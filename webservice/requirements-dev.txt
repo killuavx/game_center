@@ -1,0 +1,5 @@
+#django-debug-toolbar
+django-nose
+django-jenkins
+coverage
+nose

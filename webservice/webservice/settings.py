@@ -163,9 +163,12 @@ INTERNAL_APPS = [
     'sekizai',
     'django.contrib.admin',
     'django.contrib.admindocs',
+
     'PIL',
+    'webservice.Fix_PIL',
 ]
 EXTENDAL_APPS = [
+    'warehouse'
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 

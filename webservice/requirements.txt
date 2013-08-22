@@ -1,0 +1,28 @@
+#Django==1.5.2
+#django-cms==3.0
+-e git+https://github.com/divio/django-cms.git#egg=django-cms
+
+South==0.8.2
+django-mptt==0.6.0
+django-extensions
+django-model-utils
+django-sekizai
+#django-suit
+django-classy-tags
+html5lib
+six
+djangocms-admin-style
+
+#./dj2to3.sh
+#easy_thumbnails
+#pil-py3 url(https://github.com/gpolo/pil-py3k)
+#django-pipeline
+#django-authority
+
+#Optional, recommended packages
+-e git+https://github.com/gpolo/pil-py3k#egg=PIL
+django-filer
+cmsplugin-filer
+django-reversion
+
+mysql-python==1.2.4
