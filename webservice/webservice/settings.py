@@ -36,7 +36,8 @@ TIME_ZONE = 'Asia/Shanghai'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-cn'
 
 SITE_ID = 1
 
@@ -153,6 +154,7 @@ INTERNAL_APPS = [
     'cmsplugin_filer_folder',
     'cmsplugin_filer_image',
     'cmsplugin_filer_teaser',
+    'cms.plugins.text',
     'cms.plugins.picture',
     'cms.plugins.googlemap',
     'cms.plugins.link',
@@ -177,35 +179,13 @@ INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 # the site admins on every HTTP 500 error when DEBUG=False.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
 
 LANGUAGES = (
-    ('en', gettext('English')),
-    ('zh', gettext('Chinese')),
+  #  ('en', gettext('English')),
+  #  ('zh', gettext('Chinese')),
 )
 
+"""
 CMS_LANGUAGES = {
     1: [
         {
@@ -228,4 +208,4 @@ CMS_LANGUAGES = {
         'hide_untranslated': False,
     }
 }
-
+"""

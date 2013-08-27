@@ -18,6 +18,7 @@ class AuthorTest(TestCase):
         self.assertEqual(str(author), "Martin Flower")
         
     def _create_author(self):
+        
         author = Author.objects.create(name="Robort C. Martin",
                                        email="Uncle-Bob@testcase.com")
         return author
@@ -26,6 +27,9 @@ class AuthorTest(TestCase):
         author = self._create_author()
         self.assertEqual(author.status, Author.STATUS.draft)
         author.review()
+        self.assertEqual(author.status, Author.STATUS.unactivated)
+        
+        author.save()
         self.assertEqual(author.status, Author.STATUS.unactivated)
         
     def test_change_status_from_unactivated_to_activated(self):
@@ -139,4 +143,46 @@ class PackageTest(TestCase):
         
         pkg.reject()
         self.assertEqual(pkg.status, Package.STATUS.rejected)
+    
+    def test_status_draft_transactions_migration(self):
+        pkg = self._create_with_one_version()
+        self.assertEqual(pkg.status, Package.STATUS.draft)
+        self.assertEqual(pkg.next_statuses,(Package.STATUS.unpublished,))
+        self.assertEqual(pkg.next_actions,('review',))
+        self.assertEqual(pkg.next_transactions(), 
+                         ( ('review', Package.STATUS.unpublished), ))
         
+    def test_status_unpublished_transactions_migration(self):
+        pkg = self._create_with_one_version()
+        pkg.status = Package.STATUS.unpublished
+        self.assertEqual(pkg.status, Package.STATUS.unpublished)
+        self.assertEqual(pkg.next_statuses,
+                         (Package.STATUS.published, Package.STATUS.rejected))
+        self.assertEqual(pkg.next_actions, ( 'publish', 'reject'))
+        self.assertEqual(pkg.next_transactions(), (
+                             ('publish', Package.STATUS.published),
+                             ('reject' , Package.STATUS.rejected), ) 
+                        )
+
+    def test_status_rejected_transactions_migration(self):
+        pkg = self._create_with_one_version()
+        pkg.status = Package.STATUS.rejected
+        self.assertEqual(pkg.status, Package.STATUS.rejected)
+
+        self.assertEqual(pkg.next_statuses,
+                         (Package.STATUS.draft, Package.STATUS.unpublished))
+        self.assertEqual(pkg.next_actions, ('recall', 'appeal'))
+        self.assertEqual(pkg.next_transactions(),(
+            ('recall', Package.STATUS.draft),
+            ('appeal', Package.STATUS.unpublished), )
+        )
+        
+    def test_status_published_transaction_migration(self):
+        pkg = self._create_with_one_version()
+        pkg.status = Package.STATUS.published
+        self.assertEqual(pkg.status, Package.STATUS.published)
+        self.assertEqual(pkg.next_statuses, (Package.STATUS.rejected,))
+        self.assertEqual(pkg.next_actions, ('reject',))
+        self.assertEqual(pkg.next_transactions(), (
+            ('reject', Package.STATUS.rejected) , )
+        )

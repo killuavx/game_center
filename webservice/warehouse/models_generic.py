@@ -36,6 +36,15 @@ class AuthorStatus(object):
 
     __unicode__ = __str__
 
+    def __eq__(self, other):
+        if isinstance(other, str):
+            return self.CODE == other
+        elif isinstance(other, self.__class__):
+            return self.CODE == other.CODE
+        else:
+            return False
+
+
 class AuthorDraftStatus(AuthorStatus):
 
     CODE = "draft"
@@ -88,41 +97,38 @@ class Author(models.Model):
 
     phone = models.CharField(max_length=16, blank=True, null=True)
 
-    _status = StatusField(db_column='status')
-
     STATUS = Choices(
         (AuthorDraftStatus(),
-         AuthorDraftStatus.CODE, AuthorDraftStatus.NAME),
+        AuthorDraftStatus.CODE, AuthorDraftStatus.NAME),
         (AuthorUnactivatedStatus(),
-         AuthorUnactivatedStatus.CODE, AuthorUnactivatedStatus.NAME),
+        AuthorUnactivatedStatus.CODE, AuthorUnactivatedStatus.NAME),
         (AuthorActivatedStatus(),
-         AuthorActivatedStatus.CODE, AuthorActivatedStatus.NAME),
+        AuthorActivatedStatus.CODE, AuthorActivatedStatus.NAME),
         (AuthorRejectedStatus(),
-         AuthorRejectedStatus.CODE, AuthorRejectedStatus.NAME),
+        AuthorRejectedStatus.CODE, AuthorRejectedStatus.NAME),
         )
 
-    def get_status(self):
-        return self.STATUS.__getattr__(str(self._status))
+    status = StatusField()
 
-    def set_status(self, status):
-        self._status = self.STATUS.__getattr__(str(status)).CODE
+    @property
+    def _status(self):
+        return self.STATUS.__getattr__(str(self.status))
 
-    status = property(get_status, set_status)
 
     def review(self):
-        self.status.review(self)
+        self._status.review(self)
 
     def activate(self):
-        self.status.activate(self)
+        self._status.activate(self)
 
     def reject(self):
-        self.status.reject(self)
+        self._status.reject(self)
 
     def recall(self):
-        self.status.recall(self)
+        self._status.recall(self)
 
     def appeal(self):
-        self.status.appeal(self)
+        self._status.appeal(self)
 
     def __str__(self):
         return str(self.name)
@@ -138,6 +144,14 @@ class PackageStatus(object):
     # status nice name
     NAME = ""
 
+    _transactions = list()
+
+    @property
+    def code(self): return self.CODE
+
+    @property
+    def name(self): return self.NAME
+
     def publish(self, package):
         raise StatusNotSupportAction()
 
@@ -152,6 +166,26 @@ class PackageStatus(object):
 
     def appeal(self, package):
         raise  StatusNotSupportAction()
+
+    def next_statuses(self, package):
+        """
+            return tuple of status from next_transactions
+        """
+        return tuple(map(lambda e:e[1], self.next_transactions(package)))
+
+    def next_actions(self, package):
+        """
+            return tuple of action_name from next_transactions
+        """
+        return tuple(map(lambda e:e[0], self.next_transactions(package)))
+
+    def next_transactions(self, package):
+        """
+        return (
+            ( 'action_name', <PackageStatus> ), ...
+        )
+        """
+        raise StatusNotSupportAction()
 
     def __str__(self):
         return self.CODE
@@ -178,6 +212,11 @@ class PackageDraftStatus(PackageStatus):
         """Draft --reivew--> Unpublished"""
         package.status = package.STATUS.unpublished
 
+    def next_transactions(self, package):
+        return (
+            ('review', package.STATUS.unpublished),
+        )
+
 class PackageUnpublishedStatus(PackageStatus):
 
     CODE = "unpublished"
@@ -191,6 +230,12 @@ class PackageUnpublishedStatus(PackageStatus):
         """Unpublished --publish--> Published"""
         package.status = package.STATUS.published
 
+    def next_transactions(self, package):
+        return (
+            ('publish', package.STATUS.published),
+            ('reject', package.STATUS.rejected),
+        )
+
 class PackagePublishedStatus(PackageStatus):
 
     CODE = 'published'
@@ -199,6 +244,11 @@ class PackagePublishedStatus(PackageStatus):
     def reject(self, package):
         """published --reject--> Rejected"""
         package.status = package.STATUS.rejected
+
+    def next_transactions(self, package):
+        return (
+            ('reject', package.STATUS.rejected),
+        )
 
 class PackageRejectedStatus(PackageStatus):
 
@@ -212,6 +262,13 @@ class PackageRejectedStatus(PackageStatus):
     def recall(self, package):
         """Rejected --recall--> Draft"""
         package.status = package.STATUS.draft
+
+    def next_transactions(self, package):
+        return (
+            ('recall', package.STATUS.draft),
+            ('appeal', package.STATUS.unpublished),
+        )
+
 
 class Package(models.Model):
 
@@ -244,35 +301,43 @@ class Package(models.Model):
              PackageRejectedStatus.CODE, PackageRejectedStatus.NAME),
     )
 
-    _status = StatusField(db_column="status", default=STATUS.draft)
+    status = StatusField()
 
-    def get_status(self):
-        return self.STATUS.__getattr__(str(self._status))
+    @property
+    def _status(self):
+        return self.STATUS.__getattr__(str(self.status))
 
-    def set_status(self, status):
-        self._status = self.STATUS.__getattr__(str(status)).CODE
+    @property
+    def next_statuses(self):
+        return self._status.next_statuses(self)
 
-    status = property(get_status, set_status)
+    @property
+    def next_actions(self):
+        return self._status.next_actions(self)
+
+    def next_transactions(self):
+        return self._status.next_transactions(self)
+
     """ ================== END State Design Pattern ======================== """
 
     """ START State Design Pattern Actions ======================== """
     def review(self):
-        self.status.review(self)
+        self._status.review(self)
 
     def publish(self):
-        self.status.publish(self)
+        self._status.publish(self)
 
     def unpublish(self):
-        self.status.unpublish(self)
+        self._status.unpublish(self)
 
     def reject(self):
-        self.status.reject(self)
+        self._status.reject(self)
 
     def appeal(self):
-        self.status.appeal(self)
+        self._status.appeal(self)
 
     def recall(self):
-        self.status.recall(self)
+        self._status.recall(self)
     """ END State Design Pattern Actions ======================== """
 
     tracker = FieldTracker()
