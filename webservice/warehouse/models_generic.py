@@ -272,13 +272,13 @@ class PackageRejectedStatus(PackageStatus):
 
 class Package(models.Model):
 
-    title = models.CharField(max_length=128, null=False, default="", blank=True)
+    title = models.CharField(max_length=128)
 
-    package_name = models.CharField(max_length=128, null=False, default="", blank=True)
+    package_name = models.CharField(max_length=128)
 
     summary = models.CharField(max_length=255, null=False, default="", blank=True )
 
-    description = models.TextField(null=False, default="", blank=True, )
+    description = models.TextField(null=False, default="", blank=True )
 
     author = models.ForeignKey(Author)
 
