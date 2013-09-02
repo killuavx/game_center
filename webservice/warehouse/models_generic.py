@@ -1,8 +1,12 @@
 # -*- encoding=utf-8 -*-
 from django.db import models
+import datetime
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from model_utils.fields import StatusField
 from model_utils import Choices, FieldTracker
+from taxonomy.models import Category
+from tagging_autocomplete.models import TagAutocompleteField as TagField
 
 class StatusNotSupportAction(Exception):
     pass
@@ -32,7 +36,7 @@ class AuthorStatus(object):
         return self.CODE
 
     def __repr__(self):
-        return "<%s %s>" % (self.__class__.__name__, self.CODE)
+        return "%s" % repr(self.CODE)
 
     __unicode__ = __str__
 
@@ -91,11 +95,15 @@ class AuthorRejectedStatus(AuthorStatus):
 
 class Author(models.Model):
 
-    name = models.CharField(max_length=64)
+    class Meta:
+        verbose_name = _('Author')
+        verbose_name_plural = _('Authors')
 
-    email = models.EmailField()
+    name = models.CharField(verbose_name=_('author name'), max_length=64)
 
-    phone = models.CharField(max_length=16, blank=True, null=True)
+    email = models.EmailField(verbose_name=_('email'))
+
+    phone = models.CharField(verbose_name=_('phone'), max_length=16, blank=True, null=True)
 
     STATUS = Choices(
         (AuthorDraftStatus(),
@@ -108,7 +116,7 @@ class Author(models.Model):
         AuthorRejectedStatus.CODE, AuthorRejectedStatus.NAME),
         )
 
-    status = StatusField()
+    status = StatusField(verbose_name=_('status'))
 
     @property
     def _status(self):
@@ -191,7 +199,10 @@ class PackageStatus(object):
         return self.CODE
 
     def __repr__(self):
-        return "<%s %s>" % (self.__class__.__name__, self.CODE)
+        return "%s" % repr(self.CODE)
+
+    def __hash__(self):
+        return hash("%s:%s"%(self.__class__.__name__, self.code))
 
     __unicode__ = __str__
 
@@ -272,21 +283,29 @@ class PackageRejectedStatus(PackageStatus):
 
 class Package(models.Model):
 
-    title = models.CharField(max_length=128)
+    class Meta:
+        verbose_name = _("Package")
+        verbose_name_plural = _("Packages")
 
-    package_name = models.CharField(max_length=128)
+    title = models.CharField(verbose_name=_('package title'), max_length=128)
 
-    summary = models.CharField(max_length=255, null=False, default="", blank=True )
+    package_name = models.CharField(verbose_name=_('package name'), max_length=128)
 
-    description = models.TextField(null=False, default="", blank=True )
+    summary = models.CharField(verbose_name=_('summary'), max_length=255, null=False, default="", blank=True )
 
-    author = models.ForeignKey(Author)
+    description = models.TextField(verbose_name=_('description'), null=False, default="", blank=True )
 
-    released_datetime = models.DateTimeField(db_index=True, blank=True, null=True)
+    author = models.ForeignKey(Author, related_name='packages')
 
-    created_datetime = models.DateTimeField(auto_now_add=True)
+    released_datetime = models.DateTimeField(verbose_name=_('released time'), db_index=True, blank=True, null=True)
 
-    updated_datetime = models.DateTimeField(auto_now_add=True, auto_now=True)
+    created_datetime = models.DateTimeField(verbose_name=_('created time'),auto_now_add=True)
+
+    updated_datetime = models.DateTimeField(verbose_name=_('updated time'), auto_now_add=True, auto_now=True)
+
+    categories = models.ManyToManyField(Category, verbose_name=_('categories') , related_name='packages', blank=True)
+
+    tags = TagField(verbose_name=_('tags'),default="", blank=True)
 
     """ ================== START State Design Pattern ====================== """
 
@@ -301,7 +320,7 @@ class Package(models.Model):
              PackageRejectedStatus.CODE, PackageRejectedStatus.NAME),
     )
 
-    status = StatusField()
+    status = StatusField(verbose_name=_('status'))
 
     @property
     def _status(self):
@@ -339,6 +358,13 @@ class Package(models.Model):
     def recall(self):
         self._status.recall(self)
     """ END State Design Pattern Actions ======================== """
+
+    def was_published_recently(self):
+        return self.released_datetime >= timezone.now() - datetime.timedelta(days=1)
+
+    was_published_recently.admin_order_field = 'released_datetime'
+    was_published_recently.boolean = True
+    was_published_recently.short_description = _('Released recently?')
 
     tracker = FieldTracker()
 

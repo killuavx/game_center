@@ -12,6 +12,15 @@ django-classy-tags
 html5lib
 six
 djangocms-admin-style
+django-grappelli
+#django-admin-tools
+
+django-filter
+markdown
+djangorestframework
+
+pytz
+django-timezones
 
 #./dj2to3.sh
 #easy_thumbnails
