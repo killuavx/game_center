@@ -36,7 +36,9 @@ TIME_ZONE = 'Asia/Shanghai'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-cn'
+LANGUAGES_SUPPORTED = ('en', 'zh-cn',)
 
 SITE_ID = 1
 
@@ -93,17 +95,14 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'webservice.middlewares.RequestFillLanguageCodeMiddleware',
-    'cms.middleware.page.CurrentPageMiddleware',
-    'cms.middleware.user.CurrentUserMiddleware',
-    'cms.middleware.toolbar.ToolbarMiddleware',
-    'cms.middleware.language.LanguageCookieMiddleware',
 )
 
 ROOT_URLCONF = 'webservice.urls'
@@ -118,12 +117,6 @@ TEMPLATE_DIRS = (
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.request',
-    'cms.context_processors.media',
-    'sekizai.context_processors.sekizai',
-)
-
-CMS_TEMPLATES = (
-    ('template_1.html', 'Template One'),
 )
 
 THUMBNAIL_PROCESSORS = (
@@ -144,30 +137,23 @@ INTERNAL_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'easy_thumbnails',
-    'cms',
-    'cms.stacks',
-    'djangocms_admin_style',
     'south',
-    'filer',
-    'cmsplugin_filer_file',
-    'cmsplugin_filer_folder',
-    'cmsplugin_filer_image',
-    'cmsplugin_filer_teaser',
-    'cms.plugins.picture',
-    'cms.plugins.googlemap',
-    'cms.plugins.link',
-    #'suit',
-    'menus',
+    #'filer',
     'reversion',
     'mptt',
-    'sekizai',
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.admindocs',
 
     'PIL',
     'webservice.Fix_PIL',
+    'rest_framework',
+    'tagging',
+    'tagging_autocomplete',
+    'djrill',
 ]
 EXTENDAL_APPS = [
+    'taxonomy',
     'warehouse'
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
@@ -177,55 +163,52 @@ INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 # the site admins on every HTTP 500 error when DEBUG=False.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
 
 LANGUAGES = (
-    ('en', gettext('English')),
-    ('zh', gettext('Chinese')),
+    ('cn', gettext('Chinese')),
+  #  ('en', gettext('English')),
 )
 
-CMS_LANGUAGES = {
-    1: [
-        {
-            'code': 'en',
-            'name': gettext('English'),
-            'public': True,
-            'hide_untranslated': True,
-            'redirect_on_fallback':False,
+#from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'avatar': {'size': (50, 50), 'crop': 'smart'},
+        'icon': {'size': (72, 72)},
         },
-        {
-            'code': 'zh',
-            'name': gettext('Chinese'),
-            'public': True,
-        },
-    ],
-    'default': {
-        'fallbacks': ['en', 'zh'],
-        'redirect_on_fallback':True,
-        'public': True,
-        'hide_untranslated': False,
     }
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    #'easy_thumbnails.processors.scale_and_crop',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+    'easy_thumbnails.processors.filters',
+)
+
+_rest_route = None
+def rest_route():
+    if _rest_route is None:
+        from rest_framework.routers import DefaultRouter
+        _REST_ROUTE = DefaultRouter()
+    return _REST_ROUTE
+
+REST_FRAMEWORK = {
+    'PAGINATE_BY': 10,
+    # Use hyperlinked styles by default.
+    # Only used if the `serializer_class` attribute is not set on a view.
+    'DEFAULT_MODEL_SERIALIZER_CLASS':
+        'rest_framework.serializers.HyperlinkedModelSerializer',
+
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
 }
+
+
+#SLUGFIELD_SLUGIFY_FUNCTION = ''
+TAGGING_AUTOCOMPLETE_JS_BASE_URL = '/media/js'
+MANDRILL_API_KEY = "brack3t-is-awesome"
+EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 

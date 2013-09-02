@@ -1,3 +1,3 @@
-from django.db import models
+# -*- encoding=utf-8 -*-
+from warehouse.models_generic import *
 
-# Create your models here.
