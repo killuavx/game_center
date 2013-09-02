@@ -138,7 +138,7 @@ INTERNAL_APPS = [
     'django.contrib.staticfiles',
     'easy_thumbnails',
     'south',
-    'filer',
+    #'filer',
     'reversion',
     'mptt',
     'grappelli',
@@ -169,7 +169,7 @@ LANGUAGES = (
   #  ('en', gettext('English')),
 )
 
-from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
+#from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
 THUMBNAIL_ALIASES = {
     '': {
@@ -184,6 +184,13 @@ THUMBNAIL_PROCESSORS = (
     'filer.thumbnail_processors.scale_and_crop_with_subject_location',
     'easy_thumbnails.processors.filters',
 )
+
+_rest_route = None
+def rest_route():
+    if _rest_route is None:
+        from rest_framework.routers import DefaultRouter
+        _REST_ROUTE = DefaultRouter()
+    return _REST_ROUTE
 
 REST_FRAMEWORK = {
     'PAGINATE_BY': 10,
