@@ -8,7 +8,7 @@ class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
         model = Author
         fields = ('url', 'name')
 
-class PackageSerializer(serializers.HyperlinkedModelSerializer):
+class PackageSummarySerializer(serializers.HyperlinkedModelSerializer):
 
     author = AuthorSummarySerializer()
 

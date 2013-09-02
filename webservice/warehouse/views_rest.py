@@ -2,14 +2,14 @@
 from warehouse.models import Package, Author
 
 from rest_framework import viewsets
-from warehouse.serializers import PackageSerializer,\
+from warehouse.serializers import PackageSummarySerializer,\
     PackageDetailSerializer,\
     AuthorSerializer
 
 # ViewSets define the view behavior.
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.filter(status=Package.STATUS.published).all()
-    serializer_class = PackageSerializer
+    serializer_class = PackageSummarySerializer
 
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class = self.serializer_class

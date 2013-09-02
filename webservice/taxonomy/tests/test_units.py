@@ -1,11 +1,9 @@
 # -*- encoding=utf-8 -*-
 from django.test import TestCase
 from warehouse.models import Package, Author
+from tagging.models import Tag
 from taxonomy.models import Category
-
-def create_category(**defaults):
-    defaults.setdefault('name', "Kent Back")
-    return Category.objects.create(**defaults)
+from taxonomy.tests.helpers import *
 
 class CategorySimpleTest(TestCase):
 
@@ -104,18 +102,6 @@ class CategoryWithPackageTest(TestCase):
         self.assertEqual(except_rpg.parent, game)
         self.assertEqual(except_fps.parent, game)
 
-def create_author(**defaults):
-    defaults.setdefault('name', "Kent Back")
-    return Author.objects.create(**defaults)
-
-def create_package(**defaults):
-    defaults.setdefault('title', "Kent Back")
-    defaults.setdefault('package_name', "Kent Back")
-    if not defaults.get('author'):
-        defaults.setdefault('author', create_author())
-    return Package.objects.create(**defaults)
-
-from tagging.models import Tag
 class TagTest(TestCase):
 
     def test_basic_create(self):
