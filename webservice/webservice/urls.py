@@ -3,12 +3,13 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-import warehouse.urls
 import warehouse.views_rest
+import taxonomy.views_rest
 from rest_framework import routers
 rest_router = routers.DefaultRouter()
 rest_router.register('author', warehouse.views_rest.AuthorViewSet)
 rest_router.register('package', warehouse.views_rest.PackageViewSet)
+rest_router.register('category', taxonomy.views_rest.CategoryViewSet)
 
 from django.contrib import admin
 from djrill import DjrillAdminSite

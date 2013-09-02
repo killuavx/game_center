@@ -61,3 +61,4 @@ class AuthorAdmin(MainAdmin):
 
 admin.site.register(Package, PackageAdmin)
 admin.site.register(Author, AuthorAdmin)
+

@@ -375,4 +375,3 @@ class Package(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(Package, self).__init__(*args, **kwargs)
-

@@ -173,8 +173,8 @@ from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
 THUMBNAIL_ALIASES = {
     '': {
-        'avatar': {'size': (50, 50), 'crop': True},
-        'icon': {'size': (72, 72), 'crop': True},
+        'avatar': {'size': (50, 50), 'crop': 'smart'},
+        'icon': {'size': (72, 72)},
         },
     }
 THUMBNAIL_PROCESSORS = (
@@ -199,6 +199,8 @@ REST_FRAMEWORK = {
     ],
 }
 
+
+#SLUGFIELD_SLUGIFY_FUNCTION = ''
 TAGGING_AUTOCOMPLETE_JS_BASE_URL = '/media/js'
 MANDRILL_API_KEY = "brack3t-is-awesome"
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"

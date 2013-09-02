@@ -12,5 +12,3 @@ class PackageViewSet(viewsets.ModelViewSet):
 class AuthorViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.filter(status=Author.STATUS.activated).all()
     serializer_class = AuthorSerializer
-
-
