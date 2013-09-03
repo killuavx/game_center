@@ -48,6 +48,9 @@ class AuthorStatus(object):
         else:
             return False
 
+    def __hash__(self):
+        return hash("%s:%s"%(self.__class__.__name__, self.code))
+
 
 class AuthorDraftStatus(AuthorStatus):
 
