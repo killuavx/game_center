@@ -20,6 +20,12 @@ class AuthorStatus(object):
 
     NAME = ""
 
+    @property
+    def code(self): return self.CODE
+
+    @property
+    def name(self): return self.NAME
+
     def review(self, author):
         raise StatusNotSupportAction()
 
