@@ -5,6 +5,7 @@ django-mptt==0.6.0
 django-extensions
 django-model-utils
 Pillow>=2.1.0
+djrill
 markdown
 html5lib
 html2text
