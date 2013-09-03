@@ -20,7 +20,10 @@ class CategoryAdmin(admin.ModelAdmin):
     inlines = (CategorizedPackageInline,)
 
     def show_icon(self, obj):
-        return mark_safe('<img src="%s" alt="%s"/>' % (obj.icon.url, obj.name))
+        try:
+            return mark_safe('<img src="%s" alt="%s"/>' % (obj.icon.url, obj.name))
+        except ValueError:
+            return ''
     show_icon.short_description = _('Icon')
     show_icon.allow_tags = True
 

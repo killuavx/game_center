@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
 from taxonomy.models import Category
+from warehouse.serializers import PackageSummarySerializer
 
 class ImageUrlField(serializers.ImageField):
 
     def to_native(self, obj):
-        if obj.name:
+        try:
             return obj.url
-        return ""
+        except ValueError:
+            return ''
 
     def from_native(self, data):
         pass
@@ -18,17 +20,14 @@ class CategorySummarySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('url', 'icon', 'name', 'slug', 'children')
-
-CategorySummarySerializer.children = CategorySummarySerializer(many=True)
+        fields = ('url', 'icon', 'name', 'slug', 'parent', 'children')
 
 class CategoryDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     icon = ImageUrlField()
 
+    packages = PackageSummarySerializer(many=True)
+
     class Meta:
         model = Category
         fields = ('url', 'icon', 'name', 'slug', 'packages')
-
-from warehouse.serializers import PackageSummarySerializer
-CategoryDetailSerializer.packages = PackageSummarySerializer
