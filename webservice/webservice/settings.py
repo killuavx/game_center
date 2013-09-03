@@ -136,18 +136,18 @@ INTERNAL_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'PIL',
     'easy_thumbnails',
     'south',
-    #'filer',
     'reversion',
     'mptt',
     'grappelli',
     'django.contrib.admin',
     'django.contrib.admindocs',
 
-    'PIL',
     'webservice.Fix_PIL',
     'rest_framework',
+    'rest_framework_swagger',
     'tagging',
     'tagging_autocomplete',
     'djrill',
@@ -211,4 +211,19 @@ REST_FRAMEWORK = {
 TAGGING_AUTOCOMPLETE_JS_BASE_URL = '/media/js'
 MANDRILL_API_KEY = "brack3t-is-awesome"
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+
+SWAGGER_SETTINGS = {
+    "exclude_namespaces": [], # List URL namespaces to ignore
+    "api_version": '0.1', # Specify your API's version
+    "enabled_methods": [ # Specify which methods to enable in Swagger UI
+                         'get',
+                         'post',
+                         'put',
+                         'patch',
+                         'delete'
+    ],
+    "api_key": '', # An API key
+    "is_authenticated": False,  # Set to True to enforce user authentication,
+    "is_superuser": False,  # Set to True to enforce admin only access
+}
 
