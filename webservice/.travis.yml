@@ -1,0 +1,38 @@
+language: python
+python:
+  - "3.3"
+env:
+  - DJANGO_VERSION=1.5.2
+    DJANGO_SETTINGS_MODULE=webservice.test_settings
+    DBA_SQL_DJANGO_ENGINE='django.db.backends.mysql'
+    DBA_SQL_DB_NAME='webservice_test'
+    DBA_SQL_ADMIN_USER=travis
+    DBA_SQL_ADMIN_PASSWORD=''
+    DBA_SQL_HOST='127.0.0.1'
+    DBA_SQL_PORT='3306'
+
+services:
+  - mysql
+
+install:
+  - pip install -q Django==$DJANGO_VERSION
+  - pip install -r requirements.txt  --use-mirrors
+  - pip install -r requirements-dev.txt --use-mirrors
+  - (cd ../dependents/easy-thumbnail && python setup.py install)
+  - (cd ../dependents/django-tagging && python setup.py install)
+  - (cd ../dependents/django-tagging-autocomplate && python setup.py install)
+
+before_script:
+  - mysql -e 'create database ${DBA_SQL_DB_NAME} ;'
+  - python manage.py syncdb --noinput
+  - python manage.py migrate
+
+after_script:
+  - mysql -e 'drop database ${DBA_SQL_DB_NAME};'
+
+script:
+  - python manage.py test taxonomy
+  - python manage.py test warehouse
+
+after_success:
+  - coveralls

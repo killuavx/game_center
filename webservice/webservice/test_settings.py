@@ -15,4 +15,7 @@ DATABASES['default'].update(dict(
     PASSWORD = os.getenv('DBA_SQL_ADMIN_PASSWORD'),
     HOST = os.getenv('DBA_SQL_HOST'),
     PORT = os.getenv('DBA_SQL_PORT'),
+    OPTATIONS = dict(
+                  init_command= 'SET storage_engine=INNODB',
+            ),
     ))
