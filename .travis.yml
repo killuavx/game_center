@@ -21,7 +21,7 @@ install:
   - pip install -r $PJ/requirements-dev.txt --use-mirrors
   - cd dependents/easy-thumbnails && python setup.py install && cd -
   - cd dependents/django-tagging && python setup.py install && cd -
-  - cd dependents/django-tagging-autocomplate && python setup.py install && cd -
+  - cd dependents/django-tagging-autocomplete && python setup.py install && cd -
 
 before_script:
   - mysql -e 'create database ${DBA_SQL_DB_NAME} ;'
