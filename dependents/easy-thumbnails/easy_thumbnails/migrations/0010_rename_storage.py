@@ -14,7 +14,7 @@ class Migration(SchemaMigration):
                 db.drop_foreign_key('easy_thumbnails_source', 'storage_new_id')
             except ValueError as e:
                 # e.g MyISAM tables don't support foreign key constraints
-                print "Could not remove foreign key contraint: %s" % e
+                print("Could not remove foreign key contraint: %s" % e)
         db.rename_column('easy_thumbnails_source', 'storage_new_id', 'storage_id')
         if using_mysql:
             try:
@@ -22,14 +22,14 @@ class Migration(SchemaMigration):
                            'sourcestorage_id_fk_to_storage FOREIGN KEY (storage_id) '
                            'REFERENCES easy_thumbnails_storage(id)')
             except Exception as e:
-                print "Could not add contraint: %s" % e
+                print("Could not add contraint: %s" % e)
 
         if using_mysql:
             try:
                 db.drop_foreign_key('easy_thumbnails_thumbnail', 'storage_new_id')
             except ValueError as e:
                 # e.g MyISAM tables don't support foreign key constraints
-                print "Could not remove foreign key contraint: %s" % e
+                print("Could not remove foreign key contraint: %s" % e)
         db.rename_column('easy_thumbnails_thumbnail', 'storage_new_id', 'storage_id')
         if using_mysql:
             try:
@@ -37,7 +37,7 @@ class Migration(SchemaMigration):
                            'thumbnailstorage_id_fk_to_storage FOREIGN KEY (storage_id) '
                            'REFERENCES easy_thumbnails_storage(id)')
             except Exception as e:
-                print "Could not add contraint: %s" % e
+                print("Could not add contraint: %s" % e)
 
 
     def backwards(self, orm):

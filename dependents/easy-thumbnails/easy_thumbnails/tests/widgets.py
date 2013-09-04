@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+
 
 from easy_thumbnails import widgets, test
 from django.core.files.uploadedfile import SimpleUploadedFile
