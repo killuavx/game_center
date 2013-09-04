@@ -23,12 +23,12 @@ install:
   - cd ../dependents/django-tagging-autocomplate && python setup.py install -
 
 before_script:
-  - mysql -e 'create database ${DBA_SQL_DB_NAME} ;'
+  - mysql -e 'create database $DBA_SQL_DB_NAME ;'
   - python manage.py syncdb --noinput
   - python manage.py migrate
 
 after_script:
-  - mysql -e 'drop database ${DBA_SQL_DB_NAME};'
+  - mysql -e 'drop database $DBA_SQL_DB_NAME;'
 
 script:
   - python manage.py test taxonomy
