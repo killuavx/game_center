@@ -15,4 +15,4 @@ django-rest-swagger
 djangorestframework
 pytz
 django-timezones
--e https://github.com/clelland/MySQL-for-Python-3.git#egg=MySQLdb
+-e git+https://github.com/clelland/MySQL-for-Python-3.git#egg=MySQLdb
