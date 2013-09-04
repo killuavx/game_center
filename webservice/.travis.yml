@@ -18,9 +18,9 @@ install:
   - pip install -q Django==$DJANGO_VERSION
   - pip install -r requirements.txt  --use-mirrors
   - pip install -r requirements-dev.txt --use-mirrors
-  - (cd ../dependents/easy-thumbnail && python setup.py install)
-  - (cd ../dependents/django-tagging && python setup.py install)
-  - (cd ../dependents/django-tagging-autocomplate && python setup.py install)
+  - cd ../dependents/easy-thumbnails && python setup.py install && cd -
+  - cd ../dependents/django-tagging && python setup.py install && cd -
+  - cd ../dependents/django-tagging-autocomplate && python setup.py install -
 
 before_script:
   - mysql -e 'create database ${DBA_SQL_DB_NAME} ;'
