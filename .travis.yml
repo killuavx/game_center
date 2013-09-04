@@ -32,8 +32,7 @@ after_script:
   - mysql -e 'drop database webservice_test_2'
 
 script:
-  - cd $PJ && python manage.py test taxonomy && cd -
-  - cd $PJ && python manage.py test warehouse && cd -
+  - cd $PJ && coverage run manage.py test && cd -
 
 after_success:
   - coveralls

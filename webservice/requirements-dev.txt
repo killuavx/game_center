@@ -2,3 +2,4 @@ django-nose
 django-jenkins
 coverage
 nose
+coveralls
