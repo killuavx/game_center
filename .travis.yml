@@ -19,21 +19,21 @@ install:
   - pip install -q Django==$DJANGO_VERSION
   - pip install -r $PJ/requirements.txt  --use-mirrors
   - pip install -r $PJ/requirements-dev.txt --use-mirrors
-  - (cd dependents/easy-thumbnail && python setup.py install)
-  - (cd dependents/django-tagging && python setup.py install)
-  - (cd dependents/django-tagging-autocomplate && python setup.py install)
+  - cd dependents/easy-thumbnail && python setup.py install && cd -
+  - cd dependents/django-tagging && python setup.py install && cd -
+  - cd dependents/django-tagging-autocomplate && python setup.py install && cd -
 
 before_script:
   - mysql -e 'create database ${DBA_SQL_DB_NAME} ;'
-  - (cd $PJ && python manage.py syncdb --noinput)
-  - (cd $PJ && python manage.py migrate)
+  - cd $PJ && python manage.py syncdb --noinput && cd -
+  - cd $PJ && python manage.py migrate && cd -
 
 after_script:
   - mysql -e 'drop database ${DBA_SQL_DB_NAME};'
 
 script:
-  - (cd $PJ && python manage.py test taxonomy)
-  - (cd $PJ && python manage.py test warehouse)
+  - cd $PJ && python manage.py test taxonomy && cd -
+  - cd $PJ && python manage.py test warehouse && cd -
 
 after_success:
   - coveralls
