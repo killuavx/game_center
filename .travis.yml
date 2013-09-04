@@ -6,7 +6,7 @@ env:
     DJANGO_VERSION=1.5.2
     DJANGO_SETTINGS_MODULE=webservice.test_settings
     DBA_SQL_DJANGO_ENGINE='django.db.backends.mysql'
-    DBA_SQL_DB_NAME='webservice_test'
+    DBA_SQL_DB_NAME='webservice_test_2'
     DBA_SQL_ADMIN_USER=travis
     DBA_SQL_ADMIN_PASSWORD=''
     DBA_SQL_HOST='127.0.0.1'
@@ -24,12 +24,12 @@ install:
   - cd dependents/django-tagging-autocomplete && python setup.py install && cd -
 
 before_script:
-  - mysql -e 'create database $DBA_SQL_DB_NAME;'
+  - mysql -e 'create database webservice_test_2;'
   - cd $PJ && python manage.py syncdb --noinput && cd -
   - cd $PJ && python manage.py migrate && cd -
 
 after_script:
-  - mysql -e 'drop database $DBA_SQL_DB_NAME;'
+  - mysql -e 'drop database webservice_test_2'
 
 script:
   - cd $PJ && python manage.py test taxonomy && cd -
