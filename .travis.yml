@@ -33,7 +33,7 @@ after_script:
 
 script:
   - cd $PJ
-  - python manage.py jenkins
+  - python manage.py jenkins warehouse taxonomy
   - cd -
 
 after_success:
