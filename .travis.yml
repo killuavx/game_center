@@ -15,13 +15,13 @@ env:
 services:
   - mysql
 
-#install:
-#  - pip install -q Django==$DJANGO_VERSION
-#  - pip install -r $PJ/requirements.txt  --use-mirrors
-#  - pip install -r $PJ/requirements-dev.txt --use-mirrors
-#  - cd dependents/easy-thumbnails && python setup.py install && cd -
-#  - cd dependents/django-tagging && python setup.py install && cd -
-#  - cd dependents/django-tagging-autocomplete && python setup.py install && cd -
+install:
+  - pip install -q Django==$DJANGO_VERSION
+  - pip install -r $PJ/requirements.txt  --use-mirrors
+  - pip install -r $PJ/requirements-dev.txt --use-mirrors
+  - cd dependents/easy-thumbnails && python setup.py install && cd -
+  - cd dependents/django-tagging && python setup.py install && cd -
+  - cd dependents/django-tagging-autocomplete && python setup.py install && cd -
 
 before_script:
   - mysql -e 'create database webservice_test_2;'
