@@ -31,7 +31,7 @@ after_script:
   - mysql -e 'drop database webservice_test_1'
 
 script:
-  - coverage run manage.py test
+  - python manage.py jenkins
 
 after_success:
   - coveralls
