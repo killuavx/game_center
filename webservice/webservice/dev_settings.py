@@ -16,4 +16,3 @@ DATABASES = {
 EXTENDAL_APPS.append('django_nose')
 EXTENDAL_APPS.append('django_jenkins')
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
-

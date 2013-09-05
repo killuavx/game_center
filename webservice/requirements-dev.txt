@@ -3,4 +3,3 @@ django-jenkins
 coverage
 nose
 coveralls
-pep8
