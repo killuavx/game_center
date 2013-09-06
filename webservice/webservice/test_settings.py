@@ -5,6 +5,7 @@ MEDIA_URL = HOST_URL + MEDIA_URL
 
 EXTENDAL_APPS.append('django_nose')
 EXTENDAL_APPS.append('django_jenkins')
+EXTENDAL_APPS.append('fts')
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
 import os

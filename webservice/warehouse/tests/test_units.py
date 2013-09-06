@@ -2,6 +2,7 @@
 from django.test import TestCase
 from warehouse.models import Package, Author, StatusNotSupportAction
 from datetime import datetime , timedelta
+from fts.tests.helpers import create_author, create_package
 
 class AuthorTest(TestCase):
 
@@ -18,11 +19,9 @@ class AuthorTest(TestCase):
         self.assertEqual(str(author), "Martin Flower")
         
     def _create_author(self):
-        
-        author = Author.objects.create(name="Robort C. Martin",
+        return create_author(name="Robort C. Martin",
                                        email="Uncle-Bob@testcase.com")
-        return author
-        
+
     def test_change_status_from_draft_to_unactivated(self):
         author = self._create_author()
         self.assertEqual(author.status, Author.STATUS.draft)
@@ -67,7 +66,7 @@ class AuthorTest(TestCase):
 class PackageTest(TestCase):
     
     def setUp(self):
-        self.author = Author.objects.create(name="Martin Flower", email="martin-flower@testcase.com")
+        self.author = create_author(name="Martin Flower", email="martin-flower@testcase.com")
     
     def test_basic_create(self):
         pkg = Package(title="谷歌地图", package_name="com.google.apps.map")
@@ -94,11 +93,10 @@ class PackageTest(TestCase):
         self.assertEqual(except_author.name, "Martin Flower")
     
     def _create_with_one_version(self):
-        pkg = Package(title="梦幻西游", package_name="com.menghuan.xiyou")
-        pkg.author = self.author
-        pkg.save()
-        return Package.objects.get(pk=pkg.pk)
-    
+        return create_package(title="梦幻西游",
+                       package_name="com.menghuan.xiyou",
+                       author=self.author)
+
     def test_change_status_bewteen_draft_to_unpublished(self):
         pkg = self._create_with_one_version()
         self.assertEqual(pkg.status, Package.STATUS.draft)
