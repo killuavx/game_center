@@ -1,7 +1,18 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
-from warehouse.models import Package, Author
+from warehouse.models import Package, Author, PackageScreenshot
 
+
+class ImageUrlField(serializers.ImageField):
+
+    def to_native(self, obj):
+        try:
+            return obj.url
+        except ValueError:
+            return ''
+
+    def from_native(self, data):
+        pass
 
 class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -10,11 +21,12 @@ class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
 
 class PackageSummarySerializer(serializers.HyperlinkedModelSerializer):
 
+    icon = ImageUrlField()
     author = AuthorSummarySerializer()
-
     class Meta:
         model = Package
         fields = ('url',
+                  'icon',
                   'package_name',
                   'title',
                   'tags',
@@ -22,20 +34,43 @@ class PackageSummarySerializer(serializers.HyperlinkedModelSerializer):
                   'author',
                   'released_datetime')
 
+
+class PackageScreenshotSerializer(serializers.ModelSerializer):
+
+    large = serializers.SerializerMethodField('get_large_url')
+    preview = serializers.SerializerMethodField('get_preview_url')
+
+    # TODO 截图的预览地址，以及后台上传时的尺寸处理，
+    def get_preview_url(self, obj):
+        return obj.image.url
+
+    # TODO 截图的大图地址，以及后台上传时的尺寸处理，
+    def get_large_url(self, obj):
+        return obj.image.url
+
+    class Meta:
+        model = PackageScreenshot
+        fields = ('large', 'preview', 'rotate')
+
 class PackageDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     author = AuthorSummarySerializer()
+    icon = ImageUrlField()
+    screenshots = PackageScreenshotSerializer(many=True)
 
     class Meta:
         model = Package
         fields = ('url',
+                  'icon',
                   'package_name',
                   'title',
                   'tags',
                   'summary',
                   'description',
                   'author',
-                  'released_datetime')
+                  'released_datetime',
+                  'screenshots'
+        )
 
 class AuthorSerializer(serializers.HyperlinkedModelSerializer):
 

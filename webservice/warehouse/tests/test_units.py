@@ -1,8 +1,12 @@
 # -*- encoding=utf-8 -*-
 from django.test import TestCase
-from warehouse.models import Package, Author, StatusNotSupportAction
+from warehouse.models import *
 from datetime import datetime , timedelta
-from fts.tests.helpers import create_author, create_package
+from fts.tests import helpers
+from django.core.files import File
+from django.utils.timezone import now
+from os.path import join, abspath, dirname
+import io
 
 class AuthorTest(TestCase):
 
@@ -19,7 +23,7 @@ class AuthorTest(TestCase):
         self.assertEqual(str(author), "Martin Flower")
         
     def _create_author(self):
-        return create_author(name="Robort C. Martin",
+        return helpers.create_author(name="Robort C. Martin",
                                        email="Uncle-Bob@testcase.com")
 
     def test_change_status_from_draft_to_unactivated(self):
@@ -66,7 +70,7 @@ class AuthorTest(TestCase):
 class PackageTest(TestCase):
     
     def setUp(self):
-        self.author = create_author(name="Martin Flower", email="martin-flower@testcase.com")
+        self.author = helpers.create_author(name="Martin Flower", email="martin-flower@testcase.com")
     
     def test_basic_create(self):
         pkg = Package(title="谷歌地图", package_name="com.google.apps.map")
@@ -93,7 +97,7 @@ class PackageTest(TestCase):
         self.assertEqual(except_author.name, "Martin Flower")
     
     def _create_with_one_version(self):
-        return create_package(title="梦幻西游",
+        return helpers.create_package(title="梦幻西游",
                        package_name="com.menghuan.xiyou",
                        author=self.author)
 
@@ -184,3 +188,71 @@ class PackageTest(TestCase):
         self.assertEqual(pkg.next_transactions(), (
             ('reject', Package.STATUS.rejected) , )
         )
+
+class PackageManagerTest(TestCase):
+
+    _fixtures_dir = join(dirname(abspath(__file__)), 'fixtures')
+
+    def setUp(self):
+        super(PackageManagerTest, self).setUp()
+
+    def test_package_has_many_screenshots(self):
+        yestoday = now()-timedelta(days=1)
+        pkg = self.Given_i_have_package_with(
+            status=Package.STATUS.published,
+            released_datetime=yestoday
+        )
+        ss = PackageScreenshot()
+        f = io.FileIO(join(self._fixtures_dir, 'screenshot1.jpg'))
+        ss.image = File(f)
+        pkg.screenshots.add(ss)
+
+        except_pkg = Package.objects.get(pk=pkg.pk)
+        self.assertEqual(except_pkg.screenshots.count(), 1)
+        except_ss = except_pkg.screenshots.get()
+        self.assertIsNotNone(except_ss.image.url)
+        except_ss.delete()
+
+    def setUp(self):
+        super(PackageManagerTest, self).setUp()
+        self._count = 0
+
+    def Given_i_have_package_with(self, status=None, released_datetime=None):
+        self._count+=1
+        pkg = helpers.create_package(package_name='com.gamecenter.%d' % self._count,
+                                     title='游戏%d' % self._count,
+                                     status=status,
+                                     released_datetime=released_datetime
+        )
+        return pkg
+
+    def test_published_list_should_all_status_ok(self):
+        # tomorrow will be published
+        tomorrow = now()+timedelta(days=1)
+        self.Given_i_have_package_with(
+                                  status=Package.STATUS.published,
+                                  released_datetime=tomorrow
+        )
+        # yestoday published
+        yestoday = now()-timedelta(days=1)
+        self.Given_i_have_package_with(
+                                  status=Package.STATUS.published,
+                                  released_datetime=yestoday
+        )
+        # yestoday unpublished or else status
+        self.Given_i_have_package_with(
+                                  status=Package.STATUS.unpublished,
+                                  released_datetime=yestoday
+        )
+        self.Given_i_have_package_with(
+                                  released_datetime=yestoday,
+                                  status=Package.STATUS.draft
+        )
+        published_pkgs_set = Package.objects.published()
+        self.assertEqual(1, published_pkgs_set.count())
+
+        pub_pkgs = published_pkgs_set.all()
+        pkg = pub_pkgs[0]
+        self.assertEqual(pkg.status, Package.STATUS.published)
+
+

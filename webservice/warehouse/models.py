@@ -1,12 +1,16 @@
 # -*- encoding=utf-8 -*-
-from django.db import models
 import datetime
+from django.conf import settings
+from django.db import models
+from django.db.models.query import QuerySet
+from model_utils import Choices, FieldTracker
+from model_utils.fields import StatusField
+from model_utils.managers import PassThroughManager
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from model_utils.fields import StatusField
-from model_utils import Choices, FieldTracker
 from taxonomy.models import Category
 from tagging_autocomplete.models import TagAutocompleteField as TagField
+from easy_thumbnails.fields import ThumbnailerImageField
 
 class StatusNotSupportAction(Exception):
     pass
@@ -102,7 +106,29 @@ class AuthorRejectedStatus(AuthorStatus):
         """ Rejected --appeal--> Unactivated """
         author.status = author.STATUS.unactivated
 
+class AuthorQuerySet(QuerySet):
+
+    def have_package(self, package):
+        return self.filter(packages__in=package)
+
+    def by_name_order(self, order=None):
+        field = 'name'
+        if order is None:
+            return self
+        elif order is True:
+            return self.order_by('-'+field)
+        else:
+            return self.order_by('+'+field)
+
+    def activated(self):
+        return self.filter(status=self.model.STATUS.activated)
+
+    def unactivated(self):
+        return self.exclude(status=self.model.STATUS.activated)
+
 class Author(models.Model):
+
+    objects = PassThroughManager.for_queryset_class(AuthorQuerySet)()
 
     class Meta:
         verbose_name = _('Author')
@@ -110,7 +136,7 @@ class Author(models.Model):
 
     name = models.CharField(verbose_name=_('author name'), max_length=64)
 
-    email = models.EmailField(verbose_name=_('email'))
+    email = models.EmailField(verbose_name=_('email'), unique=True)
 
     phone = models.CharField(verbose_name=_('phone'), max_length=16, blank=True, null=True)
 
@@ -270,6 +296,7 @@ class PackagePublishedStatus(PackageStatus):
             ('reject', package.STATUS.rejected),
         )
 
+
 class PackageRejectedStatus(PackageStatus):
 
     CODE = "rejected"
@@ -289,8 +316,39 @@ class PackageRejectedStatus(PackageStatus):
             ('appeal', package.STATUS.unpublished),
         )
 
+class PackageQuerySet(QuerySet):
+
+    def by_author(self, user):
+        return self.filter(user=user)
+
+    def by_published_order(self, newest=None):
+        field = 'released_datetime'
+        if newest is None:
+            return self
+        elif newest is True:
+            return self.order_by('-'+field)
+        else:
+            return self.order_by('+'+field)
+
+    def published(self):
+        return self.filter(
+            released_datetime__lte=settings.NOW(), status=self.model.STATUS.published)
+
+    def unpublished(self):
+        return self.filter(released_datetime__gt=settings.NOW())\
+            .exclude(status=self.model.STATUS.published)
+
 
 class Package(models.Model):
+
+    icon = ThumbnailerImageField(
+        default='',
+        resize_source=dict(size=(50, 50), crop='smart'),
+        upload_to='icons',
+        blank=True
+    )
+
+    objects = PassThroughManager.for_queryset_class(PackageQuerySet)()
 
     class Meta:
         verbose_name = _("Package")
@@ -298,7 +356,7 @@ class Package(models.Model):
 
     title = models.CharField(verbose_name=_('package title'), max_length=128)
 
-    package_name = models.CharField(verbose_name=_('package name'), max_length=128)
+    package_name = models.CharField(verbose_name=_('package name'), unique=True, max_length=128)
 
     summary = models.CharField(verbose_name=_('summary'), max_length=255, null=False, default="", blank=True )
 
@@ -384,3 +442,30 @@ class Package(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(Package, self).__init__(*args, **kwargs)
+
+class PackageScreenshot(models.Model):
+
+    package = models.ForeignKey(Package, related_name='screenshots')
+
+    image = ThumbnailerImageField(
+        upload_to='screenshots',
+        blank=False
+    )
+
+    image_url = models.URLField(blank=True)
+
+    alt = models.CharField(max_length=30,blank=True)
+
+    ROTATE = (
+        ( '-180','-180'),
+        ( '-90','-90'),
+        ( '0','0'),
+        ( '90','90'),
+        ( '180','180'),
+    )
+    rotate = models.CharField(max_length=4, default=0, choices=ROTATE)
+
+    def delete(self, using=None):
+        self.image.delete(save=False)
+        super(PackageScreenshot, self).delete(using=using)
+

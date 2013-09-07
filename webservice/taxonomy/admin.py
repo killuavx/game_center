@@ -3,7 +3,6 @@ from taxonomy.models import Category
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from tagging.models import Tag, TaggedItem
-from easy_thumbnails.templatetags import thumbnail
 from django.utils.safestring import mark_safe
 from easy_thumbnails.widgets import ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField

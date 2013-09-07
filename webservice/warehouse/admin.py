@@ -1,33 +1,56 @@
 # -*- encoding=utf-8 -*-
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from warehouse.models import Package, Author
+from warehouse.models import Package, Author, PackageScreenshot
+from django.utils.safestring import mark_safe
+from easy_thumbnails.widgets import ImageClearableFileInput
+from easy_thumbnails.fields import ThumbnailerImageField
+from easy_thumbnails.templatetags.thumbnail import thumbnail_url, thumbnail
 
 class MainAdmin(admin.ModelAdmin):
     pass
 
+
+class PackageScreenshotInlines(admin.TabularInline):
+
+    model = PackageScreenshot
+    #fields = ( 'show_thumbnail' , 'alt', 'rotate')
+    def show_thumbnail(self, obj):
+        try:
+            return mark_safe(
+                '<img src="%s" alt="%s"/>' % \
+                (thumbnail_url(obj.image, 'screenshot_thumbnail' ), obj.alt))
+        except ValueError:
+            return ''
+    show_thumbnail.short_description = _('Thumbnail')
+    show_thumbnail.allow_tags = True
+    classes = ('collapse', 'grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-open',)
+
+
 class PackageAdmin(MainAdmin):
     model = Package
+    list_per_page = 15
 
     fieldsets = (
         (None, {
-            'fields': ( 'title', 'package_name', 'author',
+            'fields': ( 'icon','title', 'package_name', 'author',
                         'summary', 'description',
             )
         }),
         (_('Taxonomy'), {
-            'classes': ('collapse',),
+            'classes': ('collapse','grp-collapse grp-open'),
             'fields': ('tags', 'categories')
         }),
         (_('Release'), {
-            'classes': ('collapse',),
+            'classes': ('collapse','grp-collapse grp-open'),
             'fields': ( 'released_datetime', 'status',
                         'created_datetime', 'updated_datetime'
             )
         }),
     )
     search_fields = ( 'title', 'package_name', '^author__name')
-    list_display = ( 'title', 'package_name', 'tags', 'released_datetime', 'was_published_recently', 'status')
+    list_display = ( 'show_icon', 'title', 'package_name', 'tags', 'released_datetime', 'was_published_recently', 'status')
     list_filter = ('author__name', 'released_datetime', 'status' )
     list_display_links = ('package_name',)
     list_editable = ('status', 'tags',)
@@ -35,6 +58,18 @@ class PackageAdmin(MainAdmin):
     ordering = ('-released_datetime',)
     list_select_related = True
     filter_horizontal = ('categories', )
+    formfield_overrides = {
+        ThumbnailerImageField: {'widget': ImageClearableFileInput}
+    }
+
+    def show_icon(self, obj):
+        try:
+            return mark_safe('<img src="%s" alt="%s"/>' % (obj.icon.url, obj.title))
+        except ValueError:
+            return ''
+    show_icon.short_description = _('Icon')
+    show_icon.allow_tags = True
+
     actions = ['make_published' ]
 
     def make_published(self, request, queryset):
@@ -42,6 +77,8 @@ class PackageAdmin(MainAdmin):
     make_published.short_description = _('Make selected Packages as published')
 
     readonly_fields = ('created_datetime', 'updated_datetime',)
+
+    inlines = (PackageScreenshotInlines, )
 
 
 class PackageInline(admin.TabularInline):
