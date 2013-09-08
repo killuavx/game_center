@@ -18,29 +18,17 @@ class StatusNotSupportAction(Exception):
 class StatusUndesirable(Exception):
     pass
 
-class AuthorStatus(object):
+class StatusBase(object):
 
     CODE = ""
 
     NAME = ""
 
-    @property
-    def code(self): return self.CODE
+    def code(self):
+        return self.CODE
 
-    @property
-    def name(self): return self.NAME
-
-    def review(self, author):
-        raise StatusNotSupportAction()
-
-    def activate(self, author):
-        raise StatusNotSupportAction()
-
-    def reject(self, author):
-        raise StatusNotSupportAction()
-
-    def appeal(self, author):
-        raise StatusNotSupportAction()
+    def name(self):
+        return self.NAME
 
     def __str__(self):
         return self.CODE
@@ -60,6 +48,20 @@ class AuthorStatus(object):
 
     def __hash__(self):
         return hash("%s:%s"%(self.__class__.__name__, self.code))
+
+class AuthorStatus(StatusBase):
+
+    def review(self, author):
+        raise StatusNotSupportAction()
+
+    def activate(self, author):
+        raise StatusNotSupportAction()
+
+    def reject(self, author):
+        raise StatusNotSupportAction()
+
+    def appeal(self, author):
+        raise StatusNotSupportAction()
 
 
 class AuthorDraftStatus(AuthorStatus):
@@ -179,21 +181,9 @@ class Author(models.Model):
     __unicode__ = __str__
 
 
-class PackageStatus(object):
-
-    # status code
-    CODE = ""
-
-    # status nice name
-    NAME = ""
+class PackageStatus(StatusBase):
 
     _transactions = list()
-
-    @property
-    def code(self): return self.CODE
-
-    @property
-    def name(self): return self.NAME
 
     def publish(self, package):
         raise StatusNotSupportAction()
@@ -229,25 +219,6 @@ class PackageStatus(object):
         )
         """
         raise StatusNotSupportAction()
-
-    def __str__(self):
-        return self.CODE
-
-    def __repr__(self):
-        return "%s" % repr(self.CODE)
-
-    def __hash__(self):
-        return hash("%s:%s"%(self.__class__.__name__, self.code))
-
-    __unicode__ = __str__
-
-    def __eq__(self, other):
-        if isinstance(other, str):
-            return self.CODE == other
-        elif isinstance(other, self.__class__):
-            return self.CODE == other.CODE
-        else:
-            return False
 
 class PackageDraftStatus(PackageStatus):
 
