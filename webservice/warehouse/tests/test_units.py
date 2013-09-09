@@ -324,7 +324,7 @@ class PackageVersionTest(TestCase):
 
         # package updated_datetime should be same with latest published version 1.0beta
         except_pkg = Package.objects.get(pk=pkg.pk)
-        self.assertEqual(except_pkg.updated_datetime, version1.updated_datetime)
+        self.assertGreater( timedelta(seconds=1), version1.updated_datetime - except_pkg.updated_datetime)
 
     def test_package_should_change_updated_datetime_sync_with_latest_published_version_v2(self):
         yestoday = now() - timedelta(days=1)
@@ -349,5 +349,5 @@ class PackageVersionTest(TestCase):
                            status=PackageVersion.STATUS.published)
         # package updated_datetime should be same with latest published version 1.0beta2
         except_pkg = Package.objects.get(pk=pkg.pk)
-        self.assertEqual(except_pkg.updated_datetime, version2.updated_datetime)
+        self.assertGreater(timedelta(seconds=1), version2.updated_datetime - except_pkg.updated_datetime)
 
