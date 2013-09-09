@@ -1,13 +1,13 @@
 # -*- encoding=utf-8 -*-
 import datetime
+from django.core import exceptions
 from django.utils.timezone import now
-from django.conf import settings
+from django import forms
 from django.db import models
 from django.db.models.query import QuerySet
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from taxonomy.models import Category
 from tagging_autocomplete.models import TagAutocompleteField as TagField
@@ -63,7 +63,6 @@ class AuthorStatus(StatusBase):
 
     def appeal(self, author):
         raise StatusNotSupportAction()
-
 
 class AuthorDraftStatus(AuthorStatus):
 
@@ -181,7 +180,6 @@ class Author(models.Model):
 
     __unicode__ = __str__
 
-
 class PackageStatus(StatusBase):
 
     _transactions = list()
@@ -268,7 +266,6 @@ class PackagePublishedStatus(PackageStatus):
             ('reject', package.STATUS.rejected),
         )
 
-
 class PackageRejectedStatus(PackageStatus):
 
     CODE = "rejected"
@@ -305,7 +302,6 @@ class PackageQuerySet(QuerySet):
     def by_updated_order(self):
         return self.order_by('-updated_datetime')
 
-
     def published(self):
         return self.filter(
             released_datetime__lte=now(), status=self.model.STATUS.published)
@@ -313,8 +309,6 @@ class PackageQuerySet(QuerySet):
     def unpublished(self):
         return self.filter(released_datetime__gt=now())\
             .exclude(status=self.model.STATUS.published)
-
-        pass
 
 class Package(models.Model):
 
@@ -329,23 +323,49 @@ class Package(models.Model):
         verbose_name = _("Package")
         verbose_name_plural = _("Packages")
 
-    title = models.CharField(verbose_name=_('package title'), max_length=128)
+    title = models.CharField(
+        verbose_name=_('package title'),
+        max_length=128)
 
-    package_name = models.CharField(verbose_name=_('package name'), unique=True, max_length=128)
+    package_name = models.CharField(
+        verbose_name=_('package name'),
+        unique=True,
+        max_length=128)
 
-    summary = models.CharField(verbose_name=_('summary'), max_length=255, null=False, default="", blank=True )
+    summary = models.CharField(
+        verbose_name=_('summary'),
+        max_length=255,
+        null=False,
+        default="",
+        blank=True )
 
-    description = models.TextField(verbose_name=_('description'), null=False, default="", blank=True )
+    description = models.TextField(
+        verbose_name=_('description'),
+        null=False,
+        default="",
+        blank=True )
 
-    author = models.ForeignKey(Author, related_name='packages')
+    author = models.ForeignKey(Author,  related_name='packages')
 
-    released_datetime = models.DateTimeField(verbose_name=_('released time'), db_index=True, blank=True, null=True)
+    released_datetime = models.DateTimeField(
+        verbose_name=_('released time'),
+        db_index=True,
+        blank=True,
+        null=True)
 
-    created_datetime = models.DateTimeField(verbose_name=_('created time'),auto_now_add=True)
+    created_datetime = models.DateTimeField(
+        verbose_name=_('created time'),
+        auto_now_add=True)
 
-    updated_datetime = models.DateTimeField(verbose_name=_('updated time'), auto_now_add=True)
+    updated_datetime = models.DateTimeField(
+        verbose_name=_('updated time'),
+        auto_now_add=True)
 
-    categories = models.ManyToManyField(Category, verbose_name=_('categories') , related_name='packages', blank=True)
+    categories = models.ManyToManyField(
+        Category,
+        verbose_name=_('categories'),
+        related_name='packages',
+        blank=True)
 
     tags = TagField(verbose_name=_('tags'),default="", blank=True)
 
@@ -413,6 +433,22 @@ class Package(models.Model):
 
     tracker = FieldTracker()
 
+    def clean(self):
+        if  self.status == self.STATUS.published:
+            latest_version = None
+            try:
+                latest_version = self.versions.latest_published().get()
+            except exceptions.ObjectDoesNotExist:
+                pass
+
+            if not latest_version:
+                raise exceptions.ValidationError(
+                    _('No published version can enough to publish package,'
+                        'or you can change package status to Unpublished.'
+                    )
+                )
+        super(Package, self).clean()
+
     def __str__(self):
         return self.title
 
@@ -432,7 +468,10 @@ class PackageScreenshot(models.Model):
 
     image_url = models.URLField(blank=True)
 
-    alt = models.CharField(max_length=30,blank=True)
+    alt = models.CharField(
+        _('image alt'),
+        max_length=30,
+        blank=True)
 
     ROTATE = (
         ( '-180','-180'),
@@ -441,13 +480,44 @@ class PackageScreenshot(models.Model):
         ( '90','90'),
         ( '180','180'),
     )
-    rotate = models.CharField(max_length=4, default=0, choices=ROTATE)
+    rotate = models.CharField(
+        verbose_name=_('image rotate'),
+        max_length=4,
+        default=0,
+        choices=ROTATE)
 
     def delete(self, using=None):
         self.image.delete(save=False)
         super(PackageScreenshot, self).delete(using=using)
 
+class PackageVersionQuerySet(QuerySet):
+
+    def by_updated_order(self):
+        return self.order_by('-updated_datetime')
+
+    def by_published_order(self, newest=None):
+        field = 'released_datetime'
+        if newest is None:
+            return self
+        elif newest is True:
+            return self.order_by('-'+field)
+        else:
+            return self.order_by('+'+field)
+
+    def published(self):
+        return self.filter(
+            released_datetime__lte=now(), status=self.model.STATUS.published)
+
+    def unpublished(self):
+        return self.filter(released_datetime__gt=now()) \
+            .exclude(status=self.model.STATUS.published)
+
+    def latest_published(self):
+        return self.published().order_by('-version_code')
+
 class PackageVersion(models.Model):
+
+    objects = PassThroughManager.for_queryset_class(PackageVersionQuerySet)()
 
     class Meta:
         verbose_name = _("Package Version")
@@ -464,16 +534,30 @@ class PackageVersion(models.Model):
         blank=True,
     )
 
-    download = models.FileField(verbose_name=_('Apk File'),
-                                upload_to='packages', default='', blank=True )
+    download = models.FileField(
+        verbose_name=_('version file'),
+        upload_to='packages',
+        default='',
+        blank=True)
 
     package = models.ForeignKey(Package, related_name='versions')
 
-    version_name = models.CharField(max_length=16, blank=False, null=False)
+    version_name = models.CharField(
+        verbose_name=_('version name') ,
+        max_length=16,
+        blank=False,
+        null=False)
 
-    version_code = models.IntegerField(max_length=8, blank=False, null=False)
+    version_code = models.IntegerField(
+        verbose_name=_('version code'),
+        max_length=8,
+        blank=False,
+        null=False)
 
-    whatsnew = models.TextField(default="", blank=True )
+    whatsnew = models.TextField(
+        verbose_name=_("what's new"),
+        default="",
+        blank=True)
 
     STATUS = Choices(
         'draft',
@@ -502,7 +586,7 @@ class PackageVersion(models.Model):
 
     __unicode__ = __str__
 
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 @receiver(post_save, sender=PackageVersion)
 def package_version_post_save(sender, instance, **kwargs):
@@ -515,7 +599,7 @@ def package_version_post_save(sender, instance, **kwargs):
     package.save()
 
 # fix for PackageVersion save to update Package(set auto_now=False) updated_datetime
-@receiver(post_save, sender=Package)
+@receiver(pre_save, sender=Package)
 def package_pre_save(sender, instance, **kwargs):
     """same with DatetimeField(auto_now=True),
     but open for package_version_post_save signals,

@@ -5,16 +5,15 @@ from warehouse.models import Package, Author, PackageScreenshot, PackageVersion
 from django.utils.safestring import mark_safe
 from easy_thumbnails.widgets import ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
-from easy_thumbnails.templatetags.thumbnail import thumbnail_url, thumbnail
+from easy_thumbnails.templatetags.thumbnail import thumbnail_url
+from reversion.admin import VersionAdmin
 
-class MainAdmin(admin.ModelAdmin):
+class MainAdmin(VersionAdmin):
     pass
-
 
 class PackageScreenshotInlines(admin.TabularInline):
 
     model = PackageScreenshot
-    #fields = ( 'show_thumbnail' , 'alt', 'rotate')
     def show_thumbnail(self, obj):
         try:
             return mark_safe(
@@ -24,13 +23,12 @@ class PackageScreenshotInlines(admin.TabularInline):
             return ''
     show_thumbnail.short_description = _('Thumbnail')
     show_thumbnail.allow_tags = True
-    classes = ('collapse', 'grp-collapse grp-open',)
+    classes = ('collapse', 'grp-collapse grp-closed',)
     inline_classes = ('grp-collapse grp-open',)
 
-
-class PackageVersionInlines(admin.TabularInline):
+class PackageVersionInlines(admin.StackedInline):
     model = PackageVersion
-    classes = ('collapse', 'grp-collapse grp-open',)
+    classes = ('collapse', 'grp-collapse grp-closed',)
     inline_classes = ('grp-collapse grp-open',)
     fieldsets = (
         (_('File'), {
@@ -40,11 +38,16 @@ class PackageVersionInlines(admin.TabularInline):
             'fields':('version_code', 'version_name', 'whatsnew')
         }),
         (_('Status'), {
-            'fields':('status',)
+            'fields':('status',
+                      'released_datetime',
+                      'updated_datetime',
+                      'created_datetime'
+            )
         }),
     )
-    readonly_fields = ( 'released_datetime', 'updated_datetime')
-
+    extra = 0
+    readonly_fields = ( 'released_datetime', 'created_datetime', 'updated_datetime')
+    ordering = ('-version_code',)
 
     def show_thumbnail(self, obj):
         try:
@@ -62,13 +65,13 @@ class PackageAdmin(MainAdmin):
 
     inlines = (PackageVersionInlines, PackageScreenshotInlines, )
     fieldsets = (
-        (None, {
+        (_('Basic Information'), {
             'fields': ( 'title', 'package_name', 'author',
                         'summary', 'description',
             )
         }),
         (_('Taxonomy'), {
-            'classes': ('collapse','grp-collapse grp-open'),
+            'classes': ('collapse','grp-collapse grp-closed'),
             'fields': ('tags', 'categories')
         }),
         (_('Release'), {
@@ -112,7 +115,6 @@ class PackageInline(admin.TabularInline):
     model = Package
     fields = ( 'title', 'package_name', 'released_datetime', 'status' )
     readonly_fields = ('title', 'package_name', 'released_datetime' )
-
 
 class AuthorAdmin(MainAdmin):
     model = Author
