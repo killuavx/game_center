@@ -349,6 +349,5 @@ class PackageVersionTest(TestCase):
                            status=PackageVersion.STATUS.published)
         # package updated_datetime should be same with latest published version 1.0beta2
         except_pkg = Package.objects.get(pk=pkg.pk)
-        self.assertL
         self.assertGreater(timedelta(seconds=1), version2.updated_datetime - except_pkg.updated_datetime)
 
