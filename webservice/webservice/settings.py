@@ -173,6 +173,9 @@ LANGUAGES = (
 
 THUMBNAIL_ALIASES = {
     '': {
+        'screenshot_large': {'size':(412,232), 'crop':'smart'},
+        'screenshot_preview': {'size':(412,232), 'crop':'smart'},
+        'screenshot_thumbnail': {'size':(100,50), 'crop':'smart'},
         'avatar': {'size': (50, 50), 'crop': 'smart'},
         'icon': {'size': (72, 72)},
         },
@@ -226,3 +229,6 @@ SWAGGER_SETTINGS = {
     "is_superuser": False,  # Set to True to enforce admin only access
 }
 
+def NOW():
+    from django.utils import timezone
+    return timezone.now()

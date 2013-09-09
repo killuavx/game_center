@@ -18,6 +18,7 @@ install:
   - pip install -q Django==$DJANGO_VERSION
   - pip install -r requirements.txt  --use-mirrors
   - pip install -r requirements-dev.txt --use-mirrors
+  - cd ../dependents/python-dateutil-2.0 && python setup.py install && cd -
   - cd ../dependents/easy-thumbnails && python setup.py install && cd -
   - cd ../dependents/django-tagging && python setup.py install && cd -
   - cd ../dependents/django-tagging-autocomplate && python setup.py install -

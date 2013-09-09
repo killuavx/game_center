@@ -1,14 +1,14 @@
 # -*- encoding=utf-8 -*-
 from warehouse.models import Package, Author
 
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
 from warehouse.serializers import PackageSummarySerializer,\
     PackageDetailSerializer,\
     AuthorSerializer
 
 # ViewSets define the view behavior.
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Package.objects.filter(status=Package.STATUS.published).all()
+    queryset = Package.objects.published()
     serializer_class = PackageSummarySerializer
 
     def retrieve(self, request, *args, **kwargs):
@@ -19,7 +19,12 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         self.serializer_class = list_serializer_class
         return response
 
+class PackageNewestViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = Package.objects\
+        .published().by_published_order(newest=True)
+    serializer_class = PackageSummarySerializer
+
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Author.objects.filter(status=Author.STATUS.activated).all()
+    queryset = Author.objects.activated()
     serializer_class = AuthorSerializer

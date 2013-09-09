@@ -10,14 +10,13 @@ rest_router = routers.DefaultRouter()
 rest_router.register('authors', warehouse.views_rest.AuthorViewSet)
 rest_router.register('packages', warehouse.views_rest.PackageViewSet)
 rest_router.register('categories', taxonomy.views_rest.CategoryViewSet)
+# FIXME /packages与newest/packages 在api root上重复出现
+rest_router.register('newest/packages', warehouse.views_rest.PackageNewestViewSet)
 
 from django.contrib import admin
-from djrill import DjrillAdminSite
-
-admin.site = DjrillAdminSite()
+#from djrill import DjrillAdminSite
+#admin.site = DjrillAdminSite()
 admin.autodiscover()
-#admin.site.disable_action('delete_selected')
-
 
 urlpatterns = staticfiles_urlpatterns()
 urlpatterns += patterns('',
@@ -39,3 +38,8 @@ if settings.DEBUG:
            {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
        url(r'', include('django.contrib.staticfiles.urls')),
     ) + urlpatterns
+
+from easy_thumbnails.signals import saved_file
+from easy_thumbnails.signal_handlers import generate_aliases_global
+
+saved_file.connect(generate_aliases_global)

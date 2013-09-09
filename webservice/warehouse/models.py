@@ -1,12 +1,17 @@
 # -*- encoding=utf-8 -*-
-from django.db import models
 import datetime
+from django.utils.timezone import now
+from django.conf import settings
+from django.db import models
+from django.db.models.query import QuerySet
+from model_utils import Choices, FieldTracker
+from model_utils.fields import StatusField
+from model_utils.managers import PassThroughManager
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from model_utils.fields import StatusField
-from model_utils import Choices, FieldTracker
 from taxonomy.models import Category
 from tagging_autocomplete.models import TagAutocompleteField as TagField
+from easy_thumbnails.fields import ThumbnailerImageField
 
 class StatusNotSupportAction(Exception):
     pass
@@ -14,29 +19,17 @@ class StatusNotSupportAction(Exception):
 class StatusUndesirable(Exception):
     pass
 
-class AuthorStatus(object):
+class StatusBase(object):
 
     CODE = ""
 
     NAME = ""
 
-    @property
-    def code(self): return self.CODE
+    def code(self):
+        return self.CODE
 
-    @property
-    def name(self): return self.NAME
-
-    def review(self, author):
-        raise StatusNotSupportAction()
-
-    def activate(self, author):
-        raise StatusNotSupportAction()
-
-    def reject(self, author):
-        raise StatusNotSupportAction()
-
-    def appeal(self, author):
-        raise StatusNotSupportAction()
+    def name(self):
+        return self.NAME
 
     def __str__(self):
         return self.CODE
@@ -56,6 +49,20 @@ class AuthorStatus(object):
 
     def __hash__(self):
         return hash("%s:%s"%(self.__class__.__name__, self.code))
+
+class AuthorStatus(StatusBase):
+
+    def review(self, author):
+        raise StatusNotSupportAction()
+
+    def activate(self, author):
+        raise StatusNotSupportAction()
+
+    def reject(self, author):
+        raise StatusNotSupportAction()
+
+    def appeal(self, author):
+        raise StatusNotSupportAction()
 
 
 class AuthorDraftStatus(AuthorStatus):
@@ -102,7 +109,29 @@ class AuthorRejectedStatus(AuthorStatus):
         """ Rejected --appeal--> Unactivated """
         author.status = author.STATUS.unactivated
 
+class AuthorQuerySet(QuerySet):
+
+    def have_package(self, package):
+        return self.filter(packages__in=package)
+
+    def by_name_order(self, order=None):
+        field = 'name'
+        if order is None:
+            return self
+        elif order is True:
+            return self.order_by('-'+field)
+        else:
+            return self.order_by('+'+field)
+
+    def activated(self):
+        return self.filter(status=self.model.STATUS.activated)
+
+    def unactivated(self):
+        return self.exclude(status=self.model.STATUS.activated)
+
 class Author(models.Model):
+
+    objects = PassThroughManager.for_queryset_class(AuthorQuerySet)()
 
     class Meta:
         verbose_name = _('Author')
@@ -110,7 +139,7 @@ class Author(models.Model):
 
     name = models.CharField(verbose_name=_('author name'), max_length=64)
 
-    email = models.EmailField(verbose_name=_('email'))
+    email = models.EmailField(verbose_name=_('email'), unique=True)
 
     phone = models.CharField(verbose_name=_('phone'), max_length=16, blank=True, null=True)
 
@@ -153,21 +182,9 @@ class Author(models.Model):
     __unicode__ = __str__
 
 
-class PackageStatus(object):
-
-    # status code
-    CODE = ""
-
-    # status nice name
-    NAME = ""
+class PackageStatus(StatusBase):
 
     _transactions = list()
-
-    @property
-    def code(self): return self.CODE
-
-    @property
-    def name(self): return self.NAME
 
     def publish(self, package):
         raise StatusNotSupportAction()
@@ -203,25 +220,6 @@ class PackageStatus(object):
         )
         """
         raise StatusNotSupportAction()
-
-    def __str__(self):
-        return self.CODE
-
-    def __repr__(self):
-        return "%s" % repr(self.CODE)
-
-    def __hash__(self):
-        return hash("%s:%s"%(self.__class__.__name__, self.code))
-
-    __unicode__ = __str__
-
-    def __eq__(self, other):
-        if isinstance(other, str):
-            return self.CODE == other
-        elif isinstance(other, self.__class__):
-            return self.CODE == other.CODE
-        else:
-            return False
 
 class PackageDraftStatus(PackageStatus):
 
@@ -270,6 +268,7 @@ class PackagePublishedStatus(PackageStatus):
             ('reject', package.STATUS.rejected),
         )
 
+
 class PackageRejectedStatus(PackageStatus):
 
     CODE = "rejected"
@@ -289,16 +288,50 @@ class PackageRejectedStatus(PackageStatus):
             ('appeal', package.STATUS.unpublished),
         )
 
+class PackageQuerySet(QuerySet):
+
+    def by_author(self, user):
+        return self.filter(user=user)
+
+    def by_published_order(self, newest=None):
+        field = 'released_datetime'
+        if newest is None:
+            return self
+        elif newest is True:
+            return self.order_by('-'+field)
+        else:
+            return self.order_by('+'+field)
+
+    def by_updated_order(self):
+        return self.order_by('-updated_datetime')
+
+
+    def published(self):
+        return self.filter(
+            released_datetime__lte=now(), status=self.model.STATUS.published)
+
+    def unpublished(self):
+        return self.filter(released_datetime__gt=now())\
+            .exclude(status=self.model.STATUS.published)
+
+        pass
 
 class Package(models.Model):
 
+    objects = PassThroughManager.for_queryset_class(PackageQuerySet)()
+
     class Meta:
+        permissions = (
+            ('can_deliver_package', _('Can deliver package')),
+            ('can_remove_package',  _('Can remove package')),
+            ('can_change_package',  _('Can change package')),
+        )
         verbose_name = _("Package")
         verbose_name_plural = _("Packages")
 
     title = models.CharField(verbose_name=_('package title'), max_length=128)
 
-    package_name = models.CharField(verbose_name=_('package name'), max_length=128)
+    package_name = models.CharField(verbose_name=_('package name'), unique=True, max_length=128)
 
     summary = models.CharField(verbose_name=_('summary'), max_length=255, null=False, default="", blank=True )
 
@@ -310,7 +343,7 @@ class Package(models.Model):
 
     created_datetime = models.DateTimeField(verbose_name=_('created time'),auto_now_add=True)
 
-    updated_datetime = models.DateTimeField(verbose_name=_('updated time'), auto_now_add=True, auto_now=True)
+    updated_datetime = models.DateTimeField(verbose_name=_('updated time'), auto_now_add=True)
 
     categories = models.ManyToManyField(Category, verbose_name=_('categories') , related_name='packages', blank=True)
 
@@ -369,7 +402,10 @@ class Package(models.Model):
     """ END State Design Pattern Actions ======================== """
 
     def was_published_recently(self):
-        return self.released_datetime >= timezone.now() - datetime.timedelta(days=1)
+        if self.released_datetime:
+            return self.released_datetime >= now() - datetime.timedelta(days=1)
+        else:
+            return False
 
     was_published_recently.admin_order_field = 'released_datetime'
     was_published_recently.boolean = True
@@ -384,3 +420,113 @@ class Package(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(Package, self).__init__(*args, **kwargs)
+
+class PackageScreenshot(models.Model):
+
+    package = models.ForeignKey(Package, related_name='screenshots')
+
+    image = ThumbnailerImageField(
+        upload_to='screenshots',
+        blank=False
+    )
+
+    image_url = models.URLField(blank=True)
+
+    alt = models.CharField(max_length=30,blank=True)
+
+    ROTATE = (
+        ( '-180','-180'),
+        ( '-90','-90'),
+        ( '0','0'),
+        ( '90','90'),
+        ( '180','180'),
+    )
+    rotate = models.CharField(max_length=4, default=0, choices=ROTATE)
+
+    def delete(self, using=None):
+        self.image.delete(save=False)
+        super(PackageScreenshot, self).delete(using=using)
+
+class PackageVersion(models.Model):
+
+    class Meta:
+        verbose_name = _("Package Version")
+        verbose_name_plural = _("Package Versions")
+        unique_together = (
+            ('package', 'version_code' ),
+            ('package', 'released_datetime'),
+        )
+
+    icon = ThumbnailerImageField(
+        default='',
+        resize_source=dict(size=(50, 50), crop='smart'),
+        upload_to='icons',
+        blank=True,
+    )
+
+    download = models.FileField(verbose_name=_('Apk File'),
+                                upload_to='packages', default='', blank=True )
+
+    package = models.ForeignKey(Package, related_name='versions')
+
+    version_name = models.CharField(max_length=16, blank=False, null=False)
+
+    version_code = models.IntegerField(max_length=8, blank=False, null=False)
+
+    whatsnew = models.TextField(default="", blank=True )
+
+    STATUS = Choices(
+        'draft',
+        'unpublished',
+        'rejected',
+        'published',
+    )
+    #inspection_report = models.TextField(default='', blank=True)
+
+    status = StatusField(default='draft', blank=True)
+
+    released_datetime = models.DateTimeField(db_index=True, blank=True, null=True)
+
+    created_datetime = models.DateTimeField(auto_now_add=True)
+
+    updated_datetime = models.DateTimeField(auto_now=True, auto_now_add=True)
+
+    tracker = FieldTracker()
+
+
+    def __str__(self):
+        return self.version_code
+
+    def __hash__(self):
+        return int(self.version_code)
+
+    __unicode__ = __str__
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+@receiver(post_save, sender=PackageVersion)
+def package_version_post_save(sender, instance, **kwargs):
+    """package sync updated_datetime when self version published and changed """
+    package = instance.package
+    if instance.status == instance.STATUS.published \
+        and instance.tracker.changed():
+        package.updated_datetime = instance.updated_datetime
+
+    package.save()
+
+# fix for PackageVersion save to update Package(set auto_now=False) updated_datetime
+@receiver(post_save, sender=Package)
+def package_pre_save(sender, instance, **kwargs):
+    """same with DatetimeField(auto_now=True),
+    but open for package_version_post_save signals,
+    because model datetime with auto_now=True would be overwrite on save action
+    """
+    changed = instance.tracker.changed()
+    try:
+        changed.pop('updated_datetime')
+    except KeyError:
+        pass
+
+    if len(changed):
+        instance.updated_datetime = now()
+
