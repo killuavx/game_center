@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
-from warehouse.models import Package, Author, PackageScreenshot
-
+from warehouse.models import Package, Author, PackageScreenshot, PackageVersion
 
 class ImageUrlField(serializers.ImageField):
 
@@ -14,6 +13,18 @@ class ImageUrlField(serializers.ImageField):
     def from_native(self, data):
         pass
 
+class PackageIconField(serializers.ImageField):
+
+    def to_native(self, obj):
+        try:
+            return obj.versions.latest('version_code').icon.url
+        except:
+            return ''
+
+    def from_native(self, data):
+        pass
+
+
 class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Author
@@ -21,19 +32,16 @@ class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
 
 class PackageSummarySerializer(serializers.HyperlinkedModelSerializer):
 
-    icon = ImageUrlField()
     author = AuthorSummarySerializer()
     class Meta:
         model = Package
         fields = ('url',
-                  'icon',
                   'package_name',
                   'title',
                   'tags',
                   'summary',
                   'author',
                   'released_datetime')
-
 
 class PackageScreenshotSerializer(serializers.ModelSerializer):
 
@@ -52,16 +60,27 @@ class PackageScreenshotSerializer(serializers.ModelSerializer):
         model = PackageScreenshot
         fields = ('large', 'preview', 'rotate')
 
+class PackageVersionSerializer(serializers.ModelSerializer):
+
+    icon = ImageUrlField()
+
+    download = serializers.FileField(allow_empty_file=True)
+
+    class Meta:
+        model = PackageVersion
+        fields =( 'icon', 'version_code', 'version_name',
+                  'whatsnew', 'download',
+        )
+
 class PackageDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     author = AuthorSummarySerializer()
-    icon = ImageUrlField()
     screenshots = PackageScreenshotSerializer(many=True)
+    versions = PackageVersionSerializer(many=True)
 
     class Meta:
         model = Package
         fields = ('url',
-                  'icon',
                   'package_name',
                   'title',
                   'tags',
@@ -69,7 +88,8 @@ class PackageDetailSerializer(serializers.HyperlinkedModelSerializer):
                   'description',
                   'author',
                   'released_datetime',
-                  'screenshots'
+                  'screenshots',
+                  'versions',
         )
 
 class AuthorSerializer(serializers.HyperlinkedModelSerializer):
@@ -79,9 +99,11 @@ class AuthorSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'name', 'packages')
 
     class PackageSummarySerializer(serializers.HyperlinkedModelSerializer):
+        #icon = PackageIconField()
         class Meta:
             model = Package
             fields = ( 'url',
+                       #'icon',
                        'package_name',
                        'title',
                        'summary',

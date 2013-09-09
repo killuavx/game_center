@@ -13,16 +13,6 @@ rest_router.register('categories', taxonomy.views_rest.CategoryViewSet)
 # FIXME /packages与newest/packages 在api root上重复出现
 rest_router.register('newest/packages', warehouse.views_rest.PackageNewestViewSet)
 
-from fts.tests.helpers import *
-from django.utils.timezone import now
-from datetime import timedelta
-for i in range(3):
-    pkg = create_package(package_name='com.gamecenter.%d' % i,
-                         title='游戏%d' % i,
-                         released_datetime=now()+timedelta(days=1)
-    )
-    pkg.save()
-
 from django.contrib import admin
 #from djrill import DjrillAdminSite
 #admin.site = DjrillAdminSite()

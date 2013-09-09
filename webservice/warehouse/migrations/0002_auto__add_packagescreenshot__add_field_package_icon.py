@@ -19,18 +19,10 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('warehouse', ['PackageScreenshot'])
 
-        # Adding field 'Package.icon'
-        db.add_column('warehouse_package', 'icon',
-                      self.gf('django.db.models.fields.files.ImageField')(default='', max_length=100, blank=True),
-                      keep_default=False)
-
 
     def backwards(self, orm):
         # Deleting model 'PackageScreenshot'
         db.delete_table('warehouse_packagescreenshot')
-
-        # Deleting field 'Package.icon'
-        db.delete_column('warehouse_package', 'icon')
 
 
     models = {
@@ -62,7 +54,6 @@ class Migration(SchemaMigration):
             'categories': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'packages'", 'blank': 'True', 'symmetrical': 'False', 'to': "orm['taxonomy.Category']"}),
             'created_datetime': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'default': "''", 'blank': 'True'}),
-            'icon': ('django.db.models.fields.files.ImageField', [], {'default': "''", 'max_length': '100', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'package_name': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'released_datetime': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True', 'blank': 'True', 'null': 'True'}),

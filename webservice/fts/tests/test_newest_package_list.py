@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.test.client import Client
 from fts.tests import helpers
 from fts.tests.helpers import ApiDSL
-from warehouse.models import Package
+from warehouse.models import Package, PackageVersion
 from datetime import timedelta
 from django.utils.timezone import now
 import json
@@ -87,17 +87,32 @@ class NewestPackageTest(RestApiTest):
         helpers.clear_data()
 
     def test_should_see_package_detail_information_in_detail(self):
-
+        yestoday = now() - timedelta(days=1)
+        today = now() - timedelta(minutes=1)
         pkg = helpers.create_package(package_name='com.gamecenter.rpg1',
                                title='rpg 游戏 A',
                                status=Package.STATUS.published,
-                               released_datetime=now()-timedelta(days=1)
+                               released_datetime=yestoday,
+                               created_datetime=yestoday,
+                               updated_datetime=yestoday,
         )
         ApiDSL.Given_package_add_some_screenshot(self, pkg)
-        ApiDSL.When_i_access_package_detail(self, pkg)
+        version1 = ApiDSL.Given_package_has_version_with(self, pkg,
+                                                         all_datetime=yestoday ,
+                                                         version_name='1.0beta', version_code=21010,
+                                                         status=PackageVersion.STATUS.published)
 
+        # new published version at today
+        recently = today - timedelta(hours=2)
+        version2 = ApiDSL.Given_package_has_version_with(self, pkg,
+                                                         all_datetime=recently,
+                                                         version_name='1.0beta2', version_code=21020,
+                                                         status=PackageVersion.STATUS.published)
+
+        ApiDSL.When_i_access_package_detail(self, pkg)
         ApiDSL.Then_i_should_receive_success_response(self,)
         ApiDSL.Then_i_should_see_package_detail_information(self,
             pkg_detail_data=self.world.get('content')
         )
         helpers.clear_data()
+

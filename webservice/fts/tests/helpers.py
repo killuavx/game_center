@@ -1,11 +1,16 @@
 # -*- encoding=utf-8 -*-
-from warehouse.models import Package, Author
+from warehouse.models import Package, Author, PackageVersion, PackageScreenshot
 from taxonomy.models import Category
 from django.utils.timezone import now, timedelta
 import random
 import logging
 
 _models = []
+
+def unique_datetime_id():
+    id = "%s-%d" %(now().strftime('%Y%m%d%H%M%s'), random.randint(100, 1000))
+    return id
+
 
 def create_category(**defaults):
     logging.info('create_category', defaults)
@@ -24,7 +29,7 @@ def create_author(**defaults):
 
 def create_package(**defaults):
     logging.info('create_package', defaults)
-    id = "%s-%d" %(now().strftime('%Y%m%d%H%M%s'), random.randint(100, 1000))
+    id = unique_datetime_id()
     defaults.setdefault('title', "fts-dsl game %s" % id)
     defaults.setdefault('package_name', "com.fts.dsl-helper.%s" % id)
     if not defaults.get('author'):
@@ -44,7 +49,6 @@ def clear_data():
 
 import io
 from os.path import join, dirname, abspath
-from warehouse.models import PackageScreenshot, Package
 from django.core.files import File
 class ApiDSL(object):
 
@@ -76,9 +80,23 @@ class ApiDSL(object):
         pkg.screenshots.add(pss)
 
     def Then_i_should_see_package_detail_information(self, pkg_detail_data):
+
+        def Then_i_should_see_versions_in_package_detail(package_detail_data):
+            fields = (
+                'icon',
+                'download',
+                'version_code',
+                'version_name',
+                'whatsnew',
+            )
+
+            for v in package_detail_data.get('versions'):
+                print(v)
+                for field in fields:
+                    self.assertIn(field, v)
+
         fields = (
             'url',
-            'icon',
             'package_name',
             'title',
             'author',
@@ -86,10 +104,14 @@ class ApiDSL(object):
             'description',
             'screenshots',
             'released_datetime',
+            'versions',
 
         )
         for field in fields:
             self.assertIn(field, pkg_detail_data)
+
+        Then_i_should_see_versions_in_package_detail(pkg_detail_data)
+
 
     def When_i_access_packages_newest(self):
         self.world.setdefault('response',
@@ -121,7 +143,6 @@ class ApiDSL(object):
 
         fields = (
             'url',
-            'icon',
             'package_name',
             'title',
             'released_datetime',
@@ -139,4 +160,19 @@ class ApiDSL(object):
         serializer = PackageSummarySerializer(package)
         repsonse = self.client.get(serializer.data.get('url'))
         self.world.update(dict(response=repsonse))
+
+    def Given_package_has_version_with(self, package,
+                                       version_code, version_name, status,
+                                       all_datetime, **default):
+        version = PackageVersion(
+            version_name = version_name,
+            version_code = version_code,
+            status=status,
+            released_datetime=all_datetime,
+            updated_datetime=all_datetime,
+            created_datetime=all_datetime,
+            **default
+        )
+        package.versions.add(version)
+        return version
 

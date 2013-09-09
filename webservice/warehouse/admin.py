@@ -1,7 +1,7 @@
 # -*- encoding=utf-8 -*-
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from warehouse.models import Package, Author, PackageScreenshot
+from warehouse.models import Package, Author, PackageScreenshot, PackageVersion
 from django.utils.safestring import mark_safe
 from easy_thumbnails.widgets import ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
@@ -28,13 +28,42 @@ class PackageScreenshotInlines(admin.TabularInline):
     inline_classes = ('grp-collapse grp-open',)
 
 
+class PackageVersionInlines(admin.TabularInline):
+    model = PackageVersion
+    classes = ('collapse', 'grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-open',)
+    fieldsets = (
+        (_('File'), {
+            'fields':( 'icon', 'download')
+        }),
+        (_('Version'), {
+            'fields':('version_code', 'version_name', 'whatsnew')
+        }),
+        (_('Status'), {
+            'fields':('status',)
+        }),
+    )
+    readonly_fields = ( 'released_datetime', 'updated_datetime')
+
+
+    def show_thumbnail(self, obj):
+        try:
+            return mark_safe(
+                '<img src="%s" alt="%s"/>' % \
+                (thumbnail_url(obj.image, 'screenshot_thumbnail' ), obj.alt))
+        except ValueError:
+            return ''
+    show_thumbnail.short_description = _('Thumbnail')
+    show_thumbnail.allow_tags = True
+
 class PackageAdmin(MainAdmin):
     model = Package
     list_per_page = 15
 
+    inlines = (PackageVersionInlines, PackageScreenshotInlines, )
     fieldsets = (
         (None, {
-            'fields': ( 'icon','title', 'package_name', 'author',
+            'fields': ( 'title', 'package_name', 'author',
                         'summary', 'description',
             )
         }),
@@ -64,7 +93,8 @@ class PackageAdmin(MainAdmin):
 
     def show_icon(self, obj):
         try:
-            return mark_safe('<img src="%s" alt="%s"/>' % (obj.icon.url, obj.title))
+            version = obj.versions.latest('version_code')
+            return mark_safe('<img src="%s" alt="%s"/>' % (version.icon.url, obj.title))
         except ValueError:
             return ''
     show_icon.short_description = _('Icon')
@@ -77,9 +107,6 @@ class PackageAdmin(MainAdmin):
     make_published.short_description = _('Make selected Packages as published')
 
     readonly_fields = ('created_datetime', 'updated_datetime',)
-
-    inlines = (PackageScreenshotInlines, )
-
 
 class PackageInline(admin.TabularInline):
     model = Package
