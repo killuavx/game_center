@@ -1,6 +1,6 @@
 from webservice.settings import *
 
-HOST_URL = 'http://173.254.227.49:8000/'
+HOST_URL = 'http://sphinx.killuavx.com/'
 MEDIA_URL = HOST_URL + MEDIA_URL
 
 EXTENDAL_APPS.append('django_nose')
