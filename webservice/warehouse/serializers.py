@@ -13,6 +13,17 @@ class ImageUrlField(serializers.ImageField):
     def from_native(self, data):
         pass
 
+class FileUrlField(serializers.FileField):
+
+    def to_native(self, obj):
+        try:
+            return obj.url
+        except ValueError:
+            return ''
+
+    def from_native(self, data):
+        pass
+
 class PackageIconField(serializers.ImageField):
 
     def to_native(self, obj):
@@ -64,7 +75,7 @@ class PackageVersionSerializer(serializers.ModelSerializer):
 
     icon = ImageUrlField()
 
-    download = serializers.FileField(allow_empty_file=True)
+    download = FileUrlField(allow_empty_file=True)
 
     class Meta:
         model = PackageVersion
