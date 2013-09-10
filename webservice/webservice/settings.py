@@ -142,6 +142,7 @@ INTERNAL_APPS = [
     'reversion',
     'mptt',
     'grappelli',
+    'sizefield',
     'django.contrib.admin',
     'django.contrib.admindocs',
 
@@ -232,3 +233,9 @@ SWAGGER_SETTINGS = {
 def NOW():
     from django.utils import timezone
     return timezone.now()
+
+GRAPPELLI_AUTOCOMPLETE_SEARCH_FIELDS = {
+    "warehouse": {
+        "Package": ("id__iexact", "package_name__icontains", "title_icontains", )
+    }
+}

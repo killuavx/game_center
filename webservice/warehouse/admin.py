@@ -1,19 +1,33 @@
 # -*- encoding=utf-8 -*-
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-from warehouse.models import Package, Author, PackageScreenshot, PackageVersion
+from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from django.utils.safestring import mark_safe
 from easy_thumbnails.widgets import ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
 from easy_thumbnails.templatetags.thumbnail import thumbnail_url
 from reversion.admin import VersionAdmin
+from webservice.admin import AdminFieldBase, AdminField
+from django.core.urlresolvers import reverse
+
+class AdminIconField(AdminFieldBase):
+
+    DEFAULT_FIELD = 'icon'
+
+    @staticmethod
+    def method(obj):
+        try:
+            return mark_safe('<img src="%s" />' % obj.url)
+        except ValueError:
+            return ''
 
 class MainAdmin(VersionAdmin):
     pass
 
-class PackageScreenshotInlines(admin.TabularInline):
+class PackageVersionScreenshotInlines(admin.StackedInline):
 
-    model = PackageScreenshot
+    model = PackageVersionScreenshot
+
     def show_thumbnail(self, obj):
         try:
             return mark_safe(
@@ -25,14 +39,28 @@ class PackageScreenshotInlines(admin.TabularInline):
     show_thumbnail.allow_tags = True
     classes = ('collapse', 'grp-collapse grp-closed',)
     inline_classes = ('grp-collapse grp-open',)
+    formfield_overrides = {
+        ThumbnailerImageField: {'widget': ImageClearableFileInput}
+    }
 
-class PackageVersionInlines(admin.StackedInline):
+class PackageVersionAdmin(MainAdmin):
     model = PackageVersion
-    classes = ('collapse', 'grp-collapse grp-closed',)
-    inline_classes = ('grp-collapse grp-open',)
+    inlines = (PackageVersionScreenshotInlines, )
+    list_per_page = 15
+    search_fields = ( 'version_name',
+                      'package__package_name',
+                      'package__title')
+    list_display = ('show_icon', 'package', 'package_name',
+                    'version_name', 'version_code', 'updated_datetime' )
+    list_display_links = ('show_icon', 'version_name')
+    actions = ['make_published' ]
+    raw_id_fields = ('package', )
     fieldsets = (
+        (_('Package'), {
+            'fields':('package',)
+        }),
         (_('File'), {
-            'fields':( 'icon', 'download')
+            'fields':('icon', 'download' )
         }),
         (_('Version'), {
             'fields':('version_code', 'version_name', 'whatsnew')
@@ -46,7 +74,52 @@ class PackageVersionInlines(admin.StackedInline):
         }),
     )
     extra = 0
-    readonly_fields = ( 'released_datetime', 'created_datetime', 'updated_datetime')
+    readonly_fields = ('package', 'created_datetime', 'updated_datetime',)
+    ordering = ('-updated_datetime', '-version_code',)
+    formfield_overrides = {
+        ThumbnailerImageField: {'widget': ImageClearableFileInput},
+    }
+
+    show_icon = AdminIconField( allow_tags=True,
+                                short_description=_('Icon') )
+    def _package_link(p):
+        link =  reverse('admin:%s_%s_change' % (p._meta.app_label, p._meta.module_name), args=[p.pk])
+        return '<a href="%s" target="_blank">%s</a>' % (link, p.package_name )
+    package_name = AdminField(name='package',
+                              method=_package_link,
+                              allow_tags=True,
+                              short_description=_("Package Name"),
+                              admin_order_field='package__package_name')
+
+    def make_published(self, request, queryset):
+        queryset.update(status=PackageVersion.STATUS.published)
+    make_published.short_description = _('Make selected Packages as published')
+
+
+class PackageVersionInlines(admin.StackedInline):
+
+    model = PackageVersion
+    inlines = (PackageVersionScreenshotInlines, )
+
+    classes = ('collapse', 'grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
+    fieldsets = (
+        (_('File'), {
+            'fields':('icon', 'download' )
+        }),
+        (_('Version'), {
+            'fields':('version_code', 'version_name', 'whatsnew')
+        }),
+        (_('Status'), {
+            'fields':('status',
+                      'released_datetime',
+                      'updated_datetime',
+                      'created_datetime'
+            )
+        }),
+    )
+    extra = 0
+    readonly_fields = ( 'created_datetime', 'updated_datetime')
     ordering = ('-version_code',)
 
     def show_thumbnail(self, obj):
@@ -61,9 +134,9 @@ class PackageVersionInlines(admin.StackedInline):
 
 class PackageAdmin(MainAdmin):
     model = Package
+    inlines = (PackageVersionInlines, )
     list_per_page = 15
 
-    inlines = (PackageVersionInlines, PackageScreenshotInlines, )
     fieldsets = (
         (_('Basic Information'), {
             'fields': ( 'title', 'package_name', 'author',
@@ -125,6 +198,7 @@ class AuthorAdmin(MainAdmin):
 
     inlines = (PackageInline, )
 
+admin.site.register(PackageVersion, PackageVersionAdmin)
 admin.site.register(Package, PackageAdmin)
 admin.site.register(Author, AuthorAdmin)
 
