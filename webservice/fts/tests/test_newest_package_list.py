@@ -96,11 +96,11 @@ class NewestPackageTest(RestApiTest):
                                created_datetime=yestoday,
                                updated_datetime=yestoday,
         )
-        ApiDSL.Given_package_add_some_screenshot(self, pkg)
         version1 = ApiDSL.Given_package_has_version_with(self, pkg,
                                                          all_datetime=yestoday ,
                                                          version_name='1.0beta', version_code=21010,
                                                          status=PackageVersion.STATUS.published)
+        ApiDSL.Given_package_version_add_screenshot(self, version1)
 
         # new published version at today
         recently = today - timedelta(hours=2)
@@ -108,6 +108,7 @@ class NewestPackageTest(RestApiTest):
                                                          all_datetime=recently,
                                                          version_name='1.0beta2', version_code=21020,
                                                          status=PackageVersion.STATUS.published)
+        ApiDSL.Given_package_version_add_screenshot(self, version2)
 
         ApiDSL.When_i_access_package_detail(self, pkg)
         ApiDSL.Then_i_should_receive_success_response(self,)
@@ -115,4 +116,3 @@ class NewestPackageTest(RestApiTest):
             pkg_detail_data=self.world.get('content')
         )
         helpers.clear_data()
-

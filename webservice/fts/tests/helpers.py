@@ -1,5 +1,5 @@
 # -*- encoding=utf-8 -*-
-from warehouse.models import Package, Author, PackageVersion, PackageScreenshot
+from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from taxonomy.models import Category
 from django.utils.timezone import now, timedelta
 import random
@@ -74,24 +74,36 @@ class ApiDSL(object):
 
         return packages
 
-    def Given_package_add_some_screenshot(self, pkg):
-        pss = PackageScreenshot()
+    def Given_package_version_add_screenshot(self, version):
+        pss = PackageVersionScreenshot()
         pss.image = File(io.FileIO(join(ApiDSL._fixtures_dir,'screenshot2.jpg')))
-        pkg.screenshots.add(pss)
+        version.screenshots.add(pss)
+        _models.append(pss)
+        return pss
 
     def Then_i_should_see_package_detail_information(self, pkg_detail_data):
+
+        def Then_i_should_see_screenshots_in_package_version( version ):
+            fields = (
+                'large',
+                'preview',
+                'rotate',
+            )
+            for s in version.screenshots:
+                for field in fields:
+                    self.assertIn(field, s)
 
         def Then_i_should_see_versions_in_package_detail(package_detail_data):
             fields = (
                 'icon',
                 'download',
+                'screenshots',
                 'version_code',
                 'version_name',
                 'whatsnew',
             )
-
             for v in package_detail_data.get('versions'):
-                print(v)
+                Then_i_should_see_screenshots_in_package_version(v)
                 for field in fields:
                     self.assertIn(field, v)
 
@@ -111,7 +123,6 @@ class ApiDSL(object):
             self.assertIn(field, pkg_detail_data)
 
         Then_i_should_see_versions_in_package_detail(pkg_detail_data)
-
 
     def When_i_access_packages_newest(self):
         self.world.setdefault('response',
@@ -173,6 +184,8 @@ class ApiDSL(object):
             created_datetime=all_datetime,
             **default
         )
+        version.icon = File(io.FileIO(join(ApiDSL._fixtures_dir,'icon.png')))
+        _models.append(version.icon)
         package.versions.add(version)
         return version
 

@@ -196,20 +196,25 @@ class PackageManagerTest(TestCase):
     def setUp(self):
         super(PackageManagerTest, self).setUp()
 
-    def test_package_has_many_screenshots(self):
+    def test_package_version_has_many_screenshots(self):
         yestoday = now()-timedelta(days=1)
         pkg = self.Given_i_have_package_with(
             status=Package.STATUS.published,
             released_datetime=yestoday
         )
-        ss = PackageScreenshot()
-        f = io.FileIO(join(self._fixtures_dir, 'screenshot1.jpg'))
-        ss.image = File(f)
-        pkg.screenshots.add(ss)
+        version = ApiDSL.Given_package_has_version_with(self,
+            pkg,
+            version_code=1,
+            version_name='1.0beta',
+            all_datetime=yestoday,
+            status=PackageVersion.STATUS.published
+        )
+        ApiDSL.Given_package_version_add_screenshot(self, version)
 
         except_pkg = Package.objects.get(pk=pkg.pk)
-        self.assertEqual(except_pkg.screenshots.count(), 1)
-        except_ss = except_pkg.screenshots.get()
+        except_version = except_pkg.versions.get()
+        self.assertEqual(except_version.screenshots.count(), 1)
+        except_ss = except_version.screenshots.get()
         self.assertIsNotNone(except_ss.image.url)
         except_ss.delete()
 

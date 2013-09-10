@@ -437,7 +437,7 @@ class Package(models.Model):
         if  self.status == self.STATUS.published:
             latest_version = None
             try:
-                latest_version = self.versions.latest_published().get()
+                latest_version = self.versions.latest_published()
             except exceptions.ObjectDoesNotExist:
                 pass
 
@@ -456,39 +456,6 @@ class Package(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(Package, self).__init__(*args, **kwargs)
-
-class PackageScreenshot(models.Model):
-
-    package = models.ForeignKey(Package, related_name='screenshots')
-
-    image = ThumbnailerImageField(
-        upload_to='screenshots',
-        blank=False
-    )
-
-    image_url = models.URLField(blank=True)
-
-    alt = models.CharField(
-        _('image alt'),
-        max_length=30,
-        blank=True)
-
-    ROTATE = (
-        ( '-180','-180'),
-        ( '-90','-90'),
-        ( '0','0'),
-        ( '90','90'),
-        ( '180','180'),
-    )
-    rotate = models.CharField(
-        verbose_name=_('image rotate'),
-        max_length=4,
-        default=0,
-        choices=ROTATE)
-
-    def delete(self, using=None):
-        self.image.delete(save=False)
-        super(PackageScreenshot, self).delete(using=using)
 
 class PackageVersionQuerySet(QuerySet):
 
@@ -513,7 +480,7 @@ class PackageVersionQuerySet(QuerySet):
             .exclude(status=self.model.STATUS.published)
 
     def latest_published(self):
-        return self.published().order_by('-version_code')
+        return self.published().latest('version_code')
 
 class PackageVersion(models.Model):
 
@@ -579,12 +546,45 @@ class PackageVersion(models.Model):
 
 
     def __str__(self):
-        return self.version_code
+        return str(self.version_code)
 
     def __hash__(self):
         return int(self.version_code)
 
     __unicode__ = __str__
+
+class PackageVersionScreenshot(models.Model):
+
+    version = models.ForeignKey(PackageVersion, related_name='screenshots')
+
+    image = ThumbnailerImageField(
+        upload_to='screenshots',
+        blank=False
+    )
+
+    alt = models.CharField(
+        _('image alt'),
+        max_length=30,
+        blank=True)
+
+    ROTATE = (
+        ( '-180','-180'),
+        ( '-90','-90'),
+        ( '0','0'),
+        ( '90','90'),
+        ( '180','180'),
+    )
+
+    rotate = models.CharField(
+        verbose_name=_('image rotate'),
+        max_length=4,
+        default=0,
+        choices=ROTATE)
+
+    def delete(self, using=None):
+        self.image.delete(save=False)
+        super(PackageVersionScreenshot, self).delete(using=using)
+
 
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
