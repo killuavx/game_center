@@ -25,22 +25,34 @@ class FileUrlField(serializers.FileField):
         pass
 
 class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
+
     class Meta:
         model = Author
         fields = ('url', 'name')
 
-class PackageSummarySerializer(serializers.HyperlinkedModelSerializer):
+class PackageLatestIconUrlField(serializers.FileField):
 
-    author = AuthorSummarySerializer()
-    class Meta:
-        model = Package
-        fields = ('url',
-                  'package_name',
-                  'title',
-                  'tags',
-                  'summary',
-                  'author',
-                  'released_datetime')
+    def to_native(self, obj):
+        try:
+            return obj.url
+        except ValueError:
+            return ''
+
+def _package_latest_version_icon_url(self, obj):
+    try:
+        return obj.versions.latest_published().icon.url
+    except:
+        return ''
+
+def _package_latest_version_screenshots(self, obj):
+    try:
+        latest_version = obj.versions.latest_published()
+        screenshots_serializer = self.serializer_class_screenshot(
+            latest_version.screenshots.all() ,
+            many=True)
+        return screenshots_serializer.data
+    except:
+        return dict()
 
 class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
 
@@ -59,42 +71,48 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
         model = PackageVersionScreenshot
         fields = ('large', 'preview', 'rotate')
 
+class PackageSummarySerializer(serializers.HyperlinkedModelSerializer):
+
+    icon = serializers.SerializerMethodField('get_latest_version_icon_url')
+    get_latest_version_icon_url = _package_latest_version_icon_url
+
+    author = AuthorSummarySerializer()
+    class Meta:
+        model = Package
+        fields = ('url',
+                  'icon',
+                  'package_name',
+                  'title',
+                  'tags',
+                  'summary',
+                  'author',
+                  'released_datetime')
+
 class PackageVersionSerializer(serializers.ModelSerializer):
 
     icon = ImageUrlField()
 
     download = FileUrlField(allow_empty_file=True)
 
+    screenshots = PackageVersionScreenshotSerializer(many=True)
+
     class Meta:
         model = PackageVersion
         fields =( 'icon', 'version_code', 'version_name',
-                  'whatsnew', 'download',
+                  'screenshots', 'whatsnew', 'download',
         )
 
 class PackageDetailSerializer(serializers.HyperlinkedModelSerializer):
 
-    icon = serializers.SerializerMethodField('get_latest_version_icon_url')
-    serializer_class_screenshot = PackageVersionScreenshotSerializer
-    screenshots = serializers.SerializerMethodField('get_latest_version_screenshots')
-
     author = AuthorSummarySerializer()
     versions = PackageVersionSerializer(many=True)
 
-    def get_latest_version_screenshots(self, obj):
-        try:
-            latest_version = obj.versions.latest_published()
-            screenshots_serializer = self.serializer_class_screenshot(
-                latest_version.screenshots.all() ,
-                many=True)
-            return screenshots_serializer.data
-        except:
-            return dict()
+    icon = serializers.SerializerMethodField('get_latest_version_icon_url')
+    get_latest_version_icon_url = _package_latest_version_icon_url
 
-    def get_latest_version_icon_url(self, obj):
-        try:
-            return obj.versions.latest_published().icon.url
-        except:
-            return ''
+    serializer_class_screenshot = PackageVersionScreenshotSerializer
+    screenshots = serializers.SerializerMethodField('get_latest_version_screenshots')
+    get_latest_version_screenshots = _package_latest_version_screenshots
 
     class Meta:
         model = Package
@@ -118,9 +136,14 @@ class AuthorSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'name', 'packages')
 
     class PackageSummarySerializer(serializers.HyperlinkedModelSerializer):
+
+        icon = serializers.SerializerMethodField('get_latest_version_icon_url')
+        get_latest_version_icon_url = _package_latest_version_icon_url
+
         class Meta:
             model = Package
             fields = ( 'url',
+                       'icon',
                        'package_name',
                        'title',
                        'summary',

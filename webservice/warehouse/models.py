@@ -585,7 +585,6 @@ class PackageVersionScreenshot(models.Model):
         self.image.delete(save=False)
         super(PackageVersionScreenshot, self).delete(using=using)
 
-
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 @receiver(post_save, sender=PackageVersion)

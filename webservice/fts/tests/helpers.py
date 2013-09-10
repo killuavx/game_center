@@ -89,7 +89,7 @@ class ApiDSL(object):
                 'preview',
                 'rotate',
             )
-            for s in version.screenshots:
+            for s in version.get('screenshots'):
                 for field in fields:
                     self.assertIn(field, s)
 
@@ -97,7 +97,6 @@ class ApiDSL(object):
             fields = (
                 'icon',
                 'download',
-                'screenshots',
                 'version_code',
                 'version_name',
                 'whatsnew',
@@ -154,6 +153,7 @@ class ApiDSL(object):
 
         fields = (
             'url',
+            'icon',
             'package_name',
             'title',
             'released_datetime',

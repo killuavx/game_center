@@ -111,7 +111,7 @@ class NewestPackageTest(RestApiTest):
         ApiDSL.Given_package_version_add_screenshot(self, version2)
 
         ApiDSL.When_i_access_package_detail(self, pkg)
-        ApiDSL.Then_i_should_receive_success_response(self,)
+        ApiDSL.Then_i_should_receive_success_response(self)
         ApiDSL.Then_i_should_see_package_detail_information(self,
             pkg_detail_data=self.world.get('content')
         )
