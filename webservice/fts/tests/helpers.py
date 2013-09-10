@@ -97,6 +97,7 @@ class ApiDSL(object):
             fields = (
                 'icon',
                 'download',
+                'screenshots',
                 'version_code',
                 'version_name',
                 'whatsnew',

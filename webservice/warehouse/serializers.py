@@ -104,6 +104,10 @@ class PackageVersionSerializer(serializers.ModelSerializer):
 
 class PackageDetailSerializer(serializers.HyperlinkedModelSerializer):
 
+    icon = serializers.SerializerMethodField('get_latest_version_icon_url')
+    serializer_class_screenshot = PackageVersionScreenshotSerializer
+    screenshots = serializers.SerializerMethodField('get_latest_version_screenshots')
+
     author = AuthorSummarySerializer()
     versions = PackageVersionSerializer(many=True)
 
