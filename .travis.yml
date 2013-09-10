@@ -16,9 +16,9 @@ services:
   - mysql
 
 install:
-  - pip install -q Django==$DJANGO_VERSION
-  - pip install -r $PJ/requirements.txt  --use-mirrors
-  - pip install -r $PJ/requirements-dev.txt --use-mirrors
+  - pip install -q Django==$DJANGO_VERSION --download-cache $TRAVIS_BUILD_DIR/download-cache/
+  - pip install -r $PJ/requirements.txt  --use-mirrors --download-cache $TRAVIS_BUILD_DIR/download-cache/
+  - pip install -r $PJ/requirements-dev.txt --use-mirrors --download-cache $TRAVIS_BUILD_DIR/download-cache/
   - cd dependents/python-dateutil-2.0 && python setup.py install && cd -
   - cd dependents/easy-thumbnails && python setup.py install && cd -
   - cd dependents/django-tagging && python setup.py install && cd -
