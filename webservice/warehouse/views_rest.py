@@ -1,7 +1,8 @@
 # -*- encoding=utf-8 -*-
 from warehouse.models import Package, Author
+from rest_framework.decorators import link
 from rest_framework import (viewsets,
-                            mixins,
+                            generics,
                             filters)
 from warehouse.serializers import (PackageSummarySerializer,
                                    PackageDetailSerializer,
@@ -27,11 +28,14 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         self.serializer_class = list_serializer_class
         return response
 
-class PackageNewestViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    queryset = Package.objects\
-        .published().by_published_order(newest=True)
-    serializer_class = PackageSummarySerializer
-
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Author.objects.activated()
     serializer_class = AuthorSerializer
+
+    @link()
+    def packages(self, request, pk, *args, **kwargs):
+        author = generics.get_object_or_404(self.queryset, pk=pk)
+        ViewSet = PackageViewSet
+        queryset = author.packages.published()
+        list_view =  ViewSet.as_view({'get':'list'}, queryset=queryset)
+        return list_view(request, *args, **kwargs)

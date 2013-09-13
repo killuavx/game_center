@@ -123,8 +123,14 @@ class ApiDSL(object):
     def Given_i_have_icon_image(self):
         return File(io.FileIO(join(ApiDSL._fixtures_dir,'icon.png')))
 
-    def Given_i_have_published_package(self, all_datetime):
-        pkg = ApiDSL.Given_i_have_package_with(self, status=Package.STATUS.published)
+    def Given_i_have_activated_author(self, **kwargs):
+        kwargs.setdefault('status', Author.STATUS.activated)
+        return create_author(**kwargs)
+
+    def Given_i_have_published_package(self, all_datetime, **kwargs):
+        pkg = ApiDSL.Given_i_have_package_with(self,
+                                               status=Package.STATUS.published,
+                                               **kwargs)
         version = ApiDSL.Given_package_has_version_with(self,
                                                         pkg,
                                                         version_code=1,
@@ -140,8 +146,8 @@ class ApiDSL(object):
         defaults.setdefault('released_datetime', all_datetime)
         return create_topic(**defaults)
 
-    def Given_topic_add_package(self, topic, package):
-        return create_topicalitem(topic, package)
+    def Given_topic_add_item(self, topic, item):
+        return create_topicalitem(topic, item)
 
     def Then_i_should_see_package_detail_information(self, pkg_detail_data):
 
@@ -202,6 +208,11 @@ class ApiDSL(object):
         respose = self.client.get('/api/topics/%s/items/' % topic.slug)
         self.world.setdefault('response', respose)
 
+    def When_i_access_author_packages(self, author):
+        respose = self.client.get('/api/authors/%s/packages/' % author.pk)
+        self.world.setdefault('response', respose)
+
+
     def When_i_access_topic_newest_package(self):
         self.world.setdefault('response',
                               self.client.get('/api/topics/newest/items?ordering=-released_datetime'))
@@ -229,6 +240,11 @@ class ApiDSL(object):
         self.assertGreater(result[1].get('released_datetime'),
                            result[2].get('released_datetime'))
 
+    def Then_i_should_see_package_summary_list(self, pkg_list_data):
+        for p in pkg_list_data:
+            ApiDSL\
+                .Then_i_should_see_package_summary_information_for_list(self, p)
+
     def Then_i_should_see_package_summary_information_for_list(self, pkg_data):
         fields = (
             'url',
@@ -242,8 +258,20 @@ class ApiDSL(object):
         for field in fields:
             self.assertIn(field, pkg_data)
 
-            #self.assertIsUrl(pkg_data.get('url'))
-            #self.assertIsUrl(pkg_data.get('icon'))
+    def Then_i_should_see_author_summary_list(self, author_list_data):
+        for a in author_list_data:
+            ApiDSL.Then_i_should_see_author_summary_info(self, a)
+
+    def Then_i_should_see_author_summary_info(self, author_data):
+        fields = (
+            'url',
+            'icon',
+            'cover',
+            'name',
+            'packages_url',
+        )
+        for field in fields:
+            self.assertIn(field, author_data)
 
     def Then_i_should_see_topic_list(self, topic_list_data):
         for t in topic_list_data:

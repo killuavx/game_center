@@ -131,6 +131,14 @@ class AuthorQuerySet(QuerySet):
 
 class Author(models.Model):
 
+    icon = ThumbnailerImageField(upload_to='icons/author',
+                                 blank=True,
+                                 default='')
+
+    cover = ThumbnailerImageField(upload_to='covers/author',
+                                  blank=True,
+                                  default='')
+
     objects = PassThroughManager.for_queryset_class(AuthorQuerySet)()
 
     class Meta:
@@ -142,6 +150,8 @@ class Author(models.Model):
     email = models.EmailField(verbose_name=_('email'), unique=True)
 
     phone = models.CharField(verbose_name=_('phone'), max_length=16, blank=True, null=True)
+
+    topics = generic.GenericRelation('taxonomy.TopicalItem')
 
     STATUS = Choices(
         (AuthorDraftStatus(),

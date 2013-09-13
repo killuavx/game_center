@@ -211,10 +211,17 @@ class PackageInline(admin.TabularInline):
 
 class AuthorAdmin(MainAdmin):
     model = Author
-    list_display = ( 'name', 'email', 'phone')
+    list_display = ( 'show_icon', 'name', 'email', 'phone')
     search_fields = ( 'name', 'email', 'phone')
+    list_display_links = ('name', 'show_icon',)
     list_filter = ('status', )
     ordering = ('name',)
+
+    show_icon = AdminIconField(allow_tags=True,
+                               short_description=_('Icon') )
+    formfield_overrides = {
+        ThumbnailerImageField: {'widget': ImageClearableFileInput},
+        }
 
     inlines = (PackageInline, )
     def suit_row_attributes(self, obj, request):

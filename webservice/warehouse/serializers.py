@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
 from warehouse.models import Package, Author, PackageVersionScreenshot, PackageVersion
+from django.core.urlresolvers import reverse
 
 class ImageUrlField(serializers.ImageField):
 
@@ -8,7 +9,7 @@ class ImageUrlField(serializers.ImageField):
         try:
             return obj.url
         except ValueError:
-            return ''
+            return None
 
     def from_native(self, data):
         pass
@@ -19,7 +20,7 @@ class FileUrlField(serializers.FileField):
         try:
             return obj.url
         except ValueError:
-            return ''
+            return None
 
     def from_native(self, data):
         pass
@@ -136,25 +137,17 @@ class PackageDetailSerializer(serializers.HyperlinkedModelSerializer):
 
 class AuthorSerializer(serializers.HyperlinkedModelSerializer):
 
+    icon = ImageUrlField()
+
+    cover = ImageUrlField()
+
+    packages_url = serializers.SerializerMethodField('get_packages_url')
+    def get_packages_url(self, obj):
+        request = self.context.get('request')
+        return request.build_absolute_uri(
+            reverse('author-packages', kwargs=dict(pk=obj.pk))
+        )
+
     class Meta:
         model = Author
-        fields = ('url', 'name', 'packages')
-
-    class PackageSummarySerializer(serializers.HyperlinkedModelSerializer):
-
-        icon = serializers.SerializerMethodField('get_latest_version_icon_url')
-        get_latest_version_icon_url = _package_latest_version_icon_url
-
-        class Meta:
-            model = Package
-            fields = ( 'url',
-                       'icon',
-                       'package_name',
-                       'title',
-                       'summary',
-                       'released_datetime',
-            )
-
-    packages = PackageSummarySerializer(many=True)
-
-
+        fields = ('url','icon', 'cover', 'name', 'packages_url')
