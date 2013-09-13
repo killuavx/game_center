@@ -28,7 +28,8 @@ JENKINS_TASKS = (
     'django_jenkins.tasks.django_tests',
 )
 
-MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES).extend([
+MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
+MIDDLEWARE_CLASSES.extend([
     'fts.middlewares.ThreadLocals'
 ])
 
