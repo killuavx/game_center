@@ -81,7 +81,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -119,16 +119,6 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.request',
 )
 
-THUMBNAIL_PROCESSORS = (
-    'easy_thumbnails.processors.colorspace',
-    'easy_thumbnails.processors.autocrop',
-    #'easy_thumbnails.processors.scale_and_crop',
-    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
-    'easy_thumbnails.processors.filters',
-)
-
-
-
 INTERNAL_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -139,9 +129,9 @@ INTERNAL_APPS = [
     'PIL',
     'easy_thumbnails',
     'south',
-    'reversion',
+    'suit',
     'mptt',
-    'grappelli',
+    'reversion',
     'sizefield',
     'django.contrib.admin',
     'django.contrib.admindocs',
@@ -202,6 +192,8 @@ REST_FRAMEWORK = {
     'DEFAULT_MODEL_SERIALIZER_CLASS':
         'rest_framework.serializers.HyperlinkedModelSerializer',
 
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
+
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
@@ -234,8 +226,8 @@ def NOW():
     from django.utils import timezone
     return timezone.now()
 
-GRAPPELLI_AUTOCOMPLETE_SEARCH_FIELDS = {
-    "warehouse": {
-        "Package": ("id__iexact", "package_name__icontains", "title_icontains", )
-    }
-}
+#GRAPPELLI_AUTOCOMPLETE_SEARCH_FIELDS = {
+#    "warehouse": {
+#        "Package": ("id__iexact", "package_name__icontains", "title_icontains", )
+#    }
+#}

@@ -57,7 +57,7 @@ class PackageVersionAdmin(MainAdmin):
     raw_id_fields = ('package', )
     fieldsets = (
         (_('Package'), {
-            'fields':('package',)
+            'fields':('package', )
         }),
         (_('File'), {
             'fields':('icon', 'download' )
@@ -95,6 +95,17 @@ class PackageVersionAdmin(MainAdmin):
         queryset.update(status=PackageVersion.STATUS.published)
     make_published.short_description = _('Make selected Packages as published')
 
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def get_actions(self, request):
+        actions = super(PackageVersionAdmin, self).get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
 
 class PackageVersionInlines(admin.StackedInline):
 
@@ -104,7 +115,7 @@ class PackageVersionInlines(admin.StackedInline):
     classes = ('collapse', 'grp-collapse grp-open',)
     inline_classes = ('grp-collapse grp-closed',)
     fieldsets = (
-        (_('File'), {
+        (None, {
             'fields':('icon', 'download' )
         }),
         (_('Version'), {
@@ -183,6 +194,15 @@ class PackageAdmin(MainAdmin):
     make_published.short_description = _('Make selected Packages as published')
 
     readonly_fields = ('created_datetime', 'updated_datetime',)
+    def suit_row_attributes(self, obj, request):
+        css_class = {
+            'draft':'info',
+            'published': 'success',
+            'unpublished': 'warning',
+            'reject':'error',
+            }.get(obj.status)
+        if css_class:
+            return {'class': css_class, 'data': obj.package_name}
 
 class PackageInline(admin.TabularInline):
     model = Package
@@ -191,12 +211,28 @@ class PackageInline(admin.TabularInline):
 
 class AuthorAdmin(MainAdmin):
     model = Author
-    list_display = ( 'name', 'email', 'phone')
+    list_display = ( 'show_icon', 'name', 'email', 'phone')
     search_fields = ( 'name', 'email', 'phone')
+    list_display_links = ('name', 'show_icon',)
     list_filter = ('status', )
     ordering = ('name',)
 
+    show_icon = AdminIconField(allow_tags=True,
+                               short_description=_('Icon') )
+    formfield_overrides = {
+        ThumbnailerImageField: {'widget': ImageClearableFileInput},
+        }
+
     inlines = (PackageInline, )
+    def suit_row_attributes(self, obj, request):
+        css_class = {
+            'draft':'info',
+            'activated': 'success',
+            'unactivated': 'warning',
+            'reject':'error',
+            }.get(obj.status)
+        if css_class:
+            return {'class': css_class, 'data': obj.name}
 
 admin.site.register(PackageVersion, PackageVersionAdmin)
 admin.site.register(Package, PackageAdmin)

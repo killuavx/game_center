@@ -269,7 +269,7 @@ class PackageVersionTest(TestCase):
 
     def test_basic_create(self):
         pkg = ApiDSL.Given_i_have_package_with(self,
-            package_name='com.warehouse.tests.packageversion.%s' % helpers.unique_datetime_id(),
+            package_name='com.warehouse.tests.packageversion.%s' % helpers.guid(),
         )
 
         pkgversion = PackageVersion(
@@ -287,7 +287,7 @@ class PackageVersionTest(TestCase):
 
     def test_should_package_with_version(self):
         pkg = ApiDSL.Given_i_have_package_with(self,
-               package_name='com.warehouse.tests.packageversion.%s' % helpers.unique_datetime_id(),
+               package_name='com.warehouse.tests.packageversion.%s' % helpers.guid(),
         )
         version1 = PackageVersion(
             version_name = '1.0beta2',
@@ -308,7 +308,7 @@ class PackageVersionTest(TestCase):
     def test_package_should_change_updated_datetime_sync_with_latest_published_version(self):
         yestoday = now() - timedelta(days=1)
         pkg = ApiDSL.Given_i_have_package_with(self,
-               package_name='com.warehouse.tests.packageversion.%s' % helpers.unique_datetime_id(),
+               package_name='com.warehouse.tests.packageversion.%s' % helpers.guid(),
                released_datetime=yestoday,
                updated_datetime=yestoday,
                created_datetime=yestoday,
@@ -334,7 +334,7 @@ class PackageVersionTest(TestCase):
     def test_package_should_change_updated_datetime_sync_with_latest_published_version_v2(self):
         yestoday = now() - timedelta(days=1)
         pkg = ApiDSL.Given_i_have_package_with(self,
-                                               package_name='com.warehouse.tests.packageversion.%s' % helpers.unique_datetime_id(),
+                                               package_name='com.warehouse.tests.packageversion.%s' % helpers.guid(),
                                                released_datetime=yestoday,
                                                updated_datetime=yestoday,
                                                created_datetime=yestoday,

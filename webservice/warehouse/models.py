@@ -2,14 +2,13 @@
 import datetime
 from django.core import exceptions
 from django.utils.timezone import now
-from django import forms
+from django.contrib.contenttypes import generic
 from django.db import models
 from django.db.models.query import QuerySet
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
-from taxonomy.models import Category
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 
@@ -130,6 +129,14 @@ class AuthorQuerySet(QuerySet):
 
 class Author(models.Model):
 
+    icon = ThumbnailerImageField(upload_to='icons/author',
+                                 blank=True,
+                                 default='')
+
+    cover = ThumbnailerImageField(upload_to='covers/author',
+                                  blank=True,
+                                  default='')
+
     objects = PassThroughManager.for_queryset_class(AuthorQuerySet)()
 
     class Meta:
@@ -141,6 +148,8 @@ class Author(models.Model):
     email = models.EmailField(verbose_name=_('email'), unique=True)
 
     phone = models.CharField(verbose_name=_('phone'), max_length=16, blank=True, null=True)
+
+    topics = generic.GenericRelation('taxonomy.TopicalItem')
 
     STATUS = Choices(
         (AuthorDraftStatus(),
@@ -287,8 +296,11 @@ class PackageRejectedStatus(PackageStatus):
 
 class PackageQuerySet(QuerySet):
 
-    def by_author(self, user):
-        return self.filter(user=user)
+    def by_category(self, category):
+        return self.filter(categories__contains=category)
+
+    def by_author(self, author):
+        return self.filter(author=author)
 
     def by_published_order(self, newest=None):
         field = 'released_datetime'
@@ -362,12 +374,14 @@ class Package(models.Model):
         auto_now_add=True)
 
     categories = models.ManyToManyField(
-        Category,
+        'taxonomy.Category',
         verbose_name=_('categories'),
         related_name='packages',
         blank=True)
 
     tags = TagField(verbose_name=_('tags'),default="", blank=True)
+
+    topics = generic.GenericRelation('taxonomy.TopicalItem')
 
     """ ================== START State Design Pattern ====================== """
 
@@ -432,6 +446,10 @@ class Package(models.Model):
     was_published_recently.short_description = _('Released recently?')
 
     tracker = FieldTracker()
+
+    def is_published(self):
+        return self.status == self.STATUS.published \
+            and self.released_datetime <= now()
 
     def clean(self):
         if  self.status == self.STATUS.published:

@@ -1,6 +1,7 @@
 Django==1.5.2
 South==0.8.2
 django-reversion
+django-suit
 django-mptt==0.6.0
 django-extensions
 django-model-utils

@@ -10,8 +10,7 @@ rest_router = routers.DefaultRouter()
 rest_router.register('authors', warehouse.views_rest.AuthorViewSet)
 rest_router.register('packages', warehouse.views_rest.PackageViewSet)
 rest_router.register('categories', taxonomy.views_rest.CategoryViewSet)
-# FIXME /packages与newest/packages 在api root上重复出现
-rest_router.register('newest/packages', warehouse.views_rest.PackageNewestViewSet)
+rest_router.register('topics', taxonomy.views_rest.TopicViewSet)
 
 from django.contrib import admin
 #from djrill import DjrillAdminSite
