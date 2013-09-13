@@ -156,8 +156,11 @@ class TopcialSimpleTest(BaseTestCase):
         self.assertEqual(except_biggame.status, Topic.STATUS.draft)
         self.assertEqual(except_biggame.summary, 'big game, big play')
         self.assertEqual(except_biggame.released_datetime, today)
-        self.assertIsSameTime(except_biggame.updated_datetime, now())
-        self.assertIsSameTime(except_biggame.created_datetime, now())
+        self.assertIsSameTime(except_biggame.released_datetime, today)
+        self.assertIsSameTime(except_biggame.updated_datetime,
+                              today+timedelta(hours=1))
+        self.assertIsSameTime(except_biggame.created_datetime,
+                              today+timedelta(hours=1))
 
     def test_basic_create_with_some_package(self):
         today = now() - timedelta(hours=1)

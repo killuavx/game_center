@@ -39,8 +39,8 @@ class ApiCategoryTest(ApiTest):
         self.assertEqual(200, response.status_code)
         return response
 
-    def _request_detail_status_200(self, pk=None):
-        response = self.client.get('/api/categories/%s/' % pk)
+    def _request_detail_status_200(self, category):
+        response = self.client.get('/api/categories/%s/' % category.slug)
         self.assertEqual(200, response.status_code)
         return response
 
@@ -63,7 +63,7 @@ class ApiCategoryTest(ApiTest):
 
     def test_detail_category(self):
         category = create_category(name="RPG")
-        response = self._request_detail_status_200(pk=category.pk)
+        response = self._request_detail_status_200(category)
         content = self.convert_content(response.content)
 
         serializer = CategoryDetailSerializer(category)
@@ -73,5 +73,5 @@ class ApiCategoryTest(ApiTest):
         self.assertIn('icon', except_cat)
         self.assertEqual(sd.get('name'), except_cat.get('name'))
         self.assertEqual(sd.get('slug'), except_cat.get('slug'))
-        self.assertIn('packages', except_cat)
+        self.assertIn('packages_url', except_cat)
 

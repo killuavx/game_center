@@ -10,6 +10,7 @@ from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
 from mptt.models import MPTTModel, TreeForeignKey
+from mptt.managers import TreeManager
 
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.db.models import SlugField
@@ -92,7 +93,7 @@ class Category(MPTTModel, Taxonomy):
         super(Category, self).save(*args, **kwargs)
         Category.objects.rebuild()
 
-class TopicQuerySet(QuerySet):
+class TopicManager(TreeManager):
 
     def as_root(self):
         return self.filter(parent=None)
@@ -109,7 +110,8 @@ class TopicQuerySet(QuerySet):
 
 class Topic(MPTTModel, Taxonomy):
 
-    objects = PassThroughManager.for_queryset_class(TopicQuerySet)()
+    #objects = PassThroughManager.for_queryset_class(TopicQuerySet)()
+    objects = TopicManager()
 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 
@@ -169,6 +171,10 @@ class Topic(MPTTModel, Taxonomy):
     def is_published(self):
         return self.status == self.STATUS.published \
             and self.released_datetime <= now()
+
+    def save(self, *args, **kwargs):
+        super(Topic, self).save(*args, **kwargs)
+        Topic.objects.rebuild()
 
 class TopicalItemQuerySet(QuerySet):
 

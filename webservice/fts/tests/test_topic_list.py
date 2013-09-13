@@ -6,8 +6,6 @@ from django.utils.timezone import now, timedelta
 from django.core.urlresolvers import reverse
 from fts.middlewares import get_current_request
 
-from pprint import pprint as print
-
 class TopicListTest(RestApiTest):
 
     def _topic_with_some_packages(self, pkg_num=5, **defaults):
@@ -143,4 +141,5 @@ class TopicListTest(RestApiTest):
         ApiDSL.Then_i_should_see_result_list(self, num=2)
         packages = self.world.get('content').get('results')
         ApiDSL.Then_i_should_see_package_summary_list(self, packages)
+
 

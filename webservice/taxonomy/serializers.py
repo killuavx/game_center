@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
-from taxonomy.models import Category, Topic
+from taxonomy.helpers import get_item_model_by_topic
+from taxonomy.models import Category, Topic, TopicalItem
 from django.core.urlresolvers import reverse
 
 class ImageUrlField(serializers.ImageField):
@@ -14,19 +15,26 @@ class ImageUrlField(serializers.ImageField):
     def from_native(self, data):
         pass
 
+def get_url_for_taxonomy(request, obj, related_items, reverse_viewname):
+    if related_items.count() > 0:
+        path = reverse(reverse_viewname, kwargs=dict(slug=obj.slug))
+        if request:
+            return request.build_absolute_uri(path)
+        return path
+    return None
+
 class CategorySummarySerializer(serializers.HyperlinkedModelSerializer):
+
+    PREFIX = 'category'
 
     icon = ImageUrlField()
 
-    items_url = serializers.SerializerMethodField('get_items_url')
+    packages_url = serializers.SerializerMethodField('get_items_url')
     def get_items_url(self, obj):
-        if obj.packages.count() > 0:
-            request = self.context.get('request')
-            path = reverse('categories-items', kwargs=dict(slug=obj.slug))
-            if request:
-                return request.build_absolute_uri(path)
-            return path
-        return None
+        return get_url_for_taxonomy(self.context.get('request'),
+                                    obj,
+                                    obj.packages,
+                                    '%s-packages' % self.PREFIX)
 
     class Meta:
         model = Category
@@ -36,22 +44,21 @@ class CategorySummarySerializer(serializers.HyperlinkedModelSerializer):
                   'slug',
                   'parent',
                   'children',
-                  'items_url',
+                  'packages_url',
         )
 
 class CategoryDetailSerializer(serializers.HyperlinkedModelSerializer):
 
+    PREFIX = 'category'
+
     icon = ImageUrlField()
 
-    items_url = serializers.SerializerMethodField('get_items_url')
+    packages_url = serializers.SerializerMethodField('get_items_url')
     def get_items_url(self, obj):
-        if obj.packages.count() > 0:
-            request = self.context.get('request')
-            path = reverse('categories-items', kwargs=dict(slug=obj.slug))
-            if request:
-                return request.build_absolute_uri(path)
-            return path
-        return None
+        return get_url_for_taxonomy(self.context.get('request'),
+                                    obj,
+                                    obj.packages,
+                                    '%s-packages' % self.PREFIX)
 
     class Meta:
         model = Category
@@ -59,35 +66,38 @@ class CategoryDetailSerializer(serializers.HyperlinkedModelSerializer):
                   'icon',
                   'name',
                   'slug',
-                  'items_url',
+                  'packages_url',
         )
 
-class TopicRelatedMethodFieldMixin(object):
 
-    def get_items_url(self, obj):
-        if obj.items.count() > 0:
-            request = self.context.get('request')
-            path = reverse('topic-items', kwargs=dict(slug=obj.slug))
-            if request:
-                return request.build_absolute_uri(path)
-            return path
-        return None
+class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
+
+    PREFIX = 'topic'
+
+    item_model_class = None
+
+    def get_items_queryset(self, obj):
+        return TopicalItem.objects\
+            .get_items_by_topic(obj, get_item_model_by_topic(obj))
 
     def get_items_count(self, obj):
-        return obj.children.count()
+        return self.get_items_queryset(obj).count()
+
+    def get_items_url(self, obj):
+        return get_url_for_taxonomy(self.context.get('request'),
+                                    obj,
+                                    self.get_items_queryset(obj),
+                                    '%s-items' %self.PREFIX)
 
     def get_children_url(self, obj):
-        if obj.children.count() > 0:
-            request = self.context.get('request')
-            path = reverse('topic-children', kwargs=dict(slug=obj.slug))
-            if request:
-                return request.build_absolute_uri(path)
-            return path
-        return None
+        return get_url_for_taxonomy(self.context.get('request'),
+                                    obj,
+                                    obj.children,
+                                    '%s-children' %self.PREFIX)
 
-class TopicDetailWithPackageSerializer(TopicRelatedMethodFieldMixin,
-                                       serializers.HyperlinkedModelSerializer):
-
+class TopicDetailWithPackageSerializer(
+                                TopicRelatedItemCountUrlAndChildrenUrlMixin,
+                                serializers.HyperlinkedModelSerializer):
     icon = ImageUrlField()
 
     cover = ImageUrlField()
@@ -112,9 +122,9 @@ class TopicDetailWithPackageSerializer(TopicRelatedMethodFieldMixin,
                   'updated_datetime',
                   'released_datetime')
 
-class TopicSummarySerializer(TopicRelatedMethodFieldMixin,
-                             serializers.HyperlinkedModelSerializer):
-
+class TopicSummarySerializer(
+                            TopicRelatedItemCountUrlAndChildrenUrlMixin,
+                            serializers.HyperlinkedModelSerializer):
     icon = ImageUrlField()
 
     cover = ImageUrlField()

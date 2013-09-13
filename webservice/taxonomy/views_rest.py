@@ -8,10 +8,7 @@ from taxonomy.serializers import ( CategoryDetailSerializer,
                                    TopicDetailWithPackageSerializer )
 from rest_framework import viewsets
 from rest_framework import generics
-from warehouse.models import Package
-from warehouse.views_rest import PackageViewSet, AuthorViewSet
-
-from pprint import pprint as print
+from warehouse.views_rest import PackageViewSet
 
 # ViewSets define the view behavior.
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -19,17 +16,14 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CategorySummarySerializer
     lookup_field = 'slug'
 
-    item_viewset_package = PackageViewSet
-
     @link()
     def items(self, request, slug, *args, **kwargs):
         category =  generics.get_object_or_404(self.queryset, slug=slug)
 
-        Pkg_ViewSet = self.item_viewset_package
-        pkg_queryset = Pkg_ViewSet.queryset.by_category(category)
-        package_list = Pkg_ViewSet.as_view({'get':'list'},
-                                           queryset=pkg_queryset)
-        return package_list(request, *args, **kwargs)
+        ViewSet = PackageViewSet
+        queryset = category.packages.all()
+        list_view =  ViewSet.as_view({'get':'list'}, queryset=queryset)
+        return list_view(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class = self.serializer_class
@@ -39,49 +33,8 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         self.serializer_class = list_serializer_class
         return response
 
-class TopicalItemViewSetProxy(object):
+from taxonomy.helpers import get_item_model_by_topic, get_viewset_by_topic
 
-    _viewset_map = {
-        'default' : PackageViewSet,
-
-        # - 精选推荐
-        'home-recommend-game': PackageViewSet,
-        # - 网游专区
-        'home-network-game': PackageViewSet,
-
-        # - 最新游戏
-        'homebar-newest-game': PackageViewSet,
-        # - 大型游戏
-        'homebar-big-game': PackageViewSet,
-        # - 中文游戏
-        'homebar-cn-game': PackageViewSet,
-
-        # -- 精选专辑
-        'spec-choice-topic': PackageViewSet,
-        # -- 顶级开发商
-        'spec-top-author': AuthorViewSet,
-    }
-
-    def __init__(self, topic):
-        self.topic = topic
-
-    def _get_viewset(self, slug):
-        try:
-            return self._viewset_map[self.topic.slug]
-        except KeyError:
-            return self._viewset_map['default']
-            #raise generics.Http404()
-
-    def _get_model_from_viewset(self, viewset):
-        return viewset.serializer_class.Meta.model
-
-    def list_view(self):
-        ViewSet = self._get_viewset(self.topic.slug)
-        model = self._get_model_from_viewset(ViewSet)
-        self.queryset = TopicalItem.objects.get_items_by_topic(self.topic, model)
-
-        return ViewSet.as_view({'get':'list'},
-                                            queryset=self.queryset)
 
 class TopicViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Topic.objects.published()
@@ -112,14 +65,18 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
     def items(self, request, slug, *args, **kwargs):
         topic =  generics.get_object_or_404(self.queryset, slug=slug)
 
-        qvs = TopicalItemViewSetProxy(topic)
-        list_view = qvs.list_view()
+        list_view = self._get_item_list_view(topic)
         return list_view(request, *args, **kwargs)
 
+    def _get_item_list_view(self, topic):
+        ViewSet = get_viewset_by_topic(topic)
+        model = get_item_model_by_topic(topic)
+        queryset = TopicalItem.objects.get_items_by_topic(topic, model)
+        return ViewSet.as_view({'get':'list'}, queryset=queryset)
+
     def retrieve(self, request, *args, **kwargs):
-        list_serializer_class = self.serializer_class
         origin_serializer_class, self.serializer_class = \
             self.serializer_class, TopicDetailWithPackageSerializer
         response = super(TopicViewSet, self).retrieve(request, *args, **kwargs)
-        self.serializer_class = list_serializer_class
+        self.serializer_class = origin_serializer_class
         return response

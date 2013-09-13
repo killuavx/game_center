@@ -3,14 +3,12 @@ import datetime
 from django.core import exceptions
 from django.utils.timezone import now
 from django.contrib.contenttypes import generic
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.query import QuerySet
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
-from taxonomy.models import Category, Topic, TopicalItem
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 
@@ -299,7 +297,7 @@ class PackageRejectedStatus(PackageStatus):
 class PackageQuerySet(QuerySet):
 
     def by_category(self, category):
-        return self.filter(categories=category)
+        return self.filter(categories__contains=category)
 
     def by_author(self, author):
         return self.filter(author=author)
@@ -376,7 +374,7 @@ class Package(models.Model):
         auto_now_add=True)
 
     categories = models.ManyToManyField(
-        Category,
+        'taxonomy.Category',
         verbose_name=_('categories'),
         related_name='packages',
         blank=True)

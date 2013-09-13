@@ -11,8 +11,6 @@ from taxonomy.models import Category, Topic, TopicalItem
 from django.utils.timezone import now, timedelta
 import random
 import logging
-from pprint import pprint as print
-
 _models = []
 
 
