@@ -1,14 +1,30 @@
 # -*- encoding=utf-8 -*-
 from django.test import TestCase
-from warehouse.models import Package, Author
+from django.utils.timezone import now, timedelta, localtime
+from warehouse.models import Package, PackageVersion, Author
 from tagging.models import Tag
-from taxonomy.models import Category
-from taxonomy.tests.helpers import *
+from taxonomy.models import Category, Topic, TopicalItem
+from fts.tests import helpers
+from fts.tests.helpers import ApiDSL
 
-class CategorySimpleTest(TestCase):
+class BaseTestCase(TestCase):
+
+    def setUp(self):
+        super(BaseTestCase, self).setUp()
+
+    def tearDown(self):
+        helpers.clear_data()
+        super(BaseTestCase, self).setUp()
+
+    def assertIsSameTime(self, a, b):
+        _a = a.replace(microsecond=0)
+        _b = b.replace(microsecond=0)
+        self.assertEqual(localtime(_a), localtime(_b))
+
+class CategorySimpleTest(BaseTestCase):
 
     def _category(self, **defaults):
-        return create_category(**defaults)
+        return helpers.create_category(**defaults)
 
     def test_basic_creation(self):
         cat = Category(name="Test Case 1", slug='test-case-1')
@@ -49,10 +65,10 @@ class CategorySimpleTest(TestCase):
         self.assertEqual(except_rpg.parent, root)
         self.assertEqual(except_rpg.children.count(), 0)
 
-class CategoryWithPackageTest(TestCase):
+class CategoryWithPackageTest(BaseTestCase):
 
     def _category(self, **defaults):
-        return create_category(**defaults)
+        return helpers.create_category(**defaults)
 
     def _author(self):
         author = Author.objects.create(name="Kent Back")
@@ -102,7 +118,7 @@ class CategoryWithPackageTest(TestCase):
         self.assertEqual(except_rpg.parent, game)
         self.assertEqual(except_fps.parent, game)
 
-class TagTest(TestCase):
+class TagTest(BaseTestCase):
 
     def test_basic_create(self):
         tag = Tag.objects.create(name="Hot")
@@ -112,7 +128,7 @@ class TagTest(TestCase):
         self.assertEqual(len(tags), 1)
 
     def test_create_tags_with_package(self):
-        pkg = create_package()
+        pkg = helpers.create_package()
         pkg.tags = 'Hot, New'
         pkg.tags +=',Top'
         pkg.save()
@@ -122,4 +138,40 @@ class TagTest(TestCase):
         self.assertEqual(tags[0].name, 'Hot')
         self.assertEqual(tags[1].name, 'New')
         self.assertEqual(tags[2].name, 'Top')
+
+class TopcialSimpleTest(BaseTestCase):
+
+    def test_basic_create(self):
+        today = now() - timedelta(hours=1)
+        biggame = Topic(name="大型游戏专区", slug='big-game',
+                        summary='big game, big play',
+                        released_datetime=today)
+        biggame.cover = ApiDSL.Given_i_have_cover_image(self)
+        biggame.icon = ApiDSL.Given_i_have_icon_image(self)
+        biggame.save()
+
+        except_biggame = Topic.objects.get()
+        self.assertEqual(except_biggame.name, '大型游戏专区')
+        self.assertEqual(except_biggame.slug, 'big-game')
+        self.assertEqual(except_biggame.status, Topic.STATUS.draft)
+        self.assertEqual(except_biggame.summary, 'big game, big play')
+        self.assertEqual(except_biggame.released_datetime, today)
+        self.assertIsSameTime(except_biggame.updated_datetime, now())
+        self.assertIsSameTime(except_biggame.created_datetime, now())
+
+    def test_basic_create_with_some_package(self):
+        today = now() - timedelta(hours=1)
+        topic = ApiDSL.Given_i_have_topic_with(self,
+                                       status=Topic.STATUS.published,
+                                       all_datetime=today)
+        package = ApiDSL.Given_i_have_package_with(self)
+        version1 = ApiDSL.Given_package_has_version_with(self,
+                    package, version_code=1, version_name='1.0',
+                    all_datetime=today,
+                    status=PackageVersion.STATUS.published)
+        TopicalItem.objects.create(topic=topic, content_object=package)
+        except_topic = package.topics.all()[0].topic
+
+        self.assertEqual(except_topic.name, topic.name)
+        self.assertEqual(except_topic.slug, topic.slug)
 

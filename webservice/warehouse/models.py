@@ -2,14 +2,15 @@
 import datetime
 from django.core import exceptions
 from django.utils.timezone import now
-from django import forms
+from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models.query import QuerySet
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
-from taxonomy.models import Category
+from taxonomy.models import Category, Topic, TopicalItem
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 
@@ -287,8 +288,11 @@ class PackageRejectedStatus(PackageStatus):
 
 class PackageQuerySet(QuerySet):
 
-    def by_author(self, user):
-        return self.filter(user=user)
+    def by_category(self, category):
+        return self.filter(categories=category)
+
+    def by_author(self, author):
+        return self.filter(author=author)
 
     def by_published_order(self, newest=None):
         field = 'released_datetime'
@@ -369,6 +373,8 @@ class Package(models.Model):
 
     tags = TagField(verbose_name=_('tags'),default="", blank=True)
 
+    topics = generic.GenericRelation('taxonomy.TopicalItem')
+
     """ ================== START State Design Pattern ====================== """
 
     STATUS = Choices(
@@ -432,6 +438,10 @@ class Package(models.Model):
     was_published_recently.short_description = _('Released recently?')
 
     tracker = FieldTracker()
+
+    def is_published(self):
+        return self.status == self.STATUS.published \
+            and self.released_datetime <= now()
 
     def clean(self):
         if  self.status == self.STATUS.published:

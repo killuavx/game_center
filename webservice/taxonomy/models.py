@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
+from django.utils.timezone import now
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+from django.db.models.query import QuerySet
+from model_utils import Choices, FieldTracker
+from model_utils.fields import StatusField
+from model_utils.managers import PassThroughManager
 from mptt.models import MPTTModel, TreeForeignKey
 
 from easy_thumbnails.fields import ThumbnailerImageField
@@ -29,12 +34,7 @@ class Taxonomy(models.Model):
                      help_text='Short descriptive unique name for use in urls.',
                      )
 
-    ordering = models.PositiveIntegerField(
-        max_length=4,
-        db_index=True,
-        blank=True,
-        default=0
-    )
+    ordering = models.PositiveIntegerField(default=0, blank=True, db_index=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -60,6 +60,12 @@ class Category(MPTTModel, Taxonomy):
         left_attr = 'mptt_lft'
         right_attr = 'mptt_rgt'
         level_attr = 'mptt_level'
+        order_insertion_by = ['ordering']
+
+    class Meta:
+        ordering = ('ordering',)
+        verbose_name = _('category')
+        verbose_name_plural = _('categories')
 
     subtitle = models.CharField(
         max_length=200,
@@ -70,6 +76,7 @@ class Category(MPTTModel, Taxonomy):
                   'UI. A subtitle makes a distinction.',
         )
     icon = ThumbnailerImageField(
+        default='',
         resize_source=dict(size=(50, 50), crop='smart'),
         upload_to='icons',
         blank=True)
@@ -78,8 +85,147 @@ class Category(MPTTModel, Taxonomy):
     def get_absolute_url(self):
         return reverse('category_object_list', kwargs={'slug': self.slug})
 
+    def __str__(self):
+        return str(self.name)
+
+    def save(self, *args, **kwargs):
+        super(Category, self).save(*args, **kwargs)
+        Category.objects.rebuild()
+
+class TopicQuerySet(QuerySet):
+
+    def as_root(self):
+        return self.filter(parent=None)
+
+    def by_parent(self, topic):
+        return self.filter(parent=topic)
+
+    def published(self):
+        return self.filter(
+            released_datetime__lte=now(), status=str(self.model.STATUS.published))
+
+    def with_item_count(self):
+        return self.annotate(item_count=models.Count('items'))
+
+class Topic(MPTTModel, Taxonomy):
+
+    objects = PassThroughManager.for_queryset_class(TopicQuerySet)()
+
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+
+    class MPTTMeta:
+        left_attr = 'mptt_lft'
+        right_attr = 'mptt_rgt'
+        level_attr = 'mptt_level'
+        order_insertion_by = ['ordering']
+
     class Meta:
-        ordering = ('name',)
-        verbose_name = _('category')
-        verbose_name_plural = _('categories')
+        ordering = ('ordering',)
+        verbose_name = _('topic')
+        verbose_name_plural = _('topics')
+
+    icon = ThumbnailerImageField(
+        verbose_name=_('icon image'),
+        default='',
+        resize_source=dict(size=(50, 50), crop='smart'),
+        upload_to='icons/topic',
+        blank=True,
+    )
+
+    cover = ThumbnailerImageField(
+        verbose_name=_('cover image'),
+        default='',
+        resize_source=dict(size=(200, 420), crop='smart'),
+        upload_to='covers/topic',
+        blank=True,
+    )
+
+    summary = models.CharField(
+        verbose_name=_('summary'),
+        max_length=255,
+        null=False,
+        default="",
+        blank=True )
+
+    tracker = FieldTracker()
+
+    STATUS = Choices(
+        ('draft', _('Draft')),
+        ('unpublished', _('Unpublished')),
+        ('published', _('Published')),
+    )
+
+    status = StatusField(default='draft', blank=True)
+
+    released_datetime = models.DateTimeField(blank=True,
+                                             null=True,
+                                             db_index=True)
+
+    updated_datetime = models.DateTimeField(db_index=True,
+                                            editable=False)
+
+    created_datetime = models.DateTimeField(editable=False)
+
+    def is_published(self):
+        return self.status == self.STATUS.published \
+            and self.released_datetime <= now()
+
+class TopicalItemQuerySet(QuerySet):
+
+    def get_items_by_topic(self, topic, item_model):
+        content_type = ContentType.objects.get_for_model(item_model)
+        return item_model.objects\
+            .filter(topics__topic=topic,
+                    topics__content_type=content_type)
+
+class TopicalItem(models.Model):
+
+    objects = PassThroughManager.for_queryset_class(TopicalItemQuerySet)()
+
+    topic = models.ForeignKey(Topic, related_name='items')
+
+    content_type = models.ForeignKey(ContentType, related_name='topic_content_type')
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey("content_type", "object_id")
+
+    ordering = models.PositiveIntegerField(default=0, blank=True, db_index=True)
+
+    updated_datetime = models.DateTimeField(auto_now_add=True, auto_now=True)
+
+    class Meta:
+        unique_together = (('topic', 'content_type', 'object_id'),)
+        index_together = (('topic', 'content_type'), )
+        ordering = ('ordering', )
+        verbose_name = _('topical item')
+        verbose_name_plural = _('topical items')
+
+    def __str__(self):
+        return '%s [%s]' % (self.content_object, self.topic)
+
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+
+@receiver(pre_save, sender=Topic)
+def topic_pre_save(sender, instance, **kwargs):
+    """same with DatetimeField(auto_now=True),
+    but model datetime changed by custom with auto_now=True would be overwrite on save action
+    """
+    changed = instance.tracker.changed()
+    try:
+        changed.pop('updated_datetime')
+    except KeyError:
+        pass
+
+    if len(changed) \
+        and not instance.tracker.has_changed('updated_datetime'):
+        instance.updated_datetime = now()
+
+    if not instance.created_datetime:
+        instance.created_datetime = now()
+
+    if instance.tracker.has_changed('status') \
+        and instance.status == sender.STATUS.published \
+        and not instance.released_datetime:
+        instance.released_datetime = now()
+
 

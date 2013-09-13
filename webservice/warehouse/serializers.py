@@ -125,6 +125,7 @@ class PackageDetailSerializer(serializers.HyperlinkedModelSerializer):
                   'package_name',
                   'title',
                   'tags',
+                  'categories',
                   'summary',
                   'description',
                   'author',

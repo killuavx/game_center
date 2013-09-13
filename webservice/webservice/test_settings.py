@@ -28,5 +28,9 @@ JENKINS_TASKS = (
     'django_jenkins.tasks.django_tests',
 )
 
+MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES).extend(list(
+    'fts.middlewares.ThreadLocals'
+))
+
 OUTPUT_DIR = 'reports'
 COVERAGE_RCFILE = '.coveragerc'
