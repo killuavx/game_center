@@ -93,6 +93,8 @@ class Category(MPTTModel, Taxonomy):
         super(Category, self).save(*args, **kwargs)
         Category.objects.rebuild()
 
+# TODO 重构 TopicManager使之其能够够与 PassThroughManager\
+#           .for_queryset_class(TopicQuerySet)()协同工作
 class TopicManager(TreeManager):
 
     def as_root(self):

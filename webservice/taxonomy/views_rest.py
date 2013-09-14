@@ -80,6 +80,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         ViewSet = get_viewset_by_topic(topic)
         model = get_item_model_by_topic(topic)
         queryset = TopicalItem.objects.get_items_by_topic(topic, model)
+        # FIXME 重构此处queryset，使之与ViewSet.queryset可以合并查询
         queryset = queryset.published()
         return ViewSet.as_view({'get':'list'}, queryset=queryset)
 
