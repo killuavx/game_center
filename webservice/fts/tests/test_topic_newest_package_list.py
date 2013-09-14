@@ -28,37 +28,40 @@ class NewestTopicPackageTest(RestApiTest):
     def test_should_see_package_list_all_be_published(self):
         # tomorrow will be published
         tomorrow = now()+timedelta(days=1)
-        ApiDSL.Given_i_have_package_with(self,
-                                   status=Package.STATUS.published,
-                                   released_datetime=tomorrow
-                                   )
+        pkg1 = ApiDSL.Given_i_have_published_package(self, title='pkg1', all_datetime=tomorrow)
+        pkg1.released_datetime = tomorrow
+        pkg1.save()
+
         # yestoday published
         yestoday = now()-timedelta(days=1)
-        pkg1 = ApiDSL.Given_i_have_package_with(self,
-                                   status=Package.STATUS.published,
-                                   released_datetime=yestoday
-                                   )
+        pkg2 = ApiDSL.Given_i_have_published_package(self, title='pkg2', all_datetime=yestoday)
+        pkg2.released_datetime = yestoday
+        pkg2.save()
+
         # yestoday unpublished or else status
-        pkg2 = ApiDSL.Given_i_have_package_with(self,
-                                   status=Package.STATUS.unpublished,
-                                   released_datetime=yestoday
-                                   )
-        pkg3 = ApiDSL.Given_i_have_package_with(self,
-                                   released_datetime=yestoday,
-                                   status=Package.STATUS.draft
-                                   )
-        topic = self.Given_i_haven_topic_with_packages(pkg1, pkg2, pkg3,
+        pkg3 = ApiDSL.Given_i_have_published_package(self, title='pkg3', all_datetime=yestoday)
+        pkg3.released_datetime = yestoday
+        pkg3.status = Package.STATUS.unpublished
+        pkg3.save()
+
+        pkg4 = ApiDSL.Given_i_have_published_package(self, title='pkg4', all_datetime=yestoday)
+        pkg4.released_datetime = yestoday
+        pkg4.status = Package.STATUS.draft
+        pkg4.save()
+
+        topic = self.Given_i_haven_topic_with_packages(pkg1, pkg2, pkg3, pkg4,
                                                all_datetime=yestoday)
         self.assertTrue(topic.is_published())
 
         ApiDSL.When_i_access_topic_newest_package(self)
         ApiDSL.Then_i_should_receive_success_response(self)
         ApiDSL.Then_i_should_see_result_list(self,num=1)
-        helpers.clear_data()
 
     def test_should_see_package_list_orderby_released_datetime_desc(self):
-
+        yestoday = now()-timedelta(days=1)
         packages = ApiDSL.Given_i_have_some_packages(self, num=3)
+        topic = self.Given_i_haven_topic_with_packages(*packages, all_datetime=yestoday)
+
         ApiDSL.When_i_access_topic_newest_package(self)
         ApiDSL.Then_i_should_receive_success_response(self)
         ApiDSL.Then_i_should_see_result_list(self, num=3)
@@ -66,11 +69,11 @@ class NewestTopicPackageTest(RestApiTest):
 
     def test_should_see_package_summary_information_for_list(self):
 
-        helpers.create_package(package_name='com.gamecenter.rpg1',
-                                     title='rpg 游戏 A',
-                                     status=Package.STATUS.published,
-                                     released_datetime=now()-timedelta(days=1)
-        )
+        yestoday = now()-timedelta(days=1)
+        pkg = ApiDSL.Given_i_have_published_package(self, all_datetime=yestoday)
+        topic = self.Given_i_haven_topic_with_packages(pkg, all_datetime=yestoday)
+        self.assertTrue(topic.is_published())
+
         ApiDSL.When_i_access_topic_newest_package(self)
         ApiDSL.Then_i_should_receive_success_response(self)
 
@@ -82,30 +85,14 @@ class NewestTopicPackageTest(RestApiTest):
     def test_should_see_package_detail_information_in_detail(self):
         yestoday = now() - timedelta(days=1)
         today = now() - timedelta(minutes=1)
-        pkg = helpers.create_package(package_name='com.gamecenter.rpg1',
-                               title='rpg 游戏 A',
-                               status=Package.STATUS.published,
-                               released_datetime=yestoday,
-                               created_datetime=yestoday,
-                               updated_datetime=yestoday,
-        )
-        version1 = ApiDSL.Given_package_has_version_with(self, pkg,
-                                                         all_datetime=yestoday ,
-                                                         version_name='1.0beta', version_code=21010,
-                                                         status=PackageVersion.STATUS.published)
-        ApiDSL.Given_package_version_add_screenshot(self, version1)
+        pkg = ApiDSL.Given_i_have_published_package(self,
+                                                    title='pkg4',
+                                                    all_datetime=yestoday)
+        pkg.released_datetime = yestoday
+        pkg.save()
 
-        # new published version at today
-        recently = today - timedelta(hours=2)
-        version2 = ApiDSL.Given_package_has_version_with(self, pkg,
-                                                         all_datetime=recently,
-                                                         version_name='1.0beta2', version_code=21020,
-                                                         status=PackageVersion.STATUS.published)
-        ApiDSL.Given_package_version_add_screenshot(self, version2)
-
-        ApiDSL.When_i_access_topic_newest_package(self)
+        ApiDSL.When_i_access_package_detail(self, pkg)
         ApiDSL.Then_i_should_receive_success_response(self)
         ApiDSL.Then_i_should_see_package_detail_information(self,
             pkg_detail_data=self.world.get('content')
         )
-        helpers.clear_data()

@@ -124,8 +124,14 @@ class AuthorQuerySet(QuerySet):
     def activated(self):
         return self.filter(status=self.model.STATUS.activated)
 
+    def published(self):
+        return self.activated()
+
     def unactivated(self):
         return self.exclude(status=self.model.STATUS.activated)
+
+    def unpublished(self):
+        return self.unactivated()
 
 class Author(models.Model):
 
