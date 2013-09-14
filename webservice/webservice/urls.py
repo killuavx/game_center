@@ -17,19 +17,21 @@ from django.contrib import admin
 #admin.site = DjrillAdminSite()
 admin.autodiscover()
 
+rest_framework_swagger_url = url(r'^api-docs/', include('rest_framework_swagger.urls'))
 urlpatterns = staticfiles_urlpatterns()
 urlpatterns += patterns('',
     url(r'^tagging_autocomplete/', include('tagging_autocomplete.urls')),
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/', include(rest_router.urls)),
-    url(r'^api-docs/', include('rest_framework_swagger.urls')),
-
+    rest_framework_swagger_url,
     url(r'^grappelli/', include('grappelli.urls') ),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )
 
+if settings.TEST:
+    urlpatterns.remove(rest_framework_swagger_url)
 
 if settings.DEBUG:
     urlpatterns = patterns('',
