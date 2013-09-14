@@ -69,15 +69,15 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         从`*_url`获得关联对象列表的数据，
         再从author.packages_url/topic.items_url获得该级对象的软件列表
 
-            slug:'spec-choice-topic'
+            slug:`spec-choice-topic`
             children_url: 子专区url, 类型Topic
 
         * 顶级开发商
 
-            slug:'spec-top-author'
+            slug:`spec-top-author`
             item_url: 开发商列表url, 类型Author
 
-    TODO 添加专区数据
+    TODO 添加以上7个专区以及开发者和游戏数据
     """
 
     queryset = Topic.objects.published()
