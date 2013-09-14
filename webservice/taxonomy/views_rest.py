@@ -38,9 +38,46 @@ from taxonomy.helpers import (get_item_model_by_topic,
                               get_basic_topic_info)
 
 class TopicViewSet(viewsets.ReadOnlyModelViewSet):
-    """ TODO 补全专区接口说明
+    """ 专区接口
 
-    计划接口列表:
+    ## 接口访问基本形式:
+
+    1. 专区详细信息:
+        /api/topics/{slug}
+    2. 子专区列表:
+        /api/topics/{slug}/children
+    3. 关联对象列表:
+        /api/topics/{slug}/items
+
+    ## 专区类型
+
+    * 一级专区软件列表, `只有`items_url能有效访问关联软件列表
+
+        * 精选推荐  slug:`home-recommend-game`
+
+        * 网游专区  slug:`home-network-game`
+
+        * 最新游戏  slug:`homebar-newest-game`
+
+        * 大型游戏  slug:`homebar-big-game`
+
+        * 中文游戏  slug:`homebar-cn-game`
+
+
+    * 二级专区列表
+        * 精选专辑, 通过访问对应的`*_url`，获得下一级的关联数据列表，
+        从`*_url`获得关联对象列表的数据，
+        再从author.packages_url/topic.items_url获得该级对象的软件列表
+
+            slug:'spec-choice-topic'
+            children_url: 子专区url, 类型Topic
+
+        * 顶级开发商
+
+            slug:'spec-top-author'
+            item_url: 开发商列表url, 类型Author
+
+    TODO 添加专区数据
     """
 
     queryset = Topic.objects.published()
