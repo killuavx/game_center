@@ -212,8 +212,11 @@ class ApiDSL(object):
 
 
     def When_i_access_topic_newest_package(self):
-        self.world.setdefault('response',
-                              self.client.get('/api/topics/newest/items?ordering=-released_datetime'))
+        # note: path没有以"/"结束
+        response = self.client\
+            .get('/api/topics/newest/items?ordering=-released_datetime',
+                 follow=True)
+        self.world.setdefault('response',  response)
 
     def Then_i_should_receive_success_response(self):
         response = self.world.get('response')
@@ -318,7 +321,8 @@ class RestApiTest(TestCase):
 
     def setUp(self):
         self.world = dict()
-        self.client = Client(HTTP_ACCEPT='application/json')
+        self.client = Client(HTTP_ACCEPT='application/json',
+                             HTTP_CACHE_CONTROL='no-cache')
         ApiDSL.setUp(self, client=self.client, world=self.world)
 
     def convert_content(self, content):

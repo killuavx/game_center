@@ -181,8 +181,8 @@ class TopicalItemQuerySet(QuerySet):
     def get_items_by_topic(self, topic, item_model):
         content_type = ContentType.objects.get_for_model(item_model)
         return item_model.objects\
-            .filter(topics__topic=topic,
-                    topics__content_type=content_type)
+            .filter(topics__topic__pk=topic.pk,
+                    topics__content_type__pk=content_type.pk)
 
 class TopicalItem(models.Model):
 

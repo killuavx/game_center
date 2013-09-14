@@ -33,10 +33,16 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         self.serializer_class = list_serializer_class
         return response
 
-from taxonomy.helpers import get_item_model_by_topic, get_viewset_by_topic
-
+from taxonomy.helpers import (get_item_model_by_topic,
+                              get_viewset_by_topic,
+                              get_basic_topic_info)
 
 class TopicViewSet(viewsets.ReadOnlyModelViewSet):
+    """ TODO 补全专区接口说明
+
+    计划接口列表:
+    """
+
     queryset = Topic.objects.published()
     serializer_class = TopicSummarySerializer
     lookup_field = 'slug'
@@ -47,17 +53,19 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
     ordering = ('released_datetime',)
 
     def list(self, request, *args, **kwargs):
-        origin_queryset, self.queryset = self.queryset, self.queryset.as_root()
+        #origin_queryset, self.queryset = self.queryset, self.queryset.as_root()
+        origin_queryset, self.queryset = self.queryset, self.queryset.filter(parent=None)
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
         self.queryset = origin_queryset
         return res
 
     @link()
     def children(self, request, slug, *args, **kwargs):
+        """子专区列表"""
         queryset = self.queryset.filter(slug=slug)
         topic =  generics.get_object_or_404(queryset, slug=slug)
 
-        origin_queryset, self.queryset = self.queryset, self.queryset.by_parent(topic)
+        origin_queryset, self.queryset = self.queryset, self.queryset.filter(parent=topic)
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
         return res
 
@@ -72,6 +80,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         ViewSet = get_viewset_by_topic(topic)
         model = get_item_model_by_topic(topic)
         queryset = TopicalItem.objects.get_items_by_topic(topic, model)
+        queryset = queryset.published()
         return ViewSet.as_view({'get':'list'}, queryset=queryset)
 
     def retrieve(self, request, *args, **kwargs):
@@ -80,3 +89,8 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         response = super(TopicViewSet, self).retrieve(request, *args, **kwargs)
         self.serializer_class = origin_serializer_class
         return response
+
+    def metadata(self, request):
+        data = super(TopicViewSet, self).metadata(request)
+        data.pop('description')
+        return data

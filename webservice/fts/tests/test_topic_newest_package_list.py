@@ -14,6 +14,17 @@ class NewestTopicPackageTest(RestApiTest):
         helpers.clear_data()
         super(NewestTopicPackageTest, self).tearDown()
 
+    def Given_i_haven_topic_with_packages(self, *args, **kwargs):
+        topic = ApiDSL.Given_i_have_topic_with(self,
+                                               name='最新专区',
+                                               slug='newest',
+                                               status='published',
+                                               **kwargs)
+        for p in args:
+            ApiDSL.Given_topic_add_item(self, topic=topic, item=p)
+
+        return topic
+
     def test_should_see_package_list_all_be_published(self):
         # tomorrow will be published
         tomorrow = now()+timedelta(days=1)
@@ -23,19 +34,23 @@ class NewestTopicPackageTest(RestApiTest):
                                    )
         # yestoday published
         yestoday = now()-timedelta(days=1)
-        ApiDSL.Given_i_have_package_with(self,
+        pkg1 = ApiDSL.Given_i_have_package_with(self,
                                    status=Package.STATUS.published,
                                    released_datetime=yestoday
                                    )
         # yestoday unpublished or else status
-        ApiDSL.Given_i_have_package_with(self,
+        pkg2 = ApiDSL.Given_i_have_package_with(self,
                                    status=Package.STATUS.unpublished,
                                    released_datetime=yestoday
                                    )
-        ApiDSL.Given_i_have_package_with(self,
+        pkg3 = ApiDSL.Given_i_have_package_with(self,
                                    released_datetime=yestoday,
                                    status=Package.STATUS.draft
                                    )
+        topic = self.Given_i_haven_topic_with_packages(pkg1, pkg2, pkg3,
+                                               all_datetime=yestoday)
+        self.assertTrue(topic.is_published())
+
         ApiDSL.When_i_access_topic_newest_package(self)
         ApiDSL.Then_i_should_receive_success_response(self)
         ApiDSL.Then_i_should_see_result_list(self,num=1)
