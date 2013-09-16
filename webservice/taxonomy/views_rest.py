@@ -17,7 +17,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = 'slug'
 
     @link()
-    def items(self, request, slug, *args, **kwargs):
+    def packages(self, request, slug, *args, **kwargs):
         category =  generics.get_object_or_404(self.queryset, slug=slug)
 
         ViewSet = PackageViewSet
