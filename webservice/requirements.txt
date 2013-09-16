@@ -14,5 +14,5 @@ six
 django-sizefield
 #-e git+git://github.com/Soaa-/django-nested-inlines.git#egg=django-nested-inlines
 django-rest-swagger
-djangorestframework
+djangorestframework==2.3.7
 -e git+https://github.com/clelland/MySQL-for-Python-3.git#egg=MySQLdb
