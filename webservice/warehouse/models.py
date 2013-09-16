@@ -4,7 +4,7 @@ from django.core import exceptions
 from django.utils.timezone import now
 from django.contrib.contenttypes import generic
 from django.db import models
-from django.db.models.query import QuerySet
+from django.db.models.query import QuerySet, Q
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager

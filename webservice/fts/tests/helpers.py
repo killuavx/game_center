@@ -9,6 +9,7 @@ from django.core.files import File
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from taxonomy.models import Category, Topic, TopicalItem
 from django.utils.timezone import now, timedelta
+from urllib import parse as urlparse
 import random
 import logging
 _models = []
@@ -190,6 +191,13 @@ class ApiDSL(object):
 
         Then_i_should_see_versions_in_package_detail(pkg_detail_data)
 
+    def When_i_access_api_root(self):
+        response = self.client.get('/api/')
+        self.world.setdefault('response', response)
+
+    def Then_i_should_see_the_api_in_content(self, name):
+        self.assertIn(name, self.world.get('content'))
+
     def When_i_access_topic_list(self, topic=None):
         if topic:
             res = self.client.get('/api/topics/%s/children/' % topic.slug)
@@ -218,9 +226,21 @@ class ApiDSL(object):
                  follow=True)
         self.world.setdefault('response',  response)
 
+    def When_i_access_search_package(self, keyword):
+        response = self.client \
+            .get('/api/search?q=%s' % urlparse.quote_plus(keyword),
+                 follow=True)
+        self.world.setdefault('response',  response)
+
     def Then_i_should_receive_success_response(self):
         response = self.world.get('response')
         self.assertEqual(response.status_code, 200)
+        content = self.convert_content(response.content)
+        self.world.update(dict(response=response, content=content))
+
+    def Then_i_should_receive_response_with(self, statu_code=None):
+        response = self.world.get('response')
+        self.assertEqual(response.status_code, statu_code)
         content = self.convert_content(response.content)
         self.world.update(dict(response=response, content=content))
 
