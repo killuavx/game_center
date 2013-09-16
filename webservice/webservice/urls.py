@@ -22,10 +22,10 @@ urlpatterns = staticfiles_urlpatterns()
 urlpatterns += patterns('',
     url(r'^tagging_autocomplete/', include('tagging_autocomplete.urls')),
 
+    rest_framework_swagger_url,
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/', include(rest_router.urls)),
-    rest_framework_swagger_url,
-    url(r'^grappelli/', include('grappelli.urls') ),
+
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
 )

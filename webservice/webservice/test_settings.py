@@ -3,9 +3,6 @@ from webservice.settings import *
 HOST_URL = 'http://sphinx.killuavx.com'
 MEDIA_URL = HOST_URL + MEDIA_URL
 
-TEST=True
-
-INTERNAL_APPS.remove('rest_framework_swagger')
 EXTENDAL_APPS.append('django_nose')
 EXTENDAL_APPS.append('django_jenkins')
 EXTENDAL_APPS.append('fts')
