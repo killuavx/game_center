@@ -93,27 +93,30 @@ class Category(MPTTModel, Taxonomy):
         super(Category, self).save(*args, **kwargs)
         Category.objects.rebuild()
 
-# TODO 重构 TopicManager使之其能够够与 PassThroughManager\
-#           .for_queryset_class(TopicQuerySet)()协同工作
-class TopicManager(TreeManager):
+class TopicQuerySet(QuerySet):
 
     def as_root(self):
         return self.filter(parent=None)
-
-    def by_parent(self, topic):
-        return self.filter(parent=topic)
 
     def published(self):
         return self.filter(
             released_datetime__lte=now(), status=str(self.model.STATUS.published))
 
+    def by_parent(self, topic):
+        return self.filter(parent__pk=topic.pk)
+
+    def by_parent_pk(self, topic_pk):
+        return self.filter(parent__pk=topic_pk)
+
     def with_item_count(self):
         return self.annotate(item_count=models.Count('items'))
 
+class TopicManager(TreeManager, PassThroughManager):
+    pass
+
 class Topic(MPTTModel, Taxonomy):
 
-    #objects = PassThroughManager.for_queryset_class(TopicQuerySet)()
-    objects = TopicManager()
+    objects = TopicManager.for_queryset_class(TopicQuerySet)()
 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 

@@ -141,6 +141,22 @@ class TagTest(BaseTestCase):
 
 class TopcialSimpleTest(BaseTestCase):
 
+    def test_manager_queryset(self):
+        today = now() - timedelta(hours=1)
+        biggame = Topic(name="大型游戏专区",
+                        slug='big-game',
+                        summary='big game, big play',
+                        status=Topic.STATUS.published,
+                        released_datetime=today)
+        biggame.save()
+        except_topic = Topic.objects.as_root().published().get()
+        self.assertEqual(except_topic.name, biggame.name)
+
+        except_topic_wiht_item_count =\
+            Topic.objects.published().with_item_count().get()
+        queryset = Topic.objects.as_root().published().with_item_count()
+        self.assertEqual(0, except_topic_wiht_item_count.item_count)
+
     def test_basic_create(self):
         today = now() - timedelta(hours=1)
         biggame = Topic(name="大型游戏专区", slug='big-game',

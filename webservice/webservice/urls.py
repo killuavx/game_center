@@ -30,9 +30,6 @@ urlpatterns += patterns('',
     url(r'^admin/', include(admin.site.urls)),
 )
 
-if settings.TEST:
-    urlpatterns.remove(rest_framework_swagger_url)
-
 if settings.DEBUG:
     urlpatterns = patterns('',
        url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
