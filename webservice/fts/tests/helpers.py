@@ -18,7 +18,7 @@ _models = []
 def guid():
     def S4():
         return hex(int(((1 + random.random()) * 0x10000) or 0))[2:]
-    return "%s%s-%s-%s-%s%s"%(S4(), S4(), S4(), S4(), S4(), S4())
+    return "%s-%s-%s-%s"%(S4(), S4(), S4(), S4())
 
 def create_category(**defaults):
     logging.info('create_category', defaults)

@@ -52,7 +52,7 @@ class ApiPackageTest(ApiTest):
                                  tags='hot new top',
                                  summary="大富翁 3",
                                  status=Package.STATUS.published,
-                                 released_datetime=now()-timedelta(seconds=1))
+                                 released_datetime=now()-timedelta(hours=1))
         response = self._request_api_status_200()
         content = self.convert_content(response.content)
 
