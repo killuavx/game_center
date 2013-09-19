@@ -38,8 +38,9 @@ class SearchPackageRestApiTest(RestApiTest):
         ApiDSL.Then_i_should_receive_success_response(self)
         content = self.world.get('content')
         ApiDSL.Then_i_should_see_result_list(self, num=2, count=2)
+        pkg_list = content.get('results')
         ApiDSL\
-            .Then_i_should_see_package_summary_list(self, pkg_list_data=content)
+            .Then_i_should_see_package_summary_list(self, pkg_list_data=pkg_list)
 
 
 class SearchWordTipsRestApiTest(RestApiTest):
