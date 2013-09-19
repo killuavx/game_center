@@ -6,6 +6,7 @@ from django.test.client import Client
 from django import forms
 import json
 from django.core.files import File
+from searcher.models import TipsWord
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from taxonomy.models import Category, Topic, TopicalItem
 from django.utils.timezone import now, timedelta
@@ -63,6 +64,12 @@ def create_topicalitem(topic, item):
     inst = TopicalItem.objects.create(topic=topic, content_object=item)
     _models.append(inst)
     return inst
+
+def create_tipsword(**defaults):
+    inst = TipsWord.objects.create(**defaults)
+    _models.append(inst)
+    return inst
+
 
 def clear_data():
     for m in _models:
@@ -148,6 +155,9 @@ class ApiDSL(object):
     def Given_topic_add_item(self, topic, item):
         return create_topicalitem(topic, item)
 
+    def Given_i_have_tipsword_with(self, **default):
+        return create_tipsword(**default)
+
     def Then_i_should_see_package_detail_information(self, pkg_detail_data):
 
         def Then_i_should_see_screenshots_in_package_version( version ):
@@ -209,7 +219,6 @@ class ApiDSL(object):
         res = self.client.get('/api/topics/%s/' % topic.slug)
         self.world.setdefault('response', res)
 
-
     def When_i_access_topic_items(self, topic):
         respose = self.client.get('/api/topics/%s/items/' % topic.slug)
         self.world.setdefault('response', respose)
@@ -217,7 +226,6 @@ class ApiDSL(object):
     def When_i_access_author_packages(self, author):
         respose = self.client.get('/api/authors/%s/packages/' % author.pk)
         self.world.setdefault('response', respose)
-
 
     def When_i_access_topic_newest_package(self):
         # note: path没有以"/"结束
@@ -231,6 +239,19 @@ class ApiDSL(object):
             .get('/api/search?q=%s' % urlparse.quote_plus(keyword),
                  follow=True)
         self.world.setdefault('response',  response)
+
+    def When_i_access_search_tips(self):
+        response = self.client \
+            .get('/api/tipswords', follow=True)
+        self.world.setdefault('response',  response)
+
+    def Then_i_should_see_tips_list(self, tips_list):
+        for t in tips_list:
+            return ApiDSL.Then_i_should_see_tips(self, t)
+
+    def Then_i_should_see_tips(self, tips):
+        self.assertIn('keyword', tips)
+        self.assertIn('weight', tips)
 
     def Then_i_should_receive_success_response(self):
         response = self.world.get('response')
