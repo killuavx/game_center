@@ -8,7 +8,7 @@ from taxonomy.serializers import ( CategoryDetailSerializer,
                                    TopicDetailWithPackageSerializer )
 from rest_framework import viewsets
 from rest_framework import generics
-from warehouse.views_rest import PackageViewSet
+from mobapi.views import PackageViewSet
 
 # ViewSets define the view behavior.
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):

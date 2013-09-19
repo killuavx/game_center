@@ -151,3 +151,5 @@ class AuthorSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Author
         fields = ('url','icon', 'cover', 'name', 'packages_url')
+
+#---------------------------------------------------------------

@@ -3,7 +3,9 @@ from django.test.testcases import TestCase
 from django.test.client import Client
 from warehouse.tests import helpers
 from warehouse.models import Author
-from warehouse.serializers import AuthorSerializer, AuthorSummarySerializer
+from mobapi.serializers import (AuthorSerializer,
+                                AuthorSummarySerializer,
+                                PackageSummarySerializer)
 from django.utils.timezone import now
 from dateutil import parser as dateparser
 
@@ -38,7 +40,6 @@ class ApiRootTest(ApiTest):
         self.assertIn('categories', content)
 
 from warehouse.models import Package
-from warehouse.serializers import PackageSummarySerializer
 class ApiPackageTest(ApiTest):
 
     def _request_api_status_200(self):

@@ -4,7 +4,7 @@ def slugify(text=""):
     return text.replace(" ", "-").lower()
 
 from warehouse.models import Package, Author
-from warehouse.views_rest import PackageViewSet, AuthorViewSet
+from mobapi.views import PackageViewSet, AuthorViewSet
 _topic_viewset_model_map = {
     'default' : (PackageViewSet, Package, '默认游戏专区') ,
 

@@ -6,14 +6,13 @@ from rest_framework import (viewsets,
                             generics,
                             status,
                             filters)
-from warehouse.serializers import (PackageSummarySerializer,
-                                   PackageDetailSerializer,
-                                   AuthorSerializer)
+from mobapi.serializers import (PackageSummarySerializer,
+                                PackageDetailSerializer,
+                                AuthorSerializer)
 
 class SphinxSearchFilter(filters.SearchFilter):
     search_param = 'q'
 
-# ViewSets define the view behavior.
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Package.objects.published()
     serializer_class = PackageSummarySerializer
@@ -30,7 +29,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class = self.serializer_class
         self.serializer_class = PackageDetailSerializer
-        response = super(PackageViewSet, self)\
+        response = super(PackageViewSet, self) \
             .retrieve(request, *args, **kwargs)
         self.serializer_class = list_serializer_class
         return response
@@ -67,7 +66,7 @@ class PackageSearchViewSet(PackageViewSet):
         return super(PackageSearchViewSet, self).list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
-        response = super(PackageSearchViewSet, self)\
+        response = super(PackageSearchViewSet, self) \
             .retrieve(request, *args, **kwargs)
         return response
 
@@ -82,3 +81,6 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = author.packages.published()
         list_view =  ViewSet.as_view({'get':'list'}, queryset=queryset)
         return list_view(request, *args, **kwargs)
+
+
+#------------------------------------------------------------------
