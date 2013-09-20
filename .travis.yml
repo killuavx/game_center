@@ -43,8 +43,12 @@ install:
 before_script:
   - sh -c "if [ '$DB' = 'postgresql' ]; then psql -c 'CREATE DATABASE webservice_test;' -U postgres; fi"
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -c 'CREATE DATABASE webservice_test;'; fi"
-  - cd $PJ && python manage.py syncdb --noinput && cd -
-  - cd $PJ && python manage.py migrate taxonomy warehouse fts && cd -
+  - cd $PJ
+  - python manage.py syncdb --noinput
+  - python manage.py migrate taxonomy
+  - python manage.py migrate warehouse
+  - python manage.py migrate fts
+  - cd -
 
 after_script:
   - sh -c "if [ '$DB' = 'postgresql' ]; then psql -c 'DROP DATABASE webservice_test;' -U postgres; fi"
