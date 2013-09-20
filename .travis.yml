@@ -46,6 +46,7 @@ before_script:
   - cd $PJ
   - python manage.py syncdb --noinput
   - python manage.py migrate taxonomy
+  - sh -c "if [ '$DB' = 'postgresql' ]; then psql -U postgres -c '\dt;' webservice_test; fi"
   - python manage.py migrate warehouse
   - python manage.py migrate searcher
   - cd -
