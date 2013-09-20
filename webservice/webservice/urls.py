@@ -3,18 +3,6 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-import warehouse.views_rest
-import taxonomy.views_rest
-import searcher.views_rest
-from rest_framework import routers
-rest_router = routers.DefaultRouter()
-rest_router.register('authors', warehouse.views_rest.AuthorViewSet)
-rest_router.register('packages', warehouse.views_rest.PackageViewSet)
-rest_router.register('search', warehouse.views_rest.PackageSearchViewSet, base_name='search')
-rest_router.register('categories', taxonomy.views_rest.CategoryViewSet)
-rest_router.register('topics', taxonomy.views_rest.TopicViewSet)
-rest_router.register('tipswords', searcher.views_rest.TipsWordViewSet)
-
 from django.contrib import admin
 #from djrill import DjrillAdminSite
 #admin.site = DjrillAdminSite()

@@ -144,6 +144,7 @@ INTERNAL_APPS = [
     'djrill',
 ]
 EXTENDAL_APPS = [
+    'mobapi',
     'searcher',
     'taxonomy',
     'warehouse'
