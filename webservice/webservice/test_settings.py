@@ -30,5 +30,12 @@ MIDDLEWARE_CLASSES.extend([
     'fts.middlewares.ThreadLocals'
 ])
 
+CACHE = {
+    'default':{
+        'django.core.cache.backends.dummy.DummyCache',
+    }
+
+}
+
 OUTPUT_DIR = 'reports'
 COVERAGE_RCFILE = '.coveragerc'

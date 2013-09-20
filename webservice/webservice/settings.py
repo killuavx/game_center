@@ -187,6 +187,8 @@ def rest_route():
     return _REST_ROUTE
 
 REST_FRAMEWORK = {
+    'DATE_FORMAT':'%s',
+    'DATETIME_FORMAT':'%s',
     'PAGINATE_BY': 10,
     # Use hyperlinked styles by default.
     # Only used if the `serializer_class` attribute is not set on a view.

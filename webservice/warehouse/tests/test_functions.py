@@ -6,9 +6,7 @@ from warehouse.models import Author
 from mobapi.serializers import (AuthorSerializer,
                                 AuthorSummarySerializer,
                                 PackageSummarySerializer)
-from django.utils.timezone import now
-from dateutil import parser as dateparser
-
+from django.utils.timezone import now, datetime
 from datetime import timedelta
 import json
 
@@ -69,8 +67,8 @@ class ApiPackageTest(ApiTest):
         self.assertEqual(except_pkg['author']['name'], sd.get('author').get('name'))
         self.assertEqual(except_pkg['title'], sd.get('title'))
 
-        released_datetime = dateparser.parse(except_pkg.get('released_datetime'))
-        relative_timedelta = sd.get('released_datetime')- released_datetime
+        released_datetime = datetime.fromtimestamp(int(except_pkg.get('released_datetime')))
+        relative_timedelta = datetime.fromtimestamp(int(sd.get('released_datetime')))- released_datetime
         self.assertGreater(timedelta(seconds=1), relative_timedelta)
         self.assertEqual(except_pkg['tags'], sd.get('tags'))
         helpers.clear_data()

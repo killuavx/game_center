@@ -1,4 +1,5 @@
 # -*- encoding=utf-8 -*-
+import copy
 from warehouse.models import Package, Author
 from rest_framework.decorators import link
 from rest_framework.response import Response
@@ -56,7 +57,7 @@ class PackageSearchViewSet(PackageViewSet):
     ordering = ('-updated_datetime', )
 
     def list(self, request, *args, **kwargs):
-        querydict = dict(request.GET)
+        querydict = copy.deepcopy(dict(request.GET))
         q = querydict.get('q')
         q = q.pop() if isinstance(q, list) else q
         if not q or not (q and q.strip()):
