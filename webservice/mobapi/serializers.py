@@ -31,30 +31,6 @@ class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
         model = Author
         fields = ('url', 'name')
 
-class PackageLatestIconUrlField(serializers.FileField):
-
-    def to_native(self, obj):
-        try:
-            return obj.url
-        except ValueError:
-            return ''
-
-def _package_latest_version_icon_url(self, obj):
-    try:
-        return obj.versions.latest_published().icon.url
-    except:
-        return ''
-
-def _package_latest_version_screenshots(self, obj):
-    try:
-        latest_version = obj.versions.latest_published()
-        screenshots_serializer = self.serializer_class_screenshot(
-            latest_version.screenshots.all() ,
-            many=True)
-        return screenshots_serializer.data
-    except:
-        return dict()
-
 class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
 
     large = serializers.SerializerMethodField('get_large_url')
@@ -72,10 +48,30 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
         model = PackageVersionScreenshot
         fields = ('large', 'preview', 'rotate')
 
-class PackageSummarySerializer(serializers.HyperlinkedModelSerializer):
+class PackageRelatedLatestVersinoMixin(object):
+
+    serializer_class_screenshot = PackageVersionScreenshotSerializer
+
+    def get_latest_version_icon_url(self, obj):
+        try:
+            return obj.versions.latest_published().icon.url
+        except:
+            return ''
+
+    def get_latest_version_screenshots(self, obj):
+        try:
+            latest_version = obj.versions.latest_published()
+            screenshots_serializer = self.serializer_class_screenshot(
+                latest_version.screenshots.all() ,
+                many=True)
+            return screenshots_serializer.data
+        except:
+            return dict()
+
+class PackageSummarySerializer(PackageRelatedLatestVersinoMixin,
+                                serializers.HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
-    get_latest_version_icon_url = _package_latest_version_icon_url
 
     author = AuthorSummarySerializer()
     class Meta:
@@ -103,21 +99,14 @@ class PackageVersionSerializer(serializers.ModelSerializer):
                   'screenshots', 'whatsnew', 'download',
         )
 
-class PackageDetailSerializer(serializers.HyperlinkedModelSerializer):
+class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
+                              serializers.HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
-    serializer_class_screenshot = PackageVersionScreenshotSerializer
     screenshots = serializers.SerializerMethodField('get_latest_version_screenshots')
 
     author = AuthorSummarySerializer()
     versions = PackageVersionSerializer(many=True)
-
-    icon = serializers.SerializerMethodField('get_latest_version_icon_url')
-    get_latest_version_icon_url = _package_latest_version_icon_url
-
-    serializer_class_screenshot = PackageVersionScreenshotSerializer
-    screenshots = serializers.SerializerMethodField('get_latest_version_screenshots')
-    get_latest_version_screenshots = _package_latest_version_screenshots
 
     class Meta:
         model = Package
@@ -155,17 +144,6 @@ class AuthorSerializer(serializers.HyperlinkedModelSerializer):
 #---------------------------------------------------------------
 from taxonomy.models import Category, Topic, TopicalItem
 from mobapi.helpers import get_item_model_by_topic
-
-class ImageUrlField(serializers.ImageField):
-
-    def to_native(self, obj):
-        try:
-            return obj.url
-        except ValueError:
-            return None
-
-    def from_native(self, data):
-        pass
 
 def get_url_for_taxonomy(request, obj, related_items, reverse_viewname):
     if related_items.count() > 0:
