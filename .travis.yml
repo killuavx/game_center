@@ -6,7 +6,7 @@ env:
     PJ=webservice
     DJANGO_SETTINGS_MODULE=webservice.test_settings
     DBA_SQL_DJANGO_ENGINE='django.db.backends.mysql'
-    DBA_SQL_DB_NAME='webservice_test_mysql'
+    DBA_SQL_DB_NAME='webservice_test'
     DBA_SQL_ADMIN_USER='travis'
     DBA_SQL_ADMIN_PASSWORD=''
     DBA_SQL_HOST='127.0.0.1'
@@ -15,7 +15,7 @@ env:
     PJ=webservice
     DJANGO_SETTINGS_MODULE=webservice.test_settings
     DBA_SQL_DJANGO_ENGINE='django.db.backends.postgresql_psycopg2'
-    DBA_SQL_DB_NAME='webservice_test_postgresql'
+    DBA_SQL_DB_NAME='webservice_test'
     DBA_SQL_ADMIN_USER='postgres'
     DBA_SQL_ADMIN_PASSWORD=''
     DBA_SQL_HOST='127.0.0.1'
@@ -24,7 +24,7 @@ env:
     PJ=webservice
     DJANGO_SETTINGS_MODULE=webservice.test_settings
     DBA_SQL_DJANGO_ENGINE='django.db.backends.sqlite3'
-    DBA_SQL_DB_NAME='webservice_test_sqlite'
+    DBA_SQL_DB_NAME='webservice_test'
     DBA_SQL_ADMIN_USER=''
     DBA_SQL_ADMIN_PASSWORD=''
     DBA_SQL_HOST=''
@@ -41,14 +41,14 @@ install:
   - sh -c "if [ '$DB' = 'mysql' ]; then pip install -e git+https://github.com/clelland/MySQL-for-Python-3.git#egg=MySQLdb --use-mirrors --download-cache $TRAVIS_BUILD_DIR/download-cache/; fi"
 
 before_script:
-  - sh -c "if [ '$DB' = 'postgresql' ]; then psql -c 'CREATE DATABASE $DBA_SQL_DB_NAME;' -U postgres; fi"
-  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -c 'CREATE DATABASE $DBA_SQL_DB_NAME;'; fi"
+  - sh -c "if [ '$DB' = 'postgresql' ]; then psql -c 'CREATE DATABASE webservice_test;' -U postgres; fi"
+  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -c 'CREATE DATABASE webservice_test;'; fi"
   - cd $PJ && python manage.py syncdb --noinput && cd -
-  - cd $PJ && python manage.py migrate && cd -
+  - cd $PJ && python manage.py migrate taxonomy warehouse fts && cd -
 
 after_script:
-  - sh -c "if [ '$DB' = 'postgresql' ]; then psql -c 'DROP DATABASE $DBA_SQL_DB_NAME;' -U postgres; fi"
-  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -c 'DROP DATABASE $DBA_SQL_DB_NAME;'; fi"
+  - sh -c "if [ '$DB' = 'postgresql' ]; then psql -c 'DROP DATABASE webservice_test;' -U postgres; fi"
+  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -c 'DROP DATABASE webservice_test;'; fi"
 
 script:
   - cd $PJ
