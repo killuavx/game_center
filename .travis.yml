@@ -2,35 +2,53 @@ language: python
 python:
   - "3.3"
 env:
-  - PJ=webservice
-    DJANGO_VERSION=1.5.2
+  - DB=mysql
+    PJ=webservice
     DJANGO_SETTINGS_MODULE=webservice.test_settings
     DBA_SQL_DJANGO_ENGINE='django.db.backends.mysql'
-    DBA_SQL_DB_NAME='webservice_test_2'
-    DBA_SQL_ADMIN_USER=travis
+    DBA_SQL_DB_NAME='webservice_test_mysql'
+    DBA_SQL_ADMIN_USER='travis'
     DBA_SQL_ADMIN_PASSWORD=''
     DBA_SQL_HOST='127.0.0.1'
     DBA_SQL_PORT='3306'
-
-services:
-  - mysql
+  - DB=postgresql
+    PJ=webservice
+    DJANGO_SETTINGS_MODULE=webservice.test_settings
+    DBA_SQL_DJANGO_ENGINE='django.db.backends.postgresql_psycopg2'
+    DBA_SQL_DB_NAME='webservice_test_postgresql'
+    DBA_SQL_ADMIN_USER='postgres'
+    DBA_SQL_ADMIN_PASSWORD=''
+    DBA_SQL_HOST='127.0.0.1'
+    DBA_SQL_PORT=''
+  - DB=sqlite
+    PJ=webservice
+    DJANGO_SETTINGS_MODULE=webservice.test_settings
+    DBA_SQL_DJANGO_ENGINE='django.db.backends.sqlite3'
+    DBA_SQL_DB_NAME='webservice_test_sqlite'
+    DBA_SQL_ADMIN_USER=''
+    DBA_SQL_ADMIN_PASSWORD=''
+    DBA_SQL_HOST=''
+    DBA_SQL_PORT='3306'
 
 install:
-  - pip install -q Django==$DJANGO_VERSION --download-cache $TRAVIS_BUILD_DIR/download-cache/
   - pip install -r $PJ/requirements.txt  --use-mirrors --download-cache $TRAVIS_BUILD_DIR/download-cache/
   - pip install -r $PJ/requirements-dev.txt --use-mirrors --download-cache $TRAVIS_BUILD_DIR/download-cache/
   - cd dependents/python-dateutil-2.0 && python setup.py install && cd -
   - cd dependents/easy-thumbnails && python setup.py install && cd -
   - cd dependents/django-tagging && python setup.py install && cd -
   - cd dependents/django-tagging-autocomplete && python setup.py install && cd -
+  - sh -c "if [ '$DB' = 'postgresql' ]; then pip install psycopg2 --use-mirrors --download-cache $TRAVIS_BUILD_DIR/download-cache/; fi"
+  - sh -c "if [ '$DB' = 'mysql' ]; then pip install -e git+https://github.com/clelland/MySQL-for-Python-3.git#egg=MySQLdb --use-mirrors --download-cache $TRAVIS_BUILD_DIR/download-cache/; fi"
 
 before_script:
-  - mysql -e 'create database webservice_test_2;'
+  - sh -c "if [ '$DB' = 'postgresql' ]; then psql -c 'CREATE DATABASE $DBA_SQL_DB_NAME;' -U postgres; fi"
+  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -c 'CREATE DATABASE $DBA_SQL_DB_NAME;'; fi"
   - cd $PJ && python manage.py syncdb --noinput && cd -
   - cd $PJ && python manage.py migrate && cd -
 
 after_script:
-  - mysql -e 'drop database webservice_test_2'
+  - sh -c "if [ '$DB' = 'postgresql' ]; then psql -c 'DROP DATABASE $DBA_SQL_DB_NAME;' -U postgres; fi"
+  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -c 'DROP DATABASE $DBA_SQL_DB_NAME;'; fi"
 
 script:
   - cd $PJ
