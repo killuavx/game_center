@@ -10,11 +10,10 @@ from rest_framework import routers
 rest_router = routers.DefaultRouter()
 rest_router.register('authors', warehouse.views_rest.AuthorViewSet)
 rest_router.register('packages', warehouse.views_rest.PackageViewSet)
-rest_router.register('search', warehouse.views_rest.PackageSearchViewSet)
+rest_router.register('search', warehouse.views_rest.PackageSearchViewSet, base_name='search')
 rest_router.register('categories', taxonomy.views_rest.CategoryViewSet)
 rest_router.register('topics', taxonomy.views_rest.TopicViewSet)
 rest_router.register('tipswords', searcher.views_rest.TipsWordViewSet)
-#rest_router.register('search', searcher.views_rest.SearchViewSet)
 
 from django.contrib import admin
 #from djrill import DjrillAdminSite
