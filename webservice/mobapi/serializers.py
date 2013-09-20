@@ -276,4 +276,12 @@ class TopicSummarySerializer(
                   'slug',
                   'updated_datetime',
                   'released_datetime')
+#---------------------------------------------------------------------------
+from searcher.models import TipsWord
+
+class TipsWordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TipsWord
+        fields = ( 'keyword',
+                   'weight' )
 

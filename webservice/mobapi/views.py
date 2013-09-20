@@ -207,7 +207,12 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         self.serializer_class = origin_serializer_class
         return response
 
-    def metadata(self, request):
-        data = super(TopicViewSet, self).metadata(request)
-        data.pop('description')
-        return data
+#------------------------------------------------------------------
+from rest_framework import  mixins
+from searcher.models import TipsWord
+from mobapi.serializers import TipsWordSerializer
+
+class TipsWordViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = TipsWordSerializer
+    queryset = TipsWord.objects.published()
+
