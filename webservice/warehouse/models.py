@@ -525,6 +525,12 @@ class PackageVersion(models.Model):
         blank=True,
     )
 
+    cover = ThumbnailerImageField(
+        default='',
+        upload_to='covers',
+        blank=True,
+        )
+
     download = models.FileField(
         verbose_name=_('version file'),
         upload_to='packages',

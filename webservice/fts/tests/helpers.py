@@ -168,6 +168,7 @@ class ApiDSL(object):
         def Then_i_should_see_versions_in_package_detail(package_detail_data):
             fields = (
                 'icon',
+                'cover',
                 'download',
                 'screenshots',
                 'version_code',
@@ -181,6 +182,8 @@ class ApiDSL(object):
 
         fields = (
             'url',
+            'icon',
+            'cover',
             'package_name',
             'title',
             'author',
@@ -286,6 +289,7 @@ class ApiDSL(object):
         fields = (
             'url',
             'icon',
+            'cover',
             'package_name',
             'title',
             'released_datetime',

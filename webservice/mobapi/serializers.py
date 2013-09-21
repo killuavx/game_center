@@ -52,6 +52,12 @@ class PackageRelatedLatestVersinoMixin(object):
 
     serializer_class_screenshot = PackageVersionScreenshotSerializer
 
+    def get_latest_version_cover_url(self, obj):
+        try:
+            return obj.versions.latest_published().cover.url
+        except:
+            return ''
+
     def get_latest_version_icon_url(self, obj):
         try:
             return obj.versions.latest_published().icon.url
@@ -72,12 +78,14 @@ class PackageSummarySerializer(PackageRelatedLatestVersinoMixin,
                                 serializers.HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
+    cover = serializers.SerializerMethodField('get_latest_version_cover_url')
 
     author = AuthorSummarySerializer()
     class Meta:
         model = Package
         fields = ('url',
                   'icon',
+                  'cover',
                   'package_name',
                   'title',
                   'tags',
@@ -89,13 +97,15 @@ class PackageVersionSerializer(serializers.ModelSerializer):
 
     icon = ImageUrlField()
 
+    cover = ImageUrlField()
+
     download = FileUrlField(allow_empty_file=True)
 
     screenshots = PackageVersionScreenshotSerializer(many=True)
 
     class Meta:
         model = PackageVersion
-        fields =( 'icon', 'version_code', 'version_name',
+        fields =( 'icon', 'cover', 'version_code', 'version_name',
                   'screenshots', 'whatsnew', 'download',
         )
 
@@ -103,6 +113,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                               serializers.HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
+    cover = serializers.SerializerMethodField('get_latest_version_cover_url')
     screenshots = serializers.SerializerMethodField('get_latest_version_screenshots')
 
     author = AuthorSummarySerializer()
@@ -112,6 +123,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
         model = Package
         fields = ('url',
                   'icon',
+                  'cover',
                   'package_name',
                   'title',
                   'tags',
