@@ -92,11 +92,26 @@ class PackageRelatedLatestVersinoMixin(object):
         except:
             return dict()
 
+class PackageRelatedCategoryMixin(object):
+
+    def get_main_category_name(self, obj):
+        try:
+            return obj.main_category.name
+        except AttributeError:
+            return None
+
+    def get_categories_names(self, obj):
+        names = ( cat.name for cat in obj.categories.all() )
+        return names
+
 class PackageSummarySerializer(PackageRelatedLatestVersinoMixin,
+                               PackageRelatedCategoryMixin,
                                 serializers.HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
+    category_name = serializers.SerializerMethodField('get_main_category_name')
+    categories_names = serializers.SerializerMethodField('get_categories_names')
 
     author = AuthorSummarySerializer()
     class Meta:
@@ -107,6 +122,8 @@ class PackageSummarySerializer(PackageRelatedLatestVersinoMixin,
                   'package_name',
                   'title',
                   'tags',
+                  'category_name',
+                  'categories_names',
                   'summary',
                   'author',
                   'released_datetime')
@@ -128,6 +145,7 @@ class PackageVersionSerializer(serializers.ModelSerializer):
         )
 
 class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
+                              PackageRelatedCategoryMixin,
                               serializers.HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
@@ -136,6 +154,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
     version_code = serializers.SerializerMethodField('get_latest_version_code')
     whatsnew = serializers.SerializerMethodField('get_latest_version_whatsnew')
     screenshots = serializers.SerializerMethodField('get_latest_version_screenshots')
+    category_name = serializers.SerializerMethodField('get_main_category_name')
+    categories_names = serializers.SerializerMethodField('get_categories_names')
 
     author = AuthorSummarySerializer()
     versions = PackageVersionSerializer(many=True)
@@ -150,7 +170,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'version_code',
                   'version_name',
                   'tags',
-                  'categories',
+                  'category_name',
+                  'categories_names',
                   'whatsnew',
                   'summary',
                   'description',
