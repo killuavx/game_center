@@ -3,7 +3,7 @@ from django.test.client import Client
 from django.test.testcases import TestCase
 import json
 from fts.tests.helpers import *
-from taxonomy.serializers import CategorySummarySerializer, CategoryDetailSerializer
+from mobapi.serializers import CategorySummarySerializer, CategoryDetailSerializer
 
 class ApiTest(TestCase):
 

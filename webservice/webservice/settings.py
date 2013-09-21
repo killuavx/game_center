@@ -144,6 +144,7 @@ INTERNAL_APPS = [
     'djrill',
 ]
 EXTENDAL_APPS = [
+    'mobapi',
     'searcher',
     'taxonomy',
     'warehouse'
@@ -222,8 +223,3 @@ def NOW():
     from django.utils import timezone
     return timezone.now()
 
-#GRAPPELLI_AUTOCOMPLETE_SEARCH_FIELDS = {
-#    "warehouse": {
-#        "Package": ("id__iexact", "package_name__icontains", "title_icontains", )
-#    }
-#}

@@ -348,7 +348,7 @@ class ApiDSL(object):
             self.assertIn(field, topic_data)
 
     def When_i_access_package_detail(self, package):
-        from warehouse.serializers import PackageSummarySerializer
+        from mobapi.serializers import PackageSummarySerializer
         serializer = PackageSummarySerializer(package)
         repsonse = self.client.get(serializer.data.get('url'))
         self.world.update(dict(response=repsonse))

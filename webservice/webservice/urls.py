@@ -3,18 +3,6 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-import warehouse.views_rest
-import taxonomy.views_rest
-import searcher.views_rest
-from rest_framework import routers
-rest_router = routers.DefaultRouter()
-rest_router.register('authors', warehouse.views_rest.AuthorViewSet)
-rest_router.register('packages', warehouse.views_rest.PackageViewSet)
-rest_router.register('search', warehouse.views_rest.PackageSearchViewSet, base_name='search')
-rest_router.register('categories', taxonomy.views_rest.CategoryViewSet)
-rest_router.register('topics', taxonomy.views_rest.TopicViewSet)
-rest_router.register('tipswords', searcher.views_rest.TipsWordViewSet)
-
 from django.contrib import admin
 #from djrill import DjrillAdminSite
 #admin.site = DjrillAdminSite()
@@ -27,7 +15,7 @@ urlpatterns += patterns('',
 
     rest_framework_swagger_url,
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api/', include(rest_router.urls)),
+    url(r'^api/', include('mobapi.urls')),
 
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
