@@ -210,11 +210,25 @@ def get_url_for_taxonomy(request, obj, related_items, reverse_viewname):
         return path
     return None
 
-class CategorySummarySerializer(serializers.HyperlinkedModelSerializer):
+class CategoryRelatedChildrenMixin(object):
+
+    def get_children(self, obj):
+        try:
+            return CategorySummarySerializer(instance=obj.children.all(),
+                                             many=True,
+                                             context=self.context
+                    ).data
+        except:
+            return list()
+
+class CategorySummarySerializer(CategoryRelatedChildrenMixin,
+                                serializers.HyperlinkedModelSerializer):
 
     PREFIX = 'category'
 
     icon = ImageUrlField()
+
+    children = serializers.SerializerMethodField('get_children')
 
     packages_url = serializers.SerializerMethodField('get_items_url')
     def get_items_url(self, obj):
@@ -229,9 +243,9 @@ class CategorySummarySerializer(serializers.HyperlinkedModelSerializer):
                   'icon',
                   'name',
                   'slug',
+                  'packages_url',
                   'parent',
                   'children',
-                  'packages_url',
         )
 
 class CategoryDetailSerializer(serializers.HyperlinkedModelSerializer):

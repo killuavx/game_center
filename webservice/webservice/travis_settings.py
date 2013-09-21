@@ -29,6 +29,10 @@ CACHE = {
 
 }
 
+FIXTURE_DIRS = (
+    os.path.join(PROJECT_PATH, 'fts/tests/fixtures'),
+)
+
 TEST_RUNNER = 'django_nose.run_tests'
 NOSE_ARGS = [
     '--tests=%s' %(",".join(EXTENDAL_APPS), ),

@@ -25,6 +25,10 @@ JENKINS_TASKS = (
     'django_jenkins.tasks.django_tests',
 )
 
+FIXTURE_DIRS = (
+    os.path.join(PROJECT_PATH, 'fts/tests/fixtures'),
+)
+
 MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
 MIDDLEWARE_CLASSES.extend([
     'fts.middlewares.ThreadLocals'
