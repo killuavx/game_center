@@ -12,7 +12,6 @@ from taxonomy.models import Category, Topic, TopicalItem
 from django.utils.timezone import now, timedelta
 from urllib import parse as urlparse
 import random
-import logging
 _models = []
 
 
@@ -22,14 +21,12 @@ def guid():
     return "%s-%s-%s-%s"%(S4(), S4(), S4(), S4())
 
 def create_category(**defaults):
-    logging.info('create_category', defaults)
     defaults.setdefault('name', "Game")
     inst = Category.objects.create(**defaults)
     _models.append(inst)
     return inst
 
 def create_author(**defaults):
-    logging.info('create_author', defaults)
     defaults.setdefault('email', 'kent-back@testcase.com')
     defaults.setdefault('name', "Kent Back")
     inst, flag = Author.objects.get_or_create(**defaults)
@@ -37,7 +34,6 @@ def create_author(**defaults):
     return inst
 
 def create_package(**defaults):
-    logging.info('create_package', defaults)
     id = guid()
     defaults.setdefault('title', "fts-dsl game %s" % id)
     defaults.setdefault('package_name', "com.fts.dsl-helper.%s" % id)
@@ -52,7 +48,6 @@ def create_package(**defaults):
     return inst
 
 def create_topic(**defaults):
-    logging.info('create_topic', defaults)
     id = guid()
     defaults.setdefault('name', 'topic %s' %id)
     defaults.setdefault('slug', 'topic-%s' %id)

@@ -3,12 +3,29 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from django.utils.safestring import mark_safe
-from easy_thumbnails.widgets import ImageClearableFileInput
+from easy_thumbnails.widgets import ImageClearableFileInput as _ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
 from easy_thumbnails.templatetags.thumbnail import thumbnail_url
 from reversion.admin import VersionAdmin
 from webservice.admin import AdminFieldBase, AdminField
 from django.core.urlresolvers import reverse
+from easy_thumbnails.exceptions import InvalidImageFormatError
+
+class ImageClearableFileInput(_ImageClearableFileInput):
+
+    def render(self, name, value, attrs=None):
+        try:
+            return super(ImageClearableFileInput, self).render(
+                name, value, attrs)
+        except InvalidImageFormatError: pass
+
+        try:
+            return super(_ImageClearableFileInput, self).render(
+                name, value, attrs)
+        except InvalidImageFormatError: pass
+
+        return super(_ImageClearableFileInput, self).render(
+            name, None, attrs)
 
 class AdminIconField(AdminFieldBase):
 
@@ -20,6 +37,7 @@ class AdminIconField(AdminFieldBase):
             return mark_safe('<img src="%s" />' % obj.url)
         except ValueError:
             return ''
+
 
 class MainAdmin(VersionAdmin):
     pass

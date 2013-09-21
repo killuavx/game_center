@@ -1,7 +1,7 @@
 # -*- encoding=utf-8 -*-
 from django.test.testcases import TestCase
 from django.test.client import Client
-from warehouse.tests import helpers
+from fts.tests import helpers
 from warehouse.models import Author
 from mobapi.serializers import (AuthorSerializer,
                                 AuthorSummarySerializer,
