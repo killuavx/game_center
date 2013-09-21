@@ -53,7 +53,29 @@ class Taxonomy(models.Model):
     class Meta:
         abstract = True
 
+class CategoryQuerySet(QuerySet):
+
+    def as_root(self):
+        return self.filter(parent=None)
+
+    def published(self):
+        return self
+
+    def by_parent(self, category):
+        return self.filter(parent__pk=category.pk)
+
+    def by_parent_pk(self, category_pk):
+        return self.filter(parent__pk=category_pk)
+
+    def with_item_count(self):
+        return self.annotate(item_count=models.Count('packages'))
+
+class CategoryManager(TreeManager, PassThroughManager):
+    pass
+
 class Category(MPTTModel, Taxonomy):
+
+    objects = CategoryManager.for_queryset_class(CategoryQuerySet)()
 
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 

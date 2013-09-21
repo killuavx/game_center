@@ -1,4 +1,5 @@
 from webservice.settings import *
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -21,3 +22,14 @@ MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
 MIDDLEWARE_CLASSES.extend([
     'fts.middlewares.ThreadLocals'
 ])
+
+CACHE = {
+    'default':{
+        'django.core.cache.backends.dummy.DummyCache',
+        }
+
+}
+
+FIXTURE_DIRS = (
+    os.path.join(PROJECT_PATH, 'fts/tests/fixtures'),
+)

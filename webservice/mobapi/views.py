@@ -92,9 +92,10 @@ from mobapi.serializers import ( CategoryDetailSerializer,
                                  TopicDetailWithPackageSerializer )
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.as_root().all()
     serializer_class = CategorySummarySerializer
     lookup_field = 'slug'
+    paginate_by = None
 
     @link()
     def packages(self, request, slug, *args, **kwargs):
@@ -106,11 +107,12 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         return list_view(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
-        list_serializer_class = self.serializer_class
+        list_serializer_class, self.serializer_class = self.serializer_class, CategoryDetailSerializer
+        origin_queryset, self.queryset = self.queryset, Category.objects.all()
 
-        self.serializer_class = CategoryDetailSerializer
         response = super(CategoryViewSet, self).retrieve(request, *args, **kwargs)
         self.serializer_class = list_serializer_class
+        self.queryset = origin_queryset
         return response
 
 from mobapi.helpers import (get_item_model_by_topic,

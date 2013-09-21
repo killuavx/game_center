@@ -213,6 +213,14 @@ class ApiDSL(object):
     def Then_i_should_see_the_api_in_content(self, name):
         self.assertIn(name, self.world.get('content'))
 
+    def When_i_access_category_list(self):
+        res = self.client.get('/api/categories/')
+        self.world.setdefault('response', res)
+
+    def When_i_access_category_detail(self, category):
+        res = self.client.get('/api/categories/%s/'%category.slug)
+        self.world.setdefault('response', res)
+
     def When_i_access_topic_list(self, topic=None):
         if topic:
             res = self.client.get('/api/topics/%s/children/' % topic.slug)
@@ -360,6 +368,17 @@ class ApiDSL(object):
         )
         for field in fields:
             self.assertIn(field, topic_data)
+
+    def Then_i_should_see_category_detail(self, cat_data):
+        fields = (
+            'url',
+            'icon',
+            'name',
+            'slug',
+            'packages_url',
+        )
+        for field in fields:
+            self.assertIn(field, cat_data)
 
     def When_i_access_package_detail(self, package):
         from mobapi.serializers import PackageSummarySerializer
