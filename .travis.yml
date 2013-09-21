@@ -58,7 +58,7 @@ after_script:
 
 script:
   - cd $PJ
-  - python manage.py test warehouse taxonomy searcher fts
+  - python manage.py test warehouse taxonomy searcher mobapi fts
   - cd -
 
 after_success:
