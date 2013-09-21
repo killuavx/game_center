@@ -1,0 +1,5 @@
+coverage
+coveralls
+nose
+nose-cov
+django-nose

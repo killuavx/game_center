@@ -1,11 +1,10 @@
 [run]
+data_file=reports/.coverage
 omit =
     wsgi
-    local_settings
+    *_settings.py
 	*/migrations/*
 	*/tests/*
-
-data_file = reports/.coverage
 
 [report]
 exclude_lines =
@@ -16,7 +15,7 @@ exclude_lines =
     if __name__ == .__main__.:
 
 [html]
-directory = reports/coverage/html_report
+directory = reports/covhtml
 
 [xml]
-output = reports/coverage/coverage.xml
+output=reports/coverage.xml
