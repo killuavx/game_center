@@ -52,6 +52,30 @@ class PackageRelatedLatestVersinoMixin(object):
 
     serializer_class_screenshot = PackageVersionScreenshotSerializer
 
+    def get_latest_version_name(self, obj):
+        try:
+            return obj.versions.latest_published().version_name
+        except:
+            return ''
+
+    def get_latest_version_code(self, obj):
+        try:
+            return obj.versions.latest_published().version_code
+        except:
+            return ''
+
+    def get_latest_version_whatsnew(self, obj):
+        try:
+            return obj.versions.latest_published().whatsnew
+        except:
+            return ''
+
+    def get_latest_version_cover_url(self, obj):
+        try:
+            return obj.versions.latest_published().cover.url
+        except:
+            return ''
+
     def get_latest_version_icon_url(self, obj):
         try:
             return obj.versions.latest_published().icon.url
@@ -68,19 +92,38 @@ class PackageRelatedLatestVersinoMixin(object):
         except:
             return dict()
 
+class PackageRelatedCategoryMixin(object):
+
+    def get_main_category_name(self, obj):
+        try:
+            return obj.main_category.name
+        except AttributeError:
+            return None
+
+    def get_categories_names(self, obj):
+        names = ( cat.name for cat in obj.categories.all() )
+        return names
+
 class PackageSummarySerializer(PackageRelatedLatestVersinoMixin,
+                               PackageRelatedCategoryMixin,
                                 serializers.HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
+    cover = serializers.SerializerMethodField('get_latest_version_cover_url')
+    category_name = serializers.SerializerMethodField('get_main_category_name')
+    categories_names = serializers.SerializerMethodField('get_categories_names')
 
     author = AuthorSummarySerializer()
     class Meta:
         model = Package
         fields = ('url',
                   'icon',
+                  'cover',
                   'package_name',
                   'title',
                   'tags',
+                  'category_name',
+                  'categories_names',
                   'summary',
                   'author',
                   'released_datetime')
@@ -89,21 +132,30 @@ class PackageVersionSerializer(serializers.ModelSerializer):
 
     icon = ImageUrlField()
 
+    cover = ImageUrlField()
+
     download = FileUrlField(allow_empty_file=True)
 
     screenshots = PackageVersionScreenshotSerializer(many=True)
 
     class Meta:
         model = PackageVersion
-        fields =( 'icon', 'version_code', 'version_name',
+        fields =( 'icon', 'cover', 'version_code', 'version_name',
                   'screenshots', 'whatsnew', 'download',
         )
 
 class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
+                              PackageRelatedCategoryMixin,
                               serializers.HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
+    cover = serializers.SerializerMethodField('get_latest_version_cover_url')
+    version_name = serializers.SerializerMethodField('get_latest_version_name')
+    version_code = serializers.SerializerMethodField('get_latest_version_code')
+    whatsnew = serializers.SerializerMethodField('get_latest_version_whatsnew')
     screenshots = serializers.SerializerMethodField('get_latest_version_screenshots')
+    category_name = serializers.SerializerMethodField('get_main_category_name')
+    categories_names = serializers.SerializerMethodField('get_categories_names')
 
     author = AuthorSummarySerializer()
     versions = PackageVersionSerializer(many=True)
@@ -112,10 +164,15 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
         model = Package
         fields = ('url',
                   'icon',
+                  'cover',
                   'package_name',
                   'title',
+                  'version_code',
+                  'version_name',
                   'tags',
-                  'categories',
+                  'category_name',
+                  'categories_names',
+                  'whatsnew',
                   'summary',
                   'description',
                   'author',

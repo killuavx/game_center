@@ -88,11 +88,24 @@ class NewestTopicPackageTest(RestApiTest):
         pkg = ApiDSL.Given_i_have_published_package(self,
                                                     title='pkg4',
                                                     all_datetime=yestoday)
+        cat1 = helpers.create_category(name='Big Game', slug='big-game')
+        cat2 = helpers.create_category(name='CN Game', slug='cn-game')
+        cat3 = helpers.create_category(name='Single Game', slug='single-game')
+        pkg.categories.add(cat1)
+        pkg.categories.add(cat2)
+        pkg.categories.add(cat3)
         pkg.released_datetime = yestoday
         pkg.save()
 
         ApiDSL.When_i_access_package_detail(self, pkg)
         ApiDSL.Then_i_should_receive_success_response(self)
+
+        pkg_data = self.world.get('content')
         ApiDSL.Then_i_should_see_package_detail_information(self,
-            pkg_detail_data=self.world.get('content')
+            pkg_detail_data=pkg_data
         )
+        names = (cat1.name, cat2.name, cat3.name)
+        ApiDSL.Then_i_should_see_package_detail_contains_categories_names(self,
+            pkg_data=pkg_data,
+            cat_names=names )
+

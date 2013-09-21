@@ -168,6 +168,7 @@ class ApiDSL(object):
         def Then_i_should_see_versions_in_package_detail(package_detail_data):
             fields = (
                 'icon',
+                'cover',
                 'download',
                 'screenshots',
                 'version_code',
@@ -181,6 +182,11 @@ class ApiDSL(object):
 
         fields = (
             'url',
+            'icon',
+            'cover',
+            'version_code',
+            'version_name',
+            'whatsnew',
             'package_name',
             'title',
             'author',
@@ -189,12 +195,16 @@ class ApiDSL(object):
             'screenshots',
             'released_datetime',
             'versions',
-
+            'category_name',
+            'categories_names',
         )
         for field in fields:
             self.assertIn(field, pkg_detail_data)
 
         Then_i_should_see_versions_in_package_detail(pkg_detail_data)
+
+    def Then_i_should_see_package_detail_contains_categories_names(self, pkg_data, cat_names):
+        self.assertListEqual(pkg_data.get('categories_names'), list(cat_names))
 
     def When_i_access_api_root(self):
         response = self.client.get('/api/')
@@ -286,8 +296,12 @@ class ApiDSL(object):
         fields = (
             'url',
             'icon',
+            'cover',
             'package_name',
             'title',
+            'category_name',
+            'categories_names',
+            'tags',
             'released_datetime',
             'summary',
             'author',

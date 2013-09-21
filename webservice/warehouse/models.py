@@ -457,6 +457,13 @@ class Package(models.Model):
         return self.status == self.STATUS.published \
             and self.released_datetime <= now()
 
+    @property
+    def main_category(self):
+        try:
+            return self.categories.all()[0]
+        except (exceptions.ObjectDoesNotExist, IndexError):
+            return None
+
     def clean(self):
         if  self.status == self.STATUS.published:
             latest_version = None
@@ -524,6 +531,12 @@ class PackageVersion(models.Model):
         upload_to='icons',
         blank=True,
     )
+
+    cover = ThumbnailerImageField(
+        default='',
+        upload_to='covers',
+        blank=True,
+        )
 
     download = models.FileField(
         verbose_name=_('version file'),

@@ -229,6 +229,23 @@ class PackageManagerTest(TestCase):
         )
         return pkg
 
+    def test_package_main_category(self):
+        tomorrow = now()+timedelta(days=1)
+        pkg = self.Given_i_have_package_with(
+            status=Package.STATUS.published,
+            released_datetime=tomorrow
+        )
+        self.assertIsNone(pkg.main_category)
+        cat1 = helpers.create_category(name='Big Game', slug='big-game')
+        cat2 = helpers.create_category(name='CN Game', slug='cn-game')
+        cat3 = helpers.create_category(name='Single Game', slug='single-game')
+        pkg.categories.add(cat1)
+        pkg.categories.add(cat2)
+        pkg.categories.add(cat3)
+
+        except_cat = pkg.main_category
+        self.assertEqual(except_cat, cat1)
+
     def test_published_list_should_all_status_ok(self):
         # tomorrow will be published
         tomorrow = now()+timedelta(days=1)
@@ -257,7 +274,6 @@ class PackageManagerTest(TestCase):
         pub_pkgs = published_pkgs_set.all()
         pkg = pub_pkgs[0]
         self.assertEqual(pkg.status, Package.STATUS.published)
-
 
 from fts.tests.helpers import ApiDSL
 class PackageVersionTest(TestCase):
