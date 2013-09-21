@@ -49,6 +49,7 @@ before_script:
   #- sh -c "if [ '$DB' = 'postgresql' ]; then sleep 10; fi"
   - python manage.py migrate warehouse
   - python manage.py migrate searcher
+  - mkdir -p reports
   - cd -
 
 after_script:
