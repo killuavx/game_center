@@ -179,13 +179,6 @@ THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.filters',
 )
 
-_rest_route = None
-def rest_route():
-    if _rest_route is None:
-        from rest_framework.routers import DefaultRouter
-        _REST_ROUTE = DefaultRouter()
-    return _REST_ROUTE
-
 REST_FRAMEWORK = {
     'DATE_FORMAT':'%s',
     'DATETIME_FORMAT':'%s',

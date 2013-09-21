@@ -3,10 +3,8 @@ from django.test import TestCase
 from warehouse.models import *
 from datetime import datetime , timedelta
 from fts.tests import helpers
-from django.core.files import File
 from django.utils.timezone import now
 from os.path import join, abspath, dirname
-import io
 
 class AuthorTest(TestCase):
 

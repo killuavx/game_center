@@ -38,7 +38,6 @@ NOSE_ARGS = [
     '--xunit-file=reports/junit.xml',
     '--with-cov',
     '--cov-report=term',
-    '--cov-report=xml',
     '--cov-config=.coveragerc'
 ]
 
