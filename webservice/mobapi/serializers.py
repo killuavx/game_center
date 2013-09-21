@@ -52,6 +52,24 @@ class PackageRelatedLatestVersinoMixin(object):
 
     serializer_class_screenshot = PackageVersionScreenshotSerializer
 
+    def get_latest_version_name(self, obj):
+        try:
+            return obj.versions.latest_published().version_name
+        except:
+            return ''
+
+    def get_latest_version_code(self, obj):
+        try:
+            return obj.versions.latest_published().version_code
+        except:
+            return ''
+
+    def get_latest_version_whatsnew(self, obj):
+        try:
+            return obj.versions.latest_published().whatsnew
+        except:
+            return ''
+
     def get_latest_version_cover_url(self, obj):
         try:
             return obj.versions.latest_published().cover.url
@@ -114,6 +132,9 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
+    version_name = serializers.SerializerMethodField('get_latest_version_name')
+    version_code = serializers.SerializerMethodField('get_latest_version_code')
+    whatsnew = serializers.SerializerMethodField('get_latest_version_whatsnew')
     screenshots = serializers.SerializerMethodField('get_latest_version_screenshots')
 
     author = AuthorSummarySerializer()
@@ -126,8 +147,11 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'cover',
                   'package_name',
                   'title',
+                  'version_code',
+                  'version_name',
                   'tags',
                   'categories',
+                  'whatsnew',
                   'summary',
                   'description',
                   'author',
