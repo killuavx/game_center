@@ -1,11 +1,10 @@
 # -*- encoding=utf-8 -*-
 from django.test.testcases import TestCase
 from django.test.client import Client
-from warehouse.tests import helpers
+from fts.tests import helpers
 from warehouse.models import Author
 from warehouse.serializers import AuthorSerializer, AuthorSummarySerializer
 from django.utils.timezone import now, datetime
-from dateutil import parser as dateparser
 
 from datetime import timedelta
 import json
