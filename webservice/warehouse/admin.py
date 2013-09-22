@@ -78,7 +78,7 @@ class PackageVersionAdmin(MainAdmin):
             'fields':('package', )
         }),
         (_('File'), {
-            'fields':('icon', 'cover', 'download' )
+            'fields':('icon', 'cover', 'download' , 'di_download' )
         }),
         (_('Version'), {
             'fields':('version_code', 'version_name', 'whatsnew')
