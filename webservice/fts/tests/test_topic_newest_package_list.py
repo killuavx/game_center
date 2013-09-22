@@ -91,7 +91,7 @@ class PackageInfoRestApiTest(RestApiTest):
             os.remove(f)
 
     def Given_package_version_has_data_integration_version_app(self, version ):
-        cpkfilepath = join(self._fixture_dir, 'appdata-nodata-gpk.cpk')
+        cpkfilepath = join(self._fixture_dir, 'appexample/appdata-nodata-gpk.cpk')
         apkfilepath = join(self._fixture_dir, 'appexample/application.apk')
         version.download = File(io.FileIO(apkfilepath))
         version.di_download = File(io.FileIO(cpkfilepath))
