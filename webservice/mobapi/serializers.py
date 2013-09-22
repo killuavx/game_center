@@ -48,6 +48,16 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
         model = PackageVersionScreenshot
         fields = ('large', 'preview', 'rotate')
 
+def get_packageversion_download_url(version):
+    try:
+        return version.di_download.url
+    except ValueError: pass
+    try:
+        return version.download.url
+    except ValueError: pass
+
+    return None
+
 class PackageRelatedLatestVersinoMixin(object):
 
     serializer_class_screenshot = PackageVersionScreenshotSerializer
@@ -92,6 +102,10 @@ class PackageRelatedLatestVersinoMixin(object):
         except:
             return dict()
 
+    def get_latest_version_download(self, obj):
+        latest_version = obj.versions.latest_published()
+        return get_packageversion_download_url(latest_version)
+
 class PackageRelatedCategoryMixin(object):
 
     def get_main_category_name(self, obj):
@@ -134,7 +148,9 @@ class PackageVersionSerializer(serializers.ModelSerializer):
 
     cover = ImageUrlField()
 
-    download = FileUrlField(allow_empty_file=True)
+    download = serializers.SerializerMethodField('get_version_download_url')
+    def get_version_download_url(self, obj):
+        return get_packageversion_download_url(obj)
 
     screenshots = PackageVersionScreenshotSerializer(many=True)
 
@@ -156,6 +172,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
     screenshots = serializers.SerializerMethodField('get_latest_version_screenshots')
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
+    download = serializers.SerializerMethodField('get_latest_version_download')
 
     author = AuthorSummarySerializer()
     versions = PackageVersionSerializer(many=True)
@@ -169,6 +186,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'title',
                   'version_code',
                   'version_name',
+                  'download',
                   'tags',
                   'category_name',
                   'categories_names',

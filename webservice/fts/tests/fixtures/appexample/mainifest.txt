@@ -1,0 +1,53 @@
+{
+   "apkBaseInfo" : {
+      "appName" : "Bejeweled 2",
+      "appSize" : 1726155,
+      "packageName" : "com.eamobile.bejeweled2_na_wf",
+      "permissionName" : [
+         {
+            "name" : "android.permission.WAKE_LOCK"
+         },
+         {
+            "name" : "android.permission.VIBRATE"
+         },
+         {
+            "name" : "android.permission.WRITE_EXTERNAL_STORAGE"
+         },
+         {
+            "name" : "android.permission.READ_PHONE_STATE"
+         },
+         {
+            "name" : "android.permission.INTERNET"
+         },
+         {
+            "name" : "android.permission.READ_PHONE_STATE"
+         },
+         {
+            "name" : "android.permission.ACCESS_WIFI_STATE"
+         },
+         {
+            "name" : "android.permission.ACCESS_NETWORK_STATE"
+         },
+         {
+            "name" : "com.android.vending.CHECK_LICENSE"
+         }
+      ],
+      "versionCode" : 2007700,
+      "versionName" : "2.0.10"
+   },
+   "dataBaseInfo" : {
+      "copyPath" : "/mnt/sdcard/Android/data/com.eamobile.bejeweled2_na_wf"
+   },
+   "dataValidation" : {
+      "apkCRC32" : 3100157196
+   },
+   "gpkBaseInfo" : {
+      "autoFocus" : 0,
+      "cpuType" : 15,
+      "opglVersion" : 0,
+      "screenDensity" : 7,
+      "sdkVersion" : 4,
+      "sensorGravity" : 0
+   },
+   "gpkVersion" : "2.0.10"
+}

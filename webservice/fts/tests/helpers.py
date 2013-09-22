@@ -186,6 +186,7 @@ class ApiDSL(object):
             'cover',
             'version_code',
             'version_name',
+            'download',
             'whatsnew',
             'package_name',
             'title',

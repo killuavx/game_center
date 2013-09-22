@@ -544,6 +544,13 @@ class PackageVersion(models.Model):
         default='',
         blank=True)
 
+    di_download = models.FileField(
+        verbose_name=_('version file with data integration'),
+        upload_to='packages_di',
+        default='',
+        blank=True
+    )
+
     package = models.ForeignKey(Package, related_name='versions')
 
     version_name = models.CharField(
