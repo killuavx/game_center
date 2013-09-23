@@ -104,7 +104,7 @@ class PackageVersionAdmin(MainAdmin):
         }),
     )
     extra = 0
-    readonly_fields = ('package', 'created_datetime', 'updated_datetime',)
+    readonly_fields = ( 'created_datetime', 'updated_datetime',)
     ordering = ('-updated_datetime', '-version_code',)
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput},
@@ -121,15 +121,15 @@ class PackageVersionAdmin(MainAdmin):
                               short_description=_("Package Name"),
                               admin_order_field='package__package_name')
 
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return self.readonly_fields + ('package', )
+
+        return self.readonly_fields
+
     def make_published(self, request, queryset):
         queryset.update(status=PackageVersion.STATUS.published)
     make_published.short_description = _('Make selected Packages as published')
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
     def get_actions(self, request):
         actions = super(PackageVersionAdmin, self).get_actions(request)
@@ -146,7 +146,7 @@ class PackageVersionInlines(admin.StackedInline):
     inline_classes = ('grp-collapse grp-closed',)
     fieldsets = (
         (None, {
-            'fields':('icon', 'download' )
+            'fields':('icon', 'download', 'di_download' )
         }),
         (_('Version Statistics'), {
             'fields': (
