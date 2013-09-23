@@ -106,6 +106,10 @@ class PackageRelatedLatestVersinoMixin(object):
         latest_version = obj.versions.latest_published()
         return get_packageversion_download_url(latest_version)
 
+    def get_latest_version_download_count(self, obj):
+        latest_version = obj.versions.latest_published()
+        return latest_version.download_count
+
 class PackageRelatedCategoryMixin(object):
 
     def get_main_category_name(self, obj):
@@ -140,6 +144,7 @@ class PackageSummarySerializer(PackageRelatedLatestVersinoMixin,
                   'categories_names',
                   'summary',
                   'author',
+                  'download_count',
                   'released_datetime')
 
 class PackageVersionSerializer(serializers.ModelSerializer):
@@ -156,8 +161,14 @@ class PackageVersionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PackageVersion
-        fields =( 'icon', 'cover', 'version_code', 'version_name',
-                  'screenshots', 'whatsnew', 'download',
+        fields =( 'icon',
+                  'cover',
+                  'version_code',
+                  'version_name',
+                  'screenshots',
+                  'whatsnew',
+                  'download',
+                  'download_count',
         )
 
 class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
@@ -173,6 +184,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
     download = serializers.SerializerMethodField('get_latest_version_download')
+    download_count = serializers.SerializerMethodField('get_latest_version_download_count')
 
     author = AuthorSummarySerializer()
     versions = PackageVersionSerializer(many=True)
@@ -187,6 +199,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'version_code',
                   'version_name',
                   'download',
+                  'download_count',
                   'tags',
                   'category_name',
                   'categories_names',

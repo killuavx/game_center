@@ -316,6 +316,8 @@ class PackageQuerySet(QuerySet):
             return self.order_by('-'+field)
         else:
             return self.order_by('+'+field)
+    def by_rankings_order(self):
+        return self.order_by('-download_count')
 
     def by_updated_order(self):
         return self.order_by('-updated_datetime')
@@ -388,6 +390,13 @@ class Package(models.Model):
     tags = TagField(verbose_name=_('tags'),default="", blank=True)
 
     topics = generic.GenericRelation('taxonomy.TopicalItem')
+
+    download_count = models.PositiveIntegerField(
+                                    verbose_name=_('package download count'),
+                                    max_length=9,
+                                    default=0,
+                                    blank=True
+                                    )
 
     """ ================== START State Design Pattern ====================== """
 
@@ -522,7 +531,6 @@ class PackageVersion(models.Model):
         verbose_name_plural = _("Package Versions")
         unique_together = (
             ('package', 'version_code' ),
-            ('package', 'released_datetime'),
         )
 
     icon = ThumbnailerImageField(
@@ -548,6 +556,13 @@ class PackageVersion(models.Model):
         verbose_name=_('version file with data integration'),
         upload_to='packages_di',
         default='',
+        blank=True
+    )
+
+    download_count = models.PositiveIntegerField(
+        verbose_name=_('package version download count'),
+        max_length=9,
+        default=0,
         blank=True
     )
 
@@ -633,13 +648,24 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 @receiver(post_save, sender=PackageVersion)
 def package_version_post_save(sender, instance, **kwargs):
-    """package sync updated_datetime when self version published and changed """
+    """package sync ...
+        1. updated_datetime when self version published and changed
+        2. download_count when self version download_count changed
+    """
     package = instance.package
     if instance.status == instance.STATUS.published \
         and instance.tracker.changed():
         package.updated_datetime = instance.updated_datetime
 
-    package.save()
+    if instance.status == instance.STATUS.published \
+        and instance.tracker.has_changed('download_count'):
+        aggregate = package.versions\
+                                    .filter(status=instance.STATUS.published)\
+                                    .aggregate(download_count=models.Sum('download_count'))
+        package.download_count = aggregate.get('download_count', 0)
+
+    if package.tracker.changed():
+        package.save()
 
 # fix for PackageVersion save to update Package(set auto_now=False) updated_datetime
 @receiver(pre_save, sender=Package)

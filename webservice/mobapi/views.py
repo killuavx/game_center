@@ -1,5 +1,6 @@
 # -*- encoding=utf-8 -*-
 import copy
+from rest_framework import  mixins
 from warehouse.models import Package, Author
 from rest_framework.decorators import link
 from rest_framework.response import Response
@@ -83,6 +84,9 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
         list_view =  ViewSet.as_view({'get':'list'}, queryset=queryset)
         return list_view(request, *args, **kwargs)
 
+class PackageRankingsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = PackageSummarySerializer
+    queryset = Package.objects.published().by_rankings_order()
 
 #------------------------------------------------------------------
 from taxonomy.models import Category, Topic, TopicalItem
@@ -210,7 +214,6 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         return response
 
 #------------------------------------------------------------------
-from rest_framework import  mixins
 from searcher.models import TipsWord
 from mobapi.serializers import TipsWordSerializer
 
