@@ -68,8 +68,15 @@ class PackageVersionAdmin(MainAdmin):
     search_fields = ( 'version_name',
                       'package__package_name',
                       'package__title')
-    list_display = ('show_icon', 'package', 'package_name',
-                    'version_name', 'version_code', 'updated_datetime' )
+    list_display = ('show_icon',
+                    'package',
+                    'package_name',
+                    'version_name',
+                    'version_code',
+                    'status',
+                    'updated_datetime',
+                    'download_count',
+    )
     list_display_links = ('show_icon', 'version_name')
     actions = ['make_published' ]
     raw_id_fields = ('package', )
@@ -82,6 +89,11 @@ class PackageVersionAdmin(MainAdmin):
         }),
         (_('Version'), {
             'fields':('version_code', 'version_name', 'whatsnew')
+        }),
+        (_('Version Statistics'), {
+            'fields': (
+                'download_count',
+            )
         }),
         (_('Status'), {
             'fields':('status',
@@ -136,6 +148,11 @@ class PackageVersionInlines(admin.StackedInline):
         (None, {
             'fields':('icon', 'download' )
         }),
+        (_('Version Statistics'), {
+            'fields': (
+                'download_count',
+            )
+        }),
         (_('Version'), {
             'fields':('version_code', 'version_name', 'whatsnew')
         }),
@@ -172,6 +189,11 @@ class PackageAdmin(MainAdmin):
                         'summary', 'description',
             )
         }),
+        (_('Package Statistics'), {
+            'fields': (
+                'download_count',
+            )
+        }),
         (_('Taxonomy'), {
             'classes': ('collapse','grp-collapse grp-closed'),
             'fields': ('tags', 'categories')
@@ -184,7 +206,7 @@ class PackageAdmin(MainAdmin):
         }),
     )
     search_fields = ( 'title', 'package_name', '^author__name')
-    list_display = ( 'show_icon', 'title', 'package_name', 'tags', 'released_datetime', 'was_published_recently', 'status')
+    list_display = ( 'show_icon', 'title', 'package_name', 'tags', 'released_datetime', 'was_published_recently', 'status', 'download_count')
     list_filter = ('author__name', 'released_datetime', 'status' )
     list_display_links = ('package_name',)
     list_editable = ('status', 'tags',)
@@ -211,7 +233,7 @@ class PackageAdmin(MainAdmin):
         queryset.update(status=Package.STATUS.published)
     make_published.short_description = _('Make selected Packages as published')
 
-    readonly_fields = ('created_datetime', 'updated_datetime',)
+    readonly_fields = ('download_count', 'created_datetime', 'updated_datetime',)
     def suit_row_attributes(self, obj, request):
         css_class = {
             'draft':'info',

@@ -1,5 +1,6 @@
 # -*- encoding=utf-8 -*-
 import io
+import os
 from os.path import join, dirname, abspath
 from django.test.testcases import TestCase
 from django.test.client import Client
@@ -13,6 +14,7 @@ from django.utils.timezone import now, timedelta
 from urllib import parse as urlparse
 import random
 _models = []
+_files = []
 
 
 def guid():
@@ -65,11 +67,15 @@ def create_tipsword(**defaults):
     _models.append(inst)
     return inst
 
-
 def clear_data():
     for m in _models:
         try:  m.delete()
         except: pass
+
+    for f in _files:
+        try:
+            os.remove(f)
+        except:pass
 
 class ApiDSL(object):
 
@@ -109,6 +115,7 @@ class ApiDSL(object):
         version.icon = File(io.FileIO(join(ApiDSL._fixtures_dir,'icon.png')))
         _models.append(version.icon)
         package.versions.add(version)
+        _files.append(version.icon.path)
         return version
 
     def Given_package_version_add_screenshot(self, version):
@@ -170,6 +177,7 @@ class ApiDSL(object):
                 'icon',
                 'cover',
                 'download',
+                'download_count',
                 'screenshots',
                 'version_code',
                 'version_name',
@@ -187,6 +195,7 @@ class ApiDSL(object):
             'version_code',
             'version_name',
             'download',
+            'download_count',
             'whatsnew',
             'package_name',
             'title',
@@ -259,6 +268,11 @@ class ApiDSL(object):
             .get('/api/tipswords', follow=True)
         self.world.setdefault('response',  response)
 
+    def When_i_access_rankings_list(self, rankings_type):
+        res = self.client.get('/api/rankings/')
+        self.world.setdefault('response', res)
+
+
     def Then_i_should_see_tips_list(self, tips_list):
         for t in tips_list:
             return ApiDSL.Then_i_should_see_tips(self, t)
@@ -287,6 +301,12 @@ class ApiDSL(object):
                               next=next,
                               count=count,
                               result_len=num )
+
+    def Then_i_should_see_package_list_order_by_download_count_desc(self):
+        content = self.world.get('content')
+        result = content.get('results')
+        self.assertGreater(result[0].get('download_count'),
+                           result[1].get('download_count'))
 
     def Then_i_should_see_package_list_order_by_released_datetime_desc(self):
         content = self.world.get('content')
