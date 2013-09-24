@@ -172,17 +172,82 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440*4
 FILE_UPLOAD_PERMISSIONS = None
 FILE_UPLOAD_TEMP_DIR = None
 
-#from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
-
-THUMBNAIL_ALIASES = {
-    '': {
-        'screenshot_large': {'size':(412,232), 'crop':'smart'},
-        'screenshot_preview': {'size':(412,232), 'crop':'smart'},
-        'screenshot_thumbnail': {'size':(100,50), 'crop':'smart'},
-        'avatar': {'size': (50, 50), 'crop': 'smart'},
-        'icon': {'size': (72, 72)},
+# EasyThumbnail Settings
+THUMBNAIL_ALIASES_ICON = {
+    'large': {
+        'size': (92, 92),
+        'quality': 85,
+        'crop': True,
+        'upscale': True,
+        },
+    'middle':{
+        'size': (72, 72),
+        'quality': 85,
+        'crop': True,
+        'upscale': True,
+        },
+    'small': {
+        'size': (48, 48),
+        'quality': 85,
+        'crop': True,
+        'upscale': True,
         },
     }
+THUMBNAIL_ALIASES_COVER = {
+        'large': {
+            'size': (900, 360),
+            'quality': 85,
+            'crop': True,
+            'upscale': True,
+            },
+        'middle':{
+            'size': (450, 180),
+            'quality': 85,
+            'crop': True,
+            'upscale': True,
+            },
+        'small': {
+            'size': (48, 48),
+            'quality': 85,
+            'crop': True,
+            'upscale': True,
+            },
+        }
+THUMBNAIL_ALIASES_SCREENSHOT = {
+    'large': {
+        'size': (900, 360),
+        'quality': 85,
+        'crop': True,
+        'upscale': True,
+        },
+    'middle':{
+        'size': (450, 180),
+        'quality': 85,
+        'crop': True,
+        'upscale': True,
+        },
+    'small': {
+        'size': (150, 56),
+        'quality': 85,
+        'crop': True,
+        'upscale': True,
+        },
+    }
+THUMBNAIL_ALIASES = {
+    '': {
+        'avatar': {'size': (50, 50), 'crop': 'smart'},
+        },
+    'warehouse.PackageVersion.icon':  THUMBNAIL_ALIASES_ICON,
+    'warehouse.PackageVersion.cover': THUMBNAIL_ALIASES_COVER,
+    'warehouse.PackageVersionScreenshot.image': THUMBNAIL_ALIASES_SCREENSHOT,
+    'warehouse.Author.icon':  THUMBNAIL_ALIASES_ICON,
+    'warehouse.Author.cover': THUMBNAIL_ALIASES_COVER,
+    'taxonomy.Category.icon': THUMBNAIL_ALIASES_ICON,
+    'taxonomy.Topic.icon': THUMBNAIL_ALIASES_ICON,
+    'taxonomy.Topic.cover': THUMBNAIL_ALIASES_COVER,
+    'promotion.Advertisement.cover': THUMBNAIL_ALIASES_COVER,
+    }
+
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
     'easy_thumbnails.processors.autocrop',

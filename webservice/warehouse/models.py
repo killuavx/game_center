@@ -538,14 +538,13 @@ class PackageVersion(models.Model):
 
     icon = ThumbnailerImageField(
         default='',
-        resize_source=dict(size=(50, 50), crop='smart'),
-        upload_to='icons',
+        upload_to='icons/package',
         blank=True,
     )
 
     cover = ThumbnailerImageField(
         default='',
-        upload_to='covers',
+        upload_to='covers/package',
         blank=True,
         )
 
