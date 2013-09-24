@@ -135,7 +135,7 @@ class ApiDSL(object):
         kwargs.setdefault('status', Author.STATUS.activated)
         return create_author(**kwargs)
 
-    def Given_i_have_published_package(self, all_datetime, **kwargs):
+    def Given_i_have_published_package(self, all_datetime=now()-timedelta(days=1), **kwargs):
         pkg = ApiDSL.Given_i_have_package_with(self,
                                                status=Package.STATUS.published,
                                                **kwargs)
