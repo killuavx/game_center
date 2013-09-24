@@ -1,5 +1,6 @@
 # -*- encoding=utf-8 -*-
 from django.contrib import admin
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from django.utils.safestring import mark_safe
@@ -142,19 +143,20 @@ class PackageVersionInlines(admin.StackedInline):
     model = PackageVersion
     inlines = (PackageVersionScreenshotInlines, )
 
+    suit_classes = 'suit-tab suit-tab-versions'
     classes = ('collapse', 'grp-collapse grp-open',)
     inline_classes = ('grp-collapse grp-closed',)
     fieldsets = (
         (None, {
+            'fields':('version_code', 'version_name', 'whatsnew')
+        }),
+        (_('File'), {
             'fields':('icon', 'download', 'di_download' )
         }),
         (_('Version Statistics'), {
             'fields': (
                 'download_count',
             )
-        }),
-        (_('Version'), {
-            'fields':('version_code', 'version_name', 'whatsnew')
         }),
         (_('Status'), {
             'fields':('status',
@@ -185,30 +187,52 @@ class PackageAdmin(MainAdmin):
 
     fieldsets = (
         (_('Basic Information'), {
-            'fields': ( 'title', 'package_name', 'author',
-                        'summary', 'description',
+            'classes': ('suit-tab suit-tab-general', ),
+            'fields': (
+                'title',
+                'package_name',
+                'author',
+                'summary',
+                'description',
             )
         }),
         (_('Package Statistics'), {
+            'classes': ('suit-tab suit-tab-statistics',),
             'fields': (
                 'download_count',
             )
         }),
         (_('Taxonomy'), {
-            'classes': ('collapse','grp-collapse grp-closed'),
+            'classes': ('suit-tab suit-tab-general',
+                        'collapse','grp-collapse grp-closed'),
             'fields': ('tags', 'categories')
         }),
         (_('Release'), {
-            'classes': ('collapse','grp-collapse grp-open'),
+            'classes': ('suit-tab suit-tab-general',
+                        'collapse','grp-collapse grp-open'),
             'fields': ( 'released_datetime', 'status',
                         'created_datetime', 'updated_datetime'
             )
         }),
     )
+    suit_form_tabs = (
+        ('general', _('General')),
+        ('versions', _('Versions')),
+        ('statistics', _('Statistics')),
+                      )
     search_fields = ( 'title', 'package_name', '^author__name')
-    list_display = ( 'show_icon', 'title', 'package_name', 'tags', 'released_datetime', 'was_published_recently', 'status', 'download_count')
+    list_display = ( 'pk', 'show_icon',
+                     'title',
+                     'package_name',
+                     'tags',
+                     'released_datetime',
+                     'was_published_recently',
+                     'status',
+                     'download_count',
+                     'download_url',
+    )
     list_filter = ('author__name', 'released_datetime', 'status' )
-    list_display_links = ('package_name',)
+    list_display_links = ( 'title', 'package_name',)
     list_editable = ('status', 'tags',)
     date_hierarchy = 'released_datetime'
     ordering = ('-released_datetime',)
@@ -217,6 +241,27 @@ class PackageAdmin(MainAdmin):
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput}
     }
+
+    def _get_packageversion_download_url(self, version):
+        try:
+            return version.di_download.url
+        except ValueError: pass
+        try:
+            return version.download.url
+        except ValueError: pass
+
+        return '#'
+
+    def download_url(self, obj):
+        try:
+            a = '<a href="%{url}s" target="_blank">%{content}s</a>'
+            return a.format(url=self._get_packageversion_download_url(
+                                                obj.versions.latest_version()),
+                            content="apk下载地址")
+        except: pass
+        return None
+    download_url.short_description = _('download url')
+    download_url.allow_tags = True
 
     def show_icon(self, obj):
         try:
@@ -273,6 +318,13 @@ class AuthorAdmin(MainAdmin):
             }.get(obj.status)
         if css_class:
             return {'class': css_class, 'data': obj.name}
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(AuthorAdmin, self).get_form(request, obj, **kwargs)
+        # FIXME 简化author.email数据填充,自动生成处理
+        email = "%s@testcase.com" % now().strftime('%Y%m%d-%H%M%S')
+        form.base_fields['email'].initial=email
+        return form
 
 admin.site.register(PackageVersion, PackageVersionAdmin)
 admin.site.register(Package, PackageAdmin)
