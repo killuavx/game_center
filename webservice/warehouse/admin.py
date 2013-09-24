@@ -151,7 +151,7 @@ class PackageVersionInlines(admin.StackedInline):
             'fields':('version_code', 'version_name', 'whatsnew')
         }),
         (_('File'), {
-            'fields':('icon', 'download', 'di_download' )
+            'fields':('icon', 'cover', 'download', 'di_download' )
         }),
         (_('Version Statistics'), {
             'fields': (
