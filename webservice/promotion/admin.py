@@ -6,6 +6,13 @@ from suit.admin import SortableTabularInline
 from reversion.admin import VersionAdmin
 from promotion.models import Place, Advertisement, Advertisement_Places
 
+
+class AdvertisementPlacesInline(admin.TabularInline):
+    fields = ('place', )
+    model = Advertisement_Places
+    extra = 0
+    readonly_fields = ('ordering', )
+
 class AdvertisementAdmin(VersionAdmin):
 
     fieldsets = (
@@ -13,7 +20,6 @@ class AdvertisementAdmin(VersionAdmin):
             'fields':(
                 'title',
                 'cover',
-                'places',
             )
         }),
         (_('Content'), {
@@ -33,6 +39,7 @@ class AdvertisementAdmin(VersionAdmin):
     list_display = ('show_cover', 'title', 'is_published',)
     list_display_links = ('show_cover', 'title', )
     readonly_fields = ('updated_datetime', 'created_datetime',)
+    inlines = (AdvertisementPlacesInline, )
 
     def show_cover(self, obj):
         try:
@@ -43,14 +50,14 @@ class AdvertisementAdmin(VersionAdmin):
     show_cover.short_description = _('Icon')
     show_cover.allow_tags = True
 
-class AdvertisementInline(SortableTabularInline):
+class AdvertisementPlacesOrderingInline(SortableTabularInline):
     sortable = 'ordering'
     model = Advertisement_Places
     extra = 0
 
 class PlaceAdmin(VersionAdmin):
     list_display = ('slug', 'help_text')
-    inlines = (AdvertisementInline, )
+    inlines = (AdvertisementPlacesInline, )
 
-admin.site.register(Advertisement, AdvertisementAdmin)
 admin.site.register(Place, PlaceAdmin)
+admin.site.register(Advertisement, AdvertisementAdmin)
