@@ -147,7 +147,8 @@ EXTENDAL_APPS = [
     'mobapi',
     'searcher',
     'taxonomy',
-    'warehouse'
+    'warehouse',
+    'promotion',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 

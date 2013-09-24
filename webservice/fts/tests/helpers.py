@@ -135,7 +135,7 @@ class ApiDSL(object):
         kwargs.setdefault('status', Author.STATUS.activated)
         return create_author(**kwargs)
 
-    def Given_i_have_published_package(self, all_datetime, **kwargs):
+    def Given_i_have_published_package(self, all_datetime=now()-timedelta(days=1), **kwargs):
         pkg = ApiDSL.Given_i_have_package_with(self,
                                                status=Package.STATUS.published,
                                                **kwargs)
@@ -272,6 +272,14 @@ class ApiDSL(object):
         res = self.client.get('/api/rankings/')
         self.world.setdefault('response', res)
 
+    def When_i_access_advertisement_with(self, place=None):
+        if place:
+            res = self.client.get('/api/advertisements/?place=%s'%place.slug)
+        else:
+            res = self.client.get('/api/advertisements/')
+
+        self.world.setdefault('response', res)
+
 
     def Then_i_should_see_tips_list(self, tips_list):
         for t in tips_list:
@@ -287,9 +295,9 @@ class ApiDSL(object):
         content = self.convert_content(response.content)
         self.world.update(dict(response=response, content=content))
 
-    def Then_i_should_receive_response_with(self, statu_code=None):
+    def Then_i_should_receive_response_with(self, status_code=None):
         response = self.world.get('response')
-        self.assertEqual(response.status_code, statu_code)
+        self.assertEqual(response.status_code, status_code)
         content = self.convert_content(response.content)
         self.world.update(dict(response=response, content=content))
 
@@ -406,6 +414,24 @@ class ApiDSL(object):
         serializer = PackageSummarySerializer(package)
         repsonse = self.client.get(serializer.data.get('url'))
         self.world.update(dict(response=repsonse))
+
+    def Then_i_should_see_advertisement_list(self, adv_list):
+
+        def Then_i_should_see_advertisement_summary(adv):
+            fields = (
+                'title',
+                'cover',
+                'content_type',
+                'content_url',
+            )
+            for f in fields:
+                self.assertIn(f, adv)
+
+        for a in adv_list:
+            Then_i_should_see_advertisement_summary(a)
+
+    def clear_world(self):
+        self.world = {}
 
 class RestApiTest(TestCase):
 
