@@ -519,6 +519,9 @@ class PackageVersionQuerySet(QuerySet):
         return self.filter(released_datetime__gt=now()) \
             .exclude(status=self.model.STATUS.published)
 
+    def latest_version(self):
+        return self.latest('version_code')
+
     def latest_published(self):
         return self.published().latest('version_code')
 
