@@ -387,3 +387,27 @@ class TipsWordSerializer(serializers.ModelSerializer):
         fields = ( 'keyword',
                    'weight' )
 
+#---------------------------------------------------------------------------
+from promotion.models import Advertisement
+
+class AdvertisementSerializer(serializers.HyperlinkedModelSerializer):
+    content_url = serializers.SerializerMethodField('get_content_url')
+    def get_content_url(self, obj):
+        hlid = serializers.HyperlinkedIdentityField(source='content',
+                                                    view_name='package-detail',
+                                                    )
+        hlid.context = self.context
+        return hlid.field_to_native(obj.content, 'content_url')
+
+    content_type = serializers.SerializerMethodField('get_content_type')
+    def get_content_type(self, obj):
+        return str(obj.content_type).lower()
+
+    cover = ImageUrlField()
+    class Meta:
+        model = Advertisement
+        fields =( 'title',
+                  'cover',
+                  'content_url',
+                  'content_type',
+        )

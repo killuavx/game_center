@@ -4,8 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from suit.admin import SortableTabularInline
 from reversion.admin import VersionAdmin
-from reversion import admin as reversion_admin
-from promotion.models import Place, Advertisement
+from promotion.models import Place, Advertisement, Advertisement_Places
 
 class AdvertisementAdmin(VersionAdmin):
 
@@ -44,15 +43,9 @@ class AdvertisementAdmin(VersionAdmin):
     show_cover.short_description = _('Icon')
     show_cover.allow_tags = True
 
-#def get_adv_status(self, obj):
-#    return obj.status
-#Advertisement.places.through.get_adv_status = get_adv_status
-#from pprint import pprint as print
-#print(Advertisement.places.through.__dict__)
-
 class AdvertisementInline(SortableTabularInline):
     sortable = 'ordering'
-    model = Advertisement.places.through
+    model = Advertisement_Places
     extra = 0
 
 class PlaceAdmin(VersionAdmin):

@@ -1,5 +1,6 @@
+# -*- encoding=utf-8 -*-
 from django.db import models
-
+from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -7,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
 from model_utils import FieldTracker, Choices
 from model_utils.fields import StatusField
+from model_utils.managers import PassThroughManager
 
 class Place(models.Model):
 
@@ -31,7 +33,21 @@ class Place(models.Model):
     def __str__(self):
         return self.slug
 
+class AdvertisementQuerySet(QuerySet):
+
+    def published(self):
+        return self.filter(
+            released_datetime__lte=now(), status=self.model.STATUS.published)
+
+    def by_ordering(self):
+        return self.order_by('relation_advertisement__ordering')
+
+    def place_in(self, place):
+        return self.filter(places=place)
+
 class Advertisement(models.Model):
+
+    objects = PassThroughManager.for_queryset_class(AdvertisementQuerySet)()
 
     cover = ThumbnailerImageField(
         verbose_name=_('advertisement cover'),
@@ -47,7 +63,11 @@ class Advertisement(models.Model):
     content = generic.GenericForeignKey("content_type", "object_id")
 
     places = models.ManyToManyField(Place,
+                                    symmetrical=False,
+                                    through='Advertisement_Places',
                                     related_name='advertisements',
+                                    blank=True,
+                                    null=True,
                                     )
 
     STATUS = Choices(
@@ -82,8 +102,17 @@ class Advertisement(models.Model):
     def __str__(self):
         return self.title
 
-models.PositiveIntegerField(max_length=3, default=0, blank=True)\
-    .contribute_to_class(Advertisement.places.through, name='ordering')
+class Advertisement_Places(models.Model):
+
+    place = models.ForeignKey(Place, related_name='relation_place')
+    advertisement = models.ForeignKey(Advertisement, related_name='relation_advertisement')
+    ordering = models.PositiveIntegerField(max_length=3, default=0,blank=True)
+
+    class Meta:
+        ordering = ('ordering', )
+        unique_together = (
+            ('place', 'advertisement', )
+        )
 
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -109,3 +138,4 @@ def advertisement_pre_save(sender, instance, **kwargs):
         and instance.status == sender.STATUS.published \
         and not instance.released_datetime:
         instance.released_datetime = now()
+

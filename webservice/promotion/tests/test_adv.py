@@ -1,13 +1,8 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
+# -*- encoding=utf-8 -*-
 from datetime import timedelta
 from django.test import TestCase
 from django.utils.timezone import now
-from promotion.models import Advertisement, Place
+from promotion.models import Advertisement, Place, Advertisement_Places
 from fts.tests.helpers import ApiDSL
 
 
@@ -46,8 +41,8 @@ class AdvUnitTest(TestCase):
                             status=Advertisement.STATUS.published
                             )
         p1 = self.create_place(slug='mobile-home-top')
-        adv.places.add(p1)
+        Advertisement_Places.objects.create(advertisement=adv, place=p1)
         p2 = self.create_place(slug='website-home-top')
-        adv.places.add(p2)
+        Advertisement_Places.objects.create(advertisement=adv, place=p2)
         self.assertEqual(2, adv.places.count())
         self.assertEqual(adv.is_published(), True)

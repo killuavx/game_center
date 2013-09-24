@@ -221,3 +221,30 @@ class TipsWordViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = TipsWordSerializer
     queryset = TipsWord.objects.published()
 
+#------------------------------------------------------------------
+from promotion.models import Advertisement, Place
+from mobapi.serializers import AdvertisementSerializer
+
+from django.core.urlresolvers import reverse
+
+class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = AdvertisementSerializer
+    queryset = Advertisement.objects.published().by_ordering()
+
+    def list(self, request, *args, **kwargs):
+        querydict = copy.deepcopy(dict(request.GET))
+        q = querydict.get('place')
+        q = q.pop() if isinstance(q, list) else q
+        if not q or not (q and q.strip()):
+            data = {'detail': 'Not Allow without search parameter %{url}s/?place=slug'
+                        .format(url=reverse('advertisement-list') ) }
+            return Response(data, status=status.HTTP_403_FORBIDDEN)
+
+        place = None
+        try:
+            place = Place.objects.get(slug=q)
+        except Place.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        self.queryset = self.queryset.place_in(place)
+        return super(AdvertisementViewSet, self).list(request, *args, **kwargs)
