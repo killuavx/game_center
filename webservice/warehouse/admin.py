@@ -1,5 +1,6 @@
 # -*- encoding=utf-8 -*-
 from django.contrib import admin
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from django.utils.safestring import mark_safe
@@ -317,6 +318,13 @@ class AuthorAdmin(MainAdmin):
             }.get(obj.status)
         if css_class:
             return {'class': css_class, 'data': obj.name}
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(AuthorAdmin, self).get_form(request, obj, **kwargs)
+        # FIXME 简化author.email数据填充,自动生成处理
+        email = "%s@testcase.com" % now().strftime('%Y%m%d-%H%M%S')
+        form.base_fields['email'].initial=email
+        return form
 
 admin.site.register(PackageVersion, PackageVersionAdmin)
 admin.site.register(Package, PackageAdmin)
