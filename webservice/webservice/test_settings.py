@@ -3,6 +3,7 @@ from webservice.settings import *
 import os
 HOST_URL = os.getenv('GC_HOST_URL', '')
 MEDIA_URL = HOST_URL + MEDIA_URL
+STATIC_URL = HOST_URL + STATIC_URL
 
 EXTENDAL_APPS.append('django_nose')
 EXTENDAL_APPS.append('django_jenkins')
