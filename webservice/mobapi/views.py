@@ -78,7 +78,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             * 'rotate':旋转角度(-180, -90, 0, 90, 180)负值为逆时针
         * 'whatsnew': 版本跟新内容介绍
         * 'download': 版本下载地址
-        * ldownload_count': 版本下载量
+        * 'download_count': 版本下载量
 
     """
     queryset = Package.objects.published()
