@@ -16,6 +16,71 @@ class SphinxSearchFilter(filters.SearchFilter):
     search_param = 'q'
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
+    """ 软件接口
+
+    ## API访问形式
+
+    * 列表: /api/packages/
+        * 最新发布排序: /api/packages/?ordering=`-released_datetime`
+        * 最热下载排序: /api/packages/?ordering=`-download_count`
+    * 详情: /api/packages/`{id}`/
+
+    ## PackageSummarySerializer 列表软件结构
+
+    * `url`: 详情接口url
+    * `icon`: 图标url
+    * `title`: 名称
+    * `package_name`: 包名
+    * `author`:
+        * 'url': 作者详情url
+        * 'name': 作者名
+    * `cover`: 封面图片url
+    * `category_name`: 分类名
+    * `categories_names`: 多分类列表名称
+    * `tags`: 标签名称列表（如`新作`、`首发`、`礼包`）
+    * `download_count`:下载量
+    * `summary`: 一句话摘要
+    * `released_datetime`: 发布时间(时间戳)
+
+    ## PackageDetailSerializer 详情软件结构
+
+    * `url`: 详情接口url
+    * `icon`: 图标url
+    * `cover`: 封面图片url
+    * `title`: 名称
+    * `package_name`: 包名
+    * `version_code`: 版本号
+    * `version_name`: 版本名
+    * `author`: 作者信息
+        * 'url': 作者详情url
+        * 'name': 作者名
+    * `category_name`: 分类名
+    * `categories_names`: 多分类列表名称
+    * `tags`: 标签名称列表（如`新作`、`首发`、`礼包`）
+    * `download_count`: 下载量
+    * `download`: 下载地址
+    * `summary`: 一句话摘要
+    * `released_datetime`: 发布时间(时间戳)
+    * `whatsnew`: 版本跟新内容说明
+    * `description`: 详细介绍
+    * `screenshots`: 截图列表
+        * 'large': 大截图
+        * 'preview': 预览截图
+        * 'rotate':旋转角度(-180, -90, 0, 90, 180)负值为逆时针
+    * `versions`: 所有版本列表
+        * 'icon': 版本图标url
+        * 'cover': 版本封面url
+        * 'version_code': 版本号
+        * 'version_name': 版本名
+        * `screenshots`: 版本截图列表
+            * 'large': 大截图
+            * 'preview': 预览截图
+            * 'rotate':旋转角度(-180, -90, 0, 90, 180)负值为逆时针
+        * 'whatsnew': 版本跟新内容介绍
+        * 'download': 版本下载地址
+        * ldownload_count': 版本下载量
+
+    """
     queryset = Package.objects.published()
     serializer_class = PackageSummarySerializer
     filter_backends = (filters.OrderingFilter,
@@ -232,6 +297,15 @@ class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     接口访问基本形式:
 
+    {apis}
+
+    AdvertisementSerializer结构:
+
+    * `title`: 广告标语, UI无体现则忽略
+    * `cover`: 广告图片的url
+    * `content_type`: 用于区别content_url所指内容类型, 现在只有package
+    * `content_url`: 访问内容的url，content_type为package, 则content_url为package detail
+
     """
 
     serializer_class = AdvertisementSerializer
@@ -259,14 +333,10 @@ class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 def documentation_advertisement_viewset():
     host_url = ''
     places = Place.objects.all()
-    access_apis = list()
+    contents = list()
     for p in places:
         url =  "%s%s/?place=%s" % (host_url, '/api/advertisements', p.slug)
+        a = '[%s](%s)'%(url, url, )
+        contents.append( "\n * `%s`: %s %s" %( p.slug, p.help_text, a ))
 
-        access_apis.append([p.slug, p.help_text, url])
-
-    AdvertisementViewSet.__doc__ += "\n"
-    for i, a in enumerate(access_apis):
-        AdvertisementViewSet.__doc__ += "\n * %s: %s `%s`" %( a[0], a[1], a[2], )
-
-    print(AdvertisementViewSet.__doc__)
+    AdvertisementViewSet.__doc__ = AdvertisementViewSet.__doc__.format(apis="".join(contents))
