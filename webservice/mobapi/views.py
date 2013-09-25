@@ -58,6 +58,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     * `categories_names`: 多分类列表名称
     * `tags`: 标签名称列表（如`新作`、`首发`、`礼包`）
     * `download_count`: 下载量
+    * 'download_size': 下载文件的字节大小
     * `download`: 下载地址
     * `summary`: 一句话摘要
     * `released_datetime`: 发布时间(时间戳)
@@ -79,6 +80,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         * 'whatsnew': 版本跟新内容介绍
         * 'download': 版本下载地址
         * 'download_count': 版本下载量
+        * 'download_size': 版本文件字节大小
 
     """
     queryset = Package.objects.published()

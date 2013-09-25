@@ -58,6 +58,16 @@ def get_packageversion_download_url(version):
 
     return None
 
+def get_packageversion_download_size(version):
+    try:
+        return version.di_download.size
+    except ValueError: pass
+    try:
+        return version.download.size
+    except ValueError: pass
+
+    return None
+
 class PackageRelatedLatestVersinoMixin(object):
 
     serializer_class_screenshot = PackageVersionScreenshotSerializer
@@ -110,6 +120,11 @@ class PackageRelatedLatestVersinoMixin(object):
         latest_version = obj.versions.latest_published()
         return latest_version.download_count
 
+    def get_latest_version_download_size(self, obj):
+        latest_version = obj.versions.latest_published()
+        return get_packageversion_download_size(latest_version)
+
+
 class PackageRelatedCategoryMixin(object):
 
     def get_main_category_name(self, obj):
@@ -157,6 +172,10 @@ class PackageVersionSerializer(serializers.ModelSerializer):
     def get_version_download_url(self, obj):
         return get_packageversion_download_url(obj)
 
+    download_size = serializers.SerializerMethodField('get_version_download_size')
+    def get_version_download_size(self, obj):
+        return get_packageversion_download_size(obj)
+
     screenshots = PackageVersionScreenshotSerializer(many=True)
 
     class Meta:
@@ -169,6 +188,7 @@ class PackageVersionSerializer(serializers.ModelSerializer):
                   'whatsnew',
                   'download',
                   'download_count',
+                  'download_size',
         )
 
 class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
@@ -185,6 +205,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
     categories_names = serializers.SerializerMethodField('get_categories_names')
     download = serializers.SerializerMethodField('get_latest_version_download')
     download_count = serializers.SerializerMethodField('get_latest_version_download_count')
+    download_size = serializers.SerializerMethodField('get_latest_version_download_size')
 
     author = AuthorSummarySerializer()
     versions = PackageVersionSerializer(many=True)
@@ -200,6 +221,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'version_name',
                   'download',
                   'download_count',
+                  'download_size',
                   'tags',
                   'category_name',
                   'categories_names',
