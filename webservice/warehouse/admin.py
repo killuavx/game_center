@@ -254,10 +254,10 @@ class PackageAdmin(MainAdmin):
 
     def download_url(self, obj):
         try:
-            a = '<a href="%{url}s" target="_blank">%{content}s</a>'
+            a = '<a href="{url}" target="_blank">下载地址</a>'
             return a.format(url=self._get_packageversion_download_url(
                                                 obj.versions.latest_version()),
-                            content="apk下载地址")
+                            )
         except: pass
         return None
     download_url.short_description = _('download url')
