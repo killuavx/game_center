@@ -10,6 +10,7 @@ rest_router.register('rankings', views.PackageRankingsViewSet, base_name='rankin
 rest_router.register('categories', views.CategoryViewSet)
 rest_router.register('topics', views.TopicViewSet)
 rest_router.register('tipswords', views.TipsWordViewSet)
+views.documentation_advertisement_viewset()
 rest_router.register('advertisements', views.AdvertisementViewSet)
 
 urlpatterns = rest_router.urls

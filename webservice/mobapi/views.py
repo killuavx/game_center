@@ -228,6 +228,12 @@ from mobapi.serializers import AdvertisementSerializer
 from django.core.urlresolvers import reverse
 
 class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    """ 广告接口
+
+    接口访问基本形式:
+
+    """
+
     serializer_class = AdvertisementSerializer
     queryset = Advertisement.objects.published().by_ordering()
 
@@ -248,3 +254,19 @@ class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
         self.queryset = self.queryset.place_in(place)
         return super(AdvertisementViewSet, self).list(request, *args, **kwargs)
+
+
+def documentation_advertisement_viewset():
+    host_url = ''
+    places = Place.objects.all()
+    access_apis = list()
+    for p in places:
+        url =  "%s%s/?place=%s" % (host_url, '/api/advertisements', p.slug)
+
+        access_apis.append([p.slug, p.help_text, url])
+
+    AdvertisementViewSet.__doc__ += "\n"
+    for i, a in enumerate(access_apis):
+        AdvertisementViewSet.__doc__ += "\n * %s: %s `%s`" %( a[0], a[1], a[2], )
+
+    print(AdvertisementViewSet.__doc__)
