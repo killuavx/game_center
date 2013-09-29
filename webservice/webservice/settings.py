@@ -128,20 +128,26 @@ INTERNAL_APPS = [
     'django.contrib.staticfiles',
     'PIL',
     'easy_thumbnails',
+    'userena',
+    'guardian',
     'south',
     'suit',
     'mptt',
     'reversion',
     'sizefield',
+    'django_extensions',
+    #'admin_timeline',
     'django.contrib.admin',
     'django.contrib.admindocs',
 
     'webservice.Fix_PIL',
     'rest_framework',
+    'rest_framework.authtoken',
     'rest_framework_swagger',
     'tagging',
     'tagging_autocomplete',
     'djrill',
+    #'djohno',
 ]
 EXTENDAL_APPS = [
     'mobapi',
@@ -149,6 +155,7 @@ EXTENDAL_APPS = [
     'taxonomy',
     'warehouse',
     'promotion',
+    'account',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
@@ -246,7 +253,10 @@ THUMBNAIL_ALIASES = {
     'taxonomy.Topic.icon': THUMBNAIL_ALIASES_ICON,
     'taxonomy.Topic.cover': THUMBNAIL_ALIASES_COVER,
     'promotion.Advertisement.cover': THUMBNAIL_ALIASES_COVER,
+    'account.Profile.cover': THUMBNAIL_ALIASES_COVER,
+    'account.Profile.mugshot': THUMBNAIL_ALIASES_ICON,
     }
+
 
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
@@ -259,25 +269,25 @@ REST_FRAMEWORK = {
     'DATE_FORMAT':'%s',
     'DATETIME_FORMAT':'%s',
     'PAGINATE_BY': 10,
-    # Use hyperlinked styles by default.
-    # Only used if the `serializer_class` attribute is not set on a view.
-    'DEFAULT_MODEL_SERIALIZER_CLASS':
-        'rest_framework.serializers.HyperlinkedModelSerializer',
 
-    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
+    #'DEFAULT_MODEL_SERIALIZER_CLASS':
+    #    'rest_framework.serializers.HyperlinkedModelSerializer',
 
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework.filters.DjangoFilterBackend',
+    ),
+
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ],
 }
-
 
 #SLUGFIELD_SLUGIFY_FUNCTION = ''
 TAGGING_AUTOCOMPLETE_JS_BASE_URL = '/media/js'
 MANDRILL_API_KEY = "brack3t-is-awesome"
-EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+#EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'
+DEFAULT_FROM_EMAIL = 'killua.vx@gmail.com'
 
 SWAGGER_SETTINGS = {
     "exclude_namespaces": [], # List URL namespaces to ignore
@@ -297,4 +307,21 @@ SWAGGER_SETTINGS = {
 def NOW():
     from django.utils import timezone
     return timezone.now()
+
+# django userena
+AUTHENTICATION_BACKENDS = (
+    'account.backends.GameCenterAuthenticationBackend',
+    'userena.backends.UserenaAuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+ANONYMOUS_USER_ID = -1
+
+AUTH_PROFILE_MODULE = 'account.Profile'
+USERENA_MUGSHOT_SIZE = 80
+USERENA_MUGSHOT_CROP_TYPE = 'smart'
+
+LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+LOGIN_URL = '/accounts/signin/'
+LOGOUT_URL = '/accounts/signout/'
 

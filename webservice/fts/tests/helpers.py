@@ -77,7 +77,7 @@ def clear_data():
             os.remove(f)
         except:pass
 
-class ApiDSL(object):
+class ApiDSL():
 
     def setUp(self, client, world):
         self.world = world
@@ -431,6 +431,44 @@ class ApiDSL(object):
 
         for a in adv_list:
             Then_i_should_see_advertisement_summary(a)
+
+    def When_i_signup_with(self, user_data):
+        response = self.client.post('/api/accounts/signup/', user_data)
+        self.world.update(dict(response=response))
+
+    def When_i_signup_with_querystr(self, query):
+        response = self.client.post('/api/accounts/signup/', HTTP_CONTENT=query)
+        self.world.update(dict(response=response))
+        pass
+
+    def When_i_signin_with(self, signin_data):
+        response = self.client.post('/api/accounts/signin/', signin_data)
+        self.world.update(dict(response=response))
+
+    def When_i_signout(self):
+        headers = self.world.get('headers', dict())
+        res = self.client.get('/api/accounts/signout/', **headers)
+        self.world.update(dict(response=res))
+
+    def Then_i_should_receive_auth_token(self):
+        content = self.world.get('content')
+        self.assertEqual(len(content.get('token')), 40)
+
+    def When_i_prepare_auth_token(self, token):
+        headers = dict(HTTP_AUTHORIZATION='Token %s'%token)
+        self.world.update(dict(headers=headers))
+
+    def When_i_access_myprofile(self):
+        headers = self.world.get('headers', dict())
+        res = self.client.get('/api/accounts/myprofile', **headers)
+        self.world.update(dict(response=res))
+
+    def Then_i_should_see_myprofile_information(self, user_profile):
+        content = self.world.get('content')
+        self.assertEqual(content.get('username'), user_profile.get('username'))
+        self.assertEqual(content.get('email'), user_profile.get('email'))
+        self.assertEqual(content.get('phone'), user_profile.get('phone'))
+        self.assertIn('icon', content)
 
     def clear_world(self):
         self.world = {}

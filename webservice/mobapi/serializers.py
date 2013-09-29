@@ -433,3 +433,45 @@ class AdvertisementSerializer(serializers.HyperlinkedModelSerializer):
                   'content_url',
                   'content_type',
         )
+
+#---------------------------------------------------------------------------
+from account.models import Player, Profile
+class AccountRelatedProfileMixin(object):
+
+    def get_profile_icon_url(self, obj):
+        try:
+            return obj.profile.icon.url
+        except:
+            pass
+        return None
+
+    def get_profile_email(self, obj):
+        try:
+            return obj.profile.email
+        except:
+            pass
+        return None
+
+    def get_profile_phone(self, obj):
+        try:
+            return obj.profile.phone
+        except:
+            pass
+        return None
+
+class AccountDetailSerializer(AccountRelatedProfileMixin,
+                              serializers.ModelSerializer):
+
+    email = serializers.SerializerMethodField('get_profile_email')
+    phone = serializers.SerializerMethodField('get_profile_phone')
+    icon = serializers.SerializerMethodField('get_profile_icon_url')
+
+    class Meta:
+        model = Player
+        fields = (
+            'username',
+            'email',
+            'phone',
+            'icon',
+        )
+

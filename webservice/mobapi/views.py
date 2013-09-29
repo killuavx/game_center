@@ -331,7 +331,6 @@ class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         self.queryset = self.queryset.place_in(place)
         return super(AdvertisementViewSet, self).list(request, *args, **kwargs)
 
-
 def documentation_advertisement_viewset():
     host_url = ''
     places = Place.objects.all()
@@ -342,3 +341,103 @@ def documentation_advertisement_viewset():
         contents.append( "\n * `%s`: %s %s" %( p.slug, p.help_text, a ))
 
     AdvertisementViewSet.__doc__ = AdvertisementViewSet.__doc__.format(apis="".join(contents))
+
+
+from mobapi.serializers import AccountDetailSerializer
+from mobapi.authentications import PlayerTokenAuthentication
+from account.models import Player, Profile
+from django.core.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
+class AccountViewSet(generics.RetrieveAPIView):
+    queryset = Player.objects.published()
+
+class AccountCreateView(generics.CreateAPIView):
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = AccountDetailSerializer
+
+    def get_query_param(self, query, name):
+        return query.get(name)
+
+    def get_query_params(self, attrs):
+        attrs = dict(
+            username=self.get_query_param(attrs, 'username'),
+            password=self.get_query_param(attrs, 'password'),
+            email=self.get_query_param(attrs, 'email'),
+            phone=self.get_query_param(attrs, 'phone'),
+            )
+        return attrs
+
+    def run_validate_and_save(self, attrs):
+        user = Player(username=attrs.get('username'))
+
+        if attrs.get('password'):
+            user.set_password(attrs.get('password'))
+        else:
+            raise ValidationError('password should not be empty')
+
+
+        user.full_clean()
+        user.save()
+        profile = Profile(user=user,
+                          email=attrs.get('email'),
+                          phone=attrs.get('phone'),
+                          )
+        try:
+            profile.full_clean(['user'])
+        except ValidationError as e:
+            user.delete()
+            raise ValidationError(e)
+
+        profile.save()
+        return user
+
+    def post(self, request, *args, **kwargs):
+        try:
+            queryparams = self.get_query_params(request.DATA)
+            user = self.run_validate_and_save(queryparams)
+            serializer = self.serializer_class(user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except ValidationError as e:
+            return Response({'detail': e.messages},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+class AccountMyProfileView(generics.RetrieveAPIView):
+    authentication_classes = (PlayerTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    serializer_class = AccountDetailSerializer
+
+    def get(self, request, *args, **kwargs):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class AccountSignoutView(APIView):
+
+    authentication_classes = (PlayerTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        request.auth.delete()
+        request.auth = None
+        return Response({'detail': 'sign out successful'}, status=status.HTTP_200_OK)
+
+from django.utils.timezone import utc, datetime
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+class ObtainExpiringAuthToken(ObtainAuthToken):
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.DATA)
+        if serializer.is_valid():
+            token, created =  Token.objects.get_or_create(user=serializer.object['user'])
+
+            if not created:
+                # update the created time of the token to keep it valid
+                token.created = datetime.datetime.utcnow().replace(tzinfo=utc)
+                token.save()
+
+            return Response({'token': token.key})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
