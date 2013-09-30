@@ -5,3 +5,4 @@ from fts.tests.test_searcher import *
 from fts.tests.test_category import *
 from fts.tests.test_rankings import *
 from fts.tests.test_advertisement import *
+from fts.tests.test_accounts import *

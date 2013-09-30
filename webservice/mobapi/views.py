@@ -331,7 +331,6 @@ class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         self.queryset = self.queryset.place_in(place)
         return super(AdvertisementViewSet, self).list(request, *args, **kwargs)
 
-
 def documentation_advertisement_viewset():
     host_url = ''
     places = Place.objects.all()
@@ -342,3 +341,218 @@ def documentation_advertisement_viewset():
         contents.append( "\n * `%s`: %s %s" %( p.slug, p.help_text, a ))
 
     AdvertisementViewSet.__doc__ = AdvertisementViewSet.__doc__.format(apis="".join(contents))
+
+from mobapi.serializers import AccountDetailSerializer
+from mobapi.authentications import PlayerTokenAuthentication
+from account.models import Player, Profile
+from django.core.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
+class AccountCreateView(generics.CreateAPIView):
+    """ 账户注册
+
+    ## 接口访问形式
+
+        POST /api/accounts/signup/
+        Content-Type:application/x-www-form-urlencoded
+        ....
+
+        username=yourname&phone=+86-021-12345678&email=your@email.com&password=asdf1235s
+
+    ## 请求数据:
+
+    1. `username`: 登陆用户名
+    1. `phone`: 注册手机电话号码
+    1. `email`: 注册邮箱
+    1. `password`: 登陆密码
+
+    ## 响应状态
+
+    * 201 HTTP_201_CREATED
+        * 创建成功, 返回用户profile信息,
+        * {"username": "admin1", "email": "test@admin.com", "phone": "+86-021-123321123", "icon": null}
+    * 400 HTTP_400_BAD_REQUEST
+        * 错误请求，请求数据错误
+        * {"detail": ["\u5177\u6709 \u7528\u6237\u540d \u7684 User \u5df2\u5b58\u5728\u3002"]}
+
+    """
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = AccountDetailSerializer
+
+    def get_query_param(self, query, name):
+        return query.get(name)
+
+    def get_query_params(self, attrs):
+        attrs = dict(
+            username=self.get_query_param(attrs, 'username'),
+            password=self.get_query_param(attrs, 'password'),
+            email=self.get_query_param(attrs, 'email'),
+            phone=self.get_query_param(attrs, 'phone'),
+            )
+        return attrs
+
+    def run_validate_and_save(self, attrs):
+        user = Player(username=attrs.get('username'))
+
+        if attrs.get('password'):
+            user.set_password(attrs.get('password'))
+        else:
+            raise ValidationError('password should not be empty')
+
+
+        user.full_clean()
+        user.save()
+        profile = Profile(user=user,
+                          email=attrs.get('email'),
+                          phone=attrs.get('phone'),
+                          )
+        try:
+            profile.full_clean(['user'])
+        except ValidationError as e:
+            user.delete()
+            raise ValidationError(e)
+
+        profile.save()
+        return user
+
+    def post(self, request, *args, **kwargs):
+        try:
+            queryparams = self.get_query_params(request.DATA)
+            user = self.run_validate_and_save(queryparams)
+            serializer = self.serializer_class(user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except ValidationError as e:
+            return Response({'detail': e.messages},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+class AccountMyProfileView(generics.RetrieveAPIView):
+    """ 账户信息
+
+    ## 访问方式
+
+        GET /api/accounts/myprofile/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    ## 请求数据:
+
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
+
+    ## 响应状态
+
+    * 201 HTTP_200_OK
+        * 创建成功, 返回用户profile信息,
+        * {"username": "admin1", "email": "test@admin.com", "phone": "+86-021-123321123", "icon": null}
+    * 401 HTTP_401_UNAUTHORIZED
+        * 未登陆
+        * 无效的HTTP Header: Authorization
+    """
+    authentication_classes = (PlayerTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    serializer_class = AccountDetailSerializer
+
+    def get(self, request, *args, **kwargs):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class AccountSignoutView(APIView):
+    """ 注销接口
+
+    ## 访问方式
+
+        GET /api/accounts/signout/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    ## 请求数据
+
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
+
+    ## 响应内容
+
+    * 200 HTTP_200_OK
+        * 登出成功
+    * 401 HTTP_401_UNAUTHORIZED
+        * 未登陆
+        * 无效的HTTP Header: Authorization
+
+    """
+
+    authentication_classes = (PlayerTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, *args, **kwargs):
+        request.auth.delete()
+        request.auth = None
+        return Response({'detail': 'sign out successful'}, status=status.HTTP_200_OK)
+
+from django.utils.timezone import utc, datetime
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.settings import api_settings
+class AccountAuthTokenView(ObtainAuthToken):
+    """ 账户登陆
+
+    ## 请求方式
+
+        POST /api/accounts/signin/
+        Content-Type:application/x-www-form-urlencoded
+        ...
+
+        username=your_name&password=asdf1235s
+
+    ## 请求参数
+
+       1. `username`: 登陆用户名、电话号码或电子邮箱
+       1. `password`: 登陆密码
+
+    ## 响应内容
+
+    1. 200 HTTP_200_OK
+        * 登陆成功
+        * HTTP Response Content: {"token": "ee98b0f181d5ba43ec450008eca3f2a59e6dd9ff"}
+        * `token`用于用户登陆后的相关接口操作，需要在请求的Http Header上添加 `Authorization: Token ee98b0f181d5ba43ec450008eca3f2a59e6dd9ff`
+    2. 400 HTTP_400_BAD_REQUEST
+        * 错误请求，请求数据错误
+
+    """
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+def documentation_account_view(view):
+    _link_mask = '* %s: [%s](%s)'
+    _maps = (
+        ('注册', '/api/accounts/signup/'),
+        ('登陆', '/api/accounts/signin/'),
+        ('注销', '/api/accounts/signout/'),
+        ('账户信息', '/api/accounts/myprofile/'),
+    )
+    apis = [
+        _link_mask % (r[0], r[1], r[1] ) for r in _maps
+    ]
+    view.__doc__ += "\n"
+    view.__doc__ += "## 相关接口"
+    view.__doc__ += "\n"
+    view.__doc__ += "\n".join(apis)
+    view.__doc__ += '\n----'
+
+documentation_account_view(AccountAuthTokenView)
+documentation_account_view(AccountCreateView)
+documentation_account_view(AccountSignoutView)
+documentation_account_view(AccountMyProfileView)
+
+class ObtainExpiringAuthToken(ObtainAuthToken):
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.DATA)
+        if serializer.is_valid():
+            token, created =  Token.objects.get_or_create(user=serializer.object['user'])
+
+            if not created:
+                # update the created time of the token to keep it valid
+                token.created = datetime.datetime.utcnow().replace(tzinfo=utc)
+                token.save()
+
+            return Response({'token': token.key})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -37,6 +37,7 @@ install:
   - cd dependents/easy-thumbnails && python setup.py install && cd -
   - cd dependents/django-tagging && python setup.py install && cd -
   - cd dependents/django-tagging-autocomplete && python setup.py install && cd -
+  - cd dependents/django-userena && python setup.py install && cd -
   #- sh -c "if [ '$DB' = 'postgresql' ]; then pip install psycopg2 --use-mirrors --download-cache $TRAVIS_BUILD_DIR/download-cache/; fi"
   - sh -c "if [ '$DB' = 'mysql' ]; then pip install -e git+https://github.com/clelland/MySQL-for-Python-3.git#egg=MySQLdb --use-mirrors --download-cache $TRAVIS_BUILD_DIR/download-cache/; fi"
 
@@ -56,7 +57,7 @@ after_script:
 
 script:
   - cd $PJ
-  - python manage.py test warehouse taxonomy searcher mobapi promotion fts
+  - python manage.py test warehouse taxonomy searcher mobapi promotion account fts
   - cd -
 
 after_success:
