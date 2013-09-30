@@ -19,10 +19,11 @@ urlpatterns = rest_router.urls
 from mobapi.views import ( AccountCreateView,
                            AccountMyProfileView,
                            AccountSignoutView,
+                           AccountAuthTokenView
                            )
 urlpatterns += patterns('',
     url(r'^accounts/signup/?$', AccountCreateView.as_view(), name='account-signup'),
-    url(r'^accounts/signin/?$', 'rest_framework.authtoken.views.obtain_auth_token', name='account-signin'),
+    url(r'^accounts/signin/?$', AccountAuthTokenView.as_view(), name='account-signin'),
     url(r'^accounts/signout/?$', AccountSignoutView.as_view(), name='account-signout'),
     url(r'^accounts/myprofile/?$', AccountMyProfileView.as_view(), name='account-myprofile'),
 )

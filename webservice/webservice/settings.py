@@ -273,6 +273,16 @@ REST_FRAMEWORK = {
     #'DEFAULT_MODEL_SERIALIZER_CLASS':
     #    'rest_framework.serializers.HyperlinkedModelSerializer',
 
+    'DEFAULT_PARSER_CLASSES':(
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.JSONParser',
+    ),
+    'DEFAULT_RENDERER_CLASSES':(
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework.filters.DjangoFilterBackend',
     ),
