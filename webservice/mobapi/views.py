@@ -353,31 +353,28 @@ class AccountCreateView(generics.CreateAPIView):
     """ 账户注册
 
     ## 接口访问形式
-        地址: /api/accounts/signup/
-        请求方式:
 
+        POST /api/accounts/signup/
+        Content-Type:application/x-www-form-urlencoded
+        ....
 
-            POST /api/accounts/signup/
-            Content-Type:application/x-www-form-urlencoded
-            ....
-
-            username=yourname&phone=+86-021-12345678&email=your@email.com&password=asdf1235s
+        username=yourname&phone=+86-021-12345678&email=your@email.com&password=asdf1235s
 
     ## 请求数据:
 
-        1. `username`: 登陆用户名
-        1. `phone`: 注册手机电话号码
-        1. `email`: 注册邮箱
-        1. `password`: 登陆密码
+    1. `username`: 登陆用户名
+    1. `phone`: 注册手机电话号码
+    1. `email`: 注册邮箱
+    1. `password`: 登陆密码
 
     ## 响应状态
 
-        # 201 HTTP_201_CREATED
-            ## 创建成功, 返回用户profile信息,
-            ## {"username": "admin1", "email": "test@admin.com", "phone": "+86-021-123321123", "icon": null}
-        # 400 HTTP_400_BAD_REQUEST
-            ## 错误请求，请求数据错误
-            ## {"detail": ["\u5177\u6709 \u7528\u6237\u540d \u7684 User \u5df2\u5b58\u5728\u3002"]}
+    * 201 HTTP_201_CREATED
+        * 创建成功, 返回用户profile信息,
+        * {"username": "admin1", "email": "test@admin.com", "phone": "+86-021-123321123", "icon": null}
+    * 400 HTTP_400_BAD_REQUEST
+        * 错误请求，请求数据错误
+        * {"detail": ["\u5177\u6709 \u7528\u6237\u540d \u7684 User \u5df2\u5b58\u5728\u3002"]}
 
     """
     authentication_classes = ()
@@ -451,8 +448,6 @@ class AccountMyProfileView(generics.RetrieveAPIView):
     * 401 HTTP_401_UNAUTHORIZED
         * 未登陆
         * 无效的HTTP Header: Authorization
-
-    ----
     """
     authentication_classes = (PlayerTokenAuthentication, )
     permission_classes = (IsAuthenticated, )
@@ -483,7 +478,6 @@ class AccountSignoutView(APIView):
         * 未登陆
         * 无效的HTTP Header: Authorization
 
-    ----
     """
 
     authentication_classes = (PlayerTokenAuthentication, )
@@ -520,12 +514,33 @@ class AccountAuthTokenView(ObtainAuthToken):
         * 登陆成功
         * HTTP Response Content: {"token": "ee98b0f181d5ba43ec450008eca3f2a59e6dd9ff"}
         * `token`用于用户登陆后的相关接口操作，需要在请求的Http Header上添加 `Authorization: Token ee98b0f181d5ba43ec450008eca3f2a59e6dd9ff`
-    2. 400 HTTP_401_BAD_REQUEST
+    2. 400 HTTP_400_BAD_REQUEST
         * 错误请求，请求数据错误
 
-    ----
     """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+
+def documentation_account_view(view):
+    _link_mask = '* %s: [%s](%s)'
+    _maps = (
+        ('注册', '/api/accounts/signup/'),
+        ('登陆', '/api/accounts/signin/'),
+        ('注销', '/api/accounts/signout/'),
+        ('账户信息', '/api/accounts/myprofile/'),
+    )
+    apis = [
+        _link_mask % (r[0], r[1], r[1] ) for r in _maps
+    ]
+    view.__doc__ += "\n"
+    view.__doc__ += "## 相关接口"
+    view.__doc__ += "\n"
+    view.__doc__ += "\n".join(apis)
+    view.__doc__ += '\n----'
+
+documentation_account_view(AccountAuthTokenView)
+documentation_account_view(AccountCreateView)
+documentation_account_view(AccountSignoutView)
+documentation_account_view(AccountMyProfileView)
 
 class ObtainExpiringAuthToken(ObtainAuthToken):
 
