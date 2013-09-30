@@ -38,6 +38,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     * `category_name`: 分类名
     * `categories_names`: 多分类列表名称
     * `tags`: 标签名称列表（如`新作`、`首发`、`礼包`）
+    * `version_count`: 版本个数
     * `download_count`:下载量
     * `summary`: 一句话摘要
     * `released_datetime`: 发布时间(时间戳)
