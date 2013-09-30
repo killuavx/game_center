@@ -341,6 +341,7 @@ class ApiDSL():
             'category_name',
             'categories_names',
             'tags',
+            'version_count',
             'released_datetime',
             'summary',
             'author',

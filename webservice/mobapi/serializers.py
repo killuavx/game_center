@@ -125,6 +125,11 @@ class PackageRelatedLatestVersinoMixin(object):
         return get_packageversion_download_size(latest_version)
 
 
+class PackageRelatedVersionsMixin(object):
+
+    def get_version_count(self, obj):
+        return obj.versions.published().count()
+
 class PackageRelatedCategoryMixin(object):
 
     def get_main_category_name(self, obj):
@@ -137,14 +142,16 @@ class PackageRelatedCategoryMixin(object):
         names = ( cat.name for cat in obj.categories.all() )
         return names
 
-class PackageSummarySerializer(PackageRelatedLatestVersinoMixin,
+class PackageSummarySerializer(PackageRelatedVersionsMixin,
+                               PackageRelatedLatestVersinoMixin,
                                PackageRelatedCategoryMixin,
-                                serializers.HyperlinkedModelSerializer):
+                               serializers.HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
+    version_count = serializers.SerializerMethodField('get_version_count')
 
     author = AuthorSummarySerializer()
     class Meta:
@@ -157,6 +164,7 @@ class PackageSummarySerializer(PackageRelatedLatestVersinoMixin,
                   'tags',
                   'category_name',
                   'categories_names',
+                  'version_count',
                   'summary',
                   'author',
                   'download_count',
