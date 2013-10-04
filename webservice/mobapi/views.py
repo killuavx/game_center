@@ -574,12 +574,99 @@ class DjangoDataFilterBackend(filters.DjangoFilterBackend):
 class PackageBookmarkViewSet(viewsets.ModelViewSet):
     """ 账户收藏接口
 
-    ## 接口访问基本形式:
+    ### 必备请求数据
 
-    1. 搜索软件 /api/bookmarks/
-    2. 响应内容跟一般软件接口结构一致
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
+
+    ### 无效访问
+
+    当请求收藏相关的接口时，未包含Authorization头，或无效的Token将得到如下的响应状态
+
+    * 401 HTTP_401_UNAUTHORIZED
+        * 未登陆
+        * 无效的HTTP Header: Authorization
+
+    ----
+
+    ## 收藏列表
+
+    #### 访问方式
+
+        GET /api/bookmarks/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    #### 响应内容
+
+    * 200 HTTP_200_OK
+        * 获取成功
+        * 返回软件列表信息
+    * 404 HTTP_404_NOT_FOUND
+        * 没有软件收藏
+
+    ----
+
+    ## 添加收藏
+
+    #### 访问方式
+
+        POST /api/bookmarks/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+        ...
+
+        package_name=com.yourmark.packagename
+
+    #### 响应内容
+
+    * 201 HTTP_201_CREATED
+        * 收藏成功
+    * 400 HTTP_400_BAD_REQUEST
+        * 请求错误
+        * 请求数据无效
+
+    ----
+
+    ## 移除收藏
+
+    收藏的url从软件信息中的`actions`.`mark`中获取
+
+    #### 访问方式
+
+        DETELE /api/bookmarks/3/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    #### 响应内容
+
+    * 204 HTTP_204_NO_CONTENT
+        * 无返回内容
+    * 400 HTTP_400_BAD_REQUEST
+        * 请求错误
+        * 请求数据无效
+    * 404 HTTP_404_NOT_FOUND
+        * 找不到该收藏
+
+    ----
+
+    ## 检查是否已经收藏
+
+    收藏的url从软件信息中的`actions`.`mark`中获取
+
+    #### 访问方式
+
+        HEAD /api/bookmarks/3/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    #### 响应内容
+
+    * 200 HTTP_200_OK
+        * 有该收藏
+    * 404 HTTP_404_NOT_FOUND
+        * 找不到该收藏
+
+    ----
 
     """
+
     queryset = Package.objects.published()
     serializer_class = PackageSummarySerializer
     authentication_classes = (PlayerTokenAuthentication,)
