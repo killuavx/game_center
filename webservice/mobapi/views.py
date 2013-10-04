@@ -557,3 +557,87 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
 
             return Response({'token': token.key})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+from rest_framework.generics import get_object_or_404
+
+class DjangoDataFilterBackend(filters.DjangoFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        filter_class = self.get_filter_class(view, queryset)
+
+        if filter_class:
+            return filter_class(request.DATA, queryset=queryset).qs
+
+        return queryset
+
+class PackageBookmarkViewSet(viewsets.ModelViewSet):
+    """ 账户收藏接口
+
+    ## 接口访问基本形式:
+
+    1. 搜索软件 /api/bookmarks/
+    2. 响应内容跟一般软件接口结构一致
+
+    """
+    queryset = Package.objects.published()
+    serializer_class = PackageSummarySerializer
+    authentication_classes = (PlayerTokenAuthentication,)
+    permission_classes = (IsAuthenticated, )
+    filter_backends = (
+        DjangoDataFilterBackend,
+        filters.DjangoFilterBackend,
+    )
+    filter_fields = (
+        'package_name',
+    )
+    search_fields = tuple()
+
+    def _prepare_queryset(self, request):
+        self.queryset=self.queryset.filter(profile=request.user.profile)
+
+    def list(self, request, *args, **kwargs):
+        self._prepare_queryset(request)
+        response = super(PackageBookmarkViewSet, self).list(request, *args, **kwargs)
+        if response.data.get('count', 0) > 0:
+            return response
+
+        return Response({'detail':'No Package you bookmark'}, status=status.HTTP_404_NOT_FOUND)
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.filter_queryset(self.get_queryset())
+        else:
+            pass  # Deprecation warning
+
+        obj = get_object_or_404(queryset)
+
+        # May raise a permission denied
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def create(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        request.user.profile.bookmarks.add(self.object)
+        serializer = self.get_serializer(self.object)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
+        bookmarks = request.user.profile.bookmarks
+        queryset, self.queryset = \
+            self.queryset, bookmarks.filter(pk=kwargs.get('pk'))
+        obj = self.get_object()
+        bookmarks.remove(obj)
+        self.queryset = queryset
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def retrieve(self, request, *args, **kwargs):
+        bookmarks = request.user.profile.bookmarks
+        queryset, self.queryset = \
+            self.queryset, bookmarks.filter(pk=kwargs.get('pk'))
+        obj = self.get_object()
+
+        serializer = self.get_serializer(obj)
+        self.queryset = queryset
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

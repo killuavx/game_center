@@ -92,3 +92,5 @@ class Profile(UserenaBaseProfile):
 
     tracker = FieldTracker()
 
+    bookmarks = models.ManyToManyField('warehouse.Package', verbose_name=_('bookmarks'))
+

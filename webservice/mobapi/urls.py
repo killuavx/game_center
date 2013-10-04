@@ -13,6 +13,7 @@ rest_router.register('topics', views.TopicViewSet)
 rest_router.register('tipswords', views.TipsWordViewSet)
 views.documentation_advertisement_viewset()
 rest_router.register('advertisements', views.AdvertisementViewSet)
+rest_router.register('bookmarks', views.PackageBookmarkViewSet, base_name='bookmark')
 
 urlpatterns = rest_router.urls
 
