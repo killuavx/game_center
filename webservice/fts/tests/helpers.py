@@ -10,8 +10,11 @@ from django.core.files import File
 from searcher.models import TipsWord
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from taxonomy.models import Category, Topic, TopicalItem
+from account.models import Player
+from rest_framework.authtoken.models import Token
 from django.utils.timezone import now, timedelta
 from urllib import parse as urlparse
+
 import random
 _models = []
 _files = []
@@ -66,6 +69,24 @@ def create_tipsword(**defaults):
     inst = TipsWord.objects.create(**defaults)
     _models.append(inst)
     return inst
+
+def create_account(**default):
+    gid = guid()
+    default.setdefault('username', "player-%s"%gid)
+    default.setdefault('email', '%s@testcase.com'%gid)
+
+    def rint():
+        return str(random.randint(10,99))
+
+    default.setdefault('phone', '+86-021-%s%s%s%s'%(rint(), rint(), rint(), rint()))
+    inst = Player.objects.create_user(**default)
+    _models.append(inst)
+    return inst
+
+def create_auth_token(user):
+    token, is_newed = Token.objects.get_or_create(user=user)
+    _models.append(token)
+    return token.key
 
 def clear_data():
     for m in _models:
@@ -189,6 +210,14 @@ class ApiDSL():
                 for field in fields:
                     self.assertIn(field, v)
 
+        def Then_i_should_see_actions_in_package_detail(package_detail_data):
+            fields = (
+                'mark',
+            )
+            actions = package_detail_data.get('actions')
+            for f in fields:
+                self.assertIn(f, actions)
+
         fields = (
             'url',
             'icon',
@@ -209,10 +238,12 @@ class ApiDSL():
             'versions',
             'category_name',
             'categories_names',
+            'actions',
         )
         for field in fields:
             self.assertIn(field, pkg_detail_data)
 
+        Then_i_should_see_actions_in_package_detail(pkg_detail_data)
         Then_i_should_see_versions_in_package_detail(pkg_detail_data)
 
     def Then_i_should_see_package_detail_contains_categories_names(self, pkg_data, cat_names):
@@ -302,6 +333,7 @@ class ApiDSL():
         self.assertEqual(response.status_code, status_code)
         content = self.convert_content(response.content)
         self.world.update(dict(response=response, content=content))
+        self.world.update(dict(response=response, content=content))
 
     def Then_i_should_see_result_list(self, num, count=None, previous=None, next=None):
         content = self.world.get('content')
@@ -345,9 +377,16 @@ class ApiDSL():
             'released_datetime',
             'summary',
             'author',
+            'actions',
         )
         for field in fields:
             self.assertIn(field, pkg_data)
+
+        actions = (
+            'mark',
+        )
+        for field in actions:
+            self.assertIn(field, pkg_data.get('actions'))
 
     def Then_i_should_see_author_summary_list(self, author_list_data):
         for a in author_list_data:
@@ -440,11 +479,19 @@ class ApiDSL():
     def When_i_signup_with_querystr(self, query):
         response = self.client.post('/api/accounts/signup/', HTTP_CONTENT=query)
         self.world.update(dict(response=response))
-        pass
 
     def When_i_signin_with(self, signin_data):
         response = self.client.post('/api/accounts/signin/', signin_data)
         self.world.update(dict(response=response))
+
+    def Given_i_have_account(self, signin_data=dict()):
+        user = create_account(**signin_data)
+        return user
+
+    def Given_i_have_signup(self, user):
+        token_key = create_auth_token(user)
+        headers = dict(HTTP_AUTHORIZATION='Token %s'%token_key)
+        self.world.update(dict(headers=headers))
 
     def When_i_signout(self):
         headers = self.world.get('headers', dict())
@@ -471,6 +518,38 @@ class ApiDSL():
         self.assertEqual(content.get('phone'), user_profile.get('phone'))
         self.assertIn('icon', content)
 
+    def When_i_access_mybookmarks(self):
+        headers = self.world.get('headers', dict())
+        res = self.client.get('/api/bookmarks/', **headers)
+        self.world.update(dict(response=res))
+
+    def When_i_add_bookmark(self, pkg):
+        headers = self.world.get('headers', dict())
+        postdata = dict(package_name=pkg.package_name)
+        res = self.client.post('/api/bookmarks/', postdata, **headers)
+        self.world.update(dict(response=res))
+
+    def When_i_remove_bookmark(self, pkg):
+        headers = self.world.get('headers', dict())
+        res = self.client.delete('/api/bookmarks/%d/' % pkg.pk, **headers)
+        self.world.update(dict(response=res))
+
+    def When_i_access_bookmark_check(self, pkg):
+        headers = self.world.get('headers', dict())
+        res = self.client.head('/api/bookmarks/%d/' % pkg.pk, **headers)
+        self.world.update(dict(response=res))
+
+    def When_i_access_bookmark_check_with(self, **kwargs):
+        query = urlparse.urlencode(kwargs)
+        headers = self.world.get('headers', dict())
+        res = self.client.head('/api/bookmarks/?%s'%query, **headers)
+        self.world.update(dict(response=res))
+
+    def When_i_access_url_with_head_method(self, url):
+        headers = self.world.get('headers', dict())
+        res = self.client.head(url, **headers)
+        self.world.update(dict(response=res))
+
     def clear_world(self):
         self.world = {}
 
@@ -483,7 +562,10 @@ class RestApiTest(TestCase):
         ApiDSL.setUp(self, client=self.client, world=self.world)
 
     def convert_content(self, content):
-        return json.loads(content.decode('utf-8'))
+        try:
+            return json.loads(content.decode('utf-8'))
+        except:
+            return content.decode('utf-8')
 
     def assertResultList(self, content, previous, next, count, result_len):
         self.assertIsInstance(content.get('results'), list)

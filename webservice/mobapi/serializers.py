@@ -142,9 +142,24 @@ class PackageRelatedCategoryMixin(object):
         names = ( cat.name for cat in obj.categories.all() )
         return names
 
+class PackageActionsMixin(object):
+
+    def get_action_links(self, obj):
+        mark_url = None
+        try:
+            request = self.context.get('request')
+            mark_url = request.build_absolute_uri(
+                reverse('bookmark-detail',kwargs=dict(pk=obj.pk) )
+            )
+        except AttributeError: pass
+        return dict(
+           mark=mark_url,
+        )
+
 class PackageSummarySerializer(PackageRelatedVersionsMixin,
                                PackageRelatedLatestVersinoMixin,
                                PackageRelatedCategoryMixin,
+                               PackageActionsMixin,
                                serializers.HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
@@ -152,6 +167,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
     version_count = serializers.SerializerMethodField('get_version_count')
+    actions = serializers.SerializerMethodField('get_action_links')
 
     author = AuthorSummarySerializer()
     class Meta:
@@ -168,7 +184,9 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'summary',
                   'author',
                   'download_count',
-                  'released_datetime')
+                  'released_datetime',
+                  'actions',
+        )
 
 class PackageVersionSerializer(serializers.ModelSerializer):
 
@@ -201,6 +219,7 @@ class PackageVersionSerializer(serializers.ModelSerializer):
 
 class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                               PackageRelatedCategoryMixin,
+                              PackageActionsMixin,
                               serializers.HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
@@ -214,6 +233,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
     download = serializers.SerializerMethodField('get_latest_version_download')
     download_count = serializers.SerializerMethodField('get_latest_version_download_count')
     download_size = serializers.SerializerMethodField('get_latest_version_download_size')
+
+    actions = serializers.SerializerMethodField('get_action_links')
 
     author = AuthorSummarySerializer()
     versions = PackageVersionSerializer(many=True)
@@ -240,6 +261,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'released_datetime',
                   'screenshots',
                   'versions',
+                  'actions',
         )
 
 class AuthorSerializer(serializers.HyperlinkedModelSerializer):
