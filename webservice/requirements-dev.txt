@@ -1,5 +1,9 @@
+should-dsl
+behave
+#behaving
+nose
+#django-behave
 django-nose
 django-jenkins
 coverage
-nose
 coveralls

@@ -349,6 +349,7 @@ from account.models import Player, Profile
 from django.core.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from django.utils.translation import ugettext as _
 
 class AccountCreateView(generics.CreateAPIView):
     """ 账户注册
@@ -400,8 +401,8 @@ class AccountCreateView(generics.CreateAPIView):
         if attrs.get('password'):
             user.set_password(attrs.get('password'))
         else:
-            raise ValidationError('password should not be empty')
-
+            _mgs = [_('should not be empty')]
+            raise ValidationError(dict(password=_mgs))
 
         user.full_clean()
         user.save()
@@ -413,10 +414,24 @@ class AccountCreateView(generics.CreateAPIView):
             profile.full_clean(['user'])
         except ValidationError as e:
             user.delete()
-            raise ValidationError(e)
+            raise ValidationError(getattr(e,'message_dict', False) or e.messages)
 
         profile.save()
         return user
+
+    def prepare_validation_messages(self, e):
+
+        mgs = list()
+        if getattr(e, 'message_dict', False):
+            for _key, _mgs in e.message_dict.items():
+                mgs.append("%s %s" %(_key, _mgs
+                if isinstance(_mgs, str) else ", ".join(_mgs)))
+            return mgs
+
+        if e.messages:
+            mgs = e.messages
+
+        return mgs
 
     def post(self, request, *args, **kwargs):
         try:
@@ -425,7 +440,8 @@ class AccountCreateView(generics.CreateAPIView):
             serializer = self.serializer_class(user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except ValidationError as e:
-            return Response({'detail': e.messages},
+            messages = self.prepare_validation_messages(e)
+            return Response({'detail': ", ".join(messages) },
                             status=status.HTTP_400_BAD_REQUEST)
 
 class AccountMyProfileView(generics.RetrieveAPIView):

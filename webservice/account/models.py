@@ -80,14 +80,16 @@ class Profile(UserenaBaseProfile):
     )
 
     email = models.EmailField(verbose_name=_('register email'), default='',
+                              error_messages={'null': _('should not be empty')},
                               unique=True)
 
     phone = models.CharField(verbose_name=_('register phone'), max_length=20, unique=True, default='',
                              help_text=_('Required. 20 characters or fewer. numbers and '
                                          '+/-/ characters'),
+                             error_messages={'null': _('should not be empty')},
                              validators=[
                                  validators.RegexValidator(re.compile('^[\d.+-]+$'),
-                                                           _('Enter a valid phone number.'), 'invalid')
+                                                           _('invalid phone number.'), 'invalid')
                              ])
 
     tracker = FieldTracker()

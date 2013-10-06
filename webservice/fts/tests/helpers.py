@@ -14,6 +14,7 @@ from account.models import Player
 from rest_framework.authtoken.models import Token
 from django.utils.timezone import now, timedelta
 from urllib import parse as urlparse
+from should_dsl import should, should_not
 
 import random
 _models = []
@@ -98,11 +99,50 @@ def clear_data():
             os.remove(f)
         except:pass
 
-class ApiDSL():
+def convert_content(content):
+    try:
+        return json.loads(content.decode('utf-8'))
+    except:
+        return content.decode('utf-8')
 
-    def setUp(self, client, world):
-        self.world = world
-        self.client = client
+class RestApiTest(TestCase):
+
+    def setUp(self):
+        self.world = dict()
+        self.client = Client(HTTP_ACCEPT='application/json',
+                             HTTP_CACHE_CONTROL='no-cache')
+
+    def convert_content(self, content):
+        return convert_content(content)
+
+    def assertResultList(self, content, previous, next, count, result_len):
+        content.get('results') |should| be_kind_of(list)
+        content['count'] |should| equal_to( count)
+        len(content['results']) |should| equal_to( result_len)
+        content['previous'] |should| equal_to( previous)
+        content['next'] |should| equal_to( next)
+
+    def tearDown(self):
+        clear_data()
+        super(RestApiTest, self).tearDown()
+
+class ApiDSL(RestApiTest):
+
+    def convert_content(self, content):
+        return convert_content(content)
+
+    def assertResultList(self, content, previous, next, count, result_len):
+        content.get('results') |should| be_kind_of(list)
+        content['count'] |should| equal_to( count)
+        len(content['results']) |should| equal_to( result_len)
+        content['previous'] |should| equal_to( previous)
+        content['next'] |should| equal_to( next)
+
+    def assertIsUrl(self, url):
+        try:
+            forms.URLField(required=True).run_validators(url)
+        except forms.ValidationError as err:
+            self.fail(err.messages)
 
     _count = 0
 
@@ -190,8 +230,7 @@ class ApiDSL():
                 'rotate',
             )
             for s in version.get('screenshots'):
-                for field in fields:
-                    self.assertIn(field, s)
+                    s |should| include_keys(*fields)
 
         def Then_i_should_see_versions_in_package_detail(package_detail_data):
             fields = (
@@ -207,16 +246,14 @@ class ApiDSL():
             )
             for v in package_detail_data.get('versions'):
                 Then_i_should_see_screenshots_in_package_version(v)
-                for field in fields:
-                    self.assertIn(field, v)
+                v |should| include_keys(*fields)
 
         def Then_i_should_see_actions_in_package_detail(package_detail_data):
             fields = (
                 'mark',
             )
             actions = package_detail_data.get('actions')
-            for f in fields:
-                self.assertIn(f, actions)
+            actions |should| include_keys(*fields)
 
         fields = (
             'url',
@@ -240,21 +277,20 @@ class ApiDSL():
             'categories_names',
             'actions',
         )
-        for field in fields:
-            self.assertIn(field, pkg_detail_data)
+        pkg_detail_data |should| include_keys(*fields)
 
         Then_i_should_see_actions_in_package_detail(pkg_detail_data)
         Then_i_should_see_versions_in_package_detail(pkg_detail_data)
 
     def Then_i_should_see_package_detail_contains_categories_names(self, pkg_data, cat_names):
-        self.assertListEqual(pkg_data.get('categories_names'), list(cat_names))
+        pkg_data.get('categories_names') |should| include_in_any_order(list(cat_names))
 
     def When_i_access_api_root(self):
         response = self.client.get('/api/')
         self.world.setdefault('response', response)
 
     def Then_i_should_see_the_api_in_content(self, name):
-        self.assertIn(name, self.world.get('content'))
+        self.world.get('response').get('content') |should| include_keys(name)
 
     def When_i_access_category_list(self):
         res = self.client.get('/api/categories/')
@@ -319,20 +355,19 @@ class ApiDSL():
             return ApiDSL.Then_i_should_see_tips(self, t)
 
     def Then_i_should_see_tips(self, tips):
-        self.assertIn('keyword', tips)
-        self.assertIn('weight', tips)
+        fields = ('keyword', 'weight')
+        tips |should| include_keys(*fields)
 
     def Then_i_should_receive_success_response(self):
         response = self.world.get('response')
-        self.assertEqual(response.status_code, 200)
-        content = self.convert_content(response.content)
+        response.status_code |should| equal_to( 200)
+        content = convert_content(response.content)
         self.world.update(dict(response=response, content=content))
 
     def Then_i_should_receive_response_with(self, status_code=None):
         response = self.world.get('response')
-        self.assertEqual(response.status_code, status_code)
-        content = self.convert_content(response.content)
-        self.world.update(dict(response=response, content=content))
+        response.status_code |should| equal_to( status_code)
+        content = convert_content(response.content)
         self.world.update(dict(response=response, content=content))
 
     def Then_i_should_see_result_list(self, num, count=None, previous=None, next=None):
@@ -347,16 +382,13 @@ class ApiDSL():
     def Then_i_should_see_package_list_order_by_download_count_desc(self):
         content = self.world.get('content')
         result = content.get('results')
-        self.assertGreater(result[0].get('download_count'),
-                           result[1].get('download_count'))
+        result[0].get('download_count') |should| be_greater_than(result[1].get('download_count'))
 
     def Then_i_should_see_package_list_order_by_released_datetime_desc(self):
         content = self.world.get('content')
         result = content.get('results')
-        self.assertGreater(result[0].get('released_datetime'),
-                           result[1].get('released_datetime'))
-        self.assertGreater(result[1].get('released_datetime'),
-                           result[2].get('released_datetime'))
+        result[0].get('released_datetime') |should| be_greater_than(result[1].get('released_datetime'))
+        result[1].get('released_datetime') |should| be_greater_than(result[2].get('released_datetime'))
 
     def Then_i_should_see_package_summary_list(self, pkg_list_data):
         for p in pkg_list_data:
@@ -379,14 +411,12 @@ class ApiDSL():
             'author',
             'actions',
         )
-        for field in fields:
-            self.assertIn(field, pkg_data)
+        pkg_data |should| include_keys(*fields)
 
         actions = (
             'mark',
         )
-        for field in actions:
-            self.assertIn(field, pkg_data.get('actions'))
+        pkg_data.get('actions') |should| include_keys(*actions)
 
     def Then_i_should_see_author_summary_list(self, author_list_data):
         for a in author_list_data:
@@ -400,8 +430,16 @@ class ApiDSL():
             'name',
             'packages_url',
         )
-        for field in fields:
-            self.assertIn(field, author_data)
+        author_data |should| include_keys(*fields)
+
+    def Then_i_should_see_account_profile(self, profile_data):
+        fields = (
+            'icon',
+            'username',
+            'phone',
+            'email',
+        )
+        profile_data |should| include_keys(*fields)
 
     def Then_i_should_see_topic_list(self, topic_list_data):
         for t in topic_list_data:
@@ -420,8 +458,7 @@ class ApiDSL():
             'updated_datetime',
             'released_datetime',
         )
-        for field in fields:
-            self.assertIn(field, topic_data)
+        topic_data |should| include_keys(*fields)
 
     def Then_i_should_see_topic_detail(self, topic_data):
         fields = (
@@ -437,8 +474,7 @@ class ApiDSL():
             'updated_datetime',
             'released_datetime',
         )
-        for field in fields:
-            self.assertIn(field, topic_data)
+        topic_data |should| include_keys(*fields)
 
     def Then_i_should_see_category_detail(self, cat_data):
         fields = (
@@ -448,8 +484,7 @@ class ApiDSL():
             'slug',
             'packages_url',
         )
-        for field in fields:
-            self.assertIn(field, cat_data)
+        cat_data |should| include_keys(*fields)
 
     def When_i_access_package_detail(self, package):
         from mobapi.serializers import PackageSummarySerializer
@@ -466,8 +501,7 @@ class ApiDSL():
                 'content_type',
                 'content_url',
             )
-            for f in fields:
-                self.assertIn(f, adv)
+            adv |should| include_keys(*fields)
 
         for a in adv_list:
             Then_i_should_see_advertisement_summary(a)
@@ -500,7 +534,7 @@ class ApiDSL():
 
     def Then_i_should_receive_auth_token(self):
         content = self.world.get('content')
-        self.assertEqual(len(content.get('token')), 40)
+        len(content.get('token')) |should| equal_to(40)
 
     def When_i_prepare_auth_token(self, token):
         headers = dict(HTTP_AUTHORIZATION='Token %s'%token)
@@ -513,10 +547,10 @@ class ApiDSL():
 
     def Then_i_should_see_myprofile_information(self, user_profile):
         content = self.world.get('content')
-        self.assertEqual(content.get('username'), user_profile.get('username'))
-        self.assertEqual(content.get('email'), user_profile.get('email'))
-        self.assertEqual(content.get('phone'), user_profile.get('phone'))
-        self.assertIn('icon', content)
+        content.get('username') |should| equal_to( user_profile.get('username'))
+        content.get('email') |should| equal_to( user_profile.get('email'))
+        content.get('phone') |should| equal_to( user_profile.get('phone'))
+        content |should| include_keys('icon')
 
     def When_i_access_mybookmarks(self):
         headers = self.world.get('headers', dict())
@@ -552,35 +586,3 @@ class ApiDSL():
 
     def clear_world(self):
         self.world = {}
-
-class RestApiTest(TestCase):
-
-    def setUp(self):
-        self.world = dict()
-        self.client = Client(HTTP_ACCEPT='application/json',
-                             HTTP_CACHE_CONTROL='no-cache')
-        ApiDSL.setUp(self, client=self.client, world=self.world)
-
-    def convert_content(self, content):
-        try:
-            return json.loads(content.decode('utf-8'))
-        except:
-            return content.decode('utf-8')
-
-    def assertResultList(self, content, previous, next, count, result_len):
-        self.assertIsInstance(content.get('results'), list)
-        self.assertEqual(content['count'], count)
-        self.assertEqual(len(content['results']), result_len)
-        self.assertEqual(content['previous'], previous)
-        self.assertEqual(content['next'], next)
-
-    def assertIsUrl(self, url):
-        try:
-            forms.URLField(required=True).run_validators(url)
-        except forms.ValidationError as err:
-            self.fail(err.messages)
-
-    def tearDown(self):
-        clear_data()
-        super(RestApiTest, self).tearDown()
-
