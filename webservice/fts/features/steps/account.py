@@ -6,7 +6,7 @@ from behaving.personas.steps import *
 from fts.tests.helpers import ApiDSL, RestApiTest
 from should_dsl import should
 
-@given('I am player in game center, , named "{name}", email "{email}", phone "{phone}", with password "{password}"')
+@given('I am player in game center, named "{name}", email "{email}", phone "{phone}", with password "{password}"')
 def step_given_as_player(context, name, email, phone, password):
     context.execute_steps('''
     Given "{name}" as the persona

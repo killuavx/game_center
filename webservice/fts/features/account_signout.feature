@@ -4,7 +4,7 @@ Feature: Sign Out
   so that I can protected my account in idle.
 
   Scenario: Basic
-    Given I am player in game center, , named "martin", email "martin@testcase.com", phone "+86-021-12345678", with password "123456"
+    Given I am player in game center, named "martin", email "martin@testcase.com", phone "+86-021-12345678", with password "123456"
     When I sign in as "martin" with email
     Then I should receive 200 OK
     And I should see my authorization token

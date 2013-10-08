@@ -4,7 +4,7 @@ Feature: Sign In and Visit profile myself
   so that I can visit my profile and take part in another activities.
 
   Background:
-    Given I am player in game center, , named "martin", email "martin@testcase.com", phone "+86-021-12345678", with password "123456"
+    Given I am player in game center, named "martin", email "martin@testcase.com", phone "+86-021-12345678", with password "123456"
 
   @web @noui
   Scenario Outline: Sign In
