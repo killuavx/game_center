@@ -1,3 +1,7 @@
+should-dsl
+behave
+#behaving
+#django-behave
 coverage
 coveralls
 nose
