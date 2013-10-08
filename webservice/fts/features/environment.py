@@ -12,10 +12,8 @@ PERSONAS = {}
 def before_all(context):
     import fts
     _dir = os.path.dirname(fts.__file__)
-
-    #context.attachment_dir = os.path.join(_dir, 'tests/fixtures')
-    #context.sms_path = os.path.join(_dir, 'var/sms/')
-    #context.mail_path = os.path.join(_dir, 'var/mail/')
+    context.fixture_dir = os.path.join(_dir, 'tests/fixtures')
+    context.attachment_dir = context.fixture_dir
 
     ApiDSL.setUp(context)
     personaenv.before_all(context)
