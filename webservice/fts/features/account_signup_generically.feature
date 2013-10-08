@@ -1,5 +1,6 @@
 Feature: Sign Up Generically
 
+
   @web @noui
   Scenario: Success
     Given "martin" as the persona

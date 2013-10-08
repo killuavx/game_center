@@ -6,6 +6,19 @@ from behaving.personas.steps import *
 from fts.tests.helpers import ApiDSL, RestApiTest
 from should_dsl import should
 
+@given('I am player in game center, , named "{name}", email "{email}", phone "{phone}", with password "{password}"')
+def step_given_as_player(context, name, email, phone, password):
+    context.execute_steps('''
+    Given "{name}" as the persona
+    '''.format(name=name))
+    ApiDSL.Given_i_have_account(context, dict(
+        username=name,
+        email=email,
+        phone=phone,
+        password=password
+    ))
+    step_as_player(context, name=name, email=email, phone=phone, password=password)
+
 @when('I am player, named "{name:emptys}", email "{email:emptys}", phone "{phone:emptys}", with password "{password:emptys}"')
 def step_as_player(context, name=None, email=None, phone=None, password=None):
     data = { k:v for k,v in dict(username=name,
@@ -14,15 +27,11 @@ def step_as_player(context, name=None, email=None, phone=None, password=None):
                            password=password).items() if v is not None }
 
     context.personas[name].update(data)
+    context.persona = context.personas[name]
 
 @when('I sign up with "{name}"')
 def step_sign_up(context, name):
     ApiDSL.When_i_signup_with(context, context.personas[name])
-
-@then('I should receive {status_code:d} {status_desc}')
-def step_should_receive_status(context, status_code, status_desc):
-    ApiDSL.Then_i_should_receive_response_with(context,
-                                               status_code=status_code)
 
 @then('I should see player profile with named "{name}", email "{email}", phone "{phone}"')
 def step_should_see_player_profile(context, name=None, email=None, phone=None):
@@ -32,8 +41,33 @@ def step_should_see_player_profile(context, name=None, email=None, phone=None):
     email |should| equal_to(except_account.get('email'))
     phone |should| equal_to(except_account.get('phone'))
 
+@when('I sign in as "{username}" with {sigin_type}')
+def step_sign_in_as(context, username, sigin_type):
+    user_data = context.personas[username]
+    ApiDSL.When_i_signin_with(context, dict(
+        username=user_data.get(sigin_type),
+        password=user_data.get('password')
+    ))
+    ApiDSL.When_i_prepare_auth_token(context, context.persona.get('token_key'))
 
-@then('I should see "{message}"')
-def step_should_see_message(context, message):
-    message |should| equal_to(context.world.get('content').get('detail'))
+@when('I sign out as "{username}"')
+def step_sign_out_as(context, username):
+    user_data = context.personas[username]
+    ApiDSL.When_i_prepare_auth_token(context, user_data.get('token_key'))
+    ApiDSL.When_i_signout(context)
+
+from rest_framework.authtoken.models import Token
+@then('I should see my authorization token')
+def step_should_see_authorization_token(context):
+    user_data = context.persona
+    token_key = context.world.get('content').get('token')
+    token = Token.objects.get(user__username=user_data.get('username'))
+    token_key |should| equal_to(token.key)
+    context.persona['token_key'] = token_key
+    context.personas[user_data.get('username')]['token_key'] = token_key
+
+@when('I visit my profile using my authorization token')
+def step_visit_account_profile(context):
+    ApiDSL.When_i_prepare_auth_token(context, token=context.persona.get('token_key'))
+    ApiDSL.When_i_access_myprofile(context)
 

@@ -43,6 +43,7 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     personaenv.after_scenario(context, scenario)
+    helpers.clear_data()
 
 """
 import threading
