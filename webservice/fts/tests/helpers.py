@@ -15,6 +15,7 @@ from rest_framework.authtoken.models import Token
 from django.utils.timezone import now, timedelta
 from urllib import parse as urlparse
 from should_dsl import should, should_not
+from fts.middlewares import get_current_request
 
 import random
 _models = []
@@ -488,7 +489,8 @@ class ApiDSL(RestApiTest):
 
     def When_i_access_package_detail(self, package):
         from mobapi.serializers import PackageSummarySerializer
-        serializer = PackageSummarySerializer(package)
+
+        serializer = PackageSummarySerializer(package, context=dict(request=get_current_request()))
         repsonse = self.client.get(serializer.data.get('url'))
         self.world.update(dict(response=repsonse))
 

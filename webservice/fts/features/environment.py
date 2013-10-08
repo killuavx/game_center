@@ -5,6 +5,7 @@ from behaving import environment as benv
 from behaving.personas import environment as personaenv
 from fts.tests.helpers import ApiDSL
 from fts.tests import helpers
+from fts.middlewares import get_current_request
 from django.conf import settings
 import logging
 
@@ -14,6 +15,7 @@ def before_all(context):
     _dir = os.path.dirname(fts.__file__)
     context.fixture_dir = os.path.join(_dir, 'tests/fixtures')
     context.attachment_dir = context.fixture_dir
+    context.get_current_request = get_current_request
 
     ApiDSL.setUp(context)
     personaenv.before_all(context)

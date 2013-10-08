@@ -2,6 +2,7 @@
 from django.test.testcases import TestCase
 from django.test.client import Client
 from fts.tests import helpers
+from fts.middlewares import get_current_request
 from warehouse.models import Author
 from mobapi.serializers import (AuthorSerializer,
                                 AuthorSummarySerializer,
@@ -55,7 +56,7 @@ class ApiPackageTest(ApiTest):
         response = self._request_api_status_200()
         content = self.convert_content(response.content)
 
-        serializer = PackageSummarySerializer(package)
+        serializer = PackageSummarySerializer(package, context=dict(request=get_current_request()))
         sd = serializer.data
         self.assertResultList(content,
                               previous=None,
@@ -88,7 +89,7 @@ class ApiAuthorTest(ApiTest):
         response = self._request_api_status_200()
         content = self.convert_content(response.content)
 
-        serializer = AuthorSummarySerializer(author)
+        serializer = AuthorSummarySerializer(author, context=dict(request=get_current_request()))
         sd = serializer.data
         self.assertResultList(content,
                               previous=None,
