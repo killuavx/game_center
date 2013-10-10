@@ -744,3 +744,109 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
         self.queryset = queryset
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+#----------------------------------------------------------------
+from rest_framework.parsers import JSONParser, FormParser
+from mobapi.serializers import PackageUpdateSummarySerializer
+
+class PackageUpdateView(generics.CreateAPIView):
+    """ 应用升级检查接口
+
+    ### 访问方式
+
+        POST /api/bookmarks/
+        Content-Type: application/json
+        ...
+
+        {"versions":[{"package_name":"com.carrot.carrotfantasy","version_name":"1.1.1","version_code":258}]}
+
+    #### HTTP Body Data
+
+        {"versions":[{"package_name":"com.carrot.carrotfantasy","version_name":"1.1.1","version_code":258}]}
+
+    * versions: 客户端已安装的应用版本列表
+        * `package_name`: 包名
+        * `version_name`: 版本名
+        * `version_code`: 版本号
+
+    ### 响应
+
+    #### HTTP Response Body 响应内容
+
+        {
+            "url": "http://localhost:8000/api/packages/1/",
+            "icon": "",
+            "package_name": "com.eamobile.sims3_row_qwf",
+            "title": "\u6a21\u62df\u4eba\u751f",
+            "download": "http://localhost:8000/media/packages/com.guruas.mazegamej-27.1_6.apk",
+            "download_size": 3256602,
+            "version_code": 1,
+            "version_name": "1.0",
+            "released_datetime": "1378109580",
+            "actions": {
+                "mark": "http://localhost:8000/api/bookmarks/1/"
+            },
+            "is_updatable": false
+        }
+
+    * `url` : 详情地址
+    * `icon` : 图标地址
+    * `package_name` : 包名
+    * `title` : 应用名字
+    * `download` : 下载地址
+    * `download_size` : 下载文件大小
+    * `version_code` : 最新版本号
+    * `version_name` : 最新版本号
+    * `released_datetime` : 发布时间
+
+    #### HTTP Response Status
+
+    * 200 HTTP_200_OK
+        * 获取成功
+        * 返回应用升级列表信息
+    * 400 HTTP_400_BAD_REQUEST
+        * 请求格式有错
+
+    ----
+
+    """
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = PackageUpdateSummarySerializer
+    parser_classes = (JSONParser, FormParser)
+    queryset = Package.objects.published()
+
+    def _make_sorted_idx(self, versions):
+        sorted_pkg_idx = dict()
+        for i, v in enumerate(versions):
+            v.update(dict(order_idx=i))
+            sorted_pkg_idx[v.get('package_name')] = v
+        return sorted_pkg_idx
+
+    def post(self, request, *args, **kwargs):
+        try:
+            versions = request.DATA.pop('versions')
+        except KeyError:
+            return Response(dict(detail='versions list should not be empty'),
+                            status=status.HTTP_400_BAD_REQUEST)
+        try:
+             sorted_pkg_idx = self._make_sorted_idx(versions)
+        except TypeError as e:
+            return Response(dict(detail='versions should be list type'),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        pkg_names = sorted_pkg_idx.keys()
+        pkgs = self.queryset.filter(package_name__in=pkg_names).all()
+
+        def _sorted_key(p):
+            idx = sorted_pkg_idx[p.package_name]['order_idx']
+            return idx
+        sorted_pkgs = sorted(pkgs, key=_sorted_key)
+
+        def _fill_update_info(p):
+            p.update_info = sorted_pkg_idx[p.package_name]
+            return p
+        fill_update_pkgs = map(_fill_update_info, sorted_pkgs)
+        serializer = PackageUpdateSummarySerializer(fill_update_pkgs,
+                                                    many=True,
+                                                    context=dict(request=request))
+        return Response(serializer.data ,status.HTTP_200_OK)

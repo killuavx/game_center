@@ -505,3 +505,33 @@ class AccountDetailSerializer(AccountRelatedProfileMixin,
             'icon',
         )
 
+#---------------------------------------------------------------------------
+class PackageUpdateSummarySerializer(PackageSummarySerializer):
+
+    version_code = serializers.SerializerMethodField('get_latest_version_code')
+    version_name = serializers.SerializerMethodField('get_latest_version_name')
+    download = serializers.SerializerMethodField('get_latest_version_download')
+    download_size = serializers.\
+        SerializerMethodField('get_latest_version_download_size')
+    is_updatable = serializers.SerializerMethodField('get_is_updatable')
+
+    def get_is_updatable(self, obj):
+        if getattr(obj, 'update_info', None) \
+            and obj.update_info.get('version_code') is None:
+            return False
+        return self.get_latest_version_code(obj) > obj.update_info.\
+                                                        get('version_code')
+    class Meta:
+        model = Package
+        fields = ('url',
+                  'icon',
+                  'package_name',
+                  'title',
+                  'download',
+                  'download_size',
+                  'version_code',
+                  'version_name',
+                  'released_datetime',
+                  'actions',
+                  'is_updatable',
+        )
