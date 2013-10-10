@@ -772,7 +772,7 @@ class PackageUpdateView(generics.CreateAPIView):
 
     #### HTTP Response Body 响应内容
 
-        {
+        [{
             "url": "http://localhost:8000/api/packages/1/",
             "icon": "",
             "package_name": "com.eamobile.sims3_row_qwf",
@@ -787,6 +787,7 @@ class PackageUpdateView(generics.CreateAPIView):
             },
             "is_updatable": false
         }
+        ]
 
     * `url` : 详情地址
     * `icon` : 图标地址
