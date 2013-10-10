@@ -744,3 +744,47 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
         self.queryset = queryset
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+#----------------------------------------------------------------
+from rest_framework.parsers import JSONParser, FormParser
+from mobapi.serializers import PackageUpdateSummarySerializer
+
+class PackageUpdateView(generics.CreateAPIView):
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = PackageUpdateSummarySerializer
+    parser_classes = (JSONParser, FormParser)
+    queryset = Package.objects.published()
+
+    def _make_sorted_idx(self, versions):
+        sorted_pkg_idx = dict()
+        for i, v in enumerate(versions):
+            v.update(dict(order_idx=i))
+            sorted_pkg_idx[v.get('package_name')] = v
+        return sorted_pkg_idx
+
+    def post(self, request, *args, **kwargs):
+        try:
+            versions = request.DATA.pop('versions')
+        except KeyError:
+            return Response(dict(detail='versions list should not be empty'),
+                            status=status.HTTP_400_BAD_REQUEST)
+        try:
+             sorted_pkg_idx = self._make_sorted_idx(versions)
+        except TypeError as e:
+            return Response(dict(detail='versions should be list type'),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        pkg_names = sorted_pkg_idx.keys()
+        pkgs = self.queryset.filter(package_name__in=pkg_names).all()
+
+        def _sorted_key(p):
+            idx = sorted_pkg_idx[p.package_name]['order_idx']
+            return idx
+        sorted_pkgs = sorted(pkgs, key=_sorted_key)
+
+        def _fill_update_info(p):
+            p.update_info = sorted_pkg_idx[p.package_name]
+            return p
+        fill_update_pkgs = map(_fill_update_info, sorted_pkgs)
+        serializer = PackageUpdateSummarySerializer(fill_update_pkgs, many=True)
+        return Response(serializer.data ,status.HTTP_200_OK)

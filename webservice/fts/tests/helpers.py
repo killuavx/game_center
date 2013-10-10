@@ -21,7 +21,6 @@ import random
 _models = []
 _files = []
 
-
 def guid():
     def S4():
         return hex(int(((1 + random.random()) * 0x10000) or 0))[2:]
@@ -91,11 +90,19 @@ def create_auth_token(user):
     return token.key
 
 def clear_data():
-    for m in _models:
-        try:  m.delete()
-        except: pass
+    while True:
+        try:
+            m = _models.pop()
+            m.delete()
+        except:
+            break
 
-    for f in _files:
+    while True:
+        f = None
+        try:
+            f = _files.pop()
+        except:
+            break
         try:
             os.remove(f)
         except:pass
@@ -163,7 +170,8 @@ class ApiDSL(RestApiTest):
         return packages
 
     def Given_package_has_version_with(self, package,
-                                       version_code, version_name, status,
+                                       version_code, version_name,
+                                       status,
                                        all_datetime, **default):
         version = PackageVersion(
             version_name = version_name,
@@ -198,13 +206,19 @@ class ApiDSL(RestApiTest):
         return create_author(**kwargs)
 
     def Given_i_have_published_package(self, all_datetime=now()-timedelta(days=1), **kwargs):
+        vkwargs = dict()
+        try: vkwargs['version_code'] = kwargs.pop('version_code')
+        except: pass
+        try: vkwargs['version_name'] = kwargs.pop('version_name')
+        except: pass
+
         pkg = ApiDSL.Given_i_have_package_with(self,
                                                status=Package.STATUS.published,
                                                **kwargs)
         version = ApiDSL.Given_package_has_version_with(self,
                                                         pkg,
-                                                        version_code=1,
-                                                        version_name='1.0beta',
+                                                        version_code=vkwargs.get('version_code', 1),
+                                                        version_name=vkwargs.get('version_name', '1.0beta'),
                                                         status=PackageVersion.STATUS.published,
                                                         all_datetime=all_datetime)
         ApiDSL.Given_package_version_add_screenshot(self, version)
@@ -585,6 +599,31 @@ class ApiDSL(RestApiTest):
         headers = self.world.get('headers', dict())
         res = self.client.head(url, **headers)
         self.world.update(dict(response=res))
+
+    def When_i_post_package_update_versions(self, pkg_version_list):
+        qs = json.dumps(dict(versions=pkg_version_list))
+        res = self.client.post('/api/updates/',
+                               content_type='application/json',
+                               data=qs)
+        self.world.update(dict(response=res))
+
+    def Then_i_should_see_package_update_list_has_the_version(context,
+                                                              package_name,
+                                                              version_code,
+                                                              version_name,
+                                                              is_updatable):
+        pkg_list = context.world.get('content')
+        pkg_list |should| have(1).elements
+        except_pkg = pkg_list[0]
+        except_pkg['package_name'] |should| equal_to(package_name)
+        except_pkg['version_code'] |should| equal_to(version_code)
+        except_pkg['version_name'] |should| equal_to(version_name)
+        except_pkg['is_updatable'] |should| equal_to(is_updatable)
+        except_pkg |should| include_keys('download_size',
+                                         'download',
+                                         'icon',
+                                         'title',
+                                         'released_datetime')
 
     def clear_world(self):
         self.world = {}
