@@ -209,7 +209,8 @@ class TopicalItemQuerySet(QuerySet):
         content_type = ContentType.objects.get_for_model(item_model)
         return item_model.objects\
             .filter(topics__topic__pk=topic.pk,
-                    topics__content_type__pk=content_type.pk)
+                    topics__content_type__pk=content_type.pk)\
+            .order_by('topic__ordering')
 
 class TopicalItem(models.Model):
 
