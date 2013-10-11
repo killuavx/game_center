@@ -210,7 +210,7 @@ class TopicalItemQuerySet(QuerySet):
         return item_model.objects\
             .filter(topics__topic__pk=topic.pk,
                     topics__content_type__pk=content_type.pk)\
-            .order_by('topic__ordering')
+            .order_by('topics__ordering')
 
 class TopicalItem(models.Model):
 
