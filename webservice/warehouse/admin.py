@@ -46,6 +46,7 @@ class MainAdmin(VersionAdmin):
 class PackageVersionScreenshotInlines(admin.StackedInline):
 
     model = PackageVersionScreenshot
+    extra = 0
 
     def show_thumbnail(self, obj):
         try:
@@ -76,6 +77,7 @@ class PackageVersionAdmin(MainAdmin):
                     'version_code',
                     'status',
                     'updated_datetime',
+                    'is_data_integration',
                     'download_count',
     )
     list_display_links = ('show_icon', 'version_name')
@@ -113,6 +115,19 @@ class PackageVersionAdmin(MainAdmin):
 
     show_icon = AdminIconField( allow_tags=True,
                                 short_description=_('Icon') )
+
+    def _check_packageversion_download_data_integration(self, version):
+        try:
+            url = version.di_download.url
+            return True
+        except (AttributeError, ValueError):
+            return False
+
+    def is_data_integration(self, obj):
+        return self._check_packageversion_download_data_integration(obj)
+    is_data_integration.short_description = _('is data integration download?')
+    is_data_integration.boolean = True
+
     def _package_link(p):
         link =  reverse('admin:%s_%s_change' % (p._meta.app_label, p._meta.module_name), args=[p.pk])
         return '<a href="%s" target="_blank">%s</a>' % (link, p.package_name )
@@ -229,6 +244,7 @@ class PackageAdmin(MainAdmin):
                      'was_published_recently',
                      'status',
                      'download_count',
+                     'is_data_integration',
                      'download_url',
     )
     list_filter = ('author__name', 'released_datetime', 'status' )
@@ -262,6 +278,21 @@ class PackageAdmin(MainAdmin):
         return None
     download_url.short_description = _('download url')
     download_url.allow_tags = True
+
+    def _check_packageversion_download_data_integration(self, version):
+        try:
+            url = version.di_download.url
+            return True
+        except (AttributeError, ValueError):
+            return False
+
+    def is_data_integration(self, obj):
+        latest_version = obj.versions.latest_version()
+        return self._check_packageversion_download_data_integration(
+            latest_version
+        )
+    is_data_integration.short_description = _('is data integration download?')
+    is_data_integration.boolean = True
 
     def show_icon(self, obj):
         try:
