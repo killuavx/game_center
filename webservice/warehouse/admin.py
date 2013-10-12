@@ -326,6 +326,7 @@ class PackageAdmin(MainAdmin):
 
 class PackageInline(admin.TabularInline):
     model = Package
+    extra = 0
     fields = ( 'title', 'package_name', 'released_datetime', 'status' )
     readonly_fields = ('title', 'package_name', 'released_datetime' )
 
