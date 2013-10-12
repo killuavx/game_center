@@ -272,11 +272,15 @@ class PackageAdmin(MainAdmin):
     show_icon.short_description = _('Icon')
     show_icon.allow_tags = True
 
-    actions = ['make_published' ]
+    actions = ['make_published', 'make_unpublished' ]
 
     def make_published(self, request, queryset):
         queryset.update(status=Package.STATUS.published)
     make_published.short_description = _('Make selected Packages as published')
+
+    def make_unpublished(self, request, queryset):
+        queryset.update(status=Package.STATUS.unpublished)
+    make_unpublished.short_description = _('Make selected Packages as unpublished')
 
     readonly_fields = ('download_count', 'created_datetime', 'updated_datetime',)
     def suit_row_attributes(self, obj, request):
@@ -309,6 +313,17 @@ class AuthorAdmin(MainAdmin):
         }
 
     inlines = (PackageInline, )
+
+    actions = ['make_published', 'make_unpublished' ]
+    def make_published(self, request, queryset):
+        queryset.update(status=Author.STATUS.activated)
+    make_published.short_description = _('Make selected Authors as activated')
+
+    def make_unpublished(self, request, queryset):
+        queryset.update(status=Author.STATUS.unactivated)
+    make_unpublished.short_description = _('Make selected Authors as unactivated')
+
+
     def suit_row_attributes(self, obj, request):
         css_class = {
             'draft':'info',
