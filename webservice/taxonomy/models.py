@@ -100,7 +100,6 @@ class Category(MPTTModel, Taxonomy):
         )
     icon = ThumbnailerImageField(
         default='',
-        resize_source=dict(size=(50, 50), crop='smart'),
         upload_to='icons',
         blank=True)
 
@@ -156,7 +155,6 @@ class Topic(MPTTModel, Taxonomy):
     icon = ThumbnailerImageField(
         verbose_name=_('icon image'),
         default='',
-        resize_source=dict(size=(50, 50), crop='smart'),
         upload_to='icons/topic',
         blank=True,
     )
@@ -164,7 +162,6 @@ class Topic(MPTTModel, Taxonomy):
     cover = ThumbnailerImageField(
         verbose_name=_('cover image'),
         default='',
-        resize_source=dict(size=(200, 420), crop='smart'),
         upload_to='covers/topic',
         blank=True,
     )
