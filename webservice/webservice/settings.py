@@ -184,19 +184,19 @@ THUMBNAIL_ALIASES_ICON = {
     'large': {
         'size': (92, 92),
         'quality': 85,
-        'crop': True,
+        'crop': False,
         'upscale': True,
         },
     'middle':{
         'size': (72, 72),
         'quality': 85,
-        'crop': True,
+        'crop': False,
         'upscale': True,
         },
     'small': {
         'size': (48, 48),
         'quality': 85,
-        'crop': True,
+        'crop': False,
         'upscale': True,
         },
     }
@@ -204,19 +204,19 @@ THUMBNAIL_ALIASES_COVER = {
         'large': {
             'size': (900, 360),
             'quality': 85,
-            'crop': True,
+            'crop': False,
             'upscale': True,
             },
         'middle':{
             'size': (450, 180),
             'quality': 85,
-            'crop': True,
+            'crop': False,
             'upscale': True,
             },
         'small': {
             'size': (48, 48),
             'quality': 85,
-            'crop': True,
+            'crop': False,
             'upscale': True,
             },
         }
@@ -224,19 +224,19 @@ THUMBNAIL_ALIASES_SCREENSHOT = {
     'large': {
         'size': (900, 360),
         'quality': 85,
-        'crop': True,
+        'crop': False,
         'upscale': True,
         },
     'middle':{
         'size': (450, 180),
         'quality': 85,
-        'crop': True,
+        'crop': False,
         'upscale': True,
         },
     'small': {
         'size': (150, 56),
         'quality': 85,
-        'crop': True,
+        'crop': False,
         'upscale': True,
         },
     }
