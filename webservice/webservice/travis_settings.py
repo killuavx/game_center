@@ -9,12 +9,12 @@ EXTENDAL_APPS.append('fts')
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
 DATABASES['default'].update(dict(
-    ENGINE = os.getenv('DBA_SQL_DJANGO_ENGINE'),
-    NAME = os.getenv('DBA_SQL_DB_NAME'),
-    USER = os.getenv('DBA_SQL_ADMIN_USER'),
-    PASSWORD = os.getenv('DBA_SQL_ADMIN_PASSWORD'),
-    HOST = os.getenv('DBA_SQL_HOST'),
-    PORT = os.getenv('DBA_SQL_PORT'),
+    ENGINE=os.getenv('DBA_SQL_DJANGO_ENGINE'),
+    NAME=os.getenv('DBA_SQL_DB_NAME'),
+    USER=os.getenv('DBA_SQL_ADMIN_USER'),
+    PASSWORD=os.getenv('DBA_SQL_ADMIN_PASSWORD'),
+    HOST=os.getenv('DBA_SQL_HOST'),
+    PORT=os.getenv('DBA_SQL_PORT'),
     ))
 
 MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
