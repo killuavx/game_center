@@ -540,7 +540,7 @@ class PackageVersionQuerySet(QuerySet):
 def factory_version_upload_to_path(basename):
     def upload_to(instance, filename):
         extension = filename.split('.')[-1].lower()
-        path = "package/%d/v%d" % (instance.package_id, instance.version_code)
+        path = "package/%d/v%d" % (int(instance.package_id), int(instance.version_code))
         return '%(path)s/%(filename)s.%(extension)s' % {'path': path,
                                                         'filename': basename,
                                                         'extension': extension,
