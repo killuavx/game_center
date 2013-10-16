@@ -3,10 +3,10 @@ from django.test import TestCase
 from warehouse.models import *
 from django.utils.timezone import datetime, timedelta, now
 from fts.tests import helpers
+import os
 from os.path import join, abspath, dirname
 from should_dsl import should
 from django.test.utils import override_settings
-from django.conf import settings
 import shutil
 from fts.tests.helpers import ApiDSL
 import io
@@ -14,18 +14,18 @@ from django.core.files import File
 
 _fixture_dir = join(dirname(abspath(__file__)), 'fixtures')
 
-
 class WarehouseBaseUnitTest(TestCase):
 
     _fixture_dir = _fixture_dir
     _files_to_remove = []
+    def setUp(self):
+        _dir = join(self._fixture_dir, 'temp')
+        os.makedirs(_dir, exist_ok=True)
+        self._files_to_remove.append(_dir)
+        super(WarehouseBaseUnitTest, self).setUp()
 
     def _create_author(self, **default):
         return helpers.create_author(**default)
-
-    def _setdefault_files_to_remove(self):
-        self._files_to_remove.append(join(settings.MEDIA_ROOT, 'author'))
-        self._files_to_remove.append(join(settings.MEDIA_ROOT, 'package'))
 
     def tearDown(self):
         for f in self._files_to_remove:
@@ -45,10 +45,8 @@ class AuthorUnitTest(WarehouseBaseUnitTest):
         
         self.assertEqual(str(author), "Martin Flower")
         
-    @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temps'))
+    @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'))
     def test_upload_image_to_path(self):
-        self._setdefault_files_to_remove()
-
         author = Author(name="Chillingo International", email="ChillingoInternational@testcase.com")
         icon = io.FileIO(join(self._fixture_dir, 'author-icon.png'))
         author.icon = File(icon)
@@ -324,9 +322,8 @@ class PackageVersionUnitTest(WarehouseBaseUnitTest):
         except_pkgversion = Package.objects.get(pk=pkg.pk).versions.get()
         self.assertEqual(except_pkgversion, pkgversion)
 
-    @override_settings(MEDIA_ROOT=join(_fixture_dir,'temps'))
+    @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'))
     def test_upload_file_to_path(self):
-        self._setdefault_files_to_remove()
         pkg = ApiDSL.Given_i_have_package_with(self,
                                                package_name='com.tests.packageversion.upload',
                                                )
@@ -425,10 +422,8 @@ class PackageVersionUnitTest(WarehouseBaseUnitTest):
 
 class PackageScreenshotUnitTest(WarehouseBaseUnitTest):
 
-    @override_settings(MEDIA_ROOT=join(_fixture_dir,'temps'))
+    @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'))
     def test_package_version_screenshot_upload_to_path(self):
-        self._setdefault_files_to_remove()
-
         yestoday = datetime.now() - timedelta(days=1)
         pkg = ApiDSL.Given_i_have_package_with(self,
                                                package_name='com.tests.packageversion.upload',
