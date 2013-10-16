@@ -247,6 +247,7 @@ class PackageAdmin(MainAdmin):
                      'is_data_integration',
                      'download_url',
     )
+    raw_id_fields = ('author', )
     list_filter = ('author__name', 'released_datetime', 'status' )
     list_display_links = ( 'title', 'package_name',)
     list_editable = ('status', 'tags',)
@@ -332,7 +333,7 @@ class PackageInline(admin.TabularInline):
 
 class AuthorAdmin(MainAdmin):
     model = Author
-    list_display = ( 'show_icon', 'name', 'email', 'phone')
+    list_display = ( 'pk', 'show_icon', 'name', 'email', 'phone')
     search_fields = ( 'name', 'email', 'phone')
     list_display_links = ('name', 'show_icon',)
     list_filter = ('status', )
