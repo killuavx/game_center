@@ -11,6 +11,7 @@ from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
+from os.path import join, basename
 
 class StatusNotSupportAction(Exception):
     pass
@@ -133,13 +134,24 @@ class AuthorQuerySet(QuerySet):
     def unpublished(self):
         return self.unactivated()
 
+def factory_author_upload_to(basename):
+    def upload_to(instance, filename):
+        extension = filename.split('.')[-1].lower()
+        dt_path = now().strftime("%Y%m%d%H%M/%S-%f")
+        path = "author/%s" % dt_path
+        return '%(path)s/%(filename)s.%(extension)s' % {'path': path,
+                                                        'filename': basename,
+                                                        'extension': extension,
+                                                        }
+    return upload_to
+
 class Author(models.Model):
 
-    icon = ThumbnailerImageField(upload_to='icons/author',
+    icon = ThumbnailerImageField(upload_to=factory_author_upload_to('icon'),
                                  blank=True,
                                  default='')
 
-    cover = ThumbnailerImageField(upload_to='covers/author',
+    cover = ThumbnailerImageField(upload_to=factory_author_upload_to('cover'),
                                   blank=True,
                                   default='')
 
@@ -525,6 +537,16 @@ class PackageVersionQuerySet(QuerySet):
     def latest_published(self):
         return self.published().latest('version_code')
 
+def factory_version_upload_to_path(basename):
+    def upload_to(instance, filename):
+        extension = filename.split('.')[-1].lower()
+        path = "package/%d/v%d" % (int(instance.package_id), int(instance.version_code))
+        return '%(path)s/%(filename)s.%(extension)s' % {'path': path,
+                                                        'filename': basename,
+                                                        'extension': extension,
+                                                        }
+    return upload_to
+
 class PackageVersion(models.Model):
 
     objects = PassThroughManager.for_queryset_class(PackageVersionQuerySet)()
@@ -538,25 +560,25 @@ class PackageVersion(models.Model):
 
     icon = ThumbnailerImageField(
         default='',
-        upload_to='icons/package',
+        upload_to=factory_version_upload_to_path('icon'),
         blank=True,
     )
 
     cover = ThumbnailerImageField(
         default='',
-        upload_to='covers/package',
+        upload_to=factory_version_upload_to_path('cover'),
         blank=True,
         )
 
     download = models.FileField(
         verbose_name=_('version file'),
-        upload_to='packages',
+        upload_to=factory_version_upload_to_path('application'),
         default='',
         blank=True)
 
     di_download = models.FileField(
         verbose_name=_('version file with data integration'),
-        upload_to='packages_di',
+        upload_to=factory_version_upload_to_path('application-di'),
         default='',
         blank=True
     )
@@ -614,12 +636,21 @@ class PackageVersion(models.Model):
 
     __unicode__ = __str__
 
+def screenshot_upload_to_path(instance, filename):
+    filebasename = basename(filename).lower()
+    version = instance.version
+    return "package/%(pkg_id)d/v%(version_code)d/screenshot/%(basename)s" % {
+        'pkg_id': version.package_id,
+        'version_code': version.version_code,
+        'basename': filebasename
+    }
+
 class PackageVersionScreenshot(models.Model):
 
     version = models.ForeignKey(PackageVersion, related_name='screenshots')
 
     image = ThumbnailerImageField(
-        upload_to='screenshots',
+        upload_to=screenshot_upload_to_path,
         blank=False
     )
 

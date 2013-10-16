@@ -53,6 +53,13 @@ def create_package(**defaults):
     _models.append(inst)
     return inst
 
+def create_packageversionscreenshot(**defaults):
+    id = guid()
+    defaults.setdefault('alt', 'alt-%s'% id)
+    inst = PackageVersionScreenshot(**defaults)
+    _models.append(inst)
+    return inst
+
 def create_topic(**defaults):
     id = guid()
     defaults.setdefault('name', 'topic %s' %id)

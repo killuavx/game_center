@@ -5,11 +5,27 @@ from django.contrib.auth.models import User, UserManager
 from django.dispatch import receiver
 from django.db.models.signals import post_delete
 from django.utils.translation import ugettext as _
+from django.utils.timezone import now
 from easy_thumbnails.fields import ThumbnailerImageField
 from userena.models import UserenaBaseProfile
 from model_utils import FieldTracker
 from model_utils.managers import PassThroughManager
+import os
 import re
+
+def factory_userprofile_upload_to(basename):
+    def update_to(instance, filename):
+        fbasename = os.path.basename(filename)
+        fbname ,extension = fbasename.split('.')
+        path = "%(prefix)s/%(date)s/%(user_id)d/%(fbname)s.%(extension)s" % {
+            'prefix': 'userprofile',
+            'date': now().strftime("%Y%m%d"),
+            'user_id': instance.user.pk,
+            'fbname': basename,
+            'extension': extension
+        }
+        return path
+    return update_to
 
 def upload_to_cover(instance, filename):
     extension = filename.split('.')[-1].lower()
@@ -77,7 +93,7 @@ class Profile(UserenaBaseProfile):
 
     cover = ThumbnailerImageField(_('cover image'),
                                   blank=True,
-                                  upload_to=upload_to_cover,
+                                  upload_to=factory_userprofile_upload_to('cover'),
                                   help_text=_("A personal cover image displayed in your profile"),
     )
 
@@ -97,6 +113,12 @@ class Profile(UserenaBaseProfile):
     tracker = FieldTracker()
 
     bookmarks = models.ManyToManyField('warehouse.Package', verbose_name=_('bookmarks'))
+
+# Hack to override mugshot.upload_to and mugshot.generate_filename
+# In Django, this is not permitted for override django.models.Model attributes
+Profile.__dict__.get('mugshot').field.upload_to =\
+    Profile.__dict__.get('mugshot').field.generate_filename =\
+    factory_userprofile_upload_to('icon')
 
 @receiver(post_delete, sender=User)
 def post_delete_user(sender, instance, *args, **kwargs):
