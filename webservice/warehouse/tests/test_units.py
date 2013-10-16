@@ -3,7 +3,6 @@ from django.test import TestCase
 from warehouse.models import *
 from django.utils.timezone import datetime, timedelta, now
 from fts.tests import helpers
-from django.utils.timezone import now
 from os.path import join, abspath, dirname
 from should_dsl import should
 from django.test.utils import override_settings

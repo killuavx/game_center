@@ -1,18 +1,36 @@
 # -*- encoding=utf-8 -*-
 from django.test import TestCase
+from django.conf import settings
+from django.test.utils import override_settings
+from django.core.files import File
 from django.utils.timezone import now, timedelta, localtime
 from warehouse.models import Package, PackageVersion, Author
 from tagging.models import Tag
 from taxonomy.models import Category, Topic, TopicalItem
+import io
+import os
+from os.path import join, abspath, dirname
 from fts.tests import helpers
 from fts.tests.helpers import ApiDSL
+import shutil
+from should_dsl import should
 
+_fixture_dir = join(dirname(abspath(__file__)), 'fixtures')
 class BaseTestCase(TestCase):
 
+    _fixture_dir = _fixture_dir
+
+    _files_to_remove = []
+
     def setUp(self):
+        _dir = join(self._fixture_dir, 'temp')
+        os.makedirs(_dir, exist_ok=True)
+        self._files_to_remove.append(_dir)
         super(BaseTestCase, self).setUp()
 
     def tearDown(self):
+        for f in self._files_to_remove:
+            shutil.rmtree(f, ignore_errors=True)
         helpers.clear_data()
         super(BaseTestCase, self).setUp()
 
@@ -64,6 +82,16 @@ class CategorySimpleTest(BaseTestCase):
         except_rpg = Category.objects.get(pk=rpg.pk)
         self.assertEqual(except_rpg.parent, root)
         self.assertEqual(except_rpg.children.count(), 0)
+
+    @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'))
+    def test_upload_image_to_path(self):
+        icon = io.FileIO(join(self._fixture_dir, 'category-icon.png'))
+        cat = self._category(
+            name="Game",
+            icon=File(icon)
+        )
+        cat_icon_path = "category/%s/icon.png" % cat.slug
+        cat.icon.path |should| end_with(cat_icon_path)
 
 class CategoryWithPackageTest(BaseTestCase):
 
@@ -193,3 +221,19 @@ class TopcialSimpleTest(BaseTestCase):
         self.assertEqual(except_topic.name, topic.name)
         self.assertEqual(except_topic.slug, topic.slug)
 
+    @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'))
+    def test_upload_image_to_path(self):
+        today = now() - timedelta(hours=1)
+        icon = io.FileIO(join(self._fixture_dir, 'topic-icon.png'))
+        cover = io.FileIO(join(self._fixture_dir, 'topic-cover.jpg'))
+        biggame = Topic(name="大型游戏专区",
+                        slug='big-game',
+                        icon=File(icon),
+                        cover=File(cover),
+                        summary='big game, big play',
+                        status=Topic.STATUS.published,
+                        released_datetime=today)
+        biggame.save()
+        path = "topic/%s" % biggame.slug
+        biggame.icon.path |should| end_with(join(path, 'icon.png'))
+        biggame.cover.path |should| end_with(join(path, 'cover.jpg'))

@@ -21,6 +21,18 @@ from django.conf import settings
 slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION', 'taxonomy.helpers.slugify')
 slugify = get_callable(slugify_function_path)
 
+def factory_taxonomy_upload_to_path(basename):
+    def update_to(instance, filename):
+        extension = filename.split('.')[-1].lower()
+        path = "%(prefix)s/%(slug)s/%(filename)s.%(extension)s/" % {
+            'prefix': str(instance.__class__.__name__).lower(),
+            'slug': instance.slug,
+            'filename': basename,
+            'extension': extension
+        }
+        return path
+    return update_to
+
 class Taxonomy(models.Model):
     name = models.CharField(max_length=32,
                             unique=True,
@@ -97,11 +109,13 @@ class Category(MPTTModel, Taxonomy):
         default='',
         help_text='Some titles may be the same and cause confusion in admin '
                   'UI. A subtitle makes a distinction.',
-        )
+    )
+
     icon = ThumbnailerImageField(
         default='',
-        upload_to='icons',
-        blank=True)
+        upload_to=factory_taxonomy_upload_to_path('icon'),
+        blank=True
+    )
 
     @models.permalink
     def get_absolute_url(self):
@@ -155,14 +169,14 @@ class Topic(MPTTModel, Taxonomy):
     icon = ThumbnailerImageField(
         verbose_name=_('icon image'),
         default='',
-        upload_to='icons/topic',
+        upload_to=factory_taxonomy_upload_to_path('icon'),
         blank=True,
     )
 
     cover = ThumbnailerImageField(
         verbose_name=_('cover image'),
         default='',
-        upload_to='covers/topic',
+        upload_to=factory_taxonomy_upload_to_path('cover'),
         blank=True,
     )
 
@@ -171,7 +185,8 @@ class Topic(MPTTModel, Taxonomy):
         max_length=255,
         null=False,
         default="",
-        blank=True )
+        blank=True
+    )
 
     tracker = FieldTracker()
 
