@@ -1,4 +1,5 @@
 # -*- encoding=utf-8 -*-
+from os.path import basename
 from django.db import models
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
@@ -45,13 +46,26 @@ class AdvertisementQuerySet(QuerySet):
     def place_in(self, place):
         return self.filter(places=place)
 
+def advertisement_upload_to(instance, filename):
+    fbasename = basename(filename)
+    fbname ,extension = fbasename.split('.')
+    path = "%(prefix)s/%(date)s/%(ct)s-%(oid)d/%(fbname)s.%(extension)s/" % {
+        'prefix': 'advertisement',
+        'date': now().strftime("%Y%m%d"),
+        'ct': instance.content_type.model,
+        'oid': instance.object_id,
+        'fbname': 'cover',
+        'extension': extension
+    }
+    return path
+
 class Advertisement(models.Model):
 
     objects = PassThroughManager.for_queryset_class(AdvertisementQuerySet)()
 
     cover = ThumbnailerImageField(
         verbose_name=_('advertisement cover'),
-        upload_to='covers/adv',
+        upload_to=advertisement_upload_to,
     )
 
     title = models.CharField(verbose_name=_('title'),
