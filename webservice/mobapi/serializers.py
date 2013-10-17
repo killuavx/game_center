@@ -41,7 +41,7 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
     # TODO 截图的预览地址，以及后台上传时的尺寸处理，
     def get_preview_url(self, obj):
         try:
-            return obj.image['small'].url
+            return obj.image['middle'].url
         except:
             return ''
 
@@ -287,7 +287,7 @@ class AuthorSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Author
-        fields = ('url','icon', 'cover', 'name', 'packages_url')
+        fields = ('url', 'icon', 'cover', 'name', 'packages_url')
 
 #---------------------------------------------------------------
 from taxonomy.models import Category, Topic, TopicalItem
