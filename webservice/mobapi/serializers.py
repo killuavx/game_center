@@ -6,9 +6,11 @@ from django.core.urlresolvers import reverse
 class ImageUrlField(serializers.ImageField):
 
     def to_native(self, obj):
+        if not obj:
+            return None
         try:
-            return obj.url
-        except ValueError:
+            return obj['middle'].url
+        except (ValueError, KeyError):
             return None
 
     def from_native(self, data):
@@ -38,11 +40,17 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
 
     # TODO 截图的预览地址，以及后台上传时的尺寸处理，
     def get_preview_url(self, obj):
-        return obj.image.url
+        try:
+            return obj.image['small'].url
+        except:
+            return ''
 
     # TODO 截图的大图地址，以及后台上传时的尺寸处理，
     def get_large_url(self, obj):
-        return obj.image.url
+        try:
+            return obj.image['large'].url
+        except:
+            return ''
 
     class Meta:
         model = PackageVersionScreenshot
@@ -92,15 +100,15 @@ class PackageRelatedLatestVersinoMixin(object):
 
     def get_latest_version_cover_url(self, obj):
         try:
-            return obj.versions.latest_published().cover.url
+            return obj.versions.latest_published().cover['middle'].url
         except:
-            return ''
+            return None
 
     def get_latest_version_icon_url(self, obj):
         try:
-            return obj.versions.latest_published().icon.url
+            return obj.versions.latest_published().icon['middle'].url
         except:
-            return ''
+            return None
 
     def get_latest_version_screenshots(self, obj):
         try:
