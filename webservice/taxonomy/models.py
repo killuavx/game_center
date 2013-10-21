@@ -24,7 +24,7 @@ slugify = get_callable(slugify_function_path)
 def factory_taxonomy_upload_to_path(basename):
     def update_to(instance, filename):
         extension = filename.split('.')[-1].lower()
-        path = "%(prefix)s/%(slug)s/%(filename)s.%(extension)s/" % {
+        path = "%(prefix)s/%(slug)s/%(filename)s.%(extension)s" % {
             'prefix': str(instance.__class__.__name__).lower(),
             'slug': instance.slug,
             'filename': basename,

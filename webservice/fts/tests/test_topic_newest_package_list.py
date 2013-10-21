@@ -55,9 +55,19 @@ class NewestTopicPackageTest(RestApiTest):
         ApiDSL.Then_i_should_see_result_list(self,num=1)
 
     def test_should_see_package_list_orderby_released_datetime_desc(self):
-        yestoday = now()-timedelta(days=1)
-        packages = ApiDSL.Given_i_have_some_packages(self, num=3)
-        topic = self.Given_i_haven_topic_with_packages(*packages, all_datetime=yestoday)
+        # tomorrow will be published
+        tomorrow = now()-timedelta(days=1)
+        pkg1 = ApiDSL.Given_i_have_published_package(self, title='pkg1', all_datetime=tomorrow-timedelta(minutes=3))
+        pkg1.released_datetime = pkg1.versions.get().released_datetime
+        pkg1.save()
+        pkg2 = ApiDSL.Given_i_have_published_package(self, title='pkg2', all_datetime=tomorrow-timedelta(minutes=2))
+        pkg2.released_datetime = pkg2.versions.get().released_datetime
+        pkg2.save()
+        pkg3 = ApiDSL.Given_i_have_published_package(self, title='pkg3', all_datetime=tomorrow-timedelta(minutes=1))
+        pkg3.released_datetime = pkg3.versions.get().released_datetime
+        pkg3.save()
+
+        topic = self.Given_i_haven_topic_with_packages(*(pkg1, pkg2, pkg3), all_datetime=tomorrow-timedelta(minutes=5))
 
         ApiDSL.When_i_access_topic_newest_package(self)
         ApiDSL.Then_i_should_receive_success_response(self)

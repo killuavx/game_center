@@ -175,6 +175,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
     version_count = serializers.SerializerMethodField('get_version_count')
+    download_size = serializers.SerializerMethodField('get_latest_version_download_size')
     actions = serializers.SerializerMethodField('get_action_links')
 
     author = AuthorSummarySerializer()
@@ -191,6 +192,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'version_count',
                   'summary',
                   'author',
+                  'download_size',
                   'download_count',
                   'released_datetime',
                   'actions',

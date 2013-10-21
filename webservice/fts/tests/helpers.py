@@ -53,6 +53,12 @@ def create_package(**defaults):
     _models.append(inst)
     return inst
 
+def create_packageversion(package, **default):
+    inst = PackageVersion.objects.create(package=package,
+                                         **default)
+    _models.append(inst)
+    return inst
+
 def create_packageversionscreenshot(**defaults):
     id = guid()
     defaults.setdefault('alt', 'alt-%s'% id)
@@ -171,7 +177,7 @@ class ApiDSL(RestApiTest):
         defaults.setdefault('status', Package.STATUS.published)
         packages = []
         for i in range(num):
-            defaults['released_datetime'] =  now()-timedelta(days=i, hours=1)
+            defaults['released_datetime'] = now()-timedelta(days=i, hours=1)
             packages.append(create_package(**defaults))
 
         return packages
@@ -203,7 +209,7 @@ class ApiDSL(RestApiTest):
         return pss
 
     def Given_i_have_cover_image(self):
-        return File(io.FileIO(join(ApiDSL._fixtures_dir,'icon.png')))
+        return File(io.FileIO(join(ApiDSL._fixtures_dir, 'icon.png')))
 
     def Given_i_have_icon_image(self):
         return File(io.FileIO(join(ApiDSL._fixtures_dir,'icon.png')))
@@ -428,6 +434,7 @@ class ApiDSL(RestApiTest):
             'categories_names',
             'tags',
             'version_count',
+            'download_size',
             'released_datetime',
             'summary',
             'author',

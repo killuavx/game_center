@@ -9,6 +9,7 @@ from mobapi.serializers import (AuthorSerializer,
                                 PackageSummarySerializer)
 from django.utils.timezone import now, datetime
 from datetime import timedelta
+from should_dsl import should
 import json
 
 
@@ -47,12 +48,20 @@ class ApiPackageTest(ApiTest):
         return response
 
     def test_list(self):
+        yesterday = now()-timedelta(days=1)
         package = helpers.create_package(package_name="com.xianjian",
                                  title='大富翁',
                                  tags='hot new top',
                                  summary="大富翁 3",
                                  status=Package.STATUS.published,
-                                 released_datetime=now()-timedelta(hours=1))
+                                 released_datetime=yesterday)
+        version = helpers.create_packageversion(package=package,
+                                                version_code=10,
+                                                version_name="1.0",
+                                                status='published',
+                                                released_datetime=yesterday)
+        package.versions.count() |should| equal_to(1)
+
         response = self._request_api_status_200()
         content = self.convert_content(response.content)
 
