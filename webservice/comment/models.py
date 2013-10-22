@@ -5,7 +5,7 @@ from django_comments_xtd.models import XtdComment, XtdCommentManager
 from django.contrib.comments.managers import CommentManager as BaseCommentManager
 
 
-class CommentManager(BaseCommentManager, XtdComment):
+class CommentManager(BaseCommentManager, XtdCommentManager):
     pass
 
 
