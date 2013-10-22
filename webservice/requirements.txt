@@ -18,6 +18,7 @@ django-sizefield
 django-rest-swagger
 djangorestframework==2.3.7
 #django-userena
+django_comments_xtd
 
 # django-admin-user-status dependents
 #django-qsstats-magic>=0.6.1

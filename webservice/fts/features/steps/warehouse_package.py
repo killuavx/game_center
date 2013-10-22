@@ -3,6 +3,7 @@ __author__ = 'me'
 from behave import *
 from behaving.web.steps import *
 from fts.features import support
+from should_dsl import should, should_not
 from fts.tests.helpers import ApiDSL
 from warehouse.models import Package, PackageVersion
 
@@ -43,7 +44,7 @@ def step_when_post_package_update_version(context,
     ])
 
 @then('I should see package update list has the version package_name: "{package_name}", version_name: "{response_version_name}", version_code: "{response_version_code:d}", it can {can_be} update')
-def  step_then_should_see_package_update_list_has_the_version(context,
+def step_then_should_see_package_update_list_has_the_version(context,
                                                               package_name,
                                                               response_version_name,
                                                               response_version_code,
@@ -54,3 +55,39 @@ def  step_then_should_see_package_update_list_has_the_version(context,
                                                                  version_name=response_version_name,
                                                                  version_code=response_version_code,
                                                                  is_updatable=is_updatable)
+
+@when('I access the package detail')
+def step_when_i_access_the_package_detail(context):
+    ApiDSL.When_i_access_package_detail(context, context.package)
+
+
+@when('I access comment list of the package')
+def step_access_comment_list_of_the_package(context):
+    ApiDSL.When_i_access_comment_list(context, context.package)
+
+@then('I should see comment_count {comment_count:d} in the package version detail')
+def step_should_see_comment_count_in_the_package_version_detail(context, comment_count):
+    package_detail = context.world.get('content')
+    package_detail.get('comment_count') |should| equal_to(comment_count)
+
+    for v in package_detail.get('versions'):
+        v.get('comment_count') |should_not| be(None)
+
+@given('package name "{title}" has a set of versions below')
+def step_package_has_a_set_of_versions(context, title):
+    package = ApiDSL.Given_i_have_package_with(context,
+                                               title=title)
+    for v in context.table:
+        ApiDSL.Given_package_has_version_with(context,
+                                              package,
+                                              version_code=int(v.get('version_code')),
+                                              version_name=v.get('version_name'),
+                                              status=PackageVersion.STATUS.published,
+                                              all_datetime=package.released_datetime)
+    package.status = Package.STATUS.published
+    package.save()
+
+    if not getattr(context, 'packages', False):
+        context.packages = dict()
+    context.packages[package.package_name] = package
+    context.package = package

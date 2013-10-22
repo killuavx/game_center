@@ -1,6 +1,6 @@
 # -*- encoding=utf-8 -*-
 import copy
-from rest_framework import  mixins
+from rest_framework import mixins
 from warehouse.models import Package, Author
 from rest_framework.decorators import link
 from rest_framework.response import Response
@@ -40,6 +40,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     * `tags`: 标签名称列表（如`新作`、`首发`、`礼包`）
     * `version_count`: 版本个数
     * `download_count`:下载量
+    * `comments_url`: 评论列表接口(可用于发表评论)
     * `summary`: 一句话摘要
     * `released_datetime`: 发布时间(时间戳)
 
@@ -61,6 +62,8 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     * `download_count`: 下载量
     * 'download_size': 下载文件的字节大小
     * `download`: 下载地址
+    * `comment_count`: 评论数量
+    * `comments_url`: 评论列表接口(同时用于发表评论)
     * `summary`: 一句话摘要
     * `released_datetime`: 发布时间(时间戳)
     * `whatsnew`: 版本跟新内容说明
@@ -82,8 +85,11 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         * 'download': 版本下载地址
         * 'download_count': 版本下载量
         * 'download_size': 版本文件字节大小
+        * 'comment_count': 版本评论数量
+        * 'comments_url': 版本评论列表地址(同时作为发表评论使用)
 
     """
+
     queryset = Package.objects.published()
     serializer_class = PackageSummarySerializer
     filter_backends = (filters.OrderingFilter,
@@ -172,11 +178,11 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     @link()
     def packages(self, request, slug, *args, **kwargs):
         queryset = Category.objects.published()
-        category =  generics.get_object_or_404(queryset, slug=slug)
+        category = generics.get_object_or_404(queryset, slug=slug)
 
         ViewSet = PackageViewSet
         queryset = category.packages.all()
-        list_view =  ViewSet.as_view({'get':'list'}, queryset=queryset)
+        list_view = ViewSet.as_view({'get':'list'}, queryset=queryset)
         return list_view(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
@@ -353,7 +359,7 @@ from mobapi.serializers import AccountDetailSerializer
 from mobapi.authentications import PlayerTokenAuthentication
 from account.models import Player, Profile
 from django.core.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from django.utils.translation import ugettext as _
 
@@ -511,7 +517,7 @@ class AccountSignoutView(APIView):
         request.auth = None
         return Response({'detail': 'sign out successful'}, status=status.HTTP_200_OK)
 
-from django.utils.timezone import utc, datetime
+from django.utils.timezone import utc, datetime, now
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.settings import api_settings
@@ -753,6 +759,7 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
 #----------------------------------------------------------------
 from rest_framework.parsers import JSONParser, FormParser
 from mobapi.serializers import PackageUpdateSummarySerializer
+from django.contrib.contenttypes.models import ContentType
 
 class PackageUpdateView(generics.CreateAPIView):
     """ 应用升级检查接口
@@ -857,3 +864,165 @@ class PackageUpdateView(generics.CreateAPIView):
                                                     many=True,
                                                     context=dict(request=request))
         return Response(serializer.data ,status.HTTP_200_OK)
+
+#----------------------------------------------------------------
+from mobapi.serializers import CommentSerializer, CommentCreateSerializer
+from comment.models import Comment
+from django.contrib.sites.models import Site
+import django_filters
+from django.core import exceptions
+
+
+class CommentViewSet(mixins.CreateModelMixin,
+                     mixins.ListModelMixin,
+                     viewsets.GenericViewSet):
+    """ 评论接口
+
+
+    ----
+
+    ## 评论列表接口
+
+    #### 访问方式
+
+    具体的评论列表接口见 应用详情接口[例子](/api/packages/100)里的comments_url
+
+        GET /api/comments/?content_type=23&object_pk=120
+
+    #### 响应内容
+
+    * 200 HTTP_200_OK
+        * 获取成功
+        * 评论列表
+    * 404 HTTP_404_NOT_FOUND
+        * 找不到这款应用或应用没有评论
+
+    ### 评论列表结构
+
+    * `user_name`: 发表评论的用户名"admin",
+    * `user_icon`: 用户的icon图片地址, 没有则null,
+    * `comment`: 评论的内容,
+    * `submit_date`: 发表的时间,格式是时间戳,如"1382392569"
+
+    ----
+
+    ## 发表评论接口
+
+    ### 必备请求数据
+
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
+
+    #### 访问方式
+
+    具体的评论列表接口见 应用详情接口[例子](/api/packages/100)里的comments_url
+
+        POST /api/comments/?content_type=23&object_pk=120
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+        Content-Type:application/x-www-form-urlencoded
+
+        comment=great%20job
+
+    #### 响应内容
+
+    * 201 HTTP_201_CREATED
+        * 发表评论成功
+        * 返回刚创建的评论信息
+    * 401 HTTP_401_UNAUTHORIZED
+        * 未登陆
+        * 无效的HTTP Header: Authorization
+    * 404 HTTP_404_NOT_FOUND
+        * 找不到这款应用或应用没有评论
+
+    ### 新创建的评论数据结构
+
+    * `user_name`: 发表评论的用户名"admin",
+    * `user_icon`: 用户的icon图片地址, 没有则null,
+    * `comment`: 评论的内容,
+    * `submit_date`: 发表的时间,格式是时间戳,如"1382392569"
+
+    """
+
+    authentication_classes = (PlayerTokenAuthentication,)
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all().order_by('-submit_date')
+
+    def check_paramters(self, querydict):
+        ct = 'content_type'
+        if ct not in querydict or not querydict.get(ct):
+            return False
+
+        opk = 'object_pk'
+        if opk not in querydict or not querydict.get(opk):
+            return False
+
+        return {'content_type_id': int(querydict.get(ct)),
+                opk: int(querydict.get(opk))}
+
+    def get_content_object(self, params):
+        content_type = ContentType.objects.get_for_id(params.get('content_type_id'))
+        content_object = content_type.get_object_for_this_type(pk=params.get('object_pk'))
+        return content_object
+
+    def get_queryset(self):
+        return Comment.objects.for_model(self.content_object)
+
+    def list(self, request, *args, **kwargs):
+        params = self.check_paramters(copy.deepcopy(request.GET))
+        bad = Response({'detail': 'Bad Request'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        if not params:
+            return bad
+
+        try:
+            self.content_object = self.get_content_object(params)
+        except exceptions.ObjectDoesNotExist:
+            return bad
+
+        response = super(CommentViewSet, self).list(request, *args, **kwargs)
+        if not self.object_list:
+            return Response({'detail': 'Not Found Comment'},
+                            status=status.HTTP_404_NOT_FOUND)
+        return response
+
+    def create(self, request, *args, **kwargs):
+        params = self.check_paramters(copy.deepcopy(request.GET))
+        bad = Response({'detail': 'Bad Request'},
+                       status=status.HTTP_400_BAD_REQUEST)
+        if not params:
+            return bad
+
+        try:
+            content_object = self.get_content_object(params)
+        except exceptions.ObjectDoesNotExist:
+            return bad
+
+        serializer_class, self.serializer_class =\
+            self.serializer_class, CommentCreateSerializer
+        response = super(CommentViewSet, self).create(request, *args, **kwargs)
+        self.serializer_class = serializer_class
+
+        if response.status_code == status.HTTP_201_CREATED:
+            serializer = self.serializer_class(self.object)
+            response.data = serializer.data
+        return response
+
+    def get_serializer(self, instance=None, data=None,
+                       files=None, many=False, partial=False):
+        # create data
+        if not instance and data:
+            queryparams = copy.deepcopy(self.request.QUERY_PARAMS)
+            params = self.check_paramters(queryparams)
+            data = copy.deepcopy(data)
+            data.setdefault('submit_date', now())
+            data.setdefault('site', Site.objects.get_current().pk)
+            data.setdefault('user', self.request.user.pk)
+            data.setdefault('user_name', self.request.user.username)
+            data.setdefault('user_email', self.request.user.profile.email)
+            data.setdefault('content_type', params.get('content_type_id'))
+            data.setdefault('object_pk', params.get('object_pk'))
+
+        return super(CommentViewSet, self).get_serializer(instance, data,
+                                                   files, many, partial)
+

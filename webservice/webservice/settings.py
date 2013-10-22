@@ -148,6 +148,10 @@ INTERNAL_APPS = [
     'tagging_autocomplete',
     'djrill',
     #'djohno',
+
+    'django.contrib.comments',
+    'django_comments_xtd',
+
 ]
 EXTENDAL_APPS = [
     'mobapi',
@@ -156,6 +160,7 @@ EXTENDAL_APPS = [
     'warehouse',
     'promotion',
     'account',
+    'comment',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
@@ -335,3 +340,7 @@ LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'
 
+
+COMMENTS_APP = "django_comments_xtd"
+COMMENTS_XTD_CONFIRM_EMAIL = False
+COMMENTS_XTD_MAX_THREAD_LEVEL = 0
