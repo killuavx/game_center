@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
 from warehouse.models import Package, Author, PackageVersionScreenshot, PackageVersion
+from comment.models import Comment
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.models import ContentType
+from django.utils.http import urlencode
 
 class ImageUrlField(serializers.ImageField):
 
@@ -76,6 +79,18 @@ def get_packageversion_download_size(version):
 
     return None
 
+def get_packageversion_comment_queryset(version):
+    version_cmt = Comment.objects.for_model(version)
+    return version_cmt.filter(is_public=True, is_removed=False)
+
+def get_packageversion_comments_url(version):
+    ct = ContentType.objects.get_for_model(version)
+    kwargs = dict(content_type=ct.pk, object_pk=version.pk)
+    url = reverse('comment-list')
+    return  "%s?%s" % (url, urlencode(kwargs))
+
+    return
+
 class PackageRelatedLatestVersinoMixin(object):
 
     serializer_class_screenshot = PackageVersionScreenshotSerializer
@@ -132,6 +147,19 @@ class PackageRelatedLatestVersinoMixin(object):
         latest_version = obj.versions.latest_published()
         return get_packageversion_download_size(latest_version)
 
+    def get_latest_version_comment_count(self, obj):
+        latest_version = obj.versions.latest_published()
+        return get_packageversion_comment_queryset(latest_version).count()
+
+    def get_latest_version_comments_url(self, obj):
+        latest_version = obj.versions.latest_published()
+        url = get_packageversion_comments_url(latest_version)
+        try:
+            request = self.context.get('request')
+            return request.build_absolute_uri(url)
+        except AttributeError:
+            pass
+        return url
 
 class PackageRelatedVersionsMixin(object):
 
@@ -176,6 +204,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
     categories_names = serializers.SerializerMethodField('get_categories_names')
     version_count = serializers.SerializerMethodField('get_version_count')
     download_size = serializers.SerializerMethodField('get_latest_version_download_size')
+    comments_url = serializers.SerializerMethodField('get_latest_version_comments_url')
     actions = serializers.SerializerMethodField('get_action_links')
 
     author = AuthorSummarySerializer()
@@ -194,6 +223,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'author',
                   'download_size',
                   'download_count',
+                  'comments_url',
                   'released_datetime',
                   'actions',
         )
@@ -214,9 +244,24 @@ class PackageVersionSerializer(serializers.ModelSerializer):
 
     screenshots = PackageVersionScreenshotSerializer(many=True)
 
+    comment_count = serializers.SerializerMethodField('get_version_comment_count')
+    def get_version_comment_count(self, obj):
+        version_cmt = get_packageversion_comment_queryset(obj)
+        return version_cmt.count()
+
+    comments_url = serializers.SerializerMethodField('get_version_comments_url')
+    def get_version_comments_url(self, obj):
+        url = get_packageversion_comments_url(obj)
+        try:
+            request = self.context.get('request')
+            return request.build_absolute_uri(url)
+        except AttributeError:
+            pass
+        return url
+
     class Meta:
         model = PackageVersion
-        fields =( 'icon',
+        fields = ('icon',
                   'cover',
                   'version_code',
                   'version_name',
@@ -225,6 +270,8 @@ class PackageVersionSerializer(serializers.ModelSerializer):
                   'download',
                   'download_count',
                   'download_size',
+                  'comments_url',
+                  'comment_count',
         )
 
 class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
@@ -243,6 +290,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
     download = serializers.SerializerMethodField('get_latest_version_download')
     download_count = serializers.SerializerMethodField('get_latest_version_download_count')
     download_size = serializers.SerializerMethodField('get_latest_version_download_size')
+    comment_count = serializers.SerializerMethodField('get_latest_version_comment_count')
+    comments_url = serializers.SerializerMethodField('get_latest_version_comments_url')
 
     actions = serializers.SerializerMethodField('get_action_links')
 
@@ -261,6 +310,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'download',
                   'download_count',
                   'download_size',
+                  'comment_count',
+                  'comments_url',
                   'tags',
                   'category_name',
                   'categories_names',
@@ -545,3 +596,28 @@ class PackageUpdateSummarySerializer(PackageSummarySerializer):
                   'actions',
                   'is_updatable',
         )
+
+#---------------------------------------------------------------------------
+class CommentSerializer(serializers.ModelSerializer):
+
+    user_icon = serializers.SerializerMethodField('get_user_icon_url')
+    def get_user_icon_url(self, obj):
+        try:
+            return obj.user.profile.icon['small'].url
+        except:
+            return None
+
+    class Meta:
+        model = Comment
+        fields = (
+            'user_name',
+            'user_icon',
+            'comment',
+            'submit_date',
+        )
+
+
+class CommentCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment

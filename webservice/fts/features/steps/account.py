@@ -71,3 +71,21 @@ def step_visit_account_profile(context):
     ApiDSL.When_i_prepare_auth_token(context, token=context.persona.get('token_key'))
     ApiDSL.When_i_access_myprofile(context)
 
+@given('I sign in as player name "{username}" exists in game center')
+def step_signin_existing_player(context, username):
+    user = ApiDSL.Given_i_have_account(context, dict(
+        username=username
+    ))
+    if username not in context.personas:
+        context.personas[username]=dict()
+
+    token = Token.objects.create(user=user)
+    context.personas[username].update(dict(
+        username=username,
+        email=user.profile.email,
+        phone=user.profile.phone,
+        token_key=token.key,
+        password=None
+    ))
+    context.persona = context.personas[username]
+    ApiDSL.When_i_prepare_auth_token(context, context.persona.get('token_key'))

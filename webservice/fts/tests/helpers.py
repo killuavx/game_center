@@ -130,8 +130,9 @@ class RestApiTest(TestCase):
 
     def setUp(self):
         self.world = dict()
-        self.client = Client(HTTP_ACCEPT='application/json',
-                             HTTP_CACHE_CONTROL='no-cache')
+        self.client_initial_params = dict(HTTP_ACCEPT='application/json',
+                                          HTTP_CACHE_CONTROL='no-cache')
+        self.client = Client(**self.client_initial_params)
 
     def convert_content(self, content):
         return convert_content(content)
@@ -267,6 +268,8 @@ class ApiDSL(RestApiTest):
                 'download',
                 'download_count',
                 'download_size',
+                'comment_count',
+                'comments_url',
                 'screenshots',
                 'version_code',
                 'version_name',
@@ -377,7 +380,6 @@ class ApiDSL(RestApiTest):
 
         self.world.setdefault('response', res)
 
-
     def Then_i_should_see_tips_list(self, tips_list):
         for t in tips_list:
             return ApiDSL.Then_i_should_see_tips(self, t)
@@ -434,6 +436,7 @@ class ApiDSL(RestApiTest):
             'categories_names',
             'tags',
             'version_count',
+            'comments_url',
             'download_size',
             'released_datetime',
             'summary',
@@ -561,6 +564,9 @@ class ApiDSL(RestApiTest):
         headers = self.world.get('headers', dict())
         res = self.client.get('/api/accounts/signout/', **headers)
         self.world.update(dict(response=res))
+        try: self.client_initial_params.pop('HTTP_AUTHORIZATION')
+        except: pass
+        self.client = Client(**self.client_initial_params)
 
     def Then_i_should_receive_auth_token(self):
         content = self.world.get('content')
@@ -569,6 +575,8 @@ class ApiDSL(RestApiTest):
     def When_i_prepare_auth_token(self, token):
         headers = dict(HTTP_AUTHORIZATION='Token %s'%token)
         self.world.update(dict(headers=headers))
+        self.client_initial_params.update(headers)
+        self.client = Client(**self.client_initial_params)
 
     def When_i_access_myprofile(self):
         headers = self.world.get('headers', dict())
@@ -638,6 +646,19 @@ class ApiDSL(RestApiTest):
                                          'icon',
                                          'title',
                                          'released_datetime')
+
+    def When_i_access_comment_list(self, obj):
+        from mobapi.serializers import PackageDetailSerializer
+        serializer = PackageDetailSerializer(obj)
+        res = self.client.get(serializer.data.get('comments_url'))
+        self.world.update(dict(response=res))
+
+    def When_i_post_comment_to(self, content, obj):
+        from mobapi.serializers import PackageDetailSerializer
+        serializer = PackageDetailSerializer(obj)
+        res = self.client.post(serializer.data.get('comments_url'),
+                               dict(comment=content))
+        self.world.update(dict(response=res))
 
     def clear_world(self):
         self.world = {}
