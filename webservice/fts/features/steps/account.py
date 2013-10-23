@@ -93,7 +93,6 @@ def step_signin_existing_player(context, username):
 @then('I should see the player profile with {field} value {value:d}')
 def step_should_see_profile_field(context, field, value):
     profile = context.world.get("content")
-    print(profile)
     profile.get(field) |should| equal_to(value)
     context.persona.update(dict(profile=profile))
     context.personas[context.persona.get('username')] = profile

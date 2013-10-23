@@ -551,7 +551,7 @@ class AccountAuthTokenView(ObtainAuthToken):
 
 from warehouse.models import PackageVersion
 
-class AccountCommentPackageViewSet(generics.ListAPIView):
+class AccountCommentPackageView(generics.ListAPIView):
     """ 已评论软件接口
 
     ## 访问方式
@@ -583,10 +583,12 @@ class AccountCommentPackageViewSet(generics.ListAPIView):
         user = request.user
         qs = Comment.objects.with_site().published().by_submit_order()
         version_ids = list(qs.filter(user=user).values_list('object_pk', flat=True))
-        pkg_ids = list(PackageVersion.objects.published().filter(pk__in=version_ids))
+        pkg_ids = PackageVersion.objects.published()\
+            .filter(pk__in=version_ids).values_list('package__pk', flat=True)
+        pkg_ids = list(pkg_ids)
         self.queryset = self.queryset.filter(pk__in=pkg_ids)
 
-        return super(AccountCommentPackageViewSet, self)\
+        return super(AccountCommentPackageView, self)\
             .get(request=request, *args, **kwargs)
 
 
@@ -597,7 +599,7 @@ def documentation_account_view(view):
         ('登陆', '/api/accounts/signin/'),
         ('注销', '/api/accounts/signout/'),
         ('账户信息', '/api/accounts/myprofile/'),
-        ('评论软件列表', '/api/accounts/comment_packages/'),
+        ('评论软件列表', '/api/accounts/commented_packages/'),
     )
     apis = [
         _link_mask % (r[0], r[1], r[1] ) for r in _maps

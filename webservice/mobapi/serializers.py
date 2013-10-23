@@ -87,9 +87,7 @@ def get_packageversion_comments_url(version):
     ct = ContentType.objects.get_for_model(version)
     kwargs = dict(content_type=ct.pk, object_pk=version.pk)
     url = reverse('comment-list')
-    return  "%s?%s" % (url, urlencode(kwargs))
-
-    return
+    return "%s?%s" % (url, urlencode(kwargs))
 
 class PackageRelatedLatestVersinoMixin(object):
 

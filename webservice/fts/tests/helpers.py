@@ -661,5 +661,11 @@ class ApiDSL(RestApiTest):
                                dict(comment=content))
         self.world.update(dict(response=res))
 
+
+    def When_i_access_my_commented_packages_page(self):
+        res = self.client.get('/api/accounts/commented_packages',
+                              follow=True)
+        self.world.update(dict(response=res))
+
     def clear_world(self):
         self.world = {}

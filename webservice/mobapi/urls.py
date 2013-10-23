@@ -22,6 +22,7 @@ from mobapi.views import ( AccountCreateView,
                            AccountMyProfileView,
                            AccountSignoutView,
                            AccountAuthTokenView,
+                           AccountCommentPackageView,
                            documentation_account_view,
                            PackageUpdateView,
                            )
@@ -30,6 +31,9 @@ urlpatterns += patterns('',
     url(r'^accounts/signin/?$', AccountAuthTokenView.as_view(), name='account-signin', prefix='account'),
     url(r'^accounts/signout/?$', AccountSignoutView.as_view(), name='account-signout', prefix='account'),
     url(r'^accounts/myprofile/?$', AccountMyProfileView.as_view(), name='account-myprofile', prefix='account'),
+    url(r'^accounts/commented_packages/?$', AccountCommentPackageView.as_view(),
+        name='account-commentedpackages',
+        prefix='accont'),
 
     url(r'^updates/?$', PackageUpdateView.as_view(), name='update-create', prefix='update'),
 )
