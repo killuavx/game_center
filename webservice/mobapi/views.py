@@ -945,7 +945,7 @@ class CommentViewSet(mixins.CreateModelMixin,
     authentication_classes = (PlayerTokenAuthentication,)
     permission_classes = (IsAuthenticatedOrReadOnly, )
     serializer_class = CommentSerializer
-    queryset = Comment.objects.all().order_by('-submit_date')
+    queryset = Comment.objects.published().with_site().by_submit_order()
 
     def check_paramters(self, querydict):
         ct = 'content_type'
@@ -965,12 +965,13 @@ class CommentViewSet(mixins.CreateModelMixin,
         return content_object
 
     def get_queryset(self):
-        return Comment.objects.for_model(self.content_object)
+        return Comment.objects.for_model(self.content_object)\
+            .published().with_site().by_submit_order()
 
     def list(self, request, *args, **kwargs):
         params = self.check_paramters(copy.deepcopy(request.GET))
         bad = Response({'detail': 'Bad Request'},
-                            status=status.HTTP_400_BAD_REQUEST)
+                       status=status.HTTP_400_BAD_REQUEST)
         if not params:
             return bad
 
