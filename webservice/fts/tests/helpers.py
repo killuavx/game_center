@@ -588,6 +588,7 @@ class ApiDSL(RestApiTest):
         content.get('username') |should| equal_to( user_profile.get('username'))
         content.get('email') |should| equal_to( user_profile.get('email'))
         content.get('phone') |should| equal_to( user_profile.get('phone'))
+        content |should| include_keys('comment_count')
         content |should| include_keys('icon')
 
     def When_i_access_mybookmarks(self):
