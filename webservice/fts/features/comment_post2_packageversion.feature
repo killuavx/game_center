@@ -40,3 +40,7 @@ Feature: post comment to package version
     When I access comment list of the package
     Then I should receive 200 OK
      And I should see comment list of the package version in comment page
+
+    When I visit my profile using my authorization token
+    Then I should receive 200 OK
+     And I should see the player profile with comment_count value 1

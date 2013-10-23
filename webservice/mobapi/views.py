@@ -549,6 +549,47 @@ class AccountAuthTokenView(ObtainAuthToken):
     """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
 
+from warehouse.models import PackageVersion
+
+class AccountCommentPackageViewSet(generics.ListAPIView):
+    """ 已评论软件接口
+
+    ## 访问方式
+
+        GET /api/accounts/commented_packages/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    ## 请求数据
+
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
+
+    ## 响应内容
+
+    * 200 HTTP_200_OK
+        * 获取成功
+    * 401 HTTP_401_UNAUTHORIZED
+        * 未登陆
+        * 无效的HTTP Header: Authorization
+
+    """
+
+    authentication_classes = (PlayerTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+    serializer_class = PackageSummarySerializer
+    queryset = Package.objects.published()
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        qs = Comment.objects.with_site().published().by_submit_order()
+        version_ids = list(qs.filter(user=user).values_list('object_pk', flat=True))
+        pkg_ids = list(PackageVersion.objects.published().filter(pk__in=version_ids))
+        self.queryset = self.queryset.filter(pk__in=pkg_ids)
+
+        return super(AccountCommentPackageViewSet, self)\
+            .get(request=request, *args, **kwargs)
+
+
 def documentation_account_view(view):
     _link_mask = '* %s: [%s](%s)'
     _maps = (
@@ -556,6 +597,7 @@ def documentation_account_view(view):
         ('登陆', '/api/accounts/signin/'),
         ('注销', '/api/accounts/signout/'),
         ('账户信息', '/api/accounts/myprofile/'),
+        ('评论软件列表', '/api/accounts/comment_packages/'),
     )
     apis = [
         _link_mask % (r[0], r[1], r[1] ) for r in _maps

@@ -557,6 +557,11 @@ class AccountDetailSerializer(AccountRelatedProfileMixin,
     phone = serializers.SerializerMethodField('get_profile_phone')
     icon = serializers.SerializerMethodField('get_profile_icon_url')
 
+    comment_count = serializers.SerializerMethodField('get_comment_count')
+
+    def get_comment_count(self, obj):
+        return Comment.objects.with_site().published().filter(user=obj).count()
+
     class Meta:
         model = Player
         fields = (
@@ -564,6 +569,7 @@ class AccountDetailSerializer(AccountRelatedProfileMixin,
             'email',
             'phone',
             'icon',
+            'comment_count',
         )
 
 #---------------------------------------------------------------------------
