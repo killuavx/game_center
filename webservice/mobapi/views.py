@@ -868,9 +868,8 @@ class PackageUpdateView(generics.CreateAPIView):
 #----------------------------------------------------------------
 from mobapi.serializers import CommentSerializer, CommentCreateSerializer
 from comment.models import Comment
-from django.contrib.sites.models import Site
-import django_filters
 from django.core import exceptions
+from django.conf import settings
 
 
 class CommentViewSet(mixins.CreateModelMixin,
@@ -1016,7 +1015,7 @@ class CommentViewSet(mixins.CreateModelMixin,
             params = self.check_paramters(queryparams)
             data = copy.deepcopy(data)
             data.setdefault('submit_date', now())
-            data.setdefault('site', Site.objects.get_current().pk)
+            data.setdefault('site', settings.SITE_ID)
             data.setdefault('user', self.request.user.pk)
             data.setdefault('user_name', self.request.user.username)
             data.setdefault('user_email', self.request.user.profile.email)
