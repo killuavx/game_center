@@ -6,18 +6,30 @@ from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.utils.http import urlencode
 
+IMAGE_ICON_SIZE = 'middle'
+IMAGE_COVER_SIZE = 'small'
+
 class ImageUrlField(serializers.ImageField):
+
+    size_alias = 'middle'
 
     def to_native(self, obj):
         if not obj:
             return None
         try:
-            return obj['middle'].url
+            return obj[self.size_alias].url
         except (ValueError, KeyError):
             return None
 
     def from_native(self, data):
         pass
+
+
+def factory_imageurl_field(size_alias='middle'):
+    field = ImageUrlField()
+    field.size_alias = size_alias
+    return field
+
 
 class FileUrlField(serializers.FileField):
 
@@ -113,13 +125,13 @@ class PackageRelatedLatestVersinoMixin(object):
 
     def get_latest_version_cover_url(self, obj):
         try:
-            return obj.versions.latest_published().cover['middle'].url
+            return obj.versions.latest_published().cover[IMAGE_COVER_SIZE].url
         except:
             return None
 
     def get_latest_version_icon_url(self, obj):
         try:
-            return obj.versions.latest_published().icon['middle'].url
+            return obj.versions.latest_published().icon[IMAGE_ICON_SIZE].url
         except:
             return None
 
@@ -127,7 +139,7 @@ class PackageRelatedLatestVersinoMixin(object):
         try:
             latest_version = obj.versions.latest_published()
             screenshots_serializer = self.serializer_class_screenshot(
-                latest_version.screenshots.all() ,
+                latest_version.screenshots.all(),
                 many=True)
             return screenshots_serializer.data
         except:
@@ -228,9 +240,9 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
 
 class PackageVersionSerializer(serializers.ModelSerializer):
 
-    icon = ImageUrlField()
+    icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
-    cover = ImageUrlField()
+    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
 
     download = serializers.SerializerMethodField('get_version_download_url')
     def get_version_download_url(self, obj):
@@ -325,9 +337,9 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
 
 class AuthorSerializer(serializers.HyperlinkedModelSerializer):
 
-    icon = ImageUrlField()
+    icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
-    cover = ImageUrlField()
+    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
 
     packages_url = serializers.SerializerMethodField('get_packages_url')
     def get_packages_url(self, obj):
@@ -368,7 +380,7 @@ class CategorySummarySerializer(CategoryRelatedChildrenMixin,
 
     PREFIX = 'category'
 
-    icon = ImageUrlField()
+    icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     children = serializers.SerializerMethodField('get_children')
 
@@ -394,7 +406,7 @@ class CategoryDetailSerializer(serializers.HyperlinkedModelSerializer):
 
     PREFIX = 'category'
 
-    icon = ImageUrlField()
+    icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     packages_url = serializers.SerializerMethodField('get_items_url')
     def get_items_url(self, obj):
@@ -440,9 +452,10 @@ class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
 class TopicDetailWithPackageSerializer(
     TopicRelatedItemCountUrlAndChildrenUrlMixin,
     serializers.HyperlinkedModelSerializer):
-    icon = ImageUrlField()
 
-    cover = ImageUrlField()
+    icon = factory_imageurl_field(IMAGE_ICON_SIZE)
+
+    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
 
     items_url = serializers.SerializerMethodField('get_items_url')
 
@@ -467,9 +480,10 @@ class TopicDetailWithPackageSerializer(
 class TopicSummarySerializer(
     TopicRelatedItemCountUrlAndChildrenUrlMixin,
     serializers.HyperlinkedModelSerializer):
-    icon = ImageUrlField()
 
-    cover = ImageUrlField()
+    icon = factory_imageurl_field(IMAGE_ICON_SIZE)
+
+    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
 
     items_url = serializers.SerializerMethodField('get_items_url')
 
@@ -514,7 +528,8 @@ class AdvertisementSerializer(serializers.HyperlinkedModelSerializer):
     def get_content_type(self, obj):
         return str(obj.content_type).lower()
 
-    cover = ImageUrlField()
+    cover = factory_imageurl_field('small')
+
     class Meta:
         model = Advertisement
         fields =( 'title',

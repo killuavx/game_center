@@ -1,6 +1,7 @@
 # Django settings for webservice p
 # for django-cms
 from os.path import join, dirname, abspath
+
 gettext = lambda s: s
 PROJECT_PATH = abspath(dirname(dirname(__file__)))
 
@@ -8,7 +9,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+# ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -91,7 +92,7 @@ SECRET_KEY = '&bfc%u6_w7)&r$(utbxk#!idnv*3bm^tqnc-lgrwq0=%lh@j7%'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    #     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -115,6 +116,7 @@ TEMPLATE_DIRS = (
 )
 
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.request',
 )
@@ -172,7 +174,7 @@ INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
 LANGUAGES = (
     ('cn', gettext('Chinese')),
-  #  ('en', gettext('English')),
+    #  ('en', gettext('English')),
 )
 
 FILE_UPLOAD_HANDLERS = (
@@ -180,7 +182,7 @@ FILE_UPLOAD_HANDLERS = (
     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
 )
 
-FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440*4
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440 * 4
 FILE_UPLOAD_PERMISSIONS = None
 FILE_UPLOAD_TEMP_DIR = None
 
@@ -191,68 +193,75 @@ THUMBNAIL_ALIASES_ICON = {
         'quality': 85,
         'crop': False,
         'upscale': True,
-        },
-    'middle':{
+    },
+    'middle': {
         'size': (72, 72),
         'quality': 85,
         'crop': False,
         'upscale': True,
-        },
+    },
     'small': {
         'size': (48, 48),
         'quality': 85,
         'crop': False,
         'upscale': True,
-        },
-    }
+    },
+}
 THUMBNAIL_ALIASES_COVER = {
-        'large': {
-            'size': (900, 360),
-            'quality': 85,
-            'crop': False,
-            'upscale': True,
-            },
-        'middle':{
-            'size': (450, 180),
-            'quality': 85,
-            'crop': False,
-            'upscale': True,
-            },
-        'small': {
-            'size': (48, 48),
-            'quality': 85,
-            'crop': False,
-            'upscale': True,
-            },
-        }
+
+    'large': {
+        'size': (800, 480),
+        'quality': 85,
+        'crop': False,
+        'upscale': True,
+    },
+    'middle': {
+        'size': (800, 480),
+        'quality': 85,
+        'crop': False,
+        'upscale': True,
+    },
+    'small': {
+        'size': (480, 125),
+        'quality': 85,
+        'crop': False,
+        'upscale': True,
+    },
+    'tiny': {
+        'size': (190, 72),
+        'quality': 85,
+        'crop': False,
+        'upscale': True,
+    },
+}
 THUMBNAIL_ALIASES_SCREENSHOT = {
     'large': {
-        'size': (900, 360),
+        'size': (480, 800),
         'quality': 85,
         'crop': False,
         'upscale': True,
-        },
-    'middle':{
-        'size': (450, 180),
+    },
+    'middle': {
+        'size': (480, 800),
         'quality': 85,
         'crop': False,
         'upscale': True,
-        },
+    },
     'small': {
-        'size': (150, 56),
+        'size': (240, 400),
         'quality': 85,
         'crop': False,
         'upscale': True,
-        },
-    }
+    },
+}
 THUMBNAIL_ALIASES = {
     '': {
         'avatar': {'size': (50, 50), 'crop': 'smart'},
-        },
-    'warehouse.PackageVersion.icon':  THUMBNAIL_ALIASES_ICON,
+    },
+    'warehouse.PackageVersion.icon': THUMBNAIL_ALIASES_ICON,
     'warehouse.PackageVersion.cover': THUMBNAIL_ALIASES_COVER,
     'warehouse.PackageVersionScreenshot.image': THUMBNAIL_ALIASES_SCREENSHOT,
-    'warehouse.Author.icon':  THUMBNAIL_ALIASES_ICON,
+    'warehouse.Author.icon': THUMBNAIL_ALIASES_ICON,
     'warehouse.Author.cover': THUMBNAIL_ALIASES_COVER,
     'taxonomy.Category.icon': THUMBNAIL_ALIASES_ICON,
     'taxonomy.Topic.icon': THUMBNAIL_ALIASES_ICON,
@@ -260,8 +269,7 @@ THUMBNAIL_ALIASES = {
     'promotion.Advertisement.cover': THUMBNAIL_ALIASES_COVER,
     'account.Profile.cover': THUMBNAIL_ALIASES_COVER,
     'account.Profile.mugshot': THUMBNAIL_ALIASES_ICON,
-    }
-
+}
 
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
@@ -271,19 +279,19 @@ THUMBNAIL_PROCESSORS = (
 )
 
 REST_FRAMEWORK = {
-    'DATE_FORMAT':'%s',
-    'DATETIME_FORMAT':'%s',
+    'DATE_FORMAT': '%s',
+    'DATETIME_FORMAT': '%s',
     'PAGINATE_BY': 10,
 
     #'DEFAULT_MODEL_SERIALIZER_CLASS':
     #    'rest_framework.serializers.HyperlinkedModelSerializer',
 
-    'DEFAULT_PARSER_CLASSES':(
+    'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.JSONParser',
     ),
-    'DEFAULT_RENDERER_CLASSES':(
+    'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
@@ -307,20 +315,22 @@ DEFAULT_FROM_EMAIL = 'killua.vx@gmail.com'
 SWAGGER_SETTINGS = {
     "exclude_namespaces": [], # List URL namespaces to ignore
     "api_version": '0.1', # Specify your API's version
-    "enabled_methods": [ # Specify which methods to enable in Swagger UI
-                         'get',
-                         'post',
-                         'put',
-                         'patch',
-                         'delete'
+    "enabled_methods": [# Specify which methods to enable in Swagger UI
+                        'get',
+                        'post',
+                        'put',
+                        'patch',
+                        'delete'
     ],
     "api_key": '', # An API key
-    "is_authenticated": False,  # Set to True to enforce user authentication,
-    "is_superuser": False,  # Set to True to enforce admin only access
+    "is_authenticated": False, # Set to True to enforce user authentication,
+    "is_superuser": False, # Set to True to enforce admin only access
 }
+
 
 def NOW():
     from django.utils import timezone
+
     return timezone.now()
 
 # django userena
@@ -339,7 +349,6 @@ USERENA_MUGSHOT_CROP_TYPE = 'smart'
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'
-
 
 COMMENTS_APP = "django_comments_xtd"
 COMMENTS_XTD_CONFIRM_EMAIL = False
