@@ -3,6 +3,7 @@ __author__ = 'me'
 from behave import *
 from behaving.web.steps import *
 from fts.features import support
+from fts.tests.helpers import get_current_request
 from should_dsl import should, should_not
 from fts.tests.helpers import ApiDSL
 from warehouse.models import Package, PackageVersion
@@ -105,3 +106,21 @@ def step_package_has_a_set_of_versions(context, title):
         the_latest_version_code=min(list(versions.keys())),
         the_package_versions=versions,
     ))
+
+@then('I should see the package commented by me in result list')
+def step_should_see_commented_package_in_result_list(context):
+    from mobapi.serializers import get_packageversion_comments_url
+    results = context.world.get('content').get('results')
+    except_package = results[0]
+    the_package_versions = context.world.get('the_package_versions')
+    latest_version_code = context.world.get('the_latest_version_code')
+    the_latest_version = the_package_versions[latest_version_code]
+
+    # comments_url has query string with content_type and object_pk
+    # it can be compare different package version
+    # FIXME choose other way to compare differenct package version
+    comments_url = get_packageversion_comments_url(the_latest_version)
+    absolute_comments_url = get_current_request() \
+        .build_absolute_uri(comments_url)
+    absolute_comments_url |should| equal_to(except_package.get('comments_url'))
+
