@@ -182,6 +182,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
         ViewSet = PackageViewSet
         queryset = category.packages.all()
+        queryset = queryset.published()
         list_view = ViewSet.as_view({'get':'list'}, queryset=queryset)
         return list_view(request, *args, **kwargs)
 

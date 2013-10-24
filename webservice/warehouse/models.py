@@ -328,6 +328,7 @@ class PackageQuerySet(QuerySet):
             return self.order_by('-'+field)
         else:
             return self.order_by('+'+field)
+
     def by_rankings_order(self):
         return self.order_by('-download_count')
 
