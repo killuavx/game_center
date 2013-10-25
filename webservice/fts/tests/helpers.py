@@ -28,7 +28,6 @@ def guid():
 
 def create_category(**defaults):
     defaults.setdefault('name', "Game")
-    defaults.setdefault('slug', guid())
     inst = Category.objects.create(**defaults)
     _models.append(inst)
     return inst
