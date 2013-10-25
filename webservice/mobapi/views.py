@@ -12,8 +12,24 @@ from mobapi.serializers import (PackageSummarySerializer,
                                 PackageDetailSerializer,
                                 AuthorSerializer)
 
+
 class SphinxSearchFilter(filters.SearchFilter):
+
     search_param = 'q'
+
+    _exclude_category_slug = 'application'
+
+    def filter_queryset(self, request, queryset, view):
+        qs = super(SphinxSearchFilter, self)\
+            .filter_queryset(request, queryset, view)
+        try:
+            exclude_pkg_pks = Category.objects\
+                .get(slug=self._exclude_category_slug).packages\
+                .values_list('pk', flat=True)
+            return qs.exclude(pk__in=exclude_pkg_pks)
+        except exceptions.ObjectDoesNotExist:
+            return qs
+
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     """ 软件接口
