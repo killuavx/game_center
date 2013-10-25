@@ -176,6 +176,9 @@ class TopicQuerySet(QuerySet):
     def showed(self):
         return self.hidden(False)
 
+    def by_ordering(self):
+        return self.order_by('ordering')
+
 class TopicManager(TreeManager, PassThroughManager):
     pass
 

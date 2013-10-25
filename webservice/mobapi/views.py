@@ -213,8 +213,10 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         self.queryset = origin_queryset
         return response
 
+
 from mobapi.helpers import (get_item_model_by_topic,
-                              get_viewset_by_topic)
+                            get_viewset_by_topic)
+
 
 class TopicViewSet(viewsets.ReadOnlyModelViewSet):
     """ 专区接口
@@ -266,7 +268,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
                        filters.DjangoFilterBackend,
     )
     filter_fields = ('name', 'slug',)
-    ordering = ('released_datetime',)
+    ordering = ('released_datetime', )
 
     def list(self, request, *args, **kwargs):
         #origin_queryset, self.queryset = self.queryset, self.queryset.as_root()
@@ -279,9 +281,11 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
     def children(self, request, slug, *args, **kwargs):
         """子专区列表"""
         queryset = self.queryset.filter(slug=slug)
-        topic =  generics.get_object_or_404(queryset, slug=slug)
+        topic = generics.get_object_or_404(queryset, slug=slug)
 
-        origin_queryset, self.queryset = self.queryset, self.queryset.filter(parent=topic)
+        origin_queryset, self.queryset =\
+            self.queryset, self.queryset.filter(parent=topic)
+        self.ordering = ('ordering', )
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
         return res
 
