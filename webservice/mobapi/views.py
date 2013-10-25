@@ -13,22 +13,23 @@ from mobapi.serializers import (PackageSummarySerializer,
                                 AuthorSerializer)
 
 
-class SphinxSearchFilter(filters.SearchFilter):
-
-    search_param = 'q'
+class PackageExcludeCategoryOfApplicationFilter(filters.BaseFilterBackend):
 
     _exclude_category_slug = 'application'
 
     def filter_queryset(self, request, queryset, view):
-        qs = super(SphinxSearchFilter, self)\
-            .filter_queryset(request, queryset, view)
         try:
-            exclude_pkg_pks = Category.objects\
-                .get(slug=self._exclude_category_slug).packages\
+            exclude_pkg_pks = Category.objects \
+                .get(slug=self._exclude_category_slug).packages \
                 .values_list('pk', flat=True)
-            return qs.exclude(pk__in=exclude_pkg_pks)
+            return queryset.exclude(pk__in=exclude_pkg_pks)
         except exceptions.ObjectDoesNotExist:
-            return qs
+            return queryset
+
+
+class SphinxSearchFilter(filters.SearchFilter):
+
+    search_param = 'q'
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -177,6 +178,7 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
 class PackageRankingsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = PackageSummarySerializer
     queryset = Package.objects.published().by_rankings_order()
+    filter_backends = (PackageExcludeCategoryOfApplicationFilter, )
 
 #------------------------------------------------------------------
 from taxonomy.models import Category, Topic, TopicalItem
