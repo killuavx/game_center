@@ -170,7 +170,7 @@ from mobapi.serializers import ( CategoryDetailSerializer,
                                  TopicDetailWithPackageSerializer )
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.as_root().all()
+    queryset = Category.objects.as_root().showed()
     serializer_class = CategorySummarySerializer
     lookup_field = 'slug'
     paginate_by = None
@@ -183,7 +183,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         ViewSet = PackageViewSet
         queryset = category.packages.all()
         queryset = queryset.published()
-        list_view = ViewSet.as_view({'get':'list'}, queryset=queryset)
+        list_view = ViewSet.as_view({'get': 'list'}, queryset=queryset)
         return list_view(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):

@@ -5,6 +5,7 @@ from comment.models import Comment
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
 from django.utils.http import urlencode
+from easy_thumbnails.exceptions import InvalidImageFormatError
 
 IMAGE_ICON_SIZE = 'middle'
 IMAGE_COVER_SIZE = 'small'
@@ -18,7 +19,7 @@ class ImageUrlField(serializers.ImageField):
             return None
         try:
             return obj[self.size_alias].url
-        except (ValueError, KeyError):
+        except (ValueError, KeyError, InvalidImageFormatError):
             return None
 
     def from_native(self, data):
@@ -185,7 +186,7 @@ class PackageRelatedCategoryMixin(object):
             return None
 
     def get_categories_names(self, obj):
-        names = ( cat.name for cat in obj.categories.all() )
+        names = (cat.name for cat in obj.categories.all())
         return names
 
 class PackageActionsMixin(object):
@@ -367,11 +368,12 @@ def get_url_for_taxonomy(request, obj, related_items, reverse_viewname):
 class CategoryRelatedChildrenMixin(object):
 
     def get_children(self, obj):
+        qs = obj.children.showed()
         try:
-            return CategorySummarySerializer(instance=obj.children.all(),
-                                             many=True,
-                                             context=self.context
-                    ).data
+            return CategorySummarySerializer(
+                instance=qs,
+                many=True,
+                context=self.context).data
         except:
             return list()
 

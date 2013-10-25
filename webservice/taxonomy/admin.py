@@ -27,9 +27,11 @@ class CategorizedPackageInline(admin.TabularInline):
 
 class CategoryAdmin(MPTTModelAdmin, SortableModelAdmin, VersionAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ('name', 'show_icon', 'subtitle', 'slug', 'ordering')
+    list_display = ('name', 'show_icon', 'subtitle', 'slug', 'is_hidden', 'ordering',)
     list_display_links = ('name', )
-    inlines = (CategorizedPackageInline,)
+    list_editable = ('is_hidden',)
+    list_filter = ('is_hidden',)
+    #inlines = (CategorizedPackageInline,)
 
     mptt_level_indent = 20
     sortable = 'ordering'
@@ -71,11 +73,11 @@ class TopicInline(SortableTabularInline):
 class TopicAdmin(MPTTModelAdmin, SortableModelAdmin, VersionAdmin):
 
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ('name', 'show_icon_or_cover', 'slug', 'status')
+    list_display = ('name', 'show_icon_or_cover', 'slug', 'status', 'is_hidden')
     list_display_links = ('name', )
     search_fields = ('^name', '^slug', )
-    list_filter = ('parent',)
-    list_editable = ('status', )
+    list_filter = ('parent', 'status')
+    list_editable = ('status', 'is_hidden')
     mptt_level_indent = 20
     sortable = 'ordering'
 

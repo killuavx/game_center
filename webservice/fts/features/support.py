@@ -9,3 +9,12 @@ def str2empty(s):
         return s
 
 register_type(emptys=str2empty)
+
+def in2boolean(s):
+    is_ = s.split(" ")
+    if is_[0].lower() == 'not':
+        return False
+    else:
+        return True
+
+register_type(inb=in2boolean)
