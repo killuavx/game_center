@@ -325,11 +325,25 @@ class ApiDSL(RestApiTest):
 
     def When_i_access_category_list(self):
         res = self.client.get('/api/categories/')
-        self.world.setdefault('response', res)
+        self.world.update(dict(response=res))
 
     def When_i_access_category_detail(self, category):
         res = self.client.get('/api/categories/%s/'%category.slug)
-        self.world.setdefault('response', res)
+        self.world.update(dict(response=res))
+
+    def Then_i_should_see_the_category_in_category_tree(self, category, flag=True):
+        category_tree = self.world.get('content')
+        def _tree_contains_category(tree, category):
+            for element in tree:
+                if element.get('slug') == category.slug:
+                    return True
+                else:
+                    flag = _tree_contains_category(element.get('children'), category)
+                    if flag:
+                        return True
+            return False
+
+        _tree_contains_category(category_tree, category) |should| be(flag)
 
     def When_i_access_topic_list(self, topic=None):
         if topic:

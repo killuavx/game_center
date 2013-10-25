@@ -12,8 +12,25 @@ from mobapi.serializers import (PackageSummarySerializer,
                                 PackageDetailSerializer,
                                 AuthorSerializer)
 
+
+class PackageExcludeCategoryOfApplicationFilter(filters.BaseFilterBackend):
+
+    _exclude_category_slug = 'application'
+
+    def filter_queryset(self, request, queryset, view):
+        try:
+            exclude_pkg_pks = Category.objects \
+                .get(slug=self._exclude_category_slug).packages \
+                .values_list('pk', flat=True)
+            return queryset.exclude(pk__in=exclude_pkg_pks)
+        except exceptions.ObjectDoesNotExist:
+            return queryset
+
+
 class SphinxSearchFilter(filters.SearchFilter):
+
     search_param = 'q'
+
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     """ 软件接口
@@ -161,6 +178,7 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
 class PackageRankingsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = PackageSummarySerializer
     queryset = Package.objects.published().by_rankings_order()
+    filter_backends = (PackageExcludeCategoryOfApplicationFilter, )
 
 #------------------------------------------------------------------
 from taxonomy.models import Category, Topic, TopicalItem
@@ -170,7 +188,7 @@ from mobapi.serializers import ( CategoryDetailSerializer,
                                  TopicDetailWithPackageSerializer )
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.as_root().all()
+    queryset = Category.objects.as_root().showed()
     serializer_class = CategorySummarySerializer
     lookup_field = 'slug'
     paginate_by = None
@@ -183,7 +201,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         ViewSet = PackageViewSet
         queryset = category.packages.all()
         queryset = queryset.published()
-        list_view = ViewSet.as_view({'get':'list'}, queryset=queryset)
+        list_view = ViewSet.as_view({'get': 'list'}, queryset=queryset)
         return list_view(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):

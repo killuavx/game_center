@@ -36,18 +36,26 @@ def factory_taxonomy_upload_to_path(basename):
 class Taxonomy(models.Model):
     name = models.CharField(max_length=32,
                             unique=True,
-                            help_text='Short descriptive name for this taxonomy.',
+                            help_text=_('Short descriptive name for this taxonomy.'),
                             )
 
+    slug = SlugField(
+        max_length=32,
+        blank=False,
+        unique=True,
+        db_index=True,
+        help_text=_('Short descriptive unique name for use in urls.'),
+        )
 
-    slug = SlugField(max_length=32,
-                     blank=False,
-                     unique=True,
-                     db_index=True,
-                     help_text='Short descriptive unique name for use in urls.',
-                     )
+    ordering = models.PositiveIntegerField(
+        default=0,
+        blank=True,
+        db_index=True)
 
-    ordering = models.PositiveIntegerField(default=0, blank=True, db_index=True)
+    is_hidden = models.BooleanField(
+        default=False,
+        blank=True,
+        help_text=_('can visit from font side but hidden'))
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
@@ -81,6 +89,17 @@ class CategoryQuerySet(QuerySet):
 
     def with_item_count(self):
         return self.annotate(item_count=models.Count('packages'))
+
+    def hidden(self, flag=None):
+        if flag is None:
+            return self
+        elif flag:
+            return self.filter(is_hidden=True)
+        else:
+            return self.filter(is_hidden=False)
+
+    def showed(self):
+        return self.hidden(False)
 
 class CategoryManager(TreeManager, PassThroughManager):
     pass
@@ -145,6 +164,17 @@ class TopicQuerySet(QuerySet):
 
     def with_item_count(self):
         return self.annotate(item_count=models.Count('items'))
+
+    def hidden(self, flag=None):
+        if flag is None:
+            return self
+        elif flag:
+            return self.filter(is_hidden=True)
+        else:
+            return self.filter(is_hidden=False)
+
+    def showed(self):
+        return self.hidden(False)
 
 class TopicManager(TreeManager, PassThroughManager):
     pass
