@@ -437,7 +437,7 @@ class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
             .get_items_by_topic(obj, get_item_model_by_topic(obj))
 
     def get_items_count(self, obj):
-        return self.get_items_queryset(obj).count()
+        return self.get_items_queryset(obj).published().count()
 
     def get_items_url(self, obj):
         return get_url_for_taxonomy(self.context.get('request'),
