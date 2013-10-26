@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.test.testcases import TestCase
-from django.contrib.comments.models import Comment
+from comment.models import Comment
 from django.contrib.sites.models import Site
+from django.utils.timezone import datetime, now
 from django.conf import settings
 
 from fts.tests.helpers import ApiDSL
@@ -14,12 +15,19 @@ class CommentUnitTest(TestCase):
         package = ApiDSL.Given_i_have_published_package(self, title='愤怒的小鸟')
         version = package.versions.get()
         cmt = Comment(site=Site.objects.get_current())
+        cmt.submit_date = now()
         cmt.content_object = version
         cmt.comment = '好玩!'
         cmt.user = player
 
+        cmt.save()
+        Comment.objects.for_model(version).count() |should| equal_to(1)
+        Comment.objects.for_model(version)\
+            .published().count() |should| equal_to(0)
+
+        cmt.is_public = True
         cmt.save |should| change(
-            Comment.objects.for_model(version).count
+            Comment.objects.for_model(version).published().count
         ).from_(0).to(1)
 
         except_cmt = Comment.objects.get(pk=cmt.pk)
