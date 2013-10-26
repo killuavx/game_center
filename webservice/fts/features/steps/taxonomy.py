@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from behave import *
-from fts.features import support
 from fts.tests import helpers
 from fts.tests.helpers import ApiDSL
 from should_dsl import should
 
 
-@then('I should see the category {is_in:inb} result tree')
+@then('I should see the category {is_in:in?} result tree')
 def step_should_see_the_category_in_reuslt(context, is_in):
     the_category = context.world.get('the_category')
     ApiDSL.Then_i_should_see_the_category_in_category_tree(context,

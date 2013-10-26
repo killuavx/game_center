@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'me'
 from behave import when, given, then
-from fts.features import support
 from behaving.personas.steps import *
 from fts.tests.helpers import ApiDSL, RestApiTest
 from should_dsl import should
@@ -20,7 +19,7 @@ def step_given_as_player(context, name, email, phone, password):
     ))
     step_as_player(context, name=name, email=email, phone=phone, password=password)
 
-@when('I am player, named "{name:emptys}", email "{email:emptys}", phone "{phone:emptys}", with password "{password:emptys}"')
+@when('I am player, named "{name:n?s}", email "{email:n?s}", phone "{phone:n?s}", with password "{password:n?s}"')
 def step_as_player(context, name=None, email=None, phone=None, password=None):
     data = { k:v for k,v in dict(username=name,
                            email=email,

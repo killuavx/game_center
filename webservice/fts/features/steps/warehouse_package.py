@@ -2,7 +2,6 @@
 __author__ = 'me'
 from behave import *
 from behaving.web.steps import *
-from fts.features import support
 from fts.tests.helpers import get_current_request
 from should_dsl import should, should_not
 from fts.tests.helpers import ApiDSL
