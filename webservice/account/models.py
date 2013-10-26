@@ -124,4 +124,7 @@ Profile.__dict__.get('mugshot').field.upload_to =\
 
 @receiver(post_delete, sender=User)
 def post_delete_user(sender, instance, *args, **kwargs):
-    instance.gamecenter_profile.delete()
+    try:
+        instance.gamecenter_profile.delete()
+    except Profile.DoesNotExist:
+        pass
