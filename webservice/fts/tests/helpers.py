@@ -632,6 +632,10 @@ class ApiDSL(RestApiTest):
         res = self.client.head('/api/bookmarks/?%s'%query, **headers)
         self.world.update(dict(response=res))
 
+    def When_i_access_bookmarks_page(self):
+        res = self.client.get('/api/bookmarks/')
+        self.world.update(dict(response=res))
+
     def When_i_access_url_with_head_method(self, url):
         headers = self.world.get('headers', dict())
         res = self.client.head(url, **headers)
