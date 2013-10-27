@@ -437,7 +437,7 @@ class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
             .get_items_by_topic(obj, get_item_model_by_topic(obj))
 
     def get_items_count(self, obj):
-        return self.get_items_queryset(obj).count()
+        return self.get_items_queryset(obj).published().count()
 
     def get_items_url(self, obj):
         return get_url_for_taxonomy(self.context.get('request'),
@@ -565,6 +565,19 @@ class AccountRelatedProfileMixin(object):
             pass
         return None
 
+    def get_comment_count(self, obj):
+        try:
+            return Comment.objects.with_site().published().filter(user=obj).count()
+        except:
+            return 0
+
+    def get_profile_bookmark_count(self, obj):
+        try:
+            return obj.profile.bookmarks.published().count()
+        except:
+            pass
+        return 0
+
 class AccountDetailSerializer(AccountRelatedProfileMixin,
                               serializers.ModelSerializer):
 
@@ -574,8 +587,8 @@ class AccountDetailSerializer(AccountRelatedProfileMixin,
 
     comment_count = serializers.SerializerMethodField('get_comment_count')
 
-    def get_comment_count(self, obj):
-        return Comment.objects.with_site().published().filter(user=obj).count()
+    bookmark_count = serializers\
+        .SerializerMethodField('get_profile_bookmark_count')
 
     class Meta:
         model = Player
@@ -585,6 +598,7 @@ class AccountDetailSerializer(AccountRelatedProfileMixin,
             'phone',
             'icon',
             'comment_count',
+            'bookmark_count',
         )
 
 #---------------------------------------------------------------------------

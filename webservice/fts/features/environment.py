@@ -8,6 +8,7 @@ from fts.tests import helpers
 from fts.middlewares import get_current_request
 from django.conf import settings
 import logging
+from fts.features import support
 
 PERSONAS = {}
 def before_all(context):

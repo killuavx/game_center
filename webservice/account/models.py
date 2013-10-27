@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.query import QuerySet
 from django.core import validators
-from django.contrib.auth.models import User, UserManager
+from django.contrib.auth.models import User, UserManager, Group
 from django.dispatch import receiver
 from django.db.models.signals import post_delete
 from django.utils.translation import ugettext as _
@@ -58,6 +58,8 @@ class PlayerManager(UserManager, PassThroughManager):
         user = super(PlayerManager, self).create_user(username=username,
                                                       password=password,
                                                       **extra_fields)
+        group_player, _is_new = Group.objects.get_or_create(name='player')
+        user.groups.add(group_player)
         Profile.objects.create(user=user, email=email, phone=phone)
         return user
 
@@ -122,4 +124,7 @@ Profile.__dict__.get('mugshot').field.upload_to =\
 
 @receiver(post_delete, sender=User)
 def post_delete_user(sender, instance, *args, **kwargs):
-    instance.gamecenter_profile.delete()
+    try:
+        instance.gamecenter_profile.delete()
+    except Profile.DoesNotExist:
+        pass

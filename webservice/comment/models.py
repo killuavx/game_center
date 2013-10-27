@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.comments.moderation import CommentModerator, moderator
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from warehouse.models import PackageVersion
 from django_comments_xtd.models import XtdComment, XtdCommentManager
 from django.contrib.comments.managers import CommentManager as BaseCommentManager
@@ -8,7 +10,7 @@ from model_utils.managers import PassThroughManager
 from django.conf import settings
 
 
-class CommentManager(BaseCommentManager, XtdCommentManager, PassThroughManager):
+class CommentManager(PassThroughManager, BaseCommentManager, XtdCommentManager):
     pass
 
 
@@ -38,8 +40,19 @@ class Comment(XtdComment):
         proxy = True
         ordering = ('-submit_date',)
 
+
 class PackageVersionModerator(CommentModerator):
 
     email_notification = True
 
 moderator.register(PackageVersion, PackageVersionModerator)
+
+@receiver(pre_save, sender=Comment)
+def comment_pre_save(sender, instance, **kwargs):
+    """
+    post new comment default `is_public` allway is False
+    but it cannot create comment with is_public = True
+    """
+    if instance.pk is None:
+        instance.is_public = False
+

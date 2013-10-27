@@ -1075,6 +1075,11 @@ class CommentViewSet(mixins.CreateModelMixin,
             response.data = serializer.data
         return response
 
+    def pre_save(self, obj):
+        if not obj.ip_address:
+            obj.ip_adress = self.request.get_client_ip()
+        return obj
+
     def get_serializer(self, instance=None, data=None,
                        files=None, many=False, partial=False):
         # create data

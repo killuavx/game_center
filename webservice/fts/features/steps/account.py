@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 __author__ = 'me'
 from behave import when, given, then
-from fts.features import support
 from behaving.personas.steps import *
 from fts.tests.helpers import ApiDSL, RestApiTest
 from should_dsl import should
+from warehouse.models import Package
 
 @given('I am player in game center, named "{name}", email "{email}", phone "{phone}", with password "{password}"')
 def step_given_as_player(context, name, email, phone, password):
@@ -19,7 +19,7 @@ def step_given_as_player(context, name, email, phone, password):
     ))
     step_as_player(context, name=name, email=email, phone=phone, password=password)
 
-@when('I am player, named "{name:emptys}", email "{email:emptys}", phone "{phone:emptys}", with password "{password:emptys}"')
+@when('I am player, named "{name:n?s}", email "{email:n?s}", phone "{phone:n?s}", with password "{password:n?s}"')
 def step_as_player(context, name=None, email=None, phone=None, password=None):
     data = { k:v for k,v in dict(username=name,
                            email=email,
@@ -71,6 +71,11 @@ def step_visit_account_profile(context):
     ApiDSL.When_i_prepare_auth_token(context, token=context.persona.get('token_key'))
     ApiDSL.When_i_access_myprofile(context)
 
+@when('I visit my profile')
+def step_visit_account_profile(context):
+    ApiDSL.When_i_prepare_auth_token(context, token=context.persona.get('token_key'))
+    ApiDSL.When_i_access_myprofile(context)
+
 @given('I sign in as player name "{username}" exists in game center')
 def step_signin_existing_player(context, username):
     user = ApiDSL.Given_i_have_account(context, dict(
@@ -97,3 +102,16 @@ def step_should_see_profile_field(context, field, value):
     context.persona.update(dict(profile=profile))
     context.personas[context.persona.get('username')] = profile
 
+@when('I mark package name "{pkg_title}"')
+def step_mark_package(context, pkg_title):
+    package = Package.objects.get(title=pkg_title)
+    ApiDSL.When_i_add_bookmark(context, package)
+
+@when('I unmark package name "{pkg_title}"')
+def step_unmark_package(context, pkg_title):
+    package = Package.objects.get(title=pkg_title)
+    ApiDSL.When_i_remove_bookmark(context, package)
+
+@when('I visit my bookmarks page')
+def step_visit_mybookmarks(context):
+    ApiDSL.When_i_access_bookmarks_page(context)

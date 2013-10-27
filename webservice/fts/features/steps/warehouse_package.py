@@ -2,7 +2,6 @@
 __author__ = 'me'
 from behave import *
 from behaving.web.steps import *
-from fts.features import support
 from fts.tests.helpers import get_current_request
 from should_dsl import should, should_not
 from fts.tests.helpers import ApiDSL
@@ -124,3 +123,15 @@ def step_should_see_commented_package_in_result_list(context):
         .build_absolute_uri(comments_url)
     absolute_comments_url |should| equal_to(except_package.get('comments_url'))
 
+
+@then('I should see the package summary from response in content results')
+def step_should_see_the_package_summary_in_response_content_results(context):
+    the_package = context.world.get('the_package')
+    results = context.world.get('content').get('results', list())
+    (the_package.package_name, ) |should| include_any_of([r.get('package_name') for r in results])
+
+@then('I should see the package summary from response in content')
+def step_should_see_the_package_summary_in_response_content(context):
+    the_package = context.world.get('the_package')
+    content = context.world.get('content')
+    the_package.package_name |should| equal_to(content.get('package_name'))

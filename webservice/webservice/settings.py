@@ -100,6 +100,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'webservice.middlewares.RequestBindRemoteAddrMethodMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -153,8 +154,8 @@ INTERNAL_APPS = [
 
     'django.contrib.comments',
     'django_comments_xtd',
-
 ]
+
 EXTENDAL_APPS = [
     'mobapi',
     'searcher',
