@@ -2,7 +2,8 @@
 import os
 from os.path import abspath, dirname, join
 import shutil
-from django.test.testcases import TestCase
+from django.test.testcases import TestCase, skipIf
+
 from django.conf import settings
 from warehouse.utils.parser import *
 from mock import MagicMock
@@ -20,8 +21,39 @@ class PackageFileParserUnitTest(TestCase):
         set_package_parser_exe(AAPT_CMD)
         self._pkgfile = join(self._fixture_dir, 'tinysize.apk')
 
+    def _mock_badging_text(self, parser, return_value):
+        parser.badging_text = MagicMock(return_value=return_value)
+
+    def _pkg_profile_text(self):
+        return_value ="""package: name='solitairelite.solitaire' versionCode='4' versionName='1.3'
+sdkVersion:'3'
+application-label:'Solitaire'
+application-icon-160:'res/drawable/solitaire_icon.png'
+application: label='Solitaire' icon='res/drawable/solitaire_icon.png'
+launchable-activity: name='solitairelite.solitaire.Solitaire'  label='Solitaire' icon=''
+uses-permission:'android.permission.INTERNET'
+uses-permission:'android.permission.ACCESS_NETWORK_STATE'
+uses-permission:'android.permission.WRITE_EXTERNAL_STORAGE'
+uses-implied-permission:'android.permission.WRITE_EXTERNAL_STORAGE','targetSdkVersion < 4'
+uses-permission:'android.permission.READ_PHONE_STATE'
+uses-implied-permission:'android.permission.READ_PHONE_STATE','targetSdkVersion < 4'
+uses-permission:'android.permission.READ_EXTERNAL_STORAGE'
+uses-implied-permission:'android.permission.READ_EXTERNAL_STORAGE','requested WRITE_EXTERNAL_STORAGE'
+uses-feature:'android.hardware.touchscreen'
+uses-implied-feature:'android.hardware.touchscreen','assumed you require a touch screen unless explicitly made optional'
+main
+other-activities
+supports-screens: 'normal'
+supports-any-density: 'false'
+locales: '--_--'
+densities: '160'
+"""
+        return return_value
+
     def test_base_parser(self):
         parser = PackageFileParser(self._pkgfile)
+        if not settings.AAPT_CMD:
+            self._mock_badging_text(parser, self._pkg_profile_text())
         parser.package['package_name'] |should| equal_to('solitairelite.solitaire')
         parser.package['version_code'] |should| equal_to(4)
         parser.package['version_name'] |should| equal_to('1.3')
@@ -57,8 +89,8 @@ class PackageFileParserUnitTest(TestCase):
         parser.locales |should| equal_to(['--_--'])
         parser.supports_screens |should| equal_to(['normal'])
 
-    def _mock_badging_text(self, parser):
-        parser.badging_text = MagicMock(return_value="""package: name='com.eamobile.bejeweled2_na_wf' versionCode='2007700' versionName='2.0.10'
+    def _pkg2_profile_text(self):
+        return_value = """package: name='com.eamobile.bejeweled2_na_wf' versionCode='2007700' versionName='2.0.10'
 sdkVersion:'4'
 maxSdkVersion:'13'
 targetSdkVersion:'7'
@@ -92,11 +124,13 @@ supports-screens: 'small' 'normal' 'large'
 supports-any-density: 'true'
 locales: '--_--'
 densities: '120' '160' '240'
-native-code: 'armeabi'""")
+native-code: 'armeabi'"""
+        return return_value
 
     def test_complex_parse(self):
         parser = PackageFileParser(self._pkgfile)
-        self._mock_badging_text(parser)
+        if not settings.AAPT_CMD:
+            self._mock_badging_text(parser, self._pkg2_profile_text())
 
         parser.package.get('package_name') |should| equal_to('com.eamobile.bejeweled2_na_wf')
         parser.package.get('version_code') |should| equal_to(2007700)
@@ -156,6 +190,7 @@ native-code: 'armeabi'""")
 
         parser.native_code |should| equal_to('armeabi')
 
+    @skipIf(settings.AAPT_CMD is None, "ignore unzip file after aapt")
     def test_fetch_file(self):
         self._tmpdir = join(self._fixture_dir, 'temp')
         os.makedirs(self._tmpdir, exist_ok=True)
@@ -169,6 +204,7 @@ native-code: 'armeabi'""")
 
         shutil.rmtree(self._tmpdir, ignore_errors=True)
 
+    @skipIf(settings.AAPT_CMD is None, "ignore unzip file after aapt")
     def test_fetch_file_reduplicative(self):
         self._tmpdir = join(self._fixture_dir, 'temp')
         os.makedirs(self._tmpdir, exist_ok=True)
