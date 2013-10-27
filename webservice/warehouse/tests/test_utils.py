@@ -189,6 +189,7 @@ native-code: 'armeabi'"""
 
         parser.native_code |should| equal_to('armeabi')
 
+    @skipIf(settings.AAPT_CMD is None, 'ignore fetch file without aapt')
     def test_fetch_file(self):
         self._tmpdir = join(self._fixture_dir, 'temp')
         os.makedirs(self._tmpdir, exist_ok=True)
@@ -204,6 +205,7 @@ native-code: 'armeabi'"""
 
         shutil.rmtree(self._tmpdir, ignore_errors=True)
 
+    @skipIf(settings.AAPT_CMD is None, 'ignore fetch file without aapt')
     def test_fetch_file_reduplicative(self):
         self._tmpdir = join(self._fixture_dir, 'temp')
         os.makedirs(self._tmpdir, exist_ok=True)
