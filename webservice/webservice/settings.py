@@ -354,3 +354,5 @@ LOGOUT_URL = '/accounts/signout/'
 COMMENTS_APP = "django_comments_xtd"
 COMMENTS_XTD_CONFIRM_EMAIL = False
 COMMENTS_XTD_MAX_THREAD_LEVEL = 0
+
+AAPT_CMD = join(PROJECT_PATH, 'warehouse/utils/android-tools-linux-x64/aapt')

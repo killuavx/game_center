@@ -2,7 +2,7 @@
 __author__ = 'me'
 from behave import when, given, then
 from behaving.personas.steps import *
-from fts.tests.helpers import ApiDSL, RestApiTest
+from fts.helpers import ApiDSL, RestApiTest
 from should_dsl import should
 from warehouse.models import Package
 

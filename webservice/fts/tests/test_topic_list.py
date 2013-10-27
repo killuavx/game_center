@@ -1,5 +1,5 @@
-from fts.tests import helpers
-from fts.tests.helpers import ApiDSL, RestApiTest
+from fts import helpers
+from fts.helpers import ApiDSL, RestApiTest
 from warehouse.models import Package, PackageVersion, Author
 from taxonomy.models import Topic, TopicalItem
 from django.utils.timezone import now, timedelta

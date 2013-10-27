@@ -11,7 +11,7 @@ import io
 import os
 from os.path import join, abspath, dirname
 from fts.tests import helpers
-from fts.tests.helpers import ApiDSL
+from fts.helpers import ApiDSL
 import shutil
 from should_dsl import should
 

@@ -2,9 +2,9 @@
 __author__ = 'me'
 from behave import *
 from behaving.web.steps import *
-from fts.tests.helpers import get_current_request
+from fts.helpers import ApiDSL
+from fts.helpers import get_current_request
 from should_dsl import should, should_not
-from fts.tests.helpers import ApiDSL
 from warehouse.models import Package, PackageVersion
 
 @given('a set of packages in warehouse')

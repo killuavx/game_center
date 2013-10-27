@@ -10,7 +10,7 @@ from django.utils.timezone import now
 from django.test.utils import override_settings
 from should_dsl import should
 from promotion.models import Advertisement, Place, Advertisement_Places
-from fts.tests.helpers import ApiDSL
+from fts.helpers import ApiDSL
 import shutil
 
 _fixture_dir = join(dirname(abspath(__file__)), 'fixtures')

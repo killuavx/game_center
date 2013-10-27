@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'me'
-from fts.tests.helpers import RestApiTest, ApiDSL
+from fts.helpers import RestApiTest, ApiDSL
 from rest_framework import status
 
 class AccountBookmarkRestApiTest(RestApiTest):

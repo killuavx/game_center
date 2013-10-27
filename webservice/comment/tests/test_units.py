@@ -5,7 +5,7 @@ from django.contrib.sites.models import Site
 from django.utils.timezone import datetime, now
 from django.conf import settings
 
-from fts.tests.helpers import ApiDSL
+from fts.helpers import ApiDSL
 from should_dsl import should
 
 class CommentUnitTest(TestCase):

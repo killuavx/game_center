@@ -46,3 +46,4 @@ NOSE_ARGS = [
     '--cov-config=.coveragerc'
 ]
 
+AAPT_CMD = None

@@ -1,5 +1,5 @@
 # -*- encoding: utf-8-*-
-from fts.tests.helpers import ApiDSL, RestApiTest
+from fts.helpers import ApiDSL, RestApiTest
 from datetime import timedelta
 from django.utils.timezone import now
 from warehouse.models import PackageVersion

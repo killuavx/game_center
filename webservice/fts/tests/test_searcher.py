@@ -2,7 +2,7 @@
 from fts.tests import  helpers
 from django.utils.timezone import now, timedelta
 from rest_framework import status
-from fts.tests.helpers import ApiDSL, RestApiTest
+from fts.helpers import ApiDSL, RestApiTest
 from searcher.models import TipsWord
 
 class SearchRestApiTest(RestApiTest):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'me'
-from fts.tests.helpers import ApiDSL, RestApiTest
+from fts.helpers import ApiDSL, RestApiTest
 from rest_framework import status
 
 class AccountRestApiTest(RestApiTest):
