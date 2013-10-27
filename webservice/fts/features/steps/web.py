@@ -2,7 +2,7 @@
 __author__ = 'me'
 from behave import *
 from behaving.web.steps import *
-from fts.tests.helpers import ApiDSL
+from fts.helpers import ApiDSL
 from should_dsl import should
 
 @then('I should see "{message}"')

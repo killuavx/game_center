@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from behave import *
-from fts.tests import helpers
-from fts.tests.helpers import ApiDSL
+from fts import helpers
+from fts.helpers import ApiDSL
 from should_dsl import should
 
 

@@ -2,13 +2,13 @@
 from django.test import TestCase
 from warehouse.models import *
 from django.utils.timezone import datetime, timedelta, now
-from fts.tests import helpers
+from fts import helpers
 import os
 from os.path import join, abspath, dirname
 from should_dsl import should
 from django.test.utils import override_settings
 import shutil
-from fts.tests.helpers import ApiDSL
+from fts.helpers import ApiDSL
 import io
 from django.core.files import File
 

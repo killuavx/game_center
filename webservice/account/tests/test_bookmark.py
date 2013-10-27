@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 __author__ = 'me'
-from fts.tests.helpers import ApiDSL
+from fts.helpers import ApiDSL
 from fts.tests import helpers
 from django.test.testcases import TestCase
 

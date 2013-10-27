@@ -3,7 +3,7 @@ __author__ = 'me'
 import os
 from behaving import environment as benv
 from behaving.personas import environment as personaenv
-from fts.tests.helpers import ApiDSL
+from fts.helpers import ApiDSL
 from fts.tests import helpers
 from fts.middlewares import get_current_request
 from django.conf import settings

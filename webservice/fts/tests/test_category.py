@@ -1,6 +1,6 @@
 # -*- encoding: utf-8-*-
-from fts.tests.helpers import ApiDSL, RestApiTest
-from fts.tests import helpers
+from fts.helpers import ApiDSL, RestApiTest
+from fts import helpers
 from taxonomy.models import Category
 from pprint import pprint as print
 

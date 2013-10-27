@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from behave import *
 from behaving.web.steps import *
-from fts.tests.helpers import ApiDSL
+from fts.helpers import ApiDSL
 from should_dsl import should
 from comment.models import Comment
 from warehouse.models import Package, PackageVersion
