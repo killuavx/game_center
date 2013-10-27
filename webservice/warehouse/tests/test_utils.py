@@ -129,8 +129,7 @@ native-code: 'armeabi'"""
 
     def test_complex_parse(self):
         parser = PackageFileParser(self._pkgfile)
-        if not settings.AAPT_CMD:
-            self._mock_badging_text(parser, self._pkg2_profile_text())
+        self._mock_badging_text(parser, self._pkg2_profile_text())
 
         parser.package.get('package_name') |should| equal_to('com.eamobile.bejeweled2_na_wf')
         parser.package.get('version_code') |should| equal_to(2007700)
@@ -190,12 +189,13 @@ native-code: 'armeabi'"""
 
         parser.native_code |should| equal_to('armeabi')
 
-    @skipIf(settings.AAPT_CMD is None, "ignore unzip file after aapt")
     def test_fetch_file(self):
         self._tmpdir = join(self._fixture_dir, 'temp')
         os.makedirs(self._tmpdir, exist_ok=True)
 
         parser = PackageFileParser(self._pkgfile)
+        if not settings.AAPT_CMD:
+            self._mock_badging_text(parser, self._pkg2_profile_text())
         resource_filename = parser.application_icons['160']
         filename = parser.fetch_file(resource_filename=resource_filename,
                                       to_path=self._tmpdir)
@@ -204,12 +204,13 @@ native-code: 'armeabi'"""
 
         shutil.rmtree(self._tmpdir, ignore_errors=True)
 
-    @skipIf(settings.AAPT_CMD is None, "ignore unzip file after aapt")
     def test_fetch_file_reduplicative(self):
         self._tmpdir = join(self._fixture_dir, 'temp')
         os.makedirs(self._tmpdir, exist_ok=True)
 
         parser = PackageFileParser(self._pkgfile)
+        if not settings.AAPT_CMD:
+            self._mock_badging_text(parser, self._pkg2_profile_text())
         resource_filename = parser.application_icons['160']
 
         # first
