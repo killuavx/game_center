@@ -9,7 +9,8 @@ class AccountBookmarkRestApiTest(RestApiTest):
         player = ApiDSL.Given_i_have_account(self)
         ApiDSL.Given_i_have_signup(self, player)
         ApiDSL.When_i_access_mybookmarks(self)
-        ApiDSL.Then_i_should_receive_response_with(self, status_code=status.HTTP_404_NOT_FOUND)
+        ApiDSL.Then_i_should_receive_response_with(self, status_code=status.HTTP_200_OK)
+        ApiDSL.Then_i_should_see_result_list(self, 0, 0)
 
         pkg1 = ApiDSL.Given_i_have_published_package(self, title='愤怒的小鸟')
         pkg2 = ApiDSL.Given_i_have_published_package(self, title='植物大战僵尸')
@@ -74,8 +75,8 @@ class AccountBookmarkRestApiTest(RestApiTest):
         ApiDSL.When_i_access_bookmark_check(self, pkg1)
         ApiDSL.Then_i_should_receive_response_with(self, status_code=status.HTTP_200_OK)
 
-        pkg3 = ApiDSL.Given_i_have_published_package(self, title='水果忍者')
-        ApiDSL.When_i_access_bookmark_check_with(self, package_name=pkg3.package_name)
+        pkg3 = ApiDSL.Given_i_have_published_package(self, title='水果忍者3')
+        ApiDSL.When_i_access_bookmark_check(self, pkg3)
         ApiDSL.Then_i_should_receive_response_with(self, status_code=status.HTTP_404_NOT_FOUND)
 
         ApiDSL.When_i_access_bookmark_check(self, pkg3)

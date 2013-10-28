@@ -695,9 +695,7 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
 
     * 200 HTTP_200_OK
         * 获取成功
-        * 返回软件列表信息
-    * 404 HTTP_404_NOT_FOUND
-        * 没有软件收藏
+        * 返回软件列表信息,没有则返回空results列表
 
     ----
 
@@ -780,11 +778,8 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         self._prepare_queryset(request)
-        response = super(PackageBookmarkViewSet, self).list(request, *args, **kwargs)
-        if response.data.get('count', 0) > 0:
-            return response
-
-        return Response({'detail':'No Package you bookmark'}, status=status.HTTP_404_NOT_FOUND)
+        return super(PackageBookmarkViewSet, self)\
+            .list(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         if queryset is None:
@@ -959,9 +954,9 @@ class CommentViewSet(mixins.CreateModelMixin,
 
     * 200 HTTP_200_OK
         * 获取成功
-        * 评论列表
+        * 评论列表,没有评论返回空results列表
     * 404 HTTP_404_NOT_FOUND
-        * 找不到这款应用或应用没有评论
+        * 找不到这款应用
 
     ### 评论列表结构
 
@@ -998,7 +993,7 @@ class CommentViewSet(mixins.CreateModelMixin,
         * 未登陆
         * 无效的HTTP Header: Authorization
     * 404 HTTP_404_NOT_FOUND
-        * 找不到这款应用或应用没有评论
+        * 找不到这款应用
 
     ### 新创建的评论数据结构
 
@@ -1047,11 +1042,7 @@ class CommentViewSet(mixins.CreateModelMixin,
         except exceptions.ObjectDoesNotExist:
             return bad
 
-        response = super(CommentViewSet, self).list(request, *args, **kwargs)
-        if not self.object_list:
-            return Response({'detail': 'Not Found Comment'},
-                            status=status.HTTP_404_NOT_FOUND)
-        return response
+        return super(CommentViewSet, self).list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         params = self.check_paramters(copy.deepcopy(request.GET))

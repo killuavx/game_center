@@ -21,7 +21,7 @@ Feature: post comment to package version
      And I should see comment_count 0 in the package version detail
 
     When I access comment list of the package
-    Then I should receive 404 Not Found
+    Then I should receive 200 OK
 
   Scenario: Post Comment and set status published/unpublished
 

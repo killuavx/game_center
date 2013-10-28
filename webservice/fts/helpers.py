@@ -410,8 +410,10 @@ class ApiDSL(RestApiTest):
 
     def Then_i_should_receive_response_with(self, status_code=None):
         response = self.world.get('response')
-        response.status_code |should| equal_to( status_code)
-        content = convert_content(response.content)
+        content = None
+        if response.content:
+            content = convert_content(response.content)
+        response.status_code |should| equal_to(status_code)
         self.world.update(dict(response=response, content=content))
 
     def Then_i_should_see_result_list(self, num, count=None, previous=None, next=None):
@@ -573,6 +575,7 @@ class ApiDSL(RestApiTest):
         token_key = create_auth_token(user)
         headers = dict(HTTP_AUTHORIZATION='Token %s'%token_key)
         self.world.update(dict(headers=headers))
+        ApiDSL.When_i_prepare_auth_token(self, token_key)
 
     def When_i_signout(self):
         headers = self.world.get('headers', dict())
@@ -613,23 +616,15 @@ class ApiDSL(RestApiTest):
     def When_i_add_bookmark(self, pkg):
         headers = self.world.get('headers', dict())
         postdata = dict(package_name=pkg.package_name)
-        res = self.client.post('/api/bookmarks/', postdata, **headers)
+        res = self.client.post('/api/bookmarks/', postdata)
         self.world.update(dict(response=res))
 
     def When_i_remove_bookmark(self, pkg):
-        headers = self.world.get('headers', dict())
-        res = self.client.delete('/api/bookmarks/%d/' % pkg.pk, **headers)
+        res = self.client.delete('/api/bookmarks/%d/' % pkg.pk)
         self.world.update(dict(response=res))
 
     def When_i_access_bookmark_check(self, pkg):
-        headers = self.world.get('headers', dict())
-        res = self.client.head('/api/bookmarks/%d/' % pkg.pk, **headers)
-        self.world.update(dict(response=res))
-
-    def When_i_access_bookmark_check_with(self, **kwargs):
-        query = urlparse.urlencode(kwargs)
-        headers = self.world.get('headers', dict())
-        res = self.client.head('/api/bookmarks/?%s'%query, **headers)
+        res = self.client.head('/api/bookmarks/%d/' % pkg.pk)
         self.world.update(dict(response=res))
 
     def When_i_access_bookmarks_page(self):
