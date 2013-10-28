@@ -9,6 +9,14 @@ import os
 from django.core.files import File
 import io
 
+from django.db.models.signals import pre_save
+from warehouse.models import package_version_pre_save
+def _disconnect_packageversion_pre_save():
+    pre_save.disconnect(package_version_pre_save, PackageVersion)
+
+def _connect_packageversion_pre_save():
+    pre_save.connect(package_version_pre_save, PackageVersion)
+
 class NewestTopicPackageTest(RestApiTest):
 
     def Given_i_haven_topic_with_packages(self, *args, **kwargs):
@@ -138,6 +146,7 @@ class PackageInfoRestApiTest(RestApiTest):
             cat_names=names )
 
     def test_should_see_package_detail_cpk_download(self):
+        _disconnect_packageversion_pre_save()
         yestoday = now() - timedelta(days=1)
         today = now() - timedelta(minutes=1)
         pkg = ApiDSL.Given_i_have_published_package(self,
@@ -160,7 +169,11 @@ class PackageInfoRestApiTest(RestApiTest):
         except_version = pkg_data.get('versions')[0]
         self.assertRegex(except_version.get('download'), '.*\.cpk$')
 
+        _connect_packageversion_pre_save()
+
     def test_should_see_package_detail_apk_download(self):
+        _disconnect_packageversion_pre_save()
+
         yestoday = now() - timedelta(days=1)
         today = now() - timedelta(minutes=1)
         pkg = ApiDSL.Given_i_have_published_package(self,
@@ -185,4 +198,6 @@ class PackageInfoRestApiTest(RestApiTest):
         # version download url
         except_version = pkg_data.get('versions')[0]
         self.assertRegex(except_version.get('download'), '.*\.apk$')
+
+        _connect_packageversion_pre_save()
 

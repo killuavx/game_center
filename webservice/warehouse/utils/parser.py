@@ -42,10 +42,12 @@ class PackageFileParser(object):
                                dict_idx=(1, 2)
         ),
 
-        uses_implied_permissions=dict(pattern="uses-implied-permission:'([^']+)','([^']+)'",
-                                dict_idx=(0, 1)
+        uses_implied_permissions=dict(
+            pattern="uses-implied-permission:'([^']+)','([^']+)'",
+            dict_idx=(0, 1)
         ),
-        uses_implied_features=dict(pattern="uses-implied-feature:'([^']+)','([^']+)'",
+        uses_implied_features=dict(
+            pattern="uses-implied-feature:'([^']+)','([^']+)'",
                                 dict_idx=(0, 1)
         ),
     )
@@ -166,9 +168,9 @@ class PackageFileParser(object):
             return True
 
         sh.unzip(self._filename,
-                     resource_filename,
-                     d=to_path,
-                     _out=replace_confirm_interact)
+                 resource_filename,
+                 d=to_path,
+                 _out=replace_confirm_interact)
         # wait for unzip file
         import time
         time.sleep(1)

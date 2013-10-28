@@ -1,16 +1,19 @@
 # -*- encoding=utf-8 -*-
-from django.test import TestCase
-from warehouse.models import *
-from django.utils.timezone import datetime, timedelta, now
-from fts import helpers
 import os
-from os.path import join, abspath, dirname
-from should_dsl import should
-from django.test.utils import override_settings
-import shutil
-from fts.helpers import ApiDSL
 import io
+import shutil
+from os.path import join, abspath, dirname
+from django.test import TestCase
+from django.conf import settings
+from django.test.utils import override_settings
+from django.utils.timezone import timedelta, now
 from django.core.files import File
+from warehouse.utils.parser import PackageFileParser, set_package_parser_exe
+from should_dsl import should, should_not
+from mock import MagicMock
+from fts.helpers import ApiDSL
+from fts import helpers
+from warehouse.models import *
 
 _fixture_dir = join(dirname(abspath(__file__)), 'fixtures')
 
@@ -118,11 +121,11 @@ class PackageUnitTest(WarehouseBaseUnitTest):
         self.assertEqual(except_pkg.description,"")
         
         # datetime compare with created_datetime, updated_datetime and released_time
-        now = datetime.utcnow()
+        timenow = now().utcnow()
         self.assertEqual(except_pkg.released_datetime, None)
-        created_timedelta = now - except_pkg.created_datetime.utcnow()
+        created_timedelta = timenow - except_pkg.created_datetime.utcnow()
         self.assertLess(created_timedelta, timedelta(seconds=1))
-        updated_timedelta = now - except_pkg.updated_datetime.utcnow()
+        updated_timedelta = timenow - except_pkg.updated_datetime.utcnow()
         self.assertLess(updated_timedelta, timedelta(seconds=1))
         
         except_author = pkg.author
@@ -302,6 +305,14 @@ class PackageManagerUnitTest(WarehouseBaseUnitTest):
         pkg = pub_pkgs[0]
         self.assertEqual(pkg.status, Package.STATUS.published)
 
+from django.db.models.signals import pre_save
+from warehouse.models import package_version_pre_save
+def _disconnect_packageversion_pre_save():
+    pre_save.disconnect(package_version_pre_save, PackageVersion)
+
+def _connect_packageversion_pre_save():
+    pre_save.connect(package_version_pre_save, PackageVersion)
+
 class PackageVersionUnitTest(WarehouseBaseUnitTest):
 
     def test_basic_create(self):
@@ -324,6 +335,7 @@ class PackageVersionUnitTest(WarehouseBaseUnitTest):
 
     @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'))
     def test_upload_file_to_path(self):
+        _disconnect_packageversion_pre_save()
         pkg = ApiDSL.Given_i_have_package_with(self,
                                                package_name='com.tests.packageversion.upload',
                                                )
@@ -348,6 +360,9 @@ class PackageVersionUnitTest(WarehouseBaseUnitTest):
         except_version.cover.path |should| end_with(join(version_path, 'cover.jpg'))
         except_version.download.path |should| end_with(join(version_path, 'application.apk'))
         except_version.di_download.path |should| end_with(join(version_path, 'application-di.cpk'))
+
+        _connect_packageversion_pre_save()
+
 
     def test_should_package_with_version(self):
         pkg = ApiDSL.Given_i_have_package_with(self,
@@ -424,7 +439,7 @@ class PackageScreenshotUnitTest(WarehouseBaseUnitTest):
 
     @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'))
     def test_package_version_screenshot_upload_to_path(self):
-        yestoday = datetime.now() - timedelta(days=1)
+        yestoday = now() - timedelta(days=1)
         pkg = ApiDSL.Given_i_have_package_with(self,
                                                package_name='com.tests.packageversion.upload',
                                                )
@@ -445,4 +460,65 @@ class PackageScreenshotUnitTest(WarehouseBaseUnitTest):
         except_screenshot = except_version.screenshots.get()
         image_basename = basename(except_screenshot.image.name)
         except_screenshot.image.path |should| end_with(join(version_path, 'screenshot', image_basename))
+
+
+class PkgCreateWithPackageFileParserUnitTest(WarehouseBaseUnitTest):
+
+    def _mock_badging_text(self, parser, return_value):
+        parser.badging_text = MagicMock(return_value=return_value)
+
+    def _pkg_profile_text(self):
+        return_value ="""package: name='solitairelite.solitaire' versionCode='4' versionName='1.3'
+sdkVersion:'3'
+application-label:'Solitaire'
+application-icon-160:'res/drawable/solitaire_icon.png'
+application: label='Solitaire' icon='res/drawable/solitaire_icon.png'
+launchable-activity: name='solitairelite.solitaire.Solitaire'  label='Solitaire' icon=''
+uses-permission:'android.permission.INTERNET'
+uses-permission:'android.permission.ACCESS_NETWORK_STATE'
+uses-permission:'android.permission.WRITE_EXTERNAL_STORAGE'
+uses-implied-permission:'android.permission.WRITE_EXTERNAL_STORAGE','targetSdkVersion < 4'
+uses-permission:'android.permission.READ_PHONE_STATE'
+uses-implied-permission:'android.permission.READ_PHONE_STATE','targetSdkVersion < 4'
+uses-permission:'android.permission.READ_EXTERNAL_STORAGE'
+uses-implied-permission:'android.permission.READ_EXTERNAL_STORAGE','requested WRITE_EXTERNAL_STORAGE'
+uses-feature:'android.hardware.touchscreen'
+uses-implied-feature:'android.hardware.touchscreen','assumed you require a touch screen unless explicitly made optional'
+main
+other-activities
+supports-screens: 'normal'
+supports-any-density: 'false'
+locales: '--_--'
+densities: '160'
+"""
+        return return_value
+
+    def setUp(self):
+        super(PkgCreateWithPackageFileParserUnitTest, self).setUp()
+        AAPT_CMD=settings.AAPT_CMD
+        set_package_parser_exe(AAPT_CMD)
+        self._pkgfile = join(self._fixture_dir, 'tinysize.apk')
+
+    @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'))
+    def test_autofill_package_detail(self):
+        parser = PackageFileParser(self._pkgfile)
+        self._mock_badging_text(parser, self._pkg_profile_text())
+
+        parser.package.get('package_name')
+        version = PackageVersion()
+        version.download = File(io.FileIO(self._pkgfile))
+        version.pkgparser = parser
+        version.save()
+
+        version.package.package_name |should| equal_to(parser.package.get('package_name'))
+        parser.package.get('package_name') |should| equal_to('solitairelite.solitaire')
+        version.version_code |should| equal_to(4)
+        version.version_code |should| equal_to(parser.package.get('version_code'))
+        version.version_name |should| equal_to('1.3')
+        version.version_name |should| equal_to(parser.package.get('version_name'))
+
+        version.package.title |should| equal_to(parser.application_labels[''])
+        version.package.author_id |should| equal_to(-1)
+
+        version.icon |should_not| be_empty
 

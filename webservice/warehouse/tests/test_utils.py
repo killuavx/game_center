@@ -189,6 +189,248 @@ native-code: 'armeabi'"""
 
         parser.native_code |should| equal_to('armeabi')
 
+    def _pkg_mutil_languages_profile_text(self):
+        return """package: name='com.limbic.ac130' versionCode='1379701800' versionName='1.9.1'
+sdkVersion:'10'
+targetSdkVersion:'17'
+supports-gl-texture:'GL_OES_compressed_ETC1_RGB8_texture'
+uses-permission:'android.permission.ACCESS_NETWORK_STATE'
+uses-permission:'android.permission.GET_ACCOUNTS'
+uses-permission:'android.permission.READ_PHONE_STATE'
+uses-permission:'android.permission.INTERNET'
+uses-permission:'com.android.vending.BILLING'
+application-label:'Zombie GS'
+application-label-ca:'Zombie GS'
+application-label-da:'Zombie GS'
+application-label-fa:'Zombie GS'
+application-label-ja:'Zombie GS'
+application-label-nb:'Zombie GS'
+application-label-be:'Zombie GS'
+application-label-de:'Zombie GS'
+application-label-he:'Zombie GS'
+application-label-af:'Zombie GS'
+application-label-bg:'Zombie GS'
+application-label-th:'Zombie GS'
+application-label-fi:'Zombie GS'
+application-label-hi:'Zombie GS'
+application-label-vi:'Zombie GS'
+application-label-sk:'Zombie GS'
+application-label-uk:'Zombie GS'
+application-label-el:'Zombie GS'
+application-label-nl:'Zombie GS'
+application-label-pl:'Zombie GS'
+application-label-sl:'Zombie GS'
+application-label-tl:'Zombie GS'
+application-label-am:'Zombie GS'
+application-label-in:'Zombie GS'
+application-label-ko:'Zombie GS'
+application-label-ro:'Zombie GS'
+application-label-ar:'Zombie GS'
+application-label-fr:'Zombie GS'
+application-label-hr:'Zombie GS'
+application-label-sr:'Zombie GS'
+application-label-tr:'Zombie GS'
+application-label-cs:'Zombie GS'
+application-label-es:'Zombie GS'
+application-label-ms:'Zombie GS'
+application-label-et:'Zombie GS'
+application-label-it:'Zombie GS'
+application-label-lt:'Zombie GS'
+application-label-pt:'Zombie GS'
+application-label-hu:'Zombie GS'
+application-label-ru:'Zombie GS'
+application-label-zu:'Zombie GS'
+application-label-lv:'Zombie GS'
+application-label-sv:'Zombie GS'
+application-label-iw:'Zombie GS'
+application-label-sw:'Zombie GS'
+application-label-en_GB:'Zombie GS'
+application-label-zh_CN:'Zombie GS'
+application-label-pt_BR:'Zombie GS'
+application-label-es_US:'Zombie GS'
+application-label-pt_PT:'Zombie GS'
+application-label-zh_TW:'Zombie GS'
+application-icon-120:'res/drawable/icon.png'
+application-icon-160:'res/drawable-mdpi/icon.png'
+application-icon-240:'res/drawable-hdpi/icon.png'
+application-icon-320:'res/drawable-xhdpi/icon.png'
+application-icon-480:'res/drawable-xxhdpi/icon.png'
+application: label='Zombie GS' icon='res/drawable-mdpi/icon.png'
+launchable-activity: name='com.lion.WelcomeActivity'  label='Zombie GS' icon=''
+uses-feature:'android.hardware.touchscreen'
+uses-implied-feature:'android.hardware.touchscreen','assumed you require a touch screen unless explicitly made optional'
+uses-feature:'android.hardware.screen.landscape'
+uses-implied-feature:'android.hardware.screen.landscape','one or more activities have specified a landscape orientation'
+main
+other-activities
+other-receivers
+other-services
+supports-screens: 'normal' 'large' 'xlarge'
+supports-any-density: 'true'
+locales: '--_--' 'ca' 'da' 'fa' 'ja' 'nb' 'be' 'de' 'he' 'af' 'bg' 'th' 'fi' 'hi' 'vi' 'sk' 'uk' 'el' 'nl' 'pl' 'sl' 'tl' 'am' 'in' 'ko' 'ro' 'ar' 'fr' 'hr' 'sr' 'tr' 'cs' 'es' 'ms' 'et' 'it' 'lt' 'pt' 'hu' 'ru' 'zu' 'lv' 'sv' 'iw' 'sw' 'en_GB' 'zh_CN' 'pt_BR' 'es_US' 'pt_PT' 'zh_TW'
+densities: '120' '160' '240' '320' '480'
+native-code: 'armeabi'"""
+
+    def test_mutil_languages_parse(self):
+        parser = PackageFileParser(self._pkgfile)
+        self._mock_badging_text(parser, self._pkg_mutil_languages_profile_text())
+
+        parser.package.get('package_name') |should| equal_to('com.limbic.ac130')
+        parser.package.get('version_code') |should| equal_to(1379701800)
+        parser.package.get('version_name') |should| equal_to('1.9.1')
+
+        parser.sdk_version |should| equal_to(10)
+        parser.target_sdk_version |should| equal_to(17)
+
+        parser.application_icons |should| equal_to({
+            '120': 'res/drawable/icon.png',
+            '160': 'res/drawable-mdpi/icon.png',
+            '240': 'res/drawable-hdpi/icon.png',
+            '320': 'res/drawable-xhdpi/icon.png',
+            '480': 'res/drawable-xxhdpi/icon.png',
+        })
+
+        parser.application_labels |should| equal_to({
+            '': 'Zombie GS',
+            'ca': 'Zombie GS',
+            'da': 'Zombie GS',
+            'fa': 'Zombie GS',
+            'ja': 'Zombie GS',
+            'nb': 'Zombie GS',
+            'be': 'Zombie GS',
+            'de': 'Zombie GS',
+            'he': 'Zombie GS',
+            'af': 'Zombie GS',
+            'bg': 'Zombie GS',
+            'th': 'Zombie GS',
+            'fi': 'Zombie GS',
+            'hi': 'Zombie GS',
+            'vi': 'Zombie GS',
+            'sk': 'Zombie GS',
+            'uk': 'Zombie GS',
+            'el': 'Zombie GS',
+            'nl': 'Zombie GS',
+            'pl': 'Zombie GS',
+            'sl': 'Zombie GS',
+            'tl': 'Zombie GS',
+            'am': 'Zombie GS',
+            'in': 'Zombie GS',
+            'ko': 'Zombie GS',
+            'ro': 'Zombie GS',
+            'ar': 'Zombie GS',
+            'fr': 'Zombie GS',
+            'hr': 'Zombie GS',
+            'sr': 'Zombie GS',
+            'tr': 'Zombie GS',
+            'cs': 'Zombie GS',
+            'es': 'Zombie GS',
+            'ms': 'Zombie GS',
+            'et': 'Zombie GS',
+            'it': 'Zombie GS',
+            'lt': 'Zombie GS',
+            'pt': 'Zombie GS',
+            'hu': 'Zombie GS',
+            'ru': 'Zombie GS',
+            'zu': 'Zombie GS',
+            'lv': 'Zombie GS',
+            'sv': 'Zombie GS',
+            'iw': 'Zombie GS',
+            'sw': 'Zombie GS',
+            'en_GB': 'Zombie GS',
+            'zh_CN': 'Zombie GS',
+            'pt_BR': 'Zombie GS',
+            'es_US': 'Zombie GS',
+            'pt_PT': 'Zombie GS',
+            'zh_TW': 'Zombie GS',
+        })
+
+        parser.uses_permissions |should| equal_to([
+            'android.permission.ACCESS_NETWORK_STATE',
+            'android.permission.GET_ACCOUNTS',
+            'android.permission.READ_PHONE_STATE',
+            'android.permission.INTERNET',
+            'com.android.vending.BILLING',
+        ])
+
+        parser.uses_features |should| equal_to([
+            'android.hardware.touchscreen',
+            'android.hardware.screen.landscape',
+        ])
+        parser.uses_implied_features |should| equal_to({
+            'android.hardware.touchscreen': 'assumed you require a touch screen unless explicitly made optional',
+            'android.hardware.screen.landscape': 'one or more activities have specified a landscape orientation',
+            })
+
+        parser.supports_screens |should| equal_to([
+            'normal',
+            'large',
+            'xlarge',
+            ])
+
+        parser.densities |should| equal_to([
+            120,
+            160,
+            240,
+            320,
+            480,
+        ])
+        parser.locales |should| equal_to([
+            '--_--',
+            'ca',
+            'da',
+            'fa',
+            'ja',
+            'nb',
+            'be',
+            'de',
+            'he',
+            'af',
+            'bg',
+            'th',
+            'fi',
+            'hi',
+            'vi',
+            'sk',
+            'uk',
+            'el',
+            'nl',
+            'pl',
+            'sl',
+            'tl',
+            'am',
+            'in',
+            'ko',
+            'ro',
+            'ar',
+            'fr',
+            'hr',
+            'sr',
+            'tr',
+            'cs',
+            'es',
+            'ms',
+            'et',
+            'it',
+            'lt',
+            'pt',
+            'hu',
+            'ru',
+            'zu',
+            'lv',
+            'sv',
+            'iw',
+            'sw',
+            'en_GB',
+            'zh_CN',
+            'pt_BR',
+            'es_US',
+            'pt_PT',
+            'zh_TW'
+        ])
+
+        parser.native_code |should| equal_to('armeabi')
+
+
     @skipIf(settings.AAPT_CMD is None, 'ignore fetch file without aapt')
     def test_fetch_file(self):
         self._tmpdir = join(self._fixture_dir, 'temp')

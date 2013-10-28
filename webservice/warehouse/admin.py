@@ -325,6 +325,7 @@ class PackageAdmin(MainAdmin):
         if css_class:
             return {'class': css_class, 'data': obj.package_name}
 
+
 class PackageInline(admin.TabularInline):
     model = Package
     extra = 0

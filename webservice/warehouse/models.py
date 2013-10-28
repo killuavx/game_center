@@ -1,5 +1,6 @@
 # -*- encoding=utf-8 -*-
 import datetime
+from django.conf import settings
 from django.core import exceptions
 from django.utils.timezone import now
 from django.contrib.contenttypes import generic
@@ -161,11 +162,16 @@ class Author(models.Model):
         verbose_name = _('Author')
         verbose_name_plural = _('Authors')
 
-    name = models.CharField(verbose_name=_('author name'), max_length=64)
+    name = models.CharField(verbose_name=_('author name'),
+                            max_length=64)
 
-    email = models.EmailField(verbose_name=_('email'), unique=True)
+    email = models.EmailField(verbose_name=_('email'),
+                              unique=True)
 
-    phone = models.CharField(verbose_name=_('phone'), max_length=16, blank=True, null=True)
+    phone = models.CharField(verbose_name=_('phone'),
+                             max_length=16,
+                             blank=True,
+                             null=True)
 
     topics = generic.GenericRelation('taxonomy.TopicalItem')
 
@@ -376,7 +382,7 @@ class Package(models.Model):
         verbose_name=_('description'),
         null=False,
         default="",
-        blank=True )
+        blank=True)
 
     author = models.ForeignKey(Author,  related_name='packages')
 
@@ -541,7 +547,7 @@ class PackageVersionQuerySet(QuerySet):
 def factory_version_upload_to_path(basename):
     def upload_to(instance, filename):
         extension = filename.split('.')[-1].lower()
-        path = "package/%d/v%d" % (int(instance.package_id), int(instance.version_code))
+        path = "package/%d/v%d" % (int(instance.package.pk), int(instance.version_code))
         return '%(path)s/%(filename)s.%(extension)s' % {'path': path,
                                                         'filename': basename,
                                                         'extension': extension,
@@ -594,7 +600,7 @@ class PackageVersion(models.Model):
     package = models.ForeignKey(Package, related_name='versions')
 
     version_name = models.CharField(
-        verbose_name=_('version name') ,
+        verbose_name=_('version name'),
         max_length=16,
         blank=False,
         null=False)
@@ -627,7 +633,6 @@ class PackageVersion(models.Model):
     updated_datetime = models.DateTimeField(auto_now=True, auto_now_add=True)
 
     tracker = FieldTracker()
-
 
     def __str__(self):
         return str(self.version_code)
@@ -686,6 +691,23 @@ class PackageVersionScreenshot(models.Model):
 
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+
+@receiver(pre_save, sender=PackageVersion)
+def package_version_pre_save(sender, instance, **kwargs):
+
+    if instance.download:
+        from warehouse.utils.parser import PackageFileParser
+        from warehouse.utils.parse_handle import ParsePackageVersion
+        parser = PackageFileParser(instance.download.file.name)
+        handle = ParsePackageVersion(instance, parser)
+
+        if handle.can_parse_appfile():
+            package = handle.parse_to_package()
+            package.save()
+            instance.package_id = package.pk
+            handle.parse_to_version()
+            handle.fetch_icon_to_version()
+
 @receiver(post_save, sender=PackageVersion)
 def package_version_post_save(sender, instance, **kwargs):
     """package sync ...
@@ -722,4 +744,3 @@ def package_pre_save(sender, instance, **kwargs):
 
     if len(changed):
         instance.updated_datetime = now()
-
