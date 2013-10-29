@@ -3,29 +3,17 @@ import os
 from os.path import abspath, dirname, join
 import shutil
 from django.test.testcases import TestCase, skipIf
-
 from django.conf import settings
 from warehouse.utils.parser import *
+from warehouse.utils.parse_handle import *
 from mock import MagicMock
 from should_dsl import should
-__author__ = 'me'
 
 _fixture_dir = join(dirname(abspath(__file__)), 'fixtures')
 
-class PackageFileParserUnitTest(TestCase):
 
-    _fixture_dir = _fixture_dir
-
-    def setUp(self):
-        AAPT_CMD=settings.AAPT_CMD
-        set_package_parser_exe(AAPT_CMD)
-        self._pkgfile = join(self._fixture_dir, 'tinysize.apk')
-
-    def _mock_badging_text(self, parser, return_value):
-        parser.badging_text = MagicMock(return_value=return_value)
-
-    def _pkg_profile_text(self):
-        return_value ="""package: name='solitairelite.solitaire' versionCode='4' versionName='1.3'
+def pkg_profile_text():
+    return """package: name='solitairelite.solitaire' versionCode='4' versionName='1.3'
 sdkVersion:'3'
 application-label:'Solitaire'
 application-icon-160:'res/drawable/solitaire_icon.png'
@@ -48,49 +36,10 @@ supports-any-density: 'false'
 locales: '--_--'
 densities: '160'
 """
-        return return_value
 
-    def test_base_parser(self):
-        parser = PackageFileParser(self._pkgfile)
-        if not settings.AAPT_CMD:
-            self._mock_badging_text(parser, self._pkg_profile_text())
-        parser.package['package_name'] |should| equal_to('solitairelite.solitaire')
-        parser.package['version_code'] |should| equal_to(4)
-        parser.package['version_name'] |should| equal_to('1.3')
-        parser.sdk_version |should| equal_to(3)
 
-        parser.application_labels |should| equal_to({
-            '': 'Solitaire',
-        })
-        parser.application_icons |should| equal_to({
-            '160': 'res/drawable/solitaire_icon.png',
-        })
-
-        parser.uses_permissions |should| equal_to([
-            'android.permission.INTERNET',
-            'android.permission.ACCESS_NETWORK_STATE',
-            'android.permission.WRITE_EXTERNAL_STORAGE',
-            'android.permission.READ_PHONE_STATE',
-            'android.permission.READ_EXTERNAL_STORAGE'
-        ])
-        parser.uses_implied_permissions |should| equal_to({
-            'android.permission.WRITE_EXTERNAL_STORAGE': 'targetSdkVersion < 4',
-            'android.permission.READ_PHONE_STATE': 'targetSdkVersion < 4',
-            'android.permission.READ_EXTERNAL_STORAGE': 'requested WRITE_EXTERNAL_STORAGE',
-        })
-
-        parser.uses_features |should| equal_to([
-            'android.hardware.touchscreen',
-        ])
-        parser.uses_implied_features |should| equal_to({
-            'android.hardware.touchscreen': 'assumed you require a touch screen unless explicitly made optional'
-        })
-        parser.densities |should| equal_to([160])
-        parser.locales |should| equal_to(['--_--'])
-        parser.supports_screens |should| equal_to(['normal'])
-
-    def _pkg2_profile_text(self):
-        return_value = """package: name='com.eamobile.bejeweled2_na_wf' versionCode='2007700' versionName='2.0.10'
+def pkg_complex_profile_text():
+    return """package: name='com.eamobile.bejeweled2_na_wf' versionCode='2007700' versionName='2.0.10'
 sdkVersion:'4'
 maxSdkVersion:'13'
 targetSdkVersion:'7'
@@ -125,72 +74,10 @@ supports-any-density: 'true'
 locales: '--_--'
 densities: '120' '160' '240'
 native-code: 'armeabi'"""
-        return return_value
 
-    def test_complex_parse(self):
-        parser = PackageFileParser(self._pkgfile)
-        self._mock_badging_text(parser, self._pkg2_profile_text())
 
-        parser.package.get('package_name') |should| equal_to('com.eamobile.bejeweled2_na_wf')
-        parser.package.get('version_code') |should| equal_to(2007700)
-        parser.package.get('version_name') |should| equal_to('2.0.10')
-
-        parser.target_sdk_version |should| equal_to(7)
-        parser.sdk_version |should| equal_to(4)
-        parser.max_sdk_version |should| equal_to(13)
-
-        parser.application_icons |should| equal_to({
-            '120': 'res/drawable-ldpi/icon.png',
-            '160': 'res/drawable-mdpi/icon.png',
-            '240': 'res/drawable-hdpi/icon.png',
-        })
-        parser.application_labels |should| equal_to({
-            '': 'Bejeweled 2',
-        })
-
-        parser.uses_permissions |should| equal_to([
-            'android.permission.WAKE_LOCK',
-            'android.permission.VIBRATE',
-            'android.permission.WRITE_EXTERNAL_STORAGE',
-            'android.permission.READ_PHONE_STATE',
-            'android.permission.INTERNET',
-            'android.permission.READ_PHONE_STATE',
-            'android.permission.ACCESS_WIFI_STATE',
-            'android.permission.ACCESS_NETWORK_STATE',
-            'com.android.vending.CHECK_LICENSE',
-            'android.permission.READ_EXTERNAL_STORAGE',
-        ])
-        parser.uses_implied_permissions |should| equal_to({
-            'android.permission.READ_EXTERNAL_STORAGE': 'requested WRITE_EXTERNAL_STORAGE',
-        })
-
-        parser.uses_features |should| equal_to([
-            'android.hardware.telephony',
-            'android.hardware.touchscreen',
-            'android.hardware.wifi',
-            'android.hardware.screen.portrait'
-        ])
-        parser.uses_implied_features |should| equal_to({
-            'android.hardware.wifi': 'requested android.permission.ACCESS_WIFI_STATE, android.permission.CHANGE_WIFI_STATE, or android.permission.CHANGE_WIFI_MULTICAST_STATE permission',
-            'android.hardware.screen.portrait': 'one or more activities have specified a portrait orientation',
-        })
-
-        parser.supports_screens |should| equal_to([
-            'small',
-            'normal',
-            'large',
-        ])
-
-        parser.densities |should| equal_to([
-            120,
-            160,
-            240
-        ])
-
-        parser.native_code |should| equal_to('armeabi')
-
-    def _pkg_mutil_languages_profile_text(self):
-        return """package: name='com.limbic.ac130' versionCode='1379701800' versionName='1.9.1'
+def pkg_mutil_languages_profile_text():
+    return """package: name='com.limbic.ac130' versionCode='1379701800' versionName='1.9.1'
 sdkVersion:'10'
 targetSdkVersion:'17'
 supports-gl-texture:'GL_OES_compressed_ETC1_RGB8_texture'
@@ -271,9 +158,123 @@ locales: '--_--' 'ca' 'da' 'fa' 'ja' 'nb' 'be' 'de' 'he' 'af' 'bg' 'th' 'fi' 'hi
 densities: '120' '160' '240' '320' '480'
 native-code: 'armeabi'"""
 
+
+class PackageFileParserUnitTest(TestCase):
+
+    _fixture_dir = _fixture_dir
+
+    def setUp(self):
+        AAPT_CMD=settings.AAPT_CMD
+        set_package_parser_exe(AAPT_CMD)
+        self._pkgfile = join(self._fixture_dir, 'tinysize.apk')
+
+    def _mock_badging_text(self, parser, return_value):
+        parser.badging_text = MagicMock(return_value=return_value)
+
+    def test_base_parser(self):
+        parser = PackageFileParser(self._pkgfile)
+        if not settings.AAPT_CMD:
+            self._mock_badging_text(parser, pkg_profile_text())
+        parser.package['package_name'] |should| equal_to('solitairelite.solitaire')
+        parser.package['version_code'] |should| equal_to(4)
+        parser.package['version_name'] |should| equal_to('1.3')
+        parser.sdk_version |should| equal_to(3)
+
+        parser.application_labels |should| equal_to({
+            '': 'Solitaire',
+        })
+        parser.application_icons |should| equal_to({
+            '160': 'res/drawable/solitaire_icon.png',
+        })
+
+        parser.uses_permissions |should| equal_to([
+            'android.permission.INTERNET',
+            'android.permission.ACCESS_NETWORK_STATE',
+            'android.permission.WRITE_EXTERNAL_STORAGE',
+            'android.permission.READ_PHONE_STATE',
+            'android.permission.READ_EXTERNAL_STORAGE'
+        ])
+        parser.uses_implied_permissions |should| equal_to({
+            'android.permission.WRITE_EXTERNAL_STORAGE': 'targetSdkVersion < 4',
+            'android.permission.READ_PHONE_STATE': 'targetSdkVersion < 4',
+            'android.permission.READ_EXTERNAL_STORAGE': 'requested WRITE_EXTERNAL_STORAGE',
+        })
+
+        parser.uses_features |should| equal_to([
+            'android.hardware.touchscreen',
+        ])
+        parser.uses_implied_features |should| equal_to({
+            'android.hardware.touchscreen': 'assumed you require a touch screen unless explicitly made optional'
+        })
+        parser.densities |should| equal_to([160])
+        parser.locales |should| equal_to(['--_--'])
+        parser.supports_screens |should| equal_to(['normal'])
+
+    def test_complex_parse(self):
+        parser = PackageFileParser(self._pkgfile)
+        self._mock_badging_text(parser, pkg_complex_profile_text())
+
+        parser.package.get('package_name') |should| equal_to('com.eamobile.bejeweled2_na_wf')
+        parser.package.get('version_code') |should| equal_to(2007700)
+        parser.package.get('version_name') |should| equal_to('2.0.10')
+
+        parser.target_sdk_version |should| equal_to(7)
+        parser.sdk_version |should| equal_to(4)
+        parser.max_sdk_version |should| equal_to(13)
+
+        parser.application_icons |should| equal_to({
+            '120': 'res/drawable-ldpi/icon.png',
+            '160': 'res/drawable-mdpi/icon.png',
+            '240': 'res/drawable-hdpi/icon.png',
+        })
+        parser.application_labels |should| equal_to({
+            '': 'Bejeweled 2',
+        })
+
+        parser.uses_permissions |should| equal_to([
+            'android.permission.WAKE_LOCK',
+            'android.permission.VIBRATE',
+            'android.permission.WRITE_EXTERNAL_STORAGE',
+            'android.permission.READ_PHONE_STATE',
+            'android.permission.INTERNET',
+            'android.permission.READ_PHONE_STATE',
+            'android.permission.ACCESS_WIFI_STATE',
+            'android.permission.ACCESS_NETWORK_STATE',
+            'com.android.vending.CHECK_LICENSE',
+            'android.permission.READ_EXTERNAL_STORAGE',
+        ])
+        parser.uses_implied_permissions |should| equal_to({
+            'android.permission.READ_EXTERNAL_STORAGE': 'requested WRITE_EXTERNAL_STORAGE',
+        })
+
+        parser.uses_features |should| equal_to([
+            'android.hardware.telephony',
+            'android.hardware.touchscreen',
+            'android.hardware.wifi',
+            'android.hardware.screen.portrait'
+        ])
+        parser.uses_implied_features |should| equal_to({
+            'android.hardware.wifi': 'requested android.permission.ACCESS_WIFI_STATE, android.permission.CHANGE_WIFI_STATE, or android.permission.CHANGE_WIFI_MULTICAST_STATE permission',
+            'android.hardware.screen.portrait': 'one or more activities have specified a portrait orientation',
+        })
+
+        parser.supports_screens |should| equal_to([
+            'small',
+            'normal',
+            'large',
+        ])
+
+        parser.densities |should| equal_to([
+            120,
+            160,
+            240
+        ])
+
+        parser.native_code |should| equal_to('armeabi')
+
     def test_mutil_languages_parse(self):
         parser = PackageFileParser(self._pkgfile)
-        self._mock_badging_text(parser, self._pkg_mutil_languages_profile_text())
+        self._mock_badging_text(parser, pkg_mutil_languages_profile_text())
 
         parser.package.get('package_name') |should| equal_to('com.limbic.ac130')
         parser.package.get('version_code') |should| equal_to(1379701800)
@@ -430,6 +431,16 @@ native-code: 'armeabi'"""
 
         parser.native_code |should| equal_to('armeabi')
 
+    def test_choose_icon_density(self):
+        parser = PackageFileParser(self._pkgfile)
+        self._mock_badging_text(parser, pkg_mutil_languages_profile_text())
+
+        parser.package.get('package_name') |should| equal_to('com.limbic.ac130')
+        parser.package.get('version_code') |should| equal_to(1379701800)
+        parser.package.get('version_name') |should| equal_to('1.9.1')
+
+        parser.sdk_version |should| equal_to(10)
+        parser.target_sdk_version |should| equal_to(17)
 
     @skipIf(settings.AAPT_CMD is None, 'ignore fetch file without aapt')
     def test_fetch_file(self):
@@ -470,4 +481,5 @@ native-code: 'armeabi'"""
         os.path.isfile(filename) |should| be(True)
 
         shutil.rmtree(self._tmpdir, ignore_errors=True)
+
 

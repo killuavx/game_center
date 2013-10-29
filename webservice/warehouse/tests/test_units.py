@@ -6,6 +6,7 @@ from os.path import join, abspath, dirname
 from django.test import TestCase
 from django.conf import settings
 from django.test.utils import override_settings
+from django.test.testcases import skipIf
 from django.utils.timezone import timedelta, now
 from django.core.files import File
 from warehouse.utils.parser import PackageFileParser, set_package_parser_exe
@@ -454,13 +455,8 @@ class PackageScreenshotUnitTest(WarehouseBaseUnitTest):
         except_screenshot.image.path |should| end_with(join(version_path, 'screenshot', image_basename))
 
 
-class PkgCreateWithPackageFileParserUnitTest(WarehouseBaseUnitTest):
-
-    def _mock_badging_text(self, parser, return_value):
-        parser.badging_text = MagicMock(return_value=return_value)
-
-    def _pkg_profile_text(self):
-        return_value ="""package: name='solitairelite.solitaire' versionCode='4' versionName='1.3'
+def pkg_profile_text():
+    return """package: name='solitairelite.solitaire' versionCode='4' versionName='1.3'
 sdkVersion:'3'
 application-label:'Solitaire'
 application-icon-160:'res/drawable/solitaire_icon.png'
@@ -483,7 +479,132 @@ supports-any-density: 'false'
 locales: '--_--'
 densities: '160'
 """
-        return return_value
+
+
+def pkg_complex_profile_text():
+    return """package: name='com.eamobile.bejeweled2_na_wf' versionCode='2007700' versionName='2.0.10'
+sdkVersion:'4'
+maxSdkVersion:'13'
+targetSdkVersion:'7'
+application-label:'Bejeweled 2'
+application-icon-120:'res/drawable-ldpi/icon.png'
+application-icon-160:'res/drawable-mdpi/icon.png'
+application-icon-240:'res/drawable-hdpi/icon.png'
+application: label='Bejeweled 2' icon='res/drawable-mdpi/icon.png'
+launchable-activity: name='com.inject.InjectActivity'  label='' icon=''
+uses-permission:'android.permission.WAKE_LOCK'
+uses-permission:'android.permission.VIBRATE'
+uses-permission:'android.permission.WRITE_EXTERNAL_STORAGE'
+uses-permission:'android.permission.READ_PHONE_STATE'
+uses-permission:'android.permission.INTERNET'
+uses-permission:'android.permission.READ_PHONE_STATE'
+uses-permission:'android.permission.ACCESS_WIFI_STATE'
+uses-permission:'android.permission.ACCESS_NETWORK_STATE'
+uses-permission:'com.android.vending.CHECK_LICENSE'
+uses-feature:'android.hardware.telephony'
+uses-feature:'android.hardware.touchscreen'
+compatible-screens:'200/120','200/240','200/160','200/320','300/120','300/240','300/160','300/320','400/120','400/160','400/240','400/320'
+uses-permission:'android.permission.READ_EXTERNAL_STORAGE'
+uses-implied-permission:'android.permission.READ_EXTERNAL_STORAGE','requested WRITE_EXTERNAL_STORAGE'
+uses-feature:'android.hardware.wifi'
+uses-implied-feature:'android.hardware.wifi','requested android.permission.ACCESS_WIFI_STATE, android.permission.CHANGE_WIFI_STATE, or android.permission.CHANGE_WIFI_MULTICAST_STATE permission'
+uses-feature:'android.hardware.screen.portrait'
+uses-implied-feature:'android.hardware.screen.portrait','one or more activities have specified a portrait orientation'
+main
+other-activities
+supports-screens: 'small' 'normal' 'large'
+supports-any-density: 'true'
+locales: '--_--'
+densities: '120' '160' '240'
+native-code: 'armeabi'"""
+
+
+def pkg_mutil_languages_profile_text():
+    return """package: name='com.limbic.ac130' versionCode='1379701800' versionName='1.9.1'
+sdkVersion:'10'
+targetSdkVersion:'17'
+supports-gl-texture:'GL_OES_compressed_ETC1_RGB8_texture'
+uses-permission:'android.permission.ACCESS_NETWORK_STATE'
+uses-permission:'android.permission.GET_ACCOUNTS'
+uses-permission:'android.permission.READ_PHONE_STATE'
+uses-permission:'android.permission.INTERNET'
+uses-permission:'com.android.vending.BILLING'
+application-label:'Zombie GS'
+application-label-ca:'Zombie GS'
+application-label-da:'Zombie GS'
+application-label-fa:'Zombie GS'
+application-label-ja:'Zombie GS'
+application-label-nb:'Zombie GS'
+application-label-be:'Zombie GS'
+application-label-de:'Zombie GS'
+application-label-he:'Zombie GS'
+application-label-af:'Zombie GS'
+application-label-bg:'Zombie GS'
+application-label-th:'Zombie GS'
+application-label-fi:'Zombie GS'
+application-label-hi:'Zombie GS'
+application-label-vi:'Zombie GS'
+application-label-sk:'Zombie GS'
+application-label-uk:'Zombie GS'
+application-label-el:'Zombie GS'
+application-label-nl:'Zombie GS'
+application-label-pl:'Zombie GS'
+application-label-sl:'Zombie GS'
+application-label-tl:'Zombie GS'
+application-label-am:'Zombie GS'
+application-label-in:'Zombie GS'
+application-label-ko:'Zombie GS'
+application-label-ro:'Zombie GS'
+application-label-ar:'Zombie GS'
+application-label-fr:'Zombie GS'
+application-label-hr:'Zombie GS'
+application-label-sr:'Zombie GS'
+application-label-tr:'Zombie GS'
+application-label-cs:'Zombie GS'
+application-label-es:'Zombie GS'
+application-label-ms:'Zombie GS'
+application-label-et:'Zombie GS'
+application-label-it:'Zombie GS'
+application-label-lt:'Zombie GS'
+application-label-pt:'Zombie GS'
+application-label-hu:'Zombie GS'
+application-label-ru:'Zombie GS'
+application-label-zu:'Zombie GS'
+application-label-lv:'Zombie GS'
+application-label-sv:'Zombie GS'
+application-label-iw:'Zombie GS'
+application-label-sw:'Zombie GS'
+application-label-en_GB:'Zombie GS'
+application-label-zh_CN:'Zombie GS'
+application-label-pt_BR:'Zombie GS'
+application-label-es_US:'Zombie GS'
+application-label-pt_PT:'Zombie GS'
+application-label-zh_TW:'Zombie GS'
+application-icon-120:'res/drawable/icon.png'
+application-icon-160:'res/drawable-mdpi/icon.png'
+application-icon-240:'res/drawable-hdpi/icon.png'
+application-icon-320:'res/drawable-xhdpi/icon.png'
+application-icon-480:'res/drawable-xxhdpi/icon.png'
+application: label='Zombie GS' icon='res/drawable-mdpi/icon.png'
+launchable-activity: name='com.lion.WelcomeActivity'  label='Zombie GS' icon=''
+uses-feature:'android.hardware.touchscreen'
+uses-implied-feature:'android.hardware.touchscreen','assumed you require a touch screen unless explicitly made optional'
+uses-feature:'android.hardware.screen.landscape'
+uses-implied-feature:'android.hardware.screen.landscape','one or more activities have specified a landscape orientation'
+main
+other-activities
+other-receivers
+other-services
+supports-screens: 'normal' 'large' 'xlarge'
+supports-any-density: 'true'
+locales: '--_--' 'ca' 'da' 'fa' 'ja' 'nb' 'be' 'de' 'he' 'af' 'bg' 'th' 'fi' 'hi' 'vi' 'sk' 'uk' 'el' 'nl' 'pl' 'sl' 'tl' 'am' 'in' 'ko' 'ro' 'ar' 'fr' 'hr' 'sr' 'tr' 'cs' 'es' 'ms' 'et' 'it' 'lt' 'pt' 'hu' 'ru' 'zu' 'lv' 'sv' 'iw' 'sw' 'en_GB' 'zh_CN' 'pt_BR' 'es_US' 'pt_PT' 'zh_TW'
+densities: '120' '160' '240' '320' '480'
+native-code: 'armeabi'"""
+
+class PkgCreateWithPackageFileParserUnitTest(WarehouseBaseUnitTest):
+
+    def _mock_badging_text(self, parser, return_value):
+        parser.badging_text = MagicMock(return_value=return_value)
 
     def setUp(self):
         super(PkgCreateWithPackageFileParserUnitTest, self).setUp()
@@ -494,12 +615,11 @@ densities: '160'
     @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'))
     def test_autofill_package_detail(self):
         parser = PackageFileParser(self._pkgfile)
-        self._mock_badging_text(parser, self._pkg_profile_text())
+        self._mock_badging_text(parser, pkg_profile_text())
 
         parser.package.get('package_name')
         version = PackageVersion()
         version.download = File(io.FileIO(self._pkgfile))
-        version.pkgparser = parser
         version.save()
 
         version.package.package_name |should| equal_to(parser.package.get('package_name'))
@@ -514,3 +634,147 @@ densities: '160'
 
         version.icon |should_not| be_empty
 
+
+import hashlib
+from warehouse.utils.parse_handle import *
+def md5sum(filename):
+    d = hashlib.md5()
+    with io.FileIO(filename) as file:
+        while True:
+            try: c = file.read(256)
+            except: break
+            d.update(c)
+    return d.hexdigest()
+
+class ParsePackageVersionUnitTest(WarehouseBaseUnitTest):
+
+    _fixture_dir = _fixture_dir
+
+    def setUp(self):
+        AAPT_CMD=settings.AAPT_CMD
+        set_package_parser_exe(AAPT_CMD)
+        self._pkgfile = join(self._fixture_dir, 'tinysize.apk')
+        super(ParsePackageVersionUnitTest, self).setUp()
+
+    def _mock_badging_text(self, parser, return_value):
+        parser.badging_text = MagicMock(return_value=return_value)
+
+    def test_parse_to_package(self):
+        parser = PackageFileParser(self._pkgfile)
+        self._mock_badging_text(parser, pkg_mutil_languages_profile_text())
+        version = PackageVersion()
+        version.download = File(io.FileIO(self._pkgfile))
+        parse_handle = ParsePackageVersion(version, parser)
+
+        expect_version = parse_handle.parse_to_version()
+        version |should| be(expect_version)
+        package = parse_handle.parse_to_package()
+        package |should| equal_to(version.package)
+        package.package_name |should| equal_to(parser.package.get('package_name'))
+
+    def test_choose_icon_density(self):
+        parser = PackageFileParser(self._pkgfile)
+        self._mock_badging_text(parser, pkg_mutil_languages_profile_text())
+        version = PackageVersion()
+        version.download = File(io.FileIO(self._pkgfile))
+        parse_handle = ParsePackageVersion(version, parser)
+
+        # choose_icon_density
+        # case 1
+        [int(k) for k in parser.application_icons.keys()] |should| include_all_of([
+            120, #    4
+            160, #    3
+            240, #    2
+            320, # <--1
+            480  #    5
+        ])
+        parse_handle.choose_icon_density() |should| equal_to(320)
+
+        # case 2
+        import copy
+        application_icons = copy.deepcopy(parser.application_icons)
+        icons = copy.deepcopy(application_icons)
+        icons.pop('320')
+        icons.pop('240')
+        [int(k) for k in icons.keys()] |should| include_all_of([
+            120,
+            160,
+            480
+        ])
+        parser.application_icons = icons # mock data
+        parse_handle.choose_icon_density() |should| equal_to(160)
+
+        # case 3
+        icons = copy.deepcopy(application_icons)
+        icons.pop('120')
+        icons.pop('160')
+        icons.pop('240')
+        val = icons.pop('320')
+        icons['520'] = val
+        [int(k) for k in icons.keys()] |should| include_all_of([
+            480,
+            520
+        ])
+        parser.application_icons = icons
+        parse_handle.choose_icon_density() |should| equal_to(480)
+
+    def test_parse_to_version(self):
+        parser = PackageFileParser(self._pkgfile)
+        self._mock_badging_text(parser, pkg_mutil_languages_profile_text())
+        version = PackageVersion()
+        version.download = File(io.FileIO(self._pkgfile))
+        parse_handle = ParsePackageVersion(version, parser)
+        expect_version = parse_handle.parse_to_version()
+
+        expect_version |should| be(version)
+        expect_version.version_code |should| equal_to(parser.package.get('version_code'))
+        expect_version.version_name |should| equal_to(parser.package.get('version_name'))
+
+    @skipIf(settings.AAPT_CMD is None, 'ignore parse with no aapt support')
+    @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'),
+                       UNZIP_FILE_TEMP_DIR=join(_fixture_dir, 'temp/unzipdir'))
+    def test_fetch_icon_to_version(self):
+        parser = PackageFileParser(self._pkgfile)
+        version = PackageVersion()
+        version.download = File(io.FileIO(self._pkgfile))
+        parse_handle = ParsePackageVersion(version, parser)
+        parse_handle._unzip_file_temp_dir = settings.UNZIP_FILE_TEMP_DIR
+        expect_version = parse_handle.fetch_icon_to_version()
+        expect_version.icon.size |should| equal_to(4982)
+
+    def test_choose_locale(self):
+        parser = PackageFileParser(self._pkgfile)
+        self._mock_badging_text(parser, pkg_mutil_languages_profile_text())
+        version = PackageVersion()
+        version.download = File(io.FileIO(self._pkgfile))
+        parse_handle = ParsePackageVersion(version, parser)
+
+        parser.locales = ['zh_CN', 'zh_TW', 'en_GB', 'fr']
+        parse_handle.choose_locale() |should| equal_to('zh_CN')
+
+        parser.locales = ['en_GB', 'zh_TW', 'fr']
+        parse_handle.choose_locale() |should| equal_to('zh_TW')
+
+        parser.locales = ['fr', 'en_GB']
+        parse_handle.choose_locale() |should| equal_to('en_GB')
+
+        parser.locales = ['en_GB', 'zh', 'zh_TW', 'en']
+        parse_handle.choose_locale() |should| equal_to('zh')
+
+        parser.locales = ['en_GB', 'fr', 'en']
+        parse_handle.choose_locale() |should| equal_to('en')
+
+        parser.locales = ['fr']
+        parse_handle.choose_locale() |should| be(None)
+
+    def test_choose_locale(self):
+        parser = PackageFileParser(self._pkgfile)
+        self._mock_badging_text(parser, pkg_mutil_languages_profile_text())
+        version = PackageVersion()
+        version.download = File(io.FileIO(self._pkgfile))
+        parse_handle = ParsePackageVersion(version, parser)
+
+        parse_handle.choose_locale() |should| equal_to('zh_CN')
+
+        package = parse_handle.parse_to_package()
+        package.title |should| equal_to(parser.application_labels['zh_CN'])

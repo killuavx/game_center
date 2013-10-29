@@ -8,6 +8,8 @@ from warehouse import settings as warehouse_settings
 from warehouse.models import Package, Author
 from django.core.exceptions import ObjectDoesNotExist
 
+class DiffPackageNameFromApkInfo(Exception):
+    pass
 
 class ParsePackageVersion(object):
 
@@ -17,6 +19,12 @@ class ParsePackageVersion(object):
 
     package_class = Package
 
+    _opts = {
+        'unzip_file_temp_dir': warehouse_settings.UNZIP_FILE_TEMP_DIR,
+        'icon_priority_density': 320,
+        'locale_priority': ['zh', 'zh_CN', 'zh_TW', 'en', 'en_GB'],
+    }
+
     def __init__(self, packageversion, parser=None):
         self._pkgparser = parser
         self._version = packageversion
@@ -25,24 +33,39 @@ class ParsePackageVersion(object):
         return self._version.download and self._pkgparser
 
     def parse_to_package(self):
+        pkg = self._get_or_new_package_of_version()
+        pkginfo = self._pkgparser.package
+        self._check_package_name_between_package_and_profile()
+        pkg.package_name = pkginfo.get('package_name')
+        if not pkg.title:
+            locale = self.choose_locale()
+            pkg.title = self._pkgparser.application_labels[locale or '']
+
+        return self._version.package
+
+    def _get_or_new_package_of_version(self):
         try:
             pkg = self._version.package
         except ObjectDoesNotExist:
             pkg = Package()
-            pkg.author, is_new = Author.objects \
-                .get_or_create(pk=-1,
-                               name='default',
-                               email='default@ccplay.com.cn')
+            pkg.author = self._get_default_author()
             self._version.package = pkg
+        return pkg
 
+    def _get_default_author(self):
+        author, is_new = Author.objects \
+            .get_or_create(pk=-1,
+                           name='default',
+                           email='default@ccplay.com.cn')
+        return author
+
+    def _check_package_name_between_package_and_profile(self):
+        package = self._version.package;
         pkginfo = self._pkgparser.package
-        if pkg.pk and pkg.package_name != pkginfo.get('package_name'):
-            raise Exception('Different package_name '
-                            'between Package and PackageVersion')
-
-        pkg.package_name = pkginfo.get('package_name')
-        pkg.title = self._pkgparser.application_labels['']
-        return self._version.package
+        if package.pk and package.package_name != pkginfo.get('package_name'):
+            raise DiffPackageNameFromApkInfo(
+                'Package:%s Name Different from Apk pacakge name:%s'% \
+                (package.package_name, pkginfo.package_name))
 
     def parse_to_version(self):
         pkgparser = self._pkgparser
@@ -58,12 +81,48 @@ class ParsePackageVersion(object):
     def fetch_icon_to_version(self):
         pkgparser = self._pkgparser
         package_name = pkgparser.package.get('package_name')
-        tmpdir = join(warehouse_settings.UNZIP_FILE_TEMP_DIR, package_name)
+        tmpdir = join(self._opts.get('unzip_file_temp_dir'), package_name)
         os.makedirs(tmpdir, exist_ok=True)
 
-        resource_name = pkgparser.application_icons['160']
+        density = self.choose_icon_density()
+        resource_name = pkgparser.application_icons[str(density)]
         tmpfile = pkgparser.fetch_file(resource_name, to_path=tmpdir)
         self._version.icon = File(io.FileIO(tmpfile))
         shutil.rmtree(tmpdir)
 
         return self._version
+
+    def choose_icon_density(self):
+        """
+        choose icon density:
+            priority:
+             1. 320
+             2. 240
+             3. 160
+             4. 120
+             5. 480
+             6. ...
+        """
+        icons = self._pkgparser.application_icons
+        if len(icons) == 0:
+            raise ValueError('application icons should not be empty')
+
+        priority_density = self._opts.get('icon_priority_density')
+        keys = list(icons.keys())
+        keys.sort()
+        if str(priority_density) in keys:
+            return priority_density
+
+        keys.append(str(priority_density))
+        keys.sort()
+        idx = keys.index(str(priority_density))
+        if idx == 0:
+            return int(keys[idx+1])
+        else:
+            return int(keys[idx-1])
+
+    def choose_locale(self):
+        for l in self._opts.get("locale_priority"):
+            if l in self._pkgparser.locales:
+                return l
+        return None
