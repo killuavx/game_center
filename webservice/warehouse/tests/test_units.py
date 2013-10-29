@@ -601,6 +601,7 @@ locales: '--_--' 'ca' 'da' 'fa' 'ja' 'nb' 'be' 'de' 'he' 'af' 'bg' 'th' 'fi' 'hi
 densities: '120' '160' '240' '320' '480'
 native-code: 'armeabi'"""
 
+
 class PkgCreateWithPackageFileParserUnitTest(WarehouseBaseUnitTest):
 
     def _mock_badging_text(self, parser, return_value):
@@ -635,16 +636,8 @@ class PkgCreateWithPackageFileParserUnitTest(WarehouseBaseUnitTest):
         version.icon |should_not| be_empty
 
 
-import hashlib
 from warehouse.utils.parse_handle import *
-def md5sum(filename):
-    d = hashlib.md5()
-    with io.FileIO(filename) as file:
-        while True:
-            try: c = file.read(256)
-            except: break
-            d.update(c)
-    return d.hexdigest()
+
 
 class ParsePackageVersionUnitTest(WarehouseBaseUnitTest):
 
