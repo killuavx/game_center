@@ -305,14 +305,6 @@ class PackageManagerUnitTest(WarehouseBaseUnitTest):
         pkg = pub_pkgs[0]
         self.assertEqual(pkg.status, Package.STATUS.published)
 
-from django.db.models.signals import pre_save
-from warehouse.models import package_version_pre_save
-def _disconnect_packageversion_pre_save():
-    pre_save.disconnect(package_version_pre_save, PackageVersion)
-
-def _connect_packageversion_pre_save():
-    pre_save.connect(package_version_pre_save, PackageVersion)
-
 class PackageVersionUnitTest(WarehouseBaseUnitTest):
 
     def test_basic_create(self):
@@ -335,7 +327,7 @@ class PackageVersionUnitTest(WarehouseBaseUnitTest):
 
     @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'))
     def test_upload_file_to_path(self):
-        _disconnect_packageversion_pre_save()
+        helpers.disconnect_packageversion_pre_save()
         pkg = ApiDSL.Given_i_have_package_with(self,
                                                package_name='com.tests.packageversion.upload',
                                                )
@@ -361,7 +353,7 @@ class PackageVersionUnitTest(WarehouseBaseUnitTest):
         except_version.download.path |should| end_with(join(version_path, 'application.apk'))
         except_version.di_download.path |should| end_with(join(version_path, 'application-di.cpk'))
 
-        _connect_packageversion_pre_save()
+        helpers.connect_packageversion_pre_save()
 
 
     def test_should_package_with_version(self):
