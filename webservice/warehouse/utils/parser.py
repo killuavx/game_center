@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import sh
 import os
-import sys
 import re
 
 __author__ = 'me'

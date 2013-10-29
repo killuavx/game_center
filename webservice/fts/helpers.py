@@ -128,7 +128,6 @@ def convert_content(content):
     except:
         return content.decode('utf-8')
 
-
 def disconnect_packageversion_pre_save():
     pre_save.disconnect(package_version_pre_save, PackageVersion)
 

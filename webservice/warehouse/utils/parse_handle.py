@@ -4,7 +4,7 @@ import os
 from os.path import join
 import shutil
 from django.core.files import File
-from warehouse import settings as warehouse_settings
+from django.conf import settings
 from warehouse.models import Package, Author
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -20,7 +20,9 @@ class ParsePackageVersion(object):
     package_class = Package
 
     _opts = {
-        'unzip_file_temp_dir': warehouse_settings.UNZIP_FILE_TEMP_DIR,
+        'unzip_file_temp_dir': getattr(settings,
+                                       'UNZIP_FILE_TEMP_DIR',
+                                       '/tmp/warehouse-uploader'),
         'icon_priority_density': 320,
         'locale_priority': ['zh', 'zh_CN', 'zh_TW', 'en', 'en_GB'],
     }

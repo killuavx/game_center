@@ -691,15 +691,26 @@ class PackageVersionScreenshot(models.Model):
 
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from warehouse.helpers import import_from
 
 @receiver(pre_save, sender=PackageVersion)
 def package_version_pre_save(sender, instance, **kwargs):
+    try:
+        parser_opts = getattr(settings, 'PACKAGE_FILE_PARSE_OPTS', dict())
+        parser_class = import_from(
+            parser_opts.get('package_version_parser_class',
+                            'warehouse.utils.parser.PackageFileParser'))
+        parse_handle_class = import_from(
+            parser_opts.get('package_version_parse_handle_class',
+                            'warehouse.utils.parse_handle.ParsePackageVersion'))
+    except:
+        parser_class = None
+        parse_handle_class = None
+        pass
 
-    if instance.download:
-        from warehouse.utils.parser import PackageFileParser
-        from warehouse.utils.parse_handle import ParsePackageVersion
-        parser = PackageFileParser(instance.download.file.name)
-        handle = ParsePackageVersion(instance, parser)
+    if instance.download and parser_class and parse_handle_class:
+        parser = parser_class(instance.download.file.name)
+        handle = parse_handle_class(instance, parser)
 
         if handle.can_parse_appfile():
             package = handle.parse_to_package()

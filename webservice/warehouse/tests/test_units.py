@@ -601,11 +601,21 @@ locales: '--_--' 'ca' 'da' 'fa' 'ja' 'nb' 'be' 'de' 'he' 'af' 'bg' 'th' 'fi' 'hi
 densities: '120' '160' '240' '320' '480'
 native-code: 'armeabi'"""
 
+from mock import patch
+from warehouse.utils.parse_handle import *
 
 class PkgCreateWithPackageFileParserUnitTest(WarehouseBaseUnitTest):
 
-    def _mock_badging_text(self, parser, return_value):
-        parser.badging_text = MagicMock(return_value=return_value)
+    class MockPackageFileParser(PackageFileParser):
+
+        def badging_text(self):
+            return pkg_profile_text()
+
+    class MockParsePackageVersion(ParsePackageVersion):
+
+        def fetch_icon_to_version(self):
+            icon_filename = join(WarehouseBaseUnitTest._fixture_dir, 'icon.png')
+            self._version.icon = File(io.File(icon_filename))
 
     def setUp(self):
         super(PkgCreateWithPackageFileParserUnitTest, self).setUp()
@@ -613,12 +623,13 @@ class PkgCreateWithPackageFileParserUnitTest(WarehouseBaseUnitTest):
         set_package_parser_exe(AAPT_CMD)
         self._pkgfile = join(self._fixture_dir, 'tinysize.apk')
 
-    @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'))
+    @override_settings(MEDIA_ROOT=join(_fixture_dir, 'temp'),
+                       PACKAGE_FILE_PARSE_OPTS=dict(
+                           package_version_parser_class=MockPackageFileParser,
+                           package_version_parse_handle=MockParsePackageVersion
+                       ))
     def test_autofill_package_detail(self):
-        parser = PackageFileParser(self._pkgfile)
-        self._mock_badging_text(parser, pkg_profile_text())
-
-        parser.package.get('package_name')
+        parser = self.MockPackageFileParser(self._pkgfile)
         version = PackageVersion()
         version.download = File(io.FileIO(self._pkgfile))
         version.save()
@@ -634,9 +645,6 @@ class PkgCreateWithPackageFileParserUnitTest(WarehouseBaseUnitTest):
         version.package.author_id |should| equal_to(-1)
 
         version.icon |should_not| be_empty
-
-
-from warehouse.utils.parse_handle import *
 
 
 class ParsePackageVersionUnitTest(WarehouseBaseUnitTest):
