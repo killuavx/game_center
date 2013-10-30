@@ -30,12 +30,21 @@ def step_should_see_comment_list_in_comment_page(context):
                                   'comment')
     context.world.update(dict(comment=comment))
 
+from django.test.testcases import override_settings
 
 @when('I post comment "{comment:n?s}" to the package')
 def step_post_comment_to_the_package(context, comment):
-    ApiDSL.When_i_post_comment_to(context,
-                                  comment,
-                                  context.world.get("the_package"))
+    is_public = context.world.get('settings_comment_is_public', None)
+    if is_public is not None:
+        _decorator = override_settings(COMMENTS_POST_PUBLISHED=is_public)
+    else:
+        def _decorator(func):
+            def _wrapper(*args, **kwargs):
+                return func(*args, **kwargs)
+            return _wrapper
+    _decorator(ApiDSL.When_i_post_comment_to)(context,
+                                            content=comment,
+                                            obj=context.world.get("the_package"))
 
 @then('I should receive comment "{content:n?s}" from response')
 def step_should_receive_comment_from_response(context, content):
@@ -44,4 +53,9 @@ def step_should_receive_comment_from_response(context, content):
 @when('I visit my commented package page')
 def step_visit_my_commented_packages(context):
     ApiDSL.When_i_access_my_commented_packages_page(context)
+
+
+@given('post comment status of platform default is {is_public:pub?}')
+def step_settings_change(context, is_public):
+    context.world.update(dict(settings_comment_is_public=is_public))
 
