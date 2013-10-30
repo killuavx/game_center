@@ -656,3 +656,28 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
+
+
+#---------------------------------------------------------------------------
+from clientapp.models import ClientPackageVersion
+
+
+class ClientPackageVersionSerializer(serializers.ModelSerializer):
+
+    download = serializers.SerializerMethodField('get_download_url')
+
+    def get_download_url(self, obj):
+        if obj.download:
+            return obj.download.url
+        return None
+
+    class Meta:
+        model = ClientPackageVersion
+        fields = (
+            'version_code',
+            'version_name',
+            'download',
+            'download_size',
+            'whatsnew',
+            'released_datetime',
+        )

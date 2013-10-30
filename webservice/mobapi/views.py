@@ -1089,3 +1089,24 @@ class CommentViewSet(mixins.CreateModelMixin,
         return super(CommentViewSet, self).get_serializer(instance, data,
                                                    files, many, partial)
 
+#----------------------------------------------------------------
+from mobapi.serializers import ClientPackageVersionSerializer
+from clientapp.models import ClientPackageVersion
+
+
+class SelfUpdateView(generics.RetrieveAPIView):
+
+    serializer_class = ClientPackageVersionSerializer
+    queryset = ClientPackageVersion.objects.published()
+
+    def get_object(self, queryset=None):
+        queryset = self.filter_queryset(self.get_queryset())
+        return queryset.latest_version()
+
+    def get(self, request, *args, **kwargs):
+        try:
+            self.object = self.get_object()
+        except ClientPackageVersion.DoesNotExist:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        serializer = self.get_serializer(self.object)
+        return Response(serializer.data, status=status.HTTP_200_OK)

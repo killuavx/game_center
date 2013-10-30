@@ -689,5 +689,9 @@ class ApiDSL(RestApiTest):
                               follow=True)
         self.world.update(dict(response=res))
 
+    def When_i_access_selfupdate(self):
+        res = self.client.get('/api/selfupdate/')
+        self.world.update(dict(response=res))
+
     def clear_world(self):
         self.world = {}
