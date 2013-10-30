@@ -8,7 +8,9 @@ from django import forms
 import json
 from django.core.files import File
 from searcher.models import TipsWord
+from django.db.models.signals import pre_save
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
+from warehouse.models import package_version_pre_save
 from taxonomy.models import Category, Topic, TopicalItem
 from account.models import Player
 from rest_framework.authtoken.models import Token
@@ -125,6 +127,13 @@ def convert_content(content):
         return json.loads(content.decode('utf-8'))
     except:
         return content.decode('utf-8')
+
+def disconnect_packageversion_pre_save():
+    pre_save.disconnect(package_version_pre_save, PackageVersion)
+
+def connect_packageversion_pre_save():
+    pre_save.connect(package_version_pre_save, PackageVersion)
+
 
 class RestApiTest(TestCase):
 

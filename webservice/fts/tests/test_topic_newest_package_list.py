@@ -8,7 +8,6 @@ from os.path import join
 import os
 from django.core.files import File
 import io
-
 class NewestTopicPackageTest(RestApiTest):
 
     def Given_i_haven_topic_with_packages(self, *args, **kwargs):
@@ -138,6 +137,7 @@ class PackageInfoRestApiTest(RestApiTest):
             cat_names=names )
 
     def test_should_see_package_detail_cpk_download(self):
+        helpers.disconnect_packageversion_pre_save()
         yestoday = now() - timedelta(days=1)
         today = now() - timedelta(minutes=1)
         pkg = ApiDSL.Given_i_have_published_package(self,
@@ -160,7 +160,11 @@ class PackageInfoRestApiTest(RestApiTest):
         except_version = pkg_data.get('versions')[0]
         self.assertRegex(except_version.get('download'), '.*\.cpk$')
 
+        helpers.connect_packageversion_pre_save()
+
     def test_should_see_package_detail_apk_download(self):
+        helpers.disconnect_packageversion_pre_save()
+
         yestoday = now() - timedelta(days=1)
         today = now() - timedelta(minutes=1)
         pkg = ApiDSL.Given_i_have_published_package(self,
@@ -185,4 +189,6 @@ class PackageInfoRestApiTest(RestApiTest):
         # version download url
         except_version = pkg_data.get('versions')[0]
         self.assertRegex(except_version.get('download'), '.*\.apk$')
+
+        helpers.connect_packageversion_pre_save()
 
