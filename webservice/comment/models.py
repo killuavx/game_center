@@ -54,5 +54,5 @@ def comment_pre_save(sender, instance, **kwargs):
     but it cannot create comment with is_public = True
     """
     if instance.pk is None:
-        instance.is_public = False
+        instance.is_public = getattr(settings, 'COMMENTS_POST_PUBLISHED', True)
 
