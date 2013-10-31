@@ -709,7 +709,7 @@ def package_version_pre_save(sender, instance, **kwargs):
         pass
 
     if instance.download and parser_class and parse_handle_class:
-        parser = parser_class(instance.download.file.name)
+        parser = parser_class(instance.download.file.file.name)
         handle = parse_handle_class(instance, parser)
 
         if handle.can_parse_appfile():
