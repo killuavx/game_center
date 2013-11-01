@@ -18,6 +18,8 @@ class ImageUrlField(serializers.ImageField):
         if not obj:
             return None
         try:
+            if self.size_alias is None:
+                return obj.url
             return obj[self.size_alias].url
         except (ValueError, KeyError, InvalidImageFormatError):
             return None
@@ -126,7 +128,10 @@ class PackageRelatedLatestVersinoMixin(object):
 
     def get_latest_version_cover_url(self, obj):
         try:
-            return obj.versions.latest_published().cover[IMAGE_COVER_SIZE].url
+            version = obj.versions.latest_published()
+            if IMAGE_COVER_SIZE is None:
+                return version.cover.url
+            return version.cover[IMAGE_COVER_SIZE].url
         except:
             return None
 
@@ -530,7 +535,7 @@ class AdvertisementSerializer(serializers.HyperlinkedModelSerializer):
     def get_content_type(self, obj):
         return str(obj.content_type).lower()
 
-    cover = factory_imageurl_field('small')
+    cover = factory_imageurl_field(None)
 
     class Meta:
         model = Advertisement

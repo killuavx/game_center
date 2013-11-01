@@ -3,6 +3,7 @@ from django.test.testcases import TestCase
 from comment.models import Comment
 from django.contrib.sites.models import Site
 from django.utils.timezone import datetime, now
+from django.test.testcases import override_settings
 from django.conf import settings
 
 from fts.helpers import ApiDSL
@@ -10,6 +11,7 @@ from should_dsl import should
 
 class CommentUnitTest(TestCase):
 
+    @override_settings(COMMENTS_POST_PUBLISHED=False)
     def test_post_comment_to_packageversion(self):
         player = ApiDSL.Given_i_have_account(self)
         package = ApiDSL.Given_i_have_published_package(self, title='愤怒的小鸟')

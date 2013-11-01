@@ -15,6 +15,7 @@ Feature: post comment to package version
     Given package name "call me MT" has a set of versions below:
       | version_name | version_code | released_datetime   |
       | 1.0          | 1            | 2013-10-10 23:21:00 |
+    Given post comment status of platform default is unpublished
 
     When I access the package detail
     Then I should receive 200 OK
@@ -29,6 +30,7 @@ Feature: post comment to package version
     Given package name "call me MT" has a set of versions below:
       | version_name | version_code | released_datetime   |
       | 1.0          | 1            | 2013-10-10 23:21:00 |
+    Given post comment status of platform default is unpublished
 
     When I post comment "great job" to the package
     Then I should receive 201 Created

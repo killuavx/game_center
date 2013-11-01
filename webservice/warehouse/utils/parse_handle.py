@@ -7,6 +7,9 @@ from django.core.files import File
 from django.conf import settings
 from warehouse.models import Package, Author
 from django.core.exceptions import ObjectDoesNotExist
+from warehouse.utils.parser import set_package_parser_exe
+
+set_package_parser_exe(settings.AAPT_CMD)
 
 class DiffPackageNameFromApkInfo(Exception):
     pass
