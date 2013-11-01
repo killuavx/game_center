@@ -1,0 +1,6 @@
+[behave]
+wip=yes
+color=on
+show_skipped=no
+expand=yes
+verbose=yes
