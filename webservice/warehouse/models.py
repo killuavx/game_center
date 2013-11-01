@@ -493,7 +493,7 @@ class Package(models.Model):
             return None
 
     def clean(self):
-        if  self.status == self.STATUS.published:
+        if self.status == self.STATUS.published:
             latest_version = None
             try:
                 latest_version = self.versions.latest_published()

@@ -18,6 +18,9 @@ from django.utils.timezone import now, timedelta
 from urllib import parse as urlparse
 from should_dsl import should, should_not
 from fts.middlewares import get_current_request
+from collections import namedtuple
+
+StatusCode = namedtuple('StatusCode',['code', 'reason'])
 
 import random
 _models = []
@@ -124,15 +127,32 @@ def clear_data():
 
 def convert_content(content):
     try:
-        return json.loads(content.decode('utf-8'))
+        content = content.decode('utf-8')
     except:
-        return content.decode('utf-8')
+        pass
+
+    try:
+        return json.loads(content)
+    except:
+        return content
+
 
 def disconnect_packageversion_pre_save():
     pre_save.disconnect(package_version_pre_save, PackageVersion)
 
 def connect_packageversion_pre_save():
     pre_save.connect(package_version_pre_save, PackageVersion)
+
+
+def _world_response_status(context, res):
+    context.world.update(dict(
+        response=res,
+        content=convert_content(res.content),
+        status=StatusCode(
+            code=res.status_code,
+            reason=res.status_text
+        )
+    ))
 
 
 class RestApiTest(TestCase):
@@ -326,19 +346,19 @@ class ApiDSL(RestApiTest):
         pkg_data.get('categories_names') |should| include_in_any_order(list(cat_names))
 
     def When_i_access_api_root(self):
-        response = self.client.get('/api/')
-        self.world.setdefault('response', response)
+        res = self.client.get('/api/')
+        _world_response_status(self, res)
 
     def Then_i_should_see_the_api_in_content(self, name):
-        self.world.get('response').get('content') |should| include_keys(name)
+        self.world.get('content') |should| include_keys(name)
 
     def When_i_access_category_list(self):
         res = self.client.get('/api/categories/')
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def When_i_access_category_detail(self, category):
         res = self.client.get('/api/categories/%s/'%category.slug)
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def Then_i_should_see_the_category_in_category_tree(self, category, flag=True):
         category_tree = self.world.get('content')
@@ -359,41 +379,41 @@ class ApiDSL(RestApiTest):
             res = self.client.get('/api/topics/%s/children/' % topic.slug)
         else:
             res = self.client.get('/api/topics/')
-        self.world.setdefault('response', res)
+        _world_response_status(self, res)
 
     def When_i_access_topic_detail(self, topic):
         res = self.client.get('/api/topics/%s/' % topic.slug)
-        self.world.setdefault('response', res)
+        _world_response_status(self, res)
 
     def When_i_access_topic_items(self, topic):
-        respose = self.client.get('/api/topics/%s/items/' % topic.slug)
-        self.world.setdefault('response', respose)
+        res = self.client.get('/api/topics/%s/items/' % topic.slug)
+        _world_response_status(self, res)
 
     def When_i_access_author_packages(self, author):
-        respose = self.client.get('/api/authors/%s/packages/' % author.pk)
-        self.world.setdefault('response', respose)
+        res = self.client.get('/api/authors/%s/packages/' % author.pk)
+        _world_response_status(self, res)
 
     def When_i_access_topic_newest_package(self):
         # note: path没有以"/"结束
-        response = self.client\
+        res = self.client\
             .get('/api/topics/newest/items?ordering=-released_datetime',
                  follow=True)
-        self.world.setdefault('response',  response)
+        _world_response_status(self, res)
 
     def When_i_access_search_package(self, keyword):
-        response = self.client \
+        res = self.client \
             .get('/api/search?q=%s' % urlparse.quote_plus(keyword),
                  follow=True)
-        self.world.setdefault('response',  response)
+        _world_response_status(self, res)
 
     def When_i_access_search_tips(self):
-        response = self.client \
+        res = self.client \
             .get('/api/tipswords', follow=True)
-        self.world.setdefault('response',  response)
+        _world_response_status(self, res)
 
     def When_i_access_rankings_list(self, rankings_type):
         res = self.client.get('/api/rankings/')
-        self.world.setdefault('response', res)
+        _world_response_status(self, res)
 
     def When_i_access_advertisement_with(self, place=None):
         if place:
@@ -401,7 +421,7 @@ class ApiDSL(RestApiTest):
         else:
             res = self.client.get('/api/advertisements/')
 
-        self.world.setdefault('response', res)
+        _world_response_status(self, res)
 
     def Then_i_should_see_tips_list(self, tips_list):
         for t in tips_list:
@@ -547,8 +567,8 @@ class ApiDSL(RestApiTest):
         from mobapi.serializers import PackageSummarySerializer
 
         serializer = PackageSummarySerializer(package, context=dict(request=get_current_request()))
-        repsonse = self.client.get(serializer.data.get('url'))
-        self.world.update(dict(response=repsonse))
+        res = self.client.get(serializer.data.get('url'))
+        _world_response_status(self, res)
 
     def Then_i_should_see_advertisement_list(self, adv_list):
 
@@ -565,16 +585,16 @@ class ApiDSL(RestApiTest):
             Then_i_should_see_advertisement_summary(a)
 
     def When_i_signup_with(self, user_data):
-        response = self.client.post('/api/accounts/signup/', user_data)
-        self.world.update(dict(response=response))
+        res = self.client.post('/api/accounts/signup/', user_data)
+        _world_response_status(self, res)
 
     def When_i_signup_with_querystr(self, query):
-        response = self.client.post('/api/accounts/signup/', HTTP_CONTENT=query)
-        self.world.update(dict(response=response))
+        res = self.client.post('/api/accounts/signup/', HTTP_CONTENT=query)
+        _world_response_status(self, res)
 
     def When_i_signin_with(self, signin_data):
-        response = self.client.post('/api/accounts/signin/', signin_data)
-        self.world.update(dict(response=response))
+        res = self.client.post('/api/accounts/signin/', signin_data)
+        _world_response_status(self, res)
 
     def Given_i_have_account(self, signin_data=dict()):
         user = create_account(**signin_data)
@@ -589,7 +609,8 @@ class ApiDSL(RestApiTest):
     def When_i_signout(self):
         headers = self.world.get('headers', dict())
         res = self.client.get('/api/accounts/signout/', **headers)
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
+
         try: self.client_initial_params.pop('HTTP_AUTHORIZATION')
         except: pass
         self.client = Client(**self.client_initial_params)
@@ -607,7 +628,7 @@ class ApiDSL(RestApiTest):
     def When_i_access_myprofile(self):
         headers = self.world.get('headers', dict())
         res = self.client.get('/api/accounts/myprofile', **headers)
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def Then_i_should_see_myprofile_information(self, user_profile):
         content = self.world.get('content')
@@ -620,37 +641,36 @@ class ApiDSL(RestApiTest):
     def When_i_access_mybookmarks(self):
         headers = self.world.get('headers', dict())
         res = self.client.get('/api/bookmarks/', **headers)
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def When_i_add_bookmark(self, pkg):
-        headers = self.world.get('headers', dict())
         postdata = dict(package_name=pkg.package_name)
         res = self.client.post('/api/bookmarks/', postdata)
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def When_i_remove_bookmark(self, pkg):
         res = self.client.delete('/api/bookmarks/%d/' % pkg.pk)
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def When_i_access_bookmark_check(self, pkg):
         res = self.client.head('/api/bookmarks/%d/' % pkg.pk)
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def When_i_access_bookmarks_page(self):
         res = self.client.get('/api/bookmarks/')
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def When_i_access_url_with_head_method(self, url):
         headers = self.world.get('headers', dict())
         res = self.client.head(url, **headers)
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def When_i_post_package_update_versions(self, pkg_version_list):
         qs = json.dumps(dict(versions=pkg_version_list))
         res = self.client.post('/api/updates/',
                                content_type='application/json',
                                data=qs)
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def Then_i_should_see_package_update_list_has_the_version(context,
                                                               package_name,
@@ -674,24 +694,24 @@ class ApiDSL(RestApiTest):
         from mobapi.serializers import PackageDetailSerializer
         serializer = PackageDetailSerializer(obj)
         res = self.client.get(serializer.data.get('comments_url'))
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def When_i_post_comment_to(self, content, obj):
         from mobapi.serializers import PackageDetailSerializer
         serializer = PackageDetailSerializer(obj)
         res = self.client.post(serializer.data.get('comments_url'),
                                dict(comment=content))
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
 
     def When_i_access_my_commented_packages_page(self):
         res = self.client.get('/api/accounts/commented_packages',
                               follow=True)
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def When_i_access_selfupdate(self):
         res = self.client.get('/api/selfupdate/')
-        self.world.update(dict(response=res))
+        _world_response_status(self, res)
 
     def clear_world(self):
         self.world = {}

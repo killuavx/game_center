@@ -47,6 +47,10 @@ class ClientPackageVersion(models.Model):
         blank=True,
     )
 
+    package_name = models.CharField(
+        verbose_name=_('package name'),
+        max_length=128)
+
     download = models.FileField(
         verbose_name=_('version file'),
         upload_to=factory_version_upload_to_path('application'),
@@ -110,11 +114,19 @@ class ClientPackageVersion(models.Model):
 
     status = StatusField(default='draft', blank=True)
 
-    released_datetime = models.DateTimeField(db_index=True, blank=True, null=True)
+    released_datetime = models.DateTimeField(
+        verbose_name=_('released time'),
+        db_index=True,
+        blank=True,
+        null=True)
 
-    created_datetime = models.DateTimeField(auto_now_add=True)
+    created_datetime = models.DateTimeField(
+        verbose_name=_('created time'),
+        auto_now_add=True)
 
-    updated_datetime = models.DateTimeField(auto_now=True, auto_now_add=True)
+    updated_datetime = models.DateTimeField(
+        verbose_name=_('updated time'),
+        auto_now_add=True)
 
     tracker = FieldTracker()
 
@@ -123,7 +135,22 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 @receiver(pre_save, sender=ClientPackageVersion)
-def client_packageversion_pre_save(sender, instance, *args, **kwargs):
+def client_packageversion_pre_save(sender, instance, **kwargs):
 
     if instance.tracker.has_changed('download') and instance.download:
        instance.download_size = instance.download.size
+
+@receiver(pre_save, sender=ClientPackageVersion)
+def updated_datetime_pre_save_with_tracker(sender, instance, **kwargs):
+    """same with DatetimeField(auto_now=True),
+    but open for package_version_post_save signals,
+    because model datetime with auto_now=True would be overwrite on save action
+    """
+    changed = instance.tracker.changed()
+    try:
+        changed.pop('updated_datetime')
+    except KeyError:
+        pass
+
+    if len(changed):
+        instance.updated_datetime = now()

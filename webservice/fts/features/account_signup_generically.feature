@@ -1,17 +1,12 @@
 Feature: Sign Up Generically
 
-
-  @web @noui
   Scenario: Success
-    Given "martin" as the persona
     When I am player, named "martin", email "martin@testcase.com", phone "+82-021-12345678", with password "123456"
     And I sign up with "martin"
     Then I should receive 201 CREATED
     And I should see player profile with named "martin", email "martin@testcase.com", phone "+82-021-12345678"
 
-  @web @noui
   Scenario Outline: Fail
-    Given "<name>" as the persona
     When I am player, named "<name>", email "<email>", phone "<phone>", with password "<password>"
     And I sign up with "<name>"
     Then I should receive <status>

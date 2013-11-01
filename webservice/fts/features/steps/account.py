@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
 __author__ = 'me'
-from behave import when, given, then
+from behave import *
 from behaving.personas.steps import *
 from fts.helpers import ApiDSL, RestApiTest
 from should_dsl import should
 from warehouse.models import Package
 
+
+def step_given_a_persona(context, name):
+    if name not in context.personas:
+        context.personas[name] = Persona()
+    context.persona = context.personas[name]
+
+
 @given('I am player in game center, named "{name}", email "{email}", phone "{phone}", with password "{password}"')
 def step_given_as_player(context, name, email, phone, password):
-    context.execute_steps('''
-    Given "{name}" as the persona
-    '''.format(name=name))
+    step_given_a_persona(context, name)
+
     ApiDSL.Given_i_have_account(context, dict(
         username=name,
         email=email,
@@ -21,6 +27,7 @@ def step_given_as_player(context, name, email, phone, password):
 
 @when('I am player, named "{name:n?s}", email "{email:n?s}", phone "{phone:n?s}", with password "{password:n?s}"')
 def step_as_player(context, name=None, email=None, phone=None, password=None):
+    step_given_a_persona(context, name)
     data = { k:v for k,v in dict(username=name,
                            email=email,
                            phone=phone,

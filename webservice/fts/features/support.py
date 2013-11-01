@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 __author__ = 'me'
 from behave.matchers import register_type
+from collections import namedtuple
+
+
+StatusCode = namedtuple('StatusCode', ['code', 'reason'])
+
 
 def str2empty(s):
     if s.upper() == 'NONE':
@@ -8,12 +13,14 @@ def str2empty(s):
     else:
         return s
 
+
 def in2boolean(s):
     is_ = s.split(" ")
     if is_[0].lower() == 'not':
         return False
     else:
         return True
+
 
 def pub2boolean(s):
     s = s.lower()
@@ -23,8 +30,15 @@ def pub2boolean(s):
         return False
     return None
 
+
+def upper(s):
+    return s.upper()
+
 register_type(**{
     'pub?': pub2boolean,
     'in?': in2boolean,
-    'n?s': str2empty
+    'n?s': str2empty,
+    'upper': upper
 })
+
+
