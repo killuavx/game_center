@@ -1,4 +1,3 @@
-@wip
 Feature: update client
   As a Player
   I want to receive client version update message from game center

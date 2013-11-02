@@ -49,6 +49,8 @@ class ClientPackageVersion(models.Model):
 
     package_name = models.CharField(
         verbose_name=_('package name'),
+        blank=False,
+        null=False,
         max_length=128)
 
     download = models.FileField(

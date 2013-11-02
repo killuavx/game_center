@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-__author__ = 'me'
+
 import os
-from behaving import environment as benv
 from behaving.personas import environment as personaenv
 from behaving.web import environment as webenv
-from fts.tests import helpers
-from fts.middlewares import get_current_request
+from fts import helpers
 from fts.features import support
-from django.test.client import Client
+from toolkit.middleware import get_current_request, get_current_response
+from toolkit.helpers import import_from
+import time
 
 PERSONAS = {}
 
@@ -19,6 +19,7 @@ def setup(context):
     context.fixture_dir = os.path.join(_dir, 'tests/fixtures')
     context.attachment_dir = context.fixture_dir
     context.get_current_request = get_current_request
+    context.get_current_response = get_current_response
 
     if not hasattr(context, 'world'):
         context.world = {}
@@ -26,11 +27,9 @@ def setup(context):
 
 def setup_client(context):
     context.base_url = 'http://localhost:8080'
-    if 'browser' not in context.tags:
-        client_initial_params = dict(HTTP_ACCEPT='application/json',
-                                     HTTP_CACHE_CONTROL='no-cache')
-        context.client_initial_params = client_initial_params
-        context.client = Client(client_initial_params)
+    factory_web_dsl = import_from('fts.features.app_dsls.web.factory_dsl')
+    WebDSL = factory_web_dsl(context)
+    WebDSL.browser_or_client(context)
 
 
 def teardown_client(context):
@@ -80,6 +79,8 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
+    if context.failed:
+        time.sleep(60)
     personaenv.after_scenario(context, scenario)
     webenv.after_scenario(context, scenario)
     teardown_client(context)

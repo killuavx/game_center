@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-__author__ = 'me'
-from behave.matchers import register_type
 from collections import namedtuple
+
+from django.test import Client
+from behave.matchers import register_type
+
+from toolkit.middleware import get_current_response
 
 
 StatusCode = namedtuple('StatusCode', ['code', 'reason'])
@@ -37,8 +40,22 @@ def upper(s):
 register_type(**{
     'pub?': pub2boolean,
     'in?': in2boolean,
+    'be?': in2boolean,
     'n?s': str2empty,
     'upper': upper
 })
 
+
+class HackBrowserFromClient(Client):
+
+    @property
+    def response(self):
+        return get_current_response()
+
+    @property
+    def response_content(self):
+        return self.response.content.decode('utf-8')
+
+    def is_text_present(self, text):
+        return text in self.response_content
 

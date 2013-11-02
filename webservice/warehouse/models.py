@@ -13,6 +13,8 @@ from django.utils.translation import ugettext_lazy as _
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 from os.path import join, basename
+from toolkit.helpers import import_from
+
 
 class StatusNotSupportAction(Exception):
     pass
@@ -691,7 +693,7 @@ class PackageVersionScreenshot(models.Model):
 
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from warehouse.helpers import import_from
+
 
 @receiver(pre_save, sender=PackageVersion)
 def package_version_pre_save(sender, instance, **kwargs):

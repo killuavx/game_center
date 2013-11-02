@@ -2,23 +2,26 @@
 import io
 import os
 from os.path import join, dirname, abspath
+import json
+from urllib import parse as urlparse
+from collections import namedtuple
+
 from django.test.testcases import TestCase
 from django.test.client import Client
 from django import forms
-import json
 from django.core.files import File
-from searcher.models import TipsWord
 from django.db.models.signals import pre_save
+from rest_framework.authtoken.models import Token
+from django.utils.timezone import now, timedelta
+from should_dsl import should
+
+from searcher.models import TipsWord
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from warehouse.models import package_version_pre_save
 from taxonomy.models import Category, Topic, TopicalItem
 from account.models import Player
-from rest_framework.authtoken.models import Token
-from django.utils.timezone import now, timedelta
-from urllib import parse as urlparse
-from should_dsl import should, should_not
-from fts.middlewares import get_current_request
-from collections import namedtuple
+from toolkit.middleware import get_current_request
+
 
 StatusCode = namedtuple('StatusCode',['code', 'reason'])
 
@@ -30,6 +33,9 @@ def guid():
     def S4():
         return hex(int(((1 + random.random()) * 0x10000) or 0))[2:]
     return "%s-%s-%s-%s"%(S4(), S4(), S4(), S4())
+
+def add_model_objects(*args):
+    _models.extend(args)
 
 def create_category(**defaults):
     defaults.setdefault('name', "Game")

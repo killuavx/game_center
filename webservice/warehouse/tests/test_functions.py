@@ -1,16 +1,17 @@
 # -*- encoding=utf-8 -*-
+from datetime import timedelta
+import json
+
 from django.test.testcases import TestCase
 from django.test.client import Client
-from fts import helpers
-from fts.middlewares import get_current_request
-from warehouse.models import Author
-from mobapi.serializers import (AuthorSerializer,
-                                AuthorSummarySerializer,
-                                PackageSummarySerializer)
 from django.utils.timezone import now, datetime
-from datetime import timedelta
 from should_dsl import should
-import json
+
+from fts import helpers
+from toolkit.middleware import get_current_request
+from warehouse.models import Author
+from mobapi.serializers import ( AuthorSummarySerializer,
+                                PackageSummarySerializer)
 
 
 class ApiTest(TestCase):
