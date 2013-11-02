@@ -4,6 +4,7 @@ import os
 HOST_URL = os.getenv('GC_HOST_URL', '')
 MEDIA_URL = HOST_URL + MEDIA_URL
 
+EXTENDAL_APPS.append('toolkit')
 EXTENDAL_APPS.append('django_nose')
 EXTENDAL_APPS.append('fts')
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
@@ -19,7 +20,7 @@ DATABASES['default'].update(dict(
 
 MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
 MIDDLEWARE_CLASSES.extend([
-    'fts.middlewares.ThreadLocals'
+    'toolkit.middleware.ThreadLocals'
 ])
 
 CACHE = {
