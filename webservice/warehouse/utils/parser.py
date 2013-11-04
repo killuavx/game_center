@@ -3,16 +3,20 @@ import sh
 import os
 import re
 
-__author__ = 'me'
 
 AAPT_CMD = None
+
+
 def set_package_parser_exe(exe_path):
     global AAPT_CMD
-    AAPT_CMD=exe_path
+    AAPT_CMD = exe_path
+
 
 def get_package_parser_exe():
     global AAPT_CMD
+
     return AAPT_CMD
+
 
 class PackageFileParser(object):
 

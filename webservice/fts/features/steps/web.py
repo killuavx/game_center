@@ -1,16 +1,28 @@
 # -*- coding: utf-8 -*-
-__author__ = 'me'
 from behave import *
-from behaving.web.steps import *
-from fts.helpers import ApiDSL
-from should_dsl import should
+from fts.features.app_dsls.web import factory_dsl
 
-@then('I should see "{message}"')
+@given('a browser or client')
+def step_browser_or_client(context):
+    WebDSL = factory_dsl(context)
+    WebDSL.browser_or_client(context)
+
+@then('I should see "{message} in json response detail"')
 def step_should_see_message(context, message):
-    message |should| equal_to(context.world.get('content').get('detail'))
+    WebDSL = factory_dsl(context)
+    WebDSL.should_see(context, message)
 
-@then('I should receive {status_code:d} {status_desc}')
-def step_should_receive_status(context, status_code, status_desc):
-    ApiDSL.Then_i_should_receive_response_with(context,
-                                               status_code=status_code)
+@then('I should receive {status_code:d} {reason:upper}')
+def step_should_receive_status(context, status_code, reason):
+    WebDSL = factory_dsl(context)
+    WebDSL.should_receive_status(context, status_code, reason)
 
+@then('I should see nothing')
+def step_should_see_nothing(context):
+    WebDSL = factory_dsl(context)
+    WebDSL.should_see_nothing(context)
+
+@then('I should see message below')
+def step_see_message_below(context):
+    WebDSL = factory_dsl(context)
+    WebDSL.should_see(context, context.text)

@@ -1,10 +1,12 @@
-from fts import helpers
-from fts.helpers import ApiDSL, RestApiTest
-from warehouse.models import Package, PackageVersion, Author
-from taxonomy.models import Topic, TopicalItem
 from django.utils.timezone import now, timedelta
 from django.core.urlresolvers import reverse
-from fts.middlewares import get_current_request
+
+from fts import helpers
+from fts.helpers import ApiDSL, RestApiTest
+from warehouse.models import Author
+from taxonomy.models import Topic, TopicalItem
+from toolkit.middleware import get_current_request
+
 
 class TopicListTest(RestApiTest):
 

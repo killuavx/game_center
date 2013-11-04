@@ -14,13 +14,15 @@ DATABASES = {
         'PORT': '',
         }
 }
+EXTENDAL_APPS.append('toolkit')
+EXTENDAL_APPS.append('fts')
 EXTENDAL_APPS.append('django_nose')
 #EXTENDAL_APPS.append('django_jenkins')
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
 MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
 MIDDLEWARE_CLASSES.extend([
-    'fts.middlewares.ThreadLocals'
+    'toolkit.middleware.ThreadLocals'
 ])
 
 CACHE = {

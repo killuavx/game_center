@@ -18,14 +18,15 @@ rest_router.register('comments', views.CommentViewSet)
 
 urlpatterns = rest_router.urls
 
-from mobapi.views import ( AccountCreateView,
-                           AccountMyProfileView,
-                           AccountSignoutView,
-                           AccountAuthTokenView,
-                           AccountCommentPackageView,
-                           documentation_account_view,
-                           PackageUpdateView,
-                           )
+from mobapi.views import (AccountCreateView,
+                          AccountMyProfileView,
+                          AccountSignoutView,
+                          AccountAuthTokenView,
+                          AccountCommentPackageView,
+                          documentation_account_view,
+                          PackageUpdateView,
+                          SelfUpdateView
+                          )
 urlpatterns += patterns('',
     url(r'^accounts/signup/?$', AccountCreateView.as_view(), name='account-signup', prefix='account'),
     url(r'^accounts/signin/?$', AccountAuthTokenView.as_view(), name='account-signin', prefix='account'),
@@ -34,6 +35,10 @@ urlpatterns += patterns('',
     url(r'^accounts/commented_packages/?$', AccountCommentPackageView.as_view(),
         name='account-commentedpackages',
         prefix='accont'),
+
+    url(r'^selfupdate/?$', SelfUpdateView.as_view(),
+        name='selfupdate',
+        prefix='selfupdate'),
 
     url(r'^updates/?$', PackageUpdateView.as_view(), name='update-create', prefix='update'),
 )

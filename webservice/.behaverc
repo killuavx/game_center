@@ -1,0 +1,6 @@
+[behave]
+tags=~browser
+color=on
+show_skipped=no
+expand=yes
+verbose=yes
