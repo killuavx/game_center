@@ -23,8 +23,12 @@ def after_screenshot(ctx, filename):
     if not filename:
         return
     print('Fail scenario screenshot: "%s"' % filename)
-    import sh
-    sh.open(filename)
+    try:
+        import sh
+        sh.open(filename)
+    except:
+        with open(filename, 'r') as f:
+            print(f.readlines())
 
 
 def setup(context):
