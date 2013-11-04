@@ -28,4 +28,4 @@ Feature: update client
       | 32           | 3            | published  |
     When I visit selfupdate
     Then I should receive 200 OK
-    Then I should receive client version code "32"
+     And I should receive client package version version_code "32"

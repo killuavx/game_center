@@ -32,6 +32,14 @@ def factory_version_upload_to_path(basename):
 
 class ClientPackageVersion(models.Model):
 
+    class Meta:
+        verbose_name = _('Client Package Version')
+        verbose_name_plural = _('Client Package Versions')
+        unique_together = (
+            ('package_name', 'version_code',),
+        )
+        ordering = ('package_name', '-version_code', )
+
     objects = PassThroughManager\
         .for_queryset_class(ClientPackageVersionQuerySet)()
 
@@ -132,15 +140,24 @@ class ClientPackageVersion(models.Model):
 
     tracker = FieldTracker()
 
+    def __str__(self):
+        return "%s:%s" %(self.package_name, self.version_code)
+
 
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from os.path import getsize
 
 @receiver(pre_save, sender=ClientPackageVersion)
 def client_packageversion_pre_save(sender, instance, **kwargs):
 
     if instance.tracker.has_changed('download') and instance.download:
-       instance.download_size = instance.download.size
+        try:
+            file_size = instance.download.file.size
+        except:
+            file_name = instance.download.name
+            file_size = getsize(file_name)
+        instance.download_size = file_size
 
 @receiver(pre_save, sender=ClientPackageVersion)
 def updated_datetime_pre_save_with_tracker(sender, instance, **kwargs):

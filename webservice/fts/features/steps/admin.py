@@ -19,3 +19,9 @@ def create_staff_user(context):
 def should_logined_to_admin(context, is_logined):
     AdminDSL = factory_dsl(context)
     AdminDSL.login_successful_above(context) |should| be(is_logined)
+
+
+@given('login admin as supperuser "{username}" already exists')
+def login_as_supperuser_already_exists(context, username):
+    AdminDSL = factory_dsl(context)
+    AdminDSL.login_as_supperuser_already_exists(context, username)

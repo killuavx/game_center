@@ -82,13 +82,17 @@ class WebUsingNoUIClientDSL(WebBaseDSL):
 
 class WebUsingBrowserDSL(WebBaseDSL):
 
+    driver_name = ''
+    #driver_name = 'phantomjs'
+
+    #default_browser = 'phantomjs'
+    default_browser = ''
+
     @classmethod
     def browser_or_client(cls, context):
-        context.driver_name = 'phantomjs'
-        context.default_browser = 'phantomjs'
-        context.execute_steps("""
-            Given a browser
-        """)
+        context.driver_name = cls.driver_name
+        context.default_browser = cls.default_browser
+        context.execute_steps("Given a browser")
 
     @classmethod
     def should_see(cls, context, text):

@@ -7,6 +7,7 @@ MEDIA_URL = HOST_URL + MEDIA_URL
 EXTENDAL_APPS.append('toolkit')
 EXTENDAL_APPS.append('django_nose')
 EXTENDAL_APPS.append('fts')
+EXTENDAL_APPS.append('toolkit')
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
 DATABASES['default'].update(dict(

@@ -7,9 +7,24 @@ from fts import helpers
 from fts.features import support
 from toolkit.middleware import get_current_request, get_current_response
 from toolkit.helpers import import_from
-import time
+from datetime import datetime
 
 PERSONAS = {}
+
+
+def take_screenshot(ctx):
+    if hasattr(ctx, 'browser') and ctx.browser:
+        n = datetime.now().isoformat()
+        filename = ctx.browser.screenshot(n)
+        return filename
+
+
+def after_screenshot(ctx, filename):
+    if not filename:
+        return
+    print('Fail scenario screenshot: "%s"' % filename)
+    import sh
+    sh.open(filename)
 
 
 def setup(context):
@@ -80,31 +95,11 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
     if context.failed:
-        time.sleep(60)
+        filename = take_screenshot(context)
+        after_screenshot(context, filename)
+
     personaenv.after_scenario(context, scenario)
     webenv.after_scenario(context, scenario)
     teardown_client(context)
     teardown(context)
 
-
-"""
-import threading
-from wsgiref import simple_server
-from selenium import webdriver
-
-def before_all(context):
-    context.server = simple_server.WSGIServer(('', 8000))
-    from webservice.wsgi import application as webapp
-    context.server.set_app(webapp(dict(environment='test')))
-    context.thread = threading.Thread(target=context.server.serve_forever)
-    context.thread.start()
-    context.browser = webdriver.Chrome()
-
-def after_all(context):
-    context.server.shutdown()
-    context.thread.join()
-    context.browser.quit()
-
-def before_feature(context, feature):
-    model.init(environment='test')
-"""

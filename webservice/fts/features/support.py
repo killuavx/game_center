@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
+from os.path import join
+import tempfile
 
 from django.test import Client
 from behave.matchers import register_type
@@ -58,4 +60,10 @@ class HackBrowserFromClient(Client):
 
     def is_text_present(self, text):
         return text in self.response_content
+
+    def screenshot(self, name):
+        (fd, full_name) = tempfile.mkstemp(prefix=name, suffix='.txt')
+        with open(full_name, '+w') as file:
+            file.write(self.response_content)
+        return full_name
 

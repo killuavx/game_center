@@ -6,7 +6,7 @@ from fts.features.app_dsls.web import factory_dsl as factory_web_dsl
 
 
 @given('clientapp has version below')
-def step_create_client_versions(context):
+def step_client_versions_exists(context):
     SelfUpdateDSL = factory_dsl(context)
     for row in context.table:
         SelfUpdateDSL.clientversion_already_exists(
@@ -15,6 +15,13 @@ def step_create_client_versions(context):
             version_name=row['version_name'],
             status=row['status']
         )
+
+@when('I create client version below')
+def step_create_client_versions_in_admin(context):
+    SelfUpdateDSL = factory_dsl(context)
+    for row in context.table:
+        SelfUpdateDSL.goto_create_page(context)
+        SelfUpdateDSL.create_clientversion(context, **row.as_dict())
 
 @given('nothing can selfupdate')
 def step_nothing_can_update(context):
@@ -29,9 +36,20 @@ def step_visit_selfupdate(context):
     WebDSL = factory_web_dsl(context)
     WebDSL.response_to_world(context)
 
-@then('I should receive client version code "{version_code:d}"')
-def step_client_version_code(context, version_code):
+@then('I should receive client package version {field} "{value}"')
+def step_client_package_version_field(context, field, value):
     SelfUpdateDSL = factory_dsl(context)
     version = SelfUpdateDSL.receive_latest_client_version(context)
     version |should_not| be(None)
-    version.get('version_code') |should| equal_to(version_code)
+    expect_val = version.get(field)
+    expect_val |should_not| be(None)
+    expect_val_type = type(expect_val)
+    if type(expect_val) is not str:
+        value = expect_val_type(value)
+    version.get(field) |should| equal_to(value)
+
+
+# override step 'I choose "{value}" form "{options}"'
+@when('I select "{option_value}" from "{select_name}"')
+def select_from(context, select_name, option_value):
+    context.browser.find_by_name(select_name).first.select(option_value)

@@ -23,6 +23,8 @@ from account.models import Player
 from toolkit.middleware import get_current_request
 
 
+fixtures_dir = join(dirname(abspath(__file__)), 'fixtures')
+
 StatusCode = namedtuple('StatusCode',['code', 'reason'])
 
 import random

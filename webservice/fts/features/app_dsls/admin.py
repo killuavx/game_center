@@ -3,16 +3,17 @@ from django.contrib.auth.models import User
 from fts import helpers
 from should_dsl import should
 
+
 class AdminBaseDSL(object):
 
     login_page = '/admin'
 
     @classmethod
     def create_staff_user(cls, context, username, password):
-        user = User.objects.create_user(username=username, password=password)
-        user.check_password(password) |should| be(True)
-        user.is_staff = True
-        user.save()
+        user = User.objects.create_superuser(
+            username=username,
+            email=None,
+            password=password)
         helpers.add_model_objects(user)
         return user
 
@@ -29,6 +30,12 @@ class AdminBaseDSL(object):
     @classmethod
     def login_successful_above(cls, context):
         return context.world.get('is_logined')
+
+    @classmethod
+    def login_as_supperuser_already_exists(cls, context, username):
+        password = 'default_pass'
+        cls.create_staff_user(context, username, password)
+        cls.login(context, username, password)
 
 
 class AdminUsingBrowserDSL(AdminBaseDSL):
@@ -59,6 +66,7 @@ class AdminUsingNoUIClientDSL(AdminBaseDSL):
     def login(cls, context, username, password):
         flag = context.client.login(username=username, password=password)
         context.world.update(dict(is_logined=flag))
+
 
 def factory_dsl(context):
     if 'browser' in context.tags:

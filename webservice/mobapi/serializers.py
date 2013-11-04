@@ -679,10 +679,12 @@ class ClientPackageVersionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClientPackageVersion
         fields = (
+            'package_name',
             'version_code',
             'version_name',
             'download',
             'download_size',
+            'summary',
             'whatsnew',
             'released_datetime',
         )
