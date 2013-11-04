@@ -10,8 +10,8 @@ from easy_thumbnails.exceptions import InvalidImageFormatError
 IMAGE_ICON_SIZE = 'middle'
 IMAGE_COVER_SIZE = 'small'
 
-class ImageUrlField(serializers.ImageField):
 
+class ImageUrlField(serializers.ImageField):
     size_alias = 'middle'
 
     def to_native(self, obj):
@@ -35,7 +35,6 @@ def factory_imageurl_field(size_alias='middle'):
 
 
 class FileUrlField(serializers.FileField):
-
     def to_native(self, obj):
         try:
             return obj.url
@@ -45,14 +44,14 @@ class FileUrlField(serializers.FileField):
     def from_native(self, data):
         pass
 
-class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
 
+class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Author
         fields = ('url', 'name')
 
-class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
 
+class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
     large = serializers.SerializerMethodField('get_large_url')
     preview = serializers.SerializerMethodField('get_preview_url')
 
@@ -74,29 +73,37 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
         model = PackageVersionScreenshot
         fields = ('large', 'preview', 'rotate')
 
+
 def get_packageversion_download_url(version):
     try:
         return version.di_download.url
-    except ValueError: pass
+    except ValueError:
+        pass
     try:
         return version.download.url
-    except ValueError: pass
+    except ValueError:
+        pass
 
     return None
+
 
 def get_packageversion_download_size(version):
     try:
         return version.di_download.size
-    except ValueError: pass
+    except ValueError:
+        pass
     try:
         return version.download.size
-    except ValueError: pass
+    except ValueError:
+        pass
 
     return None
+
 
 def get_packageversion_comment_queryset(version):
     version_cmt = Comment.objects.for_model(version)
     return version_cmt.filter(is_public=True, is_removed=False)
+
 
 def get_packageversion_comments_url(version):
     ct = ContentType.objects.get_for_model(version)
@@ -104,8 +111,8 @@ def get_packageversion_comments_url(version):
     url = reverse('comment-list')
     return "%s?%s" % (url, urlencode(kwargs))
 
-class PackageRelatedLatestVersinoMixin(object):
 
+class PackageRelatedLatestVersinoMixin(object):
     serializer_class_screenshot = PackageVersionScreenshotSerializer
 
     def get_latest_version_name(self, obj):
@@ -177,13 +184,13 @@ class PackageRelatedLatestVersinoMixin(object):
             pass
         return url
 
-class PackageRelatedVersionsMixin(object):
 
+class PackageRelatedVersionsMixin(object):
     def get_version_count(self, obj):
         return obj.versions.published().count()
 
-class PackageRelatedCategoryMixin(object):
 
+class PackageRelatedCategoryMixin(object):
     def get_main_category_name(self, obj):
         try:
             return obj.main_category.name
@@ -194,36 +201,40 @@ class PackageRelatedCategoryMixin(object):
         names = (cat.name for cat in obj.categories.all())
         return names
 
-class PackageActionsMixin(object):
 
+class PackageActionsMixin(object):
     def get_action_links(self, obj):
         mark_url = None
         try:
             request = self.context.get('request')
             mark_url = request.build_absolute_uri(
-                reverse('bookmark-detail',kwargs=dict(pk=obj.pk) )
+                reverse('bookmark-detail', kwargs=dict(pk=obj.pk))
             )
-        except AttributeError: pass
+        except AttributeError:
+            pass
         return dict(
-           mark=mark_url,
+            mark=mark_url,
         )
+
 
 class PackageSummarySerializer(PackageRelatedVersionsMixin,
                                PackageRelatedLatestVersinoMixin,
                                PackageRelatedCategoryMixin,
                                PackageActionsMixin,
                                serializers.HyperlinkedModelSerializer):
-
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
     version_count = serializers.SerializerMethodField('get_version_count')
-    download_size = serializers.SerializerMethodField('get_latest_version_download_size')
-    comments_url = serializers.SerializerMethodField('get_latest_version_comments_url')
+    download_size = serializers.SerializerMethodField(
+        'get_latest_version_download_size')
+    comments_url = serializers.SerializerMethodField(
+        'get_latest_version_comments_url')
     actions = serializers.SerializerMethodField('get_action_links')
 
     author = AuthorSummarySerializer()
+
     class Meta:
         model = Package
         fields = ('url',
@@ -244,28 +255,34 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'actions',
         )
 
-class PackageVersionSerializer(serializers.ModelSerializer):
 
+class PackageVersionSerializer(serializers.ModelSerializer):
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     cover = factory_imageurl_field(IMAGE_COVER_SIZE)
 
     download = serializers.SerializerMethodField('get_version_download_url')
+
     def get_version_download_url(self, obj):
         return get_packageversion_download_url(obj)
 
-    download_size = serializers.SerializerMethodField('get_version_download_size')
+    download_size = serializers.SerializerMethodField(
+        'get_version_download_size')
+
     def get_version_download_size(self, obj):
         return get_packageversion_download_size(obj)
 
     screenshots = PackageVersionScreenshotSerializer(many=True)
 
-    comment_count = serializers.SerializerMethodField('get_version_comment_count')
+    comment_count = serializers.SerializerMethodField(
+        'get_version_comment_count')
+
     def get_version_comment_count(self, obj):
         version_cmt = get_packageversion_comment_queryset(obj)
         return version_cmt.count()
 
     comments_url = serializers.SerializerMethodField('get_version_comments_url')
+
     def get_version_comments_url(self, obj):
         url = get_packageversion_comments_url(obj)
         try:
@@ -290,24 +307,29 @@ class PackageVersionSerializer(serializers.ModelSerializer):
                   'comment_count',
         )
 
+
 class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                               PackageRelatedCategoryMixin,
                               PackageActionsMixin,
                               serializers.HyperlinkedModelSerializer):
-
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
     version_name = serializers.SerializerMethodField('get_latest_version_name')
     version_code = serializers.SerializerMethodField('get_latest_version_code')
     whatsnew = serializers.SerializerMethodField('get_latest_version_whatsnew')
-    screenshots = serializers.SerializerMethodField('get_latest_version_screenshots')
+    screenshots = serializers.SerializerMethodField(
+        'get_latest_version_screenshots')
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
     download = serializers.SerializerMethodField('get_latest_version_download')
-    download_count = serializers.SerializerMethodField('get_latest_version_download_count')
-    download_size = serializers.SerializerMethodField('get_latest_version_download_size')
-    comment_count = serializers.SerializerMethodField('get_latest_version_comment_count')
-    comments_url = serializers.SerializerMethodField('get_latest_version_comments_url')
+    download_count = serializers.SerializerMethodField(
+        'get_latest_version_download_count')
+    download_size = serializers.SerializerMethodField(
+        'get_latest_version_download_size')
+    comment_count = serializers.SerializerMethodField(
+        'get_latest_version_comment_count')
+    comments_url = serializers.SerializerMethodField(
+        'get_latest_version_comments_url')
 
     actions = serializers.SerializerMethodField('get_action_links')
 
@@ -341,13 +363,14 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'actions',
         )
 
-class AuthorSerializer(serializers.HyperlinkedModelSerializer):
 
+class AuthorSerializer(serializers.HyperlinkedModelSerializer):
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     cover = factory_imageurl_field(IMAGE_COVER_SIZE)
 
     packages_url = serializers.SerializerMethodField('get_packages_url')
+
     def get_packages_url(self, obj):
         request = self.context.get('request')
         return request.build_absolute_uri(
@@ -362,6 +385,7 @@ class AuthorSerializer(serializers.HyperlinkedModelSerializer):
 from taxonomy.models import Category, Topic, TopicalItem
 from mobapi.helpers import get_item_model_by_topic
 
+
 def get_url_for_taxonomy(request, obj, related_items, reverse_viewname):
     if related_items.count() > 0:
         path = reverse(reverse_viewname, kwargs=dict(slug=obj.slug))
@@ -370,8 +394,8 @@ def get_url_for_taxonomy(request, obj, related_items, reverse_viewname):
         return path
     return None
 
-class CategoryRelatedChildrenMixin(object):
 
+class CategoryRelatedChildrenMixin(object):
     def get_children(self, obj):
         qs = obj.children.showed()
         try:
@@ -382,9 +406,9 @@ class CategoryRelatedChildrenMixin(object):
         except:
             return list()
 
+
 class CategorySummarySerializer(CategoryRelatedChildrenMixin,
                                 serializers.HyperlinkedModelSerializer):
-
     PREFIX = 'category'
 
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
@@ -392,6 +416,7 @@ class CategorySummarySerializer(CategoryRelatedChildrenMixin,
     children = serializers.SerializerMethodField('get_children')
 
     packages_url = serializers.SerializerMethodField('get_items_url')
+
     def get_items_url(self, obj):
         return get_url_for_taxonomy(self.context.get('request'),
                                     obj,
@@ -409,13 +434,14 @@ class CategorySummarySerializer(CategoryRelatedChildrenMixin,
                   'children',
         )
 
-class CategoryDetailSerializer(serializers.HyperlinkedModelSerializer):
 
+class CategoryDetailSerializer(serializers.HyperlinkedModelSerializer):
     PREFIX = 'category'
 
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     packages_url = serializers.SerializerMethodField('get_items_url')
+
     def get_items_url(self, obj):
         return get_url_for_taxonomy(self.context.get('request'),
                                     obj,
@@ -431,8 +457,8 @@ class CategoryDetailSerializer(serializers.HyperlinkedModelSerializer):
                   'packages_url',
         )
 
-class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
 
+class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
     PREFIX = 'topic'
 
     item_model_class = None
@@ -448,18 +474,18 @@ class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
         return get_url_for_taxonomy(self.context.get('request'),
                                     obj,
                                     self.get_items_queryset(obj),
-                                    '%s-items' %self.PREFIX)
+                                    '%s-items' % self.PREFIX)
 
     def get_children_url(self, obj):
         return get_url_for_taxonomy(self.context.get('request'),
                                     obj,
                                     obj.children,
-                                    '%s-children' %self.PREFIX)
+                                    '%s-children' % self.PREFIX)
+
 
 class TopicDetailWithPackageSerializer(
     TopicRelatedItemCountUrlAndChildrenUrlMixin,
     serializers.HyperlinkedModelSerializer):
-
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     cover = factory_imageurl_field(IMAGE_COVER_SIZE)
@@ -484,10 +510,10 @@ class TopicDetailWithPackageSerializer(
                   'updated_datetime',
                   'released_datetime')
 
+
 class TopicSummarySerializer(
     TopicRelatedItemCountUrlAndChildrenUrlMixin,
     serializers.HyperlinkedModelSerializer):
-
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     cover = factory_imageurl_field(IMAGE_COVER_SIZE)
@@ -510,8 +536,10 @@ class TopicSummarySerializer(
                   'slug',
                   'updated_datetime',
                   'released_datetime')
+
 #---------------------------------------------------------------------------
 from searcher.models import TipsWord
+
 
 class TipsWordSerializer(serializers.ModelSerializer):
     class Meta:
@@ -522,16 +550,19 @@ class TipsWordSerializer(serializers.ModelSerializer):
 #---------------------------------------------------------------------------
 from promotion.models import Advertisement
 
+
 class AdvertisementSerializer(serializers.HyperlinkedModelSerializer):
     content_url = serializers.SerializerMethodField('get_content_url')
+
     def get_content_url(self, obj):
         hlid = serializers.HyperlinkedIdentityField(source='content',
                                                     view_name='package-detail',
-                                                    )
+        )
         hlid.context = self.context
         return hlid.field_to_native(obj.content, 'content_url')
 
     content_type = serializers.SerializerMethodField('get_content_type')
+
     def get_content_type(self, obj):
         return str(obj.content_type).lower()
 
@@ -539,16 +570,17 @@ class AdvertisementSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Advertisement
-        fields =( 'title',
-                  'cover',
-                  'content_url',
-                  'content_type',
+        fields = ( 'title',
+                   'cover',
+                   'content_url',
+                   'content_type',
         )
 
 #---------------------------------------------------------------------------
 from account.models import Player, Profile
-class AccountRelatedProfileMixin(object):
 
+
+class AccountRelatedProfileMixin(object):
     def get_profile_icon_url(self, obj):
         try:
             return obj.profile.icon.url
@@ -572,7 +604,8 @@ class AccountRelatedProfileMixin(object):
 
     def get_comment_count(self, obj):
         try:
-            return Comment.objects.with_site().published().filter(user=obj).count()
+            return Comment.objects.with_site().published().filter(
+                user=obj).count()
         except:
             return 0
 
@@ -583,16 +616,16 @@ class AccountRelatedProfileMixin(object):
             pass
         return 0
 
+
 class AccountDetailSerializer(AccountRelatedProfileMixin,
                               serializers.ModelSerializer):
-
     email = serializers.SerializerMethodField('get_profile_email')
     phone = serializers.SerializerMethodField('get_profile_phone')
     icon = serializers.SerializerMethodField('get_profile_icon_url')
 
     comment_count = serializers.SerializerMethodField('get_comment_count')
 
-    bookmark_count = serializers\
+    bookmark_count = serializers \
         .SerializerMethodField('get_profile_bookmark_count')
 
     class Meta:
@@ -608,11 +641,10 @@ class AccountDetailSerializer(AccountRelatedProfileMixin,
 
 #---------------------------------------------------------------------------
 class PackageUpdateSummarySerializer(PackageSummarySerializer):
-
     version_code = serializers.SerializerMethodField('get_latest_version_code')
     version_name = serializers.SerializerMethodField('get_latest_version_name')
     download = serializers.SerializerMethodField('get_latest_version_download')
-    download_size = serializers.\
+    download_size = serializers. \
         SerializerMethodField('get_latest_version_download_size')
     is_updatable = serializers.SerializerMethodField('get_is_updatable')
 
@@ -620,8 +652,9 @@ class PackageUpdateSummarySerializer(PackageSummarySerializer):
         if getattr(obj, 'update_info', None) \
             and obj.update_info.get('version_code') is None:
             return False
-        return self.get_latest_version_code(obj) > obj.update_info.\
-                                                        get('version_code')
+        return self.get_latest_version_code(obj) > obj.update_info. \
+            get('version_code')
+
     class Meta:
         model = Package
         fields = ('url',
@@ -639,8 +672,8 @@ class PackageUpdateSummarySerializer(PackageSummarySerializer):
 
 #---------------------------------------------------------------------------
 class CommentSerializer(serializers.ModelSerializer):
-
     user_icon = serializers.SerializerMethodField('get_user_icon_url')
+
     def get_user_icon_url(self, obj):
         try:
             return obj.user.profile.icon['small'].url
@@ -658,7 +691,6 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Comment
 
@@ -668,7 +700,6 @@ from clientapp.models import ClientPackageVersion
 
 
 class ClientPackageVersionSerializer(serializers.ModelSerializer):
-
     download = serializers.SerializerMethodField('get_download_url')
 
     def get_download_url(self, obj):

@@ -14,7 +14,6 @@ from mobapi.serializers import (PackageSummarySerializer,
 
 
 class PackageExcludeCategoryOfApplicationFilter(filters.BaseFilterBackend):
-
     _exclude_category_slug = 'application'
 
     def filter_queryset(self, request, queryset, view):
@@ -28,7 +27,6 @@ class PackageExcludeCategoryOfApplicationFilter(filters.BaseFilterBackend):
 
 
 class SphinxSearchFilter(filters.SearchFilter):
-
     search_param = 'q'
 
 
@@ -127,6 +125,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         self.serializer_class = list_serializer_class
         return response
 
+
 class PackageSearchViewSet(PackageViewSet):
     """ 软件搜索接口
 
@@ -163,6 +162,7 @@ class PackageSearchViewSet(PackageViewSet):
             .retrieve(request, *args, **kwargs)
         return response
 
+
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Author.objects.activated()
     serializer_class = AuthorSerializer
@@ -172,8 +172,9 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
         author = generics.get_object_or_404(self.queryset, pk=pk)
         ViewSet = PackageViewSet
         queryset = author.packages.published()
-        list_view =  ViewSet.as_view({'get':'list'}, queryset=queryset)
+        list_view = ViewSet.as_view({'get': 'list'}, queryset=queryset)
         return list_view(request, *args, **kwargs)
+
 
 class PackageRankingsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = PackageSummarySerializer
@@ -186,6 +187,7 @@ from mobapi.serializers import ( CategoryDetailSerializer,
                                  CategorySummarySerializer,
                                  TopicSummarySerializer,
                                  TopicDetailWithPackageSerializer )
+
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.as_root().showed()
@@ -208,7 +210,8 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         list_serializer_class, self.serializer_class = self.serializer_class, CategoryDetailSerializer
         origin_queryset, self.queryset = self.queryset, Category.objects.all()
 
-        response = super(CategoryViewSet, self).retrieve(request, *args, **kwargs)
+        response = super(CategoryViewSet, self).retrieve(request, *args,
+                                                         **kwargs)
         self.serializer_class = list_serializer_class
         self.queryset = origin_queryset
         return response
@@ -272,7 +275,8 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
 
     def list(self, request, *args, **kwargs):
         #origin_queryset, self.queryset = self.queryset, self.queryset.as_root()
-        origin_queryset, self.queryset = self.queryset, self.queryset.filter(parent=None)
+        origin_queryset, self.queryset = self.queryset, self.queryset.filter(
+            parent=None)
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
         self.queryset = origin_queryset
         return res
@@ -283,7 +287,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = self.queryset.filter(slug=slug)
         topic = generics.get_object_or_404(queryset, slug=slug)
 
-        origin_queryset, self.queryset =\
+        origin_queryset, self.queryset = \
             self.queryset, self.queryset.filter(parent=topic)
         self.ordering = ('ordering', )
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
@@ -291,7 +295,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
 
     @link()
     def items(self, request, slug, *args, **kwargs):
-        topic =  generics.get_object_or_404(self.queryset, slug=slug)
+        topic = generics.get_object_or_404(self.queryset, slug=slug)
 
         list_view = self._get_item_list_view(topic)
         return list_view(request, *args, **kwargs)
@@ -306,7 +310,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         # ignore filter backend ordering
         # using queryset pass by TopicalItem.ordering,
         ViewSet.ordering = ()
-        return ViewSet.as_view({'get':'list'},
+        return ViewSet.as_view({'get': 'list'},
                                queryset=queryset)
 
     def retrieve(self, request, *args, **kwargs):
@@ -320,6 +324,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
 from searcher.models import TipsWord
 from mobapi.serializers import TipsWordSerializer
 
+
 class TipsWordViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = TipsWordSerializer
     queryset = TipsWord.objects.published()
@@ -329,6 +334,7 @@ from promotion.models import Advertisement, Place
 from mobapi.serializers import AdvertisementSerializer
 
 from django.core.urlresolvers import reverse
+
 
 class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     """ 广告接口
@@ -354,8 +360,9 @@ class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         q = querydict.get('place')
         q = q.pop() if isinstance(q, list) else q
         if not q or not (q and q.strip()):
-            data = {'detail': 'Not Allow without search parameter %{url}s/?place=slug'
-                        .format(url=reverse('advertisement-list') ) }
+            data = {
+                'detail': 'Not Allow without search parameter %{url}s/?place=slug'
+                .format(url=reverse('advertisement-list'))}
             return Response(data, status=status.HTTP_403_FORBIDDEN)
 
         place = None
@@ -367,16 +374,19 @@ class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         self.queryset = self.queryset.place_in(place)
         return super(AdvertisementViewSet, self).list(request, *args, **kwargs)
 
+
 def documentation_advertisement_viewset():
     host_url = ''
     places = Place.objects.all()
     contents = list()
     for p in places:
-        url =  "%s%s/?place=%s" % (host_url, '/api/advertisements', p.slug)
-        a = '[%s](%s)'%(url, url, )
-        contents.append( "\n * `%s`: %s %s" %( p.slug, p.help_text, a ))
+        url = "%s%s/?place=%s" % (host_url, '/api/advertisements', p.slug)
+        a = '[%s](%s)' % (url, url, )
+        contents.append("\n * `%s`: %s %s" % ( p.slug, p.help_text, a ))
 
-    AdvertisementViewSet.__doc__ = AdvertisementViewSet.__doc__.format(apis="".join(contents))
+    AdvertisementViewSet.__doc__ = AdvertisementViewSet.__doc__.format(
+        apis="".join(contents))
+
 
 from mobapi.serializers import AccountDetailSerializer
 from mobapi.authentications import PlayerTokenAuthentication
@@ -385,6 +395,7 @@ from django.core.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from django.utils.translation import ugettext as _
+
 
 class AccountCreateView(generics.CreateAPIView):
     """ 账户注册
@@ -427,7 +438,7 @@ class AccountCreateView(generics.CreateAPIView):
             password=self.get_query_param(attrs, 'password'),
             email=self.get_query_param(attrs, 'email'),
             phone=self.get_query_param(attrs, 'phone'),
-            )
+        )
         return attrs
 
     def run_validate_and_save(self, attrs):
@@ -444,12 +455,13 @@ class AccountCreateView(generics.CreateAPIView):
         profile = Profile(user=user,
                           email=attrs.get('email'),
                           phone=attrs.get('phone'),
-                          )
+        )
         try:
             profile.full_clean(['user'])
         except ValidationError as e:
             user.delete()
-            raise ValidationError(getattr(e,'message_dict', False) or e.messages)
+            raise ValidationError(
+                getattr(e, 'message_dict', False) or e.messages)
 
         profile.save()
         return user
@@ -459,7 +471,7 @@ class AccountCreateView(generics.CreateAPIView):
         mgs = list()
         if getattr(e, 'message_dict', False):
             for _key, _mgs in e.message_dict.items():
-                mgs.append("%s %s" %(_key, _mgs
+                mgs.append("%s %s" % (_key, _mgs
                 if isinstance(_mgs, str) else ", ".join(_mgs)))
             return mgs
 
@@ -476,8 +488,9 @@ class AccountCreateView(generics.CreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except ValidationError as e:
             messages = self.prepare_validation_messages(e)
-            return Response({'detail': ", ".join(messages) },
+            return Response({'detail': ", ".join(messages)},
                             status=status.HTTP_400_BAD_REQUEST)
+
 
 class AccountMyProfileView(generics.RetrieveAPIView):
     """ 账户信息
@@ -509,6 +522,7 @@ class AccountMyProfileView(generics.RetrieveAPIView):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class AccountSignoutView(APIView):
     """ 注销接口
 
@@ -538,12 +552,16 @@ class AccountSignoutView(APIView):
     def get(self, request, *args, **kwargs):
         request.auth.delete()
         request.auth = None
-        return Response({'detail': 'sign out successful'}, status=status.HTTP_200_OK)
+        return Response({'detail': 'sign out successful'},
+                        status=status.HTTP_200_OK)
+
 
 from django.utils.timezone import utc, datetime, now
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.settings import api_settings
+
+
 class AccountAuthTokenView(ObtainAuthToken):
     """ 账户登陆
 
@@ -572,7 +590,9 @@ class AccountAuthTokenView(ObtainAuthToken):
     """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
 
+
 from warehouse.models import PackageVersion
+
 
 class AccountCommentPackageView(generics.ListAPIView):
     """ 已评论软件接口
@@ -605,13 +625,14 @@ class AccountCommentPackageView(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         user = request.user
         qs = Comment.objects.with_site().published().by_submit_order()
-        version_ids = list(qs.filter(user=user).values_list('object_pk', flat=True))
-        pkg_ids = PackageVersion.objects.published()\
+        version_ids = list(
+            qs.filter(user=user).values_list('object_pk', flat=True))
+        pkg_ids = PackageVersion.objects.published() \
             .filter(pk__in=version_ids).values_list('package__pk', flat=True)
         pkg_ids = list(pkg_ids)
         self.queryset = self.queryset.filter(pk__in=pkg_ids)
 
-        return super(AccountCommentPackageView, self)\
+        return super(AccountCommentPackageView, self) \
             .get(request=request, *args, **kwargs)
 
 
@@ -633,17 +654,19 @@ def documentation_account_view(view):
     view.__doc__ += "\n".join(apis)
     view.__doc__ += '\n----'
 
+
 documentation_account_view(AccountAuthTokenView)
 documentation_account_view(AccountCreateView)
 documentation_account_view(AccountSignoutView)
 documentation_account_view(AccountMyProfileView)
 
-class ObtainExpiringAuthToken(ObtainAuthToken):
 
+class ObtainExpiringAuthToken(ObtainAuthToken):
     def post(self, request):
         serializer = self.serializer_class(data=request.DATA)
         if serializer.is_valid():
-            token, created =  Token.objects.get_or_create(user=serializer.object['user'])
+            token, created = Token.objects.get_or_create(
+                user=serializer.object['user'])
 
             if not created:
                 # update the created time of the token to keep it valid
@@ -656,8 +679,8 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
 
 from rest_framework.generics import get_object_or_404
 
-class DjangoDataFilterBackend(filters.DjangoFilterBackend):
 
+class DjangoDataFilterBackend(filters.DjangoFilterBackend):
     def filter_queryset(self, request, queryset, view):
         filter_class = self.get_filter_class(view, queryset)
 
@@ -665,6 +688,7 @@ class DjangoDataFilterBackend(filters.DjangoFilterBackend):
             return filter_class(request.DATA, queryset=queryset).qs
 
         return queryset
+
 
 class PackageBookmarkViewSet(viewsets.ModelViewSet):
     """ 账户收藏接口
@@ -774,11 +798,11 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
     search_fields = tuple()
 
     def _prepare_queryset(self, request):
-        self.queryset=self.queryset.filter(profile=request.user.profile)
+        self.queryset = self.queryset.filter(profile=request.user.profile)
 
     def list(self, request, *args, **kwargs):
         self._prepare_queryset(request)
-        return super(PackageBookmarkViewSet, self)\
+        return super(PackageBookmarkViewSet, self) \
             .list(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
@@ -822,6 +846,7 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
 from rest_framework.parsers import JSONParser, FormParser
 from mobapi.serializers import PackageUpdateSummarySerializer
 from django.contrib.contenttypes.models import ContentType
+
 
 class PackageUpdateView(generics.CreateAPIView):
     """ 应用升级检查接口
@@ -905,7 +930,7 @@ class PackageUpdateView(generics.CreateAPIView):
             return Response(dict(detail='versions list should not be empty'),
                             status=status.HTTP_400_BAD_REQUEST)
         try:
-             sorted_pkg_idx = self._make_sorted_idx(versions)
+            sorted_pkg_idx = self._make_sorted_idx(versions)
         except TypeError as e:
             return Response(dict(detail='versions should be list type'),
                             status=status.HTTP_400_BAD_REQUEST)
@@ -916,16 +941,19 @@ class PackageUpdateView(generics.CreateAPIView):
         def _sorted_key(p):
             idx = sorted_pkg_idx[p.package_name]['order_idx']
             return idx
+
         sorted_pkgs = sorted(pkgs, key=_sorted_key)
 
         def _fill_update_info(p):
             p.update_info = sorted_pkg_idx[p.package_name]
             return p
+
         fill_update_pkgs = map(_fill_update_info, sorted_pkgs)
         serializer = PackageUpdateSummarySerializer(fill_update_pkgs,
                                                     many=True,
-                                                    context=dict(request=request))
-        return Response(serializer.data ,status.HTTP_200_OK)
+                                                    context=dict(
+                                                        request=request))
+        return Response(serializer.data, status.HTTP_200_OK)
 
 #----------------------------------------------------------------
 from mobapi.serializers import CommentSerializer, CommentCreateSerializer
@@ -1022,12 +1050,14 @@ class CommentViewSet(mixins.CreateModelMixin,
                 opk: int(querydict.get(opk))}
 
     def get_content_object(self, params):
-        content_type = ContentType.objects.get_for_id(params.get('content_type_id'))
-        content_object = content_type.get_object_for_this_type(pk=params.get('object_pk'))
+        content_type = ContentType.objects.get_for_id(
+            params.get('content_type_id'))
+        content_object = content_type.get_object_for_this_type(
+            pk=params.get('object_pk'))
         return content_object
 
     def get_queryset(self):
-        return Comment.objects.for_model(self.content_object)\
+        return Comment.objects.for_model(self.content_object) \
             .published().with_site().by_submit_order()
 
     def list(self, request, *args, **kwargs):
@@ -1056,7 +1086,7 @@ class CommentViewSet(mixins.CreateModelMixin,
         except exceptions.ObjectDoesNotExist:
             return bad
 
-        serializer_class, self.serializer_class =\
+        serializer_class, self.serializer_class = \
             self.serializer_class, CommentCreateSerializer
         response = super(CommentViewSet, self).create(request, *args, **kwargs)
         self.serializer_class = serializer_class
@@ -1087,7 +1117,7 @@ class CommentViewSet(mixins.CreateModelMixin,
             data.setdefault('object_pk', params.get('object_pk'))
 
         return super(CommentViewSet, self).get_serializer(instance, data,
-                                                   files, many, partial)
+                                                          files, many, partial)
 
 #----------------------------------------------------------------
 from mobapi.serializers import ClientPackageVersionSerializer

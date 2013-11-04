@@ -146,7 +146,6 @@ class SelfUpdateUsingWebBrowserDSL(SelfUpdateBaseDSL):
         ))
 
 
-
 class SelfUpdateDSLWithNoUIClient(SelfUpdateBaseDSL):
 
     @classmethod
