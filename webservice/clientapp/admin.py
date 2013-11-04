@@ -9,10 +9,6 @@ from clientapp.models import ClientPackageVersion
 
 
 class ClientPackageVersionAdmin(VersionAdmin):
-    ordering = ('-version_code',)
-
-
-class ClientPackageVersionAdmin(VersionAdmin):
     fieldsets = (
         (None, {
             'fields': (
