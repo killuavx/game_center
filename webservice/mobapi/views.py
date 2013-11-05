@@ -1166,7 +1166,7 @@ class SelfUpdateView(generics.RetrieveAPIView):
 
     * 200 HTTP_200_OK
         * 获取成功, 返回客户端最后版本数据
-    * 204 HTTP_404_NOT_FOUND
+    * 204 HTTP_204_NO_CONTENT
         * 没有可更新的数据
 
     ### 返回数据结构
