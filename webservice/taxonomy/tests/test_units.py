@@ -157,8 +157,8 @@ class TagTest(BaseTestCase):
 
     def test_create_tags_with_package(self):
         pkg = helpers.create_package()
-        pkg.tags = 'Hot, New'
-        pkg.tags +=',Top'
+        pkg.tags_text = 'Hot, New'
+        pkg.tags_text +=',Top'
         pkg.save()
 
         tags = Tag.objects.usage_for_model(model=pkg.__class__)

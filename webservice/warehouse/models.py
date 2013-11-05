@@ -10,6 +10,7 @@ from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
+import tagging
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 from os.path import join, basename
@@ -386,7 +387,7 @@ class Package(models.Model):
         default="",
         blank=True)
 
-    author = models.ForeignKey(Author,  related_name='packages')
+    author = models.ForeignKey(Author, related_name='packages')
 
     released_datetime = models.DateTimeField(
         verbose_name=_('released time'),
@@ -408,7 +409,10 @@ class Package(models.Model):
         related_name='packages',
         blank=True)
 
-    tags = TagField(verbose_name=_('tags'),default="", blank=True)
+    tags_text = TagField(
+        verbose_name=_('tags'),
+        default="",
+        blank=True)
 
     topics = generic.GenericRelation('taxonomy.TopicalItem')
 
@@ -517,6 +521,8 @@ class Package(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(Package, self).__init__(*args, **kwargs)
+
+tagging.register(Package)
 
 class PackageVersionQuerySet(QuerySet):
 
@@ -757,3 +763,4 @@ def package_pre_save(sender, instance, **kwargs):
 
     if len(changed):
         instance.updated_datetime = now()
+

@@ -52,7 +52,7 @@ class ApiPackageTest(ApiTest):
         yesterday = now()-timedelta(days=1)
         package = helpers.create_package(package_name="com.xianjian",
                                  title='大富翁',
-                                 tags='hot new top',
+                                 tags_text='hot new top',
                                  summary="大富翁 3",
                                  status=Package.STATUS.published,
                                  released_datetime=yesterday)

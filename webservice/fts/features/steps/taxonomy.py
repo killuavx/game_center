@@ -38,3 +38,11 @@ def step_should_see_the_hidden_category_detail(context):
     the_category.is_hidden |should| be(True)
     expect_category = context.world.get('content')
     expect_category.get('slug') |should| equal_to(the_category.slug)
+
+
+from fts.features.app_dsls.taxonomy import factory_dsl
+
+@given('category tree exists')
+def category_tree_already_exists(context):
+    TaxonomyDSL = factory_dsl(context)
+    TaxonomyDSL.category_tree_already_exists(context)

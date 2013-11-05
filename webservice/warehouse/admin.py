@@ -220,7 +220,7 @@ class PackageAdmin(MainAdmin):
         (_('Taxonomy'), {
             'classes': ('suit-tab suit-tab-general',
                         'collapse','grp-collapse grp-closed'),
-            'fields': ('tags', 'categories')
+            'fields': ('tags_text', 'categories')
         }),
         (_('Release'), {
             'classes': ('suit-tab suit-tab-general',
@@ -239,7 +239,7 @@ class PackageAdmin(MainAdmin):
     list_display = ( 'pk', 'show_icon',
                      'title',
                      'package_name',
-                     'tags',
+                     'tags_text',
                      'released_datetime',
                      'was_published_recently',
                      'status',
@@ -250,7 +250,7 @@ class PackageAdmin(MainAdmin):
     raw_id_fields = ('author', )
     list_filter = ('author__name', 'released_datetime', 'status' )
     list_display_links = ( 'title', 'package_name',)
-    list_editable = ('status', 'tags',)
+    list_editable = ('status', 'tags_text',)
     date_hierarchy = 'released_datetime'
     ordering = ('-released_datetime',)
     list_select_related = True
