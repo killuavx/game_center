@@ -98,6 +98,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     * `download`: 下载地址
     * `comment_count`: 评论数量
     * `comments_url`: 评论列表接口(同时用于发表评论)
+    * `related_packages_url`: 相关应用列表url接口
     * `summary`: 一句话摘要
     * `released_datetime`: 发布时间(时间戳)
     * `whatsnew`: 版本跟新内容说明
