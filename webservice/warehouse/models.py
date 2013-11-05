@@ -721,11 +721,25 @@ def package_version_pre_save(sender, instance, **kwargs):
         handle = parse_handle_class(instance, parser)
 
         if handle.can_parse_appfile():
-            package = handle.parse_to_package()
-            package.save()
-            instance.package_id = package.pk
-            handle.parse_to_version()
-            handle.fetch_icon_to_version()
+            try:
+                package = instance.package
+            except:
+                package = handle.parse_to_package()
+                package.save()
+                instance.package_id = package.pk
+
+            # no version_code&version_name new create
+            if not instance.pk\
+                and not instance.tracker.has_changed('version_code')\
+                and not instance.tracker.has_changed('version_name'):
+                handle.parse_to_version()
+
+            # no icon on new create
+            if not instance.icon and not instance.pk:
+                handle.fetch_icon_to_version()
+            #  change icon manually
+            elif instance.tracker.has_changed('icon'):
+                return
 
 @receiver(post_save, sender=PackageVersion)
 def package_version_post_save(sender, instance, **kwargs):
