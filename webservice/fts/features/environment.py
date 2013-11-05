@@ -100,7 +100,8 @@ def before_scenario(context, scenario):
 def after_scenario(context, scenario):
     if context.failed:
         filename = take_screenshot(context)
-        after_screenshot(context, filename)
+        if filename:
+            after_screenshot(context, filename)
 
     personaenv.after_scenario(context, scenario)
     webenv.after_scenario(context, scenario)

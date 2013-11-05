@@ -2,8 +2,8 @@
 import json
 from collections import namedtuple
 from behaving.web.steps import basic
-from should_dsl import should
-from fts.features.support import HackBrowserFromClient
+from should_dsl import should, should_not
+from fts.features.support import HackBrowserFromClient, StatusCode
 
 
 def text_to_json_data(text):
@@ -14,8 +14,6 @@ def text_to_json_data(text):
     return data
 
 class WebBaseDSL(object):
-
-    StatusCode = namedtuple('StatusCode', ['code', 'reason'])
 
     client_initial_params = dict(HTTP_ACCEPT='application/json',
                                  HTTP_CACHE_CONTROL='no-cache')
@@ -49,6 +47,40 @@ class WebBaseDSL(object):
         raise NotImplementedError("you must implement %s.%s" %(cls,
                                                'browser_or_client'))
 
+    @classmethod
+    def response_structure_content(cls, context):
+        return context.world.get('content_json')
+
+    @classmethod
+    def should_see_empty_result(cls, context, within_pagination):
+        results = cls.response_structure_content(context)
+        if within_pagination:
+            results= results.get('results')
+
+        results |should| be_empty
+
+    @classmethod
+    def should_see_field_in_result_within_pagination(cls, context, field, value):
+        results = cls.response_structure_content(context)
+        expect_val = results.get(field)
+        expect_val |should_not| be(None)
+        str(expect_val) |should| equal_to(value)
+
+    @classmethod
+    def should_result_contains(cls,
+                               context,
+                               within_pagination,
+                               find_func=lambda obj: False):
+        results = cls.response_structure_content(context)
+        if within_pagination:
+            results= results.get('results')
+        any((find_func(row) for row in results)) |should| be(True)
+
+    @classmethod
+    def response_to_world(cls, context):
+        raise NotImplementedError(
+            'you must implement %s.%s' %(cls, 'response_to_world'))
+
 
 class WebUsingNoUIClientDSL(WebBaseDSL):
 
@@ -61,21 +93,18 @@ class WebUsingNoUIClientDSL(WebBaseDSL):
 
     @classmethod
     def should_see(cls, context, text):
-        context.client.is_text_present =\
-            lambda text: context.world.get('content')
         basic.should_see(context, text)
-
 
     @classmethod
     def response_to_world(cls, context):
-        response = context.client.response
-        content = context.client.response_content
+        content = context.browser.html
+        status = context.browser.status_code
         context.world.update(dict(
             content=content,
             content_json=text_to_json_data(content),
-            status=cls.StatusCode(
-                code=response.status_code,
-                reason=response.status_text
+            status=StatusCode(
+                code=status.code,
+                reason=status.reason
             )
         ))
 
@@ -85,8 +114,8 @@ class WebUsingBrowserDSL(WebBaseDSL):
     driver_name = ''
     #driver_name = 'phantomjs'
 
-    #default_browser = 'phantomjs'
     default_browser = ''
+    #default_browser = 'phantomjs'
 
     @classmethod
     def browser_or_client(cls, context):
@@ -101,16 +130,20 @@ class WebUsingBrowserDSL(WebBaseDSL):
     @classmethod
     def response_to_world(cls, context):
         browser = context.browser
-        status = browser.status_code
         data = None
-        body = browser.find_by_tag('body')
-        if body:
-            content = body.text
-            data = text_to_json_data(content)
+        try:
+            body = browser.find_by_tag('body')
+            if body:
+                content = body.text
+                data = text_to_json_data(content)
+        except:
+            pass
+
+        status = browser.status_code
         context.world.update(dict(
             content=content,
             content_json=data,
-            status=cls.StatusCode(
+            status=StatusCode(
                 code=status.code,
                 reason=status.reason
             )

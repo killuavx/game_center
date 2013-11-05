@@ -13,9 +13,11 @@ def set_current_request(request):
     ))
 
 def get_current_request():
+    _thread_locals.setdefault(current_thread(), dict())
     return _thread_locals[current_thread()].get('request', None)
 
 def get_current_response():
+    _thread_locals.setdefault(current_thread(), dict())
     return _thread_locals[current_thread()].get('response', None)
 
 class ThreadLocals(object):

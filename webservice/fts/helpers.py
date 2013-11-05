@@ -25,19 +25,24 @@ from toolkit.middleware import get_current_request
 
 fixtures_dir = join(dirname(abspath(__file__)), 'fixtures')
 
-StatusCode = namedtuple('StatusCode',['code', 'reason'])
+StatusCode = namedtuple('StatusCode', ['code', 'reason'])
 
 import random
+
 _models = []
 _files = []
+
 
 def guid():
     def S4():
         return hex(int(((1 + random.random()) * 0x10000) or 0))[2:]
-    return "%s-%s-%s-%s"%(S4(), S4(), S4(), S4())
+
+    return "%s-%s-%s-%s" % (S4(), S4(), S4(), S4())
+
 
 def add_model_objects(*args):
     _models.extend(args)
+
 
 def create_category(**defaults):
     defaults.setdefault('name', "Game")
@@ -45,12 +50,14 @@ def create_category(**defaults):
     _models.append(inst)
     return inst
 
+
 def create_author(**defaults):
     defaults.setdefault('email', 'kent-back@testcase.com')
     defaults.setdefault('name', "Kent Back")
     inst, flag = Author.objects.get_or_create(**defaults)
     _models.append(inst)
     return inst
+
 
 def create_package(**defaults):
     id = guid()
@@ -66,54 +73,63 @@ def create_package(**defaults):
     _models.append(inst)
     return inst
 
+
 def create_packageversion(package, **default):
     inst = PackageVersion.objects.create(package=package,
                                          **default)
     _models.append(inst)
     return inst
 
+
 def create_packageversionscreenshot(**defaults):
     id = guid()
-    defaults.setdefault('alt', 'alt-%s'% id)
+    defaults.setdefault('alt', 'alt-%s' % id)
     inst = PackageVersionScreenshot(**defaults)
     _models.append(inst)
     return inst
 
+
 def create_topic(**defaults):
     id = guid()
-    defaults.setdefault('name', 'topic %s' %id)
-    defaults.setdefault('slug', 'topic-%s' %id)
+    defaults.setdefault('name', 'topic %s' % id)
+    defaults.setdefault('slug', 'topic-%s' % id)
     inst = Topic.objects.create(**defaults)
     _models.append(inst)
     return inst
+
 
 def create_topicalitem(topic, item):
     inst = TopicalItem.objects.create(topic=topic, content_object=item)
     _models.append(inst)
     return inst
 
+
 def create_tipsword(**defaults):
     inst = TipsWord.objects.create(**defaults)
     _models.append(inst)
     return inst
 
+
 def create_account(**default):
     gid = guid()
-    default.setdefault('username', "player-%s"%gid)
-    default.setdefault('email', '%s@testcase.com'%gid)
+    default.setdefault('username', "player-%s" % gid)
+    default.setdefault('email', '%s@testcase.com' % gid)
 
     def rint():
-        return str(random.randint(10,99))
+        return str(random.randint(10, 99))
 
-    default.setdefault('phone', '+86-021-%s%s%s%s'%(rint(), rint(), rint(), rint()))
+    default.setdefault('phone',
+                       '+86-021-%s%s%s%s' % (rint(), rint(), rint(), rint()))
     inst = Player.objects.create_user(**default)
     _models.append(inst)
     return inst
+
 
 def create_auth_token(user):
     token, is_newed = Token.objects.get_or_create(user=user)
     _models.append(token)
     return token.key
+
 
 def clear_data():
     while True:
@@ -131,7 +147,9 @@ def clear_data():
             break
         try:
             os.remove(f)
-        except:pass
+        except:
+            pass
+
 
 def convert_content(content):
     try:
@@ -148,6 +166,7 @@ def convert_content(content):
 def disconnect_packageversion_pre_save():
     pre_save.disconnect(package_version_pre_save, PackageVersion)
 
+
 def connect_packageversion_pre_save():
     pre_save.connect(package_version_pre_save, PackageVersion)
 
@@ -163,8 +182,40 @@ def _world_response_status(context, res):
     ))
 
 
-class RestApiTest(TestCase):
+def sub_file_package():
+    return join(fixtures_dir, 'tinysize.apk')
 
+
+class SubFile(object):
+
+    fixtures_dir = fixtures_dir
+
+    @classmethod
+    def package(cls):
+        name = 'tinysize.apk'
+        return cls.file(name)
+
+    @classmethod
+    def icon(cls):
+        name = 'icon.png'
+        return cls.file(name)
+
+    @classmethod
+    def cover(cls):
+        name = 'cover.jpg'
+        return cls.file(name)
+
+
+    @classmethod
+    def file(cls, name):
+        return File(io.FileIO(join(cls.fixtures_dir, name)))
+
+    @classmethod
+    def fixture_filename(cls, name):
+        return join(fixtures_dir, name)
+
+
+class RestApiTest(TestCase):
     def setUp(self):
         self.world = dict()
         self.client_initial_params = dict(HTTP_ACCEPT='application/json',
@@ -175,27 +226,27 @@ class RestApiTest(TestCase):
         return convert_content(content)
 
     def assertResultList(self, content, previous, next, count, result_len):
-        content.get('results') |should| be_kind_of(list)
-        content['count'] |should| equal_to( count)
-        len(content['results']) |should| equal_to( result_len)
-        content['previous'] |should| equal_to( previous)
-        content['next'] |should| equal_to( next)
+        content.get('results') | should | be_kind_of(list)
+        content['count'] | should | equal_to(count)
+        len(content['results']) | should | equal_to(result_len)
+        content['previous'] | should | equal_to(previous)
+        content['next'] | should | equal_to(next)
 
     def tearDown(self):
         clear_data()
         super(RestApiTest, self).tearDown()
 
-class ApiDSL(RestApiTest):
 
+class ApiDSL(RestApiTest):
     def convert_content(self, content):
         return convert_content(content)
 
     def assertResultList(self, content, previous, next, count, result_len):
-        content.get('results') |should| be_kind_of(list)
-        content['count'] |should| equal_to( count)
-        len(content['results']) |should| equal_to( result_len)
-        content['previous'] |should| equal_to( previous)
-        content['next'] |should| equal_to( next)
+        content.get('results') | should | be_kind_of(list)
+        content['count'] | should | equal_to(count)
+        len(content['results']) | should | equal_to(result_len)
+        content['previous'] | should | equal_to(previous)
+        content['next'] | should | equal_to(next)
 
     def assertIsUrl(self, url):
         try:
@@ -208,14 +259,14 @@ class ApiDSL(RestApiTest):
     _fixtures_dir = join(dirname(abspath(__file__)), 'fixtures')
 
     def Given_i_have_package_with(self, **defaults):
-        defaults.setdefault('released_datetime', now()-timedelta(days=1))
+        defaults.setdefault('released_datetime', now() - timedelta(days=1))
         return create_package(**defaults)
 
     def Given_i_have_some_packages(self, num=3, **defaults):
         defaults.setdefault('status', Package.STATUS.published)
         packages = []
         for i in range(num):
-            defaults['released_datetime'] = now()-timedelta(days=i, hours=1)
+            defaults['released_datetime'] = now() - timedelta(days=i, hours=1)
             packages.append(create_package(**defaults))
 
         return packages
@@ -225,15 +276,15 @@ class ApiDSL(RestApiTest):
                                        status,
                                        all_datetime, **default):
         version = PackageVersion(
-            version_name = version_name,
-            version_code = version_code,
+            version_name=version_name,
+            version_code=version_code,
             status=status,
             released_datetime=all_datetime,
             updated_datetime=all_datetime,
             created_datetime=all_datetime,
             **default
         )
-        version.icon = File(io.FileIO(join(ApiDSL._fixtures_dir,'icon.png')))
+        version.icon = File(io.FileIO(join(ApiDSL._fixtures_dir, 'icon.png')))
         _models.append(version.icon)
         package.versions.add(version)
         _files.append(version.icon.path)
@@ -241,7 +292,8 @@ class ApiDSL(RestApiTest):
 
     def Given_package_version_add_screenshot(self, version):
         pss = PackageVersionScreenshot()
-        pss.image = File(io.FileIO(join(ApiDSL._fixtures_dir,'screenshot2.jpg')))
+        pss.image = File(
+            io.FileIO(join(ApiDSL._fixtures_dir, 'screenshot2.jpg')))
         version.screenshots.add(pss)
         _models.append(pss)
         return pss
@@ -250,26 +302,35 @@ class ApiDSL(RestApiTest):
         return File(io.FileIO(join(ApiDSL._fixtures_dir, 'icon.png')))
 
     def Given_i_have_icon_image(self):
-        return File(io.FileIO(join(ApiDSL._fixtures_dir,'icon.png')))
+        return File(io.FileIO(join(ApiDSL._fixtures_dir, 'icon.png')))
 
     def Given_i_have_activated_author(self, **kwargs):
         kwargs.setdefault('status', Author.STATUS.activated)
         return create_author(**kwargs)
 
-    def Given_i_have_published_package(self, all_datetime=now()-timedelta(days=1), **kwargs):
+    def Given_i_have_published_package(self,
+                                       all_datetime=now() - timedelta(days=1),
+                                       **kwargs):
         vkwargs = dict()
-        try: vkwargs['version_code'] = kwargs.pop('version_code')
-        except: pass
-        try: vkwargs['version_name'] = kwargs.pop('version_name')
-        except: pass
+        try:
+            vkwargs['version_code'] = kwargs.pop('version_code')
+        except:
+            pass
+        try:
+            vkwargs['version_name'] = kwargs.pop('version_name')
+        except:
+            pass
 
         pkg = ApiDSL.Given_i_have_package_with(self,
                                                status=Package.STATUS.published,
                                                **kwargs)
         version = ApiDSL.Given_package_has_version_with(self,
                                                         pkg,
-                                                        version_code=vkwargs.get('version_code', 1),
-                                                        version_name=vkwargs.get('version_name', '1.0beta'),
+                                                        version_code=vkwargs.get(
+                                                            'version_code', 1),
+                                                        version_name=vkwargs.get(
+                                                            'version_name',
+                                                            '1.0beta'),
                                                         status=PackageVersion.STATUS.published,
                                                         all_datetime=all_datetime)
         ApiDSL.Given_package_version_add_screenshot(self, version)
@@ -289,14 +350,14 @@ class ApiDSL(RestApiTest):
 
     def Then_i_should_see_package_detail_information(self, pkg_detail_data):
 
-        def Then_i_should_see_screenshots_in_package_version( version ):
+        def Then_i_should_see_screenshots_in_package_version(version):
             fields = (
                 'large',
                 'preview',
                 'rotate',
             )
             for s in version.get('screenshots'):
-                    s |should| include_keys(*fields)
+                s | should | include_keys(*fields)
 
         def Then_i_should_see_versions_in_package_detail(package_detail_data):
             fields = (
@@ -314,14 +375,14 @@ class ApiDSL(RestApiTest):
             )
             for v in package_detail_data.get('versions'):
                 Then_i_should_see_screenshots_in_package_version(v)
-                v |should| include_keys(*fields)
+                v | should | include_keys(*fields)
 
         def Then_i_should_see_actions_in_package_detail(package_detail_data):
             fields = (
                 'mark',
             )
             actions = package_detail_data.get('actions')
-            actions |should| include_keys(*fields)
+            actions | should | include_keys(*fields)
 
         fields = (
             'url',
@@ -345,42 +406,48 @@ class ApiDSL(RestApiTest):
             'categories_names',
             'actions',
         )
-        pkg_detail_data |should| include_keys(*fields)
+        pkg_detail_data | should | include_keys(*fields)
 
         Then_i_should_see_actions_in_package_detail(pkg_detail_data)
         Then_i_should_see_versions_in_package_detail(pkg_detail_data)
 
-    def Then_i_should_see_package_detail_contains_categories_names(self, pkg_data, cat_names):
-        pkg_data.get('categories_names') |should| include_in_any_order(list(cat_names))
+    def Then_i_should_see_package_detail_contains_categories_names(self,
+                                                                   pkg_data,
+                                                                   cat_names):
+        pkg_data.get('categories_names') | should | include_in_any_order(
+            list(cat_names))
 
     def When_i_access_api_root(self):
         res = self.client.get('/api/')
         _world_response_status(self, res)
 
     def Then_i_should_see_the_api_in_content(self, name):
-        self.world.get('content') |should| include_keys(name)
+        self.world.get('content') | should | include_keys(name)
 
     def When_i_access_category_list(self):
         res = self.client.get('/api/categories/')
         _world_response_status(self, res)
 
     def When_i_access_category_detail(self, category):
-        res = self.client.get('/api/categories/%s/'%category.slug)
+        res = self.client.get('/api/categories/%s/' % category.slug)
         _world_response_status(self, res)
 
-    def Then_i_should_see_the_category_in_category_tree(self, category, flag=True):
+    def Then_i_should_see_the_category_in_category_tree(self, category,
+                                                        flag=True):
         category_tree = self.world.get('content')
+
         def _tree_contains_category(tree, category):
             for element in tree:
                 if element.get('slug') == category.slug:
                     return True
                 else:
-                    flag = _tree_contains_category(element.get('children'), category)
+                    flag = _tree_contains_category(element.get('children'),
+                                                   category)
                     if flag:
                         return True
             return False
 
-        _tree_contains_category(category_tree, category) |should| be(flag)
+        _tree_contains_category(category_tree, category) | should | be(flag)
 
     def When_i_access_topic_list(self, topic=None):
         if topic:
@@ -403,7 +470,7 @@ class ApiDSL(RestApiTest):
 
     def When_i_access_topic_newest_package(self):
         # note: path没有以"/"结束
-        res = self.client\
+        res = self.client \
             .get('/api/topics/newest/items?ordering=-released_datetime',
                  follow=True)
         _world_response_status(self, res)
@@ -425,7 +492,7 @@ class ApiDSL(RestApiTest):
 
     def When_i_access_advertisement_with(self, place=None):
         if place:
-            res = self.client.get('/api/advertisements/?place=%s'%place.slug)
+            res = self.client.get('/api/advertisements/?place=%s' % place.slug)
         else:
             res = self.client.get('/api/advertisements/')
 
@@ -437,11 +504,11 @@ class ApiDSL(RestApiTest):
 
     def Then_i_should_see_tips(self, tips):
         fields = ('keyword', 'weight')
-        tips |should| include_keys(*fields)
+        tips | should | include_keys(*fields)
 
     def Then_i_should_receive_success_response(self):
         response = self.world.get('response')
-        response.status_code |should| equal_to( 200)
+        response.status_code | should | equal_to(200)
         content = convert_content(response.content)
         self.world.update(dict(response=response, content=content))
 
@@ -450,32 +517,36 @@ class ApiDSL(RestApiTest):
         content = None
         if response.content:
             content = convert_content(response.content)
-        response.status_code |should| equal_to(status_code)
+        response.status_code | should | equal_to(status_code)
         self.world.update(dict(response=response, content=content))
 
-    def Then_i_should_see_result_list(self, num, count=None, previous=None, next=None):
+    def Then_i_should_see_result_list(self, num, count=None, previous=None,
+                                      next=None):
         content = self.world.get('content')
         count = num if count is None else count
         self.assertResultList(content=content,
                               previous=previous,
                               next=next,
                               count=count,
-                              result_len=num )
+                              result_len=num)
 
     def Then_i_should_see_package_list_order_by_download_count_desc(self):
         content = self.world.get('content')
         result = content.get('results')
-        result[0].get('download_count') |should| be_greater_than(result[1].get('download_count'))
+        result[0].get('download_count') |should| be_greater_than(
+            result[1].get('download_count'))
 
     def Then_i_should_see_package_list_order_by_released_datetime_desc(self):
         content = self.world.get('content')
         result = content.get('results')
-        result[0].get('released_datetime') |should| be_greater_than(result[1].get('released_datetime'))
-        result[1].get('released_datetime') |should| be_greater_than(result[2].get('released_datetime'))
+        result[0].get('released_datetime') |should| be_greater_than(
+            result[1].get('released_datetime'))
+        result[1].get('released_datetime') |should| be_greater_than(
+            result[2].get('released_datetime'))
 
     def Then_i_should_see_package_summary_list(self, pkg_list_data):
         for p in pkg_list_data:
-            ApiDSL\
+            ApiDSL \
                 .Then_i_should_see_package_summary_information_for_list(self, p)
 
     def Then_i_should_see_package_summary_information_for_list(self, pkg_data):
@@ -496,12 +567,12 @@ class ApiDSL(RestApiTest):
             'author',
             'actions',
         )
-        pkg_data |should| include_keys(*fields)
+        pkg_data | should | include_keys(*fields)
 
         actions = (
             'mark',
         )
-        pkg_data.get('actions') |should| include_keys(*actions)
+        pkg_data.get('actions') | should | include_keys(*actions)
 
     def Then_i_should_see_author_summary_list(self, author_list_data):
         for a in author_list_data:
@@ -515,7 +586,7 @@ class ApiDSL(RestApiTest):
             'name',
             'packages_url',
         )
-        author_data |should| include_keys(*fields)
+        author_data | should | include_keys(*fields)
 
     def Then_i_should_see_account_profile(self, profile_data):
         fields = (
@@ -524,7 +595,7 @@ class ApiDSL(RestApiTest):
             'phone',
             'email',
         )
-        profile_data |should| include_keys(*fields)
+        profile_data | should | include_keys(*fields)
 
     def Then_i_should_see_topic_list(self, topic_list_data):
         for t in topic_list_data:
@@ -543,7 +614,7 @@ class ApiDSL(RestApiTest):
             'updated_datetime',
             'released_datetime',
         )
-        topic_data |should| include_keys(*fields)
+        topic_data | should | include_keys(*fields)
 
     def Then_i_should_see_topic_detail(self, topic_data):
         fields = (
@@ -559,7 +630,7 @@ class ApiDSL(RestApiTest):
             'updated_datetime',
             'released_datetime',
         )
-        topic_data |should| include_keys(*fields)
+        topic_data | should | include_keys(*fields)
 
     def Then_i_should_see_category_detail(self, cat_data):
         fields = (
@@ -569,12 +640,13 @@ class ApiDSL(RestApiTest):
             'slug',
             'packages_url',
         )
-        cat_data |should| include_keys(*fields)
+        cat_data | should | include_keys(*fields)
 
     def When_i_access_package_detail(self, package):
         from mobapi.serializers import PackageSummarySerializer
 
-        serializer = PackageSummarySerializer(package, context=dict(request=get_current_request()))
+        serializer = PackageSummarySerializer(package, context=dict(
+            request=get_current_request()))
         res = self.client.get(serializer.data.get('url'))
         _world_response_status(self, res)
 
@@ -587,7 +659,7 @@ class ApiDSL(RestApiTest):
                 'content_type',
                 'content_url',
             )
-            adv |should| include_keys(*fields)
+            adv | should | include_keys(*fields)
 
         for a in adv_list:
             Then_i_should_see_advertisement_summary(a)
@@ -610,7 +682,7 @@ class ApiDSL(RestApiTest):
 
     def Given_i_have_signup(self, user):
         token_key = create_auth_token(user)
-        headers = dict(HTTP_AUTHORIZATION='Token %s'%token_key)
+        headers = dict(HTTP_AUTHORIZATION='Token %s' % token_key)
         self.world.update(dict(headers=headers))
         ApiDSL.When_i_prepare_auth_token(self, token_key)
 
@@ -619,16 +691,18 @@ class ApiDSL(RestApiTest):
         res = self.client.get('/api/accounts/signout/', **headers)
         _world_response_status(self, res)
 
-        try: self.client_initial_params.pop('HTTP_AUTHORIZATION')
-        except: pass
+        try:
+            self.client_initial_params.pop('HTTP_AUTHORIZATION')
+        except:
+            pass
         self.client = Client(**self.client_initial_params)
 
     def Then_i_should_receive_auth_token(self):
         content = self.world.get('content')
-        len(content.get('token')) |should| equal_to(40)
+        len(content.get('token')) | should | equal_to(40)
 
     def When_i_prepare_auth_token(self, token):
-        headers = dict(HTTP_AUTHORIZATION='Token %s'%token)
+        headers = dict(HTTP_AUTHORIZATION='Token %s' % token)
         self.world.update(dict(headers=headers))
         self.client_initial_params.update(headers)
         self.client = Client(**self.client_initial_params)
@@ -640,11 +714,12 @@ class ApiDSL(RestApiTest):
 
     def Then_i_should_see_myprofile_information(self, user_profile):
         content = self.world.get('content')
-        content.get('username') |should| equal_to( user_profile.get('username'))
-        content.get('email') |should| equal_to( user_profile.get('email'))
-        content.get('phone') |should| equal_to( user_profile.get('phone'))
-        content |should| include_keys('comment_count')
-        content |should| include_keys('icon')
+        content.get('username') | should | equal_to(
+            user_profile.get('username'))
+        content.get('email') | should | equal_to(user_profile.get('email'))
+        content.get('phone') | should | equal_to(user_profile.get('phone'))
+        content | should | include_keys('comment_count')
+        content | should | include_keys('icon')
 
     def When_i_access_mybookmarks(self):
         headers = self.world.get('headers', dict())
@@ -686,26 +761,28 @@ class ApiDSL(RestApiTest):
                                                               version_name,
                                                               is_updatable):
         pkg_list = context.world.get('content')
-        pkg_list |should| have(1).elements
+        pkg_list | should | have(1).elements
         except_pkg = pkg_list[0]
-        except_pkg['package_name'] |should| equal_to(package_name)
-        except_pkg['version_code'] |should| equal_to(version_code)
-        except_pkg['version_name'] |should| equal_to(version_name)
-        except_pkg['is_updatable'] |should| equal_to(is_updatable)
-        except_pkg |should| include_keys('download_size',
-                                         'download',
-                                         'icon',
-                                         'title',
-                                         'released_datetime')
+        except_pkg['package_name'] | should | equal_to(package_name)
+        except_pkg['version_code'] | should | equal_to(version_code)
+        except_pkg['version_name'] | should | equal_to(version_name)
+        except_pkg['is_updatable'] | should | equal_to(is_updatable)
+        except_pkg | should | include_keys('download_size',
+                                           'download',
+                                           'icon',
+                                           'title',
+                                           'released_datetime')
 
     def When_i_access_comment_list(self, obj):
         from mobapi.serializers import PackageDetailSerializer
+
         serializer = PackageDetailSerializer(obj)
         res = self.client.get(serializer.data.get('comments_url'))
         _world_response_status(self, res)
 
     def When_i_post_comment_to(self, content, obj):
         from mobapi.serializers import PackageDetailSerializer
+
         serializer = PackageDetailSerializer(obj)
         res = self.client.post(serializer.data.get('comments_url'),
                                dict(comment=content))

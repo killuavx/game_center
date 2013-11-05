@@ -70,7 +70,7 @@ class ParsePackageVersion(object):
         if package.pk and package.package_name != pkginfo.get('package_name'):
             raise DiffPackageNameFromApkInfo(
                 'Package:%s Name Different from Apk pacakge name:%s'% \
-                (package.package_name, pkginfo.package_name))
+                (package.package_name, pkginfo.get('package_name')))
 
     def parse_to_version(self):
         pkgparser = self._pkgparser

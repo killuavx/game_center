@@ -30,6 +30,25 @@ class SphinxSearchFilter(filters.SearchFilter):
     search_param = 'q'
 
 
+class RelatedPackageSearchFilter(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        if not hasattr(view, 'object') or not view.object:
+            return queryset
+
+        if not hasattr(view, 'related_package_list') \
+            or view.related_package_list is not None:
+            return queryset
+
+        qs = queryset._clone()
+        qs = qs.exclude(pk=view.object.pk).filter(
+            categories__in=list(view.object.categories.published()))
+        tags = list(view.object.tags)
+        if len(tags) and qs.count():
+            return type(view.object).tagged.with_any(tags, qs)
+        return queryset.filter(pk=None)
+
+
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     """ 软件接口
 
@@ -110,12 +129,13 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.OrderingFilter,
                        filters.DjangoFilterBackend,
                        filters.SearchFilter,
+                       RelatedPackageSearchFilter
     )
     filter_fields = ('package_name', 'title',)
     ordering = ('title',
                 'package_name',
                 'updated_datetime',
-                'released_datetime' )
+                'released_datetime')
 
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class = self.serializer_class
@@ -123,6 +143,16 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         response = super(PackageViewSet, self) \
             .retrieve(request, *args, **kwargs)
         self.serializer_class = list_serializer_class
+        return response
+
+    @link()
+    def relatedpackages(self, request, *args, **kwargs):
+
+        self.object = self.get_object(self.get_queryset())
+        self.related_package_list = None
+        response = self.list(request, *args, **kwargs)
+        self.related_package_list = self.object_list
+
         return response
 
 
