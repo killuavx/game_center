@@ -62,3 +62,10 @@ def result_list_field_should_equal(context, is_within, field, value):
     else:
         assert False, "Matcher Error"
 
+
+
+@then('I should see list result with{is_within:in?out} pagination '
+      'paginate by "{page_size:d}" items')
+def result_list_should_paginate_by(context, is_within, page_size):
+    WebDSL = factory_dsl(context)
+    WebDSL.should_result_paginate_by(context, is_within, page_size)

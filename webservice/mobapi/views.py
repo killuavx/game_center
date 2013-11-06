@@ -1,5 +1,6 @@
 # -*- encoding=utf-8 -*-
 import copy
+from rest_framework.settings import api_settings
 from rest_framework import mixins
 from warehouse.models import Package, Author
 from rest_framework.decorators import link
@@ -231,11 +232,21 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = Category.objects.published()
         category = generics.get_object_or_404(queryset, slug=slug)
 
+        list_view = self.get_packages_list_view(request, category)
+        return list_view(request, *args, **kwargs)
+
+    def get_packages_list_view(self, request, category):
         ViewSet = PackageViewSet
         queryset = category.packages.all()
         queryset = queryset.published()
         list_view = ViewSet.as_view({'get': 'list'}, queryset=queryset)
-        return list_view(request, *args, **kwargs)
+        return list_view
+
+    def filter_packages_list_view(self, list_view, request, category):
+        list_view.paginate_by = request.GET.get(
+            api_settings.PAGINATE_BY_PARAM, api_settings.PAGINATE_BY)
+        list_view.max_paginate_by = 50
+        return list_view
 
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class, self.serializer_class = self.serializer_class, CategoryDetailSerializer

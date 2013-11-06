@@ -7,13 +7,18 @@ from taxonomy.models import Category
 from os.path import join
 from should_dsl import should, should_not
 from django.test.testcases import override_settings
+from django.db.models.query import Q
 
 
 def to_package_categories(package, text):
     text = text.strip()
     cats = text.split(',')
     for cat in cats:
-        c = Category.objects.get(slug=cat.strip())
+        name_or_slug = cat.strip()
+        try:
+            c = Category.objects.get(Q(slug=name_or_slug) | Q(name=name_or_slug))
+        except Category.DoesNotExist:
+            raise Category.DoesNotExist("name or slug: %s" % name_or_slug)
         package.categories.add(c)
 
 

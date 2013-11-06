@@ -41,8 +41,23 @@ def step_should_see_the_hidden_category_detail(context):
 
 
 from fts.features.app_dsls.taxonomy import factory_dsl
+from fts.features.app_dsls.web import factory_dsl as factory_web_dsl
 
 @given('category tree exists')
 def category_tree_already_exists(context):
     TaxonomyDSL = factory_dsl(context)
     TaxonomyDSL.category_tree_already_exists(context)
+
+
+@when('I visit package list of category {field} "{name}"')
+@when('I visit package list of category {field} "{name}" paginate by "{page_size:d}"')
+def visit_the_package_list_of_category(context, field, name, page_size=None):
+    TaxonomyDSL = factory_dsl(context)
+    TaxonomyDSL.visit_the_package_list_of_category(
+        context,
+        page_size,
+        **{field: name})
+
+    WebDSL = factory_web_dsl(context)
+    WebDSL.response_to_world(context)
+
