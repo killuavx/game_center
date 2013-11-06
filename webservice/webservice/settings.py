@@ -285,6 +285,8 @@ REST_FRAMEWORK = {
     'DATE_FORMAT': '%s',
     'DATETIME_FORMAT': '%s',
     'PAGINATE_BY': 10,
+    'PAGINATE_BY_PARAM': 'page_size',
+    'MAX_PAGINATE_BY': 50,
 
     #'DEFAULT_MODEL_SERIALIZER_CLASS':
     #    'rest_framework.serializers.HyperlinkedModelSerializer',

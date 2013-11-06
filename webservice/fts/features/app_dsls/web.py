@@ -77,6 +77,14 @@ class WebBaseDSL(object):
         any((find_func(row) for row in results)) |should| be(True)
 
     @classmethod
+    def should_result_paginate_by(cls, context, within_pagination, page_size):
+        result = content = cls.response_structure_content(context)
+        if within_pagination:
+            result = content.get('results')
+
+        result |should| have(page_size).elements
+
+    @classmethod
     def response_to_world(cls, context):
         raise NotImplementedError(
             'you must implement %s.%s' %(cls, 'response_to_world'))

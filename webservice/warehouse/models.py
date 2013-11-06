@@ -728,11 +728,7 @@ def package_version_pre_save(sender, instance, **kwargs):
                 package.save()
                 instance.package_id = package.pk
 
-            # no version_code&version_name new create
-            if not instance.pk\
-                and not instance.tracker.has_changed('version_code')\
-                and not instance.tracker.has_changed('version_name'):
-                handle.parse_to_version()
+            handle.parse_to_version()
 
             # no icon on new create
             if not instance.icon and not instance.pk:

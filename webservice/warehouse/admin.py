@@ -248,13 +248,12 @@ class PackageAdmin(MainAdmin):
                      'download_url',
     )
     raw_id_fields = ('author', )
-    list_filter = ('author__name', 'released_datetime', 'status' )
-    list_display_links = ( 'title', 'package_name',)
+    list_filter = ('categories', 'released_datetime', 'status' )
+    list_display_links = ('title', 'package_name',)
     list_editable = ('status', 'tags_text',)
     date_hierarchy = 'released_datetime'
     ordering = ('-released_datetime',)
     list_select_related = True
-    filter_horizontal = ('categories', )
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput}
     }
