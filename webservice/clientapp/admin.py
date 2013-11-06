@@ -57,6 +57,7 @@ class ClientPackageVersionAdmin(VersionAdmin):
                     'download_count',
                     'download_url',
     )
+    list_display_links = ('package_name', )
 
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput}
