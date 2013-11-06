@@ -222,6 +222,46 @@ from mobapi.serializers import ( CategoryDetailSerializer,
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+    """ 分类接口
+
+    ## 分类树接口
+
+        GET /api/categories/
+
+    #### 响应内容
+
+    * 200 HTTP_200_OK
+        * 获取成功, 返回分类树状结构的列表数据
+
+    ### 单个分类元素数据结构
+
+    * `url`: 详细信息接口
+    * `icon`: 图标地址
+    * `name`: 分类名字
+    * `slug`: 分类唯一标识的名字
+    * `packages_url`: 分类软件列表接口
+    * `parent`: 父级分类详细信息接口
+    * `children`: 子级分裂列表
+
+    ----
+
+    ## 分类应用列表接口
+
+        GET /api/topics/{slug}/packages/?page_size=10
+
+    #### 请求信息
+
+    * `{slug}`: 分类slug
+    * `page_size`: 每页个数
+
+    #### 响应内容
+
+    * 200 HTTP_200_OK
+        * 获取成功, 返回应用列表, 数据结构见[应用列表接口](/api/packages/)
+
+    ----
+
+    """
     queryset = Category.objects.as_root().showed()
     serializer_class = CategorySummarySerializer
     lookup_field = 'slug'
