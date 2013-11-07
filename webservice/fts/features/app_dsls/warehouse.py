@@ -63,13 +63,17 @@ class WarehouseBaseDSL(object):
         """
         yesterday = now() - timedelta(days=1)
         released_datetime = kwargs.get('released_datetime', yesterday)
-        package = Package.objects.create(
-            title=kwargs.get('title'),
-            package_name=kwargs.get('package_name'),
-            status=kwargs.get('status'),
-            released_datetime=released_datetime,
-            author=cls.create_author_without_ui(context)
-        )
+        package_name = kwargs.get('package_name')
+        try:
+            package = Package.objects.get(package_name=package_name)
+        except Package.DoesNotExist:
+            package = Package.objects.create(
+                title=kwargs.get('title'),
+                package_name=kwargs.get('package_name'),
+                author=cls.create_author_without_ui(context),
+                status=kwargs.get('status'),
+                released_datetime=released_datetime,
+            )
 
         to_package_categories(package, kwargs.get('categories'))
         to_package_tags(package, kwargs.get('tags'))

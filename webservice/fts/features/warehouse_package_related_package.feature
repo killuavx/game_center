@@ -46,3 +46,20 @@ Feature: Package Related Other Packages
     Examples: multi-category
       | pkg_a_cats                  | pkg_b_cats                | pkg_a_tags | pkg_b_tags |
       | stand-alone-game,crack-game | big-game,stand-alone-game | cn,cartoon | cn,cartoon |
+
+  Scenario Outline: some related packages with multi-version
+    Given category tree exists
+    And package exists such below:
+      | title            | package_name            | categories    | tags         | version_name | version_code | status    |
+      | 捕鱼达人          | com.huayigame.fkdy      | <pkg_a_cats>  | <pkg_a_tags> | 1.0.1        | 1            | published |
+      | 捕鱼达人          | com.huayigame.fkdy      | <pkg_a_cats>  | <pkg_a_tags> | 2.0.1        | 2            | published |
+      | Angry Birds Rio  | com.rovio.angrybirdsrio | <pkg_b_cats>  | <pkg_b_tags> | 1.0          | 10           | published |
+    When I visit the package detail title "Angry Birds Rio"
+    And I follow the package related_packages_url
+    Then I should receive 200 OK
+    And I should see list result within pagination count equal "1"
+    And I should see list result within pagination contains the title of element is "捕鱼达人"
+
+  Examples: same multi-category
+      | pkg_a_cats                  | pkg_b_cats                | pkg_a_tags | pkg_b_tags |
+      | stand-alone-game,big-game   | stand-alone-game,big-game | cn,cute    | hot,cute   |

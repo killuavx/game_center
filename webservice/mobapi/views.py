@@ -43,7 +43,7 @@ class RelatedPackageSearchFilter(filters.BaseFilterBackend):
 
         qs = queryset._clone()
         qs = qs.exclude(pk=view.object.pk).filter(
-            categories__in=list(view.object.categories.published()))
+            categories__in=list(view.object.categories.published())).distinct()
         tags = list(view.object.tags)
         if len(tags) and qs.count():
             return type(view.object).tagged.with_any(tags, qs)
