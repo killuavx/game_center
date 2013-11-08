@@ -110,8 +110,8 @@ class SelfUpdateUsingWebBrowserDSL(SelfUpdateBaseDSL):
         other_steps = """
         When I fill in "whatsnew" with "%(whatsnew)s"
          And I fill in "summary" with "%(summary)s"
-        """ %dict(whatsnew=kwargs.get('whatsnew', ''),
-                  summary=kwargs.get('summary', ''))
+        """ %dict(whatsnew=kwargs.get('whatsnew', 'no content'),
+                  summary=kwargs.get('summary', 'no content'))
 
         context.execute_steps("""
             When I fill in "package_name" with "%(package_name)s"
