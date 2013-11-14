@@ -29,10 +29,20 @@ Feature: Package Update
       | package_name             | version_name | version_code | response_version_name | response_version_code | is_updatable |
       | com.carrot.carrotfantasy | 1.0.0        | 218          | 1.2.1                 | 268                   | be     |
 
+
+  Scenario Outline: ignore update
+    Given package "<package_name>" has a set of versions below:
+      | version_name | version_code | released_datetime |
+      | 1.1.2beta    | 259          | 2013-8-29 12:11   |
+      | 1.2.1        | 268          | 2013-8-30 12:11   |
+    When I post package version to check update with package_name: "<package_name>", version_name: "<version_name>", version_code: "<version_code>"
+    Then I should receive 200 OK
+    Then I should see empty package update list
+
     Examples: can not be update, in package versions range
-      | package_name             | version_name | version_code | response_version_name | response_version_code | is_updatable |
-      | com.carrot.carrotfantasy | 1.2.1        | 268          | 1.2.1                 | 268                   | not be |
+      | package_name             | version_name | version_code |
+      | com.carrot.carrotfantasy | 1.2.1        | 268          |
 
     Examples: can not be update, out of package versions range
-      | package_name             | version_name | version_code | response_version_name | response_version_code | is_updatable |
-      | com.carrot.carrotfantasy | 2.1.1        | 358          | 1.2.1                 | 268                   | not be |
+      | package_name             | version_name | version_code |
+      | com.carrot.carrotfantasy | 2.1.1        | 358          |

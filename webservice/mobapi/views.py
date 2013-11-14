@@ -935,7 +935,7 @@ class PackageUpdateView(generics.CreateAPIView):
 
     ### 访问方式
 
-        POST /api/bookmarks/
+        POST /api/updates/
         Content-Type: application/json
         ...
 
@@ -961,13 +961,13 @@ class PackageUpdateView(generics.CreateAPIView):
             "title": "\u6a21\u62df\u4eba\u751f",
             "download": "http://localhost:8000/media/packages/com.guruas.mazegamej-27.1_6.apk",
             "download_size": 3256602,
-            "version_code": 1,
-            "version_name": "1.0",
+            "version_code": 2,
+            "version_name": "2.0",
             "released_datetime": "1378109580",
             "actions": {
                 "mark": "http://localhost:8000/api/bookmarks/1/"
             },
-            "is_updatable": false
+            "is_updatable": True
         }
         ]
 
@@ -988,6 +988,10 @@ class PackageUpdateView(generics.CreateAPIView):
         * 返回应用升级列表信息
     * 400 HTTP_400_BAD_REQUEST
         * 请求格式有错
+
+    #### 注意
+
+        如果平台上没有应用数据，或应用不可更新，返回结果中不会包含对应的应用数据
 
     ----
 
@@ -1035,7 +1039,13 @@ class PackageUpdateView(generics.CreateAPIView):
                                                     many=True,
                                                     context=dict(
                                                         request=request))
-        return Response(serializer.data, status.HTTP_200_OK)
+        data = self._filter_ignore_disupdatable(serializer.data)
+        return Response(data, status.HTTP_200_OK)
+
+    def _filter_ignore_disupdatable(self, datalist):
+        return list(filter(lambda e: e['is_updatable'], datalist))
+
+
 
 #----------------------------------------------------------------
 from mobapi.serializers import CommentSerializer, CommentCreateSerializer
