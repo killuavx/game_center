@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-from collections import namedtuple
 from behaving.web.steps import basic
 from should_dsl import should, should_not
 from fts.features.support import HackBrowserFromClient, StatusCode
@@ -12,6 +11,7 @@ def text_to_json_data(text):
     except:
         data = None
     return data
+
 
 class WebBaseDSL(object):
 

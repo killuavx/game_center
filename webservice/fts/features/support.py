@@ -97,7 +97,10 @@ class HackBrowserFromClient(Client):
             return None
 
         (fd, full_name) = tempfile.mkstemp(prefix=name, suffix='.txt')
-        with open(full_name, '+w') as file:
-            file.write(text)
+        try:
+            with open(full_name, '+w') as file:
+                file.write(text)
+        except UnicodeEncodeError:
+            pass
         return full_name
 

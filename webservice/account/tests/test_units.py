@@ -8,7 +8,7 @@ import os
 from os.path import join, abspath, dirname
 from django.test.utils import override_settings
 from should_dsl import should
-from account.models import Player
+from account.models import User as Player
 
 __author__ = 'me'
 _fixture_dir = join(dirname(abspath(__file__)), 'fixtures')

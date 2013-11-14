@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 import os
 from behaving.personas import environment as personaenv
 from behaving.web import environment as webenv
@@ -31,6 +30,8 @@ def after_screenshot(ctx, filename):
             print(f.readlines())
 
 
+from fts.features.app_dsls.account import (setup as account_setup,
+                                           teardown as account_teardown)
 def setup(context):
     import fts
 
@@ -42,6 +43,8 @@ def setup(context):
 
     if not hasattr(context, 'world'):
         context.world = {}
+
+    account_setup(context)
 
 
 def setup_client(context):
@@ -64,6 +67,8 @@ def teardown(context):
         try:
             context.browser.quit()
         except:pass
+
+    account_teardown(context)
 
 
 def before_all(context):

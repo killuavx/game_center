@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from behave import *
 from fts.features.app_dsls.web import factory_dsl
-from should_dsl import should
+from should_dsl import should, should_not
 
 
 # override step 'I choose "{value}" form "{options}"'
@@ -62,7 +62,12 @@ def result_list_field_should_equal(context, is_within, field, value):
     else:
         assert False, "Matcher Error"
 
-
+@then('I should see response with {field} "{value}"')
+def step_should_see_field(context, field, value):
+    WebDSL = factory_dsl(context)
+    content = WebDSL.response_structure_content(context)
+    content.get(field) |should_not| be(None)
+    str(content.get(field)) |should| equal_to(value)
 
 @then('I should see list result with{is_within:in?out} pagination '
       'paginate by "{page_size:d}" items')

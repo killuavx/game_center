@@ -131,7 +131,6 @@ INTERNAL_APPS = [
     'django.contrib.staticfiles',
     'PIL',
     'easy_thumbnails',
-    'userena',
     'guardian',
     'south',
     'suit',
@@ -257,10 +256,16 @@ THUMBNAIL_ALIASES_SCREENSHOT = {
         'upscale': True,
     },
 }
+
 THUMBNAIL_ALIASES = {
     '': {
         'avatar': {'size': (50, 50), 'crop': 'smart'},
     },
+    'account.Profile': dict(list(THUMBNAIL_ALIASES_ICON.items()) + \
+                            list(dict(tiny=dict(size=(20, 20),
+                                           quality=85,
+                                           crop=False,
+                                           upscale=True)).items())),
     'warehouse.PackageVersion.icon': THUMBNAIL_ALIASES_ICON,
     'warehouse.PackageVersion.cover': THUMBNAIL_ALIASES_COVER,
     'warehouse.PackageVersionScreenshot.image': THUMBNAIL_ALIASES_SCREENSHOT,
@@ -338,18 +343,14 @@ def NOW():
 
     return timezone.now()
 
-# django userena
 AUTHENTICATION_BACKENDS = (
-    'account.backends.GameCenterAuthenticationBackend',
-    'userena.backends.UserenaAuthenticationBackend',
     'guardian.backends.ObjectPermissionBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    'account.backends.GameCenterModelBackend',
 )
 ANONYMOUS_USER_ID = -1
 
+AUTH_USER_MODEL = 'account.User'
 AUTH_PROFILE_MODULE = 'account.Profile'
-USERENA_MUGSHOT_SIZE = 80
-USERENA_MUGSHOT_CROP_TYPE = 'smart'
 
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/accounts/signin/'
@@ -360,3 +361,5 @@ COMMENTS_XTD_CONFIRM_EMAIL = False
 COMMENTS_XTD_MAX_THREAD_LEVEL = 0
 
 AAPT_CMD = join(PROJECT_PATH, 'warehouse/utils/android-tools-linux-x64/aapt')
+
+

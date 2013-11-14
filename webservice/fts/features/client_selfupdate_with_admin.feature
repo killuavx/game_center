@@ -14,7 +14,6 @@ Feature: update client
     When I visit selfupdate
     Then I should receive 204 No Content
 
-  @browser
   Scenario: some of clientapp versions are published
     When I create client version below:
       | version_code | version_name | status     | whatsnew | summary |

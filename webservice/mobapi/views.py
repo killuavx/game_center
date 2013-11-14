@@ -472,11 +472,19 @@ def documentation_advertisement_viewset():
 
 from mobapi.serializers import AccountDetailSerializer
 from mobapi.authentications import PlayerTokenAuthentication
-from account.models import Player, Profile
+from account.models import User as Player, Profile
 from django.core.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from django.utils.translation import ugettext as _
+from account.forms import mob as account_forms
+
+
+def errors_flat_to_str(errors):
+    messages = []
+    for field, _messages in errors.items():
+        messages.append(", ".join(_messages))
+    return ", ".join(messages)
 
 
 class AccountCreateView(generics.CreateAPIView):
@@ -511,67 +519,19 @@ class AccountCreateView(generics.CreateAPIView):
     permission_classes = ()
     serializer_class = AccountDetailSerializer
 
-    def get_query_param(self, query, name):
-        return query.get(name)
+    form_class = account_forms.SignupForm
 
-    def get_query_params(self, attrs):
-        attrs = dict(
-            username=self.get_query_param(attrs, 'username'),
-            password=self.get_query_param(attrs, 'password'),
-            email=self.get_query_param(attrs, 'email'),
-            phone=self.get_query_param(attrs, 'phone'),
-        )
-        return attrs
-
-    def run_validate_and_save(self, attrs):
-        user = Player(username=attrs.get('username'))
-
-        if attrs.get('password'):
-            user.set_password(attrs.get('password'))
-        else:
-            _mgs = [_('should not be empty')]
-            raise ValidationError(dict(password=_mgs))
-
-        user.full_clean()
-        user.save()
-        profile = Profile(user=user,
-                          email=attrs.get('email'),
-                          phone=attrs.get('phone'),
-        )
-        try:
-            profile.full_clean(['user'])
-        except ValidationError as e:
-            user.delete()
-            raise ValidationError(
-                getattr(e, 'message_dict', False) or e.messages)
-
-        profile.save()
-        return user
-
-    def prepare_validation_messages(self, e):
-
-        mgs = list()
-        if getattr(e, 'message_dict', False):
-            for _key, _mgs in e.message_dict.items():
-                mgs.append("%s %s" % (_key, _mgs
-                if isinstance(_mgs, str) else ", ".join(_mgs)))
-            return mgs
-
-        if e.messages:
-            mgs = e.messages
-
-        return mgs
-
-    def post(self, request, *args, **kwargs):
-        try:
-            queryparams = self.get_query_params(request.DATA)
-            user = self.run_validate_and_save(queryparams)
-            serializer = self.serializer_class(user)
+    def create(self, request, *args, **kwargs):
+        form = self.form_class(request.DATA, files=request.FILES)
+        if form.is_valid():
+            self.object = form.save()
+            self.post_save(self.object, created=True)
+            serializer = self.serializer_class(self.object)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except ValidationError as e:
-            messages = self.prepare_validation_messages(e)
-            return Response({'detail': ", ".join(messages)},
+        else:
+            return Response({'detail': errors_flat_to_str(form.errors)},
                             status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class AccountMyProfileView(generics.RetrieveAPIView):

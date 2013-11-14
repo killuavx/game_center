@@ -19,18 +19,18 @@ Feature: Unmark Package
 
      When I visit my profile
      Then I should receive 200 OK
-      And I should see the player profile with bookmark_count value 0
+      And I should see response with bookmark_count "0"
 
      When I mark package name "Angry Birds 2"
      Then I should receive 201 Created
 
      When I visit my profile
      Then I should receive 200 OK
-      And I should see the player profile with bookmark_count value 1
+      And I should see response with bookmark_count "1"
 
      When I unmark package name "Angry Birds 2"
      Then I should receive 204 No Content
 
      When I visit my profile
      Then I should receive 200 OK
-      And I should see the player profile with bookmark_count value 0
+      And I should see response with bookmark_count "0"
