@@ -149,21 +149,6 @@ def step_should_see_commented_package_in_result_list(context):
         except_package.get('comments_url'))
 
 
-@then('I should see the package summary from response in content results')
-def step_should_see_the_package_summary_in_response_content_results(context):
-    the_package = context.world.get('the_package')
-    results = context.world.get('content').get('results', list())
-    (the_package.package_name, ) | should | include_any_of(
-        [r.get('package_name') for r in results])
-
-
-@then('I should see the package summary from response in content')
-def step_should_see_the_package_summary_in_response_content(context):
-    the_package = context.world.get('the_package')
-    content = context.world.get('content')
-    the_package.package_name | should | equal_to(content.get('package_name'))
-
-
 from fts.features.app_dsls.warehouse import factory_dsl
 from fts.features.app_dsls.web import factory_dsl as factory_web_dsl
 
@@ -195,3 +180,5 @@ def follow_the_package(context, field):
     WarehouseDSL.follow_package_detail_above(context, field)
 
     factory_web_dsl(context).response_to_world(context)
+
+

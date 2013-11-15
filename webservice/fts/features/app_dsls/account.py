@@ -64,6 +64,25 @@ class AccountBaseDSL(object):
             'you must implement %s.%s' %(cls, 'visit_profile')
         )
 
+    # bookmark
+    @classmethod
+    def visit_bookmarks(cls):
+        raise NotImplementedError(
+            '%s.%s implement' %(cls, 'visit_bookmark')
+        )
+
+    @classmethod
+    def add_bookmark(cls, context, package):
+        raise NotImplementedError(
+            '%s.%s implement' %(cls, 'add_bookmark')
+        )
+
+    @classmethod
+    def remove_bookmark(cls, context, package):
+        raise NotImplementedError(
+            '%s.%s not implement' %(cls, 'remove_bookmark')
+        )
+
     @classmethod
     def teardown(cls, context):
         try:
@@ -116,6 +135,23 @@ class AccountRestApiUsingNoUIClientDSL(AccountBaseDSL):
     def visit_myprofile(cls, context):
         api_url = "%s%s" %(context.base_url, cls._profile_url)
         context.client.get(api_url)
+
+    _bookmark_url = '/api/bookmarks/'
+
+    @classmethod
+    def visit_bookmarks(cls, context):
+        api_url = "%s%s" % (context.base_url, cls._bookmark_url)
+        context.client.get(api_url)
+
+    @classmethod
+    def add_bookmark(cls, context, package):
+        api_url = "%s%s" %(context.base_url, cls._bookmark_url)
+        context.client.post(api_url, dict(package_name=package.package_name))
+
+    @classmethod
+    def remove_bookmark(cls, context, package):
+        api_url = "%s%s%d/" %(context.base_url, cls._bookmark_url, package.pk)
+        context.client.delete(api_url)
 
 
 class AccountWebAppUsingBrowserDSL(AccountBaseDSL):

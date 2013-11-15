@@ -23,7 +23,7 @@ Feature: Add Package Bookmark
 
      When I mark package name "Angry Birds"
      Then I should receive 201 Created
-      And I should see the package summary from response in content
+      And I should see response with title "Angry Birds"
 
      When I visit my profile
      Then I should receive 200 OK
@@ -31,6 +31,6 @@ Feature: Add Package Bookmark
 
      When I visit my bookmarks page
      Then I should receive 200 OK
-      And I should see the package summary from response in content results
+      And I should see list result within pagination contains the title of element is "Angry Birds"
 
 
