@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-__author__ = 'me'
 from behave import *
 from behaving.web.steps import *
 from fts.helpers import ApiDSL
@@ -81,27 +80,6 @@ def step_the_should_see_package_update_list_has_no_version_package(context):
     results |should| be_empty
 
 
-@when('I access the package detail')
-def step_when_i_access_the_package_detail(context):
-    ApiDSL.When_i_access_package_detail(context,
-                                        context.world.get('the_package'))
-
-
-@when('I access comment list of the package')
-def step_access_comment_list_of_the_package(context):
-    ApiDSL.When_i_access_comment_list(context, context.world.get('the_package'))
-
-
-@then(
-    'I should see comment_count {comment_count:d} in the package version detail')
-def step_should_see_comment_count_in_the_package_version_detail(context,
-                                                                comment_count):
-    package_detail = context.world.get('content')
-    package_detail.get('comment_count') | should | equal_to(comment_count)
-
-    for v in package_detail.get('versions'):
-        v.get('comment_count') | should_not | be(None)
-
 
 @given('package name "{title}" has a set of versions below')
 def step_package_has_a_set_of_versions(context, title):
@@ -181,4 +159,15 @@ def follow_the_package(context, field):
 
     factory_web_dsl(context).response_to_world(context)
 
+# comment
+@then('I should see comment_count {comment_count:d} '
+      'in the package version detail')
+def should_comment_count_in_the_package_version_detail(context, comment_count):
+    WebDSL = factory_web_dsl(context)
+    package_detail = WebDSL.response_structure_content(context)
+
+    package_detail.get('comment_count') | should | equal_to(comment_count)
+
+    for v in package_detail.get('versions'):
+        v.get('comment_count') | should_not | be(None)
 

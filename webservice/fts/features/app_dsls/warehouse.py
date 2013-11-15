@@ -29,6 +29,14 @@ def to_package_tags(package, text):
 class WarehouseBaseDSL(object):
 
     @classmethod
+    def setup(cls, context):
+        pass
+
+    @classmethod
+    def teardown(cls, context):
+        pass
+
+    @classmethod
     def create_author_without_ui(cls, context, **kwargs):
         name = guid()[:10]
         kwargs.setdefault('email', '%s@testcase.com' % name)
@@ -110,6 +118,13 @@ class WarehouseBaseDSL(object):
         related_url |should_not| be(None)
         context.browser.visit(related_url)
 
+    @classmethod
+    def visit_comment_list(cls, context, package):
+        from mobapi.serializers import PackageDetailSerializer
+        serializer = PackageDetailSerializer(package)
+        comment_url = serializer.data.get('comments_url')
+        context.browser.visit(comment_url)
+
 
 class WarehouseUsingNoUIClientDSL(WarehouseBaseDSL):
 
@@ -126,3 +141,11 @@ def factory_dsl(context):
         return WarehouseUsingBrowserDSL
 
     return WarehouseUsingNoUIClientDSL
+
+
+def setup(context):
+    factory_dsl(context).setup(context)
+
+
+def teardown(context):
+    factory_dsl(context).teardown(context)

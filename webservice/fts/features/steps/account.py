@@ -120,3 +120,13 @@ def visit_bookmarks_page(context):
 
     WebDSL = factory_web_dsl(context)
     WebDSL.response_to_world(context)
+
+# comment
+@when('I visit my commented package page')
+def visit_my_commented_packages(context):
+    AccountDSL = factory_dsl(context)
+    AccountDSL.visit_commented_packages(context)
+
+    WebDSL = factory_web_dsl(context)
+    WebDSL.response_to_world(context)
+

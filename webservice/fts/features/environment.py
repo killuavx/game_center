@@ -32,6 +32,12 @@ def after_screenshot(ctx, filename):
 
 from fts.features.app_dsls.account import (setup as account_setup,
                                            teardown as account_teardown)
+from fts.features.app_dsls.warehouse import (setup as warehouse_setup,
+                                             teardown as warehouse_teardown)
+from fts.features.app_dsls.comment import (setup as comment_setup,
+                                           teardown as comment_teardown)
+
+
 def setup(context):
     import fts
 
@@ -44,7 +50,11 @@ def setup(context):
     if not hasattr(context, 'world'):
         context.world = {}
 
+
+def setup_dsls(context):
     account_setup(context)
+    warehouse_setup(context)
+    comment_setup(context)
 
 
 def setup_client(context):
@@ -59,6 +69,12 @@ def teardown_client(context):
         context.client = None
 
 
+def teardown_dsls(context):
+    account_teardown(context)
+    warehouse_teardown(context)
+    comment_teardown(context)
+
+
 def teardown(context):
     context.world = {}
     helpers.clear_data()
@@ -67,8 +83,6 @@ def teardown(context):
         try:
             context.browser.quit()
         except:pass
-
-    account_teardown(context)
 
 
 def before_all(context):
@@ -97,6 +111,7 @@ def after_feature(context, feature):
 
 def before_scenario(context, scenario):
     setup(context)
+    setup_dsls(context)
     personaenv.before_scenario(context, scenario)
     webenv.before_scenario(context, scenario)
     setup_client(context)
@@ -111,5 +126,6 @@ def after_scenario(context, scenario):
     personaenv.after_scenario(context, scenario)
     webenv.after_scenario(context, scenario)
     teardown_client(context)
+    teardown_dsls(context)
     teardown(context)
 

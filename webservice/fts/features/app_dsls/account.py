@@ -153,6 +153,12 @@ class AccountRestApiUsingNoUIClientDSL(AccountBaseDSL):
         api_url = "%s%s%d/" %(context.base_url, cls._bookmark_url, package.pk)
         context.client.delete(api_url)
 
+    _commented_packages_url = '/api/accounts/commented_packages'
+
+    @classmethod
+    def visit_commented_packages(cls, context):
+        api_url = "%s%s" %(context.base_url, cls._commented_packages_url)
+        context.client.get(api_url)
 
 class AccountWebAppUsingBrowserDSL(AccountBaseDSL):
 

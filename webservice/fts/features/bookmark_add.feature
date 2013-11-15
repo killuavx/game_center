@@ -17,6 +17,7 @@ Feature: Add Package Bookmark
       | version_name | version_code | released_datetime   |
       | 2.0          | 2            | 2013-10-20 23:21:00 |
 
+
      When I visit my profile
      Then I should receive 200 OK
       And I should see response with bookmark_count "0"
