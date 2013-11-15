@@ -30,12 +30,10 @@ def after_screenshot(ctx, filename):
             print(f.readlines())
 
 
-from fts.features.app_dsls.account import (setup as account_setup,
-                                           teardown as account_teardown)
-from fts.features.app_dsls.warehouse import (setup as warehouse_setup,
-                                             teardown as warehouse_teardown)
-from fts.features.app_dsls.comment import (setup as comment_setup,
-                                           teardown as comment_teardown)
+from fts.features.app_dsls import (account,
+                                   warehouse,
+                                   comment,
+                                   clientapp)
 
 
 def setup(context):
@@ -52,9 +50,10 @@ def setup(context):
 
 
 def setup_dsls(context):
-    account_setup(context)
-    warehouse_setup(context)
-    comment_setup(context)
+    account.setup(context)
+    warehouse.setup(context)
+    comment.setup(context)
+    clientapp.setup(context)
 
 
 def setup_client(context):
@@ -70,9 +69,10 @@ def teardown_client(context):
 
 
 def teardown_dsls(context):
-    account_teardown(context)
-    warehouse_teardown(context)
-    comment_teardown(context)
+    account.teardown(context)
+    warehouse.teardown(context)
+    comment.teardown(context)
+    clientapp.setup(context)
 
 
 def teardown(context):

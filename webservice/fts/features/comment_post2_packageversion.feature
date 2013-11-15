@@ -1,4 +1,3 @@
-@wip
 Feature: post comment to package version
   As a Player
   I want to post comment to package version

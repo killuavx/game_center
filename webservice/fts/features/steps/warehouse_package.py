@@ -45,41 +45,6 @@ def step_given_package_has_versions_below(context, package_name):
     ))
 
 
-@when(
-    'I post package version to check update with package_name: "{package_name}", version_name: "{version_name}", version_code: "{version_code:d}"')
-def step_when_post_package_update_version(context,
-                                          package_name,
-                                          version_name,
-                                          version_code):
-    ApiDSL.When_i_post_package_update_versions(context, [
-        dict(
-            package_name=package_name,
-            version_code=version_code,
-            version_name=version_name,
-        )
-    ])
-
-
-@then(
-    'I should see package update list has the version package_name: "{package_name}", version_name: "{response_version_name}", version_code: "{response_version_code:d}", it can {can_be} update')
-def step_then_should_see_package_update_list_has_the_version(context,
-                                                             package_name,
-                                                             response_version_name,
-                                                             response_version_code,
-                                                             can_be):
-    is_updatable = False if can_be == 'not be' else True
-    ApiDSL.Then_i_should_see_package_update_list_has_the_version(context,
-                                                                 package_name=package_name,
-                                                                 version_name=response_version_name,
-                                                                 version_code=response_version_code,
-                                                                 is_updatable=is_updatable)
-
-@then('I should see empty package update list')
-def step_the_should_see_package_update_list_has_no_version_package(context):
-    results = context.world.get('content')
-    results |should| be_empty
-
-
 
 @given('package name "{title}" has a set of versions below')
 def step_package_has_a_set_of_versions(context, title):
@@ -105,26 +70,6 @@ def step_package_has_a_set_of_versions(context, title):
         the_latest_version_code=min(list(versions.keys())),
         the_package_versions=versions,
     ))
-
-
-@then('I should see the package commented by me in result list')
-def step_should_see_commented_package_in_result_list(context):
-    from mobapi.serializers import get_packageversion_comments_url
-
-    results = context.world.get('content').get('results')
-    except_package = results[0]
-    the_package_versions = context.world.get('the_package_versions')
-    latest_version_code = context.world.get('the_latest_version_code')
-    the_latest_version = the_package_versions[latest_version_code]
-
-    # comments_url has query string with content_type and object_pk
-    # it can be compare different package version
-    # FIXME choose other way to compare differenct package version
-    comments_url = get_packageversion_comments_url(the_latest_version)
-    absolute_comments_url = get_current_request() \
-        .build_absolute_uri(comments_url)
-    absolute_comments_url | should | equal_to(
-        except_package.get('comments_url'))
 
 
 from fts.features.app_dsls.warehouse import factory_dsl
@@ -171,3 +116,46 @@ def should_comment_count_in_the_package_version_detail(context, comment_count):
     for v in package_detail.get('versions'):
         v.get('comment_count') | should_not | be(None)
 
+# package update
+@then('I should see empty package update list')
+def should_package_update_list_be_empty(context):
+    results = factory_web_dsl(context).response_structure_content(context)
+    results |should| be_empty
+
+
+from fts.features.app_dsls.clientapp import factory_dsl as factory_clientapp_dsl
+
+@when('I post package version to check update '
+      'with package_name: "{package_name}", '
+      'version_name: "{version_name}", version_code: "{version_code:d}"')
+def post_package_update_version(context,
+                                package_name,
+                                version_name,
+                                version_code):
+    ClientAppDSL = factory_clientapp_dsl(context)
+    ClientAppDSL.post_package_to_update(context,
+                                        package_name=package_name,
+                                        version_code=version_code,
+                                        version_name=version_name)
+    factory_web_dsl(context).response_to_world(context)
+
+
+@then('I should see package update list '
+      'has the version package_name: "{package_name}", '
+      'version_name: "{response_version_name}", '
+      'version_code: "{response_version_code:d}", it can {is_updatable:be?} update')
+def should_see_package_update_list_contains(context,
+                                            package_name,
+                                            response_version_name,
+                                            response_version_code,
+                                            is_updatable):
+    def find_func(package):
+        return package.get('package_name') == package_name and \
+            package.get('version_code') == response_version_code and \
+            package.get('version_name') == response_version_name and \
+            package.get('is_updatable') == is_updatable
+
+    WebDSL = factory_web_dsl(context)
+    WebDSL.should_result_contains(context,
+                                  within_pagination=False,
+                                  find_func=find_func)

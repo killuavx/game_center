@@ -79,17 +79,6 @@ def visit_comment_list(context):
 
     factory_web_dsl(context).response_to_world(context)
 
-
-def step_should_see_comment_list_in_comment_page(context):
-    results = factory_web_dsl(context).response_structure_content(context)
-    comment = results.get('results')[0]
-
-    comment |should| include_keys('user_icon',
-                                  'user_name',
-                                  'submit_date',
-                                  'comment')
-    context.world.update(dict(comment=comment))
-
 @given('the comment of package name "{pkg_title}" '
        'version_code "{version_code:d}" change to {is_public:pub?}')
 def change_comment_of_the_packageversion_to_published(context,
