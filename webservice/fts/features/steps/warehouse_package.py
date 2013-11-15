@@ -75,6 +75,11 @@ def step_then_should_see_package_update_list_has_the_version(context,
                                                                  version_code=response_version_code,
                                                                  is_updatable=is_updatable)
 
+@then('I should see empty package update list')
+def step_the_should_see_package_update_list_has_no_version_package(context):
+    results = context.world.get('content')
+    results |should| be_empty
+
 
 @when('I access the package detail')
 def step_when_i_access_the_package_detail(context):

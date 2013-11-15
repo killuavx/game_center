@@ -8,7 +8,7 @@ from django.utils.http import urlencode
 from easy_thumbnails.exceptions import InvalidImageFormatError
 
 IMAGE_ICON_SIZE = 'middle'
-IMAGE_COVER_SIZE = 'small'
+IMAGE_COVER_SIZE = None
 
 
 class ImageUrlField(serializers.ImageField):
