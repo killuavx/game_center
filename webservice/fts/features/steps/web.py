@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from behave import *
+from fts.features import support
 from fts.features.app_dsls.web import factory_dsl
 from should_dsl import should, should_not
 
@@ -42,11 +43,17 @@ def step_should_see_empty_reuslt_list(context, is_within):
 
 
 @then('I should see list result with{is_within:in?out} pagination '
-      'contains the {field} of element is "{value}"')
-def result_list_should_contains_package(context, is_within, field, value):
+      '{be_contains:contains?} the {field} of element is "{value}"')
+def result_list_should_contains_package(context,
+                                        is_within,
+                                        field,
+                                        value,
+                                        be_contains=True):
     WebDSL = factory_dsl(context)
     WebDSL.should_result_contains(
-        context, is_within,
+        context=context,
+        be_or_not=be_contains,
+        within_pagination=is_within,
         find_func=lambda obj: str(obj.get(field))==value)
 
 @then('I should see list result with{is_within:in?out} pagination '

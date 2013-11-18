@@ -70,11 +70,14 @@ class WebBaseDSL(object):
     def should_result_contains(cls,
                                context,
                                within_pagination,
+                               be_or_not=True,
                                find_func=lambda obj: False):
         results = cls.response_structure_content(context)
+
+        _should_or_not = should if be_or_not else should_not
         if within_pagination:
             results= results.get('results')
-        any((find_func(row) for row in results)) |should| be(True)
+        any((find_func(row) for row in results)) |_should_or_not| be(True)
 
     @classmethod
     def should_result_paginate_by(cls, context, within_pagination, page_size):

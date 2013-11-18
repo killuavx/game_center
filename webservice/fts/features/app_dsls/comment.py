@@ -38,7 +38,6 @@ class CommentBaseDSL(object):
         return Comment.objects.for_model(obj).get()
 
 
-
 def factory_dsl(context):
     return CommentBaseDSL
 

@@ -33,6 +33,7 @@ def after_screenshot(ctx, filename):
 from fts.features.app_dsls import (account,
                                    warehouse,
                                    comment,
+                                   taxonomy,
                                    clientapp)
 
 
@@ -54,6 +55,7 @@ def setup_dsls(context):
     warehouse.setup(context)
     comment.setup(context)
     clientapp.setup(context)
+    taxonomy.setup(context)
 
 
 def setup_client(context):
@@ -72,7 +74,8 @@ def teardown_dsls(context):
     account.teardown(context)
     warehouse.teardown(context)
     comment.teardown(context)
-    clientapp.setup(context)
+    clientapp.teardown(context)
+    taxonomy.teardown(context)
 
 
 def teardown(context):

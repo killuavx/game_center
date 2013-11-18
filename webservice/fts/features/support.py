@@ -50,6 +50,7 @@ register_type(**{
     'pub?': pub2boolean,
     'in?out': in_out,
     'in?': in2boolean,
+    'contains?': in2boolean,
     'be?': in2boolean,
     'n?s': str2empty,
     'upper': upper

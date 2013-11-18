@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse_lazy as reverse
 from django.utils.timezone import now, timedelta
-from fts.helpers import add_model_objects, clear_data, SubFile, create_author, guid, create_package
+from fts.helpers import (add_model_objects,
+                         clear_data,
+                         SubFile,
+                         create_author,
+                         guid)
 from warehouse.models import Package, PackageVersion
-from taxonomy.models import Category
-from os.path import join
 from should_dsl import should, should_not
 from django.test.testcases import override_settings
-from django.db.models.query import Q
 
 def to_package_categories(package, text):
+    from taxonomy.models import Category
+    from django.db.models.query import Q
     text = text.strip()
     cats = text.split(',')
     for cat in cats:
@@ -45,7 +48,7 @@ class WarehouseBaseDSL(object):
     @classmethod
     def get_package_detail_url(cls, context, package):
         url = reverse('package-detail', kwargs=dict(pk=package.pk))
-        return join(context.base_url, url)
+        return "%s%s" % (context.base_url, url)
 
     @classmethod
     def receive_result(cls, context):
@@ -129,7 +132,6 @@ class WarehouseBaseDSL(object):
     def create_package_versions_without_ui(cls, context, package, **kwargs):
         yesterday = now() - timedelta(days=1)
         released_datetime = kwargs.get('released_datetime', yesterday)
-        print(package.package_name, kwargs.get('version_code'), kwargs.get('version_name'))
         package |should_not| be(None)
         package_version = PackageVersion.objects.create(
             package=package,
@@ -145,8 +147,9 @@ class WarehouseBaseDSL(object):
 
     @classmethod
     def visit_package_detail(cls, context, package):
+        from urllib.parse import urljoin
         url = cls.get_package_detail_url(context, package)
-        full_url = "%s%s" % (context.base_url, url)
+        full_url = urljoin(context.base_url, url)
         context.browser.visit(full_url)
 
     @classmethod
