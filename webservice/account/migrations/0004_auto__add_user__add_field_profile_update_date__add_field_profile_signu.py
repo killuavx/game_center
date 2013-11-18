@@ -48,14 +48,6 @@ class Migration(SchemaMigration):
             db.create_unique(m2m_table_name, ['user_id', 'permission_id'])
             pass
 
-        def alter_table_engine_for_mysql():
-            db.execute("ALTER TABLE %s ENGINE = innodb" % 'authtoken_token')
-
-        try:
-            alter_table_engine_for_mysql()
-        except:
-            pass
-
         try:
             create_auth_tables()
         except Exception as e:
