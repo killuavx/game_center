@@ -2,6 +2,7 @@
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
+from comment.models import Comment
 
 class CommentBaseDSL(object):
 
@@ -31,6 +32,10 @@ class CommentBaseDSL(object):
     def change_comment_publish_status(cls, context, the_comment, is_public):
         the_comment.is_public = is_public
         the_comment.save()
+
+    @classmethod
+    def get_comment_by(cls, obj):
+        return Comment.objects.for_model(obj).get()
 
 
 

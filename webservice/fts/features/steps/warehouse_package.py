@@ -5,75 +5,44 @@ from fts.helpers import ApiDSL
 from fts.helpers import get_current_request
 from should_dsl import should, should_not
 from warehouse.models import Package, PackageVersion
-
-
-@given('a set of packages in warehouse')
-def step_given_a_set_of_packages_in_warehouse(context):
-    for row in context.table:
-        pkg = ApiDSL.Given_i_have_published_package(context,
-                                                    title=row.get('title'),
-                                                    package_name=row.get(
-                                                        'package_name'),
-                                                    version_code=int(row.get(
-                                                        'version_code')),
-                                                    version_name=row.get(
-                                                        'version_name'),
-                                                    all_datetime=row.get(
-                                                        'released_datetime')
-        )
-
-
-@given('package "{package_name}" has a set of versions below')
-def step_given_package_has_versions_below(context, package_name):
-    package = Package.objects.get(package_name=package_name)
-    versions = {}
-    for row in context.table:
-        version = ApiDSL. \
-            Given_package_has_version_with(context,
-                                           package=package,
-                                           version_name=row.get('version_name'),
-                                           version_code=row.get('version_code'),
-                                           status=PackageVersion.STATUS.published,
-                                           all_datetime=row.get(
-                                               'released_datetime')
-        )
-        versions[int(row.get('version_code'))] = version
-    context.world.update(dict(
-        the_package=package,
-        the_package_versions=versions,
-        the_latest_version_code=min(list(versions.keys()))
-    ))
-
-
-
-@given('package name "{title}" has a set of versions below')
-def step_package_has_a_set_of_versions(context, title):
-    package = ApiDSL.Given_i_have_package_with(context, title=title)
-    versions = dict()
-    for v in context.table:
-        version = ApiDSL \
-            .Given_package_has_version_with(context,
-                                            package,
-                                            version_code=int(
-                                                v.get('version_code')),
-                                            version_name=v.get('version_name'),
-                                            status=PackageVersion.STATUS.published,
-                                            all_datetime=package.released_datetime)
-        versions[int(v.get('version_code'))] = version
-    package.status = Package.STATUS.published
-    package.save()
-
-    context.world.get('packages', dict()) \
-        .update({package.package_name: package})
-    context.world.update(dict(
-        the_package=package,
-        the_latest_version_code=min(list(versions.keys())),
-        the_package_versions=versions,
-    ))
-
-
 from fts.features.app_dsls.warehouse import factory_dsl
 from fts.features.app_dsls.web import factory_dsl as factory_web_dsl
+
+@given('package title "{title}" has a set of versions below')
+@given('package name "{package_name}" has a set of versions below')
+def create_package_versions(context, title=None, package_name=None):
+    WarehouseDSL = factory_dsl(context)
+
+    package = WarehouseDSL.create_package_without_ui(context,
+                                                     with_version=False,
+                                                     title=title,
+                                                     package_name=package_name)
+    for row in context.table:
+        WarehouseDSL.create_package_versions_without_ui(context,
+                                                        package,
+                                                        **row.as_dict())
+
+
+# pkg_field in ('name' , 'title')
+@given('I focus on package {pkg_field} "{pkg_value}"')
+@given('I focus on package {pkg_field} "{pkg_value}" '
+       'version code "{version_code}"')
+def focus_on_package_or_version(context,
+                                pkg_field,
+                                pkg_value=None,
+                                version_code=None):
+    WarehouseDSL = factory_dsl(context)
+
+    if pkg_field == 'name':
+        pkg_field = 'package_name'
+
+    if version_code is not None:
+        packageversion = WarehouseDSL.get_packageversion_by(
+            version_code=version_code, **{pkg_field: pkg_value})
+        context.world.update(the_package_version=packageversion)
+    else:
+        package = WarehouseDSL.get_package_by(**{pkg_field: pkg_value})
+        context.world.update(the_package=package)
 
 
 @given('package exists such below')
@@ -83,15 +52,18 @@ def package_already_exists_below(context):
         WarehouseDSL.create_package_without_ui(context, **row.as_dict())
 
 
-@when('I visit the package detail title "{title}"')
-def visit_the_package_detail(context, title):
-    WarehouseDSL = factory_dsl(context)
-    package = Package.objects.get(title=title)
-    context.world.update(dict(
-        the_package=package
-    ))
-    WarehouseDSL.visit_package_detail(context, package)
+@when('I visit the package detail')
+@when('I visit the package detail {pkg_field} "{pkg_value}"')
+def visit_the_package_detail(context, pkg_field=None, pkg_value=None):
+    if pkg_field:
+        focus_on_package_or_version(context, pkg_field, pkg_value)
 
+    WarehouseDSL = factory_dsl(context)
+    package = context.world.get('the_package')
+    if package is None:
+        package_version = context.world.get('the_package_version')
+        package = package_version.package
+    WarehouseDSL.visit_package_detail(context, package)
     factory_web_dsl(context).response_to_world(context)
 
 
@@ -121,41 +93,3 @@ def should_comment_count_in_the_package_version_detail(context, comment_count):
 def should_package_update_list_be_empty(context):
     results = factory_web_dsl(context).response_structure_content(context)
     results |should| be_empty
-
-
-from fts.features.app_dsls.clientapp import factory_dsl as factory_clientapp_dsl
-
-@when('I post package version to check update '
-      'with package_name: "{package_name}", '
-      'version_name: "{version_name}", version_code: "{version_code:d}"')
-def post_package_update_version(context,
-                                package_name,
-                                version_name,
-                                version_code):
-    ClientAppDSL = factory_clientapp_dsl(context)
-    ClientAppDSL.post_package_to_update(context,
-                                        package_name=package_name,
-                                        version_code=version_code,
-                                        version_name=version_name)
-    factory_web_dsl(context).response_to_world(context)
-
-
-@then('I should see package update list '
-      'has the version package_name: "{package_name}", '
-      'version_name: "{response_version_name}", '
-      'version_code: "{response_version_code:d}", it can {is_updatable:be?} update')
-def should_see_package_update_list_contains(context,
-                                            package_name,
-                                            response_version_name,
-                                            response_version_code,
-                                            is_updatable):
-    def find_func(package):
-        return package.get('package_name') == package_name and \
-            package.get('version_code') == response_version_code and \
-            package.get('version_name') == response_version_name and \
-            package.get('is_updatable') == is_updatable
-
-    WebDSL = factory_web_dsl(context)
-    WebDSL.should_result_contains(context,
-                                  within_pagination=False,
-                                  find_func=find_func)

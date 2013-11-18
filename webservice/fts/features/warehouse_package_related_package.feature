@@ -21,19 +21,21 @@ Feature: Package Related Other Packages
       | pkg_a_cats          | pkg_b_cats                | pkg_a_tags | pkg_b_tags |
       | crack-game,big-game | big-game,stand-alone-game | cartoon   |  aag   |
 
-     When I visit the package detail title "Angry Birds Rio"
+    Given I focus on package title "Angry Birds Rio"
+     When I visit the package detail
       And I follow the package related_packages_url
      Then I should receive 200 OK
       And I should see empty list result within pagination
 
   Scenario Outline: some related packages
     Given category tree exists
-    And package exists such below:
+      And package exists such below:
       | title            | package_name            | categories    | tags         | version_name | version_code | status    |
       | 捕鱼达人          | com.huayigame.fkdy      | <pkg_a_cats>  | <pkg_a_tags> | 1.0.1        | 1            | published |
       | Angry Birds Rio  | com.rovio.angrybirdsrio | <pkg_b_cats>  | <pkg_b_tags> | 1.0          | 10           | published |
+      And I focus on package title "Angry Birds Rio"
 
-    When I visit the package detail title "Angry Birds Rio"
+    When I visit the package detail
      And I follow the package related_packages_url
     Then I should receive 200 OK
      And I should see list result within pagination count equal "1"
@@ -49,12 +51,14 @@ Feature: Package Related Other Packages
 
   Scenario Outline: some related packages with multi-version
     Given category tree exists
-    And package exists such below:
+      And package exists such below:
       | title            | package_name            | categories    | tags         | version_name | version_code | status    |
       | 捕鱼达人          | com.huayigame.fkdy      | <pkg_a_cats>  | <pkg_a_tags> | 1.0.1        | 1            | published |
       | 捕鱼达人          | com.huayigame.fkdy      | <pkg_a_cats>  | <pkg_a_tags> | 2.0.1        | 2            | published |
       | Angry Birds Rio  | com.rovio.angrybirdsrio | <pkg_b_cats>  | <pkg_b_tags> | 1.0          | 10           | published |
-    When I visit the package detail title "Angry Birds Rio"
+      And I focus on package title "Angry Birds Rio"
+
+    When I visit the package detail
     And I follow the package related_packages_url
     Then I should receive 200 OK
     And I should see list result within pagination count equal "1"

@@ -136,14 +136,16 @@ def clear_data():
         try:
             m = _models.pop()
             m.delete()
-        except:
+        except AssertionError:
+            pass
+        except IndexError:
             break
 
     while True:
         f = None
         try:
             f = _files.pop()
-        except:
+        except IndexError:
             break
         try:
             os.remove(f)

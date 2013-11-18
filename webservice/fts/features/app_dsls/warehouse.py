@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse_lazy as reverse
 from django.utils.timezone import now, timedelta
-from fts.helpers import add_model_objects, SubFile, create_author, guid
+from fts.helpers import add_model_objects, clear_data, SubFile, create_author, guid, create_package
 from warehouse.models import Package, PackageVersion
 from taxonomy.models import Category
 from os.path import join
 from should_dsl import should, should_not
 from django.test.testcases import override_settings
 from django.db.models.query import Q
-
 
 def to_package_categories(package, text):
     text = text.strip()
@@ -34,7 +33,7 @@ class WarehouseBaseDSL(object):
 
     @classmethod
     def teardown(cls, context):
-        pass
+        clear_data()
 
     @classmethod
     def create_author_without_ui(cls, context, **kwargs):
@@ -57,7 +56,7 @@ class WarehouseBaseDSL(object):
         package_version_parser_class=None,
         package_version_parse_handle_class=None
     ))
-    def create_package_without_ui(cls, context, **kwargs):
+    def create_package_without_ui(cls, context, with_version=True, **kwargs):
         """
         :param context:
         :param kwargs:
@@ -71,32 +70,41 @@ class WarehouseBaseDSL(object):
         """
         yesterday = now() - timedelta(days=1)
         released_datetime = kwargs.get('released_datetime', yesterday)
-        package_name = kwargs.get('package_name')
+
+        default_name_or_title = "com.fts.%s" % guid()
         try:
-            package = Package.objects.get(package_name=package_name)
-        except Package.DoesNotExist:
-            package = Package.objects.create(
-                title=kwargs.get('title'),
+            _kw = cls._dict_package_name_or_title(
                 package_name=kwargs.get('package_name'),
+                title=kwargs.get('title')
+            )
+            package = Package.objects.get(**_kw)
+        except Package.DoesNotExist:
+            _kw = cls._dict_package_name_or_title(
+                package_name=kwargs.get('package_name', default_name_or_title),
+                title=kwargs.get('title', default_name_or_title)
+            )
+            package = Package.objects.create(
                 author=cls.create_author_without_ui(context),
-                status=kwargs.get('status'),
+                status=kwargs.get('status', 'published'),
                 released_datetime=released_datetime,
+                **_kw
             )
 
-        to_package_categories(package, kwargs.get('categories'))
-        to_package_tags(package, kwargs.get('tags'))
+        if kwargs.get("categories"):
+            to_package_categories(package, kwargs.get('categories'))
+
+        if kwargs.get('tags'):
+            to_package_tags(package, kwargs.get('tags'))
+
         package.save()
 
-        package_version = PackageVersion.objects.create(
-            package=package,
-            version_code=kwargs.get('version_code'),
-            version_name=kwargs.get('version_name'),
-            status=kwargs.get('status'),
-            released_datetime=released_datetime,
-            icon=SubFile.icon(),
-            cover=SubFile.cover(),
-            download=SubFile.package()
-        )
+        if with_version:
+            kwargs.update(released_datetime=released_datetime)
+            cls.create_package_versions_without_ui(
+                context,
+                package,
+                **kwargs
+            )
 
         if not context.world.get('packages'):
             context.world['packages'] = dict()
@@ -105,6 +113,35 @@ class WarehouseBaseDSL(object):
         context.world.get('packages').update(dict(
             package_name=package.package_name
         ))
+
+        add_model_objects(package)
+
+        return package
+
+    @classmethod
+    def _dict_package_name_or_title(cls, package_name, title):
+        kw = dict()
+        if package_name: kw['package_name'] = package_name
+        if title: kw['title'] = title
+        return kw
+
+    @classmethod
+    def create_package_versions_without_ui(cls, context, package, **kwargs):
+        yesterday = now() - timedelta(days=1)
+        released_datetime = kwargs.get('released_datetime', yesterday)
+        print(package.package_name, kwargs.get('version_code'), kwargs.get('version_name'))
+        package |should_not| be(None)
+        package_version = PackageVersion.objects.create(
+            package=package,
+            version_code=kwargs.get('version_code'),
+            version_name=kwargs.get('version_name'),
+            status=kwargs.get('status', 'published'),
+            released_datetime=released_datetime,
+            icon=SubFile.icon(),
+            cover=SubFile.cover(),
+            download=SubFile.package()
+        )
+        add_model_objects(package_version)
 
     @classmethod
     def visit_package_detail(cls, context, package):
@@ -124,6 +161,32 @@ class WarehouseBaseDSL(object):
         serializer = PackageDetailSerializer(package)
         comment_url = serializer.data.get('comments_url')
         context.browser.visit(comment_url)
+
+    @classmethod
+    def get_package_by(cls, title=None, package_name=None):
+        kw = cls._dict_package_name_or_title(package_name=package_name,
+                                             title=title)
+        package = Package.objects.get(**kw)
+        package.status |should| equal_to(Package.STATUS.published)
+        return package
+
+    @classmethod
+    def get_packageversion_by(cls, version_code, title=None, package_name=None):
+        package = cls.get_package_by(title, package_name)
+        packageversion = package.versions.get(version_code=version_code)
+        packageversion.status |should| equal_to(PackageVersion.STATUS.published)
+        return packageversion
+
+    @classmethod
+    def get_package_or_version_by(cls, title=None, package_name=None, version_code=None):
+        any((title, package_name, version_code)) |should_not| be(False)
+
+        if version_code is not None:
+            return cls.get_packageversion_by(title=title,
+                                             package_name=package_name,
+                                             version_code=version_code)
+
+        return cls.get_package_by(title=title, package_name=package_name)
 
 
 class WarehouseUsingNoUIClientDSL(WarehouseBaseDSL):

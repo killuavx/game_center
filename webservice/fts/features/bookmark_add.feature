@@ -4,7 +4,7 @@ Feature: Add Package Bookmark
   So that I would love to keep in touch with the package
 
   Scenario: Failure to mark package without Sign in
-    Given package name "Angry Birds" has a set of versions below:
+    Given package title "Angry Birds" has a set of versions below:
       | version_name | version_code | released_datetime   |
       | 2.0          | 2            | 2013-10-20 23:21:00 |
 
@@ -13,7 +13,7 @@ Feature: Add Package Bookmark
 
   Scenario: Mark package successfully
     Given I sign in as "kent.back" already exists
-    Given package name "Angry Birds" has a set of versions below:
+    Given package title "Angry Birds" has a set of versions below:
       | version_name | version_code | released_datetime   |
       | 2.0          | 2            | 2013-10-20 23:21:00 |
 
