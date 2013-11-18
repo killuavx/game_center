@@ -1,7 +1,7 @@
 # -*- encoding: utf-8-*-
 from webservice.settings import *
 import os
-HOST_URL = os.getenv('GC_HOST_URL', '')
+HOST_URL = os.getenv('GC_HOST_URL', 'http://testserver')
 MEDIA_URL = HOST_URL + MEDIA_URL
 
 EXTENDAL_APPS.append('toolkit')

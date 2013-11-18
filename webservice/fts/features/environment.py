@@ -2,6 +2,7 @@
 import os
 from behaving.personas import environment as personaenv
 from behaving.web import environment as webenv
+from django.conf import settings
 from fts import helpers
 from fts.features import support
 from toolkit.middleware import get_current_request, get_current_response
@@ -59,7 +60,8 @@ def setup_dsls(context):
 
 
 def setup_client(context):
-    context.base_url = 'http://localhost:8080'
+    base_url = getattr(settings, 'HOST_URL', '')
+    context.base_url = base_url if base_url else 'http://localhost:8080'
     factory_web_dsl = import_from('fts.features.app_dsls.web.factory_dsl')
     WebDSL = factory_web_dsl(context)
     WebDSL.browser_or_client(context)

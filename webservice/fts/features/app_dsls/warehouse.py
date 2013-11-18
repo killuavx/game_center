@@ -147,12 +147,8 @@ class WarehouseBaseDSL(object):
 
     @classmethod
     def visit_package_detail(cls, context, package):
-        from urllib.parse import urljoin
-        url = cls.get_package_detail_url(context, package)
-        full_url = urljoin(context.base_url, url)
-        print('visit_package_detail')
-        print(full_url)
-        context.browser.visit(full_url)
+        detail_url = cls.get_package_detail_url(context, package)
+        context.browser.visit(detail_url)
 
     @classmethod
     def follow_package_detail_above(cls, context, field):
