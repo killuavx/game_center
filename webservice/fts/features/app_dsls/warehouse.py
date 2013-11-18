@@ -52,10 +52,6 @@ class WarehouseBaseDSL(object):
         return context.world.get('content_json')
 
     @classmethod
-    @override_settings(PACKAGE_FILE_PARSE_OPTS=dict(
-        package_version_parser_class=None,
-        package_version_parse_handle_class=None
-    ))
     def create_package_without_ui(cls, context, with_version=True, **kwargs):
         """
         :param context:
@@ -126,6 +122,10 @@ class WarehouseBaseDSL(object):
         return kw
 
     @classmethod
+    @override_settings(PACKAGE_FILE_PARSE_OPTS=dict(
+        package_version_parser_class=None,
+        package_version_parse_handle_class=None
+    ))
     def create_package_versions_without_ui(cls, context, package, **kwargs):
         yesterday = now() - timedelta(days=1)
         released_datetime = kwargs.get('released_datetime', yesterday)
