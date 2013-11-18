@@ -12,7 +12,7 @@ Feature: Unmark Package
     Then I should receive 401 Unauthorized
 
   Scenario: Mark package successfully
-    Given I sign in as player name "kent.back" exists in game center
+    Given I sign in as "kent.back" already exists
     Given package title "Angry Birds 2" has a set of versions below:
       | version_name | version_code | released_datetime   |
       | 2.0          | 2            | 2013-10-20 23:21:00 |

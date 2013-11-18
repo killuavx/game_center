@@ -28,7 +28,7 @@ Feature: post comment to package version
 
   Scenario: Post Comment and set status published/unpublished
 
-    Given I sign in as player name "fox20century" exists in game center
+    Given I sign in as "fox20century" already exists
     Given package title "call me MT" has a set of versions below:
       | version_name | version_code | released_datetime   |
       | 1.0          | 1            | 2013-10-10 23:21:00 |

@@ -1,44 +1,7 @@
 # -*- coding: utf-8 -*-
 from behave import *
 from behaving.personas.steps import *
-from fts.helpers import ApiDSL
-from should_dsl import should, should_not
 from warehouse.models import Package
-from rest_framework.authtoken.models import Token
-
-
-@given('I sign in as player name "{username}" exists in game center')
-def step_signin_existing_player(context, username):
-    user = ApiDSL.Given_i_have_account(context, dict(
-        username=username
-    ))
-    if username not in context.personas:
-        context.personas[username] = dict()
-
-    token = Token.objects.create(user=user)
-    context.personas[username].update(dict(
-        username=username,
-        email=user.profile.email,
-        phone=user.profile.phone,
-        token_key=token.key,
-        password=None
-    ))
-    context.persona = context.personas[username]
-    ApiDSL.When_i_prepare_auth_token(context, context.persona.get('token_key'))
-
-
-@then('I should see the player profile with {field} value {value:d}')
-def step_should_see_profile_field(context, field, value):
-    profile = context.world.get("content")
-    profile.get(field) | should | equal_to(value)
-    context.persona.update(dict(profile=profile))
-    context.personas[context.persona.get('username')] = profile
-
-
-def step_visit_mybookmarks(context):
-    ApiDSL.When_i_access_bookmarks_page(context)
-
-
 from fts.features.app_dsls.account import factory_dsl
 from fts.features.app_dsls.web import factory_dsl as factory_web_dsl
 

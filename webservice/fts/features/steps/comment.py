@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from behave import *
 from behaving.web.steps import *
-from fts.helpers import ApiDSL
-from should_dsl import should
-
 from django.test.testcases import override_settings
 from fts.features.app_dsls.web import factory_dsl as factory_web_dsl
 from fts.features.app_dsls.warehouse import factory_dsl as factory_warehouse_dsl
@@ -64,7 +61,6 @@ def change_comment_of_the_packageversion_to_published(context,
                                                       title=None,
                                                       package_name=None,
                                                       version_code=None):
-    WarehouseDSL = factory_warehouse_dsl(context)
     if package_name:
         context.execute_steps(
             'Given I focus on package name "%s" version code "%s"' % (
