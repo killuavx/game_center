@@ -1,4 +1,5 @@
 should-dsl
+splinter
 behave
 #behaving
 #django-behave
