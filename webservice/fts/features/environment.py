@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-
 import os
 from behaving.personas import environment as personaenv
 from behaving.web import environment as webenv
+from django.conf import settings
 from fts import helpers
 from fts.features import support
 from toolkit.middleware import get_current_request, get_current_response
@@ -31,6 +31,13 @@ def after_screenshot(ctx, filename):
             print(f.readlines())
 
 
+from fts.features.app_dsls import (account,
+                                   warehouse,
+                                   comment,
+                                   taxonomy,
+                                   clientapp)
+
+
 def setup(context):
     import fts
 
@@ -44,8 +51,17 @@ def setup(context):
         context.world = {}
 
 
+def setup_dsls(context):
+    account.setup(context)
+    warehouse.setup(context)
+    comment.setup(context)
+    clientapp.setup(context)
+    taxonomy.setup(context)
+
+
 def setup_client(context):
-    context.base_url = 'http://localhost:8080'
+    base_url = getattr(settings, 'HOST_URL', '')
+    context.base_url = base_url if base_url else 'http://localhost:8080'
     factory_web_dsl = import_from('fts.features.app_dsls.web.factory_dsl')
     WebDSL = factory_web_dsl(context)
     WebDSL.browser_or_client(context)
@@ -54,6 +70,14 @@ def setup_client(context):
 def teardown_client(context):
     if hasattr(context, 'client'):
         context.client = None
+
+
+def teardown_dsls(context):
+    account.teardown(context)
+    warehouse.teardown(context)
+    comment.teardown(context)
+    clientapp.teardown(context)
+    taxonomy.teardown(context)
 
 
 def teardown(context):
@@ -92,6 +116,7 @@ def after_feature(context, feature):
 
 def before_scenario(context, scenario):
     setup(context)
+    setup_dsls(context)
     personaenv.before_scenario(context, scenario)
     webenv.before_scenario(context, scenario)
     setup_client(context)
@@ -106,5 +131,6 @@ def after_scenario(context, scenario):
     personaenv.after_scenario(context, scenario)
     webenv.after_scenario(context, scenario)
     teardown_client(context)
+    teardown_dsls(context)
     teardown(context)
 

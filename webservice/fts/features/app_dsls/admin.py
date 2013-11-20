@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from fts import helpers
 from should_dsl import should
 
@@ -10,6 +10,7 @@ class AdminBaseDSL(object):
 
     @classmethod
     def create_staff_user(cls, context, username, password):
+        User = get_user_model()
         user = User.objects.create_superuser(
             username=username,
             email=None,
@@ -19,13 +20,7 @@ class AdminBaseDSL(object):
 
     @classmethod
     def login(cls, context, username, password):
-        b = context.browser
-        context.execute_steps("""
-            When I visit "%(url)s"
-             And I fill in "username" with "%(username)s"
-             And I fill in "password" with "%(password)s"
-             And I press the element with xpath "%(submit_xpath)s"
-        """)
+        raise NotImplementedError()
 
     @classmethod
     def login_successful_above(cls, context):
@@ -65,7 +60,7 @@ class AdminUsingNoUIClientDSL(AdminBaseDSL):
     @classmethod
     def login(cls, context, username, password):
         flag = context.client.login(username=username, password=password)
-        context.world.update(dict(is_logined=flag))
+        context.world.update(is_logined=flag)
 
 
 def factory_dsl(context):

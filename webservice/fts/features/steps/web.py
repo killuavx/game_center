@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from behave import *
+from fts.features import support
 from fts.features.app_dsls.web import factory_dsl
-from should_dsl import should
+from should_dsl import should, should_not
 
 
 # override step 'I choose "{value}" form "{options}"'
@@ -42,11 +43,17 @@ def step_should_see_empty_reuslt_list(context, is_within):
 
 
 @then('I should see list result with{is_within:in?out} pagination '
-      'contains the {field} of element is "{value}"')
-def result_list_should_contains_package(context, is_within, field, value):
+      '{be_contains:contains?} the {field} of element is "{value}"')
+def result_list_should_contains_package(context,
+                                        is_within,
+                                        field,
+                                        value,
+                                        be_contains=True):
     WebDSL = factory_dsl(context)
     WebDSL.should_result_contains(
-        context, is_within,
+        context=context,
+        be_or_not=be_contains,
+        within_pagination=is_within,
         find_func=lambda obj: str(obj.get(field))==value)
 
 @then('I should see list result with{is_within:in?out} pagination '
@@ -62,7 +69,12 @@ def result_list_field_should_equal(context, is_within, field, value):
     else:
         assert False, "Matcher Error"
 
-
+@then('I should see response with {field} "{value}"')
+def step_should_see_field(context, field, value):
+    WebDSL = factory_dsl(context)
+    content = WebDSL.response_structure_content(context)
+    content.get(field) |should_not| be(None)
+    str(content.get(field)) |should| equal_to(value)
 
 @then('I should see list result with{is_within:in?out} pagination '
       'paginate by "{page_size:d}" items')

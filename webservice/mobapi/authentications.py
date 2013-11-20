@@ -5,7 +5,7 @@ import pytz
 from django.utils.timezone import datetime, timedelta
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import TokenAuthentication
-from account.models import Player
+from account.models import User as Player
 
 class ExpiringTokenAuthentication(TokenAuthentication):
 

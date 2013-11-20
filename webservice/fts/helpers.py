@@ -19,7 +19,7 @@ from searcher.models import TipsWord
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from warehouse.models import package_version_pre_save
 from taxonomy.models import Category, Topic, TopicalItem
-from account.models import Player
+from account.models import User as Player
 from toolkit.middleware import get_current_request
 
 
@@ -136,14 +136,16 @@ def clear_data():
         try:
             m = _models.pop()
             m.delete()
-        except:
+        except AssertionError:
+            pass
+        except IndexError:
             break
 
     while True:
         f = None
         try:
             f = _files.pop()
-        except:
+        except IndexError:
             break
         try:
             os.remove(f)
@@ -712,14 +714,11 @@ class ApiDSL(RestApiTest):
         res = self.client.get('/api/accounts/myprofile', **headers)
         _world_response_status(self, res)
 
-    def Then_i_should_see_myprofile_information(self, user_profile):
+    def Then_i_should_see_myprofile_information(self, user_profile,
+                                                fields=('username', )):
         content = self.world.get('content')
-        content.get('username') | should | equal_to(
-            user_profile.get('username'))
-        content.get('email') | should | equal_to(user_profile.get('email'))
-        content.get('phone') | should | equal_to(user_profile.get('phone'))
-        content | should | include_keys('comment_count')
-        content | should | include_keys('icon')
+        for field in fields:
+            content.get(field) |should| equal_to(user_profile.get(field))
 
     def When_i_access_mybookmarks(self):
         headers = self.world.get('headers', dict())

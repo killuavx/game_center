@@ -597,7 +597,7 @@ class AdvertisementSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 #---------------------------------------------------------------------------
-from account.models import Player, Profile
+from account.models import User as Player, Profile
 
 
 class AccountRelatedProfileMixin(object):
@@ -652,8 +652,6 @@ class AccountDetailSerializer(AccountRelatedProfileMixin,
         model = Player
         fields = (
             'username',
-            'email',
-            'phone',
             'icon',
             'comment_count',
             'bookmark_count',

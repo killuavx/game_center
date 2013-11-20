@@ -50,6 +50,7 @@ register_type(**{
     'pub?': pub2boolean,
     'in?out': in_out,
     'in?': in2boolean,
+    'contains?': in2boolean,
     'be?': in2boolean,
     'n?s': str2empty,
     'upper': upper
@@ -97,7 +98,10 @@ class HackBrowserFromClient(Client):
             return None
 
         (fd, full_name) = tempfile.mkstemp(prefix=name, suffix='.txt')
-        with open(full_name, '+w') as file:
-            file.write(text)
+        try:
+            with open(full_name, '+w') as file:
+                file.write(text)
+        except UnicodeEncodeError:
+            pass
         return full_name
 

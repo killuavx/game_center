@@ -1,7 +1,7 @@
 # -*- encoding: utf-8-*-
 from webservice.settings import *
 import os
-HOST_URL = os.getenv('GC_HOST_URL', '')
+HOST_URL = os.getenv('GC_HOST_URL', 'http://testserver')
 MEDIA_URL = HOST_URL + MEDIA_URL
 
 EXTENDAL_APPS.append('toolkit')
@@ -10,6 +10,12 @@ EXTENDAL_APPS.append('fts')
 EXTENDAL_APPS.append('toolkit')
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
+DB_OPTIONS = {}
+if 'mysql' in os.getenv('DBA_SQL_DJANGO_ENGINE'):
+    DB_OPTIONS = {
+        'init_command': 'SET storage_engine=INNODB',
+    }
+
 DATABASES['default'].update(dict(
     ENGINE=os.getenv('DBA_SQL_DJANGO_ENGINE'),
     NAME=os.getenv('DBA_SQL_DB_NAME'),
@@ -17,6 +23,7 @@ DATABASES['default'].update(dict(
     PASSWORD=os.getenv('DBA_SQL_ADMIN_PASSWORD'),
     HOST=os.getenv('DBA_SQL_HOST'),
     PORT=os.getenv('DBA_SQL_PORT'),
+    OPTIONS=DB_OPTIONS,
     ))
 
 MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)

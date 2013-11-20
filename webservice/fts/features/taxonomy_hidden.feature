@@ -5,13 +5,15 @@ Feature: Hidden Category
   but Identity url
 
   Scenario: new category
-    Given the category "Big Game" as root just created
+    Given category "Big Game" as root already exists
+      And I focus on category "Big Game"
      When I visit category page
      Then I should receive 200 OK
       And I should see the category in result tree
 
   Scenario: hide category and the category not found in category tree
-    Given the category "Chinese Game" as root just created
+    Given category "Chinese Game" as root already exists
+      And I focus on category "Chinese Game"
      When I visit category page
      Then I should receive 200 OK
       And I should see the category in result tree
@@ -22,7 +24,8 @@ Feature: Hidden Category
       And I should see the category not in result tree
 
   Scenario: hide category but the category can be visit in the detial page
-    Given the category "Chinese Game" as root just created
+    Given category "Chinese Game" as root already exists
+      And I focus on category "Chinese Game"
      When I visit category page
      Then I should receive 200 OK
       And I should see the category in result tree
@@ -30,4 +33,4 @@ Feature: Hidden Category
     Given I hide the category
      When I visit the category detail page
      Then I should receive 200 OK
-      And I should see the category detail I just hidden
+      And I should see response with name "Chinese Game"
