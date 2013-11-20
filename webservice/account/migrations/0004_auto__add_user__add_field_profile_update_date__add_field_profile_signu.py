@@ -8,43 +8,6 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'User'
-        def create_auth_tables():
-            db.create_table('auth_user', (
-                ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-                ('password', self.gf('django.db.models.fields.CharField')(max_length=128)),
-                ('last_login', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-                ('is_superuser', self.gf('django.db.models.fields.BooleanField')(default=False)),
-                ('username', self.gf('django.db.models.fields.CharField')(unique=True, max_length=30)),
-                ('first_name', self.gf('django.db.models.fields.CharField')(blank=True, max_length=30)),
-                ('last_name', self.gf('django.db.models.fields.CharField')(blank=True, max_length=30)),
-                ('email', self.gf('django.db.models.fields.EmailField')(blank=True, max_length=75)),
-                ('is_staff', self.gf('django.db.models.fields.BooleanField')(default=False)),
-                ('is_active', self.gf('django.db.models.fields.BooleanField')(default=True)),
-                ('date_joined', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ))
-            db.send_create_signal('account', ['User'])
-
-            # Adding M2M table for field groups on 'User'
-            m2m_table_name = db.shorten_name('auth_user_groups')
-            db.create_table(m2m_table_name, (
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-                ('user', models.ForeignKey(orm['account.user'], null=False)),
-                ('group', models.ForeignKey(orm['auth.group'], null=False))
-            ))
-            db.create_unique(m2m_table_name, ['user_id', 'group_id'])
-
-            # Adding M2M table for field user_permissions on 'User'
-            m2m_table_name = db.shorten_name('auth_user_user_permissions')
-            db.create_table(m2m_table_name, (
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-                ('user', models.ForeignKey(orm['account.user'], null=False)),
-                ('permission', models.ForeignKey(orm['auth.permission'], null=False))
-            ))
-            db.create_unique(m2m_table_name, ['user_id', 'permission_id'])
-
-        #create_auth_tables()
-
         # Adding field 'Profile.update_date'
         db.add_column('account_profile', 'update_date',
                       self.gf('django.db.models.fields.DateTimeField')(blank=True, default=datetime.datetime.now, auto_now=True),
@@ -55,31 +18,13 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now),
                       keep_default=False)
 
-
-        # Changing field 'Profile.user'
-        db.alter_column('account_profile', 'user_id', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['account.User'], unique=True))
-
     def backwards(self, orm):
-        def delete_auth_tables():
-            # Deleting model 'User'
-            db.delete_table('auth_user')
-
-            # Removing M2M table for field groups on 'User'
-            db.delete_table(db.shorten_name('auth_user_groups'))
-
-            # Removing M2M table for field user_permissions on 'User'
-            db.delete_table(db.shorten_name('auth_user_user_permissions'))
-            pass
 
         # Deleting field 'Profile.update_date'
         db.delete_column('account_profile', 'update_date')
 
         # Deleting field 'Profile.signup_date'
         db.delete_column('account_profile', 'signup_date')
-
-
-        # Changing field 'Profile.user'
-        db.alter_column('account_profile', 'user_id', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True))
 
     models = {
         'account.profile': {
