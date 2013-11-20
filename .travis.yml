@@ -24,7 +24,7 @@ env:
     PJ=webservice
     DJANGO_SETTINGS_MODULE=webservice.travis_settings
     DBA_SQL_DJANGO_ENGINE='django.db.backends.sqlite3'
-    DBA_SQL_DB_NAME='webservice_test'
+    DBA_SQL_DB_NAME=':memory:'
     DBA_SQL_ADMIN_USER=''
     DBA_SQL_ADMIN_PASSWORD=''
     DBA_SQL_HOST=''
