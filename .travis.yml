@@ -39,7 +39,7 @@ install:
   - cd dependents/django-tagging-autocomplete && python setup.py install && cd -
   - cd dependents/django-userena && python setup.py install && cd -
   - cd dependents/django-behave && python setup.py install && cd -
-  #- cd dependents/splinter && python setup.py install && cd -
+  - cd dependents/splinter && python setup.py install && cd -
   - cd dependents/behaving && python setup.py install && cd -
   #- sh -c "if [ '$DB' = 'postgresql' ]; then pip install psycopg2 --use-mirrors --download-cache $TRAVIS_BUILD_DIR/download-cache/; fi"
   - sh -c "if [ '$DB' = 'mysql' ]; then pip install -e git+https://github.com/clelland/MySQL-for-Python-3.git#egg=MySQLdb --use-mirrors --download-cache $TRAVIS_BUILD_DIR/download-cache/; fi"
