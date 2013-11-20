@@ -42,12 +42,8 @@ class Migration(SchemaMigration):
                 ('permission', models.ForeignKey(orm['auth.permission'], null=False))
             ))
             db.create_unique(m2m_table_name, ['user_id', 'permission_id'])
-            pass
 
-        try:
-            create_auth_tables()
-        except Exception as e:
-            pass
+        #create_auth_tables()
 
         # Adding field 'Profile.update_date'
         db.add_column('account_profile', 'update_date',
