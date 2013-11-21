@@ -11,12 +11,16 @@ def import_from(fullname):
     return getattr(importlib.import_module(packagename), classname)
 
 
-def thumbnail_scale_percents(source, size_percents):
+def thumbnail_scale_percents(source, size_percents,
+                             thumbnail_options={'quality': 85,
+                                                'crop': False,
+                                                'upscale': False}):
     from easy_thumbnails.files import get_thumbnailer
     thumbnailer = get_thumbnailer(source)
-    size = calc_scale_percents_size(origin_size=thumbnailer.size,
+    size = calc_scale_percents_size(origin_size=(thumbnailer.width,
+                                                 thumbnailer.height),
                                     size_percents=size_percents)
-    thumbnail_options = {'crop': True, 'size': size}
+    thumbnail_options.update(size=size)
     return thumbnailer.get_thumbnail(thumbnail_options)
 
 

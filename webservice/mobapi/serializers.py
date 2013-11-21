@@ -62,7 +62,7 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
             if 'one-third' in obj.image:
                 return obj.image['one-third'].url
             else:
-                return thumbnail_scale_percents(obj.image, 30).url
+                return thumbnail_scale_percents(obj.image, 33).url
         except:
             return ''
 

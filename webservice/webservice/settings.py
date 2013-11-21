@@ -255,6 +255,13 @@ THUMBNAIL_ALIASES_SCREENSHOT = {
         'crop': False,
         'upscale': True,
     },
+    'one-third': {
+        'size': None,
+        'size_percents': 33,
+        'quality': 85,
+        'crop': False,
+        'upscale': False
+    }
 }
 
 THUMBNAIL_ALIASES = {
