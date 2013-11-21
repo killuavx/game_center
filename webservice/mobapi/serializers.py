@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
+from toolkit.helpers import thumbnail_scale_percents
 from warehouse.models import Package, Author, PackageVersionScreenshot, PackageVersion
 from comment.models import Comment
 from django.core.urlresolvers import reverse
@@ -58,7 +59,10 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
     # TODO 截图的预览地址，以及后台上传时的尺寸处理，
     def get_preview_url(self, obj):
         try:
-            return obj.image['middle'].url
+            if 'one-third' in obj.image:
+                return obj.image['one-third'].url
+            else:
+                return thumbnail_scale_percents(obj.image, 30).url
         except:
             return ''
 
