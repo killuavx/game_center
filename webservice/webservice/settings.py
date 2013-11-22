@@ -255,6 +255,13 @@ THUMBNAIL_ALIASES_SCREENSHOT = {
         'crop': False,
         'upscale': True,
     },
+    'one-third': {
+        'size': None,
+        'size_percents': 33,
+        'quality': 85,
+        'crop': False,
+        'upscale': False
+    }
 }
 
 THUMBNAIL_ALIASES = {
@@ -282,7 +289,7 @@ THUMBNAIL_ALIASES = {
 THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.colorspace',
     'easy_thumbnails.processors.autocrop',
-    'easy_thumbnails.processors.scale_and_crop',
+    'toolkit.processors.scale_percents_and_crop',
     'easy_thumbnails.processors.filters',
 )
 
