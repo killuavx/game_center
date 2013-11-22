@@ -62,6 +62,7 @@ class TipsWord(models.Model):
     class Meta:
         verbose_name = _("tips word ")
         verbose_name_plural = _("tips words")
+        ordering = ('-weight',)
 
 from django.db.models.signals import pre_save
 from django.dispatch import receiver

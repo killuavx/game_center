@@ -81,3 +81,27 @@ def step_should_see_field(context, field, value):
 def result_list_should_paginate_by(context, is_within, page_size):
     WebDSL = factory_dsl(context)
     WebDSL.should_result_paginate_by(context, is_within, page_size)
+
+@then('I should see list result with{is_within:in?out} pagination '
+      'sequence like below')
+def reuslt_list_should_sequence_like(context, is_within):
+    WebDSL = factory_dsl(context)
+    WebDSL.should_result_list_sequence_like(context, is_within)
+
+
+@when('I move row contains "{text}" {updown:up?down} {times:d} times')
+def move_row_contains(context, text, updown, times):
+    updown = 'up' if updown else 'down'
+    xpath = '//tr//*[contains(text(),"%s")]//ancestor-or-self::tr' \
+            '//a[contains(@class, "sortable-%s")]' %(text, updown)
+    btn = context.browser.find_by_xpath(xpath)
+    for i in range(times):
+        btn.click()
+
+@when('I fill row contains "{text}" in name "{pattern}" with "{value}"')
+def fill_row(context, text, pattern, value):
+    xpath = '//tr//*[contains(text(),"%(text)s")]//ancestor-or-self::tr' \
+            '//*[contains(@name, "%(pattern)s")]' % dict(text=text,
+                                                         pattern=pattern)
+    input = context.browser.find_by_xpath(xpath).first
+    input.fill(value)

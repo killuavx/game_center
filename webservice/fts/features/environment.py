@@ -35,7 +35,8 @@ from fts.features.app_dsls import (account,
                                    warehouse,
                                    comment,
                                    taxonomy,
-                                   clientapp)
+                                   clientapp,
+                                   searcher)
 
 
 def setup(context):
@@ -57,6 +58,7 @@ def setup_dsls(context):
     comment.setup(context)
     clientapp.setup(context)
     taxonomy.setup(context)
+    searcher.setup(context)
 
 
 def setup_client(context):
@@ -78,6 +80,7 @@ def teardown_dsls(context):
     comment.teardown(context)
     clientapp.teardown(context)
     taxonomy.teardown(context)
+    searcher.teardown(context)
 
 
 def teardown(context):

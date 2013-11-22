@@ -409,7 +409,10 @@ from mobapi.serializers import TipsWordSerializer
 
 class TipsWordViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = TipsWordSerializer
-    queryset = TipsWord.objects.published()
+    queryset = TipsWord.objects.published().order_weight()
+    filter_backends = (
+        filters.OrderingFilter,
+    )
 
 #------------------------------------------------------------------
 from promotion.models import Advertisement, Place
