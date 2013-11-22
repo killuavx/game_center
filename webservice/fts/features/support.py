@@ -45,6 +45,14 @@ def in_out(s):
     else:
         return False
 
+def up_down(s):
+    if not s in ('up', 'down'):
+        raise Exception('match error')
+    elif s == 'up':
+        return True
+    else:
+        return False
+
 
 register_type(**{
     'pub?': pub2boolean,
@@ -53,7 +61,8 @@ register_type(**{
     'contains?': in2boolean,
     'be?': in2boolean,
     'n?s': str2empty,
-    'upper': upper
+    'upper': upper,
+    'up?down': up_down,
 })
 
 

@@ -92,6 +92,24 @@ class WebBaseDSL(object):
         raise NotImplementedError(
             'you must implement %s.%s' %(cls, 'response_to_world'))
 
+    @classmethod
+    def should_result_list_sequence_like(cls, context, within_pagination):
+        result = content = cls.response_structure_content(context)
+        if within_pagination:
+            result = content.get('results')
+
+        headings = context.table.headings
+        expect_sequence = []
+        for row in context.table:
+            _kws ={field: row.get(field) for field in headings}
+            expect_sequence.append(_kws)
+
+        result_sequence = []
+        for row in result:
+            _kws ={field: str(row.get(field)) for field in headings}
+            result_sequence.append(_kws)
+
+        result_sequence |should| equal_to(expect_sequence)
 
 class WebUsingNoUIClientDSL(WebBaseDSL):
 
