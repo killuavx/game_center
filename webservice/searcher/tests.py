@@ -53,8 +53,8 @@ class WordTipsTest(TestCase):
         self.assertEqual(len(ws), 4)
         head = ws[0]
         tail=ws[-1]
-        self.assertEqual(head.keyword, '水果忍者')
-        self.assertEqual(tail.keyword, '生化危机')
+        self.assertEqual(tail.keyword, '水果忍者')
+        self.assertEqual(head.keyword, '生化危机')
 
     def test_order_random(self):
         w1= self._create_tipsword(keyword='愤怒的小鸟',
