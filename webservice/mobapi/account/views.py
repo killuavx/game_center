@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+from django.utils.timezone import utc
 from rest_framework import generics, status, viewsets, filters
+from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -389,3 +392,21 @@ documentation_account_view(AccountSignoutView)
 documentation_account_view(AccountMyProfileView)
 documentation_account_view(AccountCommentPackageView)
 documentation_account_view(PackageBookmarkViewSet)
+
+"""
+class ObtainExpiringAuthToken(ObtainAuthToken):
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.DATA)
+        if serializer.is_valid():
+            token, created = Token.objects.get_or_create(
+                user=serializer.object['user'])
+
+            if not created:
+                # update the created time of the token to keep it valid
+                token.created = datetime.datetime.utcnow().replace(tzinfo=utc)
+                token.save()
+
+            return Response({'token': token.key})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+"""
