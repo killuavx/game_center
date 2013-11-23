@@ -8,14 +8,16 @@ from mobapi.warehouse.views.package import (
     PackageRankingsViewSet,
     PackageSearchViewSet,
     PackageUpdateView)
+from mobapi.taxonomy.views.category import CategoryViewSet
+from mobapi.taxonomy.views.topic import TopicViewSet
 
 rest_router = routers.DefaultRouter()
 rest_router.register('authors', AuthorViewSet)
 rest_router.register('packages', PackageViewSet)
 rest_router.register('search', PackageSearchViewSet, base_name='search')
 rest_router.register('rankings', PackageRankingsViewSet, base_name='rankings')
-rest_router.register('categories', views.CategoryViewSet)
-rest_router.register('topics', views.TopicViewSet)
+rest_router.register('categories', CategoryViewSet)
+rest_router.register('topics', TopicViewSet)
 rest_router.register('tipswords', views.TipsWordViewSet)
 views.documentation_advertisement_viewset()
 rest_router.register('advertisements', views.AdvertisementViewSet)
