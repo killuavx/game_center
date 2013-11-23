@@ -5,19 +5,9 @@ from django.utils.http import urlencode
 from rest_framework import serializers
 from django.core.urlresolvers import reverse
 from comment.models import Comment
-
 from mobapi.rest_fields import factory_imageurl_field
 
-from searcher.models import TipsWord
 
-
-class TipsWordSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TipsWord
-        fields = ( 'keyword',
-                   'weight' )
-
-#---------------------------------------------------------------------------
 from promotion.models import Advertisement
 
 

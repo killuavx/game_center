@@ -27,17 +27,6 @@ class MultipleFieldLookupMixin(object):
         return get_object_or_404(queryset, **filter)  # Lookup the object
 
 
-from searcher.models import TipsWord
-from mobapi.serializers import TipsWordSerializer
-
-
-class TipsWordViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    serializer_class = TipsWordSerializer
-    queryset = TipsWord.objects.published().order_weight()
-    filter_backends = (
-        filters.OrderingFilter,
-    )
-
 #------------------------------------------------------------------
 from promotion.models import Advertisement, Place
 from mobapi.serializers import AdvertisementSerializer
