@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from mobapi.helpers import (
+    get_packageversion_comment_queryset,
+    get_packageversion_comments_url)
 from mobapi.settings import IMAGE_COVER_SIZE, IMAGE_ICON_SIZE
 from mobapi.warehouse.serializers.packageversion import (
     PackageVersionScreenshotSerializer,
     get_packageversion_download_url,
     get_packageversion_download_size)
-from mobapi.serializers import (get_packageversion_comment_queryset,
-                                get_packageversion_comments_url)
 
 
 class PackageRelatedTagMin(object):

@@ -4,8 +4,9 @@ from warehouse.models import PackageVersion, PackageVersionScreenshot
 from toolkit.helpers import thumbnail_scale_percents
 from mobapi.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
 from mobapi.rest_fields import factory_imageurl_field
-from mobapi.serializers import (get_packageversion_comment_queryset,
-                                get_packageversion_comments_url)
+from mobapi.helpers import (
+    get_packageversion_comment_queryset,
+    get_packageversion_comments_url)
 
 
 class PackageVersionScreenshotSerializer(serializers.ModelSerializer):

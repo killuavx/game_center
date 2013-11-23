@@ -1,5 +1,9 @@
 # -*- encoding: utf-8-*-
+from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse
+from django.utils.http import urlencode
 from django.utils.importlib import import_module
+from comment.models import Comment
 
 
 def import_module_member(member_name, module_name):
@@ -62,3 +66,13 @@ def get_viewset_by_topic(topic):
         return vsm_map['default'][0]
 
 
+def get_packageversion_comment_queryset(version):
+    version_cmt = Comment.objects.for_model(version)
+    return version_cmt.filter(is_public=True, is_removed=False)
+
+
+def get_packageversion_comments_url(version):
+    ct = ContentType.objects.get_for_model(version)
+    kwargs = dict(content_type=ct.pk, object_pk=version.pk)
+    url = reverse('comment-list')
+    return "%s?%s" % (url, urlencode(kwargs))
