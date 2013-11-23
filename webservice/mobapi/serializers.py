@@ -1,42 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib.contenttypes.models import ContentType
 from django.utils.http import urlencode
-
 from rest_framework import serializers
 from django.core.urlresolvers import reverse
 from comment.models import Comment
-from mobapi.rest_fields import factory_imageurl_field
-
-
-from promotion.models import Advertisement
-
-
-class AdvertisementSerializer(serializers.HyperlinkedModelSerializer):
-    content_url = serializers.SerializerMethodField('get_content_url')
-
-    def get_content_url(self, obj):
-        hlid = serializers.HyperlinkedIdentityField(source='content',
-                                                    view_name='package-detail',
-        )
-        hlid.context = self.context
-        return hlid.field_to_native(obj.content, 'content_url')
-
-    content_type = serializers.SerializerMethodField('get_content_type')
-
-    def get_content_type(self, obj):
-        return str(obj.content_type).lower()
-
-    cover = factory_imageurl_field(None)
-
-    class Meta:
-        model = Advertisement
-        fields = ( 'title',
-                   'cover',
-                   'content_url',
-                   'content_type',
-        )
-
-#---------------------------------------------------------------------------
 from account.models import User as Player
 
 
@@ -97,7 +64,6 @@ class AccountDetailSerializer(AccountRelatedProfileMixin,
             'bookmark_count',
         )
 
-#---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 class CommentSerializer(serializers.ModelSerializer):
     user_icon = serializers.SerializerMethodField('get_user_icon_url')

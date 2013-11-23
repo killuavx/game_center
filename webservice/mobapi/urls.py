@@ -11,6 +11,9 @@ from mobapi.warehouse.views.package import (
 from mobapi.taxonomy.views.category import CategoryViewSet
 from mobapi.taxonomy.views.topic import TopicViewSet
 from mobapi.searcher.views import TipsWordViewSet
+from mobapi.promotion.views import (
+    AdvertisementViewSet,
+    documentation_advertisement_viewset)
 
 rest_router = routers.DefaultRouter()
 rest_router.register('authors', AuthorViewSet)
@@ -20,9 +23,11 @@ rest_router.register('rankings', PackageRankingsViewSet, base_name='rankings')
 rest_router.register('categories', CategoryViewSet)
 rest_router.register('topics', TopicViewSet)
 rest_router.register('tipswords', TipsWordViewSet)
-views.documentation_advertisement_viewset()
-rest_router.register('advertisements', views.AdvertisementViewSet)
-rest_router.register('bookmarks', views.PackageBookmarkViewSet, base_name='bookmark')
+documentation_advertisement_viewset()
+rest_router.register('advertisements', AdvertisementViewSet)
+rest_router.register('bookmarks',
+                     views.PackageBookmarkViewSet,
+                     base_name='bookmark')
 rest_router.register('comments', views.CommentViewSet)
 
 urlpatterns = rest_router.urls
