@@ -10,8 +10,8 @@ from should_dsl import should
 from fts import helpers
 from toolkit.middleware import get_current_request
 from warehouse.models import Author
-from mobapi.serializers import ( AuthorSummarySerializer,
-                                PackageSummarySerializer)
+from mobapi.warehouse.serializers.author import AuthorSummarySerializer
+from mobapi.warehouse.serializers.package import PackageSummarySerializer
 
 
 class ApiTest(TestCase):

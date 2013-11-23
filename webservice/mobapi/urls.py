@@ -2,12 +2,18 @@
 from rest_framework import routers
 from django.conf.urls import url, patterns
 from mobapi import views
+from mobapi.warehouse.views.author import AuthorViewSet
+from mobapi.warehouse.views.package import (
+    PackageViewSet,
+    PackageRankingsViewSet,
+    PackageSearchViewSet,
+    PackageUpdateView)
 
 rest_router = routers.DefaultRouter()
-rest_router.register('authors', views.AuthorViewSet)
-rest_router.register('packages', views.PackageViewSet)
-rest_router.register('search', views.PackageSearchViewSet, base_name='search')
-rest_router.register('rankings', views.PackageRankingsViewSet, base_name='rankings')
+rest_router.register('authors', AuthorViewSet)
+rest_router.register('packages', PackageViewSet)
+rest_router.register('search', PackageSearchViewSet, base_name='search')
+rest_router.register('rankings', PackageRankingsViewSet, base_name='rankings')
 rest_router.register('categories', views.CategoryViewSet)
 rest_router.register('topics', views.TopicViewSet)
 rest_router.register('tipswords', views.TipsWordViewSet)
@@ -23,8 +29,6 @@ from mobapi.views import (AccountCreateView,
                           AccountSignoutView,
                           AccountAuthTokenView,
                           AccountCommentPackageView,
-                          documentation_account_view,
-                          PackageUpdateView,
                           SelfUpdateView
                           )
 urlpatterns += patterns('',
