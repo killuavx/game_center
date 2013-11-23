@@ -33,8 +33,7 @@ rest_router.register('comments', CommentViewSet)
 
 urlpatterns = rest_router.urls
 
-from mobapi.views import SelfUpdateView
-
+from mobapi.clientapp.views import SelfUpdateView
 from mobapi.account.views import (AccountCreateView,
                                   AccountMyProfileView,
                                   AccountSignoutView,
