@@ -1,6 +1,6 @@
 # -*- encoding: utf-8-*-
 from rest_framework import routers
-from django.conf.urls import url, patterns
+from django.conf.urls import url, include, patterns
 from mobapi.warehouse.views.author import AuthorViewSet
 from mobapi.warehouse.views.package import (
     PackageViewSet,
@@ -33,28 +33,15 @@ rest_router.register('comments', CommentViewSet)
 
 urlpatterns = rest_router.urls
 
+import mobapi.account
+import mobapi.account.urls
 from mobapi.clientapp.views import SelfUpdateView
-from mobapi.account.views import (AccountCreateView,
-                                  AccountMyProfileView,
-                                  AccountSignoutView,
-                                  AccountAuthTokenView,
-                                  AccountCommentPackageView)
-
 urlpatterns += patterns('',
-    url(r'^accounts/signup/?$', AccountCreateView.as_view(),
-        name='account-signup', prefix='account'),
-    url(r'^accounts/signin/?$', AccountAuthTokenView.as_view(),
-        name='account-signin', prefix='account'),
-    url(r'^accounts/signout/?$', AccountSignoutView.as_view(),
-        name='account-signout', prefix='account'),
-    url(r'^accounts/myprofile/?$', AccountMyProfileView.as_view(),
-        name='account-myprofile', prefix='account'),
-    url(r'^accounts/commented_packages/?$', AccountCommentPackageView.as_view(),
-        name='account-commentedpackages', prefix='accont'),
-
+    url(r'^accounts/', include(mobapi.account.urls)),
     url(r'^selfupdate/?$', SelfUpdateView.as_view(),
         name='selfupdate',
         prefix='selfupdate'),
+
 
     url(r'^updates/?$', PackageUpdateView.as_view(), name='update-create', prefix='update'),
 )
