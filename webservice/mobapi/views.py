@@ -5,11 +5,7 @@ from rest_framework import mixins
 from rest_framework.response import Response
 from rest_framework import (viewsets,
                             generics,
-                            status,
-                            filters)
-
-from warehouse.models import Package
-from mobapi.warehouse.serializers.package import PackageSummarySerializer
+                            status )
 
 
 class MultipleFieldLookupMixin(object):
@@ -27,7 +23,7 @@ class MultipleFieldLookupMixin(object):
 
 
 from mobapi.authentications import PlayerTokenAuthentication
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from django.utils.timezone import utc, datetime, now
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -52,168 +48,6 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
 
 from rest_framework.generics import get_object_or_404
 
-
-class DjangoDataFilterBackend(filters.DjangoFilterBackend):
-    def filter_queryset(self, request, queryset, view):
-        filter_class = self.get_filter_class(view, queryset)
-
-        if filter_class:
-            return filter_class(request.DATA, queryset=queryset).qs
-
-        return queryset
-
-
-class PackageBookmarkViewSet(viewsets.ModelViewSet):
-    """ 账户收藏接口
-
-    ### 必备请求数据
-
-    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
-    * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
-
-    ### 无效访问
-
-    当请求收藏相关的接口时，未包含Authorization头，或无效的Token将得到如下的响应状态
-
-    * 401 HTTP_401_UNAUTHORIZED
-        * 未登陆
-        * 无效的HTTP Header: Authorization
-
-    ----
-
-    ## 收藏列表
-
-    #### 访问方式
-
-        GET /api/bookmarks/
-        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
-
-    #### 响应内容
-
-    * 200 HTTP_200_OK
-        * 获取成功
-        * 返回软件列表信息,没有则返回空results列表
-
-    ----
-
-    ## 添加收藏
-
-    #### 访问方式
-
-        POST /api/bookmarks/
-        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
-        ...
-
-        package_name=com.yourmark.packagename
-
-    #### 响应内容
-
-    * 201 HTTP_201_CREATED
-        * 收藏成功
-    * 400 HTTP_400_BAD_REQUEST
-        * 请求错误
-        * 请求数据无效
-
-    ----
-
-    ## 移除收藏
-
-    收藏的url从软件信息中的`actions`.`mark`中获取
-
-    #### 访问方式
-
-        DETELE /api/bookmarks/3/
-        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
-
-    #### 响应内容
-
-    * 204 HTTP_204_NO_CONTENT
-        * 无返回内容
-    * 400 HTTP_400_BAD_REQUEST
-        * 请求错误
-        * 请求数据无效
-    * 404 HTTP_404_NOT_FOUND
-        * 找不到该收藏
-
-    ----
-
-    ## 检查是否已经收藏
-
-    收藏的url从软件信息中的`actions`.`mark`中获取
-
-    #### 访问方式
-
-        HEAD /api/bookmarks/3/
-        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
-
-    #### 响应内容
-
-    * 200 HTTP_200_OK
-        * 有该收藏
-    * 404 HTTP_404_NOT_FOUND
-        * 找不到该收藏
-
-    ----
-
-    """
-
-    queryset = Package.objects.published()
-    serializer_class = PackageSummarySerializer
-    authentication_classes = (PlayerTokenAuthentication,)
-    permission_classes = (IsAuthenticated, )
-    filter_backends = (
-        DjangoDataFilterBackend,
-        filters.DjangoFilterBackend,
-    )
-    filter_fields = (
-        'package_name',
-    )
-    search_fields = tuple()
-
-    def _prepare_queryset(self, request):
-        self.queryset = self.queryset.filter(profile=request.user.profile)
-
-    def list(self, request, *args, **kwargs):
-        self._prepare_queryset(request)
-        return super(PackageBookmarkViewSet, self) \
-            .list(request, *args, **kwargs)
-
-    def get_object(self, queryset=None):
-        if queryset is None:
-            queryset = self.filter_queryset(self.get_queryset())
-        else:
-            pass  # Deprecation warning
-
-        obj = get_object_or_404(queryset)
-
-        # May raise a permission denied
-        self.check_object_permissions(self.request, obj)
-        return obj
-
-    def create(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        request.user.profile.bookmarks.add(self.object)
-        serializer = self.get_serializer(self.object)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def destroy(self, request, *args, **kwargs):
-        bookmarks = request.user.profile.bookmarks
-        queryset, self.queryset = \
-            self.queryset, bookmarks.filter(pk=kwargs.get('pk'))
-        obj = self.get_object()
-        bookmarks.remove(obj)
-        self.queryset = queryset
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def retrieve(self, request, *args, **kwargs):
-        bookmarks = request.user.profile.bookmarks
-        queryset, self.queryset = \
-            self.queryset, bookmarks.filter(pk=kwargs.get('pk'))
-        obj = self.get_object()
-
-        serializer = self.get_serializer(obj)
-        self.queryset = queryset
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
 #----------------------------------------------------------------
 from django.contrib.contenttypes.models import ContentType
