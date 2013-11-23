@@ -1,7 +1,6 @@
 # -*- encoding: utf-8-*-
 from rest_framework import routers
 from django.conf.urls import url, patterns
-from mobapi import views
 from mobapi.warehouse.views.author import AuthorViewSet
 from mobapi.warehouse.views.package import (
     PackageViewSet,
@@ -15,6 +14,7 @@ from mobapi.promotion.views import (
     AdvertisementViewSet,
     documentation_advertisement_viewset)
 from mobapi.account.views import PackageBookmarkViewSet
+from mobapi.comment.views import CommentViewSet
 
 rest_router = routers.DefaultRouter()
 rest_router.register('authors', AuthorViewSet)
@@ -29,7 +29,7 @@ rest_router.register('advertisements', AdvertisementViewSet)
 rest_router.register('bookmarks',
                      PackageBookmarkViewSet,
                      base_name='bookmark')
-rest_router.register('comments', views.CommentViewSet)
+rest_router.register('comments', CommentViewSet)
 
 urlpatterns = rest_router.urls
 
