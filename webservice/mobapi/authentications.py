@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-__author__ = 'me'
-
 import pytz
 from django.utils.timezone import datetime, timedelta
 from rest_framework.exceptions import AuthenticationFailed
