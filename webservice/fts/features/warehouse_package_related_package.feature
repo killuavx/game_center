@@ -1,6 +1,6 @@
 Feature: Package Related Other Packages
   As a player
-  I want to know what any package does similar to the package I watching on detail
+  I want to know what any package does similar to the package where I watching on detail
   So that I can find more different packages
 
   Background:

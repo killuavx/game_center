@@ -10,7 +10,6 @@ from should_dsl import should, should_not
 def select_from(context, select_name, option_value):
     context.browser.find_by_name(select_name).first.select(option_value)
 
-
 @given('a browser or client')
 def step_browser_or_client(context):
     WebDSL = factory_dsl(context)
@@ -69,8 +68,14 @@ def result_list_field_should_equal(context, is_within, field, value):
     else:
         assert False, "Matcher Error"
 
+@then('I should see response contains field "{name}"')
+def should_contains_field(context, name):
+    WebDSL = factory_dsl(context)
+    result = WebDSL.response_structure_content(context)
+    result.get(name) |should_not| be(None)
+
 @then('I should see response with {field} "{value}"')
-def step_should_see_field(context, field, value):
+def should_see_field(context, field, value):
     WebDSL = factory_dsl(context)
     content = WebDSL.response_structure_content(context)
     content.get(field) |should_not| be(None)

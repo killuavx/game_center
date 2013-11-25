@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse_lazy as reverse
 from django.utils.timezone import now, timedelta
+from should_dsl import should, should_not
+from django.test.testcases import override_settings
+
 from fts.helpers import (add_model_objects,
                          clear_data,
                          SubFile,
                          create_author,
                          guid)
 from warehouse.models import Package, PackageVersion
-from should_dsl import should, should_not
-from django.test.testcases import override_settings
+from mobapi.warehouse.serializers.package import PackageDetailSerializer
+
 
 def to_package_categories(package, text):
     from taxonomy.models import Category
@@ -158,7 +161,6 @@ class WarehouseBaseDSL(object):
 
     @classmethod
     def visit_comment_list(cls, context, package):
-        from mobapi.serializers import PackageDetailSerializer
         serializer = PackageDetailSerializer(package)
         comment_url = serializer.data.get('comments_url')
         context.browser.visit(comment_url)

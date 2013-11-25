@@ -21,6 +21,7 @@ from warehouse.models import package_version_pre_save
 from taxonomy.models import Category, Topic, TopicalItem
 from account.models import User as Player
 from toolkit.middleware import get_current_request
+from mobapi.warehouse.serializers.package import PackageSummarySerializer, PackageDetailSerializer
 
 
 fixtures_dir = join(dirname(abspath(__file__)), 'fixtures')
@@ -645,7 +646,6 @@ class ApiDSL(RestApiTest):
         cat_data | should | include_keys(*fields)
 
     def When_i_access_package_detail(self, package):
-        from mobapi.serializers import PackageSummarySerializer
 
         serializer = PackageSummarySerializer(package, context=dict(
             request=get_current_request()))
@@ -773,14 +773,13 @@ class ApiDSL(RestApiTest):
                                            'released_datetime')
 
     def When_i_access_comment_list(self, obj):
-        from mobapi.serializers import PackageDetailSerializer
 
         serializer = PackageDetailSerializer(obj)
         res = self.client.get(serializer.data.get('comments_url'))
         _world_response_status(self, res)
 
     def When_i_post_comment_to(self, content, obj):
-        from mobapi.serializers import PackageDetailSerializer
+        from serializers import PackageDetailSerializer
 
         serializer = PackageDetailSerializer(obj)
         res = self.client.post(serializer.data.get('comments_url'),
