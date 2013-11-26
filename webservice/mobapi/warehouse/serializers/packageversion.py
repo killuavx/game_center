@@ -24,7 +24,7 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
 
     def get_preview_url(self, obj):
         try:
-            obj.image['middle'].url
+            return obj.image['middle'].url
         except:
             return ''
 
