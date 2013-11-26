@@ -369,4 +369,4 @@ COMMENTS_XTD_MAX_THREAD_LEVEL = 0
 
 AAPT_CMD = join(PROJECT_PATH, 'warehouse/utils/android-tools-linux-x64/aapt')
 
-
+#COMMENTS_POST_PUBLISHED = False

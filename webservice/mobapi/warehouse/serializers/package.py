@@ -2,12 +2,12 @@
 from django.core.urlresolvers import reverse
 from rest_framework import serializers
 from warehouse.models import Package
-from mobapi.warehouse.serializers.packageversion import PackageVersionSerializer
 from mobapi.warehouse.serializers.mixin import (
     PackageRelatedVersionsMixin,
     PackageRelatedLatestVersinoMixin,
     PackageRelatedCategoryMixin,
     PackageRelatedTagMin,
+    PackageRelatedPackageUrlMixin,
     PackageActionsMixin,
 )
 from mobapi.warehouse.serializers.author import AuthorSummarySerializer
@@ -32,6 +32,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
     tags = serializers.SerializerMethodField('get_tags')
 
     author = AuthorSummarySerializer()
+    versions_url = serializers.SerializerMethodField('get_versions_url')
 
     class Meta:
         model = Package
@@ -51,13 +52,16 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'comments_url',
                   'released_datetime',
                   'actions',
+                  'versions_url',
         )
 
 
 class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
+                              PackageRelatedVersionsMixin,
                               PackageRelatedCategoryMixin,
                               PackageRelatedTagMin,
                               PackageActionsMixin,
+                              PackageRelatedPackageUrlMixin,
                               serializers.HyperlinkedModelSerializer):
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
@@ -83,19 +87,10 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
     actions = serializers.SerializerMethodField('get_action_links')
 
     author = AuthorSummarySerializer()
-    versions = PackageVersionSerializer(many=True)
 
     related_packages_url = serializers.SerializerMethodField('get_related_packages_url')
 
-    def get_related_packages_url(self, obj):
-        request = self.context.get('request')
-        related_url = reverse('package-relatedpackages',
-                              kwargs=dict(pk=obj.pk))
-        try:
-            related_url = request.build_absolute_uri(related_url)
-        except AttributeError:
-            pass
-        return related_url
+    versions_url = serializers.SerializerMethodField('get_versions_url')
 
     class Meta:
         model = Package
@@ -120,8 +115,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'author',
                   'released_datetime',
                   'screenshots',
-                  'versions',
                   'actions',
+                  'versions_url',
                   'related_packages_url',
         )
 

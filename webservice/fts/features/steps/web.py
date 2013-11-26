@@ -68,6 +68,18 @@ def result_list_field_should_equal(context, is_within, field, value):
     else:
         assert False, "Matcher Error"
 
+@then('I should see list result with{is_within:in?out} pagination '
+      'have {count:d} elements')
+def result_list_should_have_elements(context, is_within, count):
+    WebDSL = factory_dsl(context)
+    results = WebDSL.response_structure_content(context)
+    if is_within:
+        results = results.get('results')
+
+    results |should| have(count).elements
+
+
+
 @then('I should see response contains field "{name}"')
 def should_contains_field(context, name):
     WebDSL = factory_dsl(context)

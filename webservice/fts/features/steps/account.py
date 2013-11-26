@@ -2,6 +2,7 @@
 from behave import *
 from behaving.personas.steps import *
 from warehouse.models import Package
+from django.db.models.query import Q
 from fts.features.app_dsls.account import factory_dsl
 from fts.features.app_dsls.web import factory_dsl as factory_web_dsl
 
@@ -56,8 +57,9 @@ def signout(context):
 
 # bookmark
 @when('I mark package name "{pkg_title}"')
-def step_mark_package(context, pkg_title):
-    package = Package.objects.get(title=pkg_title)
+def mark_package(context, pkg_title):
+    package = Package.objects\
+        .get(Q(title=pkg_title) | Q(package_name=pkg_title))
 
     AccountDSL = factory_dsl(context)
     AccountDSL.add_bookmark(context, package)
@@ -67,8 +69,9 @@ def step_mark_package(context, pkg_title):
 
 
 @when('I unmark package name "{pkg_title}"')
-def step_unmark_package(context, pkg_title):
-    package = Package.objects.get(title=pkg_title)
+def unmark_package(context, pkg_title):
+    package = Package.objects \
+        .get(Q(title=pkg_title) | Q(package_name=pkg_title))
 
     AccountDSL = factory_dsl(context)
     AccountDSL.remove_bookmark(context, package)
@@ -76,10 +79,20 @@ def step_unmark_package(context, pkg_title):
     WebDSL = factory_web_dsl(context)
     WebDSL.response_to_world(context)
 
+
 @when('I visit my bookmarks page')
 def visit_bookmarks_page(context):
     AccountDSL = factory_dsl(context)
     AccountDSL.visit_bookmarks(context)
+
+    WebDSL = factory_web_dsl(context)
+    WebDSL.response_to_world(context)
+
+@when('I check bookmark with package name "{pkg_title}"')
+def check_bookmark(context, pkg_title):
+    package = Package.objects.get(Q(title=pkg_title)|Q(package_name=pkg_title))
+    AccountDSL = factory_dsl(context)
+    AccountDSL.check_bookmark(context, package)
 
     WebDSL = factory_web_dsl(context)
     WebDSL.response_to_world(context)

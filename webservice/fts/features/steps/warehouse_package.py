@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from behave import *
 from behaving.web.steps import *
-from fts.helpers import ApiDSL
-from fts.helpers import get_current_request
-from should_dsl import should, should_not
-from warehouse.models import Package, PackageVersion
+from should_dsl import should
 from fts.features.app_dsls.warehouse import factory_dsl
 from fts.features.app_dsls.web import factory_dsl as factory_web_dsl
 
@@ -40,9 +37,12 @@ def focus_on_package_or_version(context,
         packageversion = WarehouseDSL.get_packageversion_by(
             version_code=version_code, **{pkg_field: pkg_value})
         context.world.update(the_package_version=packageversion)
+        context.world.update(the_package=packageversion.package)
     else:
         package = WarehouseDSL.get_package_by(**{pkg_field: pkg_value})
         context.world.update(the_package=package)
+        context.world.update(the_package_version=package.versions\
+            .latest_version())
 
 
 @given('package exists such below')
@@ -84,9 +84,6 @@ def should_comment_count_in_the_package_version_detail(context, comment_count):
     package_detail = WebDSL.response_structure_content(context)
 
     package_detail.get('comment_count') | should | equal_to(comment_count)
-
-    for v in package_detail.get('versions'):
-        v.get('comment_count') | should_not | be(None)
 
 # package update
 @then('I should see empty package update list')

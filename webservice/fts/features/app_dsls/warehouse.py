@@ -9,7 +9,7 @@ from fts.helpers import (add_model_objects,
                          SubFile,
                          create_author,
                          guid)
-from warehouse.models import Package, PackageVersion
+from warehouse.models import Package, PackageVersion, PackageVersionScreenshot
 from mobapi.warehouse.serializers.package import PackageDetailSerializer
 
 
@@ -82,8 +82,8 @@ class WarehouseBaseDSL(object):
             package = Package.objects.get(**_kw)
         except Package.DoesNotExist:
             _kw = cls._dict_package_name_or_title(
-                package_name=kwargs.get('package_name', default_name_or_title),
-                title=kwargs.get('title', default_name_or_title)
+                package_name=kwargs.get('package_name') or default_name_or_title,
+                title=kwargs.get('title') or default_name_or_title,
             )
             package = Package.objects.create(
                 author=cls.create_author_without_ui(context),
@@ -111,7 +111,6 @@ class WarehouseBaseDSL(object):
         if not context.world.get('packages'):
             context.world['packages'] = dict()
 
-        add_model_objects(package)
         context.world.get('packages').update(dict(
             package_name=package.package_name
         ))
@@ -121,10 +120,13 @@ class WarehouseBaseDSL(object):
         return package
 
     @classmethod
-    def _dict_package_name_or_title(cls, package_name, title):
+    def _dict_package_name_or_title(cls, package_name, title, auto_random=False):
         kw = dict()
-        if package_name: kw['package_name'] = package_name
-        if title: kw['title'] = title
+        id = guid()
+        if package_name:
+            kw['package_name'] = package_name
+        if title:
+            kw['title'] = title
         return kw
 
     @classmethod
@@ -132,14 +134,18 @@ class WarehouseBaseDSL(object):
         package_version_parser_class=None,
         package_version_parse_handle_class=None
     ))
-    def create_package_versions_without_ui(cls, context, package, **kwargs):
+    def create_package_versions_without_ui(cls, context,
+                                           package,
+                                           version_code=1,
+                                           version_name='1.0',
+                                           **kwargs):
         yesterday = now() - timedelta(days=1)
         released_datetime = kwargs.get('released_datetime', yesterday)
         package |should_not| be(None)
         package_version = PackageVersion.objects.create(
             package=package,
-            version_code=kwargs.get('version_code'),
-            version_name=kwargs.get('version_name'),
+            version_code=version_code,
+            version_name=version_name,
             status=kwargs.get('status', 'published'),
             released_datetime=released_datetime,
             icon=SubFile.icon(),
@@ -147,6 +153,15 @@ class WarehouseBaseDSL(object):
             download=SubFile.package()
         )
         add_model_objects(package_version)
+        return package_version
+
+    @classmethod
+    def create_screenshot_without_ui(cls, context, version):
+        pss = PackageVersionScreenshot()
+        pss.image = SubFile.screenshot()
+        version.screenshots.add(pss)
+        add_model_objects(pss)
+        return pss
 
     @classmethod
     def visit_package_detail(cls, context, package):
@@ -203,7 +218,7 @@ class WarehouseUsingBrowserDSL(WarehouseBaseDSL):
 
 
 def factory_dsl(context):
-    if 'browser' in context.tags:
+    if hasattr(context, 'tags') and 'browser' in context.tags:
         return WarehouseUsingBrowserDSL
 
     return WarehouseUsingNoUIClientDSL

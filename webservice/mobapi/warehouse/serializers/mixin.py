@@ -4,8 +4,8 @@ from mobapi.helpers import (
     get_packageversion_comment_queryset,
     get_packageversion_comments_url)
 from mobapi.settings import IMAGE_COVER_SIZE, IMAGE_ICON_SIZE
-from mobapi.warehouse.serializers.packageversion import (
-    PackageVersionScreenshotSerializer,
+from mobapi.warehouse.serializers.helpers import (
+    get_versions_url,
     get_packageversion_download_url,
     get_packageversion_download_size)
 
@@ -43,12 +43,16 @@ class PackageRelatedCategoryMixin(object):
 
 
 class PackageRelatedVersionsMixin(object):
+
     def get_version_count(self, obj):
         return obj.versions.published().count()
 
+    def get_versions_url(self, obj):
+        return get_versions_url(request=self.context.get('request'),
+                                package=obj)
+
 
 class PackageRelatedLatestVersinoMixin(object):
-    serializer_class_screenshot = PackageVersionScreenshotSerializer
 
     def get_latest_version_name(self, obj):
         try:
@@ -84,6 +88,9 @@ class PackageRelatedLatestVersinoMixin(object):
             return None
 
     def get_latest_version_screenshots(self, obj):
+        from mobapi.warehouse.serializers.packageversion import (
+            PackageVersionScreenshotSerializer)
+        self.serializer_class_screenshot = PackageVersionScreenshotSerializer
         try:
             latest_version = obj.versions.latest_published()
             screenshots_serializer = self.serializer_class_screenshot(
@@ -118,3 +125,16 @@ class PackageRelatedLatestVersinoMixin(object):
         except AttributeError:
             pass
         return url
+
+
+class PackageRelatedPackageUrlMixin(object):
+
+    def get_related_packages_url(self, obj):
+        request = self.context.get('request')
+        related_url = reverse('package-relatedpackages',
+                              kwargs=dict(pk=obj.pk))
+        try:
+            related_url = request.build_absolute_uri(related_url)
+        except AttributeError:
+            pass
+        return related_url

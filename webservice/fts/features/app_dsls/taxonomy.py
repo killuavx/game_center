@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from fts.helpers import clear_data, SubFile, create_category
+from fts.helpers import clear_data, SubFile, create_category, create_topic
 from taxonomy.models import *
 from django.core.management import call_command
 
@@ -15,8 +15,12 @@ class TaxonomyBaseDSL(object):
         clear_data()
 
     @classmethod
-    def create_category(cls, context, name):
-        create_category(name=name)
+    def create_topic(cls, context, name, **kwargs):
+        return create_topic(name=name, **kwargs)
+
+    @classmethod
+    def create_category(cls, context, name, **kwargs):
+        return create_category(name=name, **kwargs)
 
     @classmethod
     def category_tree_already_exists(self, context):

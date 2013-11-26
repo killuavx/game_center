@@ -32,6 +32,7 @@ class AccountBaseDSL(object):
         form.is_valid()
         user = form.save()
         cls.clear_usernames.append(user.username)
+        return user
 
     @classmethod
     def signup(cls, context, **user_data):
@@ -82,6 +83,13 @@ class AccountBaseDSL(object):
         raise NotImplementedError(
             '%s.%s not implement' %(cls, 'remove_bookmark')
         )
+
+    @classmethod
+    def check_bookmark(cls, context, package):
+        raise NotImplementedError(
+            '%s.%s not implement' %(cls, 'remove_bookmark')
+        )
+
 
     @classmethod
     def teardown(cls, context):
@@ -153,12 +161,18 @@ class AccountRestApiUsingNoUIClientDSL(AccountBaseDSL):
         api_url = "%s%s%d/" %(context.base_url, cls._bookmark_url, package.pk)
         context.client.delete(api_url)
 
+    @classmethod
+    def check_bookmark(cls, context, package):
+        api_url = "%s%s%d/" %(context.base_url, cls._bookmark_url, package.pk)
+        context.client.head(api_url)
+
     _commented_packages_url = '/api/accounts/commented_packages'
 
     @classmethod
     def visit_commented_packages(cls, context):
         api_url = "%s%s" %(context.base_url, cls._commented_packages_url)
         context.client.get(api_url)
+
 
 class AccountWebAppUsingBrowserDSL(AccountBaseDSL):
 

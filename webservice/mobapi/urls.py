@@ -15,10 +15,12 @@ from mobapi.promotion.views import (
     documentation_advertisement_viewset)
 from mobapi.account.views import PackageBookmarkViewSet
 from mobapi.comment.views import CommentViewSet
+from mobapi.warehouse.views.packageversion import PackageVersionViewSet
 
 rest_router = routers.DefaultRouter()
 rest_router.register('authors', AuthorViewSet)
 rest_router.register('packages', PackageViewSet)
+rest_router.register('packageversions', PackageVersionViewSet)
 rest_router.register('search', PackageSearchViewSet, base_name='search')
 rest_router.register('rankings', PackageRankingsViewSet, base_name='rankings')
 rest_router.register('categories', CategoryViewSet)

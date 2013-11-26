@@ -208,6 +208,11 @@ class SubFile(object):
         name = 'cover.jpg'
         return cls.file(name)
 
+    @classmethod
+    def screenshot(cls):
+        name = 'screenshot1.jpg'
+        return cls.file(name)
+
 
     @classmethod
     def file(cls, name):
@@ -404,7 +409,7 @@ class ApiDSL(RestApiTest):
             'description',
             'screenshots',
             'released_datetime',
-            'versions',
+            'versions_url',
             'category_name',
             'categories_names',
             'actions',
@@ -412,7 +417,6 @@ class ApiDSL(RestApiTest):
         pkg_detail_data | should | include_keys(*fields)
 
         Then_i_should_see_actions_in_package_detail(pkg_detail_data)
-        Then_i_should_see_versions_in_package_detail(pkg_detail_data)
 
     def Then_i_should_see_package_detail_contains_categories_names(self,
                                                                    pkg_data,

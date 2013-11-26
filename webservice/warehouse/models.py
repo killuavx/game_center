@@ -20,11 +20,12 @@ from toolkit.helpers import import_from
 class StatusNotSupportAction(Exception):
     pass
 
+
 class StatusUndesirable(Exception):
     pass
 
-class StatusBase(object):
 
+class StatusBase(object):
     CODE = ""
 
     NAME = ""
@@ -52,10 +53,10 @@ class StatusBase(object):
             return False
 
     def __hash__(self):
-        return hash("%s:%s"%(self.__class__.__name__, self.code))
+        return hash("%s:%s" % (self.__class__.__name__, self.code))
+
 
 class AuthorStatus(StatusBase):
-
     def review(self, author):
         raise StatusNotSupportAction()
 
@@ -68,8 +69,8 @@ class AuthorStatus(StatusBase):
     def appeal(self, author):
         raise StatusNotSupportAction()
 
-class AuthorDraftStatus(AuthorStatus):
 
+class AuthorDraftStatus(AuthorStatus):
     CODE = "draft"
 
     NAME = _("Draft")
@@ -78,8 +79,8 @@ class AuthorDraftStatus(AuthorStatus):
         """ Draft --reivew--> Unactivated """
         author.status = author.STATUS.unactivated
 
-class AuthorUnactivatedStatus(AuthorStatus):
 
+class AuthorUnactivatedStatus(AuthorStatus):
     CODE = "unactivated"
 
     NAME = _("Unactivated")
@@ -88,8 +89,8 @@ class AuthorUnactivatedStatus(AuthorStatus):
         """ Unactivated --activate--> Activated """
         author.status = author.STATUS.activated
 
-class AuthorActivatedStatus(AuthorStatus):
 
+class AuthorActivatedStatus(AuthorStatus):
     CODE = "activated"
 
     NAME = _("Activated")
@@ -98,8 +99,8 @@ class AuthorActivatedStatus(AuthorStatus):
         """ Activated --reject--> Rejected """
         author.status = author.STATUS.rejected
 
-class AuthorRejectedStatus(AuthorStatus):
 
+class AuthorRejectedStatus(AuthorStatus):
     CODE = "rejected"
 
     NAME = _("Rejected")
@@ -112,8 +113,8 @@ class AuthorRejectedStatus(AuthorStatus):
         """ Rejected --appeal--> Unactivated """
         author.status = author.STATUS.unactivated
 
-class AuthorQuerySet(QuerySet):
 
+class AuthorQuerySet(QuerySet):
     def have_package(self, package):
         return self.filter(packages__in=package)
 
@@ -122,9 +123,9 @@ class AuthorQuerySet(QuerySet):
         if order is None:
             return self
         elif order is True:
-            return self.order_by('-'+field)
+            return self.order_by('-' + field)
         else:
-            return self.order_by('+'+field)
+            return self.order_by('+' + field)
 
     def activated(self):
         return self.filter(status=self.model.STATUS.activated)
@@ -138,6 +139,7 @@ class AuthorQuerySet(QuerySet):
     def unpublished(self):
         return self.unactivated()
 
+
 def factory_author_upload_to(basename):
     def upload_to(instance, filename):
         extension = filename.split('.')[-1].lower()
@@ -146,11 +148,12 @@ def factory_author_upload_to(basename):
         return '%(path)s/%(filename)s.%(extension)s' % {'path': path,
                                                         'filename': basename,
                                                         'extension': extension,
-                                                        }
+        }
+
     return upload_to
 
-class Author(models.Model):
 
+class Author(models.Model):
     icon = ThumbnailerImageField(upload_to=factory_author_upload_to('icon'),
                                  blank=True,
                                  default='')
@@ -187,7 +190,7 @@ class Author(models.Model):
          AuthorActivatedStatus.CODE, AuthorActivatedStatus.NAME),
         (AuthorRejectedStatus(),
          AuthorRejectedStatus.CODE, AuthorRejectedStatus.NAME),
-        )
+    )
 
     status = StatusField(verbose_name=_('status'))
 
@@ -216,36 +219,36 @@ class Author(models.Model):
 
     __unicode__ = __str__
 
-class PackageStatus(StatusBase):
 
+class PackageStatus(StatusBase):
     _transactions = list()
 
     def publish(self, package):
         raise StatusNotSupportAction()
 
     def review(self, package):
-        raise  StatusNotSupportAction()
+        raise StatusNotSupportAction()
 
     def unpublish(self, package):
-        raise  StatusNotSupportAction()
+        raise StatusNotSupportAction()
 
     def reject(self, package):
-        raise  StatusNotSupportAction()
+        raise StatusNotSupportAction()
 
     def appeal(self, package):
-        raise  StatusNotSupportAction()
+        raise StatusNotSupportAction()
 
     def next_statuses(self, package):
         """
             return tuple of status from next_transactions
         """
-        return tuple(map(lambda e:e[1], self.next_transactions(package)))
+        return tuple(map(lambda e: e[1], self.next_transactions(package)))
 
     def next_actions(self, package):
         """
             return tuple of action_name from next_transactions
         """
-        return tuple(map(lambda e:e[0], self.next_transactions(package)))
+        return tuple(map(lambda e: e[0], self.next_transactions(package)))
 
     def next_transactions(self, package):
         """
@@ -255,8 +258,8 @@ class PackageStatus(StatusBase):
         """
         raise StatusNotSupportAction()
 
-class PackageDraftStatus(PackageStatus):
 
+class PackageDraftStatus(PackageStatus):
     CODE = "draft"
     NAME = _("Draft")
 
@@ -269,8 +272,8 @@ class PackageDraftStatus(PackageStatus):
             ('review', package.STATUS.unpublished),
         )
 
-class PackageUnpublishedStatus(PackageStatus):
 
+class PackageUnpublishedStatus(PackageStatus):
     CODE = "unpublished"
     NAME = _("Unpublished")
 
@@ -288,8 +291,8 @@ class PackageUnpublishedStatus(PackageStatus):
             ('reject', package.STATUS.rejected),
         )
 
-class PackagePublishedStatus(PackageStatus):
 
+class PackagePublishedStatus(PackageStatus):
     CODE = 'published'
     NAME = _('Published')
 
@@ -302,8 +305,8 @@ class PackagePublishedStatus(PackageStatus):
             ('reject', package.STATUS.rejected),
         )
 
-class PackageRejectedStatus(PackageStatus):
 
+class PackageRejectedStatus(PackageStatus):
     CODE = "rejected"
     NAME = _("Rejected")
 
@@ -321,8 +324,8 @@ class PackageRejectedStatus(PackageStatus):
             ('appeal', package.STATUS.unpublished),
         )
 
-class PackageQuerySet(QuerySet):
 
+class PackageQuerySet(QuerySet):
     def by_category(self, category):
         return self.filter(categories__contains=category)
 
@@ -334,9 +337,9 @@ class PackageQuerySet(QuerySet):
         if newest is None:
             return self
         elif newest is True:
-            return self.order_by('-'+field)
+            return self.order_by('-' + field)
         else:
-            return self.order_by('+'+field)
+            return self.order_by('+' + field)
 
     def by_rankings_order(self):
         return self.order_by('-download_count')
@@ -349,18 +352,18 @@ class PackageQuerySet(QuerySet):
             released_datetime__lte=now(), status=self.model.STATUS.published)
 
     def unpublished(self):
-        return self.filter(released_datetime__gt=now())\
+        return self.filter(released_datetime__gt=now()) \
             .exclude(status=self.model.STATUS.published)
 
-class Package(models.Model):
 
+class Package(models.Model):
     objects = PassThroughManager.for_queryset_class(PackageQuerySet)()
 
     class Meta:
         permissions = (
             ('can_deliver_package', _('Can deliver package')),
-            ('can_remove_package',  _('Can remove package')),
-            ('can_change_package',  _('Can change package')),
+            ('can_remove_package', _('Can remove package')),
+            ('can_change_package', _('Can change package')),
         )
         verbose_name = _("Package")
         verbose_name_plural = _("Packages")
@@ -379,7 +382,7 @@ class Package(models.Model):
         max_length=255,
         null=False,
         default="",
-        blank=True )
+        blank=True)
 
     description = models.TextField(
         verbose_name=_('description'),
@@ -417,24 +420,24 @@ class Package(models.Model):
     topics = generic.GenericRelation('taxonomy.TopicalItem')
 
     download_count = models.PositiveIntegerField(
-                                    verbose_name=_('package download count'),
-                                    max_length=9,
-                                    default=0,
-                                    blank=True
-                                    )
+        verbose_name=_('package download count'),
+        max_length=9,
+        default=0,
+        blank=True
+    )
 
     """ ================== START State Design Pattern ====================== """
 
     STATUS = Choices(
         (PackageDraftStatus(),
-         PackageDraftStatus.CODE,PackageDraftStatus.NAME),
+         PackageDraftStatus.CODE, PackageDraftStatus.NAME),
         (PackagePublishedStatus(),
          PackagePublishedStatus.CODE, PackagePublishedStatus.NAME),
         (PackageUnpublishedStatus(),
          PackageUnpublishedStatus.CODE, PackageUnpublishedStatus.NAME),
         (PackageRejectedStatus(),
          PackageRejectedStatus.CODE, PackageRejectedStatus.NAME),
-        )
+    )
 
     status = StatusField(verbose_name=_('status'))
 
@@ -456,6 +459,7 @@ class Package(models.Model):
     """ ================== END State Design Pattern ======================== """
 
     """ START State Design Pattern Actions ======================== """
+
     def review(self):
         self._status.review(self)
 
@@ -473,6 +477,7 @@ class Package(models.Model):
 
     def recall(self):
         self._status.recall(self)
+
     """ END State Design Pattern Actions ======================== """
 
     def was_published_recently(self):
@@ -509,7 +514,7 @@ class Package(models.Model):
             if not latest_version:
                 raise exceptions.ValidationError(
                     _('No published version can enough to publish package,'
-                        'or you can change package status to Unpublished.'
+                      'or you can change package status to Unpublished.'
                     )
                 )
         super(Package, self).clean()
@@ -522,10 +527,11 @@ class Package(models.Model):
     def __init__(self, *args, **kwargs):
         super(Package, self).__init__(*args, **kwargs)
 
+
 tagging.register(Package)
 
-class PackageVersionQuerySet(QuerySet):
 
+class PackageVersionQuerySet(QuerySet):
     def by_updated_order(self):
         return self.order_by('-updated_datetime')
 
@@ -534,9 +540,9 @@ class PackageVersionQuerySet(QuerySet):
         if newest is None:
             return self
         elif newest is True:
-            return self.order_by('-'+field)
+            return self.order_by('-' + field)
         else:
-            return self.order_by('+'+field)
+            return self.order_by('+' + field)
 
     def published(self):
         return self.filter(
@@ -552,18 +558,21 @@ class PackageVersionQuerySet(QuerySet):
     def latest_published(self):
         return self.published().latest('version_code')
 
+
 def factory_version_upload_to_path(basename):
     def upload_to(instance, filename):
         extension = filename.split('.')[-1].lower()
-        path = "package/%d/v%d" % (int(instance.package.pk), int(instance.version_code))
+        path = "package/%d/v%d" % (
+            int(instance.package.pk), int(instance.version_code))
         return '%(path)s/%(filename)s.%(extension)s' % {'path': path,
                                                         'filename': basename,
                                                         'extension': extension,
-                                                        }
+        }
+
     return upload_to
 
-class PackageVersion(models.Model):
 
+class PackageVersion(models.Model):
     objects = PassThroughManager.for_queryset_class(PackageVersionQuerySet)()
 
     class Meta:
@@ -583,7 +592,7 @@ class PackageVersion(models.Model):
         default='',
         upload_to=factory_version_upload_to_path('cover'),
         blank=True,
-        )
+    )
 
     download = models.FileField(
         verbose_name=_('version file'),
@@ -634,7 +643,8 @@ class PackageVersion(models.Model):
 
     status = StatusField(default='draft', blank=True)
 
-    released_datetime = models.DateTimeField(db_index=True, blank=True, null=True)
+    released_datetime = models.DateTimeField(db_index=True, blank=True,
+                                             null=True)
 
     created_datetime = models.DateTimeField(auto_now_add=True)
 
@@ -650,6 +660,7 @@ class PackageVersion(models.Model):
 
     __unicode__ = __str__
 
+
 def screenshot_upload_to_path(instance, filename):
     filebasename = basename(filename).lower()
     version = instance.version
@@ -659,8 +670,8 @@ def screenshot_upload_to_path(instance, filename):
         'basename': filebasename
     }
 
-class PackageVersionScreenshot(models.Model):
 
+class PackageVersionScreenshot(models.Model):
     version = models.ForeignKey(PackageVersion, related_name='screenshots')
 
     image = ThumbnailerImageField(
@@ -674,11 +685,11 @@ class PackageVersionScreenshot(models.Model):
         blank=True)
 
     ROTATE = (
-        ( '-180','-180'),
-        ( '-90','-90'),
-        ( '0','0'),
-        ( '90','90'),
-        ( '180','180'),
+        ( '-180', '-180'),
+        ( '-90', '-90'),
+        ( '0', '0'),
+        ( '90', '90'),
+        ( '180', '180'),
     )
 
     rotate = models.CharField(
@@ -696,6 +707,7 @@ class PackageVersionScreenshot(models.Model):
             return self.image.url
         except:
             return self.alt
+
 
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
@@ -737,6 +749,7 @@ def package_version_pre_save(sender, instance, **kwargs):
             elif instance.tracker.has_changed('icon'):
                 return
 
+
 @receiver(post_save, sender=PackageVersion)
 def package_version_post_save(sender, instance, **kwargs):
     """package sync ...
@@ -750,13 +763,14 @@ def package_version_post_save(sender, instance, **kwargs):
 
     if instance.status == instance.STATUS.published \
         and instance.tracker.has_changed('download_count'):
-        aggregate = package.versions\
-                                    .filter(status=instance.STATUS.published)\
-                                    .aggregate(download_count=models.Sum('download_count'))
+        aggregate = package.versions \
+            .filter(status=instance.STATUS.published) \
+            .aggregate(download_count=models.Sum('download_count'))
         package.download_count = aggregate.get('download_count', 0)
 
     if package.tracker.changed():
         package.save()
+        pass
 
 # fix for PackageVersion save to update Package(set auto_now=False) updated_datetime
 @receiver(pre_save, sender=Package)

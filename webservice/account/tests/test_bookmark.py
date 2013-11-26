@@ -1,17 +1,32 @@
 # -*- coding: utf-8 -*-
-__author__ = 'me'
-from fts.helpers import ApiDSL
-from fts.tests import helpers
 from django.test.testcases import TestCase
+from fts.features.app_dsls import warehouse
+from fts.features.app_dsls import account
+
 
 class UserBookmarkUnitTest(TestCase):
 
+    world = {}
+    tags = []
+
+    def setUp(self):
+        warehouse.setup(self)
+        account.setup(self)
+        self.WarehouseDSL = warehouse.factory_dsl(self)
+        self.AccountDSL = account.factory_dsl(self)
+
+    def tearDown(self):
+        warehouse.teardown(self)
+        account.teardown(self)
 
     def test_user_bookmarks(self):
-        user = helpers.create_account()
+        user = self.AccountDSL.already_exists_player_create(self,
+                                                            username="kent")
         self.assertEqual(0, user.profile.bookmarks.count())
 
-        pkg = ApiDSL.Given_i_have_published_package(self, title='植物大战僵尸')
+        pkg = self.WarehouseDSL.create_package_without_ui(
+            self,
+            title='植物大战僵尸')
         user.profile.bookmarks.add(pkg)
 
         self.assertEqual(1, user.profile.bookmarks.count())

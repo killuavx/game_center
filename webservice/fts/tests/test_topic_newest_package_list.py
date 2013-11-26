@@ -157,9 +157,6 @@ class PackageInfoRestApiTest(RestApiTest):
         )
         self.assertRegex(pkg_data.get('download'), '.*\.cpk$')
 
-        except_version = pkg_data.get('versions')[0]
-        self.assertRegex(except_version.get('download'), '.*\.cpk$')
-
         helpers.connect_packageversion_pre_save()
 
     def test_should_see_package_detail_apk_download(self):
@@ -185,10 +182,6 @@ class PackageInfoRestApiTest(RestApiTest):
                                                             pkg_detail_data=pkg_data
         )
         self.assertRegex(pkg_data.get('download'), '.*\.apk$')
-
-        # version download url
-        except_version = pkg_data.get('versions')[0]
-        self.assertRegex(except_version.get('download'), '.*\.apk$')
 
         helpers.connect_packageversion_pre_save()
 
