@@ -2,7 +2,6 @@
 from django.core.urlresolvers import reverse
 from rest_framework import serializers
 from warehouse.models import PackageVersion, PackageVersionScreenshot
-from toolkit.helpers import thumbnail_scale_percents
 from mobapi.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
 from mobapi.rest_fields import factory_imageurl_field
 from mobapi.helpers import (
@@ -23,17 +22,12 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
     large = serializers.SerializerMethodField('get_large_url')
     preview = serializers.SerializerMethodField('get_preview_url')
 
-    # TODO 截图的预览地址，以及后台上传时的尺寸处理，
     def get_preview_url(self, obj):
         try:
-            if 'one-third' in obj.image:
-                return obj.image['one-third'].url
-            else:
-                return thumbnail_scale_percents(obj.image, 33).url
+            obj.image['middle'].url
         except:
             return ''
 
-    # TODO 截图的大图地址，以及后台上传时的尺寸处理，
     def get_large_url(self, obj):
         try:
             return obj.image['large'].url

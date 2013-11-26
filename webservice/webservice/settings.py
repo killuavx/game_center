@@ -224,7 +224,7 @@ THUMBNAIL_ALIASES_COVER = {
         'upscale': True,
     },
     'small': {
-        'size': (480, 125),
+        'size': (450, 215),
         'quality': 85,
         'crop': False,
         'upscale': True,
@@ -244,7 +244,7 @@ THUMBNAIL_ALIASES_SCREENSHOT = {
         'upscale': True,
     },
     'middle': {
-        'size': (480, 800),
+        'size': (235, 390),
         'quality': 85,
         'crop': False,
         'upscale': True,
@@ -255,13 +255,6 @@ THUMBNAIL_ALIASES_SCREENSHOT = {
         'crop': False,
         'upscale': True,
     },
-    'one-third': {
-        'size': None,
-        'size_percents': 33,
-        'quality': 85,
-        'crop': False,
-        'upscale': False
-    }
 }
 
 THUMBNAIL_ALIASES = {

@@ -11,17 +11,21 @@ from promotion.models import Advertisement
 class Command(BaseCommand):
 
     models = {
-        'warehouse.PackageVersionScreenshot': PackageVersionScreenshot,
-        'warehouse.PackageVersion': PackageVersion,
-        'taxonomy.Category': Category,
-        'taxonomy.Topic': Topic,
-        'promotion.Advertisement': Advertisement
+        'screenshot': PackageVersionScreenshot,
+        'version': PackageVersion,
+        'category': Category,
+        'topic': Topic,
+        'advertisement': Advertisement
     }
 
     help = 'generate thumbnails for model field, ' \
            'model such as warehouse.models.PackageVersion'
 
     option_list = BaseCommand.option_list + (
+        make_option('--model',
+                    action='store', dest='model', default='all',
+                    choices=['all']+list(models.keys()),
+                    help='model name in [%s]' %(",".join(['all']+list(models.keys())))),
         make_option('--sizealias',
                     action='store', dest='sizealias', default='all',
                     help='size alias of settings.THUMBNAIL_ALIASES'),
@@ -33,8 +37,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         fields = self.validate_option_field(options.get('field'))
-        for name, klass in self.models.items():
+        model_name = options.get('model')
+        if model_name != 'all':
+            klass = self.models[model_name]
             self.generate_model_thumbnails_for_fields(klass, fields)
+        else:
+            for name, klass in self.models.items():
+                self.generate_model_thumbnails_for_fields(klass, fields)
 
     def validate_option_field(self, option):
         tbfields = ('icon', 'cover', 'image')

@@ -2,4 +2,4 @@
 
 IMAGE_ICON_SIZE = 'middle'
 
-IMAGE_COVER_SIZE = None
+IMAGE_COVER_SIZE = 'small'
