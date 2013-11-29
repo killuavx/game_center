@@ -1,4 +1,4 @@
-@wip
+@solrservice
 Feature: Search package
   As a player
   I want to search some app with keyword
