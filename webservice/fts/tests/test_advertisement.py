@@ -1,5 +1,4 @@
 # -*- encoding: utf-8-*-
-from fts import helpers
 from fts.helpers import RestApiTest, ApiDSL
 from promotion.models import Place, Advertisement, Advertisement_Places
 from django.utils.timezone import now, timedelta

@@ -153,6 +153,7 @@ INTERNAL_APPS = [
 
     'django.contrib.comments',
     'django_comments_xtd',
+    'haystack',
 ]
 
 EXTENDAL_APPS = [
@@ -218,7 +219,7 @@ THUMBNAIL_ALIASES_COVER = {
         'upscale': True,
     },
     'middle': {
-        'size': (800, 480),
+        'size': (480, 255),
         'quality': 85,
         'crop': False,
         'upscale': True,
@@ -363,3 +364,28 @@ COMMENTS_XTD_MAX_THREAD_LEVEL = 0
 AAPT_CMD = join(PROJECT_PATH, 'warehouse/utils/android-tools-linux-x64/aapt')
 
 #COMMENTS_POST_PUBLISHED = False
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://localhost:8983/solr/package',
+    },
+    'package': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://localhost:8983/solr/package',
+    },
+}
+
+
+import os
+# for solr script
+
+os.environ['SEARCHER_SCRIPT_DIR'] = SEARCHER_SCRIPT_DIR =\
+    join(dirname(PROJECT_PATH), 'dependents/searcher')
+os.environ['SEARCHER_SERVICE_CONF'] = SEARCHER_SERVICE_CONF =\
+    join(os.environ['SEARCHER_SCRIPT_DIR'], 'solr.conf')
+os.environ['SOLR_HOME'] = SOLR_HOME =\
+    join(os.environ['SEARCHER_SCRIPT_DIR'], 'solr')
+
+
+
+

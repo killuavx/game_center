@@ -270,7 +270,7 @@ class ApiDSL(RestApiTest):
         defaults.setdefault('released_datetime', now() - timedelta(days=1))
         return create_package(**defaults)
 
-    def Given_i_have_some_packages(self, num=3, **defaults):
+    def _Given_i_have_some_packages(self, num=3, **defaults):
         defaults.setdefault('status', Package.STATUS.published)
         packages = []
         for i in range(num):

@@ -3,7 +3,6 @@ Feature: post comment to package version
   I want to post comment to package version
   So that I can suggest some idea for the game
 
-  @wip
   Scenario: post comment require sign in before
     Given package title "call me MT" has a set of versions below:
       | version_name | version_code | released_datetime   |

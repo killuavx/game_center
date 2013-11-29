@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from promotion.models import Advertisement
 from mobapi.rest_fields import factory_imageurl_field
+from mobapi.settings import IMAGE_ADV_COVER_SIZE
 
 
 class AdvertisementSerializer(serializers.HyperlinkedModelSerializer):
@@ -19,7 +20,7 @@ class AdvertisementSerializer(serializers.HyperlinkedModelSerializer):
     def get_content_type(self, obj):
         return str(obj.content_type).lower()
 
-    cover = factory_imageurl_field(None)
+    cover = factory_imageurl_field(IMAGE_ADV_COVER_SIZE)
 
     class Meta:
         model = Advertisement

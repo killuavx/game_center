@@ -5,18 +5,18 @@ Feature: Package Update
 
   Background: Packages
     Given package exists such below:
-      | title            | package_name               | version_name | version_code | released_datetime |
-      | 保卫萝卜          | com.carrot.carrotfantasy   | 1.1.1        | 258          |  2013-8-29 12:11  |
-      | 游戏存档-j子      | com.lion.backups           | 1.0         | 1             |  2013-9-08 12:11  |
-      | 植物大战僵尸2高清版 | com.popcap.pvz2cthd360     | 1.0.1       | 1             |  2013-8-29 12:11 |
-      | 齐B小短裙         | com.racttoy.qbxdq.activity | 1.0         | 1             |  2013-8-29 12:11  |
-      | 天天酷跑          | com.tencent.pao            | 1.0.6.0     | 10            |  2013-8-29 12:11  |
+      | title            | package_name               | version_name | version_code |
+      | 保卫萝卜          | com.carrot.carrotfantasy   | 1.1.1        | 258          |
+      | 游戏存档-j子      | com.lion.backups           | 1.0         | 1             |
+      | 植物大战僵尸2高清版 | com.popcap.pvz2cthd360     | 1.0.1       | 1            |
+      | 齐B小短裙         | com.racttoy.qbxdq.activity | 1.0         | 1             |
+      | 天天酷跑          | com.tencent.pao            | 1.0.6.0     | 10            |
 
   Scenario Outline: update
     Given package name "<package_name>" has a set of versions below:
-      | version_name | version_code | released_datetime |
-      | 1.1.2beta    | 259          | 2013-8-29 12:11   |
-      | 1.2.1        | 268          | 2013-8-30 12:11   |
+      | version_name | version_code |
+      | 1.1.2beta    | 259          |
+      | 1.2.1        | 268          |
      And I focus on package name "<package_name>"
     When I post package version to check update with package_name: "<package_name>", version_name: "<version_name>", version_code: "<version_code>"
     Then I should receive 200 OK
