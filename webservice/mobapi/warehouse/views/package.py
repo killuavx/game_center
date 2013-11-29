@@ -11,29 +11,10 @@ from mobapi.warehouse.serializers.package import (
     PackageSummarySerializer,
     PackageDetailSerializer,
     PackageUpdateSummarySerializer)
-
-
-class RelatedPackageSearchFilter(filters.BaseFilterBackend):
-
-    def filter_queryset(self, request, queryset, view):
-        if not hasattr(view, 'object') or not view.object:
-            return queryset
-
-        if not hasattr(view, 'related_package_list') \
-            or view.related_package_list is not None:
-            return queryset
-
-        qs = queryset._clone()
-        qs = qs.exclude(pk=view.object.pk).filter(
-            categories__in=list(view.object.categories.published())).distinct()
-        tags = list(view.object.tags)
-        if len(tags) and qs.count():
-            return type(view.object).tagged.with_any(tags, qs)
-        return queryset.filter(pk=None)
-
-
-class SphinxSearchFilter(filters.SearchFilter):
-    search_param = 'q'
+from mobapi.warehouse.views.filters import (
+    SphinxSearchFilter,
+    SolrSearchFilter,
+    RelatedPackageSearchFilter)
 
 
 class PackageExcludeCategoryOfApplicationFilter(filters.BaseFilterBackend):
@@ -179,10 +160,12 @@ class PackageSearchViewSet(PackageViewSet):
 
     filter_backends = (filters.DjangoFilterBackend,
                        filters.OrderingFilter,
-                       SphinxSearchFilter,
+                       #SphinxSearchFilter,
+                       SolrSearchFilter,
     )
-    search_fields = ('package_name', 'title')
-    ordering = ('-updated_datetime', )
+    search_fields = ('title', 'tags_text', 'package_name', 'categories')
+    search_ordering = ('-released_datetime', )
+    #ordering = ('-updated_datetime', )
 
     def list(self, request, *args, **kwargs):
         querydict = copy.deepcopy(dict(request.GET))

@@ -1,5 +1,6 @@
 [behave]
 tags=~browser
+     ~solrservice
 color=on
 show_skipped=no
 expand=yes

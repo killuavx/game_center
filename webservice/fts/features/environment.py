@@ -97,12 +97,14 @@ def before_all(context):
     setup(context)
     personaenv.before_all(context)
     webenv.before_all(context)
+    searcher.SearcherService.start()
 
 
 def after_all(context):
     personaenv.after_all(context)
     webenv.after_all(context)
     teardown(context)
+    searcher.SearcherService.start()
 
 
 def before_feature(context, feature):

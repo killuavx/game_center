@@ -38,4 +38,14 @@ def visit_tipsword_admin_list_page(context):
 
     factory_web_dsl(context).response_to_world(context)
 
+@when('I search with keyword "{keyword}"')
+def search_package(context, keyword):
+    SearcherDSL = factory_dsl(context)
+    SearcherDSL.search_package(context, keyword=keyword)
 
+    factory_web_dsl(context).response_to_world(context)
+
+@given('rebuild searcher index')
+def rebuild_searcher_index(context):
+    SearcherDSL = factory_dsl(context)
+    SearcherDSL.rebuild_index(context)
