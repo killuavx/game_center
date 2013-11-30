@@ -39,6 +39,14 @@ from fts.features.app_dsls import (account,
                                    searcher)
 
 
+def in_tags_list(tag, tags_list):
+    for row in tags_list:
+        if tag in row:
+            return True
+
+    return False
+
+
 def setup(context):
     import fts
 
@@ -93,18 +101,23 @@ def teardown(context):
         except:pass
 
 
+#-------------------------------------------------------------------------------
+
+
 def before_all(context):
     setup(context)
     personaenv.before_all(context)
     webenv.before_all(context)
-    searcher.SearcherService.start()
+    if not in_tags_list('~solrservice', context.config.tags.ands):
+        searcher.SearcherService.start()
 
 
 def after_all(context):
     personaenv.after_all(context)
     webenv.after_all(context)
     teardown(context)
-    searcher.SearcherService.start()
+    if not in_tags_list('~solrservice', context.config.tags.ands):
+        searcher.SearcherService.stop()
 
 
 def before_feature(context, feature):
