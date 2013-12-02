@@ -51,6 +51,7 @@ class WarehouseBaseUnitTest(TestCase):
         self.TaxonomyDSL.teardown(self)
 
     def create_author(self, **kwargs):
+        kwargs.setdefault('status', 'draft')
         return self.WarehouseDSL.create_author_without_ui(self, **kwargs)
 
     def create_package(self, with_version=False, **kwargs):

@@ -9,9 +9,9 @@ Feature: Top Authors Topic
       | 现代战争2黑色飞马 | ModernCombat2 |  1           | 1.0          |
       | 蜘蛛侠           | Spiderman     |  2           | 2.10         |
       And author "Kairosoft" have package exists such below:
-      | title        | package_name                     | version_code | version_name |
-      | 口袋学院      | net.kairosoft.android.school2_en |  3           | 1.0          |
-      | 百货商店的故事 | net.kairosoft.android.depart_en  |  4           | 2.10         |
+      | title        | package_name                     | released_datetime | version_code | version_name |
+      | 口袋学院      | net.kairosoft.android.school2_en | 2013-11-02 11:21  | 3           | 1.0          |
+      | 百货商店的故事 | net.kairosoft.android.depart_en  | 2013-11-01 11:21  | 4           | 2.10         |
 
       And topic exists such below:
       | name     | slug             |

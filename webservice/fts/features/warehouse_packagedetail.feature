@@ -58,7 +58,6 @@ Feature: Package detail
       And I should see response contains field "download_size"
       And I should see response contains field "download_count"
 
-  @wip
   Scenario: download with data integration
     Given category tree exists
       And package exists such below:

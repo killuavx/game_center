@@ -8,12 +8,14 @@ from fts.features.app_dsls import taxonomy, warehouse
 import io
 import os
 from os.path import join, abspath, dirname
-from fts.tests import helpers
+from fts import helpers
 from fts.helpers import SubFile
 import shutil
 from should_dsl import should
 
 _fixture_dir = join(dirname(abspath(__file__)), 'fixtures')
+
+
 class TaxonomyBaseUnitTest(TestCase):
 
     tags = []
@@ -71,6 +73,7 @@ class TaxonomyBaseUnitTest(TestCase):
         _b = b.replace(microsecond=0)
         self.assertEqual(localtime(_a), localtime(_b))
 
+
 class CategorySimpleTest(TaxonomyBaseUnitTest):
 
     def _category(self, **defaults):
@@ -81,7 +84,7 @@ class CategorySimpleTest(TaxonomyBaseUnitTest):
         cat.save()
         except_cat = Category.objects.get(pk=cat.pk)
         self.assertEqual(except_cat.name, 'Test Case 1')
-        self.assertEqual(except_cat.slug , 'test-case-1')
+        self.assertEqual(except_cat.slug, 'test-case-1')
         except_cat.delete()
 
     def test_basic_creation_with_zhcn_and_slug_not_fill(self):
@@ -123,7 +126,8 @@ class CategorySimpleTest(TaxonomyBaseUnitTest):
             icon=SubFile.icon()
         )
         cat_icon_path = "category/%s/icon.png" % cat.slug
-        cat.icon.path |should| end_with(cat_icon_path)
+        cat.icon.path | should | end_with(cat_icon_path)
+
 
 class CategoryWithPackageTest(TaxonomyBaseUnitTest):
 
@@ -152,7 +156,6 @@ class CategoryWithPackageTest(TaxonomyBaseUnitTest):
         self.assertEqual(except_rpg.parent, game)
 
     def test_package_with_mutil_category_depth_3(self):
-
         pkg = self._package()
         game = self.create_category(name="Game")
         rpg = self.create_category(parent=game, name='RPG')
@@ -170,6 +173,7 @@ class CategoryWithPackageTest(TaxonomyBaseUnitTest):
         self.assertEqual(except_rpg.parent, game)
         self.assertEqual(except_fps.parent, game)
 
+
 class TagTest(TaxonomyBaseUnitTest):
 
     def test_basic_create(self):
@@ -182,7 +186,7 @@ class TagTest(TaxonomyBaseUnitTest):
     def test_create_tags_with_package(self):
         pkg = self.create_package(package_name="com.test")
         pkg.tags_text = 'Hot, New'
-        pkg.tags_text +=',Top'
+        pkg.tags_text += ',Top'
         pkg.save()
 
         tags = Tag.objects.usage_for_model(model=pkg.__class__)
@@ -190,6 +194,7 @@ class TagTest(TaxonomyBaseUnitTest):
         self.assertEqual(tags[0].name, 'Hot')
         self.assertEqual(tags[1].name, 'New')
         self.assertEqual(tags[2].name, 'Top')
+
 
 class TopcialSimpleTest(TaxonomyBaseUnitTest):
 
@@ -204,7 +209,7 @@ class TopcialSimpleTest(TaxonomyBaseUnitTest):
         except_topic = Topic.objects.as_root().published().get()
         self.assertEqual(except_topic.name, biggame.name)
 
-        except_topic_wiht_item_count =\
+        except_topic_wiht_item_count = \
             Topic.objects.published().with_item_count().get()
         queryset = Topic.objects.as_root().published().with_item_count()
         self.assertEqual(0, except_topic_wiht_item_count.item_count)
@@ -225,9 +230,9 @@ class TopcialSimpleTest(TaxonomyBaseUnitTest):
         self.assertEqual(except_biggame.summary, 'big game, big play')
         self.assertIsSameTime(except_biggame.released_datetime, today)
         self.assertIsSameTime(except_biggame.updated_datetime,
-                              today+timedelta(hours=1))
+                              today + timedelta(hours=1))
         self.assertIsSameTime(except_biggame.created_datetime,
-                              today+timedelta(hours=1))
+                              today + timedelta(hours=1))
 
     def test_basic_create_with_some_package(self):
         today = now() - timedelta(hours=1)
@@ -236,7 +241,7 @@ class TopcialSimpleTest(TaxonomyBaseUnitTest):
                                   released_datetime=today,
                                   updated_datetime=today,
                                   created_datetime=today
-                                  )
+        )
         package = self.create_package()
         version1 = self.create_package_version(
             package=package,
@@ -264,5 +269,5 @@ class TopcialSimpleTest(TaxonomyBaseUnitTest):
         )
         biggame.save()
         path = "topic/%s" % biggame.slug
-        biggame.icon.path |should| end_with(join(path, 'icon.png'))
-        biggame.cover.path |should| end_with(join(path, 'cover.jpg'))
+        biggame.icon.path | should | end_with(join(path, 'icon.png'))
+        biggame.cover.path | should | end_with(join(path, 'cover.jpg'))
