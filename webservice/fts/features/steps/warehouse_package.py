@@ -69,10 +69,15 @@ def visit_the_package_detail(context, pkg_field=None, pkg_value=None):
 
 @when('I follow the package {field}')
 def follow_the_package(context, field):
-    package = context.world.get('the_package')
     WarehouseDSL = factory_dsl(context)
-    WarehouseDSL.visit_package_detail(context, package)
     WarehouseDSL.follow_package_detail_above(context, field)
+
+    factory_web_dsl(context).response_to_world(context)
+
+@when('I visit ranking list page')
+def visit_ranking_page(context):
+    WarehouseDSL = factory_dsl(context)
+    WarehouseDSL.visit_ranking_page(context)
 
     factory_web_dsl(context).response_to_world(context)
 

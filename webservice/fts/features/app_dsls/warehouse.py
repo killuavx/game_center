@@ -150,7 +150,8 @@ class WarehouseBaseDSL(object):
             released_datetime=released_datetime,
             icon=SubFile.icon(),
             cover=SubFile.cover(),
-            download=SubFile.package()
+            download=SubFile.package(),
+            download_count=int(kwargs.get('download_count', 0))
         )
         add_model_objects(package_version)
         return package_version
@@ -173,6 +174,11 @@ class WarehouseBaseDSL(object):
         related_url = cls.receive_result(context).get(field)
         related_url |should_not| be(None)
         context.browser.visit(related_url)
+
+    @classmethod
+    def visit_ranking_page(cls, context):
+        ranking_url = '/api/rankings/'
+        context.browser.visit(ranking_url)
 
     @classmethod
     def visit_comment_list(cls, context, package):

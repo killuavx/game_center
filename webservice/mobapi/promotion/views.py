@@ -3,6 +3,7 @@ import copy
 from django.core.urlresolvers import reverse
 from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
+from rest_framework import filters
 from promotion.models import Advertisement, Place
 from mobapi.promotion.serializers import AdvertisementSerializer
 
@@ -25,6 +26,8 @@ class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     serializer_class = AdvertisementSerializer
     queryset = Advertisement.objects.published().by_ordering()
+    filter_backends = (filters.OrderingFilter, )
+    ordering = ('-relation_advertisement__ordering',)
 
     def list(self, request, *args, **kwargs):
         querydict = copy.deepcopy(dict(request.GET))

@@ -266,7 +266,7 @@ class ApiDSL(RestApiTest):
 
     _fixtures_dir = join(dirname(abspath(__file__)), 'fixtures')
 
-    def Given_i_have_package_with(self, **defaults):
+    def _Given_i_have_package_with(self, **defaults):
         defaults.setdefault('released_datetime', now() - timedelta(days=1))
         return create_package(**defaults)
 
@@ -279,7 +279,7 @@ class ApiDSL(RestApiTest):
 
         return packages
 
-    def Given_package_has_version_with(self, package,
+    def _Given_package_has_version_with(self, package,
                                        version_code, version_name,
                                        status,
                                        all_datetime, **default):
@@ -298,7 +298,7 @@ class ApiDSL(RestApiTest):
         _files.append(version.icon.path)
         return version
 
-    def Given_package_version_add_screenshot(self, version):
+    def _Given_package_version_add_screenshot(self, version):
         pss = PackageVersionScreenshot()
         pss.image = File(
             io.FileIO(join(ApiDSL._fixtures_dir, 'screenshot2.jpg')))
