@@ -1,10 +1,51 @@
 # -*- coding: utf-8 -*-
 from behave import *
+from should_dsl import should_not
 from fts.features.app_dsls.taxonomy import factory_dsl
 from fts.features.app_dsls.web import factory_dsl as factory_web_dsl
+from django.contrib.contenttypes.models import ContentType
+
+
+def content_type_get_object_for_this_type(
+        content_type, object_field, object_value):
+    content_type |should_not| be(None)
+    ct = ContentType.objects.get(model=content_type)
+    obj = ct.get_object_for_this_type(**{
+        object_field: object_value
+    })
+    return obj
+
+@given('topic exists such below')
+def create_topics_on_below(context):
+    TaxonomyDSL = factory_dsl(context)
+    for row in context.table:
+        TaxonomyDSL.create_topic(context, **row.as_dict())
+
+@given('topic slug "{slug}" have own items such below')
+def add_to_topic_on_below(context, slug):
+    TaxonomyDSL = factory_dsl(context)
+    topic = TaxonomyDSL.get_taxonomy_by(slug=slug)
+    for row in context.table:
+        obj = content_type_get_object_for_this_type(
+            content_type=row.get('content_type'),
+            object_field=row.get('object_field'),
+            object_value=row.get('object_value')
+        )
+        TaxonomyDSL.add_to_topic(context=context,
+                                 topic=topic,
+                                 content=obj,
+                                 ordering=row.get('ordering'))
+
+@when('I visit topic detail page slug "{slug}"')
+def visit_topic_detail_page(context, slug):
+    TaxonomyDSL = factory_dsl(context)
+    TaxonomyDSL.visit_topic_detail_page(
+        context=context, topic=TaxonomyDSL.get_taxonomy_by(slug=slug))
+
+    factory_web_dsl(context).response_to_world(context)
 
 @given('category "{name}" as root already exists')
-def step_create_category_as_root(context, name):
+def create_category_as_root(context, name):
     TaxonomyDSL = factory_dsl(context)
     TaxonomyDSL.create_category(context, name)
 

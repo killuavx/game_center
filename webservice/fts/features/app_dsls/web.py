@@ -139,6 +139,13 @@ class WebBaseDSL(object):
 
         context.browser.visit(url_to_follow)
 
+    @classmethod
+    def follow_url_on_response(cls, context, url_field):
+        data = cls.response_structure_content(context)
+        url = data.get(url_field)
+        url |should_not| be(None)
+        context.browser.visit(url)
+
 
 class WebUsingNoUIClientDSL(WebBaseDSL):
 

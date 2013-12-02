@@ -134,6 +134,13 @@ def follow_url_in_response_list_result(context,
                                               within_pagination=is_within)
     WebDSL.response_to_world(context)
 
+@when('I follow {url_field} on response')
+def follow_url_on_response(context, url_field):
+    WebDSL = factory_dsl(context)
+    WebDSL.follow_url_on_response(context=context, url_field=url_field)
+    WebDSL.response_to_world(context)
+
+
 @when('I move row contains "{text}" {updown:up?down} {times:d} times')
 def move_row_contains(context, text, updown, times):
     updown = 'up' if updown else 'down'
