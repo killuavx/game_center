@@ -12,24 +12,26 @@ from webservice.admin import AdminFieldBase, AdminField
 from django.core.urlresolvers import reverse
 from easy_thumbnails.exceptions import InvalidImageFormatError
 
-class ImageClearableFileInput(_ImageClearableFileInput):
 
+class ImageClearableFileInput(_ImageClearableFileInput):
     def render(self, name, value, attrs=None):
         try:
             return super(ImageClearableFileInput, self).render(
                 name, value, attrs)
-        except InvalidImageFormatError: pass
+        except InvalidImageFormatError:
+            pass
 
         try:
             return super(_ImageClearableFileInput, self).render(
                 name, value, attrs)
-        except InvalidImageFormatError: pass
+        except InvalidImageFormatError:
+            pass
 
         return super(_ImageClearableFileInput, self).render(
             name, None, attrs)
 
-class AdminIconField(AdminFieldBase):
 
+class AdminIconField(AdminFieldBase):
     DEFAULT_FIELD = 'icon'
 
     @staticmethod
@@ -43,8 +45,8 @@ class AdminIconField(AdminFieldBase):
 class MainAdmin(VersionAdmin):
     pass
 
-class PackageVersionScreenshotInlines(admin.StackedInline):
 
+class PackageVersionScreenshotInlines(admin.StackedInline):
     model = PackageVersionScreenshot
     extra = 0
 
@@ -52,9 +54,10 @@ class PackageVersionScreenshotInlines(admin.StackedInline):
         try:
             return mark_safe(
                 '<img src="%s" alt="%s"/>' % \
-                (thumbnail_url(obj.image, 'screenshot_thumbnail' ), obj.alt))
+                (thumbnail_url(obj.image, 'screenshot_thumbnail'), obj.alt))
         except ValueError:
             return ''
+
     show_thumbnail.short_description = _('Thumbnail')
     show_thumbnail.allow_tags = True
     classes = ('collapse', 'grp-collapse grp-closed',)
@@ -63,13 +66,14 @@ class PackageVersionScreenshotInlines(admin.StackedInline):
         ThumbnailerImageField: {'widget': ImageClearableFileInput}
     }
 
+
 class PackageVersionAdmin(MainAdmin):
     model = PackageVersion
     inlines = (PackageVersionScreenshotInlines, )
     list_per_page = 15
-    search_fields = ( 'version_name',
-                      'package__package_name',
-                      'package__title')
+    search_fields = ('version_name',
+                     'package__package_name',
+                     'package__title')
     list_display = ('show_icon',
                     'package',
                     'package_name',
@@ -81,17 +85,17 @@ class PackageVersionAdmin(MainAdmin):
                     'download_count',
     )
     list_display_links = ('show_icon', 'version_name')
-    actions = ['make_published' ]
+    actions = ['make_published']
     raw_id_fields = ('package', )
     fieldsets = (
         (_('Package'), {
-            'fields':('package', )
+            'fields': ('package', )
         }),
         (_('File'), {
-            'fields':('icon', 'cover', 'download' , 'di_download' )
+            'fields': ('icon', 'cover', 'download', 'di_download' )
         }),
         (_('Version'), {
-            'fields':('version_code', 'version_name', 'whatsnew')
+            'fields': ('version_code', 'version_name', 'whatsnew')
         }),
         (_('Version Statistics'), {
             'fields': (
@@ -99,10 +103,10 @@ class PackageVersionAdmin(MainAdmin):
             )
         }),
         (_('Status'), {
-            'fields':('status',
-                      'released_datetime',
-                      'updated_datetime',
-                      'created_datetime'
+            'fields': ('status',
+                       'released_datetime',
+                       'updated_datetime',
+                       'created_datetime'
             )
         }),
     )
@@ -113,8 +117,8 @@ class PackageVersionAdmin(MainAdmin):
         ThumbnailerImageField: {'widget': ImageClearableFileInput},
     }
 
-    show_icon = AdminIconField( allow_tags=True,
-                                short_description=_('Icon') )
+    show_icon = AdminIconField(allow_tags=True,
+                               short_description=_('Icon'))
 
     def _check_packageversion_download_data_integration(self, version):
         try:
@@ -125,12 +129,16 @@ class PackageVersionAdmin(MainAdmin):
 
     def is_data_integration(self, obj):
         return self._check_packageversion_download_data_integration(obj)
+
     is_data_integration.short_description = _('is data integration download?')
     is_data_integration.boolean = True
 
     def _package_link(p):
-        link =  reverse('admin:%s_%s_change' % (p._meta.app_label, p._meta.module_name), args=[p.pk])
+        link = reverse(
+            'admin:%s_%s_change' % (p._meta.app_label, p._meta.module_name),
+            args=[p.pk])
         return '<a href="%s" target="_blank">%s</a>' % (link, p.package_name )
+
     package_name = AdminField(name='package',
                               method=_package_link,
                               allow_tags=True,
@@ -145,6 +153,7 @@ class PackageVersionAdmin(MainAdmin):
 
     def make_published(self, request, queryset):
         queryset.update(status=PackageVersion.STATUS.published)
+
     make_published.short_description = _('Make selected Packages as published')
 
     def get_actions(self, request):
@@ -153,8 +162,8 @@ class PackageVersionAdmin(MainAdmin):
             del actions['delete_selected']
         return actions
 
-class PackageVersionInlines(admin.StackedInline):
 
+class PackageVersionInlines(admin.StackedInline):
     model = PackageVersion
     inlines = (PackageVersionScreenshotInlines, )
 
@@ -163,10 +172,10 @@ class PackageVersionInlines(admin.StackedInline):
     inline_classes = ('grp-collapse grp-closed',)
     fieldsets = (
         (None, {
-            'fields':('version_code', 'version_name', 'whatsnew')
+            'fields': ('version_code', 'version_name', 'whatsnew')
         }),
         (_('File'), {
-            'fields':('icon', 'cover', 'download', 'di_download' )
+            'fields': ('icon', 'cover', 'download', 'di_download')
         }),
         (_('Version Statistics'), {
             'fields': (
@@ -174,26 +183,28 @@ class PackageVersionInlines(admin.StackedInline):
             )
         }),
         (_('Status'), {
-            'fields':('status',
-                      'released_datetime',
-                      'updated_datetime',
-                      'created_datetime'
+            'fields': ('status',
+                       'released_datetime',
+                       'updated_datetime',
+                       'created_datetime'
             )
         }),
     )
     extra = 0
-    readonly_fields = ( 'created_datetime', 'updated_datetime')
+    readonly_fields = ('created_datetime', 'updated_datetime')
     ordering = ('-version_code',)
 
     def show_thumbnail(self, obj):
         try:
             return mark_safe(
                 '<img src="%s" alt="%s"/>' % \
-                (thumbnail_url(obj.image, 'screenshot_thumbnail' ), obj.alt))
+                (thumbnail_url(obj.image, 'screenshot_thumbnail'), obj.alt))
         except ValueError:
             return ''
+
     show_thumbnail.short_description = _('Thumbnail')
     show_thumbnail.allow_tags = True
+
 
 class PackageAdmin(MainAdmin):
     model = Package
@@ -219,12 +230,12 @@ class PackageAdmin(MainAdmin):
         }),
         (_('Taxonomy'), {
             'classes': ('suit-tab suit-tab-general',
-                        'collapse','grp-collapse grp-closed'),
+                        'collapse', 'grp-collapse grp-closed'),
             'fields': ('tags_text', 'categories')
         }),
         (_('Release'), {
             'classes': ('suit-tab suit-tab-general',
-                        'collapse','grp-collapse grp-open'),
+                        'collapse', 'grp-collapse grp-open'),
             'fields': ( 'released_datetime', 'status',
                         'created_datetime', 'updated_datetime'
             )
@@ -234,7 +245,7 @@ class PackageAdmin(MainAdmin):
         ('general', _('General')),
         ('versions', _('Versions')),
         ('statistics', _('Statistics')),
-                      )
+    )
     search_fields = ( 'title', 'package_name', '^author__name')
     list_display = ( 'pk', 'show_icon',
                      'title',
@@ -261,10 +272,12 @@ class PackageAdmin(MainAdmin):
     def _get_packageversion_download_url(self, version):
         try:
             return version.di_download.url
-        except ValueError: pass
+        except ValueError:
+            pass
         try:
             return version.download.url
-        except ValueError: pass
+        except ValueError:
+            pass
 
         return '#'
 
@@ -272,10 +285,12 @@ class PackageAdmin(MainAdmin):
         try:
             a = '<a href="{url}" target="_blank">下载地址</a>'
             return a.format(url=self._get_packageversion_download_url(
-                                                obj.versions.latest_version()),
-                            )
-        except: pass
+                obj.versions.latest_version()),
+            )
+        except:
+            pass
         return None
+
     download_url.short_description = _('download url')
     download_url.allow_tags = True
 
@@ -291,36 +306,44 @@ class PackageAdmin(MainAdmin):
         return self._check_packageversion_download_data_integration(
             latest_version
         )
+
     is_data_integration.short_description = _('is data integration download?')
     is_data_integration.boolean = True
 
     def show_icon(self, obj):
         try:
             version = obj.versions.latest('version_code')
-            return mark_safe('<img src="%s" alt="%s"/>' % (version.icon.url, obj.title))
+            return mark_safe(
+                '<img src="%s" alt="%s"/>' % (version.icon.url, obj.title))
         except ValueError:
             return ''
+
     show_icon.short_description = _('Icon')
     show_icon.allow_tags = True
 
-    actions = ['make_published', 'make_unpublished' ]
+    actions = ['make_published', 'make_unpublished']
 
     def make_published(self, request, queryset):
         queryset.update(status=Package.STATUS.published)
+
     make_published.short_description = _('Make selected Packages as published')
 
     def make_unpublished(self, request, queryset):
         queryset.update(status=Package.STATUS.unpublished)
-    make_unpublished.short_description = _('Make selected Packages as unpublished')
 
-    readonly_fields = ('download_count', 'created_datetime', 'updated_datetime',)
+    make_unpublished.short_description = _(
+        'Make selected Packages as unpublished')
+
+    readonly_fields = (
+        'download_count', 'created_datetime', 'updated_datetime',)
+
     def suit_row_attributes(self, obj, request):
         css_class = {
-            'draft':'info',
+            'draft': 'info',
             'published': 'success',
             'unpublished': 'warning',
-            'reject':'error',
-            }.get(obj.status)
+            'reject': 'error',
+        }.get(obj.status)
         if css_class:
             return {'class': css_class, 'data': obj.package_name}
 
@@ -331,6 +354,7 @@ class PackageInline(admin.TabularInline):
     fields = ( 'title', 'package_name', 'released_datetime', 'status' )
     readonly_fields = ('title', 'package_name', 'released_datetime' )
 
+
 class AuthorAdmin(MainAdmin):
     model = Author
     list_display = ( 'pk', 'show_icon', 'name', 'email', 'phone')
@@ -340,30 +364,34 @@ class AuthorAdmin(MainAdmin):
     ordering = ('name',)
 
     show_icon = AdminIconField(allow_tags=True,
-                               short_description=_('Icon') )
+                               short_description=_('Icon'))
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput},
-        }
+    }
 
     inlines = (PackageInline, )
 
-    actions = ['make_published', 'make_unpublished' ]
+    actions = ['make_published', 'make_unpublished']
+
     def make_published(self, request, queryset):
         queryset.update(status=Author.STATUS.activated)
+
     make_published.short_description = _('Make selected Authors as activated')
 
     def make_unpublished(self, request, queryset):
         queryset.update(status=Author.STATUS.unactivated)
-    make_unpublished.short_description = _('Make selected Authors as unactivated')
+
+    make_unpublished.short_description = _(
+        'Make selected Authors as unactivated')
 
 
     def suit_row_attributes(self, obj, request):
         css_class = {
-            'draft':'info',
+            'draft': 'info',
             'activated': 'success',
             'unactivated': 'warning',
-            'reject':'error',
-            }.get(obj.status)
+            'reject': 'error',
+        }.get(obj.status)
         if css_class:
             return {'class': css_class, 'data': obj.name}
 
@@ -371,8 +399,9 @@ class AuthorAdmin(MainAdmin):
         form = super(AuthorAdmin, self).get_form(request, obj, **kwargs)
         # FIXME 简化author.email数据填充,自动生成处理
         email = "%s@testcase.com" % now().strftime('%Y%m%d-%H%M%S')
-        form.base_fields['email'].initial=email
+        form.base_fields['email'].initial = email
         return form
+
 
 admin.site.register(PackageVersion, PackageVersionAdmin)
 admin.site.register(Package, PackageAdmin)
