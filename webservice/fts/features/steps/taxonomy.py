@@ -36,6 +36,14 @@ def add_to_topic_on_below(context, slug):
                                  content=obj,
                                  ordering=row.get('ordering'))
 
+@given('topic slug "{slug}" have own topic children such below')
+def add_children_to_topic_on_below(context, slug):
+    TaxonomyDSL = factory_dsl(context)
+    topic = TaxonomyDSL.get_taxonomy_by(slug=slug)
+    for row in context.table:
+        child = TaxonomyDSL.create_topic(context=context, **row.as_dict())
+        topic.children.add(child)
+
 @when('I visit topic detail page slug "{slug}"')
 def visit_topic_detail_page(context, slug):
     TaxonomyDSL = factory_dsl(context)

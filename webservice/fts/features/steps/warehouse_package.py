@@ -51,6 +51,15 @@ def package_already_exists_below(context):
     for row in context.table:
         WarehouseDSL.create_package_without_ui(context, **row.as_dict())
 
+@given('author "{name}" have package exists such below')
+def author_have_package_exists_below(context, name):
+    WarehouseDSL = factory_dsl(context)
+    author = WarehouseDSL.create_author_without_ui(context=context, name=name)
+    for row in context.table:
+        WarehouseDSL.create_package_without_ui(context,
+                                               author=author,
+                                               **row.as_dict())
+
 @given('change {field} of the package version to {value}')
 def change_package_version(context, field, value):
     version = context.world.get('the_package_version')
