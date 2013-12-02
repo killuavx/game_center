@@ -108,8 +108,12 @@ def before_all(context):
     setup(context)
     personaenv.before_all(context)
     webenv.before_all(context)
-    if not in_tags_list('~solrservice', context.config.tags.ands):
+
+    with_solrservice = in_tags_list('solrservice', context.config.tags.ands)
+    if with_solrservice:
         searcher.SearcherService.start()
+
+    #with_solrservice = not in_tags_list('~solrservice', context.config.tags.ands)
 
 
 def after_all(context):

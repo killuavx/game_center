@@ -51,6 +51,7 @@ class WarehouseBaseUnitTest(TestCase):
         self.TaxonomyDSL.teardown(self)
 
     def create_author(self, **kwargs):
+        kwargs.setdefault('status', 'draft')
         return self.WarehouseDSL.create_author_without_ui(self, **kwargs)
 
     def create_package(self, with_version=False, **kwargs):
@@ -172,9 +173,11 @@ class PackageUnitTest(WarehouseBaseUnitTest):
         self.assertEqual(except_author.name, "Martin Flower")
 
     def _create_with_one_version(self):
-        return helpers.create_package(title="梦幻西游",
-                                      package_name="com.menghuan.xiyou",
-                                      author=self.author)
+        return self.create_package(title="梦幻西游",
+                                   package_name="com.menghuan.xiyou",
+                                   author=self.author,
+                                   status=Package.STATUS.draft,
+                                   with_version=True)
 
     def test_change_status_bewteen_draft_to_unpublished(self):
         pkg = self._create_with_one_version()

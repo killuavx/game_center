@@ -3,6 +3,7 @@ from behave import *
 from fts.features import support
 from fts.features.app_dsls.web import factory_dsl
 from should_dsl import should, should_not
+from collections.abc import Iterable
 
 
 # override step 'I choose "{value}" form "{options}"'
@@ -79,7 +80,6 @@ def result_list_should_have_elements(context, is_within, count):
     results |should| have(count).elements
 
 
-
 @then('I should see response contains field "{name}"')
 def should_contains_field(context, name):
     WebDSL = factory_dsl(context)
@@ -93,6 +93,28 @@ def should_see_field(context, field, value):
     content.get(field) |should_not| be(None)
     str(content.get(field)) |should| equal_to(value)
 
+@then('I should see response field {field} endswith "{endstr}"')
+def should_see_field_endswith(context, field, endstr):
+    WebDSL = factory_dsl(context)
+    content = WebDSL.response_structure_content(context)
+    content.get(field) |should_not| be(None)
+    content.get(field) |should| end_with(endstr)
+
+
+@then('I should see response contains with {field} on below')
+def should_see_field_contains_below_value(context, field):
+    WebDSL = factory_dsl(context)
+    content = WebDSL.response_structure_content(context)
+
+    data_sequeue = content.get(field)
+    data_sequeue |should_not| be(None)
+    data_sequeue |should| be_kind_of(Iterable)
+    data_sequeue = list(map(lambda e: str(e), data_sequeue))
+
+    expect_sequeue = list(map(lambda row: str(row['value']), context.table))
+    data_sequeue |should| have_at_least(len(expect_sequeue)).items
+    data_sequeue |should| include_all_of(expect_sequeue)
+
 @then('I should see list result with{is_within:in?out} pagination '
       'paginate by "{page_size:d}" items')
 def result_list_should_paginate_by(context, is_within, page_size):
@@ -104,6 +126,27 @@ def result_list_should_paginate_by(context, is_within, page_size):
 def reuslt_list_should_sequence_like(context, is_within):
     WebDSL = factory_dsl(context)
     WebDSL.should_result_list_sequence_like(context, is_within)
+
+@when('I follow {url_field} of the element {find_field} "{find_value}" '
+      'in list result of the response with{is_within:in?out} pagination')
+def follow_url_in_response_list_result(context,
+                                       url_field,
+                                       find_field,
+                                       find_value,
+                                       is_within=True):
+    WebDSL = factory_dsl(context)
+    WebDSL.follow_url_in_response_list_result(context=context,
+                                              url_field=url_field,
+                                              find_field=find_field,
+                                              find_value=find_value,
+                                              within_pagination=is_within)
+    WebDSL.response_to_world(context)
+
+@when('I follow {url_field} on response')
+def follow_url_on_response(context, url_field):
+    WebDSL = factory_dsl(context)
+    WebDSL.follow_url_on_response(context=context, url_field=url_field)
+    WebDSL.response_to_world(context)
 
 
 @when('I move row contains "{text}" {updown:up?down} {times:d} times')

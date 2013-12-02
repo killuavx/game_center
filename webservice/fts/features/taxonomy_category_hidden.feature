@@ -1,15 +1,7 @@
 Feature: Hidden Category
-  As Operator in Game Center
+  As a Operator
   I want to hide the category on the font side
-  So that category cannot be visit through category list of font side
-  but Identity url
-
-  Scenario: new category
-    Given category "Big Game" as root already exists
-      And I focus on category "Big Game"
-     When I visit category page
-     Then I should receive 200 OK
-      And I should see the category in result tree
+  So that category cannot be visit through category list of font side but Identity url
 
   Scenario: hide category and the category not found in category tree
     Given category "Chinese Game" as root already exists

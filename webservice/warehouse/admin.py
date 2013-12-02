@@ -107,7 +107,7 @@ class PackageVersionAdmin(MainAdmin):
         }),
     )
     extra = 0
-    readonly_fields = ( 'created_datetime', 'updated_datetime',)
+    readonly_fields = ('created_datetime', 'updated_datetime',)
     ordering = ('-updated_datetime', '-version_code',)
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput},
@@ -248,7 +248,7 @@ class PackageAdmin(MainAdmin):
                      'download_url',
     )
     raw_id_fields = ('author', )
-    list_filter = ('categories', 'released_datetime', 'status' )
+    list_filter = ('categories', 'released_datetime', 'status')
     list_display_links = ('title', 'package_name',)
     list_editable = ('status', 'tags_text',)
     date_hierarchy = 'released_datetime'

@@ -111,6 +111,42 @@ class WebBaseDSL(object):
 
         result_sequence |should| equal_to(expect_sequence)
 
+    @classmethod
+    def follow_url_in_response_list_result(cls, context,
+                                              url_field,
+                                              find_field,
+                                              find_value,
+                                              within_pagination=True):
+        results = cls.response_structure_content(context)
+
+        if within_pagination:
+            results= results.get('results')
+        def find_row(row):
+            if str(row.get(find_field)) == find_value:
+                return row
+            return False
+
+        expect_row = None
+        for row in results:
+            row = find_row(row)
+            if row:
+                expect_row = row
+                break
+
+        expect_row |should_not| be(None)
+        url_to_follow = expect_row.get(url_field)
+        url_to_follow |should_not| be(None)
+
+        context.browser.visit(url_to_follow)
+
+    @classmethod
+    def follow_url_on_response(cls, context, url_field):
+        data = cls.response_structure_content(context)
+        url = data.get(url_field)
+        url |should_not| be(None)
+        context.browser.visit(url)
+
+
 class WebUsingNoUIClientDSL(WebBaseDSL):
 
     @classmethod

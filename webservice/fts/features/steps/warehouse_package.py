@@ -51,6 +51,23 @@ def package_already_exists_below(context):
     for row in context.table:
         WarehouseDSL.create_package_without_ui(context, **row.as_dict())
 
+@given('author "{name}" have package exists such below')
+def author_have_package_exists_below(context, name):
+    WarehouseDSL = factory_dsl(context)
+    author = WarehouseDSL.create_author_without_ui(context=context, name=name)
+    for row in context.table:
+        WarehouseDSL.create_package_without_ui(context,
+                                               author=author,
+                                               **row.as_dict())
+
+@given('change {field} of the package version to {value}')
+def change_package_version(context, field, value):
+    version = context.world.get('the_package_version')
+    WarehouseDSL = factory_dsl(context)
+    WarehouseDSL.change_package_version(context,
+                                        version=version,
+                                        field=field,
+                                        value=value)
 
 @when('I visit the package detail')
 @when('I visit the package detail {pkg_field} "{pkg_value}"')
@@ -69,10 +86,15 @@ def visit_the_package_detail(context, pkg_field=None, pkg_value=None):
 
 @when('I follow the package {field}')
 def follow_the_package(context, field):
-    package = context.world.get('the_package')
     WarehouseDSL = factory_dsl(context)
-    WarehouseDSL.visit_package_detail(context, package)
     WarehouseDSL.follow_package_detail_above(context, field)
+
+    factory_web_dsl(context).response_to_world(context)
+
+@when('I visit ranking list page')
+def visit_ranking_page(context):
+    WarehouseDSL = factory_dsl(context)
+    WarehouseDSL.visit_ranking_page(context)
 
     factory_web_dsl(context).response_to_world(context)
 

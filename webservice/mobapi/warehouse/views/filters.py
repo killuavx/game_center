@@ -5,6 +5,7 @@ from functools import reduce
 import operator
 import six
 
+
 class SolrSearchFilter(filters.SearchFilter):
 
     collection_name = 'package'

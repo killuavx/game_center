@@ -18,8 +18,10 @@ from django.db.models import SlugField
 from django.core.urlresolvers import get_callable
 from django.conf import settings
 
-slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION', 'taxonomy.helpers.slugify')
+slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
+                                'taxonomy.helpers.slugify')
 slugify = get_callable(slugify_function_path)
+
 
 def factory_taxonomy_upload_to_path(basename):
     def update_to(instance, filename):
@@ -31,13 +33,16 @@ def factory_taxonomy_upload_to_path(basename):
             'extension': extension
         }
         return path
+
     return update_to
+
 
 class Taxonomy(models.Model):
     name = models.CharField(max_length=32,
                             unique=True,
-                            help_text=_('Short descriptive name for this taxonomy.'),
-                            )
+                            help_text=_(
+                                'Short descriptive name for this taxonomy.'),
+    )
 
     slug = SlugField(
         max_length=32,
@@ -45,7 +50,7 @@ class Taxonomy(models.Model):
         unique=True,
         db_index=True,
         help_text=_('Short descriptive unique name for use in urls.'),
-        )
+    )
 
     ordering = models.PositiveIntegerField(
         default=0,
@@ -73,8 +78,8 @@ class Taxonomy(models.Model):
     class Meta:
         abstract = True
 
-class CategoryQuerySet(QuerySet):
 
+class CategoryQuerySet(QuerySet):
     def as_root(self):
         return self.filter(parent=None)
 
@@ -101,14 +106,16 @@ class CategoryQuerySet(QuerySet):
     def showed(self):
         return self.hidden(False)
 
+
 class CategoryManager(TreeManager, PassThroughManager):
     pass
 
-class Category(MPTTModel, Taxonomy):
 
+class Category(MPTTModel, Taxonomy):
     objects = CategoryManager.for_queryset_class(CategoryQuerySet)()
 
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', null=True, blank=True,
+                            related_name='children')
 
     class MPTTMeta:
         left_attr = 'mptt_lft'
@@ -147,14 +154,15 @@ class Category(MPTTModel, Taxonomy):
         super(Category, self).save(*args, **kwargs)
         Category.objects.rebuild()
 
-class TopicQuerySet(QuerySet):
 
+class TopicQuerySet(QuerySet):
     def as_root(self):
         return self.filter(parent=None)
 
     def published(self):
         return self.filter(
-            released_datetime__lte=now(), status=str(self.model.STATUS.published))
+            released_datetime__lte=now(),
+            status=str(self.model.STATUS.published))
 
     def by_parent(self, topic):
         return self.filter(parent__pk=topic.pk)
@@ -179,14 +187,16 @@ class TopicQuerySet(QuerySet):
     def by_ordering(self):
         return self.order_by('ordering')
 
+
 class TopicManager(TreeManager, PassThroughManager):
     pass
 
-class Topic(MPTTModel, Taxonomy):
 
+class Topic(MPTTModel, Taxonomy):
     objects = TopicManager.for_queryset_class(TopicQuerySet)()
 
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', null=True, blank=True,
+                            related_name='children')
 
     class MPTTMeta:
         left_attr = 'mptt_lft'
@@ -248,22 +258,23 @@ class Topic(MPTTModel, Taxonomy):
         super(Topic, self).save(*args, **kwargs)
         Topic.objects.rebuild()
 
-class TopicalItemQuerySet(QuerySet):
 
+class TopicalItemQuerySet(QuerySet):
     def get_items_by_topic(self, topic, item_model):
         content_type = ContentType.objects.get_for_model(item_model)
-        return item_model.objects\
+        return item_model.objects \
             .filter(topics__topic__pk=topic.pk,
-                    topics__content_type__pk=content_type.pk)\
+                    topics__content_type__pk=content_type.pk) \
             .order_by('topics__ordering')
 
-class TopicalItem(models.Model):
 
+class TopicalItem(models.Model):
     objects = PassThroughManager.for_queryset_class(TopicalItemQuerySet)()
 
     topic = models.ForeignKey(Topic, related_name='items')
 
-    content_type = models.ForeignKey(ContentType, related_name='topic_content_type')
+    content_type = models.ForeignKey(ContentType,
+                                     related_name='topic_content_type')
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey("content_type", "object_id")
 
@@ -281,8 +292,10 @@ class TopicalItem(models.Model):
     def __str__(self):
         return '%s [%s]' % (self.content_object, self.topic)
 
+
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+
 
 @receiver(pre_save, sender=Topic)
 def topic_pre_save(sender, instance, **kwargs):

@@ -46,6 +46,7 @@ class WarehouseBaseDSL(object):
         name = guid()[:10]
         kwargs.setdefault('email', '%s@testcase.com' % name)
         kwargs.setdefault('name', name)
+        kwargs.setdefault('status', 'activated')
         return create_author(**kwargs)
 
     @classmethod
@@ -86,7 +87,7 @@ class WarehouseBaseDSL(object):
                 title=kwargs.get('title') or default_name_or_title,
             )
             package = Package.objects.create(
-                author=cls.create_author_without_ui(context),
+                author=kwargs.get('author') or cls.create_author_without_ui(context),
                 status=kwargs.get('status', 'published'),
                 released_datetime=released_datetime,
                 **_kw
@@ -150,10 +151,25 @@ class WarehouseBaseDSL(object):
             released_datetime=released_datetime,
             icon=SubFile.icon(),
             cover=SubFile.cover(),
-            download=SubFile.package()
+            download=SubFile.package(),
+            download_count=int(kwargs.get('download_count', 0))
         )
         add_model_objects(package_version)
         return package_version
+
+    @classmethod
+    @override_settings(PACKAGE_FILE_PARSE_OPTS=dict(
+        package_version_parser_class=None,
+        package_version_parse_handle_class=None
+    ))
+    def change_package_version(cls, context, version, field, value):
+        if value == 'cpk':
+            field = 'di_download'
+            value = SubFile.package(type='cpk')
+        elif value == 'apk':
+            value = SubFile.package(type='apk')
+        setattr(version, field, value)
+        version.save()
 
     @classmethod
     def create_screenshot_without_ui(cls, context, version):
@@ -173,6 +189,11 @@ class WarehouseBaseDSL(object):
         related_url = cls.receive_result(context).get(field)
         related_url |should_not| be(None)
         context.browser.visit(related_url)
+
+    @classmethod
+    def visit_ranking_page(cls, context):
+        ranking_url = '/api/rankings/'
+        context.browser.visit(ranking_url)
 
     @classmethod
     def visit_comment_list(cls, context, package):

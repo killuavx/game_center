@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
-from fts.helpers import clear_data, SubFile, create_category, create_topic
+from fts.helpers import (add_model_objects,
+                         clear_data,
+                         SubFile,
+                         create_category,
+                         create_topic)
 from taxonomy.models import *
+from should_dsl import should
+from django.utils.timezone import now, timedelta
 from django.core.management import call_command
 
 
@@ -16,7 +22,26 @@ class TaxonomyBaseDSL(object):
 
     @classmethod
     def create_topic(cls, context, name, **kwargs):
+        yesterday = now() - timedelta(days=1)
+        kwargs.setdefault('status', 'published')
+        kwargs.setdefault('released_datetime', yesterday)
         return create_topic(name=name, **kwargs)
+
+    @classmethod
+    def add_to_topic(cls, context, topic, content, ordering=None):
+        if ordering is not None:
+            topicItem = TopicalItem.objects.create(topic=topic,
+                                                   content_object=content,
+                                                   ordering=ordering)
+        else:
+            topicItem = TopicalItem.objects.create(topic=topic,
+                                                   content_object=content)
+        add_model_objects(topicItem)
+        return topicItem
+
+    @classmethod
+    def get_taxonomy_by(cls, slug):
+        return Topic.objects.get(slug=slug)
 
     @classmethod
     def create_category(cls, context, name, **kwargs):
@@ -52,8 +77,16 @@ class TaxonomyBaseDSL(object):
             cls, 'visit_category_page'
         ))
 
+    _api_topic_url = '/api/topics/'
+
     @classmethod
     def visit_category_detail_page(cls, context, category):
+        raise NotImplementedError('you must implement %s.%s' %(
+            cls, 'visit_category_detail_page'
+        ))
+
+    @classmethod
+    def visit_topic_detail_page(cls, context, topic):
         raise NotImplementedError('you must implement %s.%s' %(
             cls, 'visit_category_detail_page'
         ))
@@ -70,6 +103,11 @@ class TaxonomyUsingBrowserDSL(TaxonomyBaseDSL):
         api_url = "%s%s/" % (cls._api_category_url, category.slug)
         context.execute_steps('When I visit "%s"' % api_url)
 
+    @classmethod
+    def visit_topic_detail_page(cls, context, topic):
+        api_url = "%s%s/" % (cls._api_topic_url, topic.slug)
+        context.execute_steps('When I visit "%s"' % api_url)
+
 
 class TaxonomyUsingNoUIClientDSL(TaxonomyBaseDSL):
 
@@ -83,6 +121,13 @@ class TaxonomyUsingNoUIClientDSL(TaxonomyBaseDSL):
         api_url = "%s%s%s/" % (context.base_url,
                               cls._api_category_url,
                               category.slug)
+        context.client.get(api_url)
+
+    @classmethod
+    def visit_topic_detail_page(cls, context, topic):
+        api_url = "%s%s%s/" % (context.base_url,
+                               cls._api_topic_url,
+                               topic.slug)
         context.client.get(api_url)
 
 

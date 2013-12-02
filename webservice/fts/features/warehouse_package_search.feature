@@ -75,8 +75,8 @@ Feature: Search package
 
     When I search with keyword "无限"
     Then I should receive 200 OK
-    And I should see response with count "2"
-    And I should see list result within pagination sequence like below:
+     And I should see response with count "2"
+     And I should see list result within pagination sequence like below:
       | title            | package_name  |
       | 捕鱼日记无限金币版  | com.fish      |
       | 极速狂徒无限金币版  | com.luko.car  |
