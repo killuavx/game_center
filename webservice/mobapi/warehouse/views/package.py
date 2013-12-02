@@ -114,10 +114,11 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                        RelatedPackageSearchFilter
     )
     filter_fields = ('package_name', 'title',)
-    ordering = ('title',
-                'package_name',
-                'updated_datetime',
-                'released_datetime')
+    ordering = ('-released_datetime',
+                '-updated_datetime',
+                'title',
+                'package_name'
+                )
 
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class = self.serializer_class

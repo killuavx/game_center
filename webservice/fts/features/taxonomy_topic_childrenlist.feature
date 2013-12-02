@@ -3,7 +3,6 @@ Feature: Topic list
   I want to add topic for Choice Topic
   So that the topic can catch the players eye and categorized into Choice Topic
 
-  @wip
   Scenario: top authors topic
     Given author "Gameloft" have package exists such below:
       | title           | package_name  | version_code | version_name |
