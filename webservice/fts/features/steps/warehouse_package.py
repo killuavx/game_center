@@ -51,6 +51,14 @@ def package_already_exists_below(context):
     for row in context.table:
         WarehouseDSL.create_package_without_ui(context, **row.as_dict())
 
+@given('change {field} of the package version to {value}')
+def change_package_version(context, field, value):
+    version = context.world.get('the_package_version')
+    WarehouseDSL = factory_dsl(context)
+    WarehouseDSL.change_package_version(context,
+                                        version=version,
+                                        field=field,
+                                        value=value)
 
 @when('I visit the package detail')
 @when('I visit the package detail {pkg_field} "{pkg_value}"')

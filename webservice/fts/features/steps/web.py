@@ -93,6 +93,14 @@ def should_see_field(context, field, value):
     content.get(field) |should_not| be(None)
     str(content.get(field)) |should| equal_to(value)
 
+@then('I should see response field {field} endswith "{endstr}"')
+def should_see_field_endswith(context, field, endstr):
+    WebDSL = factory_dsl(context)
+    content = WebDSL.response_structure_content(context)
+    content.get(field) |should_not| be(None)
+    content.get(field) |should| end_with(endstr)
+
+
 @then('I should see response contains with {field} on below')
 def should_see_field_contains_below_value(context, field):
     WebDSL = factory_dsl(context)

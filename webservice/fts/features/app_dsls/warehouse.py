@@ -157,6 +157,16 @@ class WarehouseBaseDSL(object):
         return package_version
 
     @classmethod
+    def change_package_version(cls, context, version, field, value):
+        if value == 'cpk':
+            field = 'di_download'
+            value = SubFile.package(type='cpk')
+        elif value == 'apk':
+            value = SubFile.package(type='apk')
+        setattr(version, field, value)
+        version.save()
+
+    @classmethod
     def create_screenshot_without_ui(cls, context, version):
         pss = PackageVersionScreenshot()
         pss.image = SubFile.screenshot()

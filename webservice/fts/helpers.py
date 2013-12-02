@@ -194,8 +194,10 @@ class SubFile(object):
     fixtures_dir = fixtures_dir
 
     @classmethod
-    def package(cls):
+    def package(cls, type='apk'):
         name = 'tinysize.apk'
+        if type == 'cpk':
+            name = 'appexample/appdata-nodata-gpk.cpk'
         return cls.file(name)
 
     @classmethod
