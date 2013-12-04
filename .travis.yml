@@ -1,6 +1,8 @@
 language: python
 python:
   - "3.3"
+services:
+  - redis-server
 env:
   #- DB=mysql
   #  PJ=webservice

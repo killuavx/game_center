@@ -387,5 +387,21 @@ os.environ['SOLR_HOME'] = SOLR_HOME =\
     join(os.environ['SEARCHER_SCRIPT_DIR'], 'solr')
 
 
+REDIS_SERVER_CMD='/usr/local/bin/redis-server'
 
+SESSION_ENGINE = 'redis_sessions.session'
+SESSION_REDIS_HOST = 'localhost'
+SESSION_REDIS_PORT = 6379
+SESSION_REDIS_DB = 0
+SESSION_REDIS_PASSWORD = ''
+SESSION_REDIS_PREFIX = 'session'
 
+CACHES = {
+    "default": {
+        "BACKEND": "redis_cache.cache.RedisCache",
+        "LOCATION": "127.0.0.1:6379:1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "redis_cache.client.DefaultClient",
+            }
+    }
+}
