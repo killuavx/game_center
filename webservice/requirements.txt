@@ -28,3 +28,5 @@ django-comments-xtd==1.2a1
 pysolr
 django-haystack
 
+django-redis
+django-redis-sessions
