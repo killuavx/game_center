@@ -154,6 +154,7 @@ INTERNAL_APPS = [
     'django.contrib.comments',
     'django_comments_xtd',
     'haystack',
+    'redis_cache.stats',
 ]
 
 EXTENDAL_APPS = [
@@ -396,12 +397,12 @@ SESSION_REDIS_DB = 0
 SESSION_REDIS_PASSWORD = ''
 SESSION_REDIS_PREFIX = 'session'
 
-CACHES = {
-    "default": {
-        "BACKEND": "redis_cache.cache.RedisCache",
-        "LOCATION": "127.0.0.1:6379:1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "redis_cache.client.DefaultClient",
-            }
-    }
-}
+#CACHES = {
+#    "default": {
+#        "BACKEND": "redis_cache.cache.RedisCache",
+#        "LOCATION": "127.0.0.1:6379:1",
+#        "OPTIONS": {
+#            "CLIENT_CLASS": "redis_cache.client.DefaultClient",
+#            }
+#    }
+#}
