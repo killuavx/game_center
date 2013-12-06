@@ -167,6 +167,7 @@ EXTENDAL_APPS = [
     'promotion',
     'account',
     'comment',
+    'analysis',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
