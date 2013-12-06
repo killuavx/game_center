@@ -406,3 +406,15 @@ SESSION_REDIS_PREFIX = 'session'
 #            }
 #    }
 #}
+
+MOGOENGINE_SERVER_CMD = '/opt/local/bin/mongod'
+
+MOGOENGINE_CLIENT_CMD = '/opt/local/bin/mongo'
+
+MOGOENGINE_CONNECTS = {
+   'default': {
+       'host': 'localhost',
+       'port': 27017,
+       'name': 'datawarehouse',
+   }
+}

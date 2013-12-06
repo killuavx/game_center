@@ -5,6 +5,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import TokenAuthentication
 from account.models import User as Player
 
+
 class ExpiringTokenAuthentication(TokenAuthentication):
 
     def authenticate_credentials(self, key):
@@ -24,6 +25,7 @@ class ExpiringTokenAuthentication(TokenAuthentication):
             raise AuthenticationFailed('Token has expired')
 
         return token.user, token
+
 
 class PlayerTokenAuthentication(TokenAuthentication):
 

@@ -33,6 +33,9 @@ rest_router.register('bookmarks',
                      base_name='bookmark')
 rest_router.register('comments', CommentViewSet)
 
+from analysis.views.rest_views import EventViewSet
+rest_router.register('events', EventViewSet, base_name='event')
+
 urlpatterns = rest_router.urls
 
 import mobapi.account
