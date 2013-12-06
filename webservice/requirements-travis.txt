@@ -1,3 +1,4 @@
+selenium==2.35.0
 should-dsl
 behave
 #behaving
