@@ -30,3 +30,5 @@ django-haystack
 
 django-redis
 django-redis-sessions
+
+mongoengine

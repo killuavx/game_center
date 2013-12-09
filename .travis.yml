@@ -3,6 +3,7 @@ python:
   - "3.3"
 services:
   - redis-server
+  - mongodb
 env:
   #- DB=mysql
   #  PJ=webservice

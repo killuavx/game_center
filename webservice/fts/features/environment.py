@@ -36,7 +36,8 @@ from fts.features.app_dsls import (account,
                                    comment,
                                    taxonomy,
                                    clientapp,
-                                   searcher)
+                                   searcher,
+                                   analysis)
 
 
 def in_tags_list(tag, tags_list):
@@ -67,6 +68,7 @@ def setup_dsls(context):
     clientapp.setup(context)
     taxonomy.setup(context)
     searcher.setup(context)
+    analysis.setup(context)
 
 
 def setup_client(context):
@@ -89,6 +91,7 @@ def teardown_dsls(context):
     clientapp.teardown(context)
     taxonomy.teardown(context)
     searcher.teardown(context)
+    analysis.teardown(context)
 
 
 def teardown(context):
