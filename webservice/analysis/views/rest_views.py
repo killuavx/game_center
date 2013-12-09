@@ -25,7 +25,7 @@ class EventViewSet(mixins.CreateModelMixin,
                                                               many=many,
                                                               partial=partial)
         request = serializer.context.get('request')
-        if request:
+        if request and serializer.object:
             serializer.object.user_pk = request.user.pk
         return serializer
 
