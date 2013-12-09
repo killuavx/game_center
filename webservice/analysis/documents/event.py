@@ -2,6 +2,8 @@
 from django.utils.timezone import now
 from mongoengine import DynamicDocument, fields
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser, AbstractUser
 
 
 class Event(DynamicDocument):
@@ -10,6 +12,22 @@ class Event(DynamicDocument):
                               required=True)
 
     user_pk = fields.IntField(default=-1)
+
+    def _set_user(self, user):
+        User = get_user_model()
+        if isinstance(user, User):
+            return user.pk
+        elif isinstance(user, AnonymousUser):
+            return -1
+        elif isinstance(user, int):
+            return user
+
+        raise TypeError('user type must be int type')
+
+    def _get_user(self):
+        return get_user_model().objects.get(pk=self.user_pk)
+
+    user = property(_get_user, _set_user)
 
     ENTRY_TYPES = (
         ('client', _('CCPlay Client')),
