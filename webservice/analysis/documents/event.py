@@ -50,6 +50,12 @@ class Event(DynamicDocument):
 
     tags = fields.ListField(fields.StringField(max_length=30), required=False)
 
+    package_name = fields.StringField(max_length=150, required=False)
+
+    device = fields.StringField(max_length=100, required=False)
+
+    manufacturer = fields.StringField(max_length=50, required=False)
+
     created_datetime = fields.DateTimeField(default=now)
 
     #fact = fields.ReferenceField('anaylsis.documents.facts.BaseFact')
