@@ -41,6 +41,8 @@ class Event(DynamicDocument):
 
     EVENT_TYPES = (
         ('activate', _('Activate')),
+        ('open', _('Open')),
+        ('close', _('Close')),
     )
 
     eventtype = fields.StringField(max_length=15,
