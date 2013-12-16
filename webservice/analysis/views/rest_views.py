@@ -9,7 +9,7 @@ from mobapi.authentications import PlayerTokenAuthentication
 class EventViewSet(mixins.CreateModelMixin,
                    viewsets.GenericViewSet):
     """
-    ## 发表评论接口
+    ## 记录事件接口
 
     ### 可选登陆数据
 
