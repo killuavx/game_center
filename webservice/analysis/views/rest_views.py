@@ -8,6 +8,45 @@ from mobapi.authentications import PlayerTokenAuthentication
 
 class EventViewSet(mixins.CreateModelMixin,
                    viewsets.GenericViewSet):
+    """
+    ## 记录事件接口
+
+    ### 可选登陆数据
+
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 可通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
+
+    #### 访问方式
+
+        POST /api/events/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+        Content-Type:application/json
+
+        {
+            "imei": "4401023012500234",
+            "eventtype": "activate",
+            "entrytype": "client"
+        }
+
+    #### 提交信息
+
+    * `imei`: 国际移动设备标识码 *
+    * `eventtype`: 事件类型，可选值[activate, open, close]分别对应[激活, 打开, 关闭] *
+    * `entrytype`: 进入类型，可选值[client, game]分别对应[市场客户端, 嵌入sdk的游戏] *
+    * `package_name`: 游戏或客户端应用包名
+    * `device`: 厂商设备号信息
+    * `manufacturer`: 设备生产厂商
+    * `tags`: 自定义标签，数组类型
+
+    #### 响应内容
+
+    * 201 HTTP_201_CREATED
+        * 发布成功
+        * 返回刚创建的信息
+    * 400 HTTP_400_BAD_REQUEST
+        * 坏请求
+        * 返回错误信息
+    """
 
     model = Event
     queryset = Event.objects
