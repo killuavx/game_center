@@ -21,6 +21,8 @@ class PackageSummarySerializer(PackageSummaryRestSerializer):
 
     id = serializers.IntegerField(source='pk')
 
+    download = serializers.SerializerMethodField('get_latest_version_download')
+
     class Meta:
         model = Package
         fields = ('url',
@@ -35,6 +37,7 @@ class PackageSummarySerializer(PackageSummaryRestSerializer):
                   'version_count',
                   'summary',
                   'author',
+                  'download',
                   'download_size',
                   'download_count',
                   'comments_url',
