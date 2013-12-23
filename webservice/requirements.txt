@@ -34,8 +34,8 @@ django-redis-sessions
 mongoengine
 
 # **for support py3**
--e git+git://github.com/killuavx/django-static-precompiler/tree/support/py3#egg=django-static-precompiler
+https://github.com/killuavx/django-static-precompiler/archive/support/py3.zip#egg=django-static-precompiler
 
 # haml templatetags
--e git+git://github.com/killuavx/HamlPy/tree/support/py3#egg=HamlPy
+https://github.com/killuavx/HamlPy/archive/support/py3.zip#egg=HamlPy
 djaml
