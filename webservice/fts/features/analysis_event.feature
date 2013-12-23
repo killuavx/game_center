@@ -13,6 +13,7 @@ Feature: collect user activated Event
      And I should see response with imei "493002407599521"
      #And I should see response contains field "created_datetime"
 
+  @skip
   Scenario: Post New Event with signin
     Given I sign in as "kentback" already exists
     When I post event to analysis webservice on below:
