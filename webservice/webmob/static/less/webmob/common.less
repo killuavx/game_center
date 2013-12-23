@@ -1,0 +1,134 @@
+@import "../flatui/flat-ui";
+
+@green-sea: #16A085;
+@background-green: #67cccc;
+@panel-green: #32af3e;
+@element-green: #c6d202;
+
+body { padding-top: 40px; }
+
+.noradius () {
+  border-radius: 0;
+}
+
+header {
+  border-bottom: 1px solid @background-green;
+  margin-bottom: -10px;
+}
+
+.input-group .form-control,
+.container .jumbotron,
+.btn, .label, .share,
+{ .noradius() }
+
+.container { width: 100%;}
+
+.navbar {
+  .noradius();
+  height: 42px;
+  min-height: 42px;
+}
+
+.navbar nav {
+  padding-top: 3px;
+}
+
+@search-radius-size: 22px;
+#searchbox{
+  input {
+    border-radius: @search-radius-size 0 0 @search-radius-size;
+    border: 0px;
+  }
+
+  button {
+    border-radius: 0 @search-radius-size @search-radius-size 0;
+    border: 0px;
+    padding-top: 8px;
+    padding-bottom: 9px;
+    padding-left:9px;
+    margin-right: 10px;
+    background-color: white;
+    color: @btn-success;
+  }
+}
+
+.navbar .navbar-brand {
+  padding-left: 0px;
+  padding-right: 5px;
+  margin-left: -10px;
+  margin-right: -10px;
+  border-top: none;
+  border-bottom: none;
+  img.logo, i.logo {
+    margin: 9px;
+    margin-left: 5px;
+    width: 88px;
+  }
+}
+
+.navbar-inverse {
+  background: none;
+  .navbar-brand {
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+    padding: 0;
+  }
+}
+
+.bs-docs-nav {
+  text-shadow: 0 -1px 0 rgba(0,0,0,.15);
+  background-color: @background-green;
+  box-shadow: 0 1px 0 #1abc9c;
+}
+
+@btn-success: @background-green;
+@btn-success-hover-bg:  mix(@brand-success, white, 80%);
+@btn-success-active-bg:	mix(@brand-success, black, 85%);
+.btn-primary {
+  .button-variant(@btn-default-color, @btn-success, @btn-success-hover-bg, @btn-success-active-bg);
+}
+
+
+.topbar-group {
+  background-color: mix(@element-green, white, 50%);
+  padding: 10px;
+}
+
+#topbar-result {
+}
+
+#topbar-tips {
+}
+
+@icon_side_length: 68px;
+.package-list {
+  img.icon {
+    width: @icon_side_length;
+    height: @icon_side_length;
+  }
+  h4 {
+    font-size:18px;
+  }
+
+  .row a.btn {
+    margin: 2px;
+  }
+
+  a.download {
+    color: @btn-success;
+    background-color: white;
+  }
+
+  tr  {
+    h4 { margin-top: 5px; margin-bottom: 5px;}
+    p.summary {
+      margin-bottom: 0px;
+      color: #95A5A6;
+    }
+    td {
+      vertical-align: middle !important;
+    }
+  }
+}
+
