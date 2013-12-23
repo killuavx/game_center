@@ -88,17 +88,28 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         return list_view(request, *args, **kwargs)
 
     def _get_item_list_view(self, topic):
-        ViewSet = get_viewset_by_topic(topic)
-        model = get_item_model_by_topic(topic)
-        queryset = TopicalItem.objects.get_items_by_topic(topic, model)
+        queryset = self.item_list_view_queryset(topic)
         # FIXME 重构此处queryset，使之与ViewSet.queryset可以合并查询
         # FIXME 重构此处，预先检查有无filter backend, OrderingFilter, 如果有OrderingFilter并有filter查询请求，则使用指定排序
         queryset = queryset.published()
         # ignore filter backend ordering
         # using queryset pass by TopicalItem.ordering,
-        ViewSet.ordering = ()
+        ViewSet = self.item_list_view(topic)
         return ViewSet.as_view({'get': 'list'},
                                queryset=queryset)
+
+    @classmethod
+    def item_list_view(cls, topic):
+        ViewSet = get_viewset_by_topic(topic)
+        ViewSet.ordering = ()
+        return ViewSet
+
+    @classmethod
+    def item_list_view_queryset(cls, topic):
+        model = get_item_model_by_topic(topic)
+        queryset = TopicalItem.objects.get_items_by_topic(topic, model)
+        return queryset
+
 
     def retrieve(self, request, *args, **kwargs):
         origin_serializer_class, self.serializer_class = \

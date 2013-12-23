@@ -32,6 +32,8 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
     tags = serializers.SerializerMethodField('get_tags')
 
     author = AuthorSummarySerializer()
+    version_name = serializers.SerializerMethodField('get_latest_version_name')
+    version_code = serializers.SerializerMethodField('get_latest_version_code')
     versions_url = serializers.SerializerMethodField('get_versions_url')
 
     class Meta:
@@ -52,6 +54,8 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'comments_url',
                   'released_datetime',
                   'actions',
+                  'version_name',
+                  'version_code',
                   'versions_url',
         )
 

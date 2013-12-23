@@ -1,6 +1,7 @@
 [behave]
 tags=~browser
      ~solrservice
+     ~webmob
 color=on
 show_skipped=no
 expand=yes

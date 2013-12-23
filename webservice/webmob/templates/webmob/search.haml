@@ -1,0 +1,18 @@
+-extends 'webmob/base.haml'
+
+-load coffeescript
+-load less
+-load i18n
+
+-block header
+  {% include 'webmob/header/topbar.haml' with is_search=True %}
+  .container
+    .row.topbar-group
+      #topbar-tips.bottom.in.col-xs-12
+        推荐热词:
+        {% include 'webmob/header/topbar-tips.haml' %}
+      #topbar-result.col-xs-12
+        搜索结果: {{count|default:0}}
+
+-block content
+  {% include 'webmob/content/package-list.haml' %}

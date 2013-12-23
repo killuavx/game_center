@@ -1,0 +1,33 @@
+-load less
+
+-block content
+.panel.panel-default
+  .panel-footer
+  .panel-body
+    Panel content
+  .panel-footer
+    Panel footer
+
+  .row.topic-list{id: 'topic-list-={request.GET.page|default:1}'}
+      - for item in results
+        %div.col-6.col-sm-6.col-lg-4{id: 'topic-={item.id}'}
+          %a{href: '={item.url}'}
+            %img.cover.img-polaroid.img-responsive{alt: '={item.name}', src: 'item.cover.url'}
+          %a.caption{href: '={item.url}'}
+              %h4.title= item.name
+          %p.summary
+            = item.summary
+  {% include "webmob/widget/btn-more.haml" %}
+
+-block footer
+  :css
+    {% inlineless %}
+      .topic-list {
+        @cover_width: 450px;
+        @cover_height: 215px;
+        img.cover {
+          width: @cover_width;
+          height: @cover_height;
+        }
+      }
+    {% endinlineless %}

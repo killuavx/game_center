@@ -1,0 +1,4 @@
+- for tips in tipswords
+  %a.tag.label.label-success.{href: '{% url "webmob.views.searches" %}?q\=={tips.keyword}'}<
+    %span.glyphicon.glyphicon-tag<
+      = tips.keyword

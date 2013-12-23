@@ -16,7 +16,12 @@ def step_browser_or_client(context):
     WebDSL = factory_dsl(context)
     WebDSL.browser_or_client(context)
 
-@then('I should see "{message} in json response detail"')
+@then('I should see "{text}"')
+def step_should_see(context, text):
+    WebDSL = factory_dsl(context)
+    WebDSL.should_see(context, text)
+
+@then('I should see "{message}" in json response detail')
 def step_should_see_message(context, message):
     WebDSL = factory_dsl(context)
     WebDSL.should_see(context, message)

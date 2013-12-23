@@ -113,7 +113,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                        filters.SearchFilter,
                        RelatedPackageSearchFilter
     )
-    filter_fields = ('package_name', 'title',)
+    filter_fields = ('package_name', 'title', 'categories')
     ordering = ('-released_datetime',
                 '-updated_datetime',
                 'title',

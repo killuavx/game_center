@@ -75,6 +75,7 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
+    join(PROJECT_PATH, 'fontend-static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -83,16 +84,40 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # for fontend static files precompiler
+    'static_precompiler.finders.StaticPrecompilerFinder',
 )
+
+# List of enabled compilers
+STATIC_PRECOMPILER_COMPILERS = (
+    "static_precompiler.compilers.CoffeeScript",
+    "static_precompiler.compilers.LESS",
+)
+
+# Whether to use cache for inline compilation
+STATIC_PRECOMPILER_USE_CACHE = True
+# Cache timeout for inline styles (in seconds). Default: 30 days.
+# STATIC_PRECOMPILER_CACHE_TIMEOUT =
+
+# Path to CoffeeScript compiler executable
+COFFEESCRIPT_EXECUTABLE = 'coffee'
+
+# Path to LESS compiler executable.
+LESS_EXECUTABLE = 'lessc'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '&bfc%u6_w7)&r$(utbxk#!idnv*3bm^tqnc-lgrwq0=%lh@j7%'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
+    ('django.template.loaders.cached.Loader', (
+        'djaml.loaders.DjamlAppDirectoriesLoader',
+        'djaml.loaders.DjamlFilesystemLoader',
+    )),
     'django.template.loaders.app_directories.Loader',
-    #     'django.template.loaders.eggs.Loader',
+    'django.template.loaders.filesystem.Loader',
+
+    #'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -129,6 +154,7 @@ INTERNAL_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'PIL',
     'easy_thumbnails',
     'guardian',
@@ -155,6 +181,7 @@ INTERNAL_APPS = [
     'django_comments_xtd',
     'haystack',
     'redis_cache.stats',
+    'static_precompiler',
 ]
 
 EXTENDAL_APPS = [
@@ -168,6 +195,7 @@ EXTENDAL_APPS = [
     'account',
     'comment',
     'analysis',
+    'webmob',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
@@ -419,3 +447,5 @@ MOGOENGINE_CONNECTS = {
        'name': 'datawarehouse',
    }
 }
+
+FORUM_URL = 'http://bbs.ccplay.com.cn/'

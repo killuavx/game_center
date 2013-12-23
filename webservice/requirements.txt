@@ -32,3 +32,10 @@ django-redis
 django-redis-sessions
 
 mongoengine
+
+# **for support py3**
+-e https://github.com/killuavx/django-static-precompiler/tree/support/py3#egg=django-static-precompiler
+
+# haml templatetags
+-e https://github.com/killuavx/HamlPy/tree/support/py3#egg=HamlPy
+djaml
