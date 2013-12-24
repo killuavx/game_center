@@ -78,6 +78,7 @@ def home(request, *args, **kwargs):
     topic = get_object_or_404(Topic, slug=slug)
     queryset = TopicRestViewSet.item_list_view_queryset(topic)
     ViewSet = TopicRestViewSet.item_list_view(topic)
+    ViewSet.serializer_class = PackageSummarySerializer
     ListView = ViewSet.as_view({'get': 'list'}, queryset=queryset.published())
     response = ListView(request, *args, **kwargs)
     return render(request, 'webmob/home.haml',
