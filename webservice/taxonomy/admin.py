@@ -1,4 +1,5 @@
 # -*- encoding=utf-8 -*-
+from django.core.urlresolvers import reverse, NoReverseMatch
 from taxonomy.models import Category, Topic, TopicalItem
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
@@ -56,12 +57,42 @@ class TagAdmin(VersionAdmin):
 
     inlines = (TaggedPackageInline, )
 
-class TopicalItemAdmin(SortableModelAdmin):
+class TopicalItemAdmin(admin.ModelAdmin):
     model = TopicalItem
     search_fields = ('topic', )
     search_fields = ('^topic__name', '^topic__slug')
+    list_display = ('pk', 'topic_link', 'content_object_link', 'ordering')
     list_filter = ('topic', 'content_type')
+    list_editable = ('ordering', )
     sortable = 'ordering'
+
+    def content_object_link(self, obj):
+        try:
+            link = reverse(
+                'admin:%s_%s_change' % (obj.content_object._meta.app_label,
+                                        obj.content_object._meta.module_name),
+                args=[obj.content_object.pk])
+            return mark_safe('<a href="%s" target="_blank">%s</a>' % (link, obj.content_object))
+        except (ValueError, AttributeError, NoReverseMatch):
+            return obj.content_object
+
+    content_object_link.short_description = _('content object')
+    content_object_link.allow_tags = True
+
+    def topic_link(self, obj):
+        try:
+            link = reverse(
+                'admin:%s_%s_change' % (obj.topic._meta.app_label,
+                                        obj.topic._meta.module_name),
+                args=[obj.topic.pk])
+            return mark_safe('<a href="%s" target="_blank">%s</a>' % (link, obj.topic))
+        except (ValueError, AttributeError, NoReverseMatch):
+            return obj.topic
+
+    topic_link.short_description = _('topic')
+    topic_link.allow_tags = True
+    topic_link.admin_order_field = 'topic__name'
+
 
 class TopicInline(SortableTabularInline):
     model = Topic
