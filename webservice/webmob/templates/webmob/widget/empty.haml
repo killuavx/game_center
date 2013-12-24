@@ -1,0 +1,5 @@
+.jumbotron
+  %h1 Empty
+  %p
+    %a.btn.btn-success.btn-lg{role: 'button', href:'={go_next_url|default:"javascript:window.history.back();"}'}
+      Go {% if go_next_url and next_btn %} {{ next_btn }} {% else %} Back {% endif %}

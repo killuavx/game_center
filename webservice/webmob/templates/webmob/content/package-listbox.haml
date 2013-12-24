@@ -1,0 +1,65 @@
+-load sizefieldtags
+-load less
+
+-block content
+  .package-list.container{id: 'package-list-={request.GET.page|default:1}'}
+    .row
+      - for item in results
+        .col-sm-6.col-md-4
+          .package-item.thumbnail{id: 'pkg-={item.id}', itemscope: '', itemtype: 'http://schema.org/MobileApplication'}
+            %a{href: '={item.url}', itemprop: 'url'}
+              %img.icon.img-polaroid{alt: '={item.title}',
+                onerror: 'imgonerror(this, default_icon);',
+                src: 'item.icon.url', itemprop: 'image' }
+            %a.pull-right.btn.btn-primary.btn-lg.text-center{href: '={item.url}', itemprop: 'url'}<
+              %span.glyphicon.glyphicon-chevron-right
+            %a.pull-right.btn.btn-primary.btn-lg.text-center{href: '={item.download|default:"#"}',
+              itemprop: 'downloadUrl'}<
+              %span.glyphicon.glyphicon-cloud-download
+
+            .caption{itemprop: 'description'}
+              %span.hide{itemprop: 'name'}= item.package_name
+              %h4.title{itemprop: 'name'}
+                %a{href: '={item.url}'}= item.title
+              %span.label.label-success{itemprop: 'softwareVersion'}= item.version_name
+              &nbsp;
+              %span.label.label-info{itemprop: 'fileSize'}= item.download_size|filesize
+      - empty
+        {% include "webmob/widget/empty.haml" %}
+
+
+:css
+  {% inlineless %}
+    @icon_side_length: 90px;
+    .package-list {
+      img.icon {
+        width: @icon_side_length;
+        height: @icon_side_length;
+        margin: 0px;
+        display: inline-block;
+      }
+
+      .package-item {
+        padding: 9px;
+        border: 1px solid transparent;
+        border-color: #ccc;
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+
+        h4 {
+          font-size:18px;
+        }
+
+        a.btn {
+          margin: 2px;
+          clear: left;
+        }
+
+        .caption {
+          text-align: center;
+          padding-bottom: 9px;
+        }
+      }
+    }
+  {% endinlineless %}

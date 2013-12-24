@@ -182,8 +182,20 @@ class SearcherUsingBrowserDSL(SearcherBaseDSL):
         context.execute_steps('When I visit "%s"' % api_url)
 
 
+class SearcherOnWebMobUsingBrowserDSL(SearcherUsingBrowserDSL):
+    _search_url = '/mob/searches/'
+
+    _tipwrolds_url = '/mob/searches/'
+
+    @classmethod
+    def create_tipsword(cls, context, **kwargs):
+        return cls.create_tipsword_already_exists(context, **kwargs)
+
+
 def factory_dsl(context):
     if 'browser' in context.tags:
+        if 'webmob' in context.tags:
+            return SearcherOnWebMobUsingBrowserDSL
         return SearcherUsingBrowserDSL
 
     return SearcherWithNoUIClient

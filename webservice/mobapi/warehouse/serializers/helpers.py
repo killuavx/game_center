@@ -25,7 +25,7 @@ def get_packageversion_download_size(version):
     except ValueError:
         pass
 
-    return None
+    return 0
 
 
 def get_packageversion_urls(request, versions):

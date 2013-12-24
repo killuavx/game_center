@@ -215,8 +215,14 @@ class WebUsingBrowserDSL(WebBaseDSL):
         ))
 
 
+class WebBrowserDSL(WebUsingBrowserDSL):
+    pass
+
+
 def factory_dsl(context):
     if 'browser' in context.tags:
+        if 'web' in context.tags:
+            return WebBrowserDSL
         return WebUsingBrowserDSL
     else:
         return WebUsingNoUIClientDSL
