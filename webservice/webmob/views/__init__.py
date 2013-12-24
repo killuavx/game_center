@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
-from warehouse.models import Package
-from mobapi.warehouse.serializers.package import (
-    PackageSummarySerializer as PackageSummaryRestSerializer
-)
+from warehouse.models import Package, Author
 from mobapi.warehouse.views.package import (
     PackageViewSet as PackageRestViewSet,
     PackageSearchViewSet as PackageSearchRestViewSet
@@ -18,18 +15,110 @@ from taxonomy.models import Topic
 from clientapp.models import ClientPackageVersion
 
 from rest_framework import serializers
+from rest_framework import status
+from mobapi.warehouse.serializers.mixin import (
+    PackageActionsMixin,
+    PackageRelatedTagMin,
+    PackageRelatedCategoryMixin,
+    PackageRelatedLatestVersinoMixin,
+    PackageRelatedVersionsMixin,
+    PackageRelatedPackageUrlMixin
+)
 
 
-class PackageSummarySerializer(PackageSummaryRestSerializer):
+class AuthorSummarySerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(source='pk')
 
+    class Meta:
+        model = Author
+        fields = (
+            'name',
+            'id',
+        )
+
+
+class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
+                              PackageRelatedVersionsMixin,
+                              PackageRelatedCategoryMixin,
+                              PackageRelatedTagMin,
+                              PackageActionsMixin,
+                              PackageRelatedPackageUrlMixin,
+                              serializers.ModelSerializer):
+
+    id = serializers.IntegerField(source='pk')
+    icon = serializers.SerializerMethodField('get_latest_version_icon_url')
+    cover = serializers.SerializerMethodField('get_latest_version_cover_url')
+    version_name = serializers.SerializerMethodField('get_latest_version_name')
+    version_code = serializers.SerializerMethodField('get_latest_version_code')
+    whatsnew = serializers.SerializerMethodField('get_latest_version_whatsnew')
+    screenshots = serializers.SerializerMethodField(
+        'get_latest_version_screenshots')
+    category_name = serializers.SerializerMethodField('get_main_category_name')
+    categories_names = serializers.SerializerMethodField('get_categories_names')
     download = serializers.SerializerMethodField('get_latest_version_download')
+    download_count = serializers.SerializerMethodField(
+        'get_latest_version_download_count')
+    download_size = serializers.SerializerMethodField(
+        'get_latest_version_download_size')
+    tags = serializers.SerializerMethodField('get_tags')
+    author = AuthorSummarySerializer()
+    related_packages_url = serializers.SerializerMethodField('get_related_packages_url')
+    versions_url = serializers.SerializerMethodField('get_versions_url')
 
     class Meta:
         model = Package
-        fields = ('url',
-                  'id',
+        fields = ('id',
+                  'icon',
+                  'cover',
+                  'package_name',
+                  'title',
+                  'version_code',
+                  'version_name',
+                  'download',
+                  'download_count',
+                  'download_size',
+                  'tags',
+                  'category_name',
+                  'categories_names',
+                  'whatsnew',
+                  'summary',
+                  'description',
+                  'author',
+                  'released_datetime',
+                  'screenshots',
+                  'versions_url',
+        )
+
+
+class PackageSummarySerializer(PackageRelatedVersionsMixin,
+                              PackageRelatedLatestVersinoMixin,
+                              PackageRelatedCategoryMixin,
+                              PackageRelatedTagMin,
+                              PackageActionsMixin,
+                              serializers.ModelSerializer):
+
+    id = serializers.IntegerField(source='pk')
+    icon = serializers.SerializerMethodField('get_latest_version_icon_url')
+    cover = serializers.SerializerMethodField('get_latest_version_cover_url')
+    category_name = serializers.SerializerMethodField('get_main_category_name')
+    categories_names = serializers.SerializerMethodField('get_categories_names')
+    version_count = serializers.SerializerMethodField('get_version_count')
+    download = serializers.SerializerMethodField('get_latest_version_download')
+    download_size = serializers.SerializerMethodField(
+        'get_latest_version_download_size')
+    comments_url = serializers.SerializerMethodField(
+        'get_latest_version_comments_url')
+    actions = serializers.SerializerMethodField('get_action_links')
+    tags = serializers.SerializerMethodField('get_tags')
+    author = AuthorSummarySerializer()
+    version_name = serializers.SerializerMethodField('get_latest_version_name')
+    version_code = serializers.SerializerMethodField('get_latest_version_code')
+    versions_url = serializers.SerializerMethodField('get_versions_url')
+
+    class Meta:
+        model = Package
+        fields = ('id',
                   'icon',
                   'cover',
                   'package_name',
@@ -55,7 +144,9 @@ class PackageSummarySerializer(PackageSummaryRestSerializer):
 class PackageViewSet(PackageRestViewSet):
 
     serializer_class = PackageSummarySerializer
+    serializer_class_detail = PackageDetailSerializer
     filter_fields = ('package_name', 'title',
+                     'author',
                      'categories',
                      'categories__name',
                      'categories__slug')
@@ -67,6 +158,8 @@ class PackageViewSet(PackageRestViewSet):
 
 
 class PackageSearchViewSet(PackageSearchRestViewSet):
+    serializer_class = PackageSummarySerializer
+    serializer_class_detail = PackageDetailSerializer
     search_fields = ('title',
                      'tags_text',
                      'package_name',
@@ -95,6 +188,8 @@ def packages(request, *args, **kwargs):
 def packagedetail(request, *args, **kwargs):
     ListView = PackageViewSet.as_view(actions={'get': 'retrieve'})
     response = ListView(request, *args, **kwargs)
+    if response.status_code is not status.HTTP_200_OK:
+        return HttpResponseNotFound('Not found')
     return render(request, 'webmob/package-detail.haml', response.data)
 
 

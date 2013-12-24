@@ -5,14 +5,18 @@
   itemtype:'http://schema.org/MobileApplication'}
   %tbody
     - for item in results
-      %tr.row{itemscope: ''}
+      {% url "webmob.views.packagedetail" pk=item.id as detail_url %}
+      %tr.row{itemscope: '',
+        onclick:"window.location=$(this).data().url;", 'data-url': '={detail_url}'}
         %td
           %img.icon.img-polaroid{alt: '={item.title}',
             onerror: 'imgonerror(this, default_icon);',
             src: '={item.icon}', itemprop: 'image'}
         %td
           .caption{itemprop: 'description'}
-            %h4.title{itemprop: 'name'}= item.title
+            %h4.title{itemprop: 'name'}
+              %a{href: '={detail_url}', itemprop: 'url'}<
+                = item.title
             %p.summary.small
               %span.hide{itemprop: 'name'}= item.package_name
               %span{itemprop: 'applicationSubCategory'}= item.category_name

@@ -6,64 +6,9 @@
     .row
       .col-xs-2.col-lg-2
         %a.navbar-brand{href:'javascript:window.history.back();'}
-          %i.glyphicon.glyphicon-chevron-left &nbsp;
-      .col-xs-8.col-lg-8.text-center
+          %i.logo.glyphicon.glyphicon-chevron-left &nbsp;
+      .col-xs-8.col-lg-8.text-center<
         %h3= title
       .col-xs-2.col-lg-2
-        %a.btn.btn-lg.glyphicon.glyphicon-download-alt{href: '={download|default:"#"}'}
-
-:css
-  {% inlineless %}
-
-  body { padding-top: 53px; }
-  .noradius () {
-    border-radius: 0;
-  }
-  .navbar {
-    .noradius();
-
-    h3 {
-      color: #fff;
-      font-size: 20px;
-      margin: 0 auto;
-      height:50px;
-      line-height:50px;
-    }
-
-    nav {
-      padding-top: 3px;
-    }
-
-    .navbar-brand {
-      padding-left: 0px;
-      padding-right: 10px;
-      margin-left: -10px;
-      margin-right: -10px;
-      border-top: none;
-      border-bottom: none;
-      img.logo {
-        width: 100px;
-      }
-    }
-
-  }
-
-  .navbar-inverse {
-    background: none;
-    .navbar-brand {
-      border-top: none;
-      border-bottom: none;
-      border-right: none;
-    }
-  }
-
-  .bs-docs-nav .navbar-collapse {
-    border-color: #1abc9c;
-  }
-  .bs-docs-nav {
-    text-shadow: 0 -1px 0 rgba(0,0,0,.15);
-    background-color: #1abc9c;
-    border-color: #1abc9c;
-    box-shadow: 0 1px 0 #1abc9c;
-  }
-  {% endinlineless %}
+        %a.pull-right.btn.btn-lg.glyphicon.glyphicon-cloud-download{href: '={download|default:"#"}',
+          itemprop: 'downloadUrl'}

@@ -108,6 +108,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
     queryset = Package.objects.published()
     serializer_class = PackageSummarySerializer
+    serializer_class_detail = PackageDetailSerializer
     filter_backends = (filters.OrderingFilter,
                        filters.DjangoFilterBackend,
                        filters.SearchFilter,
@@ -120,9 +121,10 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                 'package_name'
                 )
 
+
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class = self.serializer_class
-        self.serializer_class = PackageDetailSerializer
+        self.serializer_class = self.serializer_class_detail
         response = super(PackageViewSet, self) \
             .retrieve(request, *args, **kwargs)
         self.serializer_class = list_serializer_class

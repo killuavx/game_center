@@ -1,7 +1,7 @@
 -load i18n
 -load sizefieldtags
 -load humanize
--load less
+-load util_tags
 
 
 #screenshots.jcarousel.center-block{'data-jcarousel': 'true', 'data-animation': 'fast'}
@@ -9,7 +9,7 @@
     - for screenshot in screenshots
       %li
         %a{href:'javascript:void(0);'}
-          %img{src:'={screenshot.preview}'}
+          %img{src:'={screenshot.preview}', itemprop: 'screenshot'}
   %a.jcarousel-control-prev{'data-jcarouselcontrol': 'true'}
     %span.glyphicon.glyphicon-chevron-left
   %a.jcarousel-control-next{'data-jcarouselcontrol': 'true'}
@@ -18,87 +18,52 @@
 
 #information.panel.panel-success
   .panel-heading
-    %h3.panel-title<
-      {% trans 'Information' %}
+    %h4.panel-title<
+      详细信息
   .panel-body.container
     %table.table
       %tbody
         %tr
           %th<
-            {% trans 'version' %}:
-          %td= version_name
+            版本：
+          %td{itemprop: 'softwareVersion'}= version_name
           %th<
-            {% trans 'downloads' %}:
+            下载：
           %td= download_count|intcomma
         %tr
           %th<
-            {% trans 'size' %}:
-          %td= download_size|filesize
+            大小：
+          %td{itemprop: 'fileSize'}= download_size|filesize
           %th<
-            {% trans 'release' %}:
-          %td= released_datetime|time
+            发布时间：
+          %td= released_datetime|print_timestamp|date:"Y-m-d"
         %tr
           %th<
-            {% trans 'author' %}:
-          %td{cellspan:3}= author.name
+            分类：
+          %td{itemprop: 'applicationSubCategory'}
+            %a{href: '{% url "webmob.views.packages" %}?categories__name\={{category_name}}'}<
+              = category_name
+          %th<
+            作者：
+          %td
+            %a{href: '{% url "webmob.views.packages" %}?author\={{author.id}}',
+            itemprop: 'author'}<
+              = author.name
 
 
 #description.panel.panel-success
   .panel-heading
-    %h3.panel-title<
-      {% trans 'Description' %}
+    %h4.panel-title<
+      介绍说明
   .panel-body<
-    %pre= description
+    %pre{itemprop: 'text'}= description
 
 #whatsnew.panel.panel-success
   .panel-heading
-    %h3.panel-title<
-      {% trans "What's New" %}
+    %h4.panel-title<
+      更新内容
   .panel-body<
-    %pre= whatsnew
+    %pre{itemprop: 'releaseNotes'}= whatsnew
 
-:css
-  .jcarousel img {
-    height: 300px !important;
-  }
-  .jcarousel-pagination { bottom: 10px;}
-
-
-:css
-  {% inlineless %}
-  .noradius () {
-    border-radius: 0px
-  }
-
-  .panel {
-    .noradius();
-    margin-bottom: 0;
-
-    .panel-body pre {
-      border: none;
-      margin: 0px;
-    }
-
-    .table-cell(){
-        font-size: 18px;
-        th { text-align: right }
-        td { text-align: left }
-        th,td{ border: none; }
-    }
-
-    table {
-      thead {
-        .table-cell()
-      }
-      tbody {
-        .table-cell()
-      }
-    }
-
-  }
-
-  .panel-heading {
-    .noradius();
-  }
-
-  {% endinlineless %}
+%a.text-center.btn.btn-lg.btn-primary.btn-block{href: '={download|default:"#"}'}
+  %i.glyphicon.glyphicon-cloud-download
