@@ -6,5 +6,6 @@ urlpatterns = patterns('',
         url(r'^$', views.home, name='webmob-home'),
         url(r'^packages/?$', views.packages, name='webmob-package-list'),
         url(r'^packages/(?P<pk>\d+)/?$', views.packagedetail, name='webmob-package-detail'),
-        url(r'^searches/', views.searches, name='webmob-search-list'),
+        url(r'^searches/?', views.searches, name='webmob-search-list'),
+        url(r'download/?', views.client_latest_download, name='webmob-download-client')
 )

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
 from warehouse.models import Package
 from mobapi.warehouse.serializers.package import (
@@ -13,6 +14,8 @@ from mobapi.searcher.serializers import TipsWordSerializer
 
 from mobapi.taxonomy.views.topic import TopicViewSet as TopicRestViewSet
 from taxonomy.models import Topic
+
+from clientapp.models import ClientPackageVersion
 
 from rest_framework import serializers
 
@@ -106,6 +109,18 @@ def searches(request, *args, **kwargs):
         data.update(dict(tipswords=tipswords_list))
 
     return render(request, 'webmob/search.haml', data)
+
+
+def client_latest_download(request, *args, **kwargs):
+    try:
+        clientapp = ClientPackageVersion.objects.published().latest_version()
+    except ClientPackageVersion.DoesNotExist:
+        return HttpResponseNotFound('No Content')
+
+    if clientapp.download:
+        return HttpResponseRedirect(clientapp.download.url)
+
+    return HttpResponseNotFound('No Package')
 
 
 class TopicViewSet(TopicRestViewSet):
