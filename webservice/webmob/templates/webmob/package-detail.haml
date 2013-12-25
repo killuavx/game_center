@@ -4,15 +4,15 @@
 
 -block jsappend
   = block.super
-  %script{type: 'text/javascript', src: '={STATIC_URL}{% coffeescript "js/src/warehouse/package.coffee" %}'}
   %script{type: 'text/javascript', src:'={STATIC_URL}js/lib/jquery.jcarousel.min.js'}
   %script{type: 'text/javascript', src:'={STATIC_URL}js/src/jcarousel.responsive.js'}
   %script{type: 'text/javascript', src:'={STATIC_URL}js/src/jcarousel.data-attributes.js'}
   %link{rel: 'stylesheet', type:'text/css', href:'={STATIC_URL}css/jcarousel.responsive.css'}
 
+-block title
+  = title
 
 -block content
   %div{itemscope:'', itemtype: 'http://schema.org/MobileApplication'}
     {% include 'webmob/header/topbar-detail.haml' %}
     {% include 'webmob/content/package-detail.haml' %}
-

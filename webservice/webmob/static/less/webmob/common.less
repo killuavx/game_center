@@ -5,7 +5,7 @@
 @panel-green: #32af3e;
 @element-green: #c6d202;
 
-body { padding-top: 40px; }
+body { padding-top: 44px; }
 
 .noradius () {
   border-radius: 0;
@@ -19,6 +19,7 @@ header {
 .input-group .form-control,
 .container .jumbotron,
 .btn, .label, .share,
+.panel, .panel-heading
 { .noradius() }
 
 .container { width: 100%;}
@@ -27,6 +28,22 @@ header {
   .noradius();
   height: 42px;
   min-height: 42px;
+
+  h3 {
+    color: #fff;
+    font-size: 20px;
+    margin: 0 auto;
+    height:50px;
+    line-height:50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  a.btn {
+    color: white;
+    padding-right: 17px;
+  }
 }
 
 .navbar nav {
@@ -135,3 +152,63 @@ header {
   }
 }
 
+// for detail
+.panel {
+
+  margin-bottom: 0;
+  .panel-heading {
+    background-color: @element-green;
+    color: white;
+  }
+
+  .panel-body pre {
+    border: none;
+    margin: 0px;
+    background-color:inherit;
+  }
+
+  .table-cell(){
+    font-size: 15px;
+    th {
+      text-align: right;
+      white-space: nowrap;
+    }
+    td { text-align: left; }
+    th,td{ border: none; }
+  }
+
+  table {
+    margin-bottom: 0px;
+    thead {
+      .table-cell()
+    }
+    tbody {
+      .table-cell()
+    }
+  }
+}
+
+#screenshots {
+  .jcarousel img {
+    height: 300px !important;
+  }
+
+  .jcarousel-pagination {
+    //position: relative;
+    bottom: 0px;
+    border-radius: 23px;
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 70%);
+    a {
+      margin: 0 10px;
+    }
+  }
+
+}
+
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: @background-green;
+}
+.tooltip-inner {
+  background-color: @background-green;
+}

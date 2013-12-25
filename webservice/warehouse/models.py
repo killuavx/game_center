@@ -713,7 +713,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 
-@receiver(pre_save, sender=PackageVersion)
+#@receiver(pre_save, sender=PackageVersion)
 def package_version_pre_save(sender, instance, **kwargs):
     try:
         parser_opts = getattr(settings, 'PACKAGE_FILE_PARSE_OPTS', dict())
