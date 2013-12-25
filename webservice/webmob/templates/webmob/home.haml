@@ -2,14 +2,6 @@
 
 -load less
 
--block title
-  - if request.GET.categories__name
-    {{ request.GET.categories__name }}
-  - elif author
-    {{ author.name }}
-  - else
-    CCPlay 虫虫游戏平台
-
 -block header
   .container
     .row

@@ -166,6 +166,32 @@ class PackageSearchViewSet(PackageSearchRestViewSet):
                      'categories')
 
 
+def _fill_page_seo(request, data,
+                   html_title='CCplay 虫虫游戏平台',
+                   meta_description='CCplay 虫虫游戏平台',
+                   meta_keywords='CCplay 虫虫游戏平台'
+):
+    if request.GET.get('author'):
+        try:
+            author = Author.objects.get(pk=request.GET.get('author'))
+            html_title = author.name
+        except Author.DoesNotExist:
+            pass
+    elif request.GET.get('categories__name'):
+        html_title = request.GET.get('categories__name')
+        meta_description = html_title
+    elif request.GET.get('q'):
+        html_title = '搜索关键字: %s' % request.GET.get('q')
+        meta_keywords = request.GET.get('q')
+
+    data.update(dict(
+        html_title=html_title,
+        meta_description=meta_description,
+        meta_keywords=meta_keywords,
+    ))
+    return data
+
+
 def home(request, *args, **kwargs):
     slug = 'home-recommend-game'
     topic = get_object_or_404(Topic, slug=slug)
@@ -183,18 +209,7 @@ def packages(request, *args, **kwargs):
     ListView = PackageViewSet.as_view(actions={'get': 'list'})
     response = ListView(request, *args, **kwargs)
     data = response.data
-
-    def fill_author(request, data):
-        if request.GET.get('author'):
-            try:
-                author = Author.objects.get(pk=request.GET.get('author'))
-                print(author)
-                data.update({'author': author})
-            except Author.DoesNotExist:
-                pass
-        return data
-
-    data = fill_author(request, data)
+    data = _fill_page_seo(request, data)
     return render(request, 'webmob/home.haml', data)
 
 
@@ -203,7 +218,14 @@ def packagedetail(request, *args, **kwargs):
     response = ListView(request, *args, **kwargs)
     if response.status_code is not status.HTTP_200_OK:
         raise Http404
-    return render(request, 'webmob/package-detail.haml', response.data)
+
+    data = response.data
+    data = _fill_page_seo(request, data,
+                          html_title=data.get('title'),
+                          meta_description=data.get('summary'),
+                          meta_keywords=", ".join(data.get('tags'))
+                          )
+    return render(request, 'webmob/package-detail.haml', data)
 
 
 def searches(request, *args, **kwargs):
@@ -217,6 +239,7 @@ def searches(request, *args, **kwargs):
     if tipswords_list:
         data.update(dict(tipswords=tipswords_list))
 
+    data = _fill_page_seo(request, data)
     return render(request, 'webmob/search.haml', data)
 
 
