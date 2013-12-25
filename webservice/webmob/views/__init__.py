@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponseNotFound, Http404
 from django.shortcuts import render, get_object_or_404
 from warehouse.models import Package, Author
 from mobapi.warehouse.views.package import (
@@ -182,14 +182,27 @@ def home(request, *args, **kwargs):
 def packages(request, *args, **kwargs):
     ListView = PackageViewSet.as_view(actions={'get': 'list'})
     response = ListView(request, *args, **kwargs)
-    return render(request, 'webmob/home.haml', response.data)
+    data = response.data
+
+    def fill_author(request, data):
+        if request.GET.get('author'):
+            try:
+                author = Author.objects.get(pk=request.GET.get('author'))
+                print(author)
+                data.update({'author': author})
+            except Author.DoesNotExist:
+                pass
+        return data
+
+    data = fill_author(request, data)
+    return render(request, 'webmob/home.haml', data)
 
 
 def packagedetail(request, *args, **kwargs):
     ListView = PackageViewSet.as_view(actions={'get': 'retrieve'})
     response = ListView(request, *args, **kwargs)
     if response.status_code is not status.HTTP_200_OK:
-        return HttpResponseNotFound('Not found')
+        raise Http404
     return render(request, 'webmob/package-detail.haml', response.data)
 
 
@@ -217,6 +230,11 @@ def client_latest_download(request, *args, **kwargs):
         return HttpResponseRedirect(clientapp.download.url)
 
     return HttpResponseNotFound('No Package')
+
+
+def not_found(request, *args, **kwargs):
+    return render(request, 'webmob/404.haml',
+                  status=404)
 
 
 class TopicViewSet(TopicRestViewSet):

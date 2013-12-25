@@ -7,8 +7,21 @@
       .col-xs-2.col-lg-2
         %a.navbar-brand{href:'javascript:window.history.back();'}
           %i.logo.glyphicon.glyphicon-chevron-left &nbsp;
-      .col-xs-8.col-lg-8.text-center<
-        %h3= title
+      .col-xs-8.col-lg-8.text-center.header-title<
+        %h3{'data-placement': 'bottom',
+            'data-toggle': 'tooltip',
+            'data-trigger': 'click',
+            'title': '={title}'}= title
       .col-xs-2.col-lg-2
         %a.pull-right.btn.btn-lg.glyphicon.glyphicon-cloud-download{href: '={download|default:"#"}',
           itemprop: 'downloadUrl'}
+
+%script{type: 'text/javascript'}
+  jQuery(function($){
+    self = $('header h3').tooltip();
+    $('header h3').on('show.bs.tooltip', function(){
+      if( self.width() < 300 )
+        return;
+      return false
+    })
+  });

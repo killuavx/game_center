@@ -4,6 +4,9 @@
 -load less
 -load i18n
 
+-block title
+  搜索关键字: {{ request.GET.q }}
+
 -block header
   {% include 'webmob/header/topbar.haml' with is_search=True %}
   .container

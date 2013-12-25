@@ -35,6 +35,9 @@ header {
     margin: 0 auto;
     height:50px;
     line-height:50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   a.btn {
@@ -200,3 +203,9 @@ header {
 
 }
 
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: @background-green;
+}
+.tooltip-inner {
+  background-color: @background-green;
+}
