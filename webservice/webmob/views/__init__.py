@@ -196,7 +196,7 @@ def home(request, *args, **kwargs):
     slug = 'home-recommend-game'
     topic = get_object_or_404(Topic, slug=slug)
     queryset = TopicRestViewSet.item_list_view_queryset(topic)
-    ViewSet = TopicRestViewSet.item_list_view(topic)
+    ViewSet = PackageViewSet
     ViewSet.serializer_class = PackageSummarySerializer
     ListView = ViewSet.as_view({'get': 'list'}, queryset=queryset.published())
     response = ListView(request, *args, **kwargs)
