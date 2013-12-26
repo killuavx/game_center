@@ -14,7 +14,7 @@
             src: '={item.icon}', itemprop: 'image'}
         %td
           .caption{itemprop: 'description'}
-            %h4.title{itemprop: 'name'}
+            %h4.title{itemprop: 'name', title: '={item.title_en}'}
               %a{href: '={detail_url}', itemprop: 'url'}<
                 = item.title
             %p.summary.small

@@ -25,6 +25,8 @@ DATABASES = {
     }
 }
 
+
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -39,9 +41,6 @@ TIME_ZONE = 'Asia/Shanghai'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 #LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'zh-cn'
-LANGUAGES_SUPPORTED = ('en', 'zh-cn',)
-
-DEFAULT_LANGUAGE = 'cn'
 
 SITE_ID = 1
 
@@ -209,7 +208,7 @@ INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 # more details on how to customize your logging configuration.
 
 LANGUAGES = (
-    ('cn', gettext('Chinese')),
+    ('zh-cn', gettext('Chinese')),
     ('en', gettext('English')),
 )
 
@@ -452,6 +451,12 @@ MOGOENGINE_CONNECTS = {
 }
 
 FORUM_URL = 'http://bbs.ccplay.com.cn/'
+
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'zh-cn'
+MODELTRANSLATION_PREPOPULATE_LANGUAGE = 'zh-cn'
+MODELTRANSLATION_AUTO_POPULATE = True
+
 
 
 MODELTRANSLATION_TRANSLATION_FILES = (

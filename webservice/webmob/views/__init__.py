@@ -73,6 +73,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'cover',
                   'package_name',
                   'title',
+                  'title_en',
+                  'title_zh_cn',
                   'version_code',
                   'version_name',
                   'download',
@@ -123,6 +125,8 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'cover',
                   'package_name',
                   'title',
+                  'title_en',
+                  'title_zh_cn',
                   'tags',
                   'category_name',
                   'categories_names',
@@ -215,13 +219,14 @@ def packages(request, *args, **kwargs):
 
 def packagedetail(request, *args, **kwargs):
     ListView = PackageViewSet.as_view(actions={'get': 'retrieve'})
+
     response = ListView(request, *args, **kwargs)
     if response.status_code is not status.HTTP_200_OK:
         raise Http404
 
     data = response.data
     data = _fill_page_seo(request, data,
-                          html_title=data.get('title'),
+                          html_title="%s / %s"%(data.get('title_zh_cn'), data.get('title_en')),
                           meta_description=data.get('summary'),
                           meta_keywords=", ".join(data.get('tags'))
                           )

@@ -11,6 +11,7 @@ from reversion.admin import VersionAdmin
 from webservice.admin import AdminFieldBase, AdminField
 from django.core.urlresolvers import reverse
 from easy_thumbnails.exceptions import InvalidImageFormatError
+from modeltranslation.admin import TranslationAdmin
 
 
 class ImageClearableFileInput(_ImageClearableFileInput):
@@ -206,7 +207,7 @@ class PackageVersionInlines(admin.StackedInline):
     show_thumbnail.allow_tags = True
 
 
-class PackageAdmin(MainAdmin):
+class PackageAdmin(TranslationAdmin, MainAdmin):
     model = Package
     inlines = (PackageVersionInlines, )
     list_per_page = 15
@@ -216,8 +217,6 @@ class PackageAdmin(MainAdmin):
             'classes': ('suit-tab suit-tab-general', ),
             'fields': (
                 'title',
-                'title_cn',
-                'title_en',
                 'package_name',
                 'author',
                 'summary',
