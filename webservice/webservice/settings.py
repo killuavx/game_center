@@ -41,6 +41,8 @@ TIME_ZONE = 'Asia/Shanghai'
 LANGUAGE_CODE = 'zh-cn'
 LANGUAGES_SUPPORTED = ('en', 'zh-cn',)
 
+DEFAULT_LANGUAGE = 'cn'
+
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
@@ -182,6 +184,7 @@ INTERNAL_APPS = [
     'haystack',
     'redis_cache.stats',
     'static_precompiler',
+    'modeltranslation',
 ]
 
 EXTENDAL_APPS = [
@@ -207,7 +210,7 @@ INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
 LANGUAGES = (
     ('cn', gettext('Chinese')),
-    #  ('en', gettext('English')),
+    ('en', gettext('English')),
 )
 
 FILE_UPLOAD_HANDLERS = (
@@ -449,3 +452,8 @@ MOGOENGINE_CONNECTS = {
 }
 
 FORUM_URL = 'http://bbs.ccplay.com.cn/'
+
+
+MODELTRANSLATION_TRANSLATION_FILES = (
+    'warehouse.translation',
+)

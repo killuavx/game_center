@@ -39,3 +39,5 @@ https://github.com/killuavx/django-static-precompiler/archive/support/py3.zip#eg
 # haml templatetags
 https://github.com/killuavx/HamlPy/archive/support/py3.zip#egg=HamlPy
 djaml
+
+django-modeltranslation

@@ -216,6 +216,8 @@ class PackageAdmin(MainAdmin):
             'classes': ('suit-tab suit-tab-general', ),
             'fields': (
                 'title',
+                'title_cn',
+                'title_en',
                 'package_name',
                 'author',
                 'summary',
