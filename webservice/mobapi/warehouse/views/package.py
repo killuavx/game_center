@@ -304,6 +304,79 @@ class PackageUpdateView(generics.CreateAPIView):
 
 
 class PackagePushView(generics.ListAPIView):
+    """  推送软件列表查询
+
+    ### 访问方式
+
+        GET /api/push/packages/?ids={pk1},{pk2}...
+        Content-Type: application/json
+
+    #### 请求参数
+
+    * `ids`: 以","分隔的软件包id列表
+
+    ### 响应
+
+    #### HTTP Response Body 响应内容
+
+        [
+            {
+                "url": "http://gc.ccplay.com.cn/api/packages/451/",
+                "icon": "http://gc.ccplay.com.cn/media/package/451/v11/icon.png.72x72_q85_upscale.png",
+                "cover": null,
+                "package_name": "com.feelingtouch.dragonwarcraft",
+                "title": "\u9f99\u7a74\u52c7\u58eb\u91d1\u5e01\u65e0\u9650\u7248",
+                "version_code": 11,
+                "version_name": "1.1",
+                "download": "http://gc.ccplay.com.cn/media/package/451/v11/application.apk",
+                "download_count": 632051,
+                "download_size": 24050691,
+                "comment_count": 0,
+                "comments_url": "http://gc.ccplay.com.cn/api/comments/?content_type=17&object_pk=447",
+                "tags": [
+                    "TD",
+                    "\u5854\u9632",
+                ],
+                "category_name": "\u7834\u89e3\u6e38\u620f",
+                "categories_names": [
+                    "\u7834\u89e3\u6e38\u620f",
+                ],
+                "whatsnew": "",
+                "summary": "",
+                "description": "",
+                "author": {
+                    "url": "http://gc.ccplay.com.cn/api/authors/298/",
+                    "name": "FT Games"
+                },
+                "released_datetime": "1383162567",
+                "screenshots": [
+                    {
+                        "large": "http://gc.ccplay.com.cn/media/package/451/v11/screenshot/4.jpg.480x800_q85_upscale.jpg",
+                        "preview": "http://gc.ccplay.com.cn/media/package/451/v11/screenshot/4.jpg.235x390_q85_upscale.jpg",
+                        "rotate": "0"
+                    },...
+                ],
+                "actions": {
+                    "mark": "http://gc.ccplay.com.cn/api/bookmarks/451/"
+                },
+                "versions_url": "http://gc.ccplay.com.cn/api/packageversions/?package=451",
+                "related_packages_url": "http://gc.ccplay.com.cn/api/packages/451/relatedpackages/"
+            },
+        ]
+
+    应用详情结构见[软件详情](/api/packages/#packagedetailserializer)
+
+    #### HTTP Response Status
+
+    * 200 HTTP_200_OK
+        * 获取成功
+        * 返回各应用的详情信息列表
+    * 404 HTTP_404_NOT_FOUND
+        * 请求格式有错，或没有任何数据
+
+    ----
+    """
+
 
     queryset = Package.objects.published()
     serializer_class = PackageDetailSerializer
