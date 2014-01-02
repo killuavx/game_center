@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from rest_framework import filters
+from django.http import Http404
 from haystack.query import SearchQuerySet, SQ
 from functools import reduce
 import operator
@@ -79,3 +80,27 @@ class RelatedPackageSearchFilter(filters.BaseFilterBackend):
         if len(tags) and qs.count():
             return type(view.object).tagged.with_any(tags, qs)
         return queryset.filter(pk=None)
+
+
+class PackageIdsFilter(filters.BaseFilterBackend):
+
+    ids_param = 'ids'
+
+    def validate(self, request, view):
+        _ids = request.GET.get(self.ids_param)
+        if not _ids:
+            raise Http404('not allow empty parameter')
+        ids = [self.validate_id(id.strip()) for id in _ids.split(',')]
+        return dict(id__in=ids)
+
+    def validate_id(self, val):
+        try:
+            return int(val)
+        except ValueError:
+            raise Http404
+
+    def filter_queryset(self, request, queryset, view):
+        qs = queryset._clone()
+        filter_dict = self.validate(request=request, view=view)
+        return qs.filter(**filter_dict)
+

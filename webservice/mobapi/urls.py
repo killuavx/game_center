@@ -4,6 +4,7 @@ from django.conf.urls import url, include, patterns
 from mobapi.warehouse.views.author import AuthorViewSet
 from mobapi.warehouse.views.package import (
     PackageViewSet,
+    PackagePushView,
     PackageRankingsViewSet,
     PackageSearchViewSet,
     PackageUpdateView)
@@ -46,7 +47,7 @@ urlpatterns += patterns('',
     url(r'^selfupdate/?$', SelfUpdateView.as_view(),
         name='selfupdate',
         prefix='selfupdate'),
-
+    url(r'^push/packages/?$', PackagePushView.as_view(), name='push-packages', prefix='push'),
 
     url(r'^updates/?$', PackageUpdateView.as_view(), name='update-create', prefix='update'),
 )

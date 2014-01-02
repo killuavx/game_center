@@ -12,7 +12,7 @@ from mobapi.warehouse.serializers.package import (
     PackageDetailSerializer,
     PackageUpdateSummarySerializer)
 from mobapi.warehouse.views.filters import (
-    SphinxSearchFilter,
+    PackageIdsFilter,
     SolrSearchFilter,
     RelatedPackageSearchFilter)
 
@@ -302,4 +302,9 @@ class PackageUpdateView(generics.CreateAPIView):
         return list(filter(lambda e: e['is_updatable'], datalist))
 
 
+class PackagePushView(generics.ListAPIView):
 
+    queryset = Package.objects.published()
+    serializer_class = PackageDetailSerializer
+    filter_backends = (PackageIdsFilter, )
+    paginate_by = None
