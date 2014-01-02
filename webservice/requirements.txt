@@ -11,6 +11,7 @@ djrill
 markdown
 html5lib
 html2text
+sh
 six
 pytz
 django-sizefield
