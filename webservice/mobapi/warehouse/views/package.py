@@ -15,6 +15,7 @@ from mobapi.warehouse.views.filters import (
     PackageIdsFilter,
     SolrSearchFilter,
     RelatedPackageSearchFilter)
+from django.http import Http404
 
 
 class PackageExcludeCategoryOfApplicationFilter(filters.BaseFilterBackend):
@@ -308,3 +309,32 @@ class PackagePushView(generics.ListAPIView):
     serializer_class = PackageDetailSerializer
     filter_backends = (PackageIdsFilter, )
     paginate_by = None
+
+    def resort_with_request(self, request, object_list):
+        _ids = request.GET.get('ids')
+        ids = [int(id.strip()) for id in _ids.split(',')]
+        resorted = [None] * len(ids)
+        for obj in object_list:
+            index = ids.index(obj.pk)
+            resorted[index] = obj
+        return resorted
+
+    def list(self, request, *args, **kwargs):
+        self.object_list = self.filter_queryset(self.get_queryset())
+        self.object_list = self.resort_with_request(request=request, object_list=self.object_list)
+
+        # Default is to allow empty querysets.  This can be altered by setting
+        # `.allow_empty = False`, to raise 404 errors on empty querysets.
+        if not self.allow_empty and not self.object_list:
+            class_name = self.__class__.__name__
+            error_msg = self.empty_error % {'class_name': class_name}
+            raise Http404(error_msg)
+
+        # Switch between paginated or standard style responses
+        page = self.paginate_queryset(self.object_list)
+        if page is not None:
+            serializer = self.get_pagination_serializer(page)
+        else:
+            serializer = self.get_serializer(self.object_list, many=True)
+
+        return Response(serializer.data)
