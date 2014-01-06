@@ -381,7 +381,6 @@ class PackagePushView(generics.ListAPIView):
     queryset = Package.objects.published()
     serializer_class = PackageDetailSerializer
     filter_backends = (PackageIdsFilter, )
-    paginate_by = None
 
     def resort_with_request(self, request, object_list):
         _ids = request.GET.get('ids')
