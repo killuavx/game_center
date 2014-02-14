@@ -1,5 +1,5 @@
-# Django settings for webservice p
-# for django-cms
+# -*- coding: utf-8 -*-
+# Django settings for webservice
 from os.path import join, dirname, abspath
 
 gettext = lambda s: s
@@ -9,9 +9,14 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-# ('Your Name', 'your_email@example.com'),
+    ('Ranger.Huang', 'ranger.huang@ccplay.com.cn'),
 )
 
+SHORT_DATE_FORMAT = DATE_FORMAT = 'Y-m-d'
+SHORT_DATETIME_FORMAT = 'Y-m-d P'
+
+
+SEND_BROKEN_LINK_EMAILS = True
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -27,7 +32,10 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*',
+    '.ccplay.com.cn',
+]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -121,15 +129,16 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'webservice.middlewares.RequestBindRemoteAddrMethodMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'webservice.middlewares.RequestFillLanguageCodeMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
 ROOT_URLCONF = 'webservice.urls'
@@ -151,10 +160,13 @@ INTERNAL_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.redirects',
     'django.contrib.sites',
+    "django.contrib.sitemaps",
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.comments',
     'PIL',
     'easy_thumbnails',
     'guardian',
@@ -164,7 +176,6 @@ INTERNAL_APPS = [
     'reversion',
     'sizefield',
     'django_extensions',
-    #'admin_timeline',
     'django.contrib.admin',
     'django.contrib.admindocs',
 
@@ -177,11 +188,10 @@ INTERNAL_APPS = [
     'djrill',
     #'djohno',
 
-    'django.contrib.comments',
-    'django_comments_xtd',
     'haystack',
     'redis_cache.stats',
     'static_precompiler',
+    'django_widgets',
 ]
 
 EXTENDAL_APPS = [
@@ -386,10 +396,6 @@ AUTH_PROFILE_MODULE = 'account.Profile'
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 LOGIN_URL = '/accounts/signin/'
 LOGOUT_URL = '/accounts/signout/'
-
-COMMENTS_APP = "django_comments_xtd"
-COMMENTS_XTD_CONFIRM_EMAIL = False
-COMMENTS_XTD_MAX_THREAD_LEVEL = 0
 
 AAPT_CMD = join(PROJECT_PATH, 'warehouse/utils/android-tools-linux-x64/aapt')
 

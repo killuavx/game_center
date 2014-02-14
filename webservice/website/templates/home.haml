@@ -1,0 +1,59 @@
+-extends "base.haml"
+-load mezzanine_tags
+-load staticfiles
+
+{% block meta_title %}虫虫游戏平台{% endblock %}
+
+{% block meta_keywords %}{% metablock %}
+虫虫游戏平台
+{% endmetablock %}{% endblock %}
+
+{% block meta_description %}{% metablock %}
+虫虫游戏平台
+{% endmetablock %}{% endblock %}
+
+{% block title %}
+虫虫游戏平台
+{% endblock %}
+
+
+-block before_main
+  / banner
+  .banner.clear
+    {% include "pages/widgets/home_top_banner.haml" %}
+  / banner end
+
+-block main
+  .mad01.w980
+    %img{height :"58", src :'{% static "images/mad01.jpg" %}', width :"978"}/
+  .mcol.w980
+    {% include "pages/widgets/adv_carousel_list.haml" %}
+
+  %div.main.w980
+    %div.mleft.left
+      {% include "pages/widgets/package_latest_list.haml" %}
+    %div.mcenter.left
+      {% include "pages/widgets/news_list.haml" %}
+    %div.mright.right
+      {% include "pages/widgets/package_firstcrack_list.haml" %}
+
+  %div.msort.w980.clear
+    {% include "pages/widgets/category_packages.haml" %}
+
+  %div.mspec.w980
+    {% include "pages/widgets/topics.haml" %}
+
+  %div.mnews.w980
+    %div.mnews_left.left
+      {% include "pages/widgets/top_author_list.haml" %}
+    %div.mnews_center.left
+      {% include "pages/widgets/bbs_posts_list.haml" %}
+    %div.mnews_right.right
+      {% include "pages/widgets/package_ranking_list.haml" %}
+
+  %div.mimg.w980
+    {% include "pages/widgets/picture_banners.haml" %}
+
+  %div.link.w980.clear
+    {% include "pages/widgets/friend_links.haml" %}
+

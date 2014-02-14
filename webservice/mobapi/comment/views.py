@@ -11,7 +11,6 @@ from mobapi.authentications import PlayerTokenAuthentication
 from mobapi.comment.serializers import CommentSerializer, CommentCreateSerializer
 from comment.models import Comment
 
-
 class CommentViewSet(mixins.CreateModelMixin,
                      mixins.ListModelMixin,
                      viewsets.GenericViewSet):
@@ -85,7 +84,7 @@ class CommentViewSet(mixins.CreateModelMixin,
     authentication_classes = (PlayerTokenAuthentication,)
     permission_classes = (IsAuthenticatedOrReadOnly, )
     serializer_class = CommentSerializer
-    queryset = Comment.objects.published().with_site().by_submit_order()
+    queryset = Comment.objects.published().by_submit_order()
 
     def check_paramters(self, querydict):
         ct = 'content_type'

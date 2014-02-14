@@ -6,11 +6,12 @@ from reversion.admin import VersionAdmin
 from promotion.models import Place, Advertisement, Advertisement_Places
 
 
+
 class AdvertisementPlacesInline(admin.TabularInline):
     model = Advertisement_Places
     fields = ('place', 'created_datetime', 'updated_datetime',)
     readonly_fields = ('created_datetime', 'updated_datetime',)
-    extra = 0
+    extra = 1
 
 
 class AdvertisementAdmin(VersionAdmin):
@@ -65,7 +66,7 @@ class AdvertisementPlacesOrderingInline(admin.TabularInline):
               'created_datetime', 'updated_datetime',)
     ordering = ('-ordering', )
     readonly_fields = ('created_datetime', 'updated_datetime',)
-    extra = 0
+    extra = 1
 
 
 class PlaceAdmin(VersionAdmin):

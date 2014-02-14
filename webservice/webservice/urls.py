@@ -3,32 +3,41 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+
 from django.contrib import admin
 #from djrill import DjrillAdminSite
 #admin.site = DjrillAdminSite()
 admin.autodiscover()
 
 rest_framework_swagger_url = url(r'^api-docs/', include('rest_framework_swagger.urls'))
-urlpatterns = staticfiles_urlpatterns()
-urlpatterns += patterns('',
-    url(r'^tagging_autocomplete/', include('tagging_autocomplete.urls')),
+urlpatterns = patterns("",
+                       url(r'^mob/', include('webmob.urls')),
+                       url(r'^admin/log/', include('admin_timeline.urls')),
+                       url("^admin/", include(admin.site.urls)),
+                       url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+                       url(r'^api/', include('mobapi.urls')),
+                       rest_framework_swagger_url,
+                       url(r'^admin/toolkit/', include('toolkit.urls')),
+                       url(r'^tagging_autocomplete/', include('tagging_autocomplete.urls')),
+                       )
+if "mezzanine.boot" in settings.INSTALLED_APPS:
+    from mezzanine.core.views import direct_to_template
+    urlpatterns += patterns('',
+                            url("^$", direct_to_template, {"template": "pages/comingsoon.html"}, name="home"),
+                            #url("^$", "mezzanine.blog.views.blog_post_list", name="home"),
+                            ("^", include("mezzanine.urls")),
 
-    rest_framework_swagger_url,
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api/', include('mobapi.urls')),
-
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^mob/', include('webmob.urls')),
-    url(r'^admin/toolkit/', include('toolkit.urls')),
-)
+                            )
+    handler404 = "mezzanine.core.views.page_not_found"
+    handler500 = "mezzanine.core.views.server_error"
 
 if settings.DEBUG:
     urlpatterns = patterns('',
-       url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
-           {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
-       url(r'', include('django.contrib.staticfiles.urls')),
-    ) + urlpatterns
+                           url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
+                               {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+                           url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
+                               {'document_root': settings.STATIC_ROOT, 'show_indexes': True}),
+                           ) + urlpatterns
 
 from easy_thumbnails.signals import saved_file
 from easy_thumbnails.signal_handlers import generate_aliases_global

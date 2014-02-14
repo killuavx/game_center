@@ -1,0 +1,39 @@
+-load i18n
+-load future
+-load pages_tags
+
+{% spaceless %}
+- if page_branch_in_menu
+  - for page in page_branch
+    - if page.is_primary
+      - if forloop.first
+        <div class="nav-footer">
+      - if page.in_menu
+        <ul class="list-unstyled">
+
+    - if page.in_menu
+      - if forloop.first and not page.parent.in_menu and not page.is_primary
+        <ul class="list-unstyled">
+
+        %li{
+          {% if page.is_current_or_ascendant %}
+          class: 'active'
+          {% endif%}
+          id:"footer-menu-{{ page.html_id }}"
+        }
+          %a{href: '{{ page.get_absolute_url }}'}= page.title
+
+    - if page.in_menu and page.has_children_in_menu
+      {% page_menu page %}
+
+    - if page.in_menu
+      - if forloop.first and not page.parent.in_menu and not page.is_primary
+        </li></ul>
+
+    - if page.is_primary
+      - if page.in_menu
+        </ul>
+      - if forloop.first
+        </div>
+
+{% endspaceless %}

@@ -652,6 +652,12 @@ class PackageVersion(models.Model):
 
     tracker = FieldTracker()
 
+    def get_absolute_url(self, link_type=0):
+        if link_type == 0:
+            return '/packages/%s/%s' %(self.package.package_name, self.version_name)
+        else:
+            return '/packageversions/%s' % self.pk
+
     def __str__(self):
         return str(self.version_code)
 

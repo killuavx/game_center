@@ -1,0 +1,18 @@
+﻿@charset "utf-8";
+/* CSS Document */
+body{font:12px/1.5 "微软雅黑",arial,\5b8b\4f53; color:#969891; }
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,blockquote,p,ol{padding:0; margin:0; line-height:21px;}
+table{border-collapse:collapse;cellpadding:0; cellspacing:0;}
+h1,h2,h3,h4,h5,h6{font-size:100%; }
+article, aside, footer, header, hgroup, nav, section {display: block;}
+html{ height:100%;  }
+img{border:0; vertical-align:center;}
+a{text-decoration:none; color:#333333;}
+a:focus,input{outline:none;}
+ul {list-style: none;}
+ol {list-style: none;}
+.w980{width:980px;margin:0 auto;}
+.clear{ clear:both;}
+.left{float:left;}
+.right{float:right;}
+/*top*/

@@ -3,9 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from reversion.admin import VersionAdmin
-from suit.admin import SortableModelAdmin
 from searcher.models import TipsWord
-from django.contrib.admin.views.main import ChangeList
 
 
 class TipsWordAdmin(VersionAdmin):

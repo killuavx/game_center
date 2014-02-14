@@ -1,0 +1,35 @@
+{% extends "pages/page.html" %}
+{% load staticfiles %}
+
+{% block main_css %}<link rel="stylesheet" href="{% static 'css/cont.css' %}">{% endblock %}
+{% block before_main %}
+<h3 class="login_title w980 clear">虫虫游戏 &gt; 个人页</h3>
+{% endblock %}
+{% block main %}
+<div class="h20 clear"></div>
+<section class="data">
+    <h3 class="data_top"><a href="data.html#">修改个人资料</a></h3>
+    <hgroup class="data_head">
+        <ul>
+            <li><img src="{% static 'images/data_head.png' %}" width="88" height="88"></li>
+            <li>用户名</li>
+        </ul>
+    </hgroup>
+    <hgroup class="data_left left">
+        <h4><img src="{% static 'images/dataul1.png' %}" width="22" height="16" align="absmiddle"> 我最近回复的内容</h4>
+        <ul class="dataul">
+            <li><time>2014-01-13</time><a href="data.html#">标题</a></li>
+            <li><time>2014-01-13</time><a href="data.html#">标题</a></li>
+        </ul>
+    </hgroup>
+
+    <hgroup class="data_right right">
+        <h4><img src="{% static 'images/dataul2.png' %}" width="22" height="16" align="absmiddle"> 我赞过的内容</h4>
+        <ul class="dataul">
+            <li><time>2014-01-13</time><a href="data.html#">标题</a></li>
+            <li><time>2014-01-13</time><a href="data.html#">标题</a></li>
+        </ul>
+    </hgroup>
+</section>
+{% endblock %}
+

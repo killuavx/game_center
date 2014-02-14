@@ -1,0 +1,20 @@
+-load i18n future pages_tags
+
+%ul
+  -if on_home
+    %li
+      %a.active{href :"#"}
+  -else
+    - for page in page_branch
+      - if not has_home and page.is_primary and forloop.first
+        %li
+          %a{href :"{% url 'home' %}"} 首页
+      - if page.is_current_or_ascendant
+        - if page.is_current
+          %li
+            %a.active{href: "#"} page.title
+        - else
+          %li
+            %a{href :"={page.get_absolute_url}"} page.title
+        - if page.has_children
+          {% page_menu page %}
