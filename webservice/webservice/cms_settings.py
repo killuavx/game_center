@@ -4,7 +4,7 @@ from webservice.settings import *
 from webservice.module_settings.logging_prd import *
 from webservice.module_settings.db_env import *
 
-DEBUG = TEMPLATE_DEBUG = False
+DEBUG = TEMPLATE_DEBUG = True
 
 HOST_URL = os.getenv('GC_HOST_URL', '')
 
@@ -27,7 +27,9 @@ USE_SOUTH = True
 
 USE_I18N = False
 
-HOST_URL = 'http://gc.ccplay.com.cn'
+MEDIA_URL = HOST_URL + MEDIA_ROOT
+
+STATIC_URL = HOST_URL + STATIC_ROOT
 
 TEMPLATE_CONTEXT_PROCESSORS = list(TEMPLATE_CONTEXT_PROCESSORS) + [
     'mezzanine.conf.context_processors.settings',
