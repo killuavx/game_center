@@ -135,6 +135,14 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(TopicalItem, TopicalItemAdmin)
 
-admin.site.unregister(Tag)
-admin.site.register(Tag, TagAdmin)
-admin.site.unregister(TaggedItem)
+try:
+    admin.site.unregister(Tag)
+except admin.sites.NotRegistered:
+    pass
+else:
+    admin.site.register(Tag, TagAdmin)
+
+try:
+    admin.site.unregister(TaggedItem)
+except admin.sites.NotRegistered:
+    pass
