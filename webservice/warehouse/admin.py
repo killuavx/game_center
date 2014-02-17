@@ -48,7 +48,7 @@ class MainAdmin(VersionAdmin):
 
 class PackageVersionScreenshotInlines(admin.StackedInline):
     model = PackageVersionScreenshot
-    extra = 0
+    extra = 6
 
     def show_thumbnail(self, obj):
         try:
@@ -110,7 +110,6 @@ class PackageVersionAdmin(MainAdmin):
             )
         }),
     )
-    extra = 0
     readonly_fields = ('created_datetime', 'updated_datetime',)
     ordering = ('-updated_datetime', '-version_code',)
     formfield_overrides = {
@@ -190,7 +189,8 @@ class PackageVersionInlines(admin.StackedInline):
             )
         }),
     )
-    extra = 0
+    extra = 1
+    max_num = 100
     readonly_fields = ('created_datetime', 'updated_datetime')
     ordering = ('-version_code',)
 
@@ -350,7 +350,8 @@ class PackageAdmin(MainAdmin):
 
 class PackageInline(admin.TabularInline):
     model = Package
-    extra = 0
+    extra = 1
+    max_num = 100
     fields = ( 'title', 'package_name', 'released_datetime', 'status' )
     readonly_fields = ('title', 'package_name', 'released_datetime' )
 
