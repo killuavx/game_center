@@ -4,7 +4,7 @@ from webservice.module_settings.db_test import *
 from webservice.module_settings.logging_test import *
 from webservice.module_settings.script_local import *
 
-DEBUG = TEMPLATE_DEBUG = False
+DEBUG = TEMPLATE_DEBUG = True
 
 import os
 HOST_URL = os.getenv('GC_HOST_URL', '')
@@ -60,6 +60,9 @@ CACHE = {
 OUTPUT_DIR = 'reports'
 COVERAGE_RCFILE = '.coveragerc'
 
+LESS_EXECUTABLE = 'lessc'
+
+COFFEESCRIPT_EXECUTABLE = 'coffee'
 
 try:
     from mezzanine.utils.conf import set_dynamic_settings

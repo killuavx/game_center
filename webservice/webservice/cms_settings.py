@@ -13,6 +13,7 @@ SITE_TITLE = 'CCPlay'
 # Name of the directory for the project.
 PROJECT_DIRNAME = PROJECT_PATH.split(os.sep)[-1]
 
+NEVERCACHE_KEY = "%(NEVERCACHE_KEY)s"
 
 CACHE_MIDDLEWARE_KEY_PREFIX = PROJECT_DIRNAME
 
@@ -40,7 +41,7 @@ if 'django.contrib.redirects.middleware.RedirectFallbackMiddleware' in MIDDLEWAR
     MIDDLEWARE_CLASSES\
         .remove('django.contrib.redirects.middleware.RedirectFallbackMiddleware')
 MIDDLEWARE_CLASSES = [
-     "mezzanine.core.middleware.UpdateCacheMiddleware",
+    "mezzanine.core.middleware.UpdateCacheMiddleware",
      ] + MIDDLEWARE_CLASSES + [
     "mezzanine.core.request.CurrentRequestMiddleware",
     "mezzanine.core.middleware.RedirectFallbackMiddleware",
@@ -140,6 +141,13 @@ ADMIN_MENU_ORDER =(
     (_("Searcher"), ("searcher.tipsword", )),
     (_("Comment"), ("comment.Comment", )),
 )
+
+os.environ['PATH'] = '%s:%s' %('/home/www-data/.nvm/v0.11.9/bin' , os.environ['PATH'])
+
+LESS_EXECUTABLE = '/home/www-data/.nvm/v0.11.9/bin/lessc'
+
+COFFEESCRIPT_EXECUTABLE = \
+    '/home/www-data/.nvm/v0.11.9/bin/coffee'
 
 try:
     from mezzanine.utils.conf import set_dynamic_settings
