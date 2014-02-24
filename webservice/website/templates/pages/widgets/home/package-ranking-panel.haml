@@ -6,7 +6,6 @@
   = title
 .clear
   - for package in items
-    {{ package.title }}
     {% with version=package.versions.latest_published %}
     %dl
       %dt
