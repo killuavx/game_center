@@ -5,23 +5,26 @@
       %a{:href => "={more_url}"} 更多 &gt;
   = title
 .clear
-  - for item in items
+  - for package in items
+    {{ package.title }}
+    {% with version=package.versions.latest_published %}
     %dl
       %dt
-        %img{:src => '={item.icon.url}', :height => "48", :width => "48"}/
+        %img{:src => '={version.icon.url}', :height => "48", :width => "48"}/
       %dd
-        %a.font18{:href => "={item.get_absolute_url}"}= item.package.title
+        %a.font18{:href => "={version.get_absolute_url}"}= version.package.title
       %dd
-        {% with main_category=item.package.categories.all.0 %}
+        {% with main_category=version.package.categories.all.0 %}
         %a{:href => "={main_category.get_absolute_url}"}= main_category.name
         {% endwith %}
         |
-        - if item.di_download
-          = item.di_download.size|filesizeformat
-        - elif item.download
-          = item.download.size|filesizeformat
+        - if version.di_download
+          = version.di_download.size|filesizeformat
+        - elif version.download
+          = version.download.size|filesizeformat
         - else
           0KB
         |
-        = item.download_count|default:0
+        = version.download_count|default:0
       %dd.mntxt1= forloop.counter
+    {% endwith %}

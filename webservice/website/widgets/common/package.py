@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from warehouse.models import PackageVersion
+from warehouse.models import Package, PackageVersion
 
 
 class BasePackageListWidget(object):
@@ -25,4 +25,5 @@ class BasePackageListWidget(object):
 class BaseRankingPackageListWidget(BasePackageListWidget):
 
     def get_list(self):
-        return PackageVersion.objects.published().by_rankings_order()
+        return Package.objects.published().by_rankings_order()
+
