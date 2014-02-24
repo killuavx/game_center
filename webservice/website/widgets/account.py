@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django_widgets import Widget
 
-class AccountTopbarWdiget(Widget):
+class AccountTopbarWidget(Widget):
 
     template = 'pages/widgets/common/account-topbar.haml'
 
