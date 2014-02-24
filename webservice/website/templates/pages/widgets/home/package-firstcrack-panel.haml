@@ -1,0 +1,30 @@
+-load i18n
+-load humanize
+%h2.mright_title<
+  - if more_url
+    %span.right
+      %a{:href => "={more_url}"} 更多 &gt;
+  %b
+  = title
+- for item in items
+  %dl
+    %dt
+      %img{:src => '={item.icon.url}', :width => "72", :height => "72"}
+      %span.mright_star
+    %dd
+      %a.font16{:href => "={item.get_absolute_url}"}= item.package.title
+    %dd
+      %span.mright_txt= item.package.summary|truncatechars:40|safe
+    %dd.mright_a<
+      {% spaceless %}
+      %a{:href => "#"}= item.package.categories.all.0.name
+      |
+      - if item.di_download
+        = item.di_download.size|filesizeformat
+      - elif item.download
+        = item.download.size|filesizeformat
+      - else
+        0KB
+      |
+      = item.download_count|intword
+      {% endspaceless %}

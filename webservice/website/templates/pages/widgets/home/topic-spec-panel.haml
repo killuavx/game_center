@@ -1,0 +1,13 @@
+%h3
+  - if more_url
+    %span.right
+      %a{:href => "={more_url}"} 更多 &gt;
+  %span.em
+    %b.h4bg
+    = title
+%ul
+  - for item in items
+    %li
+      %a{:href => "={item.get_absolute_url}"}
+        %span= item.name
+        %img{:src => '={item.cover.url}', :width => "326", :height => "100"}/

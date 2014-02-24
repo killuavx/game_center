@@ -22,10 +22,10 @@ urlpatterns = patterns("",
 if "mezzanine.boot" in settings.INSTALLED_APPS:
     from mezzanine.core.views import direct_to_template
     urlpatterns += patterns('',
-                            url("^$", direct_to_template, {"template": "pages/comingsoon.html"}, name="home"),
-                            #url("^$", "mezzanine.blog.views.blog_post_list", name="home"),
+                            url("^$", direct_to_template, {"template": "pages/comingsoon.html"}, name="comingsoon"),
+                            url("^$", "mezzanine.blog.views.blog_post_list", name="home"),
+                            #url("^$", "mezzanine.blog.views.blog_post_list", name="commingsoon"),
                             ("^", include("mezzanine.urls")),
-
                             )
     handler404 = "mezzanine.core.views.page_not_found"
     handler500 = "mezzanine.core.views.server_error"

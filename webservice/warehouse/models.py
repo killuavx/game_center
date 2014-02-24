@@ -219,6 +219,9 @@ class Author(models.Model):
 
     __unicode__ = __str__
 
+    def get_absolute_url(self):
+        return '/authors/%s' % self.pk
+
 
 class PackageStatus(StatusBase):
     _transactions = list()
@@ -543,6 +546,9 @@ class PackageVersionQuerySet(QuerySet):
             return self.order_by('-' + field)
         else:
             return self.order_by('+' + field)
+
+    def by_rankings_order(self):
+        return self.order_by('-download_count')
 
     def published(self):
         return self.filter(

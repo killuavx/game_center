@@ -1,18 +1,40 @@
 ﻿@charset "utf-8";
 /* CSS Document */
-body{font:12px/1.5 "微软雅黑",arial,\5b8b\4f53; color:#969891; }
+body{font:12px/1.5 "微软雅黑",arial,\5b8b\4f53; color:#969891; background:#EFFDFD; }
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,blockquote,p,ol{padding:0; margin:0; line-height:21px;}
 table{border-collapse:collapse;cellpadding:0; cellspacing:0;}
 h1,h2,h3,h4,h5,h6{font-size:100%; }
 article, aside, footer, header, hgroup, nav, section {display: block;}
 html{ height:100%;  }
+textarea{resize:none} 
 img{border:0; vertical-align:center;}
 a{text-decoration:none; color:#333333;}
 a:focus,input{outline:none;}
 ul {list-style: none;}
 ol {list-style: none;}
 .w980{width:980px;margin:0 auto;}
+.w660{ width:637px;}
+.w680{ width:658px;}
+.w730{ width:708px;}
+.w320{ width:320px;}
+.w410{width:410px; min-height:335px;}
+.w300{width:300px; min-height:335px;}
+/*top*/
 .clear{ clear:both;}
 .left{float:left;}
 .right{float:right;}
-/*top*/
+.f14{ font-size:14px;}
+.bg20{ background:#208585;}
+.bge2{ background:#e24940;}
+.bg27{ background:#274c4c;}
+.bg93{background:#931b15; }
+.bgc6{ background:#c6d202}
+.bgffc{ background:#ffcba0;}
+.cfff{ display:block;color:#fff; font-size:16px; height:25px; line-height:25px; overflow:hidden;zoom:1;}
+.c014{ font-size:14px;}
+.font10{ font-size:10px;color:#669966}
+
+
+.scont1,.scont2,.scont3,.scont4,.scont5,.smenu li,.phleft .cf li span a,.phleft .cf li span a:hover,.inllove a,#pagination li,#pagination li.current,.mleft_title b,.mcenter_title b,.mright_title b,.h4bg,.schtxt,.schbuttom,.mntxt,.mntxt1,.data_top,.data_left h4 b,.data_right h4 b,.data_top1 span,.y1,.y2,.y3,.y4,.scont dd b,.lf_xh,.lf_l,.gdown b,.smenu li:hover,.inr10 li b{background:url(../images/mainbg.png) no-repeat;}
+
+#star1,#star2,#star3,#star4,#star5,#star6,.scont_star,.bdcont dd span,.mright_star{ background:url(../images/star.png) no-repeat;}

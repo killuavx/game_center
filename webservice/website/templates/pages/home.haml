@@ -1,0 +1,72 @@
+-extends "base.haml"
+-load mezzanine_tags
+-load staticfiles
+-load widgets
+-load cache
+
+{% block meta_title %}虫虫游戏平台{% endblock %}
+
+{% block meta_keywords %}{% metablock %}
+虫虫游戏平台
+{% endmetablock %}{% endblock %}
+
+{% block meta_description %}{% metablock %}
+虫虫游戏平台
+{% endmetablock %}{% endblock %}
+
+{% block title %}
+虫虫游戏平台
+{% endblock %}
+
+{% block extra_js %}
+%script{:type => 'text/javascript', :src =>'{% static "js/jquery.SuperSlide.2.1.1.js" %}'}
+{% endblock %}
+
+-block before_main
+  {% cache 3600 home_before_main  %}
+  / banner
+  .banbg
+    {% include_widget HomeTopBannerWidget slug='home-top-banner' %}
+  %script{:src => "{% static 'js/top.js' %}"}
+  :javascript
+    jQuery(".banner").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",effect:"leftLoop",autoPlay:true,vis:1,trigger:"click"});
+  / banner end
+  {% endcache %}
+
+-block main
+  {% cache 600 home_main  %}
+  .mad01.w980
+    {% include_widget HomeTopSingleAdvWidget slug='home-top-client-download' width=978 %}
+  .mcol.w980
+    {% include_widget HomeTopCarouselAdvWidget slug='home-top-carousel-adv' max_items=3 %}
+
+  .main.w980
+    .mleft.left
+      {% include_widget HomeLatestPackagePanelWidget title="最新发布" max_items=12 %}
+    .mcenter.left
+      {% include_widget HomeNewsPanelWidget title="资讯与推荐" max_items=5 %}
+    .mright.right
+      {% include_widget HomeFirstCrackPackagePanelWidget title="首发破解" max_items=10 %}
+
+  .msort.w980.clear
+    {% include_widget HomeCategoryPackageTabsPanelWidget title="游戏分类" max_items=12 %}
+
+  .mspec.w980
+    {% include_widget HomeTopicPanelWidget title="精品集合" max_items=6 %}
+
+  .mnews.w980
+    .mnews_left.left
+      {% include_widget HomeTopicAuthorPanelWidget title="顶级开发商" max_items=8 %}
+    .mnews_center.left
+      {% include "pages/widgets/bbs_posts_list.haml" %}
+    .mnews_right.right
+      {% include_widget HomeRankingPanelWidget title="总排行榜" max_items=7 %}
+  {% endcache %}
+
+//
+  .mimg.w980
+    {% include_widget HomePictureShowcaseWidget title='图片中心' %}
+
+  .link.w980.clear
+    {% include "pages/widgets/friend_links.haml" %}
+

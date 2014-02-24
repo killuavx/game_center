@@ -394,8 +394,8 @@ AUTH_USER_MODEL = 'account.User'
 AUTH_PROFILE_MODULE = 'account.Profile'
 
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
-LOGIN_URL = '/accounts/signin/'
-LOGOUT_URL = '/accounts/signout/'
+#LOGIN_URL = '/accounts/signin/'
+#LOGOUT_URL = '/accounts/signout/'
 
 AAPT_CMD = join(PROJECT_PATH, 'warehouse/utils/android-tools-linux-x64/aapt')
 
@@ -432,15 +432,16 @@ SESSION_REDIS_DB = 0
 SESSION_REDIS_PASSWORD = ''
 SESSION_REDIS_PREFIX = 'session'
 
-#CACHES = {
-#    "default": {
-#        "BACKEND": "redis_cache.cache.RedisCache",
-#        "LOCATION": "127.0.0.1:6379:1",
-#        "OPTIONS": {
-#            "CLIENT_CLASS": "redis_cache.client.DefaultClient",
-#            }
-#    }
-#}
+CACHE_DEFAULT_LOCATION_REDIS = "127.0.0.1:6379:1"
+CACHES = {
+    "default": {
+        "BACKEND": "redis_cache.cache.RedisCache",
+        "LOCATION": CACHE_DEFAULT_LOCATION_REDIS,
+        "OPTIONS": {
+            "CLIENT_CLASS": "redis_cache.client.DefaultClient",
+            }
+    }
+}
 
 MOGOENGINE_SERVER_CMD = '/opt/local/bin/mongod'
 

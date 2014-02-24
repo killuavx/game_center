@@ -8,7 +8,7 @@ DEBUG = TEMPLATE_DEBUG = True
 
 HOST_URL = os.getenv('GC_HOST_URL', '')
 
-SITE_TITLE = 'CCPlay'
+SITE_TITLE = '虫虫游戏'
 
 # Name of the directory for the project.
 PROJECT_DIRNAME = PROJECT_PATH.split(os.sep)[-1]
@@ -16,7 +16,6 @@ PROJECT_DIRNAME = PROJECT_PATH.split(os.sep)[-1]
 NEVERCACHE_KEY = "%(NEVERCACHE_KEY)s"
 
 CACHE_MIDDLEWARE_KEY_PREFIX = PROJECT_DIRNAME
-
 
 ROOT_URLCONF = "%s.urls" % PROJECT_DIRNAME
 
@@ -82,9 +81,9 @@ OPTIONAL_APPS = (
 DEBUG_TOOLBAR_CONFIG = {"INTERCEPT_REDIRECTS": False}
 
 PAGE_MENU_TEMPLATES = (
-    (1, "Top navigation bar", "pages/menus/dropdown.html"),
+    (1, "Top navigation bar", "pages/menus/header.haml"),
     (2, "Left-hand tree", "pages/menus/tree.html"),
-    (3, "Footer", "pages/menus/footer.html"),
+    (3, "Footer", "pages/menus/footer_links.haml"),
 )
 
 replace_idx = INTERNAL_APPS.index('suit')
@@ -98,6 +97,7 @@ INTERNAL_APPS[replace_idx+1:replace_idx+1] = [
     "mezzanine.pages",
     "mezzanine.galleries",
 ]
+INTERNAL_APPS.append('mezzanine.accounts')
 INTERNAL_APPS.pop(replace_idx)
 EXTENDAL_APPS.append('website')
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
@@ -148,6 +148,9 @@ LESS_EXECUTABLE = '/home/www-data/.nvm/v0.11.9/bin/lessc'
 
 COFFEESCRIPT_EXECUTABLE = \
     '/home/www-data/.nvm/v0.11.9/bin/coffee'
+
+
+ACCOUNTS_PROFILE_VIEWS_ENABLED = True
 
 try:
     from mezzanine.utils.conf import set_dynamic_settings

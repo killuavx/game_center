@@ -42,4 +42,5 @@ https://github.com/killuavx/HamlPy/archive/support/py3.zip#egg=HamlPy
 djaml
 
 https://github.com/killuavx/django-widgets/archive/support/py3.zip#egg=django-widgets
+feedparser
 Mezzanine

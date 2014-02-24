@@ -1,0 +1,32 @@
+-load humanize
+-load i18n
+%h2.mleft_title
+  - if more_url
+    %span.right
+      %a{:href => "={more_url}"} 更多 &gt;
+  %b
+  = title
+.mleftbg
+- for item in items
+  %dl
+    %dt<
+      %img{:src => "={item.icon.url}", :width => "48", :height => "48", :alt => "={item.package.title}"}
+    %dd.mltitle<
+      %span.right<
+        %div#star3
+      %a{:href => "={item.get_absolute_url}"}= item.package.title
+    %dd<
+      {% with main_category=item.package.categories.all.0 %}
+      %a{:href => "={main_category.get_absolute_url}"}= main_category.name
+      {% endwith %}
+      |
+      - if item.di_download
+        = item.di_download.size|filesizeformat
+      - elif item.download
+        = item.download.size|filesizeformat
+      - else
+        0KB
+      |
+      = item.download_count|intword
+    %dd<
+      %span= item.released_datetime|date:'SHORT_DATE_FORMAT'

@@ -3,12 +3,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 from account.models import User, Profile
-from django.contrib.auth.admin import UserAdmin as UserBaseAdmin
+from mezzanine.accounts.admin import *
 
 from guardian.admin import GuardedModelAdmin
 
 
-class UserAdmin(VersionAdmin, UserBaseAdmin, GuardedModelAdmin):
+class UserAdmin(UserProfileAdmin, VersionAdmin, GuardedModelAdmin):
 
     def has_profile(self, obj):
         try:
@@ -42,5 +42,9 @@ class ProfileAdmin(VersionAdmin, GuardedModelAdmin):
             return ('user', ) + self.readonly_fields
         return self.readonly_fields
 
+try:
+    admin.site.unregister(User)
+except admin.sites.NotRegistered:
+    pass
 admin.site.register(User, UserAdmin)
 admin.site.register(Profile, ProfileAdmin)

@@ -1,0 +1,14 @@
+-load staticfiles
+%h3
+  - if more_url
+    %span.right>
+      %a{:href => "#"} 更多 &gt;
+  = title
+%ul.clear
+  - for author in items
+    %li
+      %a{:href => '={author.get_absolute_url}'}
+        - if author.cover
+          %img{:src => '={author.cover.url}', :width => "200", :height => "60"}/
+        - else
+          %img{:src => '', :width => "200", :height => "60"}/

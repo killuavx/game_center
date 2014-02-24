@@ -1,4 +1,13 @@
 {% extends "pages/richtextpage.html" %}
 {% load staticfiles %}
+{% load widgets %}
 {% block main_css %}<link rel="stylesheet" href="{% static 'css/cont.css' %}">{% endblock %}
-{% block before_main %}<h3 class="login_title w980 clear">虫虫游戏 &gt; 手机客户端下载</h3>{% endblock %}
+{% block before_main %}{% include "pages/menus/breadcrumb_shortcut.haml" %}{% endblock %}
+{% block main %}
+<div class="h20"></div>
+<div class="down">
+    <a href="#">
+    <div class="down_but"><input value="下载最新版" type="button" class="down_button" /></div>
+    </a>
+</div>
+{% endblock %}

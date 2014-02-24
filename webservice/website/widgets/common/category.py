@@ -1,0 +1,53 @@
+# -*- coding: utf-8 -*-
+from taxonomy.models import Category
+import re
+
+
+class BaseCategoryPackageListWidget(object):
+
+    slugs = ('crack-game',
+             'big-game',
+             'cn-game',
+             'online-game',
+             'standalone-relaxation-game',
+             'standalone-action-game',
+    )
+
+    more_url = None
+
+    def get_more_url(self):
+        return self.more_url
+
+    def get_package_list_by(self, category):
+        return category.packages.published()
+
+    def get_category(self, slug):
+        return Category.objects.get(slug=slug)
+
+    def convert_slugs_from_args(self, slugs):
+        if isinstance(slugs, str):
+            p = re.compile('[^,\s]+')
+            slugs = re.findall(p, slugs)
+
+        return slugs
+
+    def get_context(self, value=None, options=dict(), context=None):
+        slugs = self.convert_slugs_from_args(options.get('slugs', self.slugs))
+        max_items = options.get('max_items', 5)
+        group_items = list()
+        for slug in slugs:
+            try:
+                category = self.get_category(slug=slug)
+            except Category.DoesNotExist:
+                continue
+            packages = self.get_package_list_by(category)
+            group_items.append((category, packages[0:max_items]))
+
+        options.update(
+            title=options.get('title'),
+            more_url=self.get_more_url(),
+            group_items=group_items,
+            max_items=max_items,
+            )
+        return options
+

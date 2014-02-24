@@ -3,27 +3,17 @@
 -load pages_tags
 
 {% spaceless %}
-- if page_branch_in_menu
-  - for page in page_branch
-  %dl
-    %dt 关于我们
-    %dd
-      %a{href :"#"} 发展愿景
-    %dd
-      %a{href :"#"} 联系方式
-    %dd
-      %a{href :"#"} 商务合作
-    %dd
-      %a{href :"#"} 诚聘英才
-  %dl
-    %dt 社交分享
-    %dd
-      %a{href :"#"} 虫虫微信
-    %dd
-      %a{href :"#"} 新浪微博
-    %dd
-      %a{href :"#"} 腾讯微博
-  %ul
-    %li 版权信息
-    %li 备案信息
+- for page in page_branch
+  - if page.has_children_in_menu
+    %dl
+      %dt= page.title
+      - if page.has_children
+        {% page_menu page 'pages/menus/footer_links_dd.haml' %}
+  - elif page.in_menu
+    - if forloop.revcounter0 == 1
+      <ul>
+    %li
+      %a{:href => "={page.get_absolute_url}"}= page.title
+    - if forloop.revcounter0 == 0
+      </ul>
 {% endspaceless %}
