@@ -9,6 +9,7 @@ from .common.author import *
 from .common.topic import *
 from .common.category import *
 from .common.picture import *
+from .common.webspide import *
 
 
 def str_to_bytes(string):
@@ -126,3 +127,7 @@ class HomePictureShowcaseWidget(BasePictureShowcaseWidget, Widget):
 
     template = BasePictureShowcaseWidget.template
 
+
+class HomeForumThreadPanelWidget(BaseForumThreadPanelWdiget, Widget):
+
+    template = 'pages/widgets/home/forum-thread-panel.haml'
