@@ -32,8 +32,9 @@
 
 {% compress js %}
     %script{:type => "text/javascript", :src => "{% static 'js/jquery.min.js' %}"}
+    {% block extra_js %}
     %script{:type => "text/javascript", :src => "{% static 'js/jquery.jslides.js' %}"}
-    {% block extra_js %}{% endblock %}
+    {% endblock %}
 {% endcompress %}
 
     /[if lt IE 9]
