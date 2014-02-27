@@ -9,9 +9,10 @@
 - for item in items
   %dl
     %dt
-      %img{:src => '={item.icon.url}', :width => "72", :height => "72"}
+      %a{:href => '={item.get_absolute_url}'}
+        %img{:src => '={item.icon.url}', :width => "72", :height => "72"}
       %span.mright_star
-        %div#star3
+        %div.star3
     %dd
       %a.cfff{:href => "={item.get_absolute_url}"}= item.package.title
     %dd

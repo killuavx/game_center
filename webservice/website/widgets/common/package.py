@@ -8,7 +8,8 @@ class BasePackageListWidget(object):
         return None
 
     def get_list(self):
-        return PackageVersion.objects.by_published_order(True)
+        qs = Package.objects.published()
+        return PackageVersion.objects.filter(qs).by_published_order(True)
 
     def get_context(self, value=None, options=dict(), context=None):
         items = self.get_list()

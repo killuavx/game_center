@@ -30,11 +30,15 @@ ol {list-style: none;}
 .bg93{background:#931b15; }
 .bgc6{ background:#c6d202}
 .bgffc{ background:#ffcba0;}
-.cfff{ display:block;color:#fff; font-size:16px; height:25px; line-height:25px; overflow:hidden;zoom:1;}
+.cfff{ display:block;color:#fff; font-size:16px;width:150px;overflow: hidden; white-space: nowrap;-o-text-overflow: ellipsis;text-overflow: ellipsis;}
 .c014{ font-size:14px;}
 .font10{ font-size:10px;color:#669966}
+
+.txt250{ width:250px;overflow: hidden; white-space: nowrap;-o-text-overflow: ellipsis;text-overflow: ellipsis;}
+
+
 
 
 .scont1,.scont2,.scont3,.scont4,.scont5,.smenu li,.phleft .cf li span a,.phleft .cf li span a:hover,.inllove a,#pagination li,#pagination li.current,.mleft_title b,.mcenter_title b,.mright_title b,.h4bg,.schtxt,.schbuttom,.mntxt,.mntxt1,.data_top,.data_left h4 b,.data_right h4 b,.data_top1 span,.y1,.y2,.y3,.y4,.scont dd b,.lf_xh,.lf_l,.gdown b,.smenu li:hover,.inr10 li b{background:url(../images/mainbg.png) no-repeat;}
 
-#star1,#star2,#star3,#star4,#star5,#star6,.scont_star,.bdcont dd span,.mright_star{ background:url(../images/star.png) no-repeat;}
+.star1,.star2,.star3,.star4,.star5,.star6,.scont_star,.bdcont dd span,.mright_star{ background:url(../images/star.png) no-repeat;}

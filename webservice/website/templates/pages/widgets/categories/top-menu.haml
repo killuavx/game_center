@@ -1,0 +1,21 @@
+%dl.left
+  %dt
+  %dd
+    %ul.smenu
+      - for cat in flat_categories
+        %li<
+          %a{:href => "={cat.get_absolute_url}"}= cat.name
+%ul.stop_right.right
+  {% url 'category_package_list' slug=category.slug as cat_url %}
+  - if ordering == 'release'
+    %li#bg03
+      %a{:href => "={cat_url}?ordering=release"} 按时间排序
+  -else
+    %li
+      %a{:href => "={cat_url}?ordering=release"} 按时间排序
+  - if ordering == 'hot'
+    %li#bg03
+      %a{:href => "={cat_url}?ordering=hot"} 按热度排序
+  - else
+    %li
+      %a{:href => "={cat_url}?ordering=hot"} 按热度排序

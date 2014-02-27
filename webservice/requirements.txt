@@ -44,3 +44,6 @@ djaml
 https://github.com/killuavx/django-widgets/archive/support/py3.zip#egg=django-widgets
 feedparser
 Mezzanine
+
+# templatetags
+https://github.com/killuavx/django-template-utils/archive/support/py3.zip#egg=django-template-utils

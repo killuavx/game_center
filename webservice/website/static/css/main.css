@@ -20,7 +20,7 @@
 .nav a:hover{ background:url(../images/nav_libg.png) no-repeat center top;}
 .navbg{background:url(../images/nav_libg.png) no-repeat center top;}
 .search{ margin-top:8px;}
-.schtxt{ background-position:-115px -55px; width:203px; padding-left:10px; height:34px; line-height:25px; border:none; float:left;}
+.schtxt{ background-position:-115px -55px; width:203px; padding-left:10px; height:34px; line-height:34px; border:none; float:left;}
 .schbuttom{ background-position:-328px -55px; width:28px; height:34px; float:left; border:none; cursor:pointer;}
 /*head end*/
 
@@ -66,8 +66,7 @@
 .mleft dd span{margin-top:6px;font-size:10px; color:#669966;}
 .mleft dd{color:#669966; height:20px; line-height:20px;}
 .mleft dd a{ color:#669966;}
-.mltitle a{ font-size:14px; color:#003300; font-weight:bold;width:100px; }
-.mltitle {height:20px; overflow:hidden;zoom:1}
+.mltitle a{ display:block;font-size:14px; color:#003300; font-weight:bold;width:90px;overflow: hidden; white-space: nowrap;-o-text-overflow: ellipsis;text-overflow: ellipsis;}
 
 
 .star1{display:block; width:56px; height:10px; background-position:0 0;}
@@ -88,10 +87,11 @@
 .mcdl{position:relative; height:180px;border-bottom:1px #b5e2b9 solid;}
 .mcenter dl{ display:block;padding:10px 10px 10px 35px;}
 .mcenter dt{ float:right; margin-left:10px;}
-.mcenter dd h3{ color:#003300; font-size:16px;}
+.mcenter dd h3{color:#003300; font-size:16px;}
+.mcenter dd h3 a{color:#003300;}
 .mcenter dd{ color:#.mcenter dd ;}
 .mcenter dd a{ color:#669966;}
-.mc_txt{ color:#666; height:90px; margin:10px 0;}
+.mc_txt{ color:#666; height:80px; margin:10px 0;}
 .mainsort{ display:block; height:18px; line-height:18px; color:#fff; background:url(../images/tbd.png) no-repeat right; width:auto; position:absolute; left:-5px; top:10px; z-index:3; padding:0 8px 0 3px;}
 
 .mright{width:300px;height:960px; margin-top:3px;background:url(../images/mrightbg.jpg) repeat-y 42px 44px #5ebdc2;}
@@ -128,8 +128,7 @@
 .mspec h3 span a{ color:#669966; margin-right:10px;}
 .mspec ul{ margin-right:-1px;}
 .mspec li{ float:left; margin:0 1px 1px 0; float:left; width:326px; height:100px; position:relative;}
-.mspec li span{ position:absolute; bottom:0px; height:46px; line-height:46px; width:100%; text-align:center;color:#fff; font-size:14px; background:url(../images/imgbg1.png) repeat-x;}
-
+.mspec li span{ display:block;position:absolute; bottom:0px; height:46px; line-height:46px; width:100%; text-align:center;color:#fff; font-size:14px; background:url(../images/imgbg1.png) repeat-x;}
 .mnews{ height:auto; overflow:hidden;zoom:1;}
 .mnews h3{ background-color:#32af3e; height:30px; line-height:30px; color:#fff; font-size:14px; padding:0 10px;}
 .mnews h3 span a{ font-size:12px; color:#fff;}
@@ -139,13 +138,13 @@
 .mnews_center li{ height:39px; line-height:39px; border:1px #bddcdc solid; border-top:none; background:#fff; padding:0 10px;}
 .mnews_center li:hover{ background-color:#fdefe4;}
 .mnews_center li span{ float:right; color:#669966;}
-.mnews_center li a{color:#003300;}
+.mnews_center li a{color:#003300; display:block;width:320px;overflow: hidden; white-space: nowrap;-o-text-overflow: ellipsis;text-overflow: ellipsis;}
 .mnews_right{ width:300px; height:600px; background:#fff;}
 .mnews_right dl{height:auto; overflow:hidden;padding:10px; border:1px #bedddd solid; border-top:none; position:relative;}
 .mnews_right dl:hover{ background-color:#fdefe4;}
 .mnews_right dt{ float:left; margin-right:10px;}
-.mnews_right dd a{ color:#669966;}
-.font18{ font-size:18px;color:#003300; font-weight:bold;}
+.mnews_right dd a{ color:#669966;width:150px;overflow: hidden; white-space: nowrap;-o-text-overflow: ellipsis;text-overflow: ellipsis;}
+.font18{ display:block;font-size:18px;color:#003300; font-weight:bold; width:550px;overflow: hidden; white-space: nowrap;-o-text-overflow: ellipsis;text-overflow: ellipsis;}
 .font16{ font-size:16px;color:#003300;}
 
 .mntxt{ position:absolute; right:10px; top:10px; background-position:-403px -56px;width:24px; height:24px; color:#fff; text-align:center; line-height:24px; font-size:14px;}

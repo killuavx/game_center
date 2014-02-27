@@ -1,0 +1,24 @@
+-load humanize
+-load templateutils_tags
+{%  mkrange 1 5 as fnum %}
+- for package in packages
+  %dl
+    - with version=package.versions.latest_published
+      %dt<
+        %img{:alt => "={package.title}", :src => "={version.icon.url}", :width => "120", :height => "120"}/
+      %dd
+        %a.font14{:href => "={version.get_absolute_url}"}= package.title
+      %dd.scont_color
+        %span.right= version.released_datetime|date:"DATE_FORMAT"
+        = package.author.name
+      - with download=version.get_download
+        %dd
+          %ul
+            %li 大小:{{ version.get_download_size|default:0|filesizeformat }}
+            %li 下载量:{{ version.download_count|default:0|intword }}
+        %dd
+          %span.scont_star.right
+            %div{:class => "star={fnum|random}"}
+          %b
+          %a{:href => "={version.get_download_url}"} 下载
+        %dd{:class => "scont={fnum|random}"}

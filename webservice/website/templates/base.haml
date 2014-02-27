@@ -42,7 +42,8 @@
     /[if IE 6]
       %script{:type => "text/javascript", :src => "{% static 'js/ie6.js' %}" }
       :javascript
-        $(function(){ $('.nav ul>li').eq(0).addClass('navbg'); :}) => javascript
+        $(function(){ $('.nav ul>li').eq(0).addClass('navbg'); })
+      :javascript
         DD_belatedPNG.fix('*');
 
   %body

@@ -1,0 +1,17 @@
+{% extends "pages/richtextpage.html" %}
+{% load staticfiles cache %}
+{% load widgets %}
+{% block main_css %}<link rel="stylesheet" href="{% static 'css/cont.css' %}">{% endblock %}
+{% block before_main %}{% include "pages/menus/breadcrumb_shortcut.haml" %}{% endblock %}
+{% block main %}
+{% cache 3600 category_main request.path_info request.GET %}
+<div class="sort w980">
+    <div class="sort_top">
+        {% include_widget CategoryTopMenuWidget slug=category_slug ordering=request.GET.ordering %}
+    </div>
+    <div class="scont">
+        {% include_widget CategoryPackageListWidget slug=category_slug ordering=request.GET.ordering page=request.GET.page %}
+    </div>
+</div>
+{% endcache %}
+{% endblock %}

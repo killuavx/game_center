@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.utils.timezone import now
 from django.db import models
-from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -145,7 +144,7 @@ class Category(MPTTModel, Taxonomy):
 
     @models.permalink
     def get_absolute_url(self):
-        return reverse('category_object_list', kwargs={'slug': self.slug})
+        return ('category_package_list', (), dict(slug=self.slug))
 
     def __str__(self):
         return str(self.name)
@@ -257,6 +256,10 @@ class Topic(MPTTModel, Taxonomy):
     def save(self, *args, **kwargs):
         super(Topic, self).save(*args, **kwargs)
         Topic.objects.rebuild()
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('topic_package_list', (), dict(slug=self.slug))
 
 
 class TopicalItemQuerySet(QuerySet):

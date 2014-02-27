@@ -1,4 +1,3 @@
--load staticfiles
 %h3
   - if more_url
     %span.right>
@@ -9,7 +8,8 @@
     {% with version=package.versions.latest_published %}
     %dl
       %dt
-        %img{:src => '={version.icon.url}', :height => "48", :width => "48"}/
+        %a{:href => '={item.get_absolute_url}'}<
+          %img{:src => '={version.icon.url}', :height => "48", :width => "48"}/
       %dd
         %a.font18{:href => "={version.get_absolute_url}"}= version.package.title
       %dd

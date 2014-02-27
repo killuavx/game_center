@@ -10,10 +10,11 @@
 - for item in items
   %dl
     %dt<
-      %img{:src => "={item.icon.url}", :width => "48", :height => "48", :alt => "={item.package.title}"}
+      %a{:href => '={item.get_absolute_url}'}<
+        %img{:src => "={item.icon.url}", :width => "48", :height => "48", :alt => "={item.package.title}"}
     %dd.mltitle<
       %span.right<
-        %div#star3
+        %div.star3
       %a{:href => "={item.get_absolute_url}"}= item.package.title
     %dd<
       {% with main_category=item.package.categories.all.0 %}

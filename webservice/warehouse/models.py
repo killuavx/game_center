@@ -2,6 +2,7 @@
 import datetime
 from django.conf import settings
 from django.core import exceptions
+from django.core.urlresolvers import reverse
 from django.utils.timezone import now
 from django.contrib.contenttypes import generic
 from django.db import models
@@ -672,6 +673,51 @@ class PackageVersion(models.Model):
 
     __unicode__ = __str__
 
+    DOWNLOAD_FILETYPE_PK = 0
+    DOWNLOAD_FILETYPE_DI = 1
+    DOWNLOAD_FILETYPES = {
+        'di': DOWNLOAD_FILETYPE_DI,
+        'pk': DOWNLOAD_FILETYPE_PK,
+    }
+
+    DOWNLOAD_FILELOCATION_FS = 0
+    DOWNLOAD_FILELOCATION_CDN = 1
+    DOWNLOAD_FILELCOATIONS = {
+        'cdn': DOWNLOAD_FILELOCATION_CDN,
+        'fs': DOWNLOAD_FILELOCATION_FS,
+    }
+
+    def get_download(self, filetype=None):
+        if filetype is None:
+            return self.di_download if self.di_download else self.download
+        else:
+            if filetype == self.DOWNLOAD_FILETYPE_DI:
+                return self.di_download
+            else:
+                return self.download
+
+    def get_download_size(self, filetype=None):
+        download = self.get_download(filetype=filetype)
+        try:
+            return download.size
+        except:
+            return 0
+
+    def get_download_url(self, filetype=None, is_dynamic=True):
+        if is_dynamic:
+            url = self.get_download_dynamic_url(filetype=filetype)
+        else:
+            url = self.get_download_static_url(filetype=filetype)
+        return url
+
+    def get_download_static_url(self, filetype=None):
+        return self.get_download(filetype=filetype).url
+
+    def get_download_dynamic_url(self, filetype=None):
+        kwargs = dict(pk=self.pk)
+        if filetype:
+            kwargs['filetype'] = filetype
+        return reverse('download_packageversion', kwargs=kwargs)
 
 def screenshot_upload_to_path(instance, filename):
     filebasename = basename(filename).lower()
