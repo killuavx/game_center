@@ -337,13 +337,14 @@ class PackageQuerySet(QuerySet):
         return self.filter(author=author)
 
     def by_published_order(self, newest=None):
+        qs = self.published()
         field = 'released_datetime'
         if newest is None:
-            return self
+            return qs
         elif newest is True:
-            return self.order_by('-' + field)
+            return qs.order_by('-' + field)
         else:
-            return self.order_by('+' + field)
+            return qs.order_by('+' + field)
 
     def by_rankings_order(self):
         return self.order_by('-download_count')
@@ -547,12 +548,13 @@ class PackageVersionQuerySet(QuerySet):
 
     def by_published_order(self, newest=None):
         field = 'released_datetime'
+        qs = self.published()
         if newest is None:
-            return self
+            return qs
         elif newest is True:
-            return self.order_by('-' + field)
+            return qs.order_by('-' + field)
         else:
-            return self.order_by('+' + field)
+            return qs.order_by('+' + field)
 
     def by_rankings_order(self):
         return self.order_by('-download_count')
