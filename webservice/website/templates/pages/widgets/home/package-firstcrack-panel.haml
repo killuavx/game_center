@@ -15,9 +15,9 @@
         %span.mright_star
           %div.star3
       %dd
-        %a.cfff{:href => "={version.get_absolute_url}"}= item.package.title
+        %a.cfff{:href => "={version.get_absolute_url}"}= package.title
       %dd
-        %span.mright_txt= item.package.summary|truncatechars:40|safe
+        %span.mright_txt= package.summary|truncatechars:40|safe
       %dd.mright_a<
         {% spaceless %}
         - with main_category=package.categories.all.0
