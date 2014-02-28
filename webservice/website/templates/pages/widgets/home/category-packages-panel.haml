@@ -5,12 +5,13 @@
       %a{:href => "={more_url}"} 更多 &gt;
   %span.em<
     %b.h4bg
-    游戏分类
+    = title
 .hd.left
   %ul
     - for group_item in group_items
       {% with category=group_item.0 %}
-      %li{:class => "{% if forloop.first%}on{% endif %}"}= category.name
+      %li{:class => "{% if forloop.first%}on{% endif %}"}<
+        %a{:href => "={category.get_absolute_url}"}= category.name
       {% endwith %}
 .bd.left
   - for group_item in group_items

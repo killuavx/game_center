@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.core.cache import cache
+from django.core.urlresolvers import reverse
 from django_widgets import Widget
 from .common.blog import *
 from .common.promotion import *
@@ -121,6 +122,9 @@ class HomeRankingPanelWidget(BaseRankingPackageListWidget, Widget):
 class HomeCategoryPackageTabsPanelWidget(BaseCategoryPackageListWidget, Widget):
 
     template = 'pages/widgets/home/category-packages-panel.haml'
+
+    def get_more_url(self):
+        return reverse('mezzanine.pages.views.page', kwargs=dict(slug='categories'))
 
 
 class HomePictureShowcaseWidget(BasePictureShowcaseWidget, Widget):

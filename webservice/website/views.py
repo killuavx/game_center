@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import Http404
 from django.shortcuts import render, redirect
+from django.template.response import TemplateResponse
 from warehouse.models import Package, PackageVersion
 
 
@@ -22,7 +23,6 @@ def download_package(request, package_name, version_name, *args, **kwargs):
 def download_packageversion(request, pk, filetype=None, *args, **kwargs):
     try:
         pv = PackageVersion.objects.published().get(pk=pk)
-        print(pv)
     except PackageVersion.DoesNotExist:
         raise Http404()
 
@@ -41,8 +41,7 @@ def download_packageversion(request, pk, filetype=None, *args, **kwargs):
 def category_package_list(request, slug,
                           template='pages/categories.html',
                           extra_context=dict(), *args, **kwargs):
-    return render(request, template, dict(
+    return TemplateResponse(request=request, template=template, context=dict(
         category_slug=slug,
         extra_context=extra_context
     ))
-

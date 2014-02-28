@@ -4,12 +4,20 @@ from django_widgets import Widget
 from taxonomy.models import Category
 from warehouse.models import Package
 from django.core.paginator import Paginator, EmptyPage
+from . import base
+
 
 
 ORDERINGS = {'release': 'released_datetime', 'hot': 'download_count'}
 
+class CategoryWidgetMixin(object):
 
-class CategoryTopMenuWidget(Widget):
+    def configure_settings(self):
+        from mezzanine.conf import settings
+        self.slug = settings.GC_CATEGORIES_DEFAULT_SLUG
+
+
+class CategoryTopMenuWidget(CategoryWidgetMixin, Widget):
 
     template = 'pages/widgets/categories/top-menu.haml'
 
@@ -18,8 +26,6 @@ class CategoryTopMenuWidget(Widget):
     root_slug = 'game'
 
     application_slug = 'application'
-
-    orderings = ORDERINGS
 
     ordering = 'release'
 
@@ -35,10 +41,9 @@ class CategoryTopMenuWidget(Widget):
         return leafnodes
 
     def get_context(self, value=None, options=dict(), context=None):
+        self.configure_settings()
         slug = options.get('slug') if options.get('slug') else self.slug
         ordering = options.get('ordering') if options.get('ordering') else self.ordering
-        print(options)
-        print(ordering)
         try:
             category = self.get_category(slug=slug)
         except:
@@ -54,55 +59,39 @@ class CategoryTopMenuWidget(Widget):
         return options
 
 
-class CategoryPackageListWidget(Widget):
+class CategoryPackageListWidget(CategoryWidgetMixin, base.BaseListWidget):
 
     template = 'pages/widgets/categories/package-list.haml'
 
     slug = 'big-game'
 
-    orderings = ORDERINGS
-
     ordering = 'release'
 
-    per_page_items = 36
+    per_page = 36
 
-    def get_list(self, slug, order_field):
+    def get_list(self):
         try:
-            category = Category.objects.get(slug=slug)
+            category = Category.objects.get(slug=self.slug)
         except Category.DoesNotExist:
             raise Http404()
         qs = category.packages.published()
 
-        return qs.order_by('-%s' % order_field)
+        return qs.order_by('-%s' % self.order_field)
 
     def get_ordering_field(self, ordering):
-        if ordering not in self.orderings:
+        if ordering not in ORDERINGS:
             ordering = 'release'
-        order_field = self.orderings.get(ordering)
+        order_field = ORDERINGS.get(ordering)
         return order_field
 
     def get_context(self, value=None, options=dict(), context=None):
-        slug = options.get('slug') if options.get('slug') else self.slug
-        ordering = options.get('ordering') if options.get('ordering') else self.ordering
-        packages = self.get_list(slug=slug, order_field=self.get_ordering_field(ordering))
-
+        self.configure_settings()
+        self.slug = options.get('slug') if options.get('slug') else self.slug
+        self.ordering = options.get('ordering') if options.get('ordering') else self.ordering
+        self.order_field = self.get_ordering_field(self.ordering)
         try:
-            per_page_items = int(options.get('per_page_items', self.per_page_items))
-        except:
-            per_page_items = 24
 
-        try:
-            page = int(options.get('page'))
-        except:
-            page = 1
-
-        paginator = Paginator(packages, per_page_items)
-        try:
-            options.update(dict(
-                packages=paginator.page(page),
-                page=page,
-                ordering=ordering
-            ))
-        except EmptyPage:
+            return super(CategoryPackageListWidget, self)\
+                .get_context(value=value, options=options, context=context)
+        except EmptyPage as e:
             raise Http404()
-        return options

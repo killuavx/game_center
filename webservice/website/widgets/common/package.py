@@ -1,26 +1,19 @@
 # -*- coding: utf-8 -*-
 from warehouse.models import Package, PackageVersion
+from . import base
 
 
-class BasePackageListWidget(object):
+class BasePackageListWidget(base.BaseListWidget):
 
-    def get_more_url(self):
-        return None
+    def get_list(self):
+        return Package.objects.by_published_order(True)
+
+
+class BasePackageVersionListWidget(base.BaseListWidget):
 
     def get_list(self):
         qs = Package.objects.published()
-        return PackageVersion.objects.filter(qs).by_published_order(True)
-
-    def get_context(self, value=None, options=dict(), context=None):
-        items = self.get_list()
-        max_items = options.get('max_items', 5)
-        options.update(
-            title=options.get('title'),
-            more_url=self.get_more_url(),
-            items=options.get('items', list(items[0:max_items])),
-            max_items=max_items,
-        )
-        return options
+        return PackageVersion.objects.filter(package__in=qs).by_published_order(True)
 
 
 class BaseRankingPackageListWidget(BasePackageListWidget):
