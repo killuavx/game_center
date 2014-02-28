@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import Http404
-from django.shortcuts import render, redirect
+from os.path import splitext
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from warehouse.models import Package, PackageVersion
 
@@ -35,7 +36,10 @@ def download_packageversion(request, pk, filetype=None, *args, **kwargs):
     #                 .add(DownloadCounter(user=request.user,
     #                                      packageversion=pv.pk,
     #                                      filetype=filetype))
-    return redirect(download_url)
+    response = redirect(download_url)
+    new_filename = "%s%s" % (pv.package.package_name, splitext(download_url)[-1])
+    response['Content-Disposition'] = 'attachment; filename=%s' % new_filename
+    return response
 
 
 def category_package_list(request, slug,
