@@ -49,7 +49,7 @@ class AdvertisementQuerySet(QuerySet):
 
 def advertisement_upload_to(instance, filename):
     fbasename = basename(filename)
-    fbname, extension = fbasename.split('.')
+    extension = fbasename.split('.')[-1]
     path = "%(prefix)s/%(date)s/%(ct)s-%(oid)d/%(fbname)s.%(extension)s" % {
         'prefix': 'advertisement',
         'date': now().strftime("%Y%m%d"),
