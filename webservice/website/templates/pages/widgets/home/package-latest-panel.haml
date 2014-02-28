@@ -8,7 +8,7 @@
   = title
 .mleftbg
 - for package in items
-  - with version=pacakge.versions.latest_published
+  - with version=package.versions.latest_published
     %dl
       %dt<
         %a{:href => '={version.get_absolute_url}'}<
@@ -16,7 +16,7 @@
       %dd.mltitle<
         %span.right<
           %div.star3
-        %a{:href => "={version.get_absolute_url}"}= item.package.title
+        %a{:href => "={version.get_absolute_url}"}= package.title
       %dd<
         {% with main_category=package.categories.all.0 %}
         %a{:href => "={main_category.get_absolute_url}"}= main_category.name
