@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.urlresolvers import reverse
 from taxonomy.models import Category, Topic, TopicalItem
 from warehouse.models import Author
 import re
@@ -14,10 +15,8 @@ class BaseCategoryPackageListWidget(object):
              'standalone-action-game',
     )
 
-    more_url = None
-
     def get_more_url(self):
-        return self.more_url
+        return reverse('mezzanine.pages.views.page', kwargs=dict(slug='categories'))
 
     def get_package_list_by(self, category):
         return category.packages.published()

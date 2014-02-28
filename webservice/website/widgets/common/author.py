@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
+from django.core.urlresolvers import reverse
 from warehouse.models import Author
 from taxonomy.models import Topic, TopicalItem
+from . import base
 
 
-class BaseTopicAuthorPanelWidget(object):
+class BaseTopicAuthorPanelWidget(base.BaseListWidget):
 
     slug = 'spec-top-author'
 
-    more_url = None
-
     def get_more_url(self):
-        return self.more_url
+        return reverse('mezzanine.pages.views.page', kwargs=dict(slug='developers'))
 
-    def get_list(self, slug):
+    def get_list(self):
+        slug = self.slug
         try:
             topic = Topic.objects.published().get(slug=slug)
             return TopicalItem.objects.get_items_by_topic(topic=topic,
@@ -22,14 +23,9 @@ class BaseTopicAuthorPanelWidget(object):
 
     def get_context(self, value=None, options=dict(), context=None):
         self.slug = options.get('slug', self.slug)
-        max_items = options.get('max_items', 5)
-        items = self.get_list(slug=self.slug)
-        options.update(
+        options.update(dict(
             slug=self.slug,
-            title=options.get('title'),
-            items=options.get('items', items[0:max_items]),
-            max_items=max_items,
-            more_url=self.get_more_url()
-        )
-        return options
+        ))
+        return super(BaseTopicAuthorPanelWidget, self)\
+            .get_context(value=value, options=options, context=context)
 

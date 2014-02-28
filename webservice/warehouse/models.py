@@ -531,6 +531,12 @@ class Package(models.Model):
     def __init__(self, *args, **kwargs):
         super(Package, self).__init__(*args, **kwargs)
 
+    def get_absolute_url(self, link_type=0):
+        if link_type == 0:
+            return '/packages/%s/' % self.package_name
+        else:
+            return '/packages/%s/' % self.pk
+
 
 tagging.register(Package)
 
@@ -675,6 +681,11 @@ class PackageVersion(models.Model):
 
     DOWNLOAD_FILETYPE_PK = 0
     DOWNLOAD_FILETYPE_DI = 1
+    DOWNLOAD_FILETYPES = {
+        'di': DOWNLOAD_FILETYPE_DI,
+        'pk': DOWNLOAD_FILETYPE_PK,
+    }
+
     DOWNLOAD_FILETYPES = {
         'di': DOWNLOAD_FILETYPE_DI,
         'pk': DOWNLOAD_FILETYPE_PK,

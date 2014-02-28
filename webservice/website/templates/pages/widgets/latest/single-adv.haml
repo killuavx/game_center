@@ -1,0 +1,5 @@
+%span
+  %b= item.title
+- with content=item.content
+  %a{:href => "={content.get_absolute_url}"}
+    %img{:src => "={item.cover.url}", :width => "={width}", :height => "={height}" }

@@ -8,21 +8,16 @@
     {% with version=package.versions.latest_published %}
     %dl
       %dt
-        %a{:href => '={item.get_absolute_url}'}<
+        %a{:href => '={version.get_absolute_url}'}<
           %img{:src => '={version.icon.url}', :height => "48", :width => "48"}/
       %dd
-        %a.font18{:href => "={version.get_absolute_url}"}= version.package.title
+        %a.font18{:href => "={version.get_absolute_url}"}= package.title
       %dd
         {% with main_category=version.package.categories.all.0 %}
         %a{:href => "={main_category.get_absolute_url}"}= main_category.name
         {% endwith %}
         |
-        - if version.di_download
-          = version.di_download.size|filesizeformat
-        - elif version.download
-          = version.download.size|filesizeformat
-        - else
-          0KB
+        = version.get_download_size|default:0|filesizeformat
         |
         = version.download_count|default:0
       %dd.mntxt1= forloop.counter

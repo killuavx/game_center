@@ -6,27 +6,24 @@
       %a{:href => "={more_url}"} 更多 &gt;
   %b
   = title
-- for item in items
-  %dl
-    %dt
-      %a{:href => '={item.get_absolute_url}'}
-        %img{:src => '={item.icon.url}', :width => "72", :height => "72"}
-      %span.mright_star
-        %div.star3
-    %dd
-      %a.cfff{:href => "={item.get_absolute_url}"}= item.package.title
-    %dd
-      %span.mright_txt= item.package.summary|truncatechars:40|safe
-    %dd.mright_a<
-      {% spaceless %}
-      %a{:href => "#"}= item.package.categories.all.0.name
-      |
-      - if item.di_download
-        = item.di_download.size|filesizeformat
-      - elif item.download
-        = item.download.size|filesizeformat
-      - else
-        0KB
-      |
-      = item.download_count|intword
-      {% endspaceless %}
+- for package in items
+  - with version=package.versions.latest_published
+    %dl
+      %dt
+        %a{:href => '={version.get_absolute_url}'}
+          %img{:src => '={version.icon.url}', :width => "72", :height => "72"}
+        %span.mright_star
+          %div.star3
+      %dd
+        %a.cfff{:href => "={version.get_absolute_url}"}= item.package.title
+      %dd
+        %span.mright_txt= item.package.summary|truncatechars:40|safe
+      %dd.mright_a<
+        {% spaceless %}
+        - with main_category=package.categories.all.0
+          %a{:href => "={main_category.get_absolute_url}"}= main_category.name
+        |
+        = version.get_download_size|default:0|filesizeformat
+        |
+        = package.download_count|intword
+        {% endspaceless %}

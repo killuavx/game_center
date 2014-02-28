@@ -7,27 +7,23 @@
   %b
   = title
 .mleftbg
-- for item in items
-  %dl
-    %dt<
-      %a{:href => '={item.get_absolute_url}'}<
-        %img{:src => "={item.icon.url}", :width => "48", :height => "48", :alt => "={item.package.title}"}
-    %dd.mltitle<
-      %span.right<
-        %div.star3
-      %a{:href => "={item.get_absolute_url}"}= item.package.title
-    %dd<
-      {% with main_category=item.package.categories.all.0 %}
-      %a{:href => "={main_category.get_absolute_url}"}= main_category.name
-      {% endwith %}
-      |
-      - if item.di_download
-        = item.di_download.size|filesizeformat
-      - elif item.download
-        = item.download.size|filesizeformat
-      - else
-        0KB
-      |
-      = item.download_count|intword
-    %dd<
-      %span= item.released_datetime|date:'SHORT_DATE_FORMAT'
+- for package in items
+  - with version=pacakge.versions.latest_published
+    %dl
+      %dt<
+        %a{:href => '={version.get_absolute_url}'}<
+          %img{:src => "={version.icon.url}", :width => "48", :height => "48", :alt => "={package.title}"}
+      %dd.mltitle<
+        %span.right<
+          %div.star3
+        %a{:href => "={version.get_absolute_url}"}= item.package.title
+      %dd<
+        {% with main_category=package.categories.all.0 %}
+        %a{:href => "={main_category.get_absolute_url}"}= main_category.name
+        {% endwith %}
+        |
+        = version.get_download_size|default:0|filesizeformat
+        |
+        = package.download_count|intword
+      %dd<
+        %span= version.released_datetime|date:'SHORT_DATE_FORMAT'

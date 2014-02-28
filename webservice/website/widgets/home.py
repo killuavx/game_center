@@ -94,12 +94,15 @@ class HomeNewsPanelWidget(BasePostWidget, Widget):
     template = 'pages/widgets/home/news-panel.haml'
 
 
-class HomeLatestPackagePanelWidget(BasePackageListWidget, Widget):
+class HomeLatestPackagePanelWidget(BasePackageListWidget):
+
+    def get_more_url(self):
+        return reverse('mezzanine.pages.views.page', kwargs=dict(slug='latest'))
 
     template = 'pages/widgets/home/package-latest-panel.haml'
 
 
-class HomeFirstCrackPackagePanelWidget(BasePackageListWidget, Widget):
+class HomeFirstCrackPackagePanelWidget(BasePackageListWidget):
 
     template = 'pages/widgets/home/package-firstcrack-panel.haml'
 
@@ -122,9 +125,6 @@ class HomeRankingPanelWidget(BaseRankingPackageListWidget, Widget):
 class HomeCategoryPackageTabsPanelWidget(BaseCategoryPackageListWidget, Widget):
 
     template = 'pages/widgets/home/category-packages-panel.haml'
-
-    def get_more_url(self):
-        return reverse('mezzanine.pages.views.page', kwargs=dict(slug='categories'))
 
 
 class HomePictureShowcaseWidget(BasePictureShowcaseWidget, Widget):

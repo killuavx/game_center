@@ -7,7 +7,7 @@
 {% endblock %}
 {% block before_main %}{% include "pages/menus/breadcrumb_shortcut.haml" with latest_name=category.name %}{% endblock %}
 {% block main %}
-{% cache 2 category_main request.path_info request.GET %}
+{% cache 3600 category_main request.path_info request.GET %}
 <div class="sort w980">
     <div class="sort_top">
         {% include_widget CategoryTopMenuWidget slug=category.slug ordering=request.GET.ordering %}

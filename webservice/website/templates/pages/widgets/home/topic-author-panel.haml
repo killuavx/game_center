@@ -1,8 +1,7 @@
--load staticfiles
 %h3
   - if more_url
     %span.right>
-      %a{:href => "#"} 更多 &gt;
+      %a{:href => "={more_url}"} 更多 &gt;
   = title
 %ul.clear
   - for author in items
