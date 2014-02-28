@@ -38,6 +38,8 @@ class BaseSingleAdvWidget(object):
             return place.advertisements.published()[0]
         except (Place.DoesNotExist, Advertisement.DoesNotExist):
             return None
+        except IndexError:
+            return None
 
     def get_context(self, value=None, options=dict(), context=None):
         self.slug = options.get('slug', self.slug)
