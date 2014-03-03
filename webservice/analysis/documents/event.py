@@ -50,7 +50,7 @@ class Event(DynamicDocument):
                                    choices=EVENT_TYPES,
                                    )
 
-    tags = fields.ListField(fields.StringField(max_length=30), required=False)
+    tags = fields.ListField(fields.StringField(max_length=100), required=False)
 
     package_name = fields.StringField(max_length=150, required=False)
 
