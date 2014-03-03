@@ -7,6 +7,7 @@ urlpatterns = patterns('website.views',
         #url(r'^packages/(?P<pk>\d+)/?', views.detail_view, name='website_package_detail'),
         #url(r'^packages/(?P<pk>\d+)/(?P<vpk>\d+)/?', views.version_view, name='website_package_version'),
         url(r'^download/packageversion/(?P<pk>\d+)(/(?P<filetype>\w+)?)?', 'download_packageversion', name='download_packageversion'),
-        url(r'^categories/(?P<slug>[^/]+)/?', 'category_package_list', name='category_package_list')
+        url(r'^categories/(?P<slug>[^/]+)/?', 'category_package_list', name='category_package_list'),
+        url(r'^topics/(?P<slug>[^/]+)/?', 'topic_package_list', name='topic_package_list'),
 )
 

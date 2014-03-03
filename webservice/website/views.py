@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import Http404
 from os.path import splitext
+from urllib.parse import urlsplit
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from warehouse.models import Package, PackageVersion
@@ -39,6 +40,9 @@ def download_packageversion(request, pk, filetype=None, *args, **kwargs):
     response = redirect(download_url)
     new_filename = "%s%s" % (pv.package.package_name, splitext(download_url)[-1])
     response['Content-Disposition'] = 'attachment; filename=%s' % new_filename
+    bits = urlsplit(download_url)
+    path = bits[2]
+    response['X-Accel-Redirect'] = "%s?renameto=%s" %(path, new_filename)
     return response
 
 
@@ -47,5 +51,13 @@ def category_package_list(request, slug,
                           extra_context=dict(), *args, **kwargs):
     return TemplateResponse(request=request, template=template, context=dict(
         category_slug=slug,
+        extra_context=extra_context
+    ))
+
+
+def topic_package_list(request, slug, template='pages/topics/detail.html',
+                        extra_context=dict(), *args, **kwargs):
+    return TemplateResponse(request=request, template=template, context=dict(
+        topic_slug=slug,
         extra_context=extra_context
     ))

@@ -22,8 +22,21 @@ register_setting(
 
 register_setting(
     name="GC_CATEGORIES_DEFAULT_SLUG",
-    description=_("分类游戏列表页面，当进入/categories/，指定一个分类展示游戏列表" ),
+    description=_("Category.slug, 分类游戏列表页面，当进入/categories/，指定一个分类展示游戏列表" ),
     editable=True,
     default='big-game',
 )
 
+register_setting(
+    name="GC_TOPICS_MASTERPIECE_SLUG",
+    description=_("Topic.slug, 巨作页面，当进入/masterpiece/，指定一个专辑(topic)展示游戏列表" ),
+    editable=True,
+    default='home-recommend-game',
+    )
+
+register_setting(
+    name="GC_TOPICS_CHOICE_SLUG",
+    description=_("Topic.slug，专辑页面，当进入/topics/，指定一个专辑(topic)展示专辑列表" ),
+    editable=True,
+    default='home-recommend-game',
+    )

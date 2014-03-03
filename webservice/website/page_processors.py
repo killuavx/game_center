@@ -2,7 +2,7 @@
 from django.core.urlresolvers import resolve, Resolver404
 from django.http import Http404
 from mezzanine.pages.page_processors import processor_for
-from taxonomy.models import Category
+from taxonomy.models import Category, Topic
 from mezzanine.conf import settings
 
 
@@ -22,3 +22,31 @@ def categories_fill(request, page):
         except (Resolver404, Category.DoesNotExist) as e:
             raise Http404()
     return {"category": category}
+
+topics_page_slug = 'topics'
+@processor_for(topics_page_slug)
+def topics_fill(request, page):
+    data = dict()
+    if request.method == "GET":
+        try:
+            func, args, kwargs = resolve(request.path_info)
+            slug = kwargs.get('slug')
+            if topics_page_slug == slug:
+                slug = settings.GC_TOPICS_CHOICE_SLUG
+            data['topic'] = Topic.objects.get(slug=slug)
+        except (Resolver404, Topic.DoesNotExist) as e:
+            raise Http404()
+
+    return data
+
+masterpiece_page_slug = 'masterpiece'
+@processor_for(masterpiece_page_slug)
+def masterpiece_fill(request, page):
+    data = dict()
+    if request.method == "GET":
+        try:
+            data['topic'] = Topic.objects.get(slug=settings.GC_TOPICS_MASTERPIECE_SLUG)
+        except Topic.DoesNotExist as e:
+            raise Http404()
+
+    return data

@@ -1,0 +1,57 @@
+{% extends "pages/richtextpage.html" %}
+{% load staticfiles cache humanize %}
+{% load widgets %}
+{% block main_css %}<link rel="stylesheet" href="{% static 'css/cont.css' %}">{% endblock %}
+{% block meta_title %}
+    {{ topic.name }} | {{ block.super }}
+{% endblock %}
+{% block main %}
+    {% cache 2 masterpiece_main request.path_info request.GET %}
+        <div class="h20 clear"></div>
+        <div class="master w980">
+            <ul>
+                {% widget TopicsTopicInformationWidget slug=topic.slug %}
+                    <li class="maone">
+                        <div class="matop bge2">
+                            <div class="matoptxt  right">
+                                <span>
+                                    <b>{{ month_items_count }}</b>本月
+                                </span>
+                                <span>
+                                    <b>{{ total_items_count }}</b>累计
+                                </span>
+                            </div>
+                            {{ topic.name }}
+                        </div>
+                        <h4 class="bg93">标签</h4>
+                        <div class="matxt bgffc">
+                            <a href="#" id="bg67">全部</a>
+                            <a href="#">万众瞩目</a>
+                            <a href="#">标签底随文字变宽</a>
+                            <a href="#">首发破解</a>
+                        </div>
+                    </li>
+                {% endwidget %}
+
+                {% widget TopicsTopicPackageVersionListWidget slug=topic.slug per_page=8 %}
+                    {% for package in items %}
+                        {% with version=package.versions.latest_published category=package.categories.all.0 %}
+                        <li>
+                            <dl>
+                                <dt><a href="{{ version.get_absolute_url }}">
+                                    <img src="{% if version.cover %}{{ version.cover.url }}{% endif %}" width="320" height="240" alt="">
+                                </a></dt>
+                                <dd><span class="matar"><div class="star3"></div></span><a href="{{ version.get_absolute_url }}" class="font18">{{ package.title }}</a></dd>
+                                <dd class="matar_a">{{ package.author.name }} | <a href="{{ category.get_absolute_url }}">{{ category.name }}</a> | {{ version.get_download_size|default:0|filesizeformat }}| {{ version.download_count|intword }}</dd>
+                                <dd class="c69 f14">{{ package.summary|truncatechars:45 }}</dd>
+                                <dd class="mabut"><span class="matime">{{ package.released_datetime|date:'SHORT_DATE_FORMAT' }}</span>  <span class="masz">99845</span>  <span class="madown"><a href="{{ version.get_download_url }}">下载</a></span></dd>
+                            </dl>
+                        </li>
+                        {% endwith %}
+                    {% endfor %}
+                {% endwidget %}
+
+            </ul>
+        </div>
+    {% endcache %}
+{% endblock %}

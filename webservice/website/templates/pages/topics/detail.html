@@ -1,0 +1,56 @@
+{% extends "pages/page.html" %}
+{% load staticfiles cache humanize%}
+{% load widgets %}
+{% load templateutils_tags %}
+
+{% block main_css %}<link rel="stylesheet" href="{% static 'css/cont.css' %}">{% endblock %}
+{% block before_main %}{% include "pages/menus/breadcrumb_shortcut.haml" with latest_name=topic.name %}{% endblock %}
+{% block meta_title %}
+    {{ topic.name }} | {{ block.super }}
+{% endblock %}
+
+{% block main %}
+{% cache 2 topics_main request.path_info request.GET %}
+<div class="h20 clear"></div>
+    {% widget  TopicsTopicInformationWidget slug=topic.slug %}
+<div class="chlist w980">
+    <dl>
+        <dt><img src="" width="320" height="240" alt=""></dt>
+        <dd>
+            <ul>
+                <li><a href="#">{{ topic.name }}</a></li>
+                <li><span class="matime">{{ topic.released_datetime|date:"SHORT_DATE_FORMAT" }}</span>  <span class="masz">99845</span></li>
+                <li class="chlistxt clear">{{ topic.summary }}</li>
+            </ul>
+        </dd>
+    </dl>
+</div>
+    {% endwidget %}
+
+<div class="sort w980 clear">
+    <div class="scont">
+    {% mkrange 1 6 as fnum %}
+    {% widget TopicsTopicPackageVersionListWidget slug=topic.slug %}
+        {% for package in items %}
+            {% with version=package.versions.latest_version category=package.categories.all.0 %}
+        <dl>
+            <dt><a href="{{ version.get_absolute_url }}"><img src="{{ version.icon.url }}" width="120" height="120" alt=""></a></dt>
+            <dd><a href="{{ version.get_absolute_url }}" class="font14">{{ package.title }}</a></dd>
+            <dd class="scont_color"><span class="right">{{ version.released_datetime|date:"SHORT_DATE_FORMAT" }}</span>厂商</dd>
+            <dd>
+                <ul>
+                    <li>大小:{{ version.get_download_size|default:0|filesizeformat }}</li>
+                    <li>下载量:{{ package.download_count|intword }}</li>
+                </ul>
+            </dd>
+            <dd><span class="scont_star right"><div class="star{{ fnum|random }}"></div></span><b></b> <a href="{{ version.get_download_url }}">下载</a></dd>
+            <dd class="scont{{ fnum|random }}"></dd>
+        </dl>
+            {% endwith %}
+        {% endfor %}
+    {% endwidget %}
+    </div>
+</div>
+
+{% endcache %}
+{% endblock %}
