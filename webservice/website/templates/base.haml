@@ -46,33 +46,33 @@
       :javascript
         DD_belatedPNG.fix('*');
 
-  %body
-    / head
-    .topbg
-      .top.w980
-        {% include_widget AccountTopbarWidget %}
+    %body
+      / head
+      .topbg
+        .top.w980
+          {% include_widget AccountTopbarWidget %}
 
-    %header#header.headbg
-      .head.w980
-        {% page_menu "pages/menus/header.haml" %}
-    / head end
+      %header#header.headbg
+        .head.w980
+          {% page_menu "pages/menus/header.haml" %}
+      / head end
 
-    {% block before_main %}{% endblock %}
+      {% block before_main %}{% endblock %}
 
-    / main
-    .mbg
-      {% block main %}{% endblock %}
-    / main end
+      / main
+      .mbg
+        {% block main %}{% endblock %}
+      / main end
 
-    {% block main_after %}{% endblock %}
+      {% block main_after %}{% endblock %}
 
-    / footer
-    .footer
-      .foot.w980
-        .foot_sch
-          {% include "pages/widgets/search_form.haml" %}
-        {% page_menu "pages/menus/footer_links.haml" %}
-    / footer end
-    {% include "includes/footer_scripts.html" %}
+      / footer
+      .footer
+        .foot.w980
+          .foot_sch
+            {% include "pages/widgets/search_form.haml" %}
+          {% page_menu "pages/menus/footer_links.haml" %}
+      / footer end
+      {% include "includes/footer_scripts.html" %}
 
-    {% block footer_js %}{% endblock %}
+      {% block footer_js %}{% endblock %}
