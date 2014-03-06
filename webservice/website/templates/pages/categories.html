@@ -1,6 +1,9 @@
 {% extends "pages/richtextpage.html" %}
 {% load staticfiles cache %}
 {% load widgets %}
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'js/jquery.infinitescroll.min.js' %}"></script>
+{% endblock %}
 {% block main_css %}<link rel="stylesheet" href="{% static 'css/cont.css' %}">{% endblock %}
 {% block meta_title %}
     {{ category.name }} | {{ block.super }}
@@ -12,9 +15,14 @@
     <div class="sort_top">
         {% include_widget CategoryTopMenuWidget slug=category.slug ordering=request.GET.ordering %}
     </div>
-    <div class="scont">
+    <div class="scont" id="content-js">
         {% include_widget CategoryPackageListWidget slug=category.slug ordering=request.GET.ordering page=request.GET.page %}
+    </div>
+    <div class="navigation" style="display: none;">
+        <a href="#"></a>
     </div>
 </div>
 {% endcache %}
 {% endblock %}
+
+{% block footer_js %}<script type="text/javascript" src="{% static 'js/ccpaly.pages.js' %}"></script>{% endblock %}

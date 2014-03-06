@@ -1,4 +1,4 @@
-﻿@charset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 body{font:12px/1.5 "微软雅黑",arial,\5b8b\4f53; color:#969891; background:#EFFDFD; }
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,blockquote,p,ol{padding:0; margin:0; line-height:21px;}
@@ -7,7 +7,7 @@ h1,h2,h3,h4,h5,h6{font-size:100%; }
 article, aside, footer, header, hgroup, nav, section {display: block;}
 html{ height:100%;  }
 textarea{resize:none} 
-img{border:0; vertical-align:center;}
+img{border:0; vertical-align:top;}
 a{text-decoration:none; color:#333333;}
 a:focus,input{outline:none;}
 ul {list-style: none;}
@@ -39,6 +39,30 @@ ol {list-style: none;}
 
 
 
-.scont1,.scont2,.scont3,.scont4,.scont5,.smenu li,.phleft .cf li span a,.phleft .cf li span a:hover,.inllove a,#pagination li,#pagination li.current,.mleft_title b,.mcenter_title b,.mright_title b,.h4bg,.schtxt,.schbuttom,.mntxt,.mntxt1,.data_top,.data_left h4 b,.data_right h4 b,.data_top1 span,.y1,.y2,.y3,.y4,.scont dd b,.lf_xh,.lf_l,.gdown b,.smenu li:hover,.inr10 li b{background:url(../images/mainbg.png) no-repeat;}
+.scont1,.scont2,.scont3,.scont4,.scont5,.smenu li,.phleft .cf li span a,.phleft .cf li span a:hover,.inllove a,#pagination li,#pagination li.current,.mleft_title b,.mcenter_title b,.mright_title b,.h4bg,.schtxt,.schbuttom,.mntxt,.mntxt1,.data_top,.data_left h4 b,.data_right h4 b,.data_top1 span,.y1,.y2,.y3,.y4,.scont dd b,.lf_xh,.lf_l,.gdown b,.smenu li:hover,.inr10 li b{background:url("../images/mainbg.png") no-repeat;}
 
-.star1,.star2,.star3,.star4,.star5,.star6,.scont_star,.bdcont dd span,.mright_star{ background:url(../images/star.png) no-repeat;}
+.star1,.star2,.star3,.star4,.star5,.star6,.scont_star,.bdcont dd span,.mright_star{ background:url("../images/star.png") no-repeat;}
+
+
+#infscr-loading {
+    background: none repeat scroll 0 0 #000000;
+    border-radius: 10px;
+    bottom: 40px;
+    color: #FFFFFF;
+    left: 45%;
+    opacity: 0.6;
+    padding: 10px;
+    position: fixed;
+    text-align: center;
+    width: 200px;
+    z-index: 100;
+}
+
+
+.loadingLine-box{display:block;height:35px;line-height:35px;font-size:14px;text-align:center;background:#C7E3F1;margin-top:10px}
+.loadingLine-box em{font-weight:700;color:#1482BE;font-family: 宋体;font-style: normal;}
+.loadingLine-box:hover{text-decoration:none;}
+.loadingLine-box .icon_txt{margin-left:3px;color:#1482BE;}
+.loadingLine-box .loadingMini{height:15px;width:15px;display:inline-block;vertical-align:middle;background:url("../images/loading4.gif");}
+
+

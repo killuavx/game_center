@@ -5,10 +5,11 @@
   %dl
     - with version=package.versions.latest_published
       %dt<
-        %img{:alt => "={package.title}", :src => "={version.icon.large.url}", :width => "120", :height => "120"}/
+        %a{:href => "={version.get_absolute_url}"}<
+          %img{:alt => "={package.title}", :src => "={version.icon.large.url}", :width => "120", :height => "120"}/
       %dd
         %a.font14{:href => "={version.get_absolute_url}"}= package.title
-      %dd.scont_color
+      %dd.scont_color.firm
         %span.right= version.released_datetime|date:"SHORT_DATE_FORMAT"
         = package.author.name
       - with download=version.get_download

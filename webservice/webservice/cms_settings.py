@@ -153,6 +153,29 @@ COFFEESCRIPT_EXECUTABLE = \
 
 ACCOUNTS_PROFILE_VIEWS_ENABLED = True
 
+
+FILEBROWSER_EXTENSIONS = {
+    'Folder': [''],
+    'Image': ['.jpg', '.jpeg', '.gif', '.png', '.tif', '.tiff'],
+    'Video': ['.mov', '.wmv', '.mpeg', '.mpg', '.avi', '.rm'],
+    'Document': ['.pdf', '.doc', '.rtf', '.txt', '.xls', '.csv'],
+    'Audio': ['.mp3', '.mp4', '.wav', '.aiff', '.midi', '.m4p'],
+    'Code': ['.html', '.py', '.js', '.css'],
+    'Package': ['.cpk', '.apk'],
+}
+
+FILEBROWSER_SELECT_FORMATS = {
+    'File': ['Folder', 'Document'],
+    'Image': ['Image'],
+    'Media': ['Video', 'Audio'],
+    'Document': ['Document'],
+    # for TinyMCE we can also define lower-case items
+    'image': ['Image'],
+    'file': ['Folder', 'Image', 'Document'],
+    'media': ['Video', 'Audio'],
+    'package': ['Package']
+}
+
 try:
     from mezzanine.utils.conf import set_dynamic_settings
 except ImportError:

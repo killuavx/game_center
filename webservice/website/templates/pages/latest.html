@@ -6,10 +6,13 @@
 {% block main %}
 {% cache 3600 latest_main request.path_info request.GET %}
 <div class="game w980">
+    {% cache 36000 latest_main_timeline %}
     <div class="gameleft left">
         {% include_widget LatestPackageTimelinePanelWidget max_items=10 %}
     </div>
+    {% endcache %}
     <div class="gameright right">
+        {% cache 86400 latest_main_right_adv %}
         <div class="grignttop">
             <ul>
                 <li>{% include_widget LatestSingleAdvWidget slug="latest-right-top" width=710 height=260 %}</li>
@@ -17,10 +20,12 @@
                 <li class="right">{% include_widget LatestSingleAdvWidget slug="latest-right-right" width=345 height=200 %}</li>
             </ul>
         </div>
+        {% endcache %}
         <div class="grightcont clear">
             <h3></h3>
-            {% include_widget LatestPackageVersionListWidget per_page page=request.GET.page %}
+            {% include_widget LatestPackageVersionListWidget list_page_var='latest_page_package' page=request.GET.page %}
         </div>
+        {% include_widget PaginatorPrevNextWidget list_page_var='latest_page_package' page=request.GET.page %}
     </div>
 </div>
 {% endcache %}

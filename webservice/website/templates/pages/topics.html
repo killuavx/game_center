@@ -6,7 +6,7 @@
     {{ topic.name }} | {{ block.super }}
 {% endblock %}
 {% block main %}
-{% cache 2 topics_main request.path_info request.GET %}
+{% cache 3600 topics_main request.path_info request.GET %}
 <div class="h20 clear"></div>
 <div class="master w980">
     <ul>

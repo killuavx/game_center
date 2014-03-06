@@ -2,12 +2,16 @@
 from django.conf.urls import patterns, url
 from warehouse.models import PackageVersion
 
+slug_pattern = '[\w_.-]+'
 urlpatterns = patterns('website.views',
-        #url(r'^packages/?', views.list_view, name='website_package_list'),
-        #url(r'^packages/(?P<pk>\d+)/?', views.detail_view, name='website_package_detail'),
-        #url(r'^packages/(?P<pk>\d+)/(?P<vpk>\d+)/?', views.version_view, name='website_package_version'),
-        url(r'^download/packageversion/(?P<pk>\d+)(/(?P<filetype>\w+)?)?', 'download_packageversion', name='download_packageversion'),
-        url(r'^categories/(?P<slug>[^/]+)/?', 'category_package_list', name='category_package_list'),
-        url(r'^topics/(?P<slug>[^/]+)/?', 'topic_package_list', name='topic_package_list'),
+        url(r'^packages/(?P<package_name>%s)(/(?P<version_name>%s)?)?' % (slug_pattern, slug_pattern),
+            'packageversion_detail', name='packageversion_detail'),
+        url(r'^download/packageversion/(?P<pk>\d+)(/(?P<filetype>\w+)?)?',
+            'download_packageversion', name='download_packageversion'),
+        url(r'^download/package/(?P<package_name>%s)'
+            '(/(?P<version_name>%s)?)?(/(?P<filetype>\w+)?)?' % (slug_pattern, slug_pattern),
+            'download_package', name='download_package'),
+        url(r'^categories/(?P<slug>%s)' % slug_pattern, 'category_package_list', name='category_package_list'),
+        url(r'^topics/(?P<slug>%s)' % slug_pattern, 'topic_package_list', name='topic_package_list'),
 )
 

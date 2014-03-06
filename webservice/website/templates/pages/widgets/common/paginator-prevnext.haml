@@ -1,0 +1,18 @@
+-load url_tags
+%ul.inleft_page
+  - if list_page.has_previous
+    {% qurl query_url page=list_page.previous_page_number as prev_url %}
+    %li.left<
+      %a{:href => "={prev_url}"} 上一页
+  - else
+    %li.left<
+      %a{:href => "#"} 上一页
+
+  - if list_page.has_next
+    {% qurl query_url page=list_page.next_page_number as next_url %}
+    %li.right<
+      %a{:href => "={next_url}"} 下一页
+  - else
+    %li.right<
+      %a{:href => "#"} 下一页
+
