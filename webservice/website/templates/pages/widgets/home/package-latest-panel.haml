@@ -10,16 +10,20 @@
 - for package in items
   - with version=package.versions.latest_published
     %dl
-      %dt<
-        %a{:href => '={version.get_absolute_url}'}<
-          %img{:src => "={version.icon.url}", :width => "48", :height => "48", :alt => "={package.title}"}
-      %dd.mltitle<
-        %span.right<
-          %div.star3
+      %dt
+        %a{:href => "={version.get_absolute_url}"}
+          %img{:src => "={version.icon.small.url}", :width => "48", :height => "48"}
+      %dd.mltitle
+        %em.star3.right
         %a{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":6"
-      %dd<
-        {% with main_category=package.categories.all.0 %}
-        %a{:href => "={main_category.get_absolute_url}"}= main_category.name
-        {% endwith %} | {{ version.get_download_size|default:0|filesizeformat }} | {{ package.download_count|intword }}
-      %dd<
-        %span= version.released_datetime|date:'SHORT_DATE_FORMAT'
+      %dd
+        {% with category=package.categories.all.0 %}
+        %a{:href => "={category.get_absolute_url}"}= category.name
+        {% endwith %}
+        %i |
+        {{ version.get_download_size|default:0|filesizeformat }}
+        %i |
+        {{ version.released_datetime|date:"SHORT_DATE_FORMAT" }}
+      %dd
+        %span.left v{{ version.version_name}}
+        %span.right {{ version.download_count|default:0|intword }}次

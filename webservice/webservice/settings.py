@@ -12,7 +12,9 @@ ADMINS = (
     ('Ranger.Huang', 'ranger.huang@ccplay.com.cn'),
 )
 
-SHORT_DATE_FORMAT = DATE_FORMAT = 'Y-m-d'
+
+SHORT_DATE_FORMAT = 'm-d'
+DATE_FORMAT = 'Y-m-d'
 SHORT_DATETIME_FORMAT = 'Y-m-d P'
 
 

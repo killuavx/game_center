@@ -9,7 +9,7 @@
     %dl
       %dt
         %a{:href => '={version.get_absolute_url}'}<
-          %img{:src => '={version.icon.url}', :height => "48", :width => "48"}/
+          %img{:src => '={version.icon.small.url}', :height => "48", :width => "48"}/
       %dd
         %a.font18{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":8"
       %dd

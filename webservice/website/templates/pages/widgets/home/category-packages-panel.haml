@@ -21,7 +21,7 @@
         %li<
           {% with version=package.versions.published.0 %}
           %a{:href => "={version.get_absolute_url}", :title => "={package.title}"}
-            %img{:src => "={version.icon.url}", :width => "72", :height => "72" }
+            %img{:src => "={version.icon.small.url}", :width => "72", :height => "72" }
             %span= package.title|slice:":5"
           {% endwith %}
       {% endwith %}
