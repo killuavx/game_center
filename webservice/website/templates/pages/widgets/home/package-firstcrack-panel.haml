@@ -1,5 +1,4 @@
--load i18n
--load humanize
+-load util_tags
 %h2.mright_title<
   - if more_url
     %span.right
@@ -25,5 +24,5 @@
         |
         = version.get_download_size|default:0|filesizeformat
         |
-        = package.download_count|intword
+        = package.download_count|intwordcn
         {% endspaceless %}

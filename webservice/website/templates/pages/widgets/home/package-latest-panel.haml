@@ -1,5 +1,4 @@
--load humanize
--load i18n
+-load util_tags
 %h2.mleft_title
   - if more_url
     %span.right
@@ -26,4 +25,4 @@
         {{ version.released_datetime|date:"SHORT_DATE_FORMAT" }}
       %dd
         %span.left v{{ version.version_name}}
-        %span.right {{ version.download_count|default:0|intword }}次
+        %span.right {{ version.download_count|default:0|intwordcn }}次

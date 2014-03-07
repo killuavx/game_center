@@ -1,6 +1,6 @@
 {% extends "pages/page.html" %}
-{% load staticfiles cache humanize%}
-{% load widgets %}
+{% load staticfiles cache humanize %}
+{% load widgets util_tags %}
 {% load templateutils_tags %}
 
 {% block main_css %}<link rel="stylesheet" href="{% static 'css/cont.css' %}">{% endblock %}
@@ -35,12 +35,12 @@
             {% with version=package.versions.latest_version category=package.categories.all.0 %}
         <dl>
             <dt><a href="{{ version.get_absolute_url }}"><img src="{{ version.icon.url }}" width="120" height="120" alt=""></a></dt>
-            <dd><a href="{{ version.get_absolute_url }}" class="font14">{{ package.title }}</a></dd>
+            <dd><a href="{{ version.get_absolute_url }}" class="font14" title="{{ package.title }}">{{ package.title|slice:":10" }}</a></dd>
             <dd class="scont_color"><span class="right">{{ version.released_datetime|date:"SHORT_DATE_FORMAT" }}</span>厂商</dd>
             <dd>
                 <ul>
                     <li>大小:{{ version.get_download_size|default:0|filesizeformat }}</li>
-                    <li>下载量:{{ package.download_count|intword }}</li>
+                    <li>下载量:{{ package.download_count|intwordcn }}</li>
                 </ul>
             </dd>
             <dd><span class="scont_star right"><div class="star{{ fnum|random }}"></div></span><b></b> <a href="{{ version.get_download_url }}">下载</a></dd>

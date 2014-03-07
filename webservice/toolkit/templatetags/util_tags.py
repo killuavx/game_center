@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from django.template import defaultfilters
 from django.template.base import Library, VariableDoesNotExist, Variable
 import datetime
+from django.conf import settings
 
 register = Library()
 
@@ -88,3 +90,52 @@ def partition_horizontal(thelist, n):
     return newlists
 
 
+intwordcn_converters = (
+    (4, lambda number: (
+        '%(value).1f 万',
+        '%(value)s 万',
+    )),
+    (8, lambda number: (
+        '%(value).1f 亿',
+        '%(value)s 亿',
+    )),
+    (12, lambda number: (
+        '%(value).1f 兆',
+        '%(value)s 兆',
+    )),
+)
+
+from decimal import Decimal
+
+@register.filter
+def intwordcn(value):
+    """
+        same to intword
+    """
+    try:
+        value = int(value)
+    except (TypeError, ValueError):
+        return value
+
+    if value < 10000:
+        return value
+
+    def _check_for_float(value, float_formatted, string_formatted):
+        """
+        Use the i18n enabled defaultfilters.floatformat if possible
+        """
+        value = defaultfilters.floatformat(value)
+        value = Decimal(value)
+        if value - int(value) == 0:
+            value = int(value)
+            template = string_formatted
+        else:
+            template = float_formatted
+        return template % {'value': value}
+
+    for exponent, converters in intwordcn_converters:
+        large_number = 10 ** exponent
+        if value < large_number * 10000:
+            new_value = value / float(large_number)
+            return _check_for_float(new_value, *converters(new_value))
+    return value

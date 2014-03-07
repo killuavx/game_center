@@ -1,4 +1,4 @@
--load humanize
+-load util_tags
 - for version in items
   - with package=version.package version_url=version.get_absolute_url
     %dl
@@ -18,7 +18,7 @@
         |
         = version.released_datetime|date:'SHORT_DATE_FORMAT'
         ｜
-        = version.download_count|default:0|intword
+        = version.download_count|default:0|intwordcn
       %dd
         %span.gdown
           %b

@@ -1,25 +1,26 @@
--load humanize
+-load util_tags
 -load templateutils_tags
 {%  mkrange 1 5 as fnum %}
 - for package in items
-  %dl
-    - with version=package.versions.latest_published
+  - with version=package.versions.latest_published
+    %dl
       %dt<
         %a{:href => "={version.get_absolute_url}"}<
           %img{:alt => "={package.title}", :src => "={version.icon.large.url}", :width => "120", :height => "120"}/
       %dd
         %a.font14{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":9"
       %dd.scont_color.firm
-        %span.right= version.released_datetime|date:"SHORT_DATE_FORMAT"
-        %span{:title => "={package.author.name}"}= package.author.name|slice:":10"
-      - with download=version.get_download
-        %dd
-          %ul
-            %li 大小: {{ version.get_download_size|default:0|filesizeformat }}
-            %li 下载量: {{ version.download_count|default:0|intword }}
-        %dd
-          %span.scont_star.right
-            %div{:class => "star={fnum|random}"}
-          %b
-          %a{:href => "={version.get_download_url}"} 下载
-        %dd{:class => "scont={fnum|random}"}
+        %span{:title => "={package.author.name}"}= package.author.name|slice:":20"
+      %dd
+        {{ version.released_datetime|date:"SHORT_DATE_FORMAT"}}
+        %i> |
+        v{{ version.version_name }}
+      %dd
+        {{ version.get_download_size|default:0|filesizeformat }}
+        %i> |
+        {{ version.download_count|default:0|intwordcn }}次
+      %dd
+        %em{:class => "star={fnum|random}"}
+        %b
+        %a{:href => "={version.get_download_url}"} 下载
+      %dd{:class => "scont={fnum|random}"}
