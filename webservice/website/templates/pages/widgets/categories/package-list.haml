@@ -8,15 +8,15 @@
         %a{:href => "={version.get_absolute_url}"}<
           %img{:alt => "={package.title}", :src => "={version.icon.large.url}", :width => "120", :height => "120"}/
       %dd
-        %a.font14{:href => "={version.get_absolute_url}"}= package.title
+        %a.font14{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":9"
       %dd.scont_color.firm
         %span.right= version.released_datetime|date:"SHORT_DATE_FORMAT"
-        = package.author.name
+        %span{:title => "={package.author.name}"}= package.author.name|slice:":10"
       - with download=version.get_download
         %dd
           %ul
-            %li 大小:{{ version.get_download_size|default:0|filesizeformat }}
-            %li 下载量:{{ version.download_count|default:0|intword }}
+            %li 大小: {{ version.get_download_size|default:0|filesizeformat }}
+            %li 下载量: {{ version.download_count|default:0|intword }}
         %dd
           %span.scont_star.right
             %div{:class => "star={fnum|random}"}
