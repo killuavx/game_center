@@ -42,7 +42,7 @@
                             <img src="{% if version.cover %}{{ version.cover.url }}{% endif %}" width="320" height="240" alt="">
                         </a></dt>
                         <dd><span class="matar"><div class="star3"></div></span><a href="{{ version.get_absolute_url }}" class="font18" title="{{ package.title }}">{{ package.title|slice:":20" }}</a></dd>
-                        <dd class="matar_a">{{ package.author.name|slice:":6" }} | <a href="{{ category.get_absolute_url }}">{{ category.name }}</a> | {{ version.get_download_size|default:0|filesizeformat }}| {{ version.download_count|intword }}</dd>
+                        <dd class="matar_a"><span title="{{ package.author.name }}">{{ package.author.name|slice:":6" }}</span> | <a href="{{ category.get_absolute_url }}">{{ category.name }}</a> | {{ version.get_download_size|default:0|filesizeformat }}| {{ version.download_count|intword }}</dd>
                         <dd class="c69 f14">{{ package.summary|truncatechars:45 }}</dd>
                         <dd class="mabut"><span class="matime">{{ package.released_datetime|date:'SHORT_DATE_FORMAT' }}</span>  <span class="masz">99845</span>  <span class="madown"><a href="{{ version.get_download_url }}">下载</a></span></dd>
                     </dl>
