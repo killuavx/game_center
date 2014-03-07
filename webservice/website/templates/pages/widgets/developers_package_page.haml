@@ -15,7 +15,7 @@
           .detopright.right
             %span
               %b
-                %a{:href => "={version.get_absolute_url}"}= package.title
+                %a{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":9"
                 = package.summary
             %img{:alt => "", :height => "200", :src => "images/p5.jpg", :width => "280"}/
           {% endwith %}
@@ -24,9 +24,9 @@
           {% with version=package.versions.latest_published %}
           %dl
             %dt
-              %img{:alt => "={package.title}", :src => "={version.icon.url}", :width => "72", :height => "72"}/
+              %img{:alt => "={package.title}", :src => "={version.icon.middle.url}", :width => "72", :height => "72"}/
             %dd
-              %a{:href => "={version.get_absolute_url}"}= package.title
+              %a{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":5"
             %dd
               %span
                 .star1
