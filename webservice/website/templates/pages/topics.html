@@ -33,12 +33,12 @@
         </li>
     {% endwidget %}
 
-    {% widget TopicsListWidget slug=topic.slug per_page=8 %}
+    {% widget TopicsListWidget slug=topic.slug %}
         {% for topic in items %}
         <li>
             <dl>
                 <dt><a href="{{ topic.get_absolute_url }}"><img src="{{ topic.cover.url }}" width="320" height="240" alt=""></a></dt>
-                <dd><span class="matar"><div class="star3"></div></span><a href="{{ topic.get_absolute_url }}" class="font18">{{ topic.name }}</a></dd>
+                <dd><span class="matar"><div class="star3"></div></span><a href="{{ topic.get_absolute_url }}" class="font18" title="{{ topic.name }}">{{ topic.name|slice:":10" }}</a></dd>
                 <dd class="c69 f14">{{ topic.summary|truncatechars:45 }}</dd>
                 <dd class="mabut"><span class="matime">{{ topic.released_datetime|date:'SHORT_DATE_FORMAT' }}</span>  <span class="masz">99845</span> </dd>
             </dl>
