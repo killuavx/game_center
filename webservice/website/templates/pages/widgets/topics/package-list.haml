@@ -4,15 +4,15 @@
 - for package in items
   - with version=package.versions.latest_version
     %dl
-      %dt
-        %a{:href => "={version.get_absolute_url}"}
+      %dt><
+        %a{:href => "={version.get_absolute_url}"}><
           %img{:alt => "", :src => "={version.icon.large.url}", :width => "120", :height => "120"}/
-      %dd
+      %dd><
         %a.font14{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":10"
       %dd.scont_color
         %span.right= version.released_datetime|date:"SHORT_DATE_FORMAT"
         %span{:title => "={package.author.name}"}= package.author.name|slice:":10"
-      %dd
+      %dd><
         %ul
           %li 大小:{{ version.get_download_size|default:0|filesizeformat }}
           %li 下载量:{{ package.download_count|intwordcn }}

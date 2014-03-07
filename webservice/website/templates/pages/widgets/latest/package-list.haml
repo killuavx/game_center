@@ -2,22 +2,22 @@
 - for version in items
   - with package=version.package version_url=version.get_absolute_url
     %dl
-      %dt<
+      %dt><
         %img{:alt => "={package.title}", :src => "={version.icon.url}",
              :width => "50", :height => "50"}/
       %dd
-        %span.font18
-          %a{:href => "={version_url}"}= package.title
-          |
-          %a.c69{:href => "={version_url}"}= package.summary
-      %dd.gright_lx
+        %span.font18><
+          %a{:href => "={version_url}"}><= package.title
+          %i>< |
+          %a.c69{:href => "={version_url}"}><= package.summary
+      %dd.gright_lx><
         - with category=package.categories.all.0
-          %a{:href => "={category.get_absolute_url}"}= category.name
-        |
+          %a{:href => "={category.get_absolute_url}"}><= category.name
+        %i>< |
         = version.get_download_size|default:0|filesizeformat
-        |
+        %i>< |
         = version.released_datetime|date:'SHORT_DATE_FORMAT'
-        ｜
+        %i>< |
         = version.download_count|default:0|intwordcn
       %dd
         %span.gdown

@@ -4,23 +4,23 @@
 - for package in items
   - with version=package.versions.latest_published
     %dl
-      %dt<
-        %a{:href => "={version.get_absolute_url}"}<
+      %dt><
+        %a{:href => "={version.get_absolute_url}"}><
           %img{:alt => "={package.title}", :src => "={version.icon.large.url}", :width => "120", :height => "120"}/
-      %dd
+      %dd><
         %a.font14{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":9"
-      %dd.scont_color.firm
+      %dd.scont_color.firm><
         %span{:title => "={package.author.name}"}= package.author.name|slice:":20"
-      %dd
+      %dd><
         {{ version.released_datetime|date:"SHORT_DATE_FORMAT"}}
-        %i> |
+        %i>< |
         v{{ version.version_name }}
-      %dd
+      %dd><
         {{ version.get_download_size|default:0|filesizeformat }}
-        %i> |
+        %i>< |
         {{ version.download_count|default:0|intwordcn }}次
-      %dd
+      %dd><
         %em{:class => "star={fnum|random}"}
-        %b
+        %b><
         %a{:href => "={version.get_download_url}"} 下载
       %dd{:class => "scont={fnum|random}"}

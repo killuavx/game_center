@@ -17,12 +17,10 @@
         %a.cfff{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":8"
       %dd
         %span.mright_txt= package.summary|truncatechars:40|safe
-      %dd.mright_a<
-        {% spaceless %}
+      %dd.mright_a><
         - with main_category=package.categories.all.0
-          %a{:href => "={main_category.get_absolute_url}"}= main_category.name
-        |
+          %a{:href => "={main_category.get_absolute_url}"}><= main_category.name
+        %i>< |
         = version.get_download_size|default:0|filesizeformat
-        |
+        %i>< |
         = package.download_count|intwordcn
-        {% endspaceless %}
