@@ -107,7 +107,7 @@ class HomeFirstCrackPackagePanelWidget(BasePackageListWidget):
     template = 'pages/widgets/home/package-firstcrack-panel.haml'
 
 
-class HomeTopicPanelWidget(BaseTopicWidget, Widget):
+class HomeTopicPanelWidget(BaseTopicListWidget, Widget):
 
     template = 'pages/widgets/home/topic-spec-panel.haml'
 

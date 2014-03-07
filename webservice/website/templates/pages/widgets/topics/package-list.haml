@@ -1,0 +1,24 @@
+- load util_tags
+-load templateutils_tags
+{% mkrange 1 6 as fnum %}
+- for package in items
+  - with version=package.versions.latest_version
+    %dl
+      %dt
+        %a{:href => "={version.get_absolute_url}"}
+          %img{:alt => "", :src => "={version.icon.large.url}", :width => "120", :height => "120"}/
+      %dd
+        %a.font14{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":10"
+      %dd.scont_color
+        %span.right= version.released_datetime|date:"SHORT_DATE_FORMAT"
+        %span{:title => "={package.author.name}"}= package.author.name|slice:":10"
+      %dd
+        %ul
+          %li 大小:{{ version.get_download_size|default:0|filesizeformat }}
+          %li 下载量:{{ package.download_count|intwordcn }}
+      %dd
+        %span.scont_star.right
+          %div{:class => "star={fnum|random}"}
+        %b
+        %a{:href => "={version.get_download_url}"} 下载
+      %dd{:class => "scont={fnum|random}"}

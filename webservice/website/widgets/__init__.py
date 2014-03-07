@@ -6,3 +6,5 @@ from .clientapp import *
 from .developer import *
 from .categories import *
 from .latest import *
+from .masterpiece import *
+from .topics import *

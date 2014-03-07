@@ -6,47 +6,17 @@
     {{ topic.name }} | {{ block.super }}
 {% endblock %}
 {% block main %}
-{% cache 3600 topics_main request.path_info request.GET %}
-<div class="h20 clear"></div>
-<div class="master w980">
-    <ul>
-    {% widget TopicsInformationWidget slug=topic.slug %}
-        <li class="maone">
-            <div class="matop bg20">
-                <div class="matoptxt  right">
-                    <span>
-                        <b>{{ month_items_count }}</b>本月
-                    </span>
-                    <span>
-                        <b>{{ total_items_count }}</b>累计
-                    </span>
-                </div>
-                {{ topic.name }}
-            </div>
-            <h4 class="bg27">标签</h4>
-            <div class="matxt bgc6">
-                <a href="#" id="bg67">全部</a>
-                <a href="#">万众瞩目</a>
-                <a href="#">标签底随文字变宽</a>
-                <a href="#">首发破解</a>
-            </div>
-        </li>
-    {% endwidget %}
-
-    {% widget TopicsListWidget slug=topic.slug %}
-        {% for topic in items %}
-        <li>
-            <dl>
-                <dt><a href="{{ topic.get_absolute_url }}"><img src="{{ topic.cover.url }}" width="320" height="240" alt=""></a></dt>
-                <dd><span class="matar"><div class="star3"></div></span><a href="{{ topic.get_absolute_url }}" class="font18" title="{{ topic.name }}">{{ topic.name|slice:":10" }}</a></dd>
-                <dd class="c69 f14">{{ topic.summary|truncatechars:45 }}</dd>
-                <dd class="mabut"><span class="matime">{{ topic.released_datetime|date:'SHORT_DATE_FORMAT' }}</span>  <span class="masz">99845</span> </dd>
-            </dl>
-        </li>
-        {% endfor %}
-    {% endwidget %}
-
-    </ul>
-</div>
-{% endcache %}
+{% with page_num=request.GET.page %}
+    {% cache 3600 topics_main request.path_info page_num %}
+    <div class="h20 clear"></div>
+    <div class="master w980">
+        <ul>
+            <li class="maone">
+                {% include_widget TopicsInformationWidget slug=topic.slug %}
+            </li>
+            {% include_widget TopicsTopicListWidget slug=topic.slug page=request.GET.page %}
+        </ul>
+    </div>
+    {% endcache %}
+{% endwith %}
 {% endblock %}

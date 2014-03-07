@@ -16,4 +16,4 @@ class LatestPackageTimelinePanelWidget(BasePackageListWidget):
 
 class LatestPackageVersionListWidget(BasePackageVersionListWidget):
 
-    template = 'pages/widgets/latest/packageversion-list.haml'
+    template = 'pages/widgets/latest/package-list.haml'
