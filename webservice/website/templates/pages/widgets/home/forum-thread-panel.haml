@@ -8,5 +8,5 @@
   - for post in items
     %li
       %span.time= post.pub_date
-      %a{:href =>"={post.url}"}= post.title
+      %a{:href =>"={post.url}", :title => "={post.title}"}= post.title
 {% endspaceless %}

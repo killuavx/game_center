@@ -20,10 +20,9 @@
       - for package in packages
         %li<
           {% with version=package.versions.published.0 %}
-          %a{:href => "={version.get_absolute_url}"}
+          %a{:href => "={version.get_absolute_url}", :title => "={package.title}"}
             %img{:src => "={version.icon.url}", :width => "72", :height => "72" }
-            %span<
-              = package.title
+            %span= package.title|slice:":5"
           {% endwith %}
       {% endwith %}
   :javascript

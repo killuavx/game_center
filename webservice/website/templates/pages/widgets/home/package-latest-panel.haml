@@ -16,14 +16,10 @@
       %dd.mltitle<
         %span.right<
           %div.star3
-        %a{:href => "={version.get_absolute_url}"}= package.title
+        %a{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":6"
       %dd<
         {% with main_category=package.categories.all.0 %}
         %a{:href => "={main_category.get_absolute_url}"}= main_category.name
-        {% endwith %}
-        |
-        = version.get_download_size|default:0|filesizeformat
-        |
-        = package.download_count|intword
+        {% endwith %} | {{ version.get_download_size|default:0|filesizeformat }} | {{ package.download_count|intword }}
       %dd<
         %span= version.released_datetime|date:'SHORT_DATE_FORMAT'

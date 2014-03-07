@@ -11,7 +11,7 @@
         %a{:href => '={version.get_absolute_url}'}<
           %img{:src => '={version.icon.url}', :height => "48", :width => "48"}/
       %dd
-        %a.font18{:href => "={version.get_absolute_url}"}= package.title
+        %a.font18{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":8"
       %dd
         {% with main_category=version.package.categories.all.0 %}
         %a{:href => "={main_category.get_absolute_url}"}= main_category.name
