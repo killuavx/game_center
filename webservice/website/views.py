@@ -5,6 +5,7 @@ from urllib.parse import urlsplit
 from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.views.decorators.vary import vary_on_headers
 
 from .response import WidgetHttpResponse
 from warehouse.models import PackageVersion
@@ -64,6 +65,7 @@ def packageversion_detail(request, package_name, version_name,
         extra_context=extra_context
     ))
 
+@vary_on_headers('X-Requested-With', 'Cookie')
 def category_package_list(request, slug,
                           template='pages/categories.html',
                           extra_context=dict(), *args, **kwargs):

@@ -8,13 +8,14 @@ var rollLoad = function(){
   var url = window.location+"";
   url = url.indexOf("?") != -1 ? url+"&page=2" : url+"?page=2";
   var nav_a = $("div.navigation a");
-  nav_a.attr("href","http://static.ccplay.com.cn/static/1page.htm?page=2");
+  nav_a.attr("href",url);
   
   $container.infinitescroll({
     debug           : false,
     nextSelector    : "div.navigation a",
     navSelector     : "div.navigation",
     contentSelector : "#content-js",
+
 	loading: {
           finishedMsg: '没有数据了.',
           msgText: '<em>亲，正在用力加载中哦...</em>',
