@@ -71,12 +71,12 @@ class QURLNode(Node):
             value = value.resolve(context)
             value = smart_str(value) if value is not None else None
             if op == '+=':
-                qp = list(filter(lambda n, v: not(n == name and v == value), qp))
+                qp = list(filter(lambda nv: not(nv[0] == name and nv[1] == value), qp))
                 qp.append((name, value,))
             elif op == '-=':
-                qp = list(filter(lambda n, v: not(n == name and v == value), qp))
+                qp = list(filter(lambda nv: not(nv[0] == name and nv[1] == value), qp))
             elif op == '=':
-                qp = list(filter(lambda n, v: not(n == name), qp))
+                qp = list(filter(lambda nv: not(nv[0] == name), qp))
                 if value is not None:
                     qp.append((name, value,))
 

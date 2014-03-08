@@ -75,7 +75,7 @@ def category_package_list(request, slug,
         page_num=request.GET.get('page'),
         extra_context=extra_context
     )
-    if request.is_ajax():
+    if request.is_ajax() or request.GET.get('ajax'):
         response = WidgetHttpResponse(request=request,
                                   context=context,
                                   widget_name='CategoryPackageListWidget')

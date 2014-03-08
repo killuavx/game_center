@@ -1,9 +1,7 @@
 {% extends "pages/richtextpage.html" %}
 {% load staticfiles cache %}
-{% load widgets %}
-{% block extra_js %}
-    <script type="text/javascript" src="{% static 'js/jquery.infinitescroll.min.js' %}"></script>
-{% endblock %}
+{% load widgets url_tags %}
+{% block extra_js %} <script type="text/javascript" src="{% static 'js/jquery.infinitescroll.min.js' %}"></script> {% endblock %}
 {% block main_css %}<link rel="stylesheet" href="{% static 'css/cont.css' %}">{% endblock %}
 {% block meta_title %}
     {{ category.name }} | {{ block.super }}
@@ -18,11 +16,14 @@
     <div class="scont" id="content-js">
         {% include_widget CategoryPackageListWidget slug=category.slug ordering=request.GET.ordering page=request.GET.page %}
     </div>
+    {% qurl request.get_full_path ajax=1 ordering=request.GET.ordering|default:None page=page.GET.page|default:1|add:1 as next_url %}
     <div class="navigation" style="display: none;">
-        <a href="#"></a>
+        <a href="{{ next_url }}"></a>
     </div>
 </div>
 {% endcache %}
 {% endblock %}
 
-{% block footer_js %}<script type="text/javascript" charset="utf-8" src="{% static 'js/ccpaly.pages.js' %}"></script>{% endblock %}
+{% block footer_js %}
+<script type="text/javascript" charset="utf-8" src="{% static 'js/ccpaly.pages.js' %}"></script>
+{% endblock %}

@@ -5,10 +5,10 @@
 var rollLoad = function(){
   var $container = $('#content-js');
   if($container.size() == 0) return;
-  var url = window.location+"";
-  url = url.indexOf("?") != -1 ? url+"&page=2" : url+"?page=2";
   var nav_a = $("div.navigation a");
-  nav_a.attr("href",url);
+  url = nav_a.attr("href");
+  nav_a.attr('href', url)
+
   
   $container.infinitescroll({
     debug           : false,
