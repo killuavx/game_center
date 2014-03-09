@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from os.path import splitext
 from urllib.parse import urlsplit
+from django.conf import settings
+from mezzanine.conf import settings
 from django.core.paginator import EmptyPage
 
 from django.http import Http404
@@ -59,22 +61,19 @@ def download_packageversion(request, pk, filetype=None, *args, **kwargs):
 
 def packageversion_detail(request, package_name, version_name,
                           template='pages/package/version-detail.html',
-                          extra_context=dict(), *args, **kwargs):
+                          *args, **kwargs):
     return TemplateResponse(request=request, template=template, context=dict(
         package_name=package_name,
         version_name=version_name,
-        extra_context=extra_context
     ))
 
 
-def category_package_list(request, slug,
-                          template='pages/categories.html',
-                          extra_context=dict(), *args, **kwargs):
+def category_package_list(request, slug=settings.GC_CATEGORIES_DEFAULT_SLUG,
+                          template='pages/categories.html', *args, **kwargs):
     context = dict(
         slug=slug,
         ordering=request.GET.get('ordering'),
         page_num=request.GET.get('page'),
-        extra_context=extra_context
     )
     if request.is_ajax() or request.GET.get('ajax'):
         response = WidgetHttpResponse(request=request,
@@ -86,10 +85,9 @@ def category_package_list(request, slug,
 
 
 def topics_page(request, template='pages/topics.html',
-                extra_context=dict(), *args, **kwargs):
+                *args, **kwargs):
     context = dict(
         page_num=request.GET.get('page'),
-        extra_context=extra_context,
     )
     if request.is_ajax() or request.GET.get('ajax'):
         try:

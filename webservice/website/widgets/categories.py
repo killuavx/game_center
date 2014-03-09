@@ -90,7 +90,6 @@ class CategoryPackageListWidget(CategoryWidgetMixin, base.BaseListWidget):
         self.ordering = options.get('ordering') if options.get('ordering') else self.ordering
         self.order_field = self.get_ordering_field(self.ordering)
         try:
-
             return super(CategoryPackageListWidget, self)\
                 .get_context(value=value, options=options, context=context)
         except EmptyPage as e:

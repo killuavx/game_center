@@ -9,19 +9,22 @@ from mezzanine.conf import settings
 categories_page_slug = 'categories'
 @processor_for(categories_page_slug)
 def categories_fill(request, page):
-    category = None
+    data = dict()
     if request.method == "GET":
         try:
             func, args, kwargs = resolve(request.path_info)
             # mezzine.pages.views.page contains kwargs['slug']
             # with value "categories", replace it to default category slug
-            category_slug = kwargs.get('slug')
-            if categories_page_slug == category_slug:
-                category_slug = settings.GC_CATEGORIES_DEFAULT_SLUG
-            category = Category.objects.get(slug=category_slug)
+            slug = kwargs.get('slug')
+            if categories_page_slug == slug:
+                slug = settings.GC_CATEGORIES_DEFAULT_SLUG
+            if slug is None:
+                slug = settings.GC_CATEGORIES_DEFAULT_SLUG
+            data['category'] = Category.objects.get(slug=slug)
         except (Resolver404, Category.DoesNotExist) as e:
+            print(e)
             raise Http404()
-    return {"category": category}
+    return data
 
 topics_page_slug = 'topics'
 @processor_for(topics_page_slug)
