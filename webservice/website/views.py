@@ -89,13 +89,11 @@ def masterpiece_view(request, template='pages/masterpiece.html', *args, **kwargs
         page_num=request.GET.get('page'),
     )
     if request.is_ajax() or request.GET.get('ajax'):
-        try:
-            response = WidgetHttpResponse(request=request,
-                                          context=context,
-                                          widget_name='MasterpiecePackageListWidget')
-            return response
-        except Exception as e:
-            raise Http404()
+        response = WidgetHttpResponse(request=request,
+                                      context=context,
+                                      widget_name='MasterpiecePackageListWidget')
+        return response
+
     return TemplateResponse(request=request, template=template, context=context)
 
 

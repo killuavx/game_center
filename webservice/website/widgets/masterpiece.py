@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from django.core.paginator import EmptyPage
+from django.http import Http404
 from .common.topic import BaseTopicPackageListWidget, BaseTopicInformationWidget
 
 
@@ -13,4 +15,10 @@ class MasterpiecePackageListWidget(BaseTopicPackageListWidget):
 
     template = 'pages/widgets/masterpiece/package-list.haml'
 
-
+    def get_context(self, value=None, options=dict(), context=None):
+        try:
+            return super(MasterpiecePackageListWidget, self).get_context(value,
+                                                                         options,
+                                                                         context)
+        except EmptyPage:
+            raise Http404()
