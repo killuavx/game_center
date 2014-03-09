@@ -84,7 +84,22 @@ def category_package_list(request, slug=settings.GC_CATEGORIES_DEFAULT_SLUG,
     return TemplateResponse(request=request, template=template, context=context)
 
 
-def topics_page(request, template='pages/topics.html',
+def masterpiece_view(request, template='pages/masterpiece.html', *args, **kwargs):
+    context = dict(
+        page_num=request.GET.get('page'),
+    )
+    if request.is_ajax() or request.GET.get('ajax'):
+        try:
+            response = WidgetHttpResponse(request=request,
+                                          context=context,
+                                          widget_name='MasterpiecePackageListWidget')
+            return response
+        except Exception as e:
+            raise Http404()
+    return TemplateResponse(request=request, template=template, context=context)
+
+
+def topics_view(request, template='pages/topics.html',
                 *args, **kwargs):
     context = dict(
         page_num=request.GET.get('page'),
@@ -101,11 +116,10 @@ def topics_page(request, template='pages/topics.html',
 
 
 def topic_package_list(request, slug, template='pages/topics/detail.html',
-                        extra_context=dict(), *args, **kwargs):
+                       *args, **kwargs):
     context = dict(
         slug=slug,
         page_num=request.GET.get('page'),
-        extra_context=extra_context,
     )
     if request.is_ajax() or request.GET.get('ajax'):
         try:

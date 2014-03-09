@@ -14,7 +14,8 @@ urlpatterns = patterns('website.views',
             'download_package', name='download_package'),
         url(r'^categories/$', 'category_package_list', name='category_default_page'),
         url(r'^categories/(?P<slug>%s)' % slug_pattern, 'category_package_list', name='category_package_list'),
-        url(r'^topics/$', 'topics_page', name='topics_page'),
+        url(r'^masterpiece/$', 'masterpiece_view', name='masterpiece_page'),
+        url(r'^topics/$', 'topics_view', name='topics_page'),
         url(r'^topics/(?P<slug>%s)' % slug_pattern, 'topic_package_list', name='topic_package_list'),
 )
 
