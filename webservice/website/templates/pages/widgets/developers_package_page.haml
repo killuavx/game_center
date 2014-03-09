@@ -22,12 +22,13 @@
       %li.bdcont.clear
         - for package in packages
           {% with version=package.versions.latest_published %}
-          %dl
-            %dt
-              %img{:alt => "={package.title}", :src => "={version.icon.middle.url}", :width => "72", :height => "72"}/
-            %dd
+          %dl><
+            %dt><
+              %a{:href => "={version.get_absolute_url}"}><
+                %img{:alt => "={package.title}", :src => "={version.icon.middle.url}", :width => "72", :height => "72"}/
+            %dd><
               %a{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":5"
-            %dd
+            %dd><
               %span
                 .star1
           {% endwith %}
