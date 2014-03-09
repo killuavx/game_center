@@ -25,8 +25,8 @@ if "mezzanine.boot" in settings.INSTALLED_APPS:
                             url("^$", direct_to_template, {"template": "pages/comingsoon.html"}, name="comingsoon"),
                             url("^$", "mezzanine.blog.views.blog_post_list", name="home"),
                             #url("^$", "mezzanine.blog.views.blog_post_list", name="commingsoon"),
+                            url("^", include('website.urls')),
                             ("^", include("mezzanine.urls")),
-                            url("^", include('website.urls') ),
                             )
 
     handler404 = "mezzanine.core.views.page_not_found"

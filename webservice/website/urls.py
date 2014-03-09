@@ -12,6 +12,7 @@ urlpatterns = patterns('website.views',
             '(/(?P<version_name>%s)?)?(/(?P<filetype>\w+)?)?' % (slug_pattern, slug_pattern),
             'download_package', name='download_package'),
         url(r'^categories/(?P<slug>%s)' % slug_pattern, 'category_package_list', name='category_package_list'),
+        url(r'^topics/$', 'topics_page', name='topics_page'),
         url(r'^topics/(?P<slug>%s)' % slug_pattern, 'topic_package_list', name='topic_package_list'),
 )
 

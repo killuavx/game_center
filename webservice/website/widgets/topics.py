@@ -62,3 +62,4 @@ class TopicsPackageListWidget(BaseTopicPackageListWidget):
     per_page = 24
 
     template = 'pages/widgets/topics/package-list.haml'
+

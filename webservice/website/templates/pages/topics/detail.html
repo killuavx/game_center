@@ -1,14 +1,11 @@
 {% extends "pages/page.html" %}
 {% load staticfiles cache humanize %}
-{% load widgets util_tags %}
+{% load widgets url_tags util_tags %}
 {% load templateutils_tags %}
-
+{% block extra_js %} <script type="text/javascript" src="{% static 'js/jquery.infinitescroll.min.js' %}"></script>{% endblock %}
 {% block main_css %}<link rel="stylesheet" href="{% static 'css/cont.css' %}">{% endblock %}
 {% block before_main %}{% include "pages/menus/breadcrumb_shortcut.haml" with latest_name=topic.name %}{% endblock %}
-{% block meta_title %}
-    {{ topic.name }} | {{ block.super }}
-{% endblock %}
-
+{% block meta_title %}{{ topic.name }} | {{ block.super }}{% endblock %}
 {% block main %}
 {% with page_num=request.GET.page %}
     {% cache 3600 topics_detail_main request.path_info page_num %}
@@ -18,10 +15,17 @@
     </div>
 
     <div class="sort w980 clear">
-        <div class="scont">
+        <div class="scont" id="content-js">
         {% include_widget TopicsPackageListWidget slug=topic.slug page=page_num %}
+        </div>
+        {% qurl request.get_full_path ajax=1 page=page.GET.page|default:1|add:1 as next_url %}
+        <div class="navigation" style="display: none;">
+            <a href="{{ next_url }}"></a>
         </div>
     </div>
     {% endcache %}
 {% endwith %}
+{% endblock %}
+{% block footer_js %}
+<script type="text/javascript" charset="utf-8" src="{% static 'js/ccpaly.pages.js' %}"></script>
 {% endblock %}

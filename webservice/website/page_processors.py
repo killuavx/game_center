@@ -33,10 +33,11 @@ def topics_fill(request, page):
             slug = kwargs.get('slug')
             if topics_page_slug == slug:
                 slug = settings.GC_TOPICS_CHOICE_SLUG
+            if slug is None:
+                slug = settings.GC_TOPICS_CHOICE_SLUG
             data['topic'] = Topic.objects.get(slug=slug)
         except (Resolver404, Topic.DoesNotExist) as e:
             raise Http404()
-
     return data
 
 masterpiece_page_slug = 'masterpiece'

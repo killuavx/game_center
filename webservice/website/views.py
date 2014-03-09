@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from os.path import splitext
 from urllib.parse import urlsplit
+from django.core.paginator import EmptyPage
 
 from django.http import Http404
 from django.shortcuts import redirect
@@ -65,7 +66,7 @@ def packageversion_detail(request, package_name, version_name,
         extra_context=extra_context
     ))
 
-@vary_on_headers('X-Requested-With', 'Cookie')
+
 def category_package_list(request, slug,
                           template='pages/categories.html',
                           extra_context=dict(), *args, **kwargs):
@@ -77,16 +78,44 @@ def category_package_list(request, slug,
     )
     if request.is_ajax() or request.GET.get('ajax'):
         response = WidgetHttpResponse(request=request,
-                                  context=context,
-                                  widget_name='CategoryPackageListWidget')
+                                      context=context,
+                                      widget_name='CategoryPackageListWidget')
         return response
 
     return TemplateResponse(request=request, template=template, context=context)
 
 
+def topics_page(request, template='pages/topics.html',
+                extra_context=dict(), *args, **kwargs):
+    context = dict(
+        page_num=request.GET.get('page'),
+        extra_context=extra_context,
+    )
+    if request.is_ajax() or request.GET.get('ajax'):
+        try:
+            response = WidgetHttpResponse(request=request,
+                                          context=context,
+                                          widget_name='TopicsTopicListWidget')
+            return response
+        except Exception as e:
+            raise Http404()
+    return TemplateResponse(request=request, template=template, context=context)
+
+
 def topic_package_list(request, slug, template='pages/topics/detail.html',
                         extra_context=dict(), *args, **kwargs):
-    return TemplateResponse(request=request, template=template, context=dict(
-        topic_slug=slug,
-        extra_context=extra_context
-    ))
+    context = dict(
+        slug=slug,
+        page_num=request.GET.get('page'),
+        extra_context=extra_context,
+    )
+    if request.is_ajax() or request.GET.get('ajax'):
+        try:
+            response = WidgetHttpResponse(request=request,
+                                          context=context,
+                                          widget_name='TopicsPackageListWidget')
+        except EmptyPage:
+            raise Http404()
+        return response
+
+    return TemplateResponse(request=request, template=template, context=context)
