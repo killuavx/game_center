@@ -3,16 +3,15 @@
   - with version=package.versions.latest_published
     %li
       %dl
-        %dt
-          %a{:href => "={version.get_absolute_url}"}
+        %dt><
+          %a{:href => "={version.get_absolute_url}"}><
             %img{:alt => "", :src => "{% if version.cover %}{{ version.cover.url }}{% endif %}", :width => "320", :height => "240"}
-        %dd
-          %span.matar
-            .star3
+        %dd><
           %a.font18{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":20"
-        %dd.matar_a
-          %span{:title => "={package.author.name}"}= package.author.name|slice:":6"
-          %i>< |
+        %dd><
+          = package.author.name|slice:":6"
+          %em.star3.right><
+        %dd.matar_a><
           - with category=package.categories.all.0
             %a{:href => "={category.get_absolute_url}"}><= category.name
           %i>< |
@@ -20,7 +19,7 @@
           %i>< |
           = version.download_count|intwordcn
         %dd.c69.f14= package.summary|truncatechars:45
-        %dd.mabut
+        %dd.mabut><
           %span.matime= package.released_datetime|date:'SHORT_DATE_FORMAT'
           %span.masz 99845
           %span.madown
