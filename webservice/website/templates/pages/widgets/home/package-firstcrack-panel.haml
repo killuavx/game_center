@@ -13,9 +13,9 @@
           %img{:src => '={version.icon.middle.url}', :width => "72", :height => "72"}
         %span.mright_star
           %div.star3
-      %dd
-        %a.cfff{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":8"
-      %dd
+      %dd><
+        %a.cfff{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":12"
+      %dd><
         %span.mright_txt= package.summary|truncatechars:40|safe
       %dd.mright_a><
         - with main_category=package.categories.all.0
