@@ -30,8 +30,9 @@ class Event(DynamicDocument):
     user = property(_get_user, _set_user)
 
     ENTRY_TYPES = (
-        ('client', _('CCPlay Client')),
+        ('client', _('GC Client')),
         ('game', _('Game')),
+        ('sdk', _('SDK')),
     )
 
     entrytype = fields.StringField(max_length=25,
