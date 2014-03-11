@@ -27,7 +27,6 @@
   / banner
   .banbg
     {% include_widget HomeTopBannerWidget slug='home-top-banner' %}
-  %script{:src => "{% static 'js/top.js' %}"}
   :javascript
     jQuery(".banner").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",effect:"leftLoop",autoPlay:true,vis:1,trigger:"click"});
   / banner end

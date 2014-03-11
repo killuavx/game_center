@@ -32,6 +32,7 @@
 
     {% compress js %}
     %script{:type => "text/javascript", :src => "{% static 'js/jquery.min.js' %}"}
+    %script{:type => "text/javascript", :src => "{% static 'js/top.js' %}"}
     {% block extra_js %}
     %script{:type => "text/javascript", :src => "{% static 'js/jquery.jslides.js' %}"}
     {% endblock %}
