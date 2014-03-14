@@ -2,15 +2,17 @@
 from django.contrib import admin
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from django.utils.safestring import mark_safe
 from easy_thumbnails.widgets import ImageClearableFileInput as _ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
 from easy_thumbnails.templatetags.thumbnail import thumbnail_url
 from reversion.admin import VersionAdmin
-from webservice.admin import AdminFieldBase, AdminField
 from django.core.urlresolvers import reverse
 from easy_thumbnails.exceptions import InvalidImageFormatError
+from toolkit.helpers import sync_status_summary, sync_status_actions
+
+from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
+from webservice.admin import AdminFieldBase, AdminField
 
 
 class ImageClearableFileInput(_ImageClearableFileInput):
@@ -67,23 +69,6 @@ class PackageVersionScreenshotInlines(admin.StackedInline):
     }
 
 
-def sync_status_check(obj):
-    from website.documents.cdn import SyncQueue
-    publish_queues = SyncQueue.objects \
-        .filter(latest_op_name='publish') \
-        .by_content_object(obj)
-    publish_count = publish_queues.count()
-    FEEDBACK_CODE = 'SUCCESS'
-    publish_finish = publish_queues.filter(latest_fb_result=FEEDBACK_CODE)
-    publish_finish_count = publish_finish.count()
-
-    if not publish_count:
-        return 'No file or not publish file '
-    if publish_finish_count == publish_count:
-        return 'OK'
-    return "%s/%s" %(publish_finish_count, publish_count)
-
-
 class PackageVersionAdmin(MainAdmin):
     model = PackageVersion
     inlines = (PackageVersionScreenshotInlines, )
@@ -101,7 +86,7 @@ class PackageVersionAdmin(MainAdmin):
                     'updated_datetime',
                     'is_data_integration',
                     'download_count',
-                    'check_sync_status'
+                    'sync_file_action',
     )
     list_display_links = ('show_icon', 'version_name')
     actions = ['make_published']
@@ -147,7 +132,6 @@ class PackageVersionAdmin(MainAdmin):
 
     def is_data_integration(self, obj):
         return self._check_packageversion_download_data_integration(obj)
-
     is_data_integration.short_description = _('is data integration download?')
     is_data_integration.boolean = True
 
@@ -163,12 +147,6 @@ class PackageVersionAdmin(MainAdmin):
                               short_description=_("Package Name"),
                               admin_order_field='package__package_name')
 
-    def check_sync_status(self, obj):
-        return sync_status_check(obj)
-    check_sync_status.allow_tags = True
-    check_sync_status.short_description = _('Sync Status')
-
-
     def get_readonly_fields(self, request, obj=None):
         if obj:
             return self.readonly_fields + ('package', )
@@ -177,7 +155,6 @@ class PackageVersionAdmin(MainAdmin):
 
     def make_published(self, request, queryset):
         queryset.update(status=PackageVersion.STATUS.published)
-
     make_published.short_description = _('Make selected Packages as published')
 
     def get_actions(self, request):
@@ -185,6 +162,17 @@ class PackageVersionAdmin(MainAdmin):
         if 'delete_selected' in actions:
             del actions['delete_selected']
         return actions
+
+    def sync_file_action(self, obj):
+        return sync_status_summary(obj) + " | " + sync_status_actions(obj)
+    sync_file_action.allow_tags = True
+    sync_file_action.short_description = _('Sync Status')
+
+    class Media:
+        #from django.conf import settings
+        #static_url = getattr(settings, 'STATIC_URL', '/static')
+        static_url = '/static/'
+        js = [static_url+'js/syncfile.action.js', ]
 
 
 class PackageVersionInlines(admin.StackedInline):
