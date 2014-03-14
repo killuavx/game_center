@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url
-from django.conf import settings
-from warehouse.models import PackageVersion
 
 slug_pattern = '[\w_.-]+'
 urlpatterns = patterns('website.views',

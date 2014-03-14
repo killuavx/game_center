@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from django.db.models import Model
 from django.utils.timezone import now
 from django.contrib.contenttypes.models import ContentType
 from mongoengine import (DynamicDocument,
                          DynamicEmbeddedDocument, fields, QuerySet)
+from website.cdn.utils import get_content_object
 
 
 class BaseOperation(DynamicEmbeddedDocument):
@@ -104,6 +106,17 @@ class SyncQueueQuerySet(QuerySet):
     def get_by_latest_item_id(self, item_id):
         return self.filter(**{'operations.0.item_id': item_id}).get()
 
+    def by_content_object(self, content_object):
+        if not isinstance(content_object, Model):
+            raise TypeError()
+        ct = ContentType.objects.get_for_model(content_object.__class__)
+        return self.filter(content_type=str(ct.pk),
+                           object_pk=str(content_object.pk))
+
+    def by_raw_content_object(self, content_type, object_pk):
+        return self.filter(content_type=str(content_type),
+                           object_pk=str(object_pk))
+
 
 class SyncQueue(DynamicDocument):
 
@@ -112,15 +125,8 @@ class SyncQueue(DynamicDocument):
     object_pk = fields.StringField(max_length=15, required=True)
 
     def _get_content_object(self):
-        content_type = self.content_type
-        object_pk = self.object_pk
-        if content_type.isnumeric() and object_pk.isnumeric():
-            content_type = int(content_type)
-            object_pk = int(object_pk)
-            ct = ContentType.objects.get_for_id(content_type)
-            return ct.get_object_for_this_type(pk=object_pk)
-
-        return None
+        return get_content_object(content_type=self.content_type,
+                                    object_pk=self.object_pk)
 
     def _set_content_object(self, content_object):
         ct = ContentType.objects.get_for_model(content_object.__class__)

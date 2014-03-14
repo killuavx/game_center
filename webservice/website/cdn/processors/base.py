@@ -4,6 +4,7 @@ from os.path import join
 from urllib.parse import urlparse, urlunparse
 from django.contrib.contenttypes.models import ContentType
 from django.utils.timezone import now
+from cdn.utils import publish_path_to_content_type, relative_path_to_object_pk
 from website.cdn.errors import StaticContentTypeError
 from website.cdn.core import Processor
 from website.documents import cdn
@@ -28,7 +29,6 @@ class BaseProcessor(Processor):
         faileds = list(filter(lambda r: r[0].code == STATIC_CODE_FAILED, result))
         flag = all((res.code == STATIC_CODE_SUCCESS for res, item, queue in result))
         return flag, result, faileds
-        pass
 
     def publish_one(self, fpath=None, filelevel=None):
         if filelevel is None:
@@ -162,17 +162,8 @@ class StaticProcessor(BaseProcessor):
                                     self.CONTENT_TYPE_PATHS.keys()))
 
         super(StaticProcessor, self).__init__()
-
-        # assert file/directory exists
-        _abs_file_path = join(self.absolute_root_path, relative_path)
-        os.stat(_abs_file_path)
-
-        # fill object_pk with root directory name
-        self.object_pk = ''
-        bits = relative_path.split(os.path.sep)
-        if len(bits) > 1 or \
-                (os.path.isdir(_abs_file_path) and len(bits) == 1):
-            self.object_pk = bits[0]
+        self.object_pk = relative_path_to_object_pk(self.absolute_root_path,
+                                                    self.relative_path)
 
     def get_absolute_root_path(self):
         return self.CONTENT_TYPE_PATHS[self.content_type]['abs_path']
@@ -187,19 +178,6 @@ class StaticProcessor(BaseProcessor):
 
     def get_publish_path_prefix(self):
         return self.CONTENT_TYPE_PATHS[self.content_type]['url']
-
-    @classmethod
-    def content_type_to_db(cls, publish_path):
-        from django.conf import settings
-        if publish_path.startswith(settings.STATIC_URL):
-            return 'static'
-        if publish_path.startswith(settings.MEDIA_URL):
-            return 'media'
-        raise StaticContentTypeError
-
-    @classmethod
-    def content_type_from_db(cls, val):
-        return val
 
     def generate_item_id(self):
         sequeue_num = now().strftime(self.DATETIME_FORMAT)
@@ -225,11 +203,6 @@ class ModelProcessor(BaseProcessor):
     def content_type_to_db(cls, obj):
         ct = ContentType.objects.get_for_model(obj.__class__)
         return ct.pk
-
-    @classmethod
-    def content_type_from_db(cls, val):
-        ct = ContentType.objects.get_for_id(int(val))
-        return ct.model_class()
 
     def generate_item_id(self, obj):
         ct = self.content_type_to_db(obj)

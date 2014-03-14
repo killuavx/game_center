@@ -28,3 +28,48 @@ def calc_scale_percents_size(origin_size, size_percents):
     assert 0 < size_percents < 100, 'invalid size percents'
     size_w, size_h = [float(s) for s in origin_size]
     return int(size_w * size_percents / 100.0), int(size_h * size_percents / 100.0)
+
+
+def sync_status_from(obj):
+    from website.documents.cdn import SyncQueue
+    publish_queues = SyncQueue.objects \
+        .filter(latest_op_name='publish') \
+        .by_content_object(obj)
+    publish_count = publish_queues.count()
+    FEEDBACK_CODE = 'SUCCESS'
+    publish_finish = publish_queues.filter(latest_fb_result=FEEDBACK_CODE)
+    publish_finish_count = publish_finish.count()
+    return dict(finish=publish_finish_count, total=publish_count)
+
+
+def sync_status_summary(obj):
+    result = sync_status_from(obj)
+    if not result['total']:
+        return 'Nofile/Unpublish'
+    if result['finish'] == result['total']:
+        return 'OK'
+    return "%s/%s" %(result['finish'], result['total'])
+
+
+def sync_status_actions(obj):
+    from website.documents.cdn import PublishOperation
+    from website.cdn.utils import get_dict_by_content_object
+    mask = """<a href="javascript:sync_%(op_name)s_file('%(content_type)s', '%(object_pk)s', %(publishlevel)s);">%(text)s</a>"""
+    data = get_dict_by_content_object(obj)
+    refresh_link = mask % dict(op_name='publish',
+                               text='publish(refresh)',
+                               content_type=data['content_type'],
+                               object_pk=data['object_pk'],
+                               publishlevel=PublishOperation.FILE_LEVEL_REFRESH)
+    preload_link = mask % dict(op_name='publish',
+                               text='publish(preload)',
+                               content_type=data['content_type'],
+                               object_pk=data['object_pk'],
+                               publishlevel=PublishOperation.FILE_LEVEL_PRELOAD)
+    update_link = mask % dict(op_name='update',
+                              text='update',
+                              content_type=data['content_type'],
+                              object_pk=data['object_pk'],
+                              publishlevel=None)
+    return " | ".join([refresh_link, preload_link, update_link])
+

@@ -16,6 +16,7 @@ urlpatterns = patterns("",
                        url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
                        url(r'^api/', include('mobapi.urls')),
                        rest_framework_swagger_url,
+                       url(r'^admin/cdn/', include('website.cdn.urls')),
                        url(r'^admin/toolkit/', include('toolkit.urls')),
                        url(r'^tagging_autocomplete/', include('tagging_autocomplete.urls')),
                        )

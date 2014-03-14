@@ -15,7 +15,7 @@ import tagging
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 from os.path import join, basename
-from toolkit.helpers import import_from
+from toolkit.helpers import import_from, sync_status_from, sync_status_summary
 
 
 class StatusNotSupportAction(Exception):
@@ -731,6 +731,10 @@ class PackageVersion(models.Model):
         if filetype:
             kwargs['filetype'] = filetype
         return reverse('download_packageversion', kwargs=kwargs)
+
+    def sync_status(self):
+        return sync_status_from(self)
+
 
 def screenshot_upload_to_path(instance, filename):
     filebasename = basename(filename).lower()
