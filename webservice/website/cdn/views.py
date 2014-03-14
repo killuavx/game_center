@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse, HttpResponseBadRequest
-from cdn.utils import get_content_object
-from website.documents.cdn import SyncQueue, BaseOperation
+from website.cdn.utils import get_content_object
 from django.contrib.admin.views.decorators import staff_member_required
 import json
 
