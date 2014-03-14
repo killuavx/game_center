@@ -67,6 +67,23 @@ class PackageVersionScreenshotInlines(admin.StackedInline):
     }
 
 
+def sync_status_check(obj):
+    from website.documents.cdn import SyncQueue
+    publish_queues = SyncQueue.objects \
+        .filter(latest_op_name='publish') \
+        .by_content_object(obj)
+    publish_count = publish_queues.count()
+    FEEDBACK_CODE = 'SUCCESS'
+    publish_finish = publish_queues.filter(latest_fb_result=FEEDBACK_CODE)
+    publish_finish_count = publish_finish.count()
+
+    if not publish_count:
+        return 'No file or not publish file '
+    if publish_finish_count == publish_count:
+        return 'OK'
+    return "%s/%s" %(publish_finish_count, publish_count)
+
+
 class PackageVersionAdmin(MainAdmin):
     model = PackageVersion
     inlines = (PackageVersionScreenshotInlines, )
@@ -75,6 +92,7 @@ class PackageVersionAdmin(MainAdmin):
                      'package__package_name',
                      'package__title')
     list_display = ('show_icon',
+                    'id',
                     'package',
                     'package_name',
                     'version_name',
@@ -83,6 +101,7 @@ class PackageVersionAdmin(MainAdmin):
                     'updated_datetime',
                     'is_data_integration',
                     'download_count',
+                    'check_sync_status'
     )
     list_display_links = ('show_icon', 'version_name')
     actions = ['make_published']
@@ -143,6 +162,12 @@ class PackageVersionAdmin(MainAdmin):
                               allow_tags=True,
                               short_description=_("Package Name"),
                               admin_order_field='package__package_name')
+
+    def check_sync_status(self, obj):
+        return sync_status_check(obj)
+    check_sync_status.allow_tags = True
+    check_sync_status.short_description = _('Sync Status')
+
 
     def get_readonly_fields(self, request, obj=None):
         if obj:
