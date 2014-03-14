@@ -4,7 +4,7 @@ from os.path import join
 from urllib.parse import urlparse, urlunparse
 from django.contrib.contenttypes.models import ContentType
 from django.utils.timezone import now
-from cdn.utils import publish_path_to_content_type, relative_path_to_object_pk
+from website.cdn.utils import publish_path_to_content_type, relative_path_to_object_pk
 from website.cdn.errors import StaticContentTypeError
 from website.cdn.core import Processor
 from website.documents import cdn

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db.models.signals import post_save, pre_save
-from cdn.core import Feedback
-from cdn.errors import WorkingDirectoryNotFound
+from .core import Feedback
+from .errors import WorkingDirectoryNotFound
 from .processors.warehouse import PackageVersionProcessor
 from .processors.taxonomy import TopicProcessor, CategoryProcessor
 from .processors.promotion import AdvertisementProcessor
