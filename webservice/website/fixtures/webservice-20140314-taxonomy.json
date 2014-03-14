@@ -1,0 +1,4738 @@
+[
+{
+  "pk": 1, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 0, 
+    "mptt_lft": 1, 
+    "name": "\u6e38\u620f", 
+    "parent": null, 
+    "ordering": 0, 
+    "is_hidden": false, 
+    "icon": "", 
+    "slug": "game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 44
+  }
+},
+{
+  "pk": 2, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 5, 
+    "name": "\u5927\u578b\u6e38\u620f", 
+    "parent": 5, 
+    "ordering": 3, 
+    "is_hidden": false, 
+    "icon": "category/big-game/icon_2.png", 
+    "slug": "big-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 6
+  }
+},
+{
+  "pk": 3, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 7, 
+    "name": "\u4e2d\u6587\u6e38\u620f", 
+    "parent": 5, 
+    "ordering": 4, 
+    "is_hidden": false, 
+    "icon": "category/cn-game/icon_1.png", 
+    "slug": "cn-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 8
+  }
+},
+{
+  "pk": 4, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 3, 
+    "name": "\u7834\u89e3\u6e38\u620f", 
+    "parent": 5, 
+    "ordering": 2, 
+    "is_hidden": false, 
+    "icon": "category/crack-game/icon_2.png", 
+    "slug": "crack-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 4
+  }
+},
+{
+  "pk": 5, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 1, 
+    "mptt_lft": 2, 
+    "name": "\u7279\u8272\u6e38\u620f", 
+    "parent": 1, 
+    "ordering": 1, 
+    "is_hidden": false, 
+    "icon": "", 
+    "slug": "characteristic-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 11
+  }
+},
+{
+  "pk": 6, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 1, 
+    "mptt_lft": 12, 
+    "name": "\u5355\u673a\u6e38\u620f", 
+    "parent": 1, 
+    "ordering": 5, 
+    "is_hidden": false, 
+    "icon": "", 
+    "slug": "stand-alone-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 29
+  }
+},
+{
+  "pk": 7, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 1, 
+    "mptt_lft": 30, 
+    "name": "\u7f51\u7edc\u6e38\u620f", 
+    "parent": 1, 
+    "ordering": 14, 
+    "is_hidden": false, 
+    "icon": "", 
+    "slug": "online-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 39
+  }
+},
+{
+  "pk": 8, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 35, 
+    "name": "\u5373\u65f6\u52a8\u4f5c", 
+    "parent": 7, 
+    "ordering": 17, 
+    "is_hidden": false, 
+    "icon": "category/online-immediate-action-game/icon.png", 
+    "slug": "online-immediate-action-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 36
+  }
+},
+{
+  "pk": 9, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 31, 
+    "name": "\u5361\u724c\u7b56\u7565", 
+    "parent": 7, 
+    "ordering": 15, 
+    "is_hidden": false, 
+    "icon": "category/online-card-game/icon_1.png", 
+    "slug": "online-card-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 32
+  }
+},
+{
+  "pk": 10, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 33, 
+    "name": "\u56de\u5408\u6218\u6597", 
+    "parent": 7, 
+    "ordering": 16, 
+    "is_hidden": false, 
+    "icon": "category/online-tbs-game/icon_1.png", 
+    "slug": "online-tbs-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 34
+  }
+},
+{
+  "pk": 11, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 13, 
+    "name": "\u4f11\u95f2\u76ca\u667a", 
+    "parent": 6, 
+    "ordering": 6, 
+    "is_hidden": false, 
+    "icon": "category/standalone-relaxation-game/icon_1.png", 
+    "slug": "standalone-relaxation-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 14
+  }
+},
+{
+  "pk": 12, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 15, 
+    "name": "\u52a8\u4f5c\u5c04\u51fb", 
+    "parent": 6, 
+    "ordering": 7, 
+    "is_hidden": false, 
+    "icon": "category/standalone-action-game/icon_1.png", 
+    "slug": "standalone-action-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 16
+  }
+},
+{
+  "pk": 13, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 17, 
+    "name": "\u4f53\u80b2\u7ade\u6280", 
+    "parent": 6, 
+    "ordering": 8, 
+    "is_hidden": false, 
+    "icon": "category/standalone-sports-game/icon_2.png", 
+    "slug": "standalone-sports-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 18
+  }
+},
+{
+  "pk": 14, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 19, 
+    "name": "\u89d2\u8272\u626e\u6f14", 
+    "parent": 6, 
+    "ordering": 9, 
+    "is_hidden": false, 
+    "icon": "category/standalone-rpg-game/icon_1.png", 
+    "slug": "standalone-rpg-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 20
+  }
+},
+{
+  "pk": 15, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 21, 
+    "name": "\u68cb\u724c\u6e38\u620f", 
+    "parent": 6, 
+    "ordering": 10, 
+    "is_hidden": false, 
+    "icon": "category/standalone-chess-card-game/icon_1.png", 
+    "slug": "standalone-chess-card-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 22
+  }
+},
+{
+  "pk": 16, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 23, 
+    "name": "\u8d5b\u8f66\u7ade\u901f", 
+    "parent": 6, 
+    "ordering": 11, 
+    "is_hidden": false, 
+    "icon": "category/standalone-rac-game/icon_1.png", 
+    "slug": "standalone-rac-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 24
+  }
+},
+{
+  "pk": 17, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 25, 
+    "name": "\u7b56\u7565\u5854\u9632", 
+    "parent": 6, 
+    "ordering": 12, 
+    "is_hidden": false, 
+    "icon": "category/standalone-strategicdefense-game/icon_1.png", 
+    "slug": "standalone-strategicdefense-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 26
+  }
+},
+{
+  "pk": 18, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 27, 
+    "name": "\u6a21\u62df\u7ecf\u8425", 
+    "parent": 6, 
+    "ordering": 13, 
+    "is_hidden": false, 
+    "icon": "category/standalone-imitate-game/icon_1.png", 
+    "slug": "standalone-imitate-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 28
+  }
+},
+{
+  "pk": 20, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 1, 
+    "mptt_lft": 40, 
+    "name": "\u70ed\u95e8\u6e38\u620f", 
+    "parent": 1, 
+    "ordering": 18, 
+    "is_hidden": false, 
+    "icon": "category/popular1game_/icon_1.png", 
+    "slug": "popular-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 41
+  }
+},
+{
+  "pk": 22, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 9, 
+    "name": "\u7cbe\u9009\u6e38\u620f", 
+    "parent": 5, 
+    "ordering": 19, 
+    "is_hidden": false, 
+    "icon": "category/hot-game/icon_2.png", 
+    "slug": "hot-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 10
+  }
+},
+{
+  "pk": 23, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 2, 
+    "mptt_lft": 37, 
+    "name": "\u4f11\u95f2\u5a31\u4e50", 
+    "parent": 7, 
+    "ordering": 20, 
+    "is_hidden": false, 
+    "icon": "category/online-relax-game/icon_1.png", 
+    "slug": "online-relax-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 38
+  }
+},
+{
+  "pk": 24, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 1, 
+    "mptt_lft": 42, 
+    "name": "\u6700\u65b0\u6e38\u620f", 
+    "parent": 1, 
+    "ordering": 21, 
+    "is_hidden": false, 
+    "icon": "category/newgame_/icon_1.png", 
+    "slug": "new-game", 
+    "tree_id": 1, 
+    "subtitle": "", 
+    "mptt_rgt": 43
+  }
+},
+{
+  "pk": 25, 
+  "model": "taxonomy.category", 
+  "fields": {
+    "mptt_level": 0, 
+    "mptt_lft": 1, 
+    "name": "\u88c5\u673a\u5fc5\u5907", 
+    "parent": null, 
+    "ordering": 22, 
+    "is_hidden": true, 
+    "icon": "", 
+    "slug": "application", 
+    "tree_id": 2, 
+    "subtitle": "", 
+    "mptt_rgt": 2
+  }
+},
+{
+  "pk": 1, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 0, 
+    "mptt_rgt": 2, 
+    "tree_id": 1, 
+    "parent": null, 
+    "released_datetime": "2013-09-16T02:00:07Z", 
+    "ordering": 0, 
+    "summary": "", 
+    "mptt_lft": 1, 
+    "name": "\u7cbe\u9009\u63a8\u8350", 
+    "created_datetime": "2013-09-16T08:00:07.769Z", 
+    "is_hidden": false, 
+    "cover": "", 
+    "icon": "", 
+    "slug": "home-recommend-game", 
+    "status": "published", 
+    "updated_datetime": "2013-09-16T08:50:53.740Z"
+  }
+},
+{
+  "pk": 2, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 0, 
+    "mptt_rgt": 2, 
+    "tree_id": 2, 
+    "parent": null, 
+    "released_datetime": "2013-09-16T06:06:21Z", 
+    "ordering": 1, 
+    "summary": "", 
+    "mptt_lft": 1, 
+    "name": "\u9876\u7ea7\u5f00\u53d1\u5546", 
+    "created_datetime": "2013-09-16T08:06:21.552Z", 
+    "is_hidden": false, 
+    "cover": "", 
+    "icon": "", 
+    "slug": "spec-top-author", 
+    "status": "published", 
+    "updated_datetime": "2013-09-16T08:50:53.832Z"
+  }
+},
+{
+  "pk": 3, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 0, 
+    "mptt_rgt": 2, 
+    "tree_id": 3, 
+    "parent": null, 
+    "released_datetime": "2013-09-16T08:49:43.462Z", 
+    "ordering": 2, 
+    "summary": "", 
+    "mptt_lft": 1, 
+    "name": "\u5927\u578b\u6e38\u620f", 
+    "created_datetime": "2013-09-16T08:49:43.462Z", 
+    "is_hidden": false, 
+    "cover": "", 
+    "icon": "", 
+    "slug": "homebar-big-game", 
+    "status": "published", 
+    "updated_datetime": "2013-09-16T08:50:53.917Z"
+  }
+},
+{
+  "pk": 4, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 0, 
+    "mptt_rgt": 2, 
+    "tree_id": 4, 
+    "parent": null, 
+    "released_datetime": "2013-09-16T08:50:19.292Z", 
+    "ordering": 3, 
+    "summary": "", 
+    "mptt_lft": 1, 
+    "name": "\u6700\u65b0\u6e38\u620f", 
+    "created_datetime": "2013-09-16T08:50:19.292Z", 
+    "is_hidden": false, 
+    "cover": "", 
+    "icon": "", 
+    "slug": "homebar-newest-game", 
+    "status": "published", 
+    "updated_datetime": "2013-09-16T08:50:54.003Z"
+  }
+},
+{
+  "pk": 5, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 0, 
+    "mptt_rgt": 2, 
+    "tree_id": 5, 
+    "parent": null, 
+    "released_datetime": "2013-09-16T08:50:50.109Z", 
+    "ordering": 4, 
+    "summary": "", 
+    "mptt_lft": 1, 
+    "name": "\u4e2d\u6587\u6e38\u620f", 
+    "created_datetime": "2013-09-16T08:50:50.109Z", 
+    "is_hidden": false, 
+    "cover": "", 
+    "icon": "", 
+    "slug": "homebar-cn-game", 
+    "status": "published", 
+    "updated_datetime": "2013-09-16T08:50:54.082Z"
+  }
+},
+{
+  "pk": 6, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 0, 
+    "mptt_rgt": 2, 
+    "tree_id": 6, 
+    "parent": null, 
+    "released_datetime": "2013-09-16T08:53:41.317Z", 
+    "ordering": 5, 
+    "summary": "", 
+    "mptt_lft": 1, 
+    "name": "\u7f51\u6e38\u4e13\u533a", 
+    "created_datetime": "2013-09-16T08:53:41.316Z", 
+    "is_hidden": false, 
+    "cover": "", 
+    "icon": "", 
+    "slug": "home-network-game", 
+    "status": "published", 
+    "updated_datetime": "2013-09-16T08:53:41.316Z"
+  }
+},
+{
+  "pk": 7, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 0, 
+    "mptt_rgt": 14, 
+    "tree_id": 8, 
+    "parent": null, 
+    "released_datetime": "2013-09-16T12:01:41Z", 
+    "ordering": 7, 
+    "summary": "", 
+    "mptt_lft": 1, 
+    "name": "\u7cbe\u9009\u4e13\u8f91", 
+    "created_datetime": "2013-09-16T12:01:41.442Z", 
+    "is_hidden": false, 
+    "cover": "", 
+    "icon": "", 
+    "slug": "spec-choice-topic", 
+    "status": "published", 
+    "updated_datetime": "2013-10-25T06:55:31.943Z"
+  }
+},
+{
+  "pk": 8, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 1, 
+    "mptt_rgt": 5, 
+    "tree_id": 8, 
+    "parent": 7, 
+    "released_datetime": "2013-12-16T12:02:50Z", 
+    "ordering": 9, 
+    "summary": "Com2uS\u7834\u89e3\u6e38\u620f\u5408\u96c6", 
+    "mptt_lft": 4, 
+    "name": "Com2uS\u7834\u89e3\u6e38\u620f\u5408\u96c6", 
+    "created_datetime": "2013-09-16T12:02:50.870Z", 
+    "is_hidden": false, 
+    "cover": "topic/topic-com2uspj/cover.png", 
+    "icon": "", 
+    "slug": "topic-com2uspj", 
+    "status": "published", 
+    "updated_datetime": "2013-12-17T05:51:54.349Z"
+  }
+},
+{
+  "pk": 9, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 0, 
+    "mptt_rgt": 2, 
+    "tree_id": 7, 
+    "parent": null, 
+    "released_datetime": "2013-09-25T02:47:33Z", 
+    "ordering": 6, 
+    "summary": "\u6d41\u884c\u5e94\u7528\u548c\u6e38\u620f", 
+    "mptt_lft": 1, 
+    "name": "\u88c5\u673a\u5fc5\u5907", 
+    "created_datetime": "2013-09-26T02:47:46.366Z", 
+    "is_hidden": false, 
+    "cover": "", 
+    "icon": "", 
+    "slug": "homebar-basic-installed", 
+    "status": "published", 
+    "updated_datetime": "2013-10-25T06:55:32.295Z"
+  }
+},
+{
+  "pk": 12, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 1, 
+    "mptt_rgt": 7, 
+    "tree_id": 8, 
+    "parent": 7, 
+    "released_datetime": "2013-10-10T09:06:09Z", 
+    "ordering": 10, 
+    "summary": "\u7cbe\u6311\u7ec6\u9009\u7684\u7a7a\u6218\u6e38\u620f", 
+    "mptt_lft": 6, 
+    "name": "\u58ee\u5fd7\u51cc\u4e91\u7a7a\u6218\u6e38\u620f\u5408\u96c6", 
+    "created_datetime": "2013-10-11T09:10:40.044Z", 
+    "is_hidden": false, 
+    "cover": "topic/topic-kongzhan/cover_1.jpg", 
+    "icon": "", 
+    "slug": "topic-kongzhan", 
+    "status": "published", 
+    "updated_datetime": "2013-11-27T08:12:20.670Z"
+  }
+},
+{
+  "pk": 13, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 1, 
+    "mptt_rgt": 11, 
+    "tree_id": 8, 
+    "parent": 7, 
+    "released_datetime": "2013-10-10T09:12:24Z", 
+    "ordering": 12, 
+    "summary": "Tom\u732b\u548c\u4ed6\u7684\u5c0f\u4f19\u4f34\u4eec", 
+    "mptt_lft": 10, 
+    "name": "\u4f1a\u8bf4\u8bdd\u7684\u7cfb\u5217\u7cbe\u9009", 
+    "created_datetime": "2013-10-11T09:15:57.215Z", 
+    "is_hidden": false, 
+    "cover": "topic/topic-talking/cover_2.jpg", 
+    "icon": "", 
+    "slug": "topic-talking", 
+    "status": "published", 
+    "updated_datetime": "2013-11-27T08:12:20.984Z"
+  }
+},
+{
+  "pk": 14, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 1, 
+    "mptt_rgt": 9, 
+    "tree_id": 8, 
+    "parent": 7, 
+    "released_datetime": "2013-10-10T09:14:12Z", 
+    "ordering": 11, 
+    "summary": "\u7cbe\u6311\u7ec6\u9009\u7684\u4f11\u95f2\u6e38\u620f\uff0c\u8ba9\u4f60\u65e0\u804a\u7684\u65f6\u95f4\u7acb\u9a6c\u6d88\u5931", 
+    "mptt_lft": 8, 
+    "name": "\u6d88\u78e8\u65f6\u5149\u6e38\u620f\u7cbe\u9009", 
+    "created_datetime": "2013-10-11T09:17:44.189Z", 
+    "is_hidden": false, 
+    "cover": "topic/topic-xiaomo/cover_1.jpg", 
+    "icon": "", 
+    "slug": "topic-xiaomo", 
+    "status": "published", 
+    "updated_datetime": "2013-11-27T08:12:20.839Z"
+  }
+},
+{
+  "pk": 19, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 1, 
+    "mptt_rgt": 3, 
+    "tree_id": 8, 
+    "parent": 7, 
+    "released_datetime": "2013-11-26T08:11:53Z", 
+    "ordering": 8, 
+    "summary": "\u866b\u866b\u7834\u89e3\u6e38\u620f\u7cbe\u9009\uff0c\u5e26\u7ed9\u4f60\u6700\u68d2\u7684\u7834\u89e3\u6e38\u620f", 
+    "mptt_lft": 2, 
+    "name": "\u866b\u866b\u7834\u89e3\u6e38\u620f\u7cbe\u9009", 
+    "created_datetime": "2013-11-27T08:12:09.582Z", 
+    "is_hidden": false, 
+    "cover": "topic/topic-ccpojie/cover.jpg", 
+    "icon": "", 
+    "slug": "topic-ccpojie", 
+    "status": "published", 
+    "updated_datetime": "2013-11-27T08:12:21.157Z"
+  }
+},
+{
+  "pk": 20, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 1, 
+    "mptt_rgt": 13, 
+    "tree_id": 8, 
+    "parent": 7, 
+    "released_datetime": "2014-02-23T09:04:38Z", 
+    "ordering": 13, 
+    "summary": "\u4f53\u80b2\u8ff7\u5fc5\u5907\u6e38\u620f\u6e38\u620f\u5408\u96c6", 
+    "mptt_lft": 12, 
+    "name": "\u4f53\u80b2\u8ff7\u5fc5\u5907\u6e38\u620f\u5408\u96c6", 
+    "created_datetime": "2014-02-24T09:04:46.836Z", 
+    "is_hidden": false, 
+    "cover": "topic/topic-sports/cover_1.jpg", 
+    "icon": "", 
+    "slug": "topic-sports", 
+    "status": "published", 
+    "updated_datetime": "2014-02-24T09:06:59.538Z"
+  }
+},
+{
+  "pk": 21, 
+  "model": "taxonomy.topic", 
+  "fields": {
+    "mptt_level": 0, 
+    "mptt_rgt": 2, 
+    "tree_id": 9, 
+    "parent": null, 
+    "released_datetime": "2014-03-10T07:21:31Z", 
+    "ordering": 14, 
+    "summary": "", 
+    "mptt_lft": 1, 
+    "name": "\u5de8\u4f5c", 
+    "created_datetime": "2014-03-11T07:21:35.123Z", 
+    "is_hidden": false, 
+    "cover": "", 
+    "icon": "", 
+    "slug": "game-masterpiece", 
+    "status": "published", 
+    "updated_datetime": "2014-03-11T07:21:35.123Z"
+  }
+},
+{
+  "pk": 8, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 2, 
+    "topic": 2, 
+    "updated_datetime": "2013-11-27T07:51:51.391Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 24, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 5, 
+    "topic": 6, 
+    "updated_datetime": "2013-10-23T02:54:09.721Z", 
+    "ordering": 7
+  }
+},
+{
+  "pk": 40, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 23, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.521Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 41, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 24, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.530Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 57, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 27, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T06:03:31.685Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 62, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 21, 
+    "topic": 6, 
+    "updated_datetime": "2013-11-04T11:57:15.123Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 63, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 22, 
+    "topic": 6, 
+    "updated_datetime": "2013-11-04T11:57:15.137Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 67, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 42, 
+    "topic": 6, 
+    "updated_datetime": "2013-11-04T11:57:15.159Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 68, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 43, 
+    "topic": 6, 
+    "updated_datetime": "2013-10-23T02:54:09.688Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 69, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 44, 
+    "topic": 6, 
+    "updated_datetime": "2013-11-04T11:57:15.178Z", 
+    "ordering": 11
+  }
+},
+{
+  "pk": 70, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 45, 
+    "topic": 6, 
+    "updated_datetime": "2013-10-23T02:54:09.701Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 72, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 46, 
+    "topic": 6, 
+    "updated_datetime": "2013-10-23T02:54:09.711Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 137, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 30, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-14T09:42:58.079Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 139, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 11, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-14T09:42:58.105Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 143, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 40, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-14T09:42:58.153Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 144, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 27, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-14T09:42:58.167Z", 
+    "ordering": 9
+  }
+},
+{
+  "pk": 145, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 38, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-14T09:42:58.182Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 147, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 22, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-14T09:42:58.209Z", 
+    "ordering": 11
+  }
+},
+{
+  "pk": 149, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 13, 
+    "topic": 2, 
+    "updated_datetime": "2013-11-27T07:51:51.419Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 150, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 36, 
+    "topic": 2, 
+    "updated_datetime": "2013-11-27T07:51:51.432Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 152, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 48, 
+    "topic": 3, 
+    "updated_datetime": "2014-01-15T11:32:47.154Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 153, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 49, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-13T11:21:06.991Z", 
+    "ordering": 19
+  }
+},
+{
+  "pk": 154, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 50, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-13T11:21:06.969Z", 
+    "ordering": 18
+  }
+},
+{
+  "pk": 155, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 51, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-17T05:31:01.911Z", 
+    "ordering": 18
+  }
+},
+{
+  "pk": 156, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 3, 
+    "topic": 2, 
+    "updated_datetime": "2013-11-27T07:51:51.406Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 157, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 45, 
+    "topic": 2, 
+    "updated_datetime": "2013-11-27T07:51:51.453Z", 
+    "ordering": 7
+  }
+},
+{
+  "pk": 159, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 47, 
+    "topic": 2, 
+    "updated_datetime": "2013-11-27T07:51:51.443Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 160, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 89, 
+    "topic": 3, 
+    "updated_datetime": "2014-01-15T11:32:47.077Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 161, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 88, 
+    "topic": 3, 
+    "updated_datetime": "2014-01-15T11:32:47.100Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 162, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 87, 
+    "topic": 3, 
+    "updated_datetime": "2014-01-15T11:32:47.123Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 163, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 86, 
+    "topic": 3, 
+    "updated_datetime": "2014-01-15T11:32:47.180Z", 
+    "ordering": 18
+  }
+},
+{
+  "pk": 164, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 71, 
+    "topic": 3, 
+    "updated_datetime": "2014-01-15T11:32:47.208Z", 
+    "ordering": 19
+  }
+},
+{
+  "pk": 165, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 69, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-17T05:31:01.898Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 166, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 68, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.592Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 167, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 67, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-13T11:21:06.946Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 168, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 66, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-13T11:21:06.934Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 169, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 65, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.619Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 170, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 61, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.650Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 171, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 58, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.687Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 172, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 60, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.710Z", 
+    "ordering": 18
+  }
+},
+{
+  "pk": 173, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 54, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.725Z", 
+    "ordering": 19
+  }
+},
+{
+  "pk": 175, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 96, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-14T05:56:29.927Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 176, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 103, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-14T05:56:29.916Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 177, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 105, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-14T05:55:19.427Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 178, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 108, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-14T05:55:19.452Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 179, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 110, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-14T05:55:19.463Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 181, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 115, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.412Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 182, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 57, 
+    "topic": 2, 
+    "updated_datetime": "2013-10-25T08:46:36.585Z", 
+    "ordering": 9
+  }
+},
+{
+  "pk": 183, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 56, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.747Z", 
+    "ordering": 20
+  }
+},
+{
+  "pk": 184, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 59, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.792Z", 
+    "ordering": 21
+  }
+},
+{
+  "pk": 185, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 57, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.831Z", 
+    "ordering": 22
+  }
+},
+{
+  "pk": 186, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 64, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.855Z", 
+    "ordering": 23
+  }
+},
+{
+  "pk": 187, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 53, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-17T05:31:01.863Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 188, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 63, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.901Z", 
+    "ordering": 24
+  }
+},
+{
+  "pk": 189, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 62, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.944Z", 
+    "ordering": 25
+  }
+},
+{
+  "pk": 190, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 113, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.425Z", 
+    "ordering": 7
+  }
+},
+{
+  "pk": 192, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 122, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.452Z", 
+    "ordering": 9
+  }
+},
+{
+  "pk": 193, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 124, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.461Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 194, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 125, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.471Z", 
+    "ordering": 11
+  }
+},
+{
+  "pk": 195, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 126, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.481Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 196, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 127, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.491Z", 
+    "ordering": 13
+  }
+},
+{
+  "pk": 197, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 129, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.501Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 199, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 128, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.510Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 200, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 98, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-14T05:56:29.937Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 201, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 130, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.540Z", 
+    "ordering": 18
+  }
+},
+{
+  "pk": 202, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 131, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.557Z", 
+    "ordering": 19
+  }
+},
+{
+  "pk": 203, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 132, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.572Z", 
+    "ordering": 20
+  }
+},
+{
+  "pk": 204, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 133, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.589Z", 
+    "ordering": 21
+  }
+},
+{
+  "pk": 205, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 136, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.294Z", 
+    "ordering": 23
+  }
+},
+{
+  "pk": 206, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 134, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.306Z", 
+    "ordering": 24
+  }
+},
+{
+  "pk": 207, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 135, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.315Z", 
+    "ordering": 25
+  }
+},
+{
+  "pk": 208, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 137, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.334Z", 
+    "ordering": 27
+  }
+},
+{
+  "pk": 209, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 138, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.364Z", 
+    "ordering": 30
+  }
+},
+{
+  "pk": 210, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 139, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.376Z", 
+    "ordering": 31
+  }
+},
+{
+  "pk": 211, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 140, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.387Z", 
+    "ordering": 32
+  }
+},
+{
+  "pk": 212, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 141, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.405Z", 
+    "ordering": 33
+  }
+},
+{
+  "pk": 213, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 142, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.432Z", 
+    "ordering": 34
+  }
+},
+{
+  "pk": 214, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 143, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.443Z", 
+    "ordering": 35
+  }
+},
+{
+  "pk": 215, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 144, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.453Z", 
+    "ordering": 36
+  }
+},
+{
+  "pk": 216, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 145, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.462Z", 
+    "ordering": 37
+  }
+},
+{
+  "pk": 217, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 146, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.472Z", 
+    "ordering": 38
+  }
+},
+{
+  "pk": 218, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 147, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.324Z", 
+    "ordering": 26
+  }
+},
+{
+  "pk": 219, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 148, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.344Z", 
+    "ordering": 28
+  }
+},
+{
+  "pk": 220, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 149, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.355Z", 
+    "ordering": 29
+  }
+},
+{
+  "pk": 221, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 150, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.492Z", 
+    "ordering": 40
+  }
+},
+{
+  "pk": 222, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 151, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.502Z", 
+    "ordering": 41
+  }
+},
+{
+  "pk": 223, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 152, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.513Z", 
+    "ordering": 42
+  }
+},
+{
+  "pk": 224, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 153, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.523Z", 
+    "ordering": 43
+  }
+},
+{
+  "pk": 225, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 154, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.483Z", 
+    "ordering": 39
+  }
+},
+{
+  "pk": 226, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 155, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.535Z", 
+    "ordering": 44
+  }
+},
+{
+  "pk": 227, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 156, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.547Z", 
+    "ordering": 45
+  }
+},
+{
+  "pk": 234, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 158, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T05:41:27.442Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 235, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 35, 
+    "topic": 12, 
+    "updated_datetime": "2013-10-25T08:01:14.217Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 237, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 159, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.559Z", 
+    "ordering": 46
+  }
+},
+{
+  "pk": 238, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 160, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.582Z", 
+    "ordering": 48
+  }
+},
+{
+  "pk": 248, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 187, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.591Z", 
+    "ordering": 49
+  }
+},
+{
+  "pk": 249, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 185, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.600Z", 
+    "ordering": 50
+  }
+},
+{
+  "pk": 250, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 181, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.610Z", 
+    "ordering": 51
+  }
+},
+{
+  "pk": 252, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 171, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.572Z", 
+    "ordering": 47
+  }
+},
+{
+  "pk": 253, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 359, 
+    "topic": 9, 
+    "updated_datetime": "2013-10-22T06:04:27.619Z", 
+    "ordering": 22
+  }
+},
+{
+  "pk": 267, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 367, 
+    "topic": 6, 
+    "updated_datetime": "2013-11-04T11:57:15.190Z", 
+    "ordering": 13
+  }
+},
+{
+  "pk": 268, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 368, 
+    "topic": 6, 
+    "updated_datetime": "2013-10-23T02:54:09.784Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 269, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 366, 
+    "topic": 6, 
+    "updated_datetime": "2013-11-04T11:57:15.147Z", 
+    "ordering": 9
+  }
+},
+{
+  "pk": 270, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 365, 
+    "topic": 6, 
+    "updated_datetime": "2013-10-23T02:54:09.803Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 271, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 363, 
+    "topic": 6, 
+    "updated_datetime": "2013-11-04T11:57:15.202Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 272, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 364, 
+    "topic": 6, 
+    "updated_datetime": "2013-11-04T11:57:15.214Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 273, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 361, 
+    "topic": 6, 
+    "updated_datetime": "2013-11-04T11:57:15.242Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 274, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 362, 
+    "topic": 6, 
+    "updated_datetime": "2013-10-23T02:54:09.843Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 275, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 360, 
+    "topic": 6, 
+    "updated_datetime": "2013-10-23T02:54:09.853Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 290, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 199, 
+    "topic": 12, 
+    "updated_datetime": "2013-10-25T08:01:14.261Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 291, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 198, 
+    "topic": 12, 
+    "updated_datetime": "2013-10-25T08:01:14.305Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 292, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 97, 
+    "topic": 12, 
+    "updated_datetime": "2013-10-25T08:01:14.332Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 293, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 112, 
+    "topic": 13, 
+    "updated_datetime": "2013-10-25T03:32:51.297Z", 
+    "ordering": 185
+  }
+},
+{
+  "pk": 294, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 114, 
+    "topic": 13, 
+    "updated_datetime": "2013-10-25T03:33:04.211Z", 
+    "ordering": 186
+  }
+},
+{
+  "pk": 295, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 116, 
+    "topic": 13, 
+    "updated_datetime": "2013-10-25T03:33:17.690Z", 
+    "ordering": 187
+  }
+},
+{
+  "pk": 296, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 117, 
+    "topic": 13, 
+    "updated_datetime": "2013-10-25T03:33:30.734Z", 
+    "ordering": 188
+  }
+},
+{
+  "pk": 297, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 118, 
+    "topic": 13, 
+    "updated_datetime": "2013-10-25T03:33:43.097Z", 
+    "ordering": 189
+  }
+},
+{
+  "pk": 298, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 120, 
+    "topic": 13, 
+    "updated_datetime": "2013-10-25T03:34:03.264Z", 
+    "ordering": 190
+  }
+},
+{
+  "pk": 299, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 121, 
+    "topic": 13, 
+    "updated_datetime": "2013-10-25T03:34:11.822Z", 
+    "ordering": 191
+  }
+},
+{
+  "pk": 300, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 194, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-25T03:38:18.296Z", 
+    "ordering": 192
+  }
+},
+{
+  "pk": 301, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 190, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-25T03:38:39.246Z", 
+    "ordering": 193
+  }
+},
+{
+  "pk": 302, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 193, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-25T03:39:01.499Z", 
+    "ordering": 194
+  }
+},
+{
+  "pk": 303, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 189, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-25T03:39:35.844Z", 
+    "ordering": 195
+  }
+},
+{
+  "pk": 304, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 351, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-25T03:39:59.070Z", 
+    "ordering": 196
+  }
+},
+{
+  "pk": 305, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 309, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-25T03:40:19.059Z", 
+    "ordering": 197
+  }
+},
+{
+  "pk": 306, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 56, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-25T03:40:58.246Z", 
+    "ordering": 198
+  }
+},
+{
+  "pk": 307, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 93, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-25T03:41:24.705Z", 
+    "ordering": 199
+  }
+},
+{
+  "pk": 308, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 119, 
+    "topic": 14, 
+    "updated_datetime": "2013-10-25T03:41:46.981Z", 
+    "ordering": 200
+  }
+},
+{
+  "pk": 309, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 334, 
+    "topic": 12, 
+    "updated_datetime": "2013-10-25T08:01:33.156Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 310, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 397, 
+    "topic": 12, 
+    "updated_datetime": "2013-10-25T08:01:33.170Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 311, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 398, 
+    "topic": 12, 
+    "updated_datetime": "2013-10-25T08:01:33.197Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 312, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 399, 
+    "topic": 12, 
+    "updated_datetime": "2013-10-25T08:01:33.242Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 313, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 400, 
+    "topic": 12, 
+    "updated_datetime": "2013-10-25T08:01:33.260Z", 
+    "ordering": 7
+  }
+},
+{
+  "pk": 314, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 401, 
+    "topic": 12, 
+    "updated_datetime": "2013-10-25T08:01:33.272Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 315, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 402, 
+    "topic": 12, 
+    "updated_datetime": "2013-10-25T08:01:33.286Z", 
+    "ordering": 9
+  }
+},
+{
+  "pk": 316, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 126, 
+    "topic": 2, 
+    "updated_datetime": "2013-10-25T08:49:01.298Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 317, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 85, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.968Z", 
+    "ordering": 26
+  }
+},
+{
+  "pk": 318, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 84, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:32.981Z", 
+    "ordering": 27
+  }
+},
+{
+  "pk": 319, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 82, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.000Z", 
+    "ordering": 28
+  }
+},
+{
+  "pk": 320, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 79, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.013Z", 
+    "ordering": 29
+  }
+},
+{
+  "pk": 321, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 77, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.024Z", 
+    "ordering": 30
+  }
+},
+{
+  "pk": 322, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 75, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.044Z", 
+    "ordering": 31
+  }
+},
+{
+  "pk": 323, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 72, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.066Z", 
+    "ordering": 32
+  }
+},
+{
+  "pk": 324, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 70, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.080Z", 
+    "ordering": 33
+  }
+},
+{
+  "pk": 325, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 97, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.104Z", 
+    "ordering": 34
+  }
+},
+{
+  "pk": 326, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 100, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.124Z", 
+    "ordering": 35
+  }
+},
+{
+  "pk": 327, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 101, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.143Z", 
+    "ordering": 36
+  }
+},
+{
+  "pk": 328, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 102, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.161Z", 
+    "ordering": 37
+  }
+},
+{
+  "pk": 329, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 104, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.190Z", 
+    "ordering": 38
+  }
+},
+{
+  "pk": 330, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 106, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.216Z", 
+    "ordering": 39
+  }
+},
+{
+  "pk": 331, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 107, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.236Z", 
+    "ordering": 40
+  }
+},
+{
+  "pk": 332, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 109, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.247Z", 
+    "ordering": 41
+  }
+},
+{
+  "pk": 333, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 111, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.258Z", 
+    "ordering": 42
+  }
+},
+{
+  "pk": 334, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 452, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.270Z", 
+    "ordering": 43
+  }
+},
+{
+  "pk": 335, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 413, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.284Z", 
+    "ordering": 44
+  }
+},
+{
+  "pk": 336, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 36, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.298Z", 
+    "ordering": 45
+  }
+},
+{
+  "pk": 337, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 121, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.311Z", 
+    "ordering": 46
+  }
+},
+{
+  "pk": 338, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 118, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.330Z", 
+    "ordering": 47
+  }
+},
+{
+  "pk": 339, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 117, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.341Z", 
+    "ordering": 48
+  }
+},
+{
+  "pk": 340, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 114, 
+    "topic": 3, 
+    "updated_datetime": "2013-12-13T06:09:33.351Z", 
+    "ordering": 49
+  }
+},
+{
+  "pk": 356, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 23, 
+    "topic": 2, 
+    "updated_datetime": "2013-11-27T07:51:51.463Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 357, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 101, 
+    "topic": 2, 
+    "updated_datetime": "2013-11-27T07:51:51.471Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 360, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 458, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T08:20:48.089Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 361, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 27, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T08:20:48.104Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 362, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 475, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.171Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 363, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 468, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T08:20:48.128Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 364, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 471, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.188Z", 
+    "ordering": 9
+  }
+},
+{
+  "pk": 365, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 462, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.113Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 366, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 467, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.213Z", 
+    "ordering": 11
+  }
+},
+{
+  "pk": 367, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 196, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.225Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 368, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 237, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T08:20:48.187Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 369, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 38, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.257Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 370, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 32, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.285Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 371, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 460, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.141Z", 
+    "ordering": 7
+  }
+},
+{
+  "pk": 372, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 461, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.200Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 373, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 476, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.237Z", 
+    "ordering": 13
+  }
+},
+{
+  "pk": 375, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 470, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.128Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 376, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 280, 
+    "topic": 19, 
+    "updated_datetime": "2013-11-27T09:13:39.298Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 379, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 25, 
+    "topic": 2, 
+    "updated_datetime": "2013-11-28T02:50:41.740Z", 
+    "ordering": 225
+  }
+},
+{
+  "pk": 380, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 15, 
+    "object_id": 46, 
+    "topic": 2, 
+    "updated_datetime": "2013-11-28T02:50:59.080Z", 
+    "ordering": 226
+  }
+},
+{
+  "pk": 385, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 192, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-10T09:56:36.538Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 401, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 489, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-13T11:21:06.919Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 405, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 489, 
+    "topic": 1, 
+    "updated_datetime": "2013-12-30T11:34:15.686Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 407, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 383, 
+    "topic": 8, 
+    "updated_datetime": "2013-12-17T06:04:44.302Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 408, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 491, 
+    "topic": 8, 
+    "updated_datetime": "2013-12-17T06:04:44.331Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 409, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 492, 
+    "topic": 8, 
+    "updated_datetime": "2013-12-17T06:04:44.368Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 410, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 493, 
+    "topic": 8, 
+    "updated_datetime": "2013-12-17T06:04:44.393Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 411, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 385, 
+    "topic": 8, 
+    "updated_datetime": "2013-12-17T06:04:44.431Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 412, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 391, 
+    "topic": 8, 
+    "updated_datetime": "2013-12-17T06:04:44.457Z", 
+    "ordering": 7
+  }
+},
+{
+  "pk": 413, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 375, 
+    "topic": 8, 
+    "updated_datetime": "2013-12-17T06:04:44.509Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 414, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 432, 
+    "topic": 8, 
+    "updated_datetime": "2013-12-17T06:04:44.559Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 415, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 436, 
+    "topic": 8, 
+    "updated_datetime": "2013-12-17T06:04:44.597Z", 
+    "ordering": 9
+  }
+},
+{
+  "pk": 416, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 449, 
+    "topic": 8, 
+    "updated_datetime": "2013-12-17T06:04:44.638Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 417, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 382, 
+    "topic": 8, 
+    "updated_datetime": "2013-12-17T06:04:44.670Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 420, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 498, 
+    "topic": 1, 
+    "updated_datetime": "2013-12-26T08:00:24.609Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 445, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 509, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T06:03:31.591Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 447, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 512, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-05T04:48:52.784Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 448, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 263, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-09T05:15:09.952Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 452, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 515, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-05T04:48:52.800Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 454, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 518, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-11T05:14:28.258Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 458, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 522, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-09T05:14:56.311Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 459, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 523, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-23T06:49:00.925Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 466, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 488, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.645Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 467, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 383, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.701Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 468, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 212, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.741Z", 
+    "ordering": 18
+  }
+},
+{
+  "pk": 472, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 527, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-13T12:45:52.982Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 479, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 543, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-22T03:49:24.862Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 480, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 543, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-17T05:31:01.875Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 481, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 205, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-14T09:22:08.823Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 482, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 544, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-14T09:22:08.839Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 483, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 545, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-13T12:45:52.955Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 484, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 546, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-23T06:49:21.045Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 486, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 547, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-23T06:49:00.896Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 487, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 542, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-10T09:56:36.443Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 496, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 551, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-20T10:02:46.278Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 497, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 551, 
+    "topic": 4, 
+    "updated_datetime": "2014-01-11T07:47:49.145Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 499, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 551, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-17T05:31:01.852Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 500, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 552, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-22T03:49:24.838Z", 
+    "ordering": 13
+  }
+},
+{
+  "pk": 501, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 553, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-20T10:02:46.266Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 502, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 552, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-17T05:31:01.839Z", 
+    "ordering": 13
+  }
+},
+{
+  "pk": 503, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 553, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-17T05:31:01.923Z", 
+    "ordering": 19
+  }
+},
+{
+  "pk": 504, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 554, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-23T06:49:00.829Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 506, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 555, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-22T03:49:24.851Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 508, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 556, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-17T05:31:01.825Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 509, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 556, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.391Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 510, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 557, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-23T06:49:00.868Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 512, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 706, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-06T08:26:05.012Z", 
+    "ordering": 13
+  }
+},
+{
+  "pk": 513, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 560, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-23T06:49:21.032Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 514, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 561, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-22T03:49:24.885Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 515, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 562, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-14T11:34:32.115Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 516, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 296, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-18T12:31:42.034Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 517, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 567, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-20T10:02:46.335Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 518, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 564, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-20T10:02:46.310Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 520, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 548, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.604Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 521, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 564, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.593Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 522, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 565, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-17T05:31:01.797Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 523, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 557, 
+    "topic": 4, 
+    "updated_datetime": "2014-01-15T11:33:48.358Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 524, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 568, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-22T03:49:24.825Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 526, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 569, 
+    "topic": 1, 
+    "updated_datetime": "2014-01-22T03:49:24.873Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 527, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 566, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.582Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 528, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 566, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.372Z", 
+    "ordering": 9
+  }
+},
+{
+  "pk": 529, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 568, 
+    "topic": 4, 
+    "updated_datetime": "2014-01-16T09:49:16.187Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 530, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 567, 
+    "topic": 4, 
+    "updated_datetime": "2014-01-16T09:49:22.921Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 531, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 560, 
+    "topic": 4, 
+    "updated_datetime": "2014-01-16T09:49:33.498Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 532, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 559, 
+    "topic": 4, 
+    "updated_datetime": "2014-01-16T09:49:45.143Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 533, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 558, 
+    "topic": 4, 
+    "updated_datetime": "2014-01-16T09:49:52.713Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 534, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 547, 
+    "topic": 4, 
+    "updated_datetime": "2014-01-16T09:51:02.256Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 535, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 552, 
+    "topic": 4, 
+    "updated_datetime": "2014-01-16T09:52:05.139Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 536, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 572, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.357Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 537, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 643, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-18T12:30:50.922Z", 
+    "ordering": 9
+  }
+},
+{
+  "pk": 538, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 410, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-26T07:26:59.848Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 540, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 575, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-10T05:57:53.691Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 541, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 575, 
+    "topic": 4, 
+    "updated_datetime": "2014-01-20T08:13:01.216Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 542, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 575, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.323Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 543, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 576, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-10T05:57:53.732Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 544, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 576, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.309Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 545, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 576, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.567Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 547, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 574, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-10T05:57:53.879Z", 
+    "ordering": 13
+  }
+},
+{
+  "pk": 549, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 579, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-10T05:57:53.611Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 550, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 572, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-10T05:57:53.776Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 551, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 709, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-06T08:26:34.987Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 553, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 585, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.553Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 556, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 581, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-10T05:57:53.549Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 557, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 586, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-10T05:57:53.646Z", 
+    "ordering": 11
+  }
+},
+{
+  "pk": 559, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 587, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-17T10:06:32.595Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 560, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 588, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.539Z", 
+    "ordering": 13
+  }
+},
+{
+  "pk": 561, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 669, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-27T12:13:50.609Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 562, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 589, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.295Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 563, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 590, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.280Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 564, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 596, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-11T11:18:49.748Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 565, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 608, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-14T08:35:16.628Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 566, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 608, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.526Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 567, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 610, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-27T12:11:44.658Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 568, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 235, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-14T08:35:16.745Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 569, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 609, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-14T08:35:16.714Z", 
+    "ordering": 13
+  }
+},
+{
+  "pk": 572, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 611, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-27T12:13:38.140Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 573, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 612, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-14T08:35:16.691Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 574, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 613, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-26T07:24:20.077Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 575, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 612, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.513Z", 
+    "ordering": 11
+  }
+},
+{
+  "pk": 576, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 675, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-26T07:22:07.767Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 577, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 657, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-25T03:14:19.035Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 578, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 618, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-17T10:06:32.581Z", 
+    "ordering": 14
+  }
+},
+{
+  "pk": 579, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 619, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-27T12:12:24.395Z", 
+    "ordering": 13
+  }
+},
+{
+  "pk": 580, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 625, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.478Z", 
+    "ordering": 9
+  }
+},
+{
+  "pk": 581, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 620, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-14T08:35:16.674Z", 
+    "ordering": 11
+  }
+},
+{
+  "pk": 582, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 624, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-17T10:06:32.634Z", 
+    "ordering": 17
+  }
+},
+{
+  "pk": 584, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 622, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-17T10:06:32.567Z", 
+    "ordering": 13
+  }
+},
+{
+  "pk": 585, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 621, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-17T10:06:32.610Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 586, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 625, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-17T10:06:32.516Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 587, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 626, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-26T09:11:25.324Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 588, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 647, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-25T03:12:08.364Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 589, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 629, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-17T10:06:32.554Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 590, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 668, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-26T07:26:41.518Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 591, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 662, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.498Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 592, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 616, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.264Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 593, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 412, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:39:15.248Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 594, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 628, 
+    "topic": 5, 
+    "updated_datetime": "2014-02-14T08:38:16.853Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 595, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 630, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-27T12:13:15.310Z", 
+    "ordering": 7
+  }
+},
+{
+  "pk": 596, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 630, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.410Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 597, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 631, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.388Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 598, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 631, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-25T03:11:50.520Z", 
+    "ordering": 12
+  }
+},
+{
+  "pk": 599, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 632, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-25T03:09:16.071Z", 
+    "ordering": 15
+  }
+},
+{
+  "pk": 600, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 475, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-25T03:06:57.387Z", 
+    "ordering": 10
+  }
+},
+{
+  "pk": 601, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 649, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-25T03:09:47.797Z", 
+    "ordering": 16
+  }
+},
+{
+  "pk": 602, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 724, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T11:51:08.819Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 603, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 636, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-17T10:06:32.506Z", 
+    "ordering": 9
+  }
+},
+{
+  "pk": 605, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 642, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-25T03:08:59.828Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 606, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 642, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.360Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 607, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 648, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.464Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 608, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 656, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.447Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 609, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 658, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.432Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 610, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 660, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:37:35.340Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 611, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 635, 
+    "topic": 20, 
+    "updated_datetime": "2014-02-24T09:08:23.915Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 612, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 626, 
+    "topic": 20, 
+    "updated_datetime": "2014-02-24T09:08:36.191Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 613, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 490, 
+    "topic": 20, 
+    "updated_datetime": "2014-02-24T09:08:49.571Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 614, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 511, 
+    "topic": 20, 
+    "updated_datetime": "2014-02-24T09:09:12.273Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 615, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 446, 
+    "topic": 20, 
+    "updated_datetime": "2014-02-24T09:09:35.378Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 616, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 417, 
+    "topic": 20, 
+    "updated_datetime": "2014-02-24T09:09:50.066Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 617, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 381, 
+    "topic": 20, 
+    "updated_datetime": "2014-02-24T09:10:01.303Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 618, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 80, 
+    "topic": 20, 
+    "updated_datetime": "2014-02-24T09:10:24.860Z", 
+    "ordering": 7
+  }
+},
+{
+  "pk": 619, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 36, 
+    "topic": 20, 
+    "updated_datetime": "2014-02-24T09:11:13.386Z", 
+    "ordering": 7
+  }
+},
+{
+  "pk": 620, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 664, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-27T12:05:08.807Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 621, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 659, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-25T03:09:25.999Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 622, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 684, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-27T12:13:07.964Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 623, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 663, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-05T03:32:41.654Z", 
+    "ordering": 8
+  }
+},
+{
+  "pk": 624, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 702, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-05T03:33:10.517Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 625, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 666, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-25T05:36:32.302Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 626, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 726, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-12T07:37:58.419Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 627, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 674, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T06:03:31.660Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 628, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 674, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-26T07:07:33.027Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 630, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 673, 
+    "topic": 1, 
+    "updated_datetime": "2014-02-26T12:20:20.613Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 631, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 676, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-26T08:35:50.501Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 632, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 676, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-04T05:44:11.510Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 633, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 288, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T08:07:46.390Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 634, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 682, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-05T03:32:41.631Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 635, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 681, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-07T08:56:50.068Z", 
+    "ordering": 6
+  }
+},
+{
+  "pk": 636, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 682, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-27T12:14:54.940Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 637, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 685, 
+    "topic": 3, 
+    "updated_datetime": "2014-02-28T03:49:14.048Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 638, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 685, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T06:03:31.639Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 639, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 686, 
+    "topic": 3, 
+    "updated_datetime": "2014-03-06T03:37:35.887Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 640, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 723, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T08:07:10.468Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 641, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 697, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T06:03:31.570Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 642, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 213, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-12T07:04:13.221Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 643, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 704, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T06:03:31.546Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 644, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 705, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T06:03:31.468Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 645, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 705, 
+    "topic": 3, 
+    "updated_datetime": "2014-03-06T02:43:14.922Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 646, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 707, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T06:03:31.614Z", 
+    "ordering": 4
+  }
+},
+{
+  "pk": 647, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 707, 
+    "topic": 5, 
+    "updated_datetime": "2014-03-06T03:37:23.788Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 648, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 708, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-12T07:37:58.403Z", 
+    "ordering": 5
+  }
+},
+{
+  "pk": 649, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 717, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-12T07:37:58.375Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 650, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 717, 
+    "topic": 3, 
+    "updated_datetime": "2014-03-07T08:05:43.641Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 651, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 717, 
+    "topic": 5, 
+    "updated_datetime": "2014-03-07T08:05:51.354Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 652, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 718, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-12T07:37:58.385Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 653, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 718, 
+    "topic": 5, 
+    "updated_datetime": "2014-03-07T08:57:37.604Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 654, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 719, 
+    "topic": 5, 
+    "updated_datetime": "2014-03-07T09:05:37.640Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 655, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 719, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T08:06:44.449Z", 
+    "ordering": 3
+  }
+},
+{
+  "pk": 656, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 720, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-10T11:50:41.653Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 657, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 722, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-13T02:35:25.644Z", 
+    "ordering": 2
+  }
+},
+{
+  "pk": 658, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 723, 
+    "topic": 3, 
+    "updated_datetime": "2014-03-10T11:49:45.848Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 659, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 727, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-11T07:39:32.494Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 660, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 729, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-13T02:35:25.622Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 661, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 732, 
+    "topic": 3, 
+    "updated_datetime": "2014-03-12T07:36:17.374Z", 
+    "ordering": 1
+  }
+},
+{
+  "pk": 662, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 736, 
+    "topic": 1, 
+    "updated_datetime": "2014-03-13T02:36:25.186Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 663, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 736, 
+    "topic": 5, 
+    "updated_datetime": "2014-03-13T02:36:36.023Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 664, 
+  "model": "taxonomy.topicalitem", 
+  "fields": {
+    "content_type": 16, 
+    "object_id": 735, 
+    "topic": 5, 
+    "updated_datetime": "2014-03-13T02:36:47.580Z", 
+    "ordering": 1
+  }
+}
+]

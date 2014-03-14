@@ -17,5 +17,7 @@ urlpatterns = patterns('website.views',
         url(r'^masterpiece/$', 'masterpiece_view', name='masterpiece_page'),
         url(r'^topics/$', 'topics_view', name='topics_page'),
         url(r'^topics/(?P<slug>%s)' % slug_pattern, 'topic_package_list', name='topic_package_list'),
+        url(r'^feedbacks/cdn/(?P<slug>%s)' % slug_pattern, 'cdn_feedback', name='cdn_feedback'),
+
 )
 

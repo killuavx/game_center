@@ -5,7 +5,7 @@ from django.conf import settings
 from mezzanine.conf import settings
 from django.core.paginator import EmptyPage
 
-from django.http import Http404
+from django.http import Http404, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.vary import vary_on_headers
@@ -129,3 +129,16 @@ def topic_package_list(request, slug, template='pages/topics/detail.html',
         return response
 
     return TemplateResponse(request=request, template=template, context=context)
+
+
+def cdn_feedback(request, slug, *args, **kwargs):
+    from website.cdn.core import Feedback
+    ctx1 = request.GET.get('context')
+    ctx2 = request.POST.get('context')
+    if not(ctx1 or ctx2) or slug != 'cscc':
+        return HttpResponseBadRequest()
+    context = ctx1 or ctx2
+    feedback = Feedback()
+    response = feedback.process(content=context)
+    return HttpResponse(response.render(), mimetype='text/xml; charset=utf-8')
+
