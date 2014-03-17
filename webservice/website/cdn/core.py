@@ -84,7 +84,8 @@ class Processor(object):
         return Site.objects.get_current().domain
 
     def get_publish_path_prefix(self):
-        return settings.MEDIA_URL
+        return settings.PUBLISH_MEDIA_URL
+        #return settings.MEDIA_URL
 
     def get_absolute_root_path(self):
         return settings.MEDIA_ROOT

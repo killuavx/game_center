@@ -27,9 +27,17 @@ USE_SOUTH = True
 
 USE_I18N = False
 
-MEDIA_URL = HOST_URL.replace('gc', 'media') + MEDIA_URL
+#MEDIA_URL = HOST_URL.replace('gc', 'media') + MEDIA_URL
 
-STATIC_URL = HOST_URL.replace('gc', 'static') + STATIC_URL
+#STATIC_URL = HOST_URL.replace('gc', 'static') + STATIC_URL
+
+MEDIA_URL = HOST_URL + MEDIA_URL
+
+STATIC_URL = HOST_URL + STATIC_URL
+
+PUBLISH_MEDIA_URL = HOST_URL.replace('gc', 'media') + MEDIA_URL
+
+PUBLISH_STATIC_URL = HOST_URL.replace('gc', 'static') + STATIC_URL
 
 TEMPLATE_CONTEXT_PROCESSORS = list(TEMPLATE_CONTEXT_PROCESSORS) + [
     'mezzanine.conf.context_processors.settings',

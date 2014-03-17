@@ -146,9 +146,9 @@ class StaticProcessor(BaseProcessor):
     def _content_type_paths(self):
         from django.conf import settings
         return {
-            'media': {'url': settings.MEDIA_URL,
+            'media': {'url': settings.PUBLISH_MEDIA_URL,
                       'abs_path': settings.MEDIA_ROOT},
-            'static': {'url': settings.STATIC_URL,
+            'static': {'url': settings.PUBLISH_STATIC_URL,
                        'abs_path': settings.STATIC_ROOT}
         }
 
