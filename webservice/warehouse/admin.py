@@ -87,6 +87,7 @@ class PackageVersionAdmin(MainAdmin):
                     'is_data_integration',
                     'download_count',
                     'sync_file_action',
+                    'publish_path_check_links',
     )
     list_display_links = ('show_icon', 'version_name')
     actions = ['make_published']
@@ -167,6 +168,36 @@ class PackageVersionAdmin(MainAdmin):
         return sync_status_summary(obj) + " | " + sync_status_actions(obj)
     sync_file_action.allow_tags = True
     sync_file_action.short_description = _('Sync Status')
+
+    def publish_path_check_links(self, obj):
+        from django.conf import settings
+        from os.path import basename
+        def _model_file_publish_link(filefield, name):
+            mask = """<a href="%s" target="_blank" title="%s">%s</a>"""
+            default_base_url = filefield.storage.base_url
+            filefield.storage.base_url = settings.PUBLISH_MEDIA_URL
+            link = mask %(filefield.url, filefield.url, name)
+            filefield.storage.base_url = default_base_url
+            return link
+
+        links = []
+        links.append(_model_file_publish_link(obj.icon, 'icon'))
+        if obj.download:
+            download = _model_file_publish_link(obj.download, 'download')
+            links.append(download)
+        if obj.di_download:
+            di_download = _model_file_publish_link(obj.download, 'di_download')
+            links.append(di_download)
+        screenshots = []
+        for s in obj.screenshots.all():
+            _s = _model_file_publish_link(s.image, basename(s.image.name))
+            screenshots.append(_s)
+        if screenshots:
+            links.append("screenshots[%s%s%s]" % ("<br/>", ",<br/>".join(screenshots), "<br/>"))
+        return "<br/>".join(links)
+    sync_file_action.allow_tags = True
+    publish_path_check_links.allow_tags = True
+    publish_path_check_links.short_description = _('Sync Links')
 
     class Media:
         #from django.conf import settings
