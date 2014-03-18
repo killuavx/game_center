@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from os.path import splitext
 from urllib.parse import urlsplit
-from django.conf import settings
+from mezzanine.conf import settings
 from django.core.paginator import EmptyPage
 
 from django.http import Http404, HttpResponseBadRequest, HttpResponse
