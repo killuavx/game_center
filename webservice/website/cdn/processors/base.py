@@ -174,6 +174,8 @@ class StaticProcessor(BaseProcessor):
         ps = urlparse(url)
         result = list(tuple(ps))
         result[1] = source_host
+        if not result[0]:
+            result[0] = 'http'
         return urlunparse(result)
 
     def get_publish_path_prefix(self):

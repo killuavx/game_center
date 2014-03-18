@@ -2,16 +2,15 @@
 from os.path import splitext
 from urllib.parse import urlsplit
 from django.conf import settings
-from mezzanine.conf import settings
 from django.core.paginator import EmptyPage
 
 from django.http import Http404, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.views.decorators.vary import vary_on_headers
+from django.views.decorators.csrf import csrf_exempt
 
 from .response import WidgetHttpResponse
-from warehouse.models import PackageVersion
+from warehouse.models import PackageVersion, Package
 
 
 def _download_packageversion_response(packageversion, filetype):
@@ -59,10 +58,26 @@ def download_packageversion(request, pk, filetype=None, *args, **kwargs):
     return _download_packageversion_response(packageversion, filetype)
 
 
-def packageversion_detail(request, package_name, version_name,
-                          template='pages/package/version-detail.html',
+def packageversion_detail(request, package_name, version_name=False,
+                          template='pages/packages/version-detail.html',
                           *args, **kwargs):
+    if version_name is False:
+        try:
+            package = Package.objects.published().get(package_name=package_name)
+        except Package.DoesNotExist:
+            raise Http404
+        version = package.versions.latest_publish()
+    else:
+        try:
+            version = PackageVersion.objects.published()\
+                .get(package__package_name=package_name, version_name=version_name)
+        except PackageVersion.DoesNotExist:
+            raise Http404()
+        package = version.package
+
     return TemplateResponse(request=request, template=template, context=dict(
+        package=package,
+        version=version,
         package_name=package_name,
         version_name=version_name,
     ))
@@ -131,14 +146,21 @@ def topic_package_list(request, slug, template='pages/topics/detail.html',
     return TemplateResponse(request=request, template=template, context=context)
 
 
+
+@csrf_exempt
 def cdn_feedback(request, slug, *args, **kwargs):
     from website.cdn.core import Feedback
+    from website.cdn.parsers import OperationResponse
     ctx1 = request.GET.get('context')
     ctx2 = request.POST.get('context')
-    if not(ctx1 or ctx2) or slug != 'cscc':
-        return HttpResponseBadRequest()
+    if not(ctx1 or ctx2) or slug != 'ccsc':
+        response = OperationResponse(OperationResponse.STATUS_CODE_FAILED,
+                                     'Bad Requeset')
+        return HttpResponseBadRequest(response.render(),
+                                      mimetype='text/xml; charset=utf-8')
     context = ctx1 or ctx2
     feedback = Feedback()
     response = feedback.process(content=context)
-    return HttpResponse(response.render(), mimetype='text/xml; charset=utf-8')
+    return HttpResponse(response.render(),
+                        mimetype='text/xml; charset=utf-8')
 
