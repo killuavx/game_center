@@ -44,11 +44,12 @@ def sync_status_from(obj):
 
 def sync_status_summary(obj):
     result = sync_status_from(obj)
+    span_wrapper = '<span class="result">%s</span>'
     if not result['total']:
-        return 'Nofile/Unpublish'
+        return span_wrapper % 'Nofile/Unpublish'
     if result['finish'] == result['total']:
-        return 'OK'
-    return """<span class="result">%s/%s</span>""" %(result['finish'], result['total'])
+        return span_wrapper % 'OK'
+    return span_wrapper %("""%s/%s""" %(result['finish'], result['total']))
 
 
 def sync_status_actions(obj):
