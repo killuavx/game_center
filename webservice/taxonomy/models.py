@@ -16,6 +16,7 @@ from django.db.models import SlugField
 
 from django.core.urlresolvers import get_callable
 from django.conf import settings
+from toolkit.helpers import sync_status_from
 
 slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
                                 'taxonomy.helpers.slugify')
@@ -76,6 +77,9 @@ class Taxonomy(models.Model):
 
     class Meta:
         abstract = True
+
+    def sync_status(self):
+        return sync_status_from(self)
 
 
 class CategoryQuerySet(QuerySet):
@@ -141,6 +145,8 @@ class Category(MPTTModel, Taxonomy):
         upload_to=factory_taxonomy_upload_to_path('icon'),
         blank=True
     )
+
+    tracker = FieldTracker()
 
     @models.permalink
     def get_absolute_url(self):

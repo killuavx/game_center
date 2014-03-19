@@ -173,7 +173,7 @@ class CDNTestCase(TestCase):
         expect_item.item_id |should| equal_to(item.item_id)
 
     fixtures = [
-        'syncqueue.json',
+        #'syncqueue.json',
         'webservice-20140314-promotion.json',
         'webservice-20140314-taxonomy.json',
     ]
@@ -236,7 +236,14 @@ class CDNTestCase(TestCase):
     def test_after_save_category(self):
         from taxonomy.models import Category
         category = Category.objects.get(slug='big-game')
+        category.icon = None
         category.save()
+
+    def test_after_save_advertisement(self):
+        from promotion.models import Advertisement
+        adv = Advertisement.objects.published()[0]
+        adv.cover = None
+        adv.save()
 
     def test_after_save_packageversion_call_to_publish_and_feedback(self):
         from warehouse.models import PackageVersion

@@ -17,4 +17,7 @@ class AdvertisementProcessor(ModelProcessor):
             path = self.instance.cover.path
             raise WorkingDirectoryNotFound(
                 "working direcotry %s '%s' not found" % (self.instance, path))
+        except ValueError:
+            raise WorkingDirectoryNotFound(
+                "working direcotry %s not found" % self.instance)
         return dirname(self.instance.cover.name)

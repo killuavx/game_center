@@ -48,13 +48,13 @@ def sync_status_summary(obj):
         return 'Nofile/Unpublish'
     if result['finish'] == result['total']:
         return 'OK'
-    return "%s/%s" %(result['finish'], result['total'])
+    return """<span class="result">%s/%s</span>""" %(result['finish'], result['total'])
 
 
 def sync_status_actions(obj):
     from website.documents.cdn import PublishOperation
     from website.cdn.utils import get_dict_by_content_object
-    mask = """<a href="javascript:sync_%(op_name)s_file('%(content_type)s', '%(object_pk)s', %(publishlevel)s);">%(text)s</a>"""
+    mask = """<a href="javascript:void(0);" onclick="sync_%(op_name)s_file(this, '%(content_type)s', '%(object_pk)s', %(publishlevel)s);">%(text)s</a>"""
     data = get_dict_by_content_object(obj)
     refresh_link = mask % dict(op_name='publish',
                                text='publish(refresh)',

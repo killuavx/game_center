@@ -23,20 +23,35 @@ def feedback_start_action(sender, instance, operation, queue, **kwargs):
     pass
 
 
+def pre_save_sync_files(sender, instance, **kwargs):
+    if instance.pk is None:
+        instance._sync_files = True
+        return
+
+    changed = instance.tracker.changed()
+    for key, val in changed.items():
+        if key in ('icon', 'cover', 'screenshots'):
+            instance._sync_files = True
+            return
+
+
 def post_save_sync_files(sender, instance, **kwargs):
-    created = kwargs.get('created', False)
     try:
-        if created:
+        if hasattr(instance, '_sync_files') and instance._sync_files:
             processor = instance.sync_processor_class(instance)
             processor.publish()
+            del instance._sync_files
     except WorkingDirectoryNotFound:
         pass
 
 #fb_signals.start_action.connect(feedback_start_action, sender=Feedback)
 
-"""
+pre_save.connect(pre_save_sync_files, sender=PackageVersion)
+pre_save.connect(pre_save_sync_files, sender=Advertisement)
+pre_save.connect(pre_save_sync_files, sender=Category)
+pre_save.connect(pre_save_sync_files, sender=Topic)
+
 post_save.connect(post_save_sync_files, sender=PackageVersion)
 post_save.connect(post_save_sync_files, sender=Advertisement)
 post_save.connect(post_save_sync_files, sender=Category)
 post_save.connect(post_save_sync_files, sender=Topic)
-"""

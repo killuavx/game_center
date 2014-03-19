@@ -6,6 +6,8 @@ from django.utils.safestring import mark_safe
 from easy_thumbnails.widgets import ImageClearableFileInput as _ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
 from easy_thumbnails.templatetags.thumbnail import thumbnail_url
+from mezzanine.core.admin import (TabularDynamicInlineAdmin as TabularInline,
+                                  StackedDynamicInlineAdmin as StackedInline)
 from reversion.admin import VersionAdmin
 from django.core.urlresolvers import reverse
 from easy_thumbnails.exceptions import InvalidImageFormatError
@@ -13,7 +15,6 @@ from toolkit.helpers import sync_status_summary, sync_status_actions
 
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from webservice.admin import AdminFieldBase, AdminField
-
 
 class ImageClearableFileInput(_ImageClearableFileInput):
     def render(self, name, value, attrs=None):
@@ -48,9 +49,9 @@ class MainAdmin(VersionAdmin):
     pass
 
 
-class PackageVersionScreenshotInlines(admin.StackedInline):
+class PackageVersionScreenshotInlines(StackedInline):
     model = PackageVersionScreenshot
-    extra = 6
+    #extra = 6
 
     def show_thumbnail(self, obj):
         try:
@@ -62,8 +63,6 @@ class PackageVersionScreenshotInlines(admin.StackedInline):
 
     show_thumbnail.short_description = _('Thumbnail')
     show_thumbnail.allow_tags = True
-    classes = ('collapse', 'grp-collapse grp-closed',)
-    inline_classes = ('grp-collapse grp-open',)
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput}
     }
@@ -87,7 +86,6 @@ class PackageVersionAdmin(MainAdmin):
                     'is_data_integration',
                     'download_count',
                     'sync_file_action',
-                    'publish_path_check_links',
     )
     list_display_links = ('show_icon', 'version_name')
     actions = ['make_published']
@@ -206,13 +204,10 @@ class PackageVersionAdmin(MainAdmin):
         js = [static_url+'js/syncfile.action.js', ]
 
 
-class PackageVersionInlines(admin.StackedInline):
+class PackageVersionInlines(StackedInline):
     model = PackageVersion
     inlines = (PackageVersionScreenshotInlines, )
 
-    suit_classes = 'suit-tab suit-tab-versions'
-    classes = ('collapse', 'grp-collapse grp-open',)
-    inline_classes = ('grp-collapse grp-closed',)
     fieldsets = (
         (None, {
             'fields': ('version_code', 'version_name', 'whatsnew')
@@ -233,7 +228,7 @@ class PackageVersionInlines(admin.StackedInline):
             )
         }),
     )
-    extra = 1
+    #extra = 1
     max_num = 100
     readonly_fields = ('created_datetime', 'updated_datetime')
     ordering = ('-version_code',)
@@ -392,11 +387,11 @@ class PackageAdmin(MainAdmin):
             return {'class': css_class, 'data': obj.package_name}
 
 
-class PackageInline(admin.TabularInline):
+class PackageInline(TabularInline):
     model = Package
-    extra = 1
+    #extra = 1
     max_num = 100
-    fields = ( 'title', 'package_name', 'released_datetime', 'status' )
+    fields = ('title', 'package_name', 'released_datetime', 'status' )
     readonly_fields = ('title', 'package_name', 'released_datetime' )
 
 
