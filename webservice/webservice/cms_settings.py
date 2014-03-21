@@ -27,13 +27,13 @@ USE_SOUTH = True
 
 USE_I18N = False
 
-MEDIA_URL = HOST_URL + MEDIA_URL
+MEDIA_URL = HOST_URL.replace('gc', 'media') + MEDIA_URL
 
-STATIC_URL = HOST_URL + STATIC_URL
+STATIC_URL = HOST_URL.replace('gc', 'static') + STATIC_URL
 
-PUBLISH_MEDIA_URL = MEDIA_URL.replace('gc', 'media')
+PUBLISH_MEDIA_URL = MEDIA_URL
 
-PUBLISH_STATIC_URL = STATIC_URL.replace('gc', 'static')
+PUBLISH_STATIC_URL = STATIC_URL
 
 TEMPLATE_CONTEXT_PROCESSORS = list(TEMPLATE_CONTEXT_PROCESSORS) + [
     'mezzanine.conf.context_processors.settings',
@@ -165,7 +165,8 @@ FILEBROWSER_EXTENSIONS = {
     'Document': ['.pdf', '.doc', '.rtf', '.txt', '.xls', '.csv'],
     'Audio': ['.mp3', '.mp4', '.wav', '.aiff', '.midi', '.m4p'],
     'Code': ['.html', '.py', '.js', '.css'],
-    'Package': ['.cpk', '.apk'],
+    'AndroidApp': ['.cpk', '.apk'],
+    'iOSApp': ['.ipa'],
 }
 
 FILEBROWSER_SELECT_FORMATS = {
@@ -177,8 +178,10 @@ FILEBROWSER_SELECT_FORMATS = {
     'image': ['Image'],
     'file': ['Folder', 'Image', 'Document'],
     'media': ['Video', 'Audio'],
-    'package': ['Package']
+    'Package': ['iOSApp', 'AndroidApp']
 }
+
+FILEBROWSER_DIRECTORY = ''
 
 try:
     from mezzanine.utils.conf import set_dynamic_settings
