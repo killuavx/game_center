@@ -31,7 +31,7 @@ class EventViewSet(mixins.CreateModelMixin,
     #### 提交信息
 
     * `imei`: 国际移动设备标识码 *
-    * `eventtype`: 事件类型，可选值[activate, open, close]分别对应[激活, 打开, 关闭] *
+    * `eventtype`: 事件类型，可选值[activate, open, close, click]分别对应[激活, 打开, 关闭, 点击] *
     * `entrytype`: 进入类型，可选值[client, game]分别对应[市场客户端, 嵌入sdk的游戏] *
     * `package_name`: 游戏或客户端应用包名
     * `device`: 厂商设备号信息
