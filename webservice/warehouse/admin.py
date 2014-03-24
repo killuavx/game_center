@@ -204,10 +204,8 @@ class PackageVersionAdmin(MainAdmin):
         js = [static_url+'js/syncfile.action.js', ]
 
 
-class PackageVersionInlines(StackedInline):
+class PackageVersionInlines(admin.StackedInline):
     model = PackageVersion
-    inlines = (PackageVersionScreenshotInlines, )
-
     fieldsets = (
         (None, {
             'fields': ('version_code', 'version_name', 'whatsnew')
