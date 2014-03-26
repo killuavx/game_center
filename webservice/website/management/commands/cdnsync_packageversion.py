@@ -87,7 +87,7 @@ class Command(BaseCommand):
 
     def get_random_versions(self, options):
         limit = options['limit']
-        return PackageVersion.objects.order_by('?')[0:limit]
+        return PackageVersion.objects.published().order_by('?')[0:limit]
 
     def sync_processor(self, version, op_type):
         package = version.package
