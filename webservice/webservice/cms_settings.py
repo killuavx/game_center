@@ -105,7 +105,9 @@ INTERNAL_APPS.append('mezzanine.accounts')
 INTERNAL_APPS.append('template_utils')
 INTERNAL_APPS.pop(replace_idx)
 EXTENDAL_APPS.append('website')
-INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
+INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS + [
+    'django_widgets',
+]
 
 REST_FRAMEWORK.update(dict(
     #DEFAULT_RENDERER_CLASSES=(

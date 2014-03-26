@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .response import WidgetHttpResponse
 from warehouse.models import PackageVersion, Package
+from analysis.documents.event import Event
 
 
 def _download_packageversion_response(packageversion, filetype):
@@ -35,6 +36,23 @@ def _download_packageversion_response(packageversion, filetype):
     return response
 
 
+def _download_make_event(request, response, packageversion, filetype=None):
+    entrytype = request.GET.get('entrytype', 'web')
+    imei = request.GET.get('imei', '')
+    user = request.user
+    package_name = packageversion.package.package_name
+    event = Event(eventtype='download',
+                  entrytype=entrytype,
+                  imei=imei,
+                  package_name=package_name)
+    event.file_type = filetype
+    event.current_uri = request.build_absolute_uri()
+    event.redirect_to = response.get('Location')
+    event.referer = request.META.get('HTTP_REFERER')
+    event.user = user
+    event.save()
+
+
 def download_package(request, package_name, version_name=None,
                      filetype=None, *args, **kwargs):
     try:
@@ -46,7 +64,9 @@ def download_package(request, package_name, version_name=None,
     except (PackageVersion.DoesNotExist, PackageVersion.MultipleObjectsReturned):
         raise Http404()
 
-    return _download_packageversion_response(packageversion, filetype)
+    response = _download_packageversion_response(packageversion, filetype)
+    _download_make_event(request, response, packageversion, filetype)
+    return response
 
 
 def download_packageversion(request, pk, filetype=None, *args, **kwargs):
@@ -55,7 +75,9 @@ def download_packageversion(request, pk, filetype=None, *args, **kwargs):
     except PackageVersion.DoesNotExist:
         raise Http404()
 
-    return _download_packageversion_response(packageversion, filetype)
+    response = _download_packageversion_response(packageversion, filetype)
+    _download_make_event(request, response, packageversion, filetype)
+    return response
 
 
 def packageversion_detail(request, package_name, version_name=False,

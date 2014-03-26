@@ -141,6 +141,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'webservice.middlewares.RequestFillLanguageCodeMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'toolkit.middleware.TokenAuthenticationMiddleware',
 )
 
 ROOT_URLCONF = 'webservice.urls'
@@ -193,7 +194,7 @@ INTERNAL_APPS = [
     'haystack',
     'redis_cache.stats',
     'static_precompiler',
-    'django_widgets',
+    #'django_widgets',
 ]
 
 EXTENDAL_APPS = [
@@ -209,7 +210,7 @@ EXTENDAL_APPS = [
     'analysis',
     'webmob',
 ]
-INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
+INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS + [ 'django_widgets' ]
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -458,3 +459,6 @@ MOGOENGINE_CONNECTS = {
 }
 
 FORUM_URL = 'http://bbs.ccplay.com.cn/'
+
+#DATABASE_ROUTERS = ['webservice.dbroute_settings.DatawarehouseRouter']
+

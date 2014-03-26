@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 try:
     from threading import local, current_thread
 except ImportError:
@@ -37,3 +38,31 @@ class ThreadLocals(object):
             response=response
         ))
         return response
+
+
+from django.utils.functional import SimpleLazyObject
+from django.contrib import auth
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.exceptions import AuthenticationFailed
+
+
+def get_user(request):
+    token_auth = TokenAuthentication()
+    try:
+        result = token_auth.authenticate(request)
+        user, token = result
+        request._cached_user = user
+    except (AuthenticationFailed, TypeError):
+        pass
+
+    if not hasattr(request, '_cached_user'):
+        request._cached_user = auth.get_user(request)
+    return request._cached_user
+
+
+class TokenAuthenticationMiddleware(object):
+
+    def process_request(self, request):
+
+        request.user = SimpleLazyObject(lambda: get_user(request))
+
