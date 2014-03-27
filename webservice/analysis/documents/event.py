@@ -35,10 +35,12 @@ class Event(DynamicDocument):
         ('game', _('Game')),
         ('sdk', _('SDK')),
         ('web', _('Web')),
+        ('wap', _('Wap')),
     )
 
     entrytype = fields.StringField(max_length=25,
                                    required=True,
+                                   choices=ENTRY_TYPES,
                                    )
 
     EVENT_TYPES = (

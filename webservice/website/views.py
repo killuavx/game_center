@@ -29,7 +29,9 @@ def _download_packageversion_response(packageversion, filetype):
     #                                      packageversion=pv.pk,
     #                                      filetype=filetype))
     response = redirect(download_url)
-    new_filename = "%s%s" % (packageversion.package.package_name, splitext(download_url)[-1])
+    new_filename = "%s-%s%s" % (packageversion.package.package_name,
+                                packageversion.version_name,
+                                splitext(download_url)[-1])
     response['Content-Disposition'] = 'attachment; filename=%s' % new_filename
     bits = urlsplit(download_url)
     path = bits[2]
@@ -46,8 +48,11 @@ def _download_make_event(request, response, packageversion, filetype=None):
     event = Event(eventtype='download',
                   entrytype=entrytype,
                   imei=imei,
-                  package_name=package_name)
+                  package_name=package_name,
+                  version_name=packageversion.version_name,
+                  )
     event.file_type = filetype
+
     event.current_uri = request.build_absolute_uri()
     event.redirect_to = response.get('Location')
     event.referer = request.META.get('HTTP_REFERER')
@@ -67,7 +72,10 @@ def download_package(request, package_name, version_name=None,
         raise Http404()
 
     response = _download_packageversion_response(packageversion, filetype)
-    _download_make_event(request, response, packageversion, filetype)
+    try:
+        _download_make_event(request, response, packageversion, filetype)
+    except Exception:
+        pass
     return response
 
 
@@ -78,7 +86,10 @@ def download_packageversion(request, pk, filetype=None, *args, **kwargs):
         raise Http404()
 
     response = _download_packageversion_response(packageversion, filetype)
-    _download_make_event(request, response, packageversion, filetype)
+    try:
+        _download_make_event(request, response, packageversion, filetype)
+    except Exception:
+        pass
     return response
 
 
