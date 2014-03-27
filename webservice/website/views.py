@@ -10,6 +10,7 @@ from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from .response import WidgetHttpResponse
+from toolkit.helpers import get_client_event_data
 from warehouse.models import PackageVersion, Package
 from analysis.documents.event import Event
 
@@ -17,7 +18,7 @@ from analysis.documents.event import Event
 def _download_packageversion_response(packageversion, filetype):
     try:
         download_url = packageversion.get_download_static_url(filetype=filetype)
-    except ValueError:
+    except (AttributeError, ValueError):
         raise Http404()
     # counter plus one
     # from website.tasks import packageversion_download_counter
@@ -37,8 +38,9 @@ def _download_packageversion_response(packageversion, filetype):
 
 
 def _download_make_event(request, response, packageversion, filetype=None):
-    entrytype = request.GET.get('entrytype', 'web')
-    imei = request.GET.get('imei', '')
+    kwargs = get_client_event_data(request)
+    entrytype = request.GET.get('entrytype', kwargs.get('entrytype', 'web'))
+    imei = request.GET.get('imei', kwargs.get('imei', ''))
     user = request.user
     package_name = packageversion.package.package_name
     event = Event(eventtype='download',

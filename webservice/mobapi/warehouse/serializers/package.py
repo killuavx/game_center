@@ -19,6 +19,9 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                                PackageRelatedTagMin,
                                PackageActionsMixin,
                                serializers.HyperlinkedModelSerializer):
+
+    entrytype = 'client'
+
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
     category_name = serializers.SerializerMethodField('get_main_category_name')
@@ -67,6 +70,9 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                               PackageActionsMixin,
                               PackageRelatedPackageUrlMixin,
                               serializers.HyperlinkedModelSerializer):
+
+    entrytype = 'client'
+
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
     version_name = serializers.SerializerMethodField('get_latest_version_name')
@@ -126,6 +132,9 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
 
 
 class PackageUpdateSummarySerializer(PackageSummarySerializer):
+
+    entrytype = 'client'
+
     version_code = serializers.SerializerMethodField('get_latest_version_code')
     version_name = serializers.SerializerMethodField('get_latest_version_name')
     download = serializers.SerializerMethodField('get_latest_version_download')

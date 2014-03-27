@@ -194,7 +194,7 @@ INTERNAL_APPS = [
     'haystack',
     'redis_cache.stats',
     'static_precompiler',
-    #'django_widgets',
+    'django_widgets',
 ]
 
 EXTENDAL_APPS = [
@@ -210,7 +210,7 @@ EXTENDAL_APPS = [
     'analysis',
     'webmob',
 ]
-INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS + [ 'django_widgets' ]
+INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

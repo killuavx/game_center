@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from django.utils import importlib
 
 
@@ -74,3 +75,14 @@ def sync_status_actions(obj):
                               publishlevel=None)
     return " | ".join([refresh_link, preload_link, update_link])
 
+
+def get_client_event_data(request):
+    kwargs = dict()
+    event_json = request.META.get('HTTP_X_CLIENT_EVENT')
+    if event_json:
+        try:
+            data = dict(json.loads(event_json))
+            kwargs.update(data)
+        except ValueError:
+            pass
+    return kwargs

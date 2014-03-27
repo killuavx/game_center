@@ -15,7 +15,8 @@ import tagging
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 from os.path import join, basename
-from toolkit.helpers import import_from, sync_status_from, sync_status_summary
+from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
+from toolkit.helpers import import_from, sync_status_from
 
 
 class StatusNotSupportAction(Exception):
@@ -594,8 +595,9 @@ class PackageVersion(models.Model):
         verbose_name = _("Package Version")
         verbose_name_plural = _("Package Versions")
         unique_together = (
-            ('package', 'version_code' ),
+            ('package', 'version_code'),
         )
+
 
     icon = ThumbnailerImageField(
         default='',
@@ -655,6 +657,8 @@ class PackageVersion(models.Model):
         'published',
     )
     #inspection_report = models.TextField(default='', blank=True)
+    #report = models.OneToOneField('PackageVersionReport',
+    #                              on_delete=True)
 
     status = StatusField(default='draft', blank=True)
 
@@ -716,11 +720,18 @@ class PackageVersion(models.Model):
         except:
             return 0
 
-    def get_download_url(self, filetype=None, is_dynamic=True):
+    def get_download_url(self, filetype=None, is_dynamic=True, **kwargs):
+        kwargs.setdefault('entrytype', 'web')
         if is_dynamic:
             url = self.get_download_dynamic_url(filetype=filetype)
         else:
             url = self.get_download_static_url(filetype=filetype)
+
+        part = list(urlparse(url))
+        query_idx = 4
+        query_params = list(parse_qsl(part[query_idx])) + list(kwargs.items())
+        part[query_idx] = urlencode(query_params)
+        url = urlunparse(part)
         return url
 
     def get_download_static_url(self, filetype=None):
