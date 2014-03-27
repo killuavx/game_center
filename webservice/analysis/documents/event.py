@@ -39,7 +39,6 @@ class Event(DynamicDocument):
 
     entrytype = fields.StringField(max_length=25,
                                    required=True,
-                                   choices=ENTRY_TYPES,
                                    )
 
     EVENT_TYPES = (
