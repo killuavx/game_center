@@ -44,20 +44,22 @@ def _download_make_event(request, response, packageversion, filetype=None):
     entrytype = request.GET.get('entrytype', kwargs.get('entrytype', 'web'))
     imei = request.GET.get('imei', kwargs.get('imei', ''))
     user = request.user
-    package_name = packageversion.package.package_name
-    event = Event(eventtype='download',
-                  entrytype=entrytype,
-                  imei=imei,
-                  package_name=package_name,
-                  version_name=packageversion.version_name,
-                  )
+
+    event = Event(**kwargs)
+    event.imei = imei
+    event.eventtype = 'download'
+    event.entrytype = entrytype
     event.file_type = filetype
+
+    event.download_package_name = packageversion.package.package_name
+    event.download_version_name = packageversion.version_name
 
     event.current_uri = request.build_absolute_uri()
     event.redirect_to = response.get('Location')
     event.referer = request.META.get('HTTP_REFERER')
     event.user = user
     event.save()
+    return event
 
 
 def download_package(request, package_name, version_name=None,
@@ -73,8 +75,8 @@ def download_package(request, package_name, version_name=None,
 
     response = _download_packageversion_response(packageversion, filetype)
     try:
-        _download_make_event(request, response, packageversion, filetype)
-    except Exception:
+        event = _download_make_event(request, response, packageversion, filetype)
+    except Exception as e:
         pass
     return response
 
@@ -87,8 +89,8 @@ def download_packageversion(request, pk, filetype=None, *args, **kwargs):
 
     response = _download_packageversion_response(packageversion, filetype)
     try:
-        _download_make_event(request, response, packageversion, filetype)
-    except Exception:
+        event = _download_make_event(request, response, packageversion, filetype)
+    except Exception as e:
         pass
     return response
 
