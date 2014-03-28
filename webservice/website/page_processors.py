@@ -22,7 +22,6 @@ def categories_fill(request, page):
                 slug = settings.GC_CATEGORIES_DEFAULT_SLUG
             data['category'] = Category.objects.get(slug=slug)
         except (Resolver404, Category.DoesNotExist) as e:
-            print(e)
             raise Http404()
     return data
 

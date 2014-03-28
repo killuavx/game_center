@@ -7,6 +7,7 @@ from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
+from toolkit.helpers import sync_status_from
 
 
 class ClientPackageVersionQuerySet(QuerySet):
@@ -139,6 +140,9 @@ class ClientPackageVersion(models.Model):
         auto_now_add=True)
 
     tracker = FieldTracker()
+
+    def sync_status(self):
+        return sync_status_from(self)
 
     def __str__(self):
         return "%s:%s" %(self.package_name, self.version_code)
