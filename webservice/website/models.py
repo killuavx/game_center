@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.utils.translation import ugettext as _
-from mezzanine.utils.models import upload_to
 from website.cdn.model_register import *
-from django.db import models
-from toolkit.fields import FileField
 
 
 def mock_processor_class(processor_class):
@@ -48,9 +44,3 @@ if settings.DEBUG:
 
 
 
-class Image(models.Model):
-    file = FileField(_("File"), max_length=200, format="Image",
-                     upload_to=upload_to("website.Image.file", "temps"))
-
-    description = models.CharField(_("Description"), max_length=1000,
-                                   blank=True)
