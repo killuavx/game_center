@@ -31,12 +31,17 @@ class Command(BaseCommand):
                     type='string',
                     dest='version_name',
                     default=False,
-                    help='PackageVersion.version_name'),
+                    help='PackageVersion.version_name with package'),
         make_option('--version_id',
                     type='int',
                     dest='version_id',
                     default=0,
                     help='PackageVersion.id'),
+        make_option('--version_code',
+                    type='int',
+                    dest='version_code',
+                    default=0,
+                    help='PackageVersion.version_code with package'),
         make_option('--sync_type',
                     choices=['publish', 'update'],
                     dest='type',
@@ -78,6 +83,8 @@ class Command(BaseCommand):
     def get_packageversion(self, options, package):
         if package and options['version_name']:
             return package.versions.get(package_name=options['package_name'])
+        elif package and options['version_code']:
+            return package.versions.get(version_code=options['version_code'])
         elif package:
             return package.versions.latest_published()
         elif options['version_id']:
