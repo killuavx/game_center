@@ -727,11 +727,12 @@ class PackageVersion(models.Model):
         else:
             url = self.get_download_static_url(filetype=filetype)
 
-        part = list(urlparse(url))
-        query_idx = 4
-        query_params = list(parse_qsl(part[query_idx])) + list(kwargs.items())
-        part[query_idx] = urlencode(query_params)
-        url = urlunparse(part)
+        if kwargs:
+            part = list(urlparse(url))
+            query_idx = 4
+            query_params = list(parse_qsl(part[query_idx])) + list(kwargs.items())
+            part[query_idx] = urlencode(query_params)
+            url = urlunparse(part)
         return url
 
     def get_download_static_url(self, filetype=None):

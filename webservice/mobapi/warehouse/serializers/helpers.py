@@ -5,12 +5,13 @@ from toolkit.helpers import get_client_event_data
 
 def get_packageversion_download_url(request, version, **kwargs):
     try:
+        data = dict()
+        if kwargs.get('entrytype'):
+            data['entrytype'] = kwargs.get('entrytype')
         if request:
-            data = get_client_event_data(request)
-            data.update(**kwargs)
             url = request.build_absolute_uri(version.get_download_url(**data))
         else:
-            url = version.get_download_url(**kwargs)
+            url = version.get_download_url(**data)
     except (AttributeError, ValueError):
         return '#'
     return url
