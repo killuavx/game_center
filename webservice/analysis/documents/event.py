@@ -24,7 +24,6 @@ class Event(DynamicDocument):
         else:
             raise TypeError('user type must be int type')
 
-
     def _get_user(self):
         return get_user_model().objects.get(pk=self.user_pk)
 
@@ -49,6 +48,7 @@ class Event(DynamicDocument):
         ('close', _('Close')),
         ('click', _('Click')),
         ('download', _('Download')),
+        ('downloaded', _('Download finish')),
     )
 
     eventtype = fields.StringField(max_length=15,
@@ -76,5 +76,4 @@ class Event(DynamicDocument):
 
     def __str__(self):
         return str(self.id)
-
 
