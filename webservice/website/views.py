@@ -53,6 +53,8 @@ def _download_make_event(request, response, packageversion, filetype=None):
     event.eventtype = 'download'
     event.entrytype = entrytype
     event.file_type = filetype
+    if hasattr(request, 'get_client_ip'):
+        event.client_ip = request.get_client_ip()
 
     event.download_package_name = packageversion.package.package_name
     event.download_version_name = packageversion.version_name
