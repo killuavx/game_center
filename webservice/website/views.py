@@ -29,6 +29,8 @@ def _download_packageversion_response(packageversion, filetype):
     #                                      packageversion=pv.pk,
     #                                      filetype=filetype))
     response = redirect(download_url)
+    # 重命名会导致重定向失败，使得cdn地址失效
+    """
     new_filename = "%s-%s%s" % (packageversion.package.package_name,
                                 packageversion.version_name,
                                 splitext(download_url)[-1])
@@ -36,6 +38,7 @@ def _download_packageversion_response(packageversion, filetype):
     bits = urlsplit(download_url)
     path = bits[2]
     response['X-Accel-Redirect'] = "%s?renameto=%s" %(path, new_filename)
+    """
     return response
 
 
