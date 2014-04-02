@@ -44,8 +44,8 @@ def _download_packageversion_response(packageversion, filetype):
 
 def _download_make_event(request, response, packageversion, filetype=None):
     kwargs = get_client_event_data(request)
-    entrytype = request.GET.get('entrytype', kwargs.get('entrytype', 'web'))
-    imei = request.GET.get('imei', kwargs.get('imei', ''))
+    entrytype = kwargs.get('entrytype', request.GET.get('entrytype', 'web'))
+    imei = kwargs.get('imei', request.GET.get('imei', ''))
     user = request.user
 
     event = Event(**kwargs)
