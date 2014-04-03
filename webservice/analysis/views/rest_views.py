@@ -66,5 +66,7 @@ class EventViewSet(mixins.CreateModelMixin,
         request = serializer.context.get('request')
         if request and serializer.object:
             serializer.object.user = request.user
+            if hasattr(request, 'get_client_ip'):
+                serializer.object.client_ip = request.get_client_ip()
         return serializer
 
