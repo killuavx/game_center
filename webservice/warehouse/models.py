@@ -545,9 +545,9 @@ class Package(models.Model):
 
 tagging.register(Package)
 
-class IosPackage(Package):
-    ios_preview_url = models.URLField(null=True,blank=True)
-    user_center_is_enabled = models.BooleanField(default=False)
+# class IosPackage(Package):
+#     ios_preview_url = models.URLField(null=True,blank=True)
+#     user_center_is_enabled = models.BooleanField(default=False)
 
 
 
