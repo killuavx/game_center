@@ -181,7 +181,7 @@ class Author(models.Model):
                              blank=True,
                              null=True)
 
-    home_page = models.URLField(blank=True,null=True)
+    # home_page = models.URLField(blank=True,null=True)
 
     topics = generic.GenericRelation('taxonomy.TopicalItem')
 
