@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.utils.timezone import now
-from mongoengine import DynamicDocument, fields
+from mongoengine import DynamicDocument, fields, Document, DoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
@@ -35,6 +35,7 @@ class Event(DynamicDocument):
         ('sdk', _('SDK')),
         ('web', _('Web')),
         ('wap', _('Wap')),
+        ('game_loading', _('Game Loading')),
     )
 
     entrytype = fields.StringField(max_length=25,
@@ -62,10 +63,12 @@ class Event(DynamicDocument):
 
     created_datetime = fields.DateTimeField(default=now)
 
-    #fact = fields.ReferenceField('anaylsis.documents.facts.BaseFact')
     meta = {
         #'allow_inheritance': True,
         'indexes': ['created_datetime',
+                    'imei',
+                    'eventtype',
+                    'entrytype',
                     ('entrytype', 'eventtype', 'created_datetime'),
                     ('entrytype', 'eventtype'),
         ]
@@ -76,4 +79,35 @@ class Event(DynamicDocument):
 
     def __str__(self):
         return str(self.id)
+
+
+class CellTower(Document):
+
+    mcc = fields.IntField()
+    mnc = fields.IntField()
+    lac = fields.IntField()
+    cid = fields.IntField(unique_with=['mcc', 'mnc', 'lac'])
+
+    lng = fields.FloatField()
+    lat = fields.FloatField()
+
+    point = fields.GeoPointField()
+
+    samples = fields.IntField(default=0)
+    changeable = fields.BooleanField(default=False)
+
+    created = fields.DateTimeField(default=None)
+    updated = fields.DateTimeField(default=None)
+
+    averageSignalStrength = fields.FloatField(default=0)
+
+    meta = {
+        'collection': 'cell_tower',
+        'indexes': [
+            'mcc',
+            ('mcc', 'mnc'),
+            ('mcc', 'mnc', 'lac', 'cid'),
+        ]
+    }
+
 

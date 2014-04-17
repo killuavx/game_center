@@ -127,7 +127,7 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
     'django.template.loaders.filesystem.Loader',
 
-    #'django.template.loaders.eggs.Loader',
+    'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -460,5 +460,5 @@ MOGOENGINE_CONNECTS = {
 
 FORUM_URL = 'http://bbs.ccplay.com.cn/'
 
-#DATABASE_ROUTERS = ['webservice.dbroute_settings.DatawarehouseRouter']
+DATABASE_ROUTERS = ['webservice.dbroute_settings.DatawarehouseRouter']
 
