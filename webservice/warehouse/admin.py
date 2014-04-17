@@ -308,15 +308,9 @@ class PackageAdmin(MainAdmin):
 
     def _get_packageversion_download_url(self, version):
         try:
-            return version.di_download.url
-        except ValueError:
-            pass
-        try:
-            return version.download.url
-        except ValueError:
-            pass
-
-        return '#'
+            return version.get_download_static_url()
+        except (AttributeError, ValueError):
+            return '#'
 
     def download_url(self, obj):
         try:
