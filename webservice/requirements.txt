@@ -23,7 +23,7 @@ django-comments-xtd==1.2a1
 
 # django-admin-user-status dependents
 #django-qsstats-magic>=0.6.1
-python-dateutil==1.5
+python-dateutil
 #django-chart-tools>=0.2.1
 #django-admin-user-stats
 pysolr
@@ -50,5 +50,5 @@ https://github.com/killuavx/django-template-utils/archive/support/py3.zip#egg=dj
 
 qrcode
 
-django-floppyforms
-django-daterange-filter
+#django-floppyforms
+#django-daterange-filter
