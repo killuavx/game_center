@@ -545,12 +545,6 @@ class Package(models.Model):
 
 tagging.register(Package)
 
-# class IosPackage(Package):
-#     ios_preview_url = models.URLField(null=True,blank=True)
-#     user_center_is_enabled = models.BooleanField(default=False)
-
-
-
 
 class PackageVersionQuerySet(QuerySet):
     def by_updated_order(self):
@@ -595,6 +589,7 @@ def factory_version_upload_to_path(basename):
         }
 
     return upload_to
+
 
 class PackageVersion(models.Model):
     objects = PassThroughManager.for_queryset_class(PackageVersionQuerySet)()
@@ -754,19 +749,6 @@ class PackageVersion(models.Model):
 
     def sync_status(self):
         return sync_status_from(self)
-
-class IosPackageVersion(PackageVersion):
-    CONCURRENCY_TYPE = (
-        ('UK','美金'),
-        ('RMB','人民币')
-    )
-    SUPPORT_DEVICE = (
-        ('IPAD','IPAD')
-    )
-    concurrent_version_point = models.SmallIntegerField(blank=True,null=True)
-    sale_price = models.FloatField(default=0.00)
-    concurrency_type = models.CharField(max_length=30,choices=CONCURRENCY_TYPE)
-    support_device = models.CharField(max_length=30,choices=SUPPORT_DEVICE)
 
 
 
