@@ -24,7 +24,7 @@ class DatawarehouseRouter(object):
                         obj2._meta.app_label in self.ALLOW_RELATION_APP_LABELS:
             return True
 
-        return False
+        return None
 
     def allow_syncdb(self, db, model):
         #该方法定义数据库是否能和名为db的数据库同步
