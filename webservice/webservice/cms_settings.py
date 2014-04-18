@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from webservice.settings import *
 from webservice.module_settings.logging_prd import *
 from webservice.module_settings.db_env import *
+from webservice.module_settings.mongo_env import *
 
 DEBUG = TEMPLATE_DEBUG = True
 

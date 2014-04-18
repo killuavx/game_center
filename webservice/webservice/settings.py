@@ -450,14 +450,6 @@ MOGOENGINE_SERVER_CMD = '/opt/local/bin/mongod'
 
 MOGOENGINE_CLIENT_CMD = '/opt/local/bin/mongo'
 
-MOGOENGINE_CONNECTS = {
-   'default': {
-       'host': 'localhost',
-       'port': 27017,
-       'name': 'datawarehouse',
-   }
-}
-
 FORUM_URL = 'http://bbs.ccplay.com.cn/'
 
 DATABASE_ROUTERS = ['webservice.dbroute_settings.DatawarehouseRouter']
