@@ -1740,6 +1740,7 @@ class SumActivateDeviceProductResult(BaseSumActivateResult):
 
     class Meta:
         verbose_name = '产品激活启动'
+        verbose_name_plural = '产品激活启动列表'
         db_table = 'result_sum_activate_product'
         unique_together = (
             ('productkey', 'start_date', 'end_date',),
@@ -1759,6 +1760,7 @@ class SumActivateDeviceProductPackageResult(BaseSumActivateResult):
 
     class Meta:
         verbose_name = '产品-应用激活启动'
+        verbose_name_plural = '产品-应用激活启动列表'
         db_table = 'result_sum_activate_productpackage'
         unique_together = (
             ('productkey', 'start_date', 'end_date',),
@@ -1778,6 +1780,7 @@ class SumActivateDeviceProductPackageVersionResult(BaseSumActivateResult):
 
     class Meta:
         verbose_name = '产品-应用-版本激活启动'
+        verbose_name_plural =  '产品-应用-版本激活启动列表'
         db_table = 'result_sum_activate_productpackageversion'
         unique_together = (
             ('productkey', 'start_date', 'end_date',),
@@ -1817,6 +1820,7 @@ class SumDownloadProductResult(BaseResult):
 
     class Meta:
         verbose_name = '产品下载'
+        verbose_name_plural = '产品下载列表'
         db_table = 'result_sum_download_product'
         unique_together = (
             ('productkey', 'start_date', 'end_date',),
