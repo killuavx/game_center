@@ -73,8 +73,8 @@ class SumActivateDeviceProductResultAdmin(DiseditableAdminMixin,
             .lookup_allowed(lookup, value)
 
 
-admin.site.register(ActivateFact, ActivateFactAdmin)
-admin.site.register(UsinglogFact, UsinglogFactAdmin)
+#admin.site.register(ActivateFact, ActivateFactAdmin)
+#admin.site.register(UsinglogFact, UsinglogFactAdmin)
 admin.site.register(SumActivateDeviceProductResult,
                     SumActivateDeviceProductResultAdmin)
 admin.site.register(SumActivateDeviceProductPackageResult,
@@ -146,7 +146,7 @@ class PackageDimAdmin(DiseditableAdminMixin,
     version_link.admin_order_field = 'version_name'
 
 
-admin.site.register(PackageDim, PackageDimAdmin)
+#admin.site.register(PackageDim, PackageDimAdmin)
 
 
 class SumDownloadProductResultAdmin(DiseditableAdminMixin, admin.ModelAdmin):
