@@ -1696,7 +1696,8 @@ class BaseResult(models.Model):
         (4, '3days'),
     )
 
-    cycle_type = models.PositiveSmallIntegerField(choices=CYCLE_TYPES,
+    cycle_type = models.PositiveSmallIntegerField('统计周期',
+                                                  choices=CYCLE_TYPES,
                                                   db_index=True,
                                                   max_length=2)
 
@@ -1734,13 +1735,18 @@ class BaseSumActivateResult(BaseResult):
         abstract = True
 
 
+productkey_verbose_name = '产品类型'
+
+
 class SumActivateDeviceProductResult(BaseSumActivateResult):
 
-    productkey = models.ForeignKey(ProductKeyDim, related_name='+')
+    productkey = models.ForeignKey(ProductKeyDim,
+                                   verbose_name= productkey_verbose_name,
+                                   related_name='+')
 
     class Meta:
-        verbose_name = '产品激活启动'
-        verbose_name_plural = '产品激活启动列表'
+        verbose_name = '产品的激活启动'
+        verbose_name_plural = '产品的激活启动统计'
         db_table = 'result_sum_activate_product'
         unique_together = (
             ('productkey', 'start_date', 'end_date',),
@@ -1756,11 +1762,13 @@ class SumActivateDeviceProductResult(BaseSumActivateResult):
 
 class SumActivateDeviceProductPackageResult(BaseSumActivateResult):
 
-    productkey = models.ForeignKey(ProductKeyDim, related_name='+')
+    productkey = models.ForeignKey(ProductKeyDim,
+                                   verbose_name=productkey_verbose_name,
+                                   related_name='+')
 
     class Meta:
-        verbose_name = '产品-应用激活启动'
-        verbose_name_plural = '产品-应用激活启动列表'
+        verbose_name = '产品-应用的激活启动'
+        verbose_name_plural = '产品-应用的激活启动统计'
         db_table = 'result_sum_activate_productpackage'
         unique_together = (
             ('productkey', 'start_date', 'end_date',),
@@ -1776,11 +1784,13 @@ class SumActivateDeviceProductPackageResult(BaseSumActivateResult):
 
 class SumActivateDeviceProductPackageVersionResult(BaseSumActivateResult):
 
-    productkey = models.ForeignKey(ProductKeyDim, related_name='+')
+    productkey = models.ForeignKey(ProductKeyDim,
+                                   verbose_name=productkey_verbose_name,
+                                   related_name='+')
 
     class Meta:
-        verbose_name = '产品-应用-版本激活启动'
-        verbose_name_plural =  '产品-应用-版本激活启动列表'
+        verbose_name = '产品-应用-版本的激活启动'
+        verbose_name_plural =  '产品-应用-版本的激活启动统计'
         db_table = 'result_sum_activate_productpackageversion'
         unique_together = (
             ('productkey', 'start_date', 'end_date',),
@@ -1796,7 +1806,9 @@ class SumActivateDeviceProductPackageVersionResult(BaseSumActivateResult):
 
 class SumDownloadProductResult(BaseResult):
 
-    productkey = models.ForeignKey(ProductKeyDim, related_name='+')
+    productkey = models.ForeignKey(ProductKeyDim,
+                                   verbose_name=productkey_verbose_name,
+                                   related_name='+')
 
     total_download_count = models.PositiveIntegerField('累计下载次数',
                                                        default=0,
@@ -1819,8 +1831,8 @@ class SumDownloadProductResult(BaseResult):
                                                    )
 
     class Meta:
-        verbose_name = '产品下载'
-        verbose_name_plural = '产品下载列表'
+        verbose_name = '应用下载'
+        verbose_name_plural = '应用下载统计'
         db_table = 'result_sum_download_product'
         unique_together = (
             ('productkey', 'start_date', 'end_date',),
