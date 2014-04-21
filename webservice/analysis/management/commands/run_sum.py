@@ -124,17 +124,21 @@ class Command(BaseCommand):
         if cycle_type == 'all':
             for t in tasks:
                 t.process_daily(dt)
-                t.process_weekly(dt)
-                t.process_monthly(dt)
+                #t.process_weekly(dt)
+                t.process_weekly_by_natural(dt)
+                #t.process_monthly(dt)
+                t.process_monthly_by_natural(dt)
         elif cycle_type == 'daily':
             for t in tasks:
                 t.process_daily(dt)
         elif cycle_type == 'weekly':
             for t in tasks:
-                t.process_weekly(dt)
+                #t.process_weekly(dt)
+                t.process_weekly_by_natural(dt)
         elif cycle_type == 'monthly':
             for t in tasks:
-                t.process_monthly(dt)
+                #t.process_monthly(dt)
+                t.process_monthly_by_natural(dt)
 
     def run_sum_download(self, dt, cycle_type='all'):
         task = LoadSumDownloadProductResultTask()
@@ -143,12 +147,14 @@ class Command(BaseCommand):
         if cycle_type == 'daily':
             task.process_daily(dt)
         elif cycle_type == 'weekly':
-            task.process_weekly(dt)
+            #task.process_weekly(dt)
+            task.process_weekly_by_natural(dt)
         elif cycle_type == 'monthly':
-            task.process_monthly(dt)
+            #task.process_monthly(dt)
+            task.process_monthly_by_natural(dt)
         elif cycle_type == 'all':
             task.process_daily(dt)
-            task.process_weekly(dt)
-            task.process_monthly(dt)
-
-
+            #task.process_weekly(dt)
+            task.process_weekly_by_natural(dt)
+            #task.process_monthly(dt)
+            task.process_monthly_by_natural(dt)

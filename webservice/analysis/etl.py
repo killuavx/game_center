@@ -6,6 +6,7 @@ from .models import *
 from .documents.event import Event
 from mongoengine import Q
 from django.utils.timezone import datetime, timedelta, get_default_timezone
+from dateutil.relativedelta import *
 import logging
 
 USING = UsinglogFact.objects.db
@@ -761,6 +762,14 @@ class LoadResultTask(object):
                                start_datedim=start_datedim,
                                end_datedim=end_datedim,
                                cycle_type=self.CHOICE_CYCLE_TYPE['monthly'])
+
+    def process_weekly_by_natural(self, dt):
+        dt = dt + relativedelta(weekday=MO(-1))
+        self.process_weekly(dt)
+
+    def process_monthly_by_natural(self, dt):
+        dt = datetime(dt.year, dt.month, 1)
+        self.process_monthly(dt)
 
 
 class LoadSumActivateDeviceProductsResultTask(LoadResultTask):
