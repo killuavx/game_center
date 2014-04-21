@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from webservice.cms_settings import *
-from webservice.module_settings.db_test import *
+from webservice.module_settings.db_local import *
 from webservice.module_settings.logging_test import *
 from webservice.module_settings.script_local import *
 
@@ -56,6 +56,7 @@ CACHE = {
         }
 
 }
+
 
 OUTPUT_DIR = 'reports'
 COVERAGE_RCFILE = '.coveragerc'
