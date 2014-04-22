@@ -19,11 +19,16 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                                PackageRelatedTagMin,
                                PackageActionsMixin,
                                serializers.HyperlinkedModelSerializer):
+
+    entrytype = 'client'
+
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
     version_count = serializers.SerializerMethodField('get_version_count')
+    download = serializers.SerializerMethodField(
+        'get_latest_version_download')
     download_size = serializers.SerializerMethodField(
         'get_latest_version_download_size')
     comments_url = serializers.SerializerMethodField(
@@ -49,6 +54,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'version_count',
                   'summary',
                   'author',
+                  'download',
                   'download_size',
                   'download_count',
                   'comments_url',
@@ -67,6 +73,9 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                               PackageActionsMixin,
                               PackageRelatedPackageUrlMixin,
                               serializers.HyperlinkedModelSerializer):
+
+    entrytype = 'client'
+
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
     version_name = serializers.SerializerMethodField('get_latest_version_name')
@@ -126,6 +135,9 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
 
 
 class PackageUpdateSummarySerializer(PackageSummarySerializer):
+
+    entrytype = 'client'
+
     version_code = serializers.SerializerMethodField('get_latest_version_code')
     version_name = serializers.SerializerMethodField('get_latest_version_name')
     download = serializers.SerializerMethodField('get_latest_version_download')

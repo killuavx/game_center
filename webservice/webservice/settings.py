@@ -1,5 +1,5 @@
-# Django settings for webservice p
-# for django-cms
+# -*- coding: utf-8 -*-
+# Django settings for webservice
 from os.path import join, dirname, abspath
 
 gettext = lambda s: s
@@ -9,9 +9,16 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-# ('Your Name', 'your_email@example.com'),
+    ('Ranger.Huang', 'ranger.huang@ccplay.com.cn'),
 )
 
+
+SHORT_DATE_FORMAT = 'm-d'
+DATE_FORMAT = 'Y-m-d'
+SHORT_DATETIME_FORMAT = 'Y-m-d P'
+
+
+SEND_BROKEN_LINK_EMAILS = True
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -27,7 +34,10 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*',
+    '.ccplay.com.cn',
+]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -117,19 +127,21 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
     'django.template.loaders.filesystem.Loader',
 
-    #'django.template.loaders.eggs.Loader',
+    'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'webservice.middlewares.RequestBindRemoteAddrMethodMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'webservice.middlewares.RequestFillLanguageCodeMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'toolkit.middleware.TokenAuthenticationMiddleware',
 )
 
 ROOT_URLCONF = 'webservice.urls'
@@ -151,10 +163,13 @@ INTERNAL_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.redirects',
     'django.contrib.sites',
+    "django.contrib.sitemaps",
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.comments',
     'PIL',
     'easy_thumbnails',
     'guardian',
@@ -164,7 +179,6 @@ INTERNAL_APPS = [
     'reversion',
     'sizefield',
     'django_extensions',
-    #'admin_timeline',
     'django.contrib.admin',
     'django.contrib.admindocs',
 
@@ -177,11 +191,10 @@ INTERNAL_APPS = [
     'djrill',
     #'djohno',
 
-    'django.contrib.comments',
-    'django_comments_xtd',
     'haystack',
     'redis_cache.stats',
     'static_precompiler',
+    'django_widgets',
 ]
 
 EXTENDAL_APPS = [
@@ -384,12 +397,8 @@ AUTH_USER_MODEL = 'account.User'
 AUTH_PROFILE_MODULE = 'account.Profile'
 
 LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
-LOGIN_URL = '/accounts/signin/'
-LOGOUT_URL = '/accounts/signout/'
-
-COMMENTS_APP = "django_comments_xtd"
-COMMENTS_XTD_CONFIRM_EMAIL = False
-COMMENTS_XTD_MAX_THREAD_LEVEL = 0
+#LOGIN_URL = '/accounts/signin/'
+#LOGOUT_URL = '/accounts/signout/'
 
 AAPT_CMD = join(PROJECT_PATH, 'warehouse/utils/android-tools-linux-x64/aapt')
 
@@ -426,26 +435,22 @@ SESSION_REDIS_DB = 0
 SESSION_REDIS_PASSWORD = ''
 SESSION_REDIS_PREFIX = 'session'
 
-#CACHES = {
-#    "default": {
-#        "BACKEND": "redis_cache.cache.RedisCache",
-#        "LOCATION": "127.0.0.1:6379:1",
-#        "OPTIONS": {
-#            "CLIENT_CLASS": "redis_cache.client.DefaultClient",
-#            }
-#    }
-#}
+CACHE_DEFAULT_LOCATION_REDIS = "127.0.0.1:6379:1"
+CACHES = {
+    "default": {
+        "BACKEND": "redis_cache.cache.RedisCache",
+        "LOCATION": CACHE_DEFAULT_LOCATION_REDIS,
+        "OPTIONS": {
+            "CLIENT_CLASS": "redis_cache.client.DefaultClient",
+            }
+    }
+}
 
 MOGOENGINE_SERVER_CMD = '/opt/local/bin/mongod'
 
 MOGOENGINE_CLIENT_CMD = '/opt/local/bin/mongo'
 
-MOGOENGINE_CONNECTS = {
-   'default': {
-       'host': 'localhost',
-       'port': 27017,
-       'name': 'datawarehouse',
-   }
-}
-
 FORUM_URL = 'http://bbs.ccplay.com.cn/'
+
+DATABASE_ROUTERS = ['webservice.dbroute_settings.DatawarehouseRouter']
+

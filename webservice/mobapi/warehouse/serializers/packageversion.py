@@ -40,6 +40,9 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
 
 
 class PackageVersionSerializer(serializers.ModelSerializer):
+
+    entrytype = 'client'
+
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     cover = factory_imageurl_field(IMAGE_COVER_SIZE)
@@ -47,7 +50,12 @@ class PackageVersionSerializer(serializers.ModelSerializer):
     download = serializers.SerializerMethodField('get_version_download_url')
 
     def get_version_download_url(self, obj):
-        return get_packageversion_download_url(obj)
+        kwargs = dict()
+        if hasattr(self, 'entrytype'):
+            kwargs['entrytype'] = self.entrytype
+        return get_packageversion_download_url(request=self.context.get('request'),
+                                               version=obj,
+                                               **kwargs)
 
     download_size = serializers.SerializerMethodField(
         'get_version_download_size')
@@ -140,12 +148,19 @@ class PackageVersionRelatedPackageMixin(PackageRelatedCategoryMixin,
 
 class PackageVersionSummarySerializer(serializers.HyperlinkedModelSerializer):
 
+    entrytype = 'client'
+
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     download = serializers.SerializerMethodField('get_version_download_url')
 
     def get_version_download_url(self, obj):
-        return get_packageversion_download_url(obj)
+        kwargs = dict()
+        if hasattr(self, 'entrytype'):
+            kwargs['entrytype'] = self.entrytype
+        return get_packageversion_download_url(request=self.context.get('request'),
+                                               version=obj,
+                                               **kwargs)
 
     download_size = serializers.SerializerMethodField(
         'get_version_download_size')
@@ -188,6 +203,8 @@ class PackageVersionSummarySerializer(serializers.HyperlinkedModelSerializer):
 class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
                                      serializers.HyperlinkedModelSerializer):
 
+    entrytype = 'client'
+
     package_name = serializers.SerializerMethodField('get_package_name')
 
     title = serializers.SerializerMethodField('get_title')
@@ -201,7 +218,12 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
     download = serializers.SerializerMethodField('get_version_download_url')
 
     def get_version_download_url(self, obj):
-        return get_packageversion_download_url(obj)
+        kwargs = dict()
+        if hasattr(self, 'entrytype'):
+            kwargs['entrytype'] = self.entrytype
+        return get_packageversion_download_url(request=self.context.get('request'),
+                                               version=obj,
+                                               **kwargs)
 
     download_size = serializers.SerializerMethodField(
         'get_version_download_size')

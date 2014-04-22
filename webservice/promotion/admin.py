@@ -4,13 +4,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 from promotion.models import Place, Advertisement, Advertisement_Places
+from toolkit.helpers import sync_status_summary, sync_status_actions
+from mezzanine.core.admin import (TabularDynamicInlineAdmin as TabularInline,
+                                  StackedDynamicInlineAdmin as StackedInline)
 
 
-class AdvertisementPlacesInline(admin.TabularInline):
+class AdvertisementPlacesInline(TabularInline):
     model = Advertisement_Places
     fields = ('place', 'created_datetime', 'updated_datetime',)
     readonly_fields = ('created_datetime', 'updated_datetime',)
-    extra = 0
+    #extra = 1
 
 
 class AdvertisementAdmin(VersionAdmin):
@@ -38,7 +41,9 @@ class AdvertisementAdmin(VersionAdmin):
     list_display = ('show_cover',
                     'title',
                     'is_published',
-                    'released_datetime')
+                    'released_datetime',
+                    'sync_file_status'
+    )
     list_display_links = ('show_cover', 'title', )
     readonly_fields = ('updated_datetime', 'created_datetime',)
     inlines = (AdvertisementPlacesInline, )
@@ -58,14 +63,25 @@ class AdvertisementAdmin(VersionAdmin):
     show_cover.short_description = _('Icon')
     show_cover.allow_tags = True
 
+    def sync_file_status(self, obj):
+        return sync_status_summary(obj) + " | " + sync_status_actions(obj)
+    sync_file_status.short_description = _('Sync Status')
+    sync_file_status.allow_tags = True
 
-class AdvertisementPlacesOrderingInline(admin.TabularInline):
+    class Media:
+        #from django.conf import settings
+        #static_url = getattr(settings, 'STATIC_URL', '/static')
+        static_url = '/static/'
+        js = [static_url+'js/syncfile.action.js', ]
+
+
+class AdvertisementPlacesOrderingInline(TabularInline):
     model = Advertisement_Places
     fields = ('advertisement', 'ordering',
               'created_datetime', 'updated_datetime',)
     ordering = ('-ordering', )
     readonly_fields = ('created_datetime', 'updated_datetime',)
-    extra = 0
+    #extra = 1
 
 
 class PlaceAdmin(VersionAdmin):

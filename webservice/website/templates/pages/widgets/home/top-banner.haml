@@ -1,0 +1,13 @@
+-load staticfiles
+.banner.w980.clear
+  .hd
+    %a.next
+    %ul
+    %a.prev
+  .bd
+    %ul.picList
+      - for item in items
+        %li
+          %span= item.title
+          %a{:href => '={item.content.get_absolute_url}'}<
+            %img{:src => '={item.cover.url}', :alt => '={item.title|safe}', :width => "980", :height => "300"}

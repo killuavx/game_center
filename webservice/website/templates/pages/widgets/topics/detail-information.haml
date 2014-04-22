@@ -1,0 +1,11 @@
+%dl
+  %dt
+    %img{:alt => "", :src => "", :width => "320", :height => "240"}/
+  %dd
+    %ul
+      %li
+        %a{:href => "#"}= topic.name
+      %li
+        %span.matime= topic.released_datetime|date:"SHORT_DATE_FORMAT"
+        %span.masz 99845
+      %li.chlistxt.clear= topic.summary

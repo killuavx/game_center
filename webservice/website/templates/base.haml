@@ -1,0 +1,79 @@
+-load pages_tags mezzanine_tags
+-load cache
+-load i18n
+-load future
+-load staticfiles
+-load widgets
+!!! 5
+%html{:lang => '={LANGUAGE_CODE}'}
+  %head
+    %meta{'http-equiv' :'Content-Type', :content => 'text/html; charset=UTF-8'}
+    %title<
+      {% block meta_title %}{% endblock %}{% if settings.SITE_TITLE %} | {{ settings.SITE_TITLE }}{% endif %}
+    %meta{:name => "keywords", :content => "{% block meta_keywords %}{% endblock %}"}
+    %meta{:name => "description", :content => "{% block meta_description %}{% endblock %}"}
+    {% block extra_meta %}
+    %meta{:name => "robots", :content => "INDEX,FOLLOW"}
+    {% endblock %}
+    %link{:rel => "shortcut icon", :href => "{% static 'image/favicon.ico' %}" }
+
+    {% ifinstalled mezzanine.blog %}
+    %link{:rel => "alternate", :type => "application/rss+xml", :title => "RSS", :href => "{% url 'blog_post_feed' 'rss'%}"}
+    %link{:rel => "alternate", :type => "application/rss+xml", :title => "Atom", :href => "{% url 'blog_post_feed' 'atom'%}"}
+    {% endifinstalled %}
+
+    {% compress css %}
+    %link{:href => "{% static 'css/mezzanine.css' %}", :rel => "stylesheet"}
+    {% block main_css %}
+    %link{:href => "{% static 'css/main.css' %}", :rel => "stylesheet"}
+    {% endblock %}
+    {% block extra_css %}{% endblock %}
+    {% endcompress %}
+
+    {% compress js %}
+    %script{:type => "text/javascript", :src => "{% static 'js/jquery.min.js' %}"}
+    %script{:type => "text/javascript", :src => "{% static 'js/top.js' %}"}
+    {% block extra_js %}
+    %script{:type => "text/javascript", :src => "{% static 'js/jquery.jslides.js' %}"}
+    {% endblock %}
+    {% endcompress %}
+
+    /[if lt IE 9]
+      %script{:type => "text/javascript", :src => "{% static 'js/html5.js' %}" }
+    /[if IE 6]
+      %script{:type => "text/javascript", :src => "{% static 'js/ie6.js' %}" }
+      :javascript
+        $(function(){ $('.nav ul>li').eq(0).addClass('navbg'); })
+      :javascript
+        DD_belatedPNG.fix('*');
+
+  %body
+    / head
+    .topbg
+      .top.w980
+        {% include_widget AccountTopbarWidget %}
+
+    %header#header.headbg
+      .head.w980
+        {% page_menu "pages/menus/header.haml" %}
+    / head end
+
+    {% block before_main %}{% endblock %}
+
+    / main
+    .mbg
+      {% block main %}{% endblock %}
+    / main end
+
+    {% block main_after %}{% endblock %}
+
+    / footer
+    .footer
+      .foot.w980
+        .foot_sch
+          {% include "pages/widgets/search_form.haml" %}
+        {% page_menu "pages/menus/footer_links.haml" %}
+    / footer end
+    {% include "includes/footer_scripts.html" %}
+
+    {% block footer_js %}{% endblock %}

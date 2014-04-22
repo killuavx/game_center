@@ -102,7 +102,12 @@ class PackageRelatedLatestVersinoMixin(object):
 
     def get_latest_version_download(self, obj):
         latest_version = obj.versions.latest_published()
-        return get_packageversion_download_url(latest_version)
+        kwargs = dict()
+        if hasattr(self, 'entrytype'):
+            kwargs['entrytype'] = self.entrytype
+        return get_packageversion_download_url(request=self.context.get('request'),
+                                               version=latest_version,
+                                               **kwargs)
 
     def get_latest_version_download_count(self, obj):
         latest_version = obj.versions.latest_published()

@@ -1,0 +1,15 @@
+%h4= title
+{% with category=package.categories.all.0 version=package.versions.latest_published %}
+%dl
+  %dt<
+    %a{:href => "={version.get_absolute_url}"}<
+      %img{:alt => "", :src => "={version.icon.url}", :width => "50", :height => "50"}/
+  %dd<
+    %a.inr11_title{:href => "={version.get_absolute_url}"}= package.name
+  %dd<
+    %a{:href => "={category.get_absolute_url}"}= category.name
+    |
+    = version.get_download_size|default:0|filesizeformat
+    |
+    = version.download_count
+{% endwith %}

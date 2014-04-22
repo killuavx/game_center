@@ -1,0 +1,14 @@
+{% spaceless %}
+%h3.login_title.w980.clear<
+  %a{:href => "{% url 'home' %}"}
+    = settings.SITE_TITLE
+  &nbsp;&gt;&nbsp;
+  - if latest_name
+    %a{:href => "={page.get_absolute_url}"}
+      = page.title
+  -else
+    = page.title
+  - if latest_name
+    &nbsp;&gt;&nbsp;
+    = latest_name
+{% endspaceless %}

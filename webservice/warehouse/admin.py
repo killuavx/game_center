@@ -2,16 +2,19 @@
 from django.contrib import admin
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from django.utils.safestring import mark_safe
 from easy_thumbnails.widgets import ImageClearableFileInput as _ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
 from easy_thumbnails.templatetags.thumbnail import thumbnail_url
+from mezzanine.core.admin import (TabularDynamicInlineAdmin as TabularInline,
+                                  StackedDynamicInlineAdmin as StackedInline)
 from reversion.admin import VersionAdmin
-from webservice.admin import AdminFieldBase, AdminField
 from django.core.urlresolvers import reverse
 from easy_thumbnails.exceptions import InvalidImageFormatError
+from toolkit.helpers import sync_status_summary, sync_status_actions
 
+from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
+from webservice.admin import AdminFieldBase, AdminField
 
 class ImageClearableFileInput(_ImageClearableFileInput):
     def render(self, name, value, attrs=None):
@@ -46,9 +49,9 @@ class MainAdmin(VersionAdmin):
     pass
 
 
-class PackageVersionScreenshotInlines(admin.StackedInline):
+class PackageVersionScreenshotInlines(StackedInline):
     model = PackageVersionScreenshot
-    extra = 0
+    #extra = 6
 
     def show_thumbnail(self, obj):
         try:
@@ -60,8 +63,6 @@ class PackageVersionScreenshotInlines(admin.StackedInline):
 
     show_thumbnail.short_description = _('Thumbnail')
     show_thumbnail.allow_tags = True
-    classes = ('collapse', 'grp-collapse grp-closed',)
-    inline_classes = ('grp-collapse grp-open',)
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput}
     }
@@ -75,6 +76,7 @@ class PackageVersionAdmin(MainAdmin):
                      'package__package_name',
                      'package__title')
     list_display = ('show_icon',
+                    'id',
                     'package',
                     'package_name',
                     'version_name',
@@ -83,6 +85,7 @@ class PackageVersionAdmin(MainAdmin):
                     'updated_datetime',
                     'is_data_integration',
                     'download_count',
+                    'sync_file_action',
     )
     list_display_links = ('show_icon', 'version_name')
     actions = ['make_published']
@@ -110,7 +113,6 @@ class PackageVersionAdmin(MainAdmin):
             )
         }),
     )
-    extra = 0
     readonly_fields = ('created_datetime', 'updated_datetime',)
     ordering = ('-updated_datetime', '-version_code',)
     formfield_overrides = {
@@ -129,7 +131,6 @@ class PackageVersionAdmin(MainAdmin):
 
     def is_data_integration(self, obj):
         return self._check_packageversion_download_data_integration(obj)
-
     is_data_integration.short_description = _('is data integration download?')
     is_data_integration.boolean = True
 
@@ -153,7 +154,6 @@ class PackageVersionAdmin(MainAdmin):
 
     def make_published(self, request, queryset):
         queryset.update(status=PackageVersion.STATUS.published)
-
     make_published.short_description = _('Make selected Packages as published')
 
     def get_actions(self, request):
@@ -162,14 +162,50 @@ class PackageVersionAdmin(MainAdmin):
             del actions['delete_selected']
         return actions
 
+    def sync_file_action(self, obj):
+        return sync_status_summary(obj) + " | " + sync_status_actions(obj)
+    sync_file_action.allow_tags = True
+    sync_file_action.short_description = _('Sync Status')
+
+    def publish_path_check_links(self, obj):
+        from django.conf import settings
+        from os.path import basename
+        def _model_file_publish_link(filefield, name):
+            mask = """<a href="%s" target="_blank" title="%s">%s</a>"""
+            default_base_url = filefield.storage.base_url
+            filefield.storage.base_url = settings.PUBLISH_MEDIA_URL
+            link = mask %(filefield.url, filefield.url, name)
+            filefield.storage.base_url = default_base_url
+            return link
+
+        links = []
+        links.append(_model_file_publish_link(obj.icon, 'icon'))
+        if obj.download:
+            download = _model_file_publish_link(obj.download, 'download')
+            links.append(download)
+        if obj.di_download:
+            di_download = _model_file_publish_link(obj.download, 'di_download')
+            links.append(di_download)
+        screenshots = []
+        for s in obj.screenshots.all():
+            _s = _model_file_publish_link(s.image, basename(s.image.name))
+            screenshots.append(_s)
+        if screenshots:
+            links.append("screenshots[%s%s%s]" % ("<br/>", ",<br/>".join(screenshots), "<br/>"))
+        return "<br/>".join(links)
+    sync_file_action.allow_tags = True
+    publish_path_check_links.allow_tags = True
+    publish_path_check_links.short_description = _('Sync Links')
+
+    class Media:
+        #from django.conf import settings
+        #static_url = getattr(settings, 'STATIC_URL', '/static')
+        static_url = '/static/'
+        js = [static_url+'js/syncfile.action.js', ]
+
 
 class PackageVersionInlines(admin.StackedInline):
     model = PackageVersion
-    inlines = (PackageVersionScreenshotInlines, )
-
-    suit_classes = 'suit-tab suit-tab-versions'
-    classes = ('collapse', 'grp-collapse grp-open',)
-    inline_classes = ('grp-collapse grp-closed',)
     fieldsets = (
         (None, {
             'fields': ('version_code', 'version_name', 'whatsnew')
@@ -190,7 +226,8 @@ class PackageVersionInlines(admin.StackedInline):
             )
         }),
     )
-    extra = 0
+    #extra = 1
+    max_num = 100
     readonly_fields = ('created_datetime', 'updated_datetime')
     ordering = ('-version_code',)
 
@@ -271,15 +308,9 @@ class PackageAdmin(MainAdmin):
 
     def _get_packageversion_download_url(self, version):
         try:
-            return version.di_download.url
-        except ValueError:
-            pass
-        try:
-            return version.download.url
-        except ValueError:
-            pass
-
-        return '#'
+            return version.get_download_static_url()
+        except (AttributeError, ValueError):
+            return '#'
 
     def download_url(self, obj):
         try:
@@ -348,10 +379,11 @@ class PackageAdmin(MainAdmin):
             return {'class': css_class, 'data': obj.package_name}
 
 
-class PackageInline(admin.TabularInline):
+class PackageInline(TabularInline):
     model = Package
-    extra = 0
-    fields = ( 'title', 'package_name', 'released_datetime', 'status' )
+    #extra = 1
+    max_num = 100
+    fields = ('title', 'package_name', 'released_datetime', 'status' )
     readonly_fields = ('title', 'package_name', 'released_datetime' )
 
 

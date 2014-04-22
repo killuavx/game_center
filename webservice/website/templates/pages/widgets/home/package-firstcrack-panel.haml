@@ -1,0 +1,26 @@
+-load util_tags
+%h2.mright_title<
+  - if more_url
+    %span.right
+      %a{:href => "={more_url}"} 更多 &gt;
+  %b
+  = title
+- for package in items
+  - with version=package.versions.latest_published
+    %dl
+      %dt
+        %a{:href => '={version.get_absolute_url}'}
+          %img{:src => '={version.icon.middle.url}', :width => "72", :height => "72"}
+        %span.mright_star
+          %div.star3
+      %dd><
+        %a.cfff{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":12"
+      %dd><
+        %span.mright_txt= package.summary|truncatechars:40|safe
+      %dd.mright_a><
+        - with main_category=package.categories.all.0
+          %a{:href => "={main_category.get_absolute_url}"}><= main_category.name
+        %i>< |
+        = version.get_download_size|default:0|filesizeformat
+        %i>< |
+        = package.download_count|intwordcn

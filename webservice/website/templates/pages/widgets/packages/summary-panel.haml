@@ -1,0 +1,27 @@
+{% with package=version.package category=package.categories.all.0 %}
+  .inllove
+    %a#inllove_a{:href => "#"}
+  .inl1
+    .inl1tit
+      %span= package.title
+      = category.name
+    .inl1img
+      %span
+        %img{:alt => "", :src => "={version.icon.url}", :width => "90", :height => "90"}/
+      %img{:alt => "", :height => "140", :src => "images/04.jpg", :width => "230"}/
+    .inl1txt
+      %p= package.summary
+      %p 开发商：={package.author.name}
+      %p 发布：={version.released_datetime|date:"SHORT_DATE_FORMAT"}
+      %p 版本：v={version.version_name}
+      %p 大小：={version.get_download_size|filesizeformat}
+      %p 格式：cpk
+      %p 语言：英文
+      %p 适用：Android 2.2 以上
+      %p 下载次数：={version.download_count}
+      %p 下载资费：免费
+      %p 游戏官网
+      %p 更新记录：={version.whatsnew}
+    .inl1down
+      %a{:href => "={version.get_download_url}"}
+{% endwith %}

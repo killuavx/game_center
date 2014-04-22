@@ -23,14 +23,14 @@ django-comments-xtd==1.2a1
 
 # django-admin-user-status dependents
 #django-qsstats-magic>=0.6.1
-#python-dateutil==1.5
+python-dateutil
 #django-chart-tools>=0.2.1
 #django-admin-user-stats
 pysolr
 django-haystack
 
-django-redis
-django-redis-sessions
+django-redis==3.3
+django-redis-sessions==0.4.0
 
 mongoengine
 
@@ -40,3 +40,15 @@ https://github.com/killuavx/django-static-precompiler/archive/support/py3.zip#eg
 # haml templatetags
 https://github.com/killuavx/HamlPy/archive/support/py3.zip#egg=HamlPy
 djaml
+
+https://github.com/killuavx/django-widgets/archive/support/py3.zip#egg=django-widgets
+feedparser
+Mezzanine==3.0.8
+
+# templatetags
+https://github.com/killuavx/django-template-utils/archive/support/py3.zip#egg=django-template-utils
+
+qrcode
+
+#django-floppyforms
+#django-daterange-filter

@@ -2,6 +2,7 @@
 import datetime
 from django.conf import settings
 from django.core import exceptions
+from django.core.urlresolvers import reverse
 from django.utils.timezone import now
 from django.contrib.contenttypes import generic
 from django.db import models
@@ -14,7 +15,8 @@ import tagging
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 from os.path import join, basename
-from toolkit.helpers import import_from
+from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
+from toolkit.helpers import import_from, sync_status_from
 
 
 class StatusNotSupportAction(Exception):
@@ -179,6 +181,8 @@ class Author(models.Model):
                              blank=True,
                              null=True)
 
+    # home_page = models.URLField(blank=True,null=True)
+
     topics = generic.GenericRelation('taxonomy.TopicalItem')
 
     STATUS = Choices(
@@ -218,6 +222,9 @@ class Author(models.Model):
         return str(self.name)
 
     __unicode__ = __str__
+
+    def get_absolute_url(self):
+        return '/authors/%s' % self.pk
 
 
 class PackageStatus(StatusBase):
@@ -333,13 +340,14 @@ class PackageQuerySet(QuerySet):
         return self.filter(author=author)
 
     def by_published_order(self, newest=None):
+        qs = self.published()
         field = 'released_datetime'
         if newest is None:
-            return self
+            return qs
         elif newest is True:
-            return self.order_by('-' + field)
+            return qs.order_by('-' + field)
         else:
-            return self.order_by('+' + field)
+            return qs.order_by('+' + field)
 
     def by_rankings_order(self):
         return self.order_by('-download_count')
@@ -354,6 +362,7 @@ class PackageQuerySet(QuerySet):
     def unpublished(self):
         return self.filter(released_datetime__gt=now()) \
             .exclude(status=self.model.STATUS.published)
+
 
 
 class Package(models.Model):
@@ -527,6 +536,12 @@ class Package(models.Model):
     def __init__(self, *args, **kwargs):
         super(Package, self).__init__(*args, **kwargs)
 
+    def get_absolute_url(self, link_type=0):
+        if link_type == 0:
+            return '/packages/%s/' % self.package_name
+        else:
+            return '/packages/%s/' % self.pk
+
 
 tagging.register(Package)
 
@@ -537,12 +552,16 @@ class PackageVersionQuerySet(QuerySet):
 
     def by_published_order(self, newest=None):
         field = 'released_datetime'
+        qs = self.published()
         if newest is None:
-            return self
+            return qs
         elif newest is True:
-            return self.order_by('-' + field)
+            return qs.order_by('-' + field)
         else:
-            return self.order_by('+' + field)
+            return qs.order_by('+' + field)
+
+    def by_rankings_order(self):
+        return self.order_by('-download_count')
 
     def published(self):
         return self.filter(
@@ -579,8 +598,9 @@ class PackageVersion(models.Model):
         verbose_name = _("Package Version")
         verbose_name_plural = _("Package Versions")
         unique_together = (
-            ('package', 'version_code' ),
+            ('package', 'version_code'),
         )
+
 
     icon = ThumbnailerImageField(
         default='',
@@ -640,6 +660,8 @@ class PackageVersion(models.Model):
         'published',
     )
     #inspection_report = models.TextField(default='', blank=True)
+    #report = models.OneToOneField('PackageVersionReport',
+    #                              on_delete=True)
 
     status = StatusField(default='draft', blank=True)
 
@@ -652,6 +674,12 @@ class PackageVersion(models.Model):
 
     tracker = FieldTracker()
 
+    def get_absolute_url(self, link_type=0):
+        if link_type == 0:
+            return '/packages/%s/%s' %(self.package.package_name, self.version_name)
+        else:
+            return '/packageversions/%s' % self.pk
+
     def __str__(self):
         return str(self.version_code)
 
@@ -659,6 +687,69 @@ class PackageVersion(models.Model):
         return int(self.version_code)
 
     __unicode__ = __str__
+
+    DOWNLOAD_FILETYPE_PK = 0
+    DOWNLOAD_FILETYPE_DI = 1
+    DOWNLOAD_FILETYPES = {
+        'di': DOWNLOAD_FILETYPE_DI,
+        'pk': DOWNLOAD_FILETYPE_PK,
+    }
+
+    DOWNLOAD_FILETYPES = {
+        'di': DOWNLOAD_FILETYPE_DI,
+        'pk': DOWNLOAD_FILETYPE_PK,
+    }
+
+    DOWNLOAD_FILELOCATION_FS = 0
+    DOWNLOAD_FILELOCATION_CDN = 1
+    DOWNLOAD_FILELCOATIONS = {
+        'cdn': DOWNLOAD_FILELOCATION_CDN,
+        'fs': DOWNLOAD_FILELOCATION_FS,
+    }
+
+    def get_download(self, filetype=None):
+        if filetype is None:
+            return self.di_download if self.di_download else self.download
+        else:
+            if filetype == self.DOWNLOAD_FILETYPE_DI:
+                return self.di_download
+            else:
+                return self.download
+
+    def get_download_size(self, filetype=None):
+        download = self.get_download(filetype=filetype)
+        try:
+            return download.size
+        except:
+            return 0
+
+    def get_download_url(self, filetype=None, is_dynamic=True, **kwargs):
+        kwargs.setdefault('entrytype', 'web')
+        if is_dynamic:
+            url = self.get_download_dynamic_url(filetype=filetype)
+        else:
+            url = self.get_download_static_url(filetype=filetype)
+
+        if kwargs:
+            part = list(urlparse(url))
+            query_idx = 4
+            query_params = list(parse_qsl(part[query_idx])) + list(kwargs.items())
+            part[query_idx] = urlencode(query_params)
+            url = urlunparse(part)
+        return url
+
+    def get_download_static_url(self, filetype=None):
+        return self.get_download(filetype=filetype).url
+
+    def get_download_dynamic_url(self, filetype=None):
+        kwargs = dict(pk=self.pk)
+        if filetype:
+            kwargs['filetype'] = filetype
+        return reverse('download_packageversion', kwargs=kwargs)
+
+    def sync_status(self):
+        return sync_status_from(self)
+
 
 
 def screenshot_upload_to_path(instance, filename):

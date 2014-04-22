@@ -6,6 +6,7 @@ from reversion.admin import VersionAdmin
 from easy_thumbnails.widgets import ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
 from clientapp.models import ClientPackageVersion
+from toolkit.helpers import sync_status_summary, sync_status_actions
 
 
 class ClientPackageVersionAdmin(VersionAdmin):
@@ -56,6 +57,7 @@ class ClientPackageVersionAdmin(VersionAdmin):
                     'status',
                     'download_count',
                     'download_url',
+                    'sync_file_status',
     )
     list_display_links = ('package_name', )
 
@@ -84,5 +86,13 @@ class ClientPackageVersionAdmin(VersionAdmin):
     show_icon.short_description = _('Icon')
     show_icon.allow_tags = True
 
+    def sync_file_status(self, obj):
+        return sync_status_summary(obj) + " | " + sync_status_actions(obj)
+    sync_file_status.short_description = _('Sync Status')
+    sync_file_status.allow_tags = True
+
+    class Media:
+        static_url = '/static/'
+        js = [static_url+'js/syncfile.action.js', ]
 
 admin.site.register(ClientPackageVersion, ClientPackageVersionAdmin)

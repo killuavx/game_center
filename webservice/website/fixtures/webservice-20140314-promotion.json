@@ -1,0 +1,535 @@
+[
+{
+  "pk": 4, 
+  "model": "promotion.place", 
+  "fields": {
+    "slug": "home-recommend-game", 
+    "help_text": "\u624b\u673a\u7aef\u63a8\u8350banner"
+  }
+},
+{
+  "pk": 5, 
+  "model": "promotion.place", 
+  "fields": {
+    "slug": "home-network-game", 
+    "help_text": "\u624b\u673a\u7aef\u7f51\u6e38\u4e13\u533a"
+  }
+},
+{
+  "pk": 6, 
+  "model": "promotion.place", 
+  "fields": {
+    "slug": "home-top-banner", 
+    "help_text": "\u7f51\u7ad9\u9996\u9875\u7684\u9876\u90e8\u6ed1\u52a8banner 980x300"
+  }
+},
+{
+  "pk": 7, 
+  "model": "promotion.place", 
+  "fields": {
+    "slug": "home-top-carousel-adv", 
+    "help_text": "\u7f51\u7ad9\u4e3b\u9875\u5934\u90e8\u8f6e\u64ad\u5e7f\u544a 230x120"
+  }
+},
+{
+  "pk": 8, 
+  "model": "promotion.place", 
+  "fields": {
+    "slug": "home-top-client-download", 
+    "help_text": "\u7f51\u7ad9\u4e3b\u9875banner\u4e0b\u65b9\u5360\u636e\u5168\u5bbd\u56fe\u7247\u7684\u5ba2\u6237\u7aef\u4e0b\u8f7d\u94fe\u63a5"
+  }
+},
+{
+  "pk": 9, 
+  "model": "promotion.place", 
+  "fields": {
+    "slug": "latest-right-top", 
+    "help_text": "710x260 \u6700\u65b0\u6e38\u620f\u5217\u8868\u9875\u7684\u53f3\u4e0a\u4fa7\u5e7f\u544a"
+  }
+},
+{
+  "pk": 10, 
+  "model": "promotion.place", 
+  "fields": {
+    "slug": "latest-right-left", 
+    "help_text": "345x200 \u6700\u65b0\u6e38\u620f\u5217\u8868\u9875\u53f3\u680f\u5de6\u4fa7"
+  }
+},
+{
+  "pk": 11, 
+  "model": "promotion.place", 
+  "fields": {
+    "slug": "latest-right-right", 
+    "help_text": "345x200 \u6700\u65b0\u6e38\u620f\u5217\u8868\u9875\u53f3\u680f\u53f3\u4fa7"
+  }
+},
+{
+  "pk": 10, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2013-10-11T08:23:51.592Z", 
+    "title": "\u9b54\u7a9f\u7537\u5b69\u9003\u8131,\u8003\u9a8c\u4f60\u667a\u5546", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-05T08:16:14.276Z", 
+    "released_datetime": "2014-03-04T08:09:12Z", 
+    "cover": "advertisement/20140305/package-704/cover.jpg", 
+    "object_id": 704, 
+    "status": "published"
+  }
+},
+{
+  "pk": 12, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2013-10-11T08:25:50.309Z", 
+    "title": "\u53f2\u4e0a\u6700\u725b\u7684\u6e38\u620f2\u4fee\u6539\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-06T06:43:27.945Z", 
+    "released_datetime": "2014-03-05T06:43:15Z", 
+    "cover": "advertisement/20140306/package-707/cover.jpg", 
+    "object_id": 707, 
+    "status": "published"
+  }
+},
+{
+  "pk": 13, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2013-10-11T08:26:35.376Z", 
+    "title": "\u5f02\u5f62\u5730\u5e26\u589e\u5f3a\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-05T06:58:35.806Z", 
+    "released_datetime": "2014-03-04T06:56:34Z", 
+    "cover": "advertisement/20140305/package-697/cover.jpg", 
+    "object_id": 697, 
+    "status": "published"
+  }
+},
+{
+  "pk": 14, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2013-10-11T08:27:29.973Z", 
+    "title": "\u6025\u901f\u51b2\u51fb\u5b8c\u6574\u7834\u89e3\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-11T07:53:29.645Z", 
+    "released_datetime": "2014-03-10T07:53:03Z", 
+    "cover": "advertisement/20140311/package-727/cover.jpg", 
+    "object_id": 727, 
+    "status": "published"
+  }
+},
+{
+  "pk": 15, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2013-10-11T08:28:25.143Z", 
+    "title": "\u706b\u7ebf\u6307\u4ee42\u7834\u89e3\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-06T06:42:47.265Z", 
+    "released_datetime": "2014-03-05T02:42:19Z", 
+    "cover": "advertisement/20140306/package-705/cover_1.jpg", 
+    "object_id": 705, 
+    "status": "published"
+  }
+},
+{
+  "pk": 26, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2013-11-14T03:02:19.421Z", 
+    "title": "\u76f4\u5347\u673a\u7a7a\u6218\u7834\u89e3\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-07T08:07:10.658Z", 
+    "released_datetime": "2014-03-06T08:06:50Z", 
+    "cover": "advertisement/20140307/package-717/cover.jpg", 
+    "object_id": 717, 
+    "status": "published"
+  }
+},
+{
+  "pk": 28, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2014-03-02T04:29:59.061Z", 
+    "title": "\u653b\u57ce\u8bdb\u9b54\uff1a\u6218\u4e89\u65f6\u4ee3\u7834\u89e3\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-02T04:43:43.144Z", 
+    "released_datetime": "2014-03-01T04:29:10Z", 
+    "cover": "advertisement/20140302/package-686/cover.jpg", 
+    "object_id": 686, 
+    "status": "published"
+  }
+},
+{
+  "pk": 29, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2014-03-02T04:30:48.007Z", 
+    "title": "\u6700\u540e\u7684\u82f1\u96c4\u7834\u89e3\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-02T04:43:53.808Z", 
+    "released_datetime": "2014-03-01T04:29:10Z", 
+    "cover": "advertisement/20140302/package-683/cover.png", 
+    "object_id": 683, 
+    "status": "published"
+  }
+},
+{
+  "pk": 30, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2014-03-02T04:31:35.585Z", 
+    "title": "\u5076\u6ef4\u795eTD\u7834\u89e3\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-02T04:44:10.868Z", 
+    "released_datetime": "2014-03-01T04:31:18Z", 
+    "cover": "advertisement/20140302/package-683/cover_1.jpg", 
+    "object_id": 683, 
+    "status": "published"
+  }
+},
+{
+  "pk": 32, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2014-03-02T04:35:44.594Z", 
+    "title": "Hello\uff01\u8d8a\u72f1\u5154\u4fee\u6539\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-04T02:11:37.216Z", 
+    "released_datetime": "2014-03-01T04:34:49Z", 
+    "cover": "advertisement/20140304/package-632/cover_2.jpg", 
+    "object_id": 632, 
+    "status": "published"
+  }
+},
+{
+  "pk": 33, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2014-03-02T04:39:31.499Z", 
+    "title": "\u89d2\u6597\u58eb\u7834\u89e3\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-04T02:11:27.459Z", 
+    "released_datetime": "2014-03-01T04:39:19Z", 
+    "cover": "advertisement/20140304/package-666/cover_2.jpg", 
+    "object_id": 666, 
+    "status": "published"
+  }
+},
+{
+  "pk": 34, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2014-03-02T04:46:17.942Z", 
+    "title": "\u5c0f\u9ec4\u4eba\u5feb\u8dd1\u4fee\u6539\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-04T02:11:14.886Z", 
+    "released_datetime": "2014-03-01T04:45:08Z", 
+    "cover": "advertisement/20140304/package-576/cover_2.jpg", 
+    "object_id": 576, 
+    "status": "published"
+  }
+},
+{
+  "pk": 35, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2014-03-02T04:48:06.723Z", 
+    "title": "\u5c71\u810a\u8d5b\u8f66\uff1a\u6ed1\u6d41\u7834\u89e3\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-04T02:11:04.050Z", 
+    "released_datetime": "2014-03-01T04:47:50Z", 
+    "cover": "advertisement/20140304/package-660/cover_2.jpg", 
+    "object_id": 660, 
+    "status": "published"
+  }
+},
+{
+  "pk": 36, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2014-03-02T04:50:13.660Z", 
+    "title": "\u771f\u5b9e\u8d5b\u8f663\u7834\u89e3\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-06T11:27:00.498Z", 
+    "released_datetime": "2014-03-01T04:49:54Z", 
+    "cover": "advertisement/20140304/package-630/cover_2.jpg", 
+    "object_id": 630, 
+    "status": "published"
+  }
+},
+{
+  "pk": 37, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2014-03-02T04:52:11.866Z", 
+    "title": "GTA\u4fa0\u76d7\u730e\u8f66\u624b\uff1a\u5723\u5b89\u5730\u5217\u65af\u4e2d\u6587\u7834\u89e3\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-02T04:52:11.866Z", 
+    "released_datetime": "2014-03-01T04:51:54Z", 
+    "cover": "advertisement/20140302/package-548/cover.jpg", 
+    "object_id": 548, 
+    "status": "published"
+  }
+},
+{
+  "pk": 38, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2014-03-02T04:52:59.081Z", 
+    "title": "\u72c2\u91ce\u98d9\u8f668\u4e2d\u6587\u4fee\u6539\u7248", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-02T04:52:59.081Z", 
+    "released_datetime": "2014-03-01T04:51:54Z", 
+    "cover": "advertisement/20140302/package-642/cover.png", 
+    "object_id": 642, 
+    "status": "published"
+  }
+},
+{
+  "pk": 39, 
+  "model": "promotion.advertisement", 
+  "fields": {
+    "created_datetime": "2014-03-02T04:53:47.059Z", 
+    "title": "\u73b0\u4ee3\u6218\u4e895", 
+    "content_type": 16, 
+    "updated_datetime": "2014-03-02T04:53:47.059Z", 
+    "released_datetime": "2014-03-01T04:51:54Z", 
+    "cover": "advertisement/20140302/package-1/cover.jpg", 
+    "object_id": 1, 
+    "status": "published"
+  }
+},
+{
+  "pk": 8, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 10, 
+    "created_datetime": "2013-12-02T09:50:02.414Z", 
+    "place": 4, 
+    "updated_datetime": "2013-12-02T09:49:55.887Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 10, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 12, 
+    "created_datetime": "2013-12-02T09:50:02.414Z", 
+    "place": 4, 
+    "updated_datetime": "2013-12-02T09:49:55.887Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 11, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 13, 
+    "created_datetime": "2013-12-02T09:50:02.414Z", 
+    "place": 4, 
+    "updated_datetime": "2013-12-02T09:49:55.887Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 12, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 14, 
+    "created_datetime": "2013-12-02T09:50:02.414Z", 
+    "place": 4, 
+    "updated_datetime": "2013-12-02T09:49:55.887Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 13, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 15, 
+    "created_datetime": "2013-12-02T09:50:02.414Z", 
+    "place": 4, 
+    "updated_datetime": "2013-12-02T09:49:55.887Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 20, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 22, 
+    "created_datetime": "2013-12-02T09:50:02.414Z", 
+    "place": 5, 
+    "updated_datetime": "2013-12-02T09:49:55.887Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 21, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 23, 
+    "created_datetime": "2013-12-02T09:50:02.414Z", 
+    "place": 5, 
+    "updated_datetime": "2013-12-02T09:49:55.887Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 22, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 24, 
+    "created_datetime": "2013-12-02T09:50:02.414Z", 
+    "place": 5, 
+    "updated_datetime": "2013-12-02T09:49:55.887Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 23, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 25, 
+    "created_datetime": "2013-12-02T09:50:02.414Z", 
+    "place": 5, 
+    "updated_datetime": "2013-12-02T09:49:55.887Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 24, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 26, 
+    "created_datetime": "2013-12-02T09:50:02.414Z", 
+    "place": 4, 
+    "updated_datetime": "2013-12-02T09:49:55.887Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 25, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 27, 
+    "created_datetime": "2014-02-24T09:08:04.891Z", 
+    "place": 8, 
+    "updated_datetime": "2014-02-24T09:08:04.891Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 26, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 29, 
+    "created_datetime": "2014-03-02T04:30:49.001Z", 
+    "place": 11, 
+    "updated_datetime": "2014-03-02T04:30:49.001Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 27, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 30, 
+    "created_datetime": "2014-03-02T04:31:35.857Z", 
+    "place": 10, 
+    "updated_datetime": "2014-03-02T04:31:35.857Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 28, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 32, 
+    "created_datetime": "2014-03-02T04:35:44.880Z", 
+    "place": 6, 
+    "updated_datetime": "2014-03-02T04:35:44.879Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 30, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 33, 
+    "created_datetime": "2014-03-02T04:39:31.816Z", 
+    "place": 6, 
+    "updated_datetime": "2014-03-02T04:39:31.816Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 31, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 34, 
+    "created_datetime": "2014-03-02T04:46:20.233Z", 
+    "place": 6, 
+    "updated_datetime": "2014-03-02T04:46:20.233Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 32, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 35, 
+    "created_datetime": "2014-03-02T04:48:07.151Z", 
+    "place": 6, 
+    "updated_datetime": "2014-03-02T04:48:07.151Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 33, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 36, 
+    "created_datetime": "2014-03-02T04:50:13.948Z", 
+    "place": 7, 
+    "updated_datetime": "2014-03-02T04:50:13.948Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 34, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 37, 
+    "created_datetime": "2014-03-02T04:52:12.595Z", 
+    "place": 7, 
+    "updated_datetime": "2014-03-02T04:52:12.595Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 35, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 38, 
+    "created_datetime": "2014-03-02T04:52:59.352Z", 
+    "place": 7, 
+    "updated_datetime": "2014-03-02T04:52:59.352Z", 
+    "ordering": 0
+  }
+},
+{
+  "pk": 36, 
+  "model": "promotion.advertisement_places", 
+  "fields": {
+    "advertisement": 39, 
+    "created_datetime": "2014-03-02T04:53:47.332Z", 
+    "place": 7, 
+    "updated_datetime": "2014-03-02T04:53:47.332Z", 
+    "ordering": 0
+  }
+}
+]

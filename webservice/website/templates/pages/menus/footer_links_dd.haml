@@ -1,0 +1,7 @@
+-load pages_tags
+
+- for page in page_branch
+  - if page.in_menu
+    - if page.is_current_or_ascendant or not page.is_primary
+      %dd
+        %a{:href => "={page.get_absolute_url}"}= page.title

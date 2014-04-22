@@ -1,31 +1,24 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
+from toolkit.helpers import get_client_event_data
 
 
-def get_packageversion_download_url(version):
+def get_packageversion_download_url(request, version, **kwargs):
     try:
-        return version.di_download.url
-    except ValueError:
-        pass
-    try:
-        return version.download.url
-    except ValueError:
-        pass
-
-    return None
+        data = dict()
+        if kwargs.get('entrytype'):
+            data['entrytype'] = kwargs.get('entrytype')
+        if request:
+            url = request.build_absolute_uri(version.get_download_url(**data))
+        else:
+            url = version.get_download_url(**data)
+    except (AttributeError, ValueError):
+        return '#'
+    return url
 
 
 def get_packageversion_download_size(version):
-    try:
-        return version.di_download.size
-    except ValueError:
-        pass
-    try:
-        return version.download.size
-    except ValueError:
-        pass
-
-    return 0
+    return version.get_download_size()
 
 
 def get_packageversion_urls(request, versions):

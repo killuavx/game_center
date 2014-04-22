@@ -10,6 +10,7 @@ from easy_thumbnails.fields import ThumbnailerImageField
 from model_utils import FieldTracker, Choices
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
+from toolkit.helpers import sync_status_from
 
 
 class Place(models.Model):
@@ -49,7 +50,7 @@ class AdvertisementQuerySet(QuerySet):
 
 def advertisement_upload_to(instance, filename):
     fbasename = basename(filename)
-    fbname, extension = fbasename.split('.')
+    extension = fbasename.split('.')[-1]
     path = "%(prefix)s/%(date)s/%(ct)s-%(oid)d/%(fbname)s.%(extension)s" % {
         'prefix': 'advertisement',
         'date': now().strftime("%Y%m%d"),
@@ -118,6 +119,9 @@ class Advertisement(models.Model):
 
     def __str__(self):
         return self.title
+
+    def sync_status(self):
+        return sync_status_from(self)
 
 
 class Advertisement_Places(models.Model):

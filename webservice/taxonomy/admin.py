@@ -7,12 +7,16 @@ from tagging.models import Tag, TaggedItem
 from django.utils.safestring import mark_safe
 from easy_thumbnails.widgets import ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
+from toolkit.helpers import sync_status_summary, sync_status_actions
 from warehouse.models import Package
 from mptt.admin import MPTTModelAdmin
-from suit.admin import SortableModelAdmin, SortableTabularInline
+from mezzanine.core.admin import (TabularDynamicInlineAdmin as TabularInline,
+                                  StackedDynamicInlineAdmin as StackedInline)
 from reversion.admin import VersionAdmin
 
 from easy_thumbnails.exceptions import InvalidImageFormatError
+
+
 class EmptySupportImageClearableFileInput(ImageClearableFileInput):
 
     def render(self, name, value, attrs=None):
@@ -23,12 +27,14 @@ class EmptySupportImageClearableFileInput(ImageClearableFileInput):
             return super(ImageClearableFileInput, self).render(
                 name, value, attrs)
 
+
 class CategorizedPackageInline(admin.TabularInline):
     model = Package.categories.through
 
-class CategoryAdmin(MPTTModelAdmin, SortableModelAdmin, VersionAdmin):
+
+class CategoryAdmin(MPTTModelAdmin, VersionAdmin):
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ('name', 'show_icon', 'subtitle', 'slug', 'is_hidden', 'ordering',)
+    list_display = ('name', 'show_icon', 'subtitle', 'slug', 'is_hidden', 'ordering', 'sync_file_status', )
     list_display_links = ('name', )
     list_editable = ('is_hidden',)
     list_filter = ('is_hidden',)
@@ -50,20 +56,34 @@ class CategoryAdmin(MPTTModelAdmin, SortableModelAdmin, VersionAdmin):
         ThumbnailerImageField: {'widget': EmptySupportImageClearableFileInput}
     }
 
+    def sync_file_status(self, obj):
+        return sync_status_summary(obj) + " | " + sync_status_actions(obj)
+    sync_file_status.short_description = _('Sync Status')
+    sync_file_status.allow_tags = True
+
+    class Media:
+        #from django.conf import settings
+        #static_url = getattr(settings, 'STATIC_URL', '/static')
+        static_url = '/static/'
+        js = [static_url+'js/syncfile.action.js', ]
+
+
 class TaggedPackageInline(admin.TabularInline):
     model = TaggedItem
+
 
 class TagAdmin(VersionAdmin):
 
     inlines = (TaggedPackageInline, )
 
+
 class TopicalItemAdmin(admin.ModelAdmin):
     model = TopicalItem
     search_fields = ('topic', )
     search_fields = ('^topic__name', '^topic__slug')
-    list_display = ('pk', 'topic_link', 'content_object_link', 'ordering')
+    list_display = ('pk', 'topic_link', 'content_object_link', 'content_type', 'object_id', 'ordering')
     list_filter = ('topic', 'content_type')
-    list_editable = ('ordering', )
+    list_editable = ('ordering', 'content_type', 'object_id')
     sortable = 'ordering'
 
     def content_object_link(self, obj):
@@ -94,17 +114,18 @@ class TopicalItemAdmin(admin.ModelAdmin):
     topic_link.admin_order_field = 'topic__name'
 
 
-class TopicInline(SortableTabularInline):
+class TopicInline(TabularInline):
     model = Topic
-    fields = ('name', 'slug', 'ordering', 'status', 'released_datetime' )
+    fields = ('name', 'slug', 'ordering', 'status', 'released_datetime')
     #readonly_fields = ('name', 'slug',)
     sortable = 'ordering'
-    extra = 0
+    #extra = 0
 
-class TopicAdmin(MPTTModelAdmin, SortableModelAdmin, VersionAdmin):
+
+class TopicAdmin(MPTTModelAdmin, VersionAdmin):
 
     prepopulated_fields = {"slug": ("name",)}
-    list_display = ('name', 'show_icon_or_cover', 'slug', 'status', 'is_hidden')
+    list_display = ('name', 'show_icon_or_cover', 'slug', 'status', 'is_hidden', 'sync_file_status')
     list_display_links = ('name', )
     search_fields = ('^name', '^slug', )
     list_filter = ('parent', 'status')
@@ -129,12 +150,31 @@ class TopicAdmin(MPTTModelAdmin, SortableModelAdmin, VersionAdmin):
     show_icon_or_cover.short_description = _('Icon/Cover')
     show_icon_or_cover.allow_tags = True
 
+    def sync_file_status(self, obj):
+        return sync_status_summary(obj) + " | " + sync_status_actions(obj)
+    sync_file_status.short_description = _('Sync Status')
+    sync_file_status.allow_tags = True
+
     inlines = (TopicInline,)
+
+    class Media:
+        #from django.conf import settings
+        #static_url = getattr(settings, 'STATIC_URL', '/static')
+        static_url = '/static/'
+        js = [static_url+'js/syncfile.action.js', ]
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(TopicalItem, TopicalItemAdmin)
 
-admin.site.unregister(Tag)
-admin.site.register(Tag, TagAdmin)
-admin.site.unregister(TaggedItem)
+try:
+    admin.site.unregister(Tag)
+except admin.sites.NotRegistered:
+    pass
+else:
+    admin.site.register(Tag, TagAdmin)
+
+try:
+    admin.site.unregister(TaggedItem)
+except admin.sites.NotRegistered:
+    pass

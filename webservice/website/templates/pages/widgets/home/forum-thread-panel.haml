@@ -1,0 +1,12 @@
+%h3
+  - if more_url
+    %span.right>
+      %a{:href =>"={more_url}"} 更多 &gt;
+  = title
+{% spaceless %}
+%ul.clear
+  - for post in items
+    %li
+      %span.time= post.pub_date
+      %a{:href =>"={post.url}", :title => "={post.title}"}= post.title
+{% endspaceless %}

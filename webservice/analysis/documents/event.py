@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.utils.timezone import now
-from mongoengine import DynamicDocument, fields
+from mongoengine import DynamicDocument, fields, Document, DoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
@@ -16,13 +16,13 @@ class Event(DynamicDocument):
     def _set_user(self, user):
         User = get_user_model()
         if isinstance(user, User):
-            return user.pk
+            self.user_pk = user.pk
         elif isinstance(user, AnonymousUser):
-            return -1
+            self.user_pk = -1
         elif isinstance(user, int):
-            return user
-
-        raise TypeError('user type must be int type')
+            self.user_pk = user
+        else:
+            raise TypeError('user type must be int type')
 
     def _get_user(self):
         return get_user_model().objects.get(pk=self.user_pk)
@@ -30,8 +30,12 @@ class Event(DynamicDocument):
     user = property(_get_user, _set_user)
 
     ENTRY_TYPES = (
-        ('client', _('CCPlay Client')),
+        ('client', _('GC Client')),
         ('game', _('Game')),
+        ('sdk', _('SDK')),
+        ('web', _('Web')),
+        ('wap', _('Wap')),
+        ('game_loading', _('Game Loading')),
     )
 
     entrytype = fields.StringField(max_length=25,
@@ -43,6 +47,9 @@ class Event(DynamicDocument):
         ('activate', _('Activate')),
         ('open', _('Open')),
         ('close', _('Close')),
+        ('click', _('Click')),
+        ('download', _('Download')),
+        ('downloaded', _('Download finish')),
     )
 
     eventtype = fields.StringField(max_length=15,
@@ -50,20 +57,57 @@ class Event(DynamicDocument):
                                    choices=EVENT_TYPES,
                                    )
 
-    tags = fields.ListField(fields.StringField(max_length=30), required=False)
+    tags = fields.ListField(fields.StringField(max_length=100), required=False)
 
     package_name = fields.StringField(max_length=150, required=False)
 
-    device = fields.StringField(max_length=100, required=False)
-
-    manufacturer = fields.StringField(max_length=50, required=False)
-
     created_datetime = fields.DateTimeField(default=now)
 
-    #fact = fields.ReferenceField('anaylsis.documents.facts.BaseFact')
     meta = {
+        #'allow_inheritance': True,
         'indexes': ['created_datetime',
+                    'imei',
+                    'eventtype',
+                    'entrytype',
                     ('entrytype', 'eventtype', 'created_datetime'),
                     ('entrytype', 'eventtype'),
         ]
+
     }
+
+    referer = fields.StringField(required=False)
+
+    def __str__(self):
+        return str(self.id)
+
+
+class CellTower(Document):
+
+    mcc = fields.IntField()
+    mnc = fields.IntField()
+    lac = fields.IntField()
+    cid = fields.IntField(unique_with=['mcc', 'mnc', 'lac'])
+
+    lng = fields.FloatField()
+    lat = fields.FloatField()
+
+    point = fields.GeoPointField()
+
+    samples = fields.IntField(default=0)
+    changeable = fields.BooleanField(default=False)
+
+    created = fields.DateTimeField(default=None)
+    updated = fields.DateTimeField(default=None)
+
+    averageSignalStrength = fields.FloatField(default=0)
+
+    meta = {
+        'collection': 'cell_tower',
+        'indexes': [
+            'mcc',
+            ('mcc', 'mnc'),
+            ('mcc', 'mnc', 'lac', 'cid'),
+        ]
+    }
+
+

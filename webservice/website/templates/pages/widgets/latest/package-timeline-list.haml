@@ -1,0 +1,20 @@
+-load templateutils_tags
+%h3= title
+.gleft
+  {%  mkrange 1 5 as fnum %}
+  - for package in items
+    - with version=package.versions.latest_published curnum=fnum|random
+      %dl
+        %dt
+          - if curnum > 2
+            %img{:alt => "={package.title}", :src => "={version.icon.url}",
+                 :width => "70", :height => "70"}/
+          - else
+            %img{:alt => "={package.title}", :src => "={version.icon.url}",
+                 :width => "50", :height => "50"}/
+        %dd
+          %a{:href => "#"}= package.title
+        %dd= package.released_datetime|date:'SHORT_DATE_FORMAT'
+        - if curnum > 2
+          %dd.game_txt= package.summary
+        %dd{:class =>"y={curnum}"}

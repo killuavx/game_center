@@ -46,6 +46,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                               PackageRelatedPackageUrlMixin,
                               serializers.ModelSerializer):
 
+    entrytype = 'wap'
+
     id = serializers.IntegerField(source='pk')
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
@@ -97,6 +99,8 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                               PackageRelatedTagMin,
                               PackageActionsMixin,
                               serializers.ModelSerializer):
+
+    entrytype = 'wap'
 
     id = serializers.IntegerField(source='pk')
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
