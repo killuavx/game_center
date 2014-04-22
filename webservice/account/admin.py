@@ -7,6 +7,12 @@ from mezzanine.accounts.admin import *
 
 from guardian.admin import GuardedModelAdmin
 
+if ProfileInline in UserProfileAdmin.inlines:
+    idx = UserProfileAdmin.inlines.index(ProfileInline)
+    inlines = list(UserProfileAdmin.inlines)
+    inlines.pop(idx)
+    UserProfileAdmin.inlines = inlines
+
 
 class UserAdmin(UserProfileAdmin, VersionAdmin, GuardedModelAdmin):
 
