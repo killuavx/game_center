@@ -1,12 +1,15 @@
 # -*- encoding=utf-8 -*-
 import datetime
+from os.path import basename
+from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
+
 from django.conf import settings
 from django.core import exceptions
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now
 from django.contrib.contenttypes import generic
 from django.db import models
-from django.db.models.query import QuerySet, Q
+from django.db.models.query import QuerySet
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
@@ -14,109 +17,13 @@ from django.utils.translation import ugettext_lazy as _
 import tagging
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
-from os.path import join, basename
-from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
+
+from toolkit.models import SiteRelated, CurrentSitePassThroughManager
 from toolkit.helpers import import_from, sync_status_from
 
 
-class StatusNotSupportAction(Exception):
-    pass
-
-
-class StatusUndesirable(Exception):
-    pass
-
-
-class StatusBase(object):
-    CODE = ""
-
-    NAME = ""
-
-    def code(self):
-        return self.CODE
-
-    def name(self):
-        return self.NAME
-
-    def __str__(self):
-        return self.CODE
-
-    def __repr__(self):
-        return "%s" % repr(self.CODE)
-
-    __unicode__ = __str__
-
-    def __eq__(self, other):
-        if isinstance(other, str):
-            return self.CODE == other
-        elif isinstance(other, self.__class__):
-            return self.CODE == other.CODE
-        else:
-            return False
-
-    def __hash__(self):
-        return hash("%s:%s" % (self.__class__.__name__, self.code))
-
-
-class AuthorStatus(StatusBase):
-    def review(self, author):
-        raise StatusNotSupportAction()
-
-    def activate(self, author):
-        raise StatusNotSupportAction()
-
-    def reject(self, author):
-        raise StatusNotSupportAction()
-
-    def appeal(self, author):
-        raise StatusNotSupportAction()
-
-
-class AuthorDraftStatus(AuthorStatus):
-    CODE = "draft"
-
-    NAME = _("Draft")
-
-    def review(self, author):
-        """ Draft --reivew--> Unactivated """
-        author.status = author.STATUS.unactivated
-
-
-class AuthorUnactivatedStatus(AuthorStatus):
-    CODE = "unactivated"
-
-    NAME = _("Unactivated")
-
-    def activate(self, author):
-        """ Unactivated --activate--> Activated """
-        author.status = author.STATUS.activated
-
-
-class AuthorActivatedStatus(AuthorStatus):
-    CODE = "activated"
-
-    NAME = _("Activated")
-
-    def reject(self, author):
-        """ Activated --reject--> Rejected """
-        author.status = author.STATUS.rejected
-
-
-class AuthorRejectedStatus(AuthorStatus):
-    CODE = "rejected"
-
-    NAME = _("Rejected")
-
-    def recall(self, author):
-        """ Rejected --recall--> Draft """
-        author.status = author.STATUS.draft
-
-    def appeal(self, author):
-        """ Rejected --appeal--> Unactivated """
-        author.status = author.STATUS.unactivated
-
-
 class AuthorQuerySet(QuerySet):
+
     def have_package(self, package):
         return self.filter(packages__in=package)
 
@@ -155,7 +62,11 @@ def factory_author_upload_to(basename):
     return upload_to
 
 
-class Author(models.Model):
+class Author(SiteRelated, models.Model):
+
+    objects = CurrentSitePassThroughManager.for_queryset_class(AuthorQuerySet)()
+
+
     icon = ThumbnailerImageField(upload_to=factory_author_upload_to('icon'),
                                  blank=True,
                                  default='')
@@ -164,11 +75,12 @@ class Author(models.Model):
                                   blank=True,
                                   default='')
 
-    objects = PassThroughManager.for_queryset_class(AuthorQuerySet)()
-
     class Meta:
         verbose_name = _('Author')
         verbose_name_plural = _('Authors')
+        unique_together = (
+            ('site', 'name',),
+        )
 
     name = models.CharField(verbose_name=_('author name'),
                             max_length=64)
@@ -186,37 +98,13 @@ class Author(models.Model):
     topics = generic.GenericRelation('taxonomy.TopicalItem')
 
     STATUS = Choices(
-        (AuthorDraftStatus(),
-         AuthorDraftStatus.CODE, AuthorDraftStatus.NAME),
-        (AuthorUnactivatedStatus(),
-         AuthorUnactivatedStatus.CODE, AuthorUnactivatedStatus.NAME),
-        (AuthorActivatedStatus(),
-         AuthorActivatedStatus.CODE, AuthorActivatedStatus.NAME),
-        (AuthorRejectedStatus(),
-         AuthorRejectedStatus.CODE, AuthorRejectedStatus.NAME),
+        ('draft', 'draft', _('Draft')),
+        ('unactivated', 'unactivated', _('Unactivated')),
+        ('activated', 'activated', _('Activated')),
+        ('rejected', 'rejected', _('Rejected'))
     )
 
     status = StatusField(verbose_name=_('status'))
-
-    @property
-    def _status(self):
-        return self.STATUS.__getattr__(str(self.status))
-
-
-    def review(self):
-        self._status.review(self)
-
-    def activate(self):
-        self._status.activate(self)
-
-    def reject(self):
-        self._status.reject(self)
-
-    def recall(self):
-        self._status.recall(self)
-
-    def appeal(self):
-        self._status.appeal(self)
 
     def __str__(self):
         return str(self.name)
@@ -227,112 +115,8 @@ class Author(models.Model):
         return '/authors/%s' % self.pk
 
 
-class PackageStatus(StatusBase):
-    _transactions = list()
-
-    def publish(self, package):
-        raise StatusNotSupportAction()
-
-    def review(self, package):
-        raise StatusNotSupportAction()
-
-    def unpublish(self, package):
-        raise StatusNotSupportAction()
-
-    def reject(self, package):
-        raise StatusNotSupportAction()
-
-    def appeal(self, package):
-        raise StatusNotSupportAction()
-
-    def next_statuses(self, package):
-        """
-            return tuple of status from next_transactions
-        """
-        return tuple(map(lambda e: e[1], self.next_transactions(package)))
-
-    def next_actions(self, package):
-        """
-            return tuple of action_name from next_transactions
-        """
-        return tuple(map(lambda e: e[0], self.next_transactions(package)))
-
-    def next_transactions(self, package):
-        """
-        return (
-            ( 'action_name', <PackageStatus> ), ...
-        )
-        """
-        raise StatusNotSupportAction()
-
-
-class PackageDraftStatus(PackageStatus):
-    CODE = "draft"
-    NAME = _("Draft")
-
-    def review(self, package):
-        """Draft --reivew--> Unpublished"""
-        package.status = package.STATUS.unpublished
-
-    def next_transactions(self, package):
-        return (
-            ('review', package.STATUS.unpublished),
-        )
-
-
-class PackageUnpublishedStatus(PackageStatus):
-    CODE = "unpublished"
-    NAME = _("Unpublished")
-
-    def reject(self, package):
-        """Unpublished --reject--> Rejected"""
-        package.status = package.STATUS.rejected
-
-    def publish(self, package):
-        """Unpublished --publish--> Published"""
-        package.status = package.STATUS.published
-
-    def next_transactions(self, package):
-        return (
-            ('publish', package.STATUS.published),
-            ('reject', package.STATUS.rejected),
-        )
-
-
-class PackagePublishedStatus(PackageStatus):
-    CODE = 'published'
-    NAME = _('Published')
-
-    def reject(self, package):
-        """published --reject--> Rejected"""
-        package.status = package.STATUS.rejected
-
-    def next_transactions(self, package):
-        return (
-            ('reject', package.STATUS.rejected),
-        )
-
-
-class PackageRejectedStatus(PackageStatus):
-    CODE = "rejected"
-    NAME = _("Rejected")
-
-    def appeal(self, package):
-        """Rejected --appeal--> Unpublished"""
-        package.status = package.STATUS.unpublished
-
-    def recall(self, package):
-        """Rejected --recall--> Draft"""
-        package.status = package.STATUS.draft
-
-    def next_transactions(self, package):
-        return (
-            ('recall', package.STATUS.draft),
-            ('appeal', package.STATUS.unpublished),
-        )
-
-
 class PackageQuerySet(QuerySet):
+
     def by_category(self, category):
         return self.filter(categories__contains=category)
 
@@ -364,9 +148,9 @@ class PackageQuerySet(QuerySet):
             .exclude(status=self.model.STATUS.published)
 
 
+class Package(SiteRelated, models.Model):
 
-class Package(models.Model):
-    objects = PassThroughManager.for_queryset_class(PackageQuerySet)()
+    objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
 
     class Meta:
         permissions = (
@@ -376,6 +160,9 @@ class Package(models.Model):
         )
         verbose_name = _("Package")
         verbose_name_plural = _("Packages")
+        unique_together = (
+            ('site', 'package_name',)
+        )
 
     title = models.CharField(
         verbose_name=_('package title'),
@@ -383,7 +170,7 @@ class Package(models.Model):
 
     package_name = models.CharField(
         verbose_name=_('package name'),
-        unique=True,
+        db_index=True,
         max_length=128)
 
     summary = models.CharField(
@@ -401,6 +188,7 @@ class Package(models.Model):
 
     author = models.ForeignKey(Author, related_name='packages')
 
+
     released_datetime = models.DateTimeField(
         verbose_name=_('released time'),
         db_index=True,
@@ -413,6 +201,7 @@ class Package(models.Model):
 
     updated_datetime = models.DateTimeField(
         verbose_name=_('updated time'),
+        db_index=True,
         auto_now_add=True)
 
     categories = models.ManyToManyField(
@@ -431,63 +220,20 @@ class Package(models.Model):
     download_count = models.PositiveIntegerField(
         verbose_name=_('package download count'),
         max_length=9,
+        db_index=True,
         default=0,
         blank=True
     )
 
-    """ ================== START State Design Pattern ====================== """
-
     STATUS = Choices(
-        (PackageDraftStatus(),
-         PackageDraftStatus.CODE, PackageDraftStatus.NAME),
-        (PackagePublishedStatus(),
-         PackagePublishedStatus.CODE, PackagePublishedStatus.NAME),
-        (PackageUnpublishedStatus(),
-         PackageUnpublishedStatus.CODE, PackageUnpublishedStatus.NAME),
-        (PackageRejectedStatus(),
-         PackageRejectedStatus.CODE, PackageRejectedStatus.NAME),
+        ('draft', 'draft', _('Draft')),
+        ('published', 'published', _('Published')),
+        ('unpublished', 'unpublished', _('Unpublished')),
+        ('rejected', 'rejected', _('Rejected')),
     )
 
     status = StatusField(verbose_name=_('status'))
 
-    @property
-    def _status(self):
-        return self.STATUS.__getattr__(str(self.status))
-
-    @property
-    def next_statuses(self):
-        return self._status.next_statuses(self)
-
-    @property
-    def next_actions(self):
-        return self._status.next_actions(self)
-
-    def next_transactions(self):
-        return self._status.next_transactions(self)
-
-    """ ================== END State Design Pattern ======================== """
-
-    """ START State Design Pattern Actions ======================== """
-
-    def review(self):
-        self._status.review(self)
-
-    def publish(self):
-        self._status.publish(self)
-
-    def unpublish(self):
-        self._status.unpublish(self)
-
-    def reject(self):
-        self._status.reject(self)
-
-    def appeal(self):
-        self._status.appeal(self)
-
-    def recall(self):
-        self._status.recall(self)
-
-    """ END State Design Pattern Actions ======================== """
 
     def was_published_recently(self):
         if self.released_datetime:
@@ -547,6 +293,7 @@ tagging.register(Package)
 
 
 class PackageVersionQuerySet(QuerySet):
+
     def by_updated_order(self):
         return self.order_by('-updated_datetime')
 
@@ -591,14 +338,16 @@ def factory_version_upload_to_path(basename):
     return upload_to
 
 
-class PackageVersion(models.Model):
-    objects = PassThroughManager.for_queryset_class(PackageVersionQuerySet)()
+class PackageVersion(SiteRelated, models.Model):
+
+    objects =  CurrentSitePassThroughManager\
+        .for_queryset_class(PackageVersionQuerySet)()
 
     class Meta:
         verbose_name = _("Package Version")
         verbose_name_plural = _("Package Versions")
         unique_together = (
-            ('package', 'version_code'),
+            ('site', 'package', 'version_code'),
         )
 
 
@@ -751,7 +500,6 @@ class PackageVersion(models.Model):
         return sync_status_from(self)
 
 
-
 def screenshot_upload_to_path(instance, filename):
     filebasename = basename(filename).lower()
     version = instance.version
@@ -763,6 +511,7 @@ def screenshot_upload_to_path(instance, filename):
 
 
 class PackageVersionScreenshot(models.Model):
+
     version = models.ForeignKey(PackageVersion, related_name='screenshots')
 
     image = ThumbnailerImageField(

@@ -13,13 +13,17 @@ from mobapi.warehouse.serializers.packageversion import (
 
 class PackageVersionViewSet(viewsets.ReadOnlyModelViewSet):
 
-    queryset = PackageVersion.objects.published()
+    model = PackageVersion
+
     serializer_class = PackageVersionSummarySerializer
 
     filter_backends = (filters.DjangoFilterBackend,
                        filters.OrderingFilter)
     filter_fields = ('package', )
     ordering = ('-version_code', )
+
+    def get_queryset(self):
+        return self.model.objects.published()
 
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class, self.serializer_class = \

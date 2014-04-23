@@ -7,8 +7,12 @@ from mobapi.warehouse.views.package import PackageViewSet
 
 
 class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Author.objects.activated()
     serializer_class = AuthorSerializer
+
+    model = Author
+
+    def get_queryset(self):
+        return Author.objects.activated()
 
     @link()
     def packages(self, request, pk, *args, **kwargs):
