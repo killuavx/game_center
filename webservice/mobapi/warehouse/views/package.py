@@ -270,7 +270,9 @@ class PackageUpdateView(generics.CreateAPIView):
     model = Package
 
     def get_queryset(self):
-        return self.model.objects.published()
+        if not self.queryset:
+            self.queryset = self.model.objects.published()
+        return self.queryset
 
     def _make_sorted_idx(self, versions):
         sorted_pkg_idx = dict()
@@ -292,7 +294,7 @@ class PackageUpdateView(generics.CreateAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         pkg_names = sorted_pkg_idx.keys()
-        pkgs = self.queryset.filter(package_name__in=pkg_names).all()
+        pkgs = self.get_queryset().filter(package_name__in=pkg_names).all()
 
         def _sorted_key(p):
             idx = sorted_pkg_idx[p.package_name]['order_idx']
