@@ -10,12 +10,15 @@ from django.contrib import admin
 admin.autodiscover()
 
 rest_framework_swagger_url = url(r'^api-docs/', include('rest_framework_swagger.urls'))
+rest_framework_swagger_url_v2 = url(r'^api-docs/v2/', include('rest_framework_swagger.urls'))
 urlpatterns = patterns("",
                        url(r'^mob/', include('webmob.urls')),
                        url("^admin/", include(admin.site.urls)),
                        url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
                        url(r'^api/', include('mobapi.urls')),
+                       url(r'^api/v2/', include('mobapi2.urls')),
                        rest_framework_swagger_url,
+                       rest_framework_swagger_url_v2,
                        url(r'^admin/cdn/', include('website.cdn.urls')),
                        url(r'^admin/toolkit/', include('toolkit.urls')),
                        url(r'^tagging_autocomplete/', include('tagging_autocomplete.urls')),

@@ -200,6 +200,7 @@ INTERNAL_APPS = [
 EXTENDAL_APPS = [
     'toolkit',
     'mobapi',
+    'mobapi2',
     'clientapp',
     'searcher',
     'taxonomy',
