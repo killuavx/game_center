@@ -27,7 +27,7 @@ rest_router.register('rankings', PackageRankingsViewSet, base_name='rankings')
 rest_router.register('categories', CategoryViewSet)
 rest_router.register('topics', TopicViewSet)
 rest_router.register('tipswords', TipsWordViewSet)
-documentation_advertisement_viewset()
+#documentation_advertisement_viewset()
 rest_router.register('advertisements', AdvertisementViewSet)
 rest_router.register('bookmarks',
                      PackageBookmarkViewSet,
