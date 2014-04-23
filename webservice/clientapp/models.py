@@ -8,6 +8,7 @@ from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
 from toolkit.helpers import sync_status_from
+from toolkit.models import SiteRelated, CurrentSitePassThroughManager
 
 
 class ClientPackageVersionQuerySet(QuerySet):
@@ -31,17 +32,17 @@ def factory_version_upload_to_path(basename):
     return upload_to
 
 
-class ClientPackageVersion(models.Model):
+class ClientPackageVersion(SiteRelated, models.Model):
 
     class Meta:
         verbose_name = _('Client Package Version')
         verbose_name_plural = _('Client Package Versions')
         unique_together = (
-            ('package_name', 'version_code',),
+            ('site', 'package_name', 'version_code',),
         )
         ordering = ('package_name', '-version_code', )
 
-    objects = PassThroughManager\
+    objects = CurrentSitePassThroughManager\
         .for_queryset_class(ClientPackageVersionQuerySet)()
 
     icon = ThumbnailerImageField(

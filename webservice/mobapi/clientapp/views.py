@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from rest_framework import generics, status
+from rest_framework import generics, status, filters
 from rest_framework.response import Response
 from mobapi.clientapp.serializers import ClientPackageVersionSerializer
 from clientapp.models import ClientPackageVersion
@@ -10,7 +10,10 @@ class SelfUpdateView(generics.RetrieveAPIView):
 
     #### 访问方式
 
-        GET /api/selfupdate
+        GET /api/selfupdate/?package_name=com.lion.market
+
+    #### 请求参数
+    * `package_name`: 更新包名，指定需要更新的包名（可选，默认为"com.lion.market"）
 
     #### 响应内容
 
@@ -33,7 +36,16 @@ class SelfUpdateView(generics.RetrieveAPIView):
     """
 
     serializer_class = ClientPackageVersionSerializer
-    queryset = ClientPackageVersion.objects.published()
+    model = ClientPackageVersion
+    filter_backends = (
+        filters.DjangoFilterBackend,
+    )
+    filter_fields = ('package_name', )
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = ClientPackageVersion.objects
+        return self.queryset.published()
 
     def get_object(self, queryset=None):
         queryset = self.filter_queryset(self.get_queryset())
