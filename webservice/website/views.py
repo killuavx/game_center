@@ -53,6 +53,7 @@ def _download_make_event(request, response, packageversion, filetype=None):
     event.eventtype = 'download'
     event.entrytype = entrytype
     event.file_type = filetype
+    event.domain = request.get_host()
     if hasattr(request, 'get_client_ip'):
         event.client_ip = request.get_client_ip()
 
