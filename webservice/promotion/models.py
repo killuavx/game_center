@@ -9,13 +9,15 @@ from django.utils.translation import ugettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
 from model_utils import FieldTracker, Choices
 from model_utils.fields import StatusField
-from model_utils.managers import PassThroughManager
 from toolkit.helpers import sync_status_from
+from toolkit.models import CurrentSitePassThroughManager, SiteRelated
 
 
-class Place(models.Model):
+class Place(SiteRelated, models.Model):
+
+    objects = CurrentSitePassThroughManager()
+
     slug = models.CharField(verbose_name=_('slug'),
-                            unique=True,
                             max_length=32,
                             help_text='唯一定位一个位置的名称，'
                                       '命名使用英文字母、数字和"-"组合',
@@ -31,12 +33,16 @@ class Place(models.Model):
     class Meta:
         verbose_name = _('place')
         verbose_name_plural = _('places')
+        unique_together = (
+            ('site', 'slug',),
+        )
 
     def __str__(self):
         return self.slug
 
 
 class AdvertisementQuerySet(QuerySet):
+
     def published(self):
         return self.filter(
             released_datetime__lte=now(), status=self.model.STATUS.published)
@@ -62,8 +68,10 @@ def advertisement_upload_to(instance, filename):
     return path
 
 
-class Advertisement(models.Model):
-    objects = PassThroughManager.for_queryset_class(AdvertisementQuerySet)()
+class Advertisement(SiteRelated, models.Model):
+
+    objects = CurrentSitePassThroughManager\
+        .for_queryset_class(AdvertisementQuerySet)()
 
     cover = ThumbnailerImageField(
         verbose_name=_('advertisement cover'),
@@ -125,6 +133,7 @@ class Advertisement(models.Model):
 
 
 class Advertisement_Places(models.Model):
+
     place = models.ForeignKey(Place, related_name='relation_place')
 
     advertisement = models.ForeignKey(Advertisement,

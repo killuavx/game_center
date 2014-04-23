@@ -31,6 +31,10 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
 
     updated_datetime = indexes.DateTimeField(model_attr='updated_datetime')
 
+    # ERROR:root:Error updating warehouse using package
+    # TypeError: expected bytes, bytearray or buffer compatible object
+    #site = indexes.IntegerField(model_attr='site_id')
+
     def get_model(self):
         return Package
 

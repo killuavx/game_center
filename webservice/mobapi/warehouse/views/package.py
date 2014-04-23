@@ -107,7 +107,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
     """
 
-    queryset = Package.objects.published()
+    model = Package
     serializer_class = PackageSummarySerializer
     serializer_class_detail = PackageDetailSerializer
     filter_backends = (filters.OrderingFilter,
@@ -122,6 +122,12 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                 'package_name'
                 )
 
+    def get_queryset(self):
+        if self.queryset:
+            return self.queryset.published()
+        else:
+            self.queryset = self.model.objects
+            return self.queryset.published()
 
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class = self.serializer_class
@@ -144,8 +150,12 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
 class PackageRankingsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = PackageSummarySerializer
-    queryset = Package.objects.published().by_rankings_order()
     filter_backends = (PackageExcludeCategoryOfApplicationFilter, )
+
+    model = Package
+
+    def get_queryset(self):
+        return self.model.objects.published().by_rankings_order()
 
 
 class PackageSearchViewSet(PackageViewSet):
@@ -257,7 +267,10 @@ class PackageUpdateView(generics.CreateAPIView):
     permission_classes = ()
     serializer_class = PackageUpdateSummarySerializer
     parser_classes = (JSONParser, FormParser)
-    queryset = Package.objects.published()
+    model = Package
+
+    def get_queryset(self):
+        return self.model.objects.published()
 
     def _make_sorted_idx(self, versions):
         sorted_pkg_idx = dict()
@@ -377,10 +390,13 @@ class PackagePushView(generics.ListAPIView):
     ----
     """
 
-
-    queryset = Package.objects.published()
     serializer_class = PackageDetailSerializer
     filter_backends = (PackageIdsFilter, )
+
+    model = Package
+
+    def get_queryset(self):
+        return self.model.objects.published()
 
     def resort_with_request(self, request, object_list):
         _ids = request.GET.get('ids')

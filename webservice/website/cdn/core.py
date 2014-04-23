@@ -82,8 +82,14 @@ class Processor(object):
         return urlunparse(result)
 
     def get_source_host(self):
-        from django.contrib.sites.models import Site
-        return Site.objects.get_current().domain
+        return 'gc.ccplay.com.cn'
+        """
+        if not hasattr(self, '_source_host'):
+            from toolkit.models import current_request
+            from django.contrib.sites.models import RequestSite
+            self._source_host = RequestSite(request=current_request()).domain
+        return self._source_host
+        """
 
     def get_publish_path_prefix(self):
         return settings.PUBLISH_MEDIA_URL

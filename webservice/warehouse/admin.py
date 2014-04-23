@@ -16,6 +16,7 @@ from toolkit.helpers import sync_status_summary, sync_status_actions
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from webservice.admin import AdminFieldBase, AdminField
 
+
 class ImageClearableFileInput(_ImageClearableFileInput):
     def render(self, name, value, attrs=None):
         try:

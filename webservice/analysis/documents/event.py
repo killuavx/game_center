@@ -75,6 +75,24 @@ class Event(DynamicDocument):
 
     }
 
+    @property
+    def domain(self):
+        if hasattr(self, 'site_domain'):
+            return self.site_domain
+
+        return None
+
+    @domain.setter
+    def domain(self, domain):
+        self.site_domain = domain
+        bits = domain.split('.')
+        if bits[0] in ('ios', 'android'):
+            self.platform = bits[0]
+        elif bits[0] == 'gc' or bits[0].isnumeric():
+            self.platform = 'android'
+        else:
+            self.platform = 'undefined'
+
     referer = fields.StringField(required=False)
 
     def __str__(self):

@@ -24,10 +24,15 @@ class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     """
 
+    model = Advertisement
     serializer_class = AdvertisementSerializer
-    queryset = Advertisement.objects.published().by_ordering()
     filter_backends = (filters.OrderingFilter, )
     ordering = ('-relation_advertisement__ordering',)
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = self.model.objects.published().by_ordering()
+        return self.queryset
 
     def list(self, request, *args, **kwargs):
         querydict = copy.deepcopy(dict(request.GET))
@@ -45,7 +50,7 @@ class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         except Place.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        self.queryset = self.queryset.place_in(place)
+        self.queryset = self.get_queryset().place_in(place)
         return super(AdvertisementViewSet, self).list(request, *args, **kwargs)
 
 

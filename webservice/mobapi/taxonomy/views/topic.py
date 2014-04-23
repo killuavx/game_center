@@ -51,7 +51,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
     TODO 添加以上7个专区以及开发者和游戏数据
     """
 
-    queryset = Topic.objects.published()
+    model = Topic
     serializer_class = TopicSummarySerializer
     lookup_field = 'slug'
     filter_backends = (filters.OrderingFilter,
@@ -60,10 +60,14 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
     filter_fields = ('name', 'slug',)
     ordering = ('released_datetime', )
 
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = Topic.objects.published()
+        return self.queryset
+
     def list(self, request, *args, **kwargs):
-        #origin_queryset, self.queryset = self.queryset, self.queryset.as_root()
-        origin_queryset, self.queryset = self.queryset, self.queryset.filter(
-            parent=None)
+        queryset = self.get_queryset()
+        origin_queryset, self.queryset = self.queryset, self.get_queryset().as_root()
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
         self.queryset = origin_queryset
         return res
@@ -71,18 +75,18 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
     @link()
     def children(self, request, slug, *args, **kwargs):
         """子专区列表"""
-        queryset = self.queryset.filter(slug=slug)
+        queryset = self.get_queryset().filter(slug=slug)
         topic = generics.get_object_or_404(queryset, slug=slug)
 
         origin_queryset, self.queryset = \
-            self.queryset, self.queryset.filter(parent=topic)
+            self.queryset, self.get_queryset().filter(parent=topic)
         self.ordering = ('ordering', )
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
         return res
 
     @link()
     def items(self, request, slug, *args, **kwargs):
-        topic = generics.get_object_or_404(self.queryset, slug=slug)
+        topic = generics.get_object_or_404(self.get_queryset(), slug=slug)
 
         list_view = self._get_item_list_view(topic)
         return list_view(request, *args, **kwargs)
