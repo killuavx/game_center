@@ -5,6 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
+from toolkit.models import SiteRelated, CurrentSitePassThroughManager
+
 
 class TipsWordQuerySet(QuerySet):
 
@@ -21,14 +23,14 @@ class TipsWordQuerySet(QuerySet):
         return self.filter(
             released_datetime__lte=now(), status=self.model.STATUS.published)
 
-# Create your models here.
-class TipsWord(models.Model):
 
-    objects = PassThroughManager.for_queryset_class(TipsWordQuerySet)()
+class TipsWord(SiteRelated, models.Model):
+
+    objects = CurrentSitePassThroughManager\
+        .for_queryset_class(TipsWordQuerySet)()
 
     keyword = models.CharField(_('keyword'),
-                               max_length=36,
-                               unique=True)
+                               max_length=36)
 
     weight = models.PositiveIntegerField(_('ordering weight'),
                                          max_length=8,
@@ -63,6 +65,9 @@ class TipsWord(models.Model):
         verbose_name = _("tips word ")
         verbose_name_plural = _("tips words")
         ordering = ('-weight',)
+        unique_together = (
+            ('site', 'keyword'),
+        )
 
 from django.db.models.signals import pre_save
 from django.dispatch import receiver

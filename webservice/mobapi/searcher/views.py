@@ -6,8 +6,14 @@ from mobapi.searcher.serializers import TipsWordSerializer
 
 class TipsWordViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = TipsWordSerializer
-    queryset = TipsWord.objects.published().order_weight()
+    model = TipsWord
     filter_backends = (
         filters.OrderingFilter,
     )
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = self.model.objects.published()
+        return self.queryset.order_weight()
+
 
