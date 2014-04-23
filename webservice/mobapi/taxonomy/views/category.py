@@ -48,10 +48,15 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     ----
 
     """
-    queryset = Category.objects.as_root().showed()
     serializer_class = CategorySummarySerializer
+    model = Category
     lookup_field = 'slug'
     paginate_by = None
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = Category.objects
+        return self.queryset.as_root().showed()
 
     @link()
     def packages(self, request, slug, *args, **kwargs):

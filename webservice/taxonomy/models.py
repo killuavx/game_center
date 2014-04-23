@@ -17,6 +17,9 @@ from django.db.models import SlugField
 from django.core.urlresolvers import get_callable
 from django.conf import settings
 from toolkit.helpers import sync_status_from
+from toolkit.models import (SiteRelated,
+                            CurrentSitePassThroughManager,
+                            current_site_id)
 
 slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
                                 'taxonomy.helpers.slugify')
@@ -37,9 +40,10 @@ def factory_taxonomy_upload_to_path(basename):
     return update_to
 
 
-class Taxonomy(models.Model):
+class Taxonomy(SiteRelated, models.Model):
+
     name = models.CharField(max_length=32,
-                            unique=True,
+                            db_index=True,
                             help_text=_(
                                 'Short descriptive name for this taxonomy.'),
     )
@@ -47,7 +51,6 @@ class Taxonomy(models.Model):
     slug = SlugField(
         max_length=32,
         blank=False,
-        unique=True,
         db_index=True,
         help_text=_('Short descriptive unique name for use in urls.'),
     )
@@ -62,15 +65,12 @@ class Taxonomy(models.Model):
         blank=True,
         help_text=_('can visit from font side but hidden'))
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def save(self, update_site=False, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
 
-        return super(Taxonomy, self).save(force_insert=False,
-                                          force_update=False,
-                                          using=None,
-                                          update_fields=None)
+        return super(Taxonomy, self).save(update_site=update_site, *args,
+                                          **kwargs)
 
     def __str__(self):
         return self.name
@@ -83,6 +83,7 @@ class Taxonomy(models.Model):
 
 
 class CategoryQuerySet(QuerySet):
+
     def as_root(self):
         return self.filter(parent=None)
 
@@ -110,7 +111,7 @@ class CategoryQuerySet(QuerySet):
         return self.hidden(False)
 
 
-class CategoryManager(TreeManager, PassThroughManager):
+class CategoryManager(TreeManager, CurrentSitePassThroughManager):
     pass
 
 
@@ -130,6 +131,10 @@ class Category(MPTTModel, Taxonomy):
         ordering = ('ordering',)
         verbose_name = _('category')
         verbose_name_plural = _('categories')
+        unique_together = (
+            ('site', 'slug'),
+            ('site', 'name'),
+        )
 
     subtitle = models.CharField(
         max_length=200,
@@ -155,12 +160,15 @@ class Category(MPTTModel, Taxonomy):
     def __str__(self):
         return str(self.name)
 
-    def save(self, *args, **kwargs):
+    def save(self, update_site=False, *args, **kwargs):
+        if update_site or not self.id:
+            self.site_id = current_site_id()
         super(Category, self).save(*args, **kwargs)
         Category.objects.rebuild()
 
 
 class TopicQuerySet(QuerySet):
+
     def as_root(self):
         return self.filter(parent=None)
 
@@ -193,7 +201,7 @@ class TopicQuerySet(QuerySet):
         return self.order_by('ordering')
 
 
-class TopicManager(TreeManager, PassThroughManager):
+class TopicManager(TreeManager, CurrentSitePassThroughManager):
     pass
 
 
@@ -213,6 +221,10 @@ class Topic(MPTTModel, Taxonomy):
         ordering = ('ordering',)
         verbose_name = _('topic')
         verbose_name_plural = _('topics')
+        unique_together = (
+            ('site', 'slug'),
+            ('site', 'name'),
+        )
 
     icon = ThumbnailerImageField(
         verbose_name=_('icon image'),
@@ -259,7 +271,9 @@ class Topic(MPTTModel, Taxonomy):
         return self.status == self.STATUS.published \
             and self.released_datetime <= now()
 
-    def save(self, *args, **kwargs):
+    def save(self, update_site=False, *args, **kwargs):
+        if update_site or not self.id:
+            self.site_id = current_site_id()
         super(Topic, self).save(*args, **kwargs)
         Topic.objects.rebuild()
 
@@ -277,8 +291,10 @@ class TopicalItemQuerySet(QuerySet):
             .order_by('topics__ordering')
 
 
-class TopicalItem(models.Model):
-    objects = PassThroughManager.for_queryset_class(TopicalItemQuerySet)()
+class TopicalItem(SiteRelated, models.Model):
+
+    objects = CurrentSitePassThroughManager\
+        .for_queryset_class(TopicalItemQuerySet)()
 
     topic = models.ForeignKey(Topic, related_name='items')
 

@@ -17,6 +17,18 @@ def current_site_id():
     return site_id
 
 
+def current_site():
+    from mezzanine.utils.sites import current_site_id as _cur_site_id
+    from django.contrib.sites.models import Site
+    site_id = _cur_site_id()
+    return Site.objects.get(pk=site_id)
+
+
+def current_request():
+    from mezzanine.core.request import current_request as _cur_request
+    return _cur_request()
+
+
 class CurrentSiteManager(DjangoCSM):
     """
     Extends Django's site manager to first look up site by ID stored in
@@ -48,7 +60,7 @@ class SiteRelated(models.Model):
     class Meta:
         abstract = True
 
-    site = models.ForeignKey("sites.Site", editable=False)
+    site = models.ForeignKey("sites.Site", db_index=True, editable=False)
 
     def save(self, update_site=False, *args, **kwargs):
         """
