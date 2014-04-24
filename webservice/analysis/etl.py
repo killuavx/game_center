@@ -804,8 +804,13 @@ class LoadSumActivateDeviceProductsResultTask(LoadResultTask):
                                                    total_vals)
         self.logger.info(total_vals)
 
-        self._save_activate_values(total_vals, cycle_type,
-                                   start_datedim, end_datedim)
+        try:
+            sid = transaction.savepoint(USING)
+            self._save_activate_values(total_vals, cycle_type,
+                                       start_datedim, end_datedim)
+        except Exception as e:
+            self.logger.info(e)
+            transaction.savepoint_rollback(sid)
 
     def _until_date_total_reserve_values(self, end_datedim):
         datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
@@ -874,8 +879,13 @@ class LoadSumActivateDeviceProductPackagesResultTask(
                                                    until_date_reserve_values,
                                                    total_values)
 
-        self._save_activate_values(total_values, cycle_type,
-                                   start_datedim, end_datedim)
+        try:
+            sid = transaction.savepoint(USING)
+            self._save_activate_values(total_values, cycle_type,
+                                       start_datedim, end_datedim)
+        except Exception as e:
+            self.logger.info(e)
+            transaction.savepoint_rollback(sid)
 
     def _until_date_total_reserve_values(self, end_datedim):
         datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
@@ -912,8 +922,14 @@ class LoadSumActivateDeviceProductPackageVersionsResultTask(
                                                    until_date_reserve_values,
                                                    total_values)
 
-        self._save_activate_values(total_values, cycle_type,
-                                   start_datedim, end_datedim)
+        try:
+            sid = transaction.savepoint(USING)
+            self._save_activate_values(total_values, cycle_type,
+                                       start_datedim, end_datedim)
+            transaction.savepoint_commit(sid)
+        except Exception as e:
+            self.logger.info(e)
+            transaction.savepoint_rollback(sid)
 
     def _until_date_total_reserve_values(self, end_datedim):
         datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
@@ -952,7 +968,14 @@ class LoadSumDownloadProductResultTask(LoadResultTask):
         cb_dw_values = self._combine_values(total_download_values,
                                             cb_dw_values, is_total=True)
         self.logger.info(cb_dw_values)
-        self._save_values(cb_dw_values, cycle_type, start_datedim, end_datedim)
+
+        try:
+            sid = transaction.savepoint(USING)
+            self._save_values(cb_dw_values, cycle_type, start_datedim, end_datedim)
+            transaction.savepoint_commit(sid)
+        except Exception as e:
+            self.logger.info(e)
+            transaction.savepoint_rollback(sid)
 
     def _until_date_download_values(self, end_datedim):
         datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
