@@ -20,6 +20,7 @@ from mobapi2.account.views import (AccountCreateView,
                                    AccountSignoutView,
                                    AccountAuthTokenView,
                                    AccountCommentPackageView)
+from mobapi2.clientapp.views import SelfUpdateView
 from analysis.views.rest_views import EventViewSet
 
 
@@ -60,9 +61,7 @@ rest_router.register('bookmarks', PackageBookmarkViewSet, base_name='bookmark')
 rest_router.register('comments', CommentViewSet)
 rest_router.register('events', EventViewSet, base_name='event')
 
-urlpatterns = rest_router.urls
 
-from mobapi2.clientapp.views import SelfUpdateView
 
 def _account_basename(name):
     prefix='account'
@@ -83,6 +82,7 @@ account_urlpatterns = patterns('',
                            name=_account_basename('commentedpackages')),
                        )
 
+urlpatterns = rest_router.urls
 urlpatterns += patterns('',
     url(r'^selfupdate/?$', SelfUpdateView.as_view(),
         name=rest_router.get_base_name('selfupdate')),

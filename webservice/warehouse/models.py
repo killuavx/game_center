@@ -12,7 +12,7 @@ from django.db import models
 from django.db.models.query import QuerySet
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
-from model_utils.managers import PassThroughManager
+from toolkit.fields import StarsField
 from django.utils.translation import ugettext_lazy as _
 import tagging
 from tagging_autocomplete.models import TagAutocompleteField as TagField
@@ -421,6 +421,8 @@ class PackageVersion(SiteRelated, models.Model):
 
     updated_datetime = models.DateTimeField(auto_now=True, auto_now_add=True)
 
+    stars = StarsField(verbose_name=_('Star'))
+
     tracker = FieldTracker()
 
     def get_absolute_url(self, link_type=0):
@@ -627,4 +629,6 @@ def package_pre_save(sender, instance, **kwargs):
 
     if len(changed):
         instance.updated_datetime = now()
+
+
 

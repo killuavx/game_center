@@ -28,6 +28,8 @@ USE_SOUTH = True
 
 USE_I18N = False
 
+APPEND_SLASH = False
+
 MEDIA_URL = HOST_URL.replace('gc', 'media') + MEDIA_URL
 
 STATIC_URL = HOST_URL.replace('gc', 'static') + STATIC_URL
@@ -181,6 +183,7 @@ FILEBROWSER_SELECT_FORMATS = {
     'media': ['Video', 'Audio'],
     'Package': ['iOSApp', 'AndroidApp']
 }
+
 
 FILEBROWSER_DIRECTORY = ''
 

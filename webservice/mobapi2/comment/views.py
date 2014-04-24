@@ -3,6 +3,7 @@ import copy
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
+from django.db import transaction
 from django.utils.timezone import now
 from rest_framework import mixins, viewsets, status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -138,7 +139,10 @@ class CommentViewSet(mixins.CreateModelMixin,
 
         serializer_class, self.serializer_class = \
             self.serializer_class, CommentCreateSerializer
+
+        sid = transaction.savepoint()
         response = super(CommentViewSet, self).create(request, *args, **kwargs)
+        transaction.savepoint_commit(sid)
         self.serializer_class = serializer_class
 
         if response.status_code == status.HTTP_201_CREATED:

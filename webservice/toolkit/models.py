@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
+from toolkit import settings
+from django.contrib.contenttypes.generic import GenericForeignKey
 from django.db import models
 from django.contrib.sites.managers import CurrentSiteManager as DjangoCSM
+from mezzanine.utils.models import get_user_model_name
 from model_utils.managers import PassThroughManager
+from django.utils.translation import ugettext_lazy as _
 
 
 def current_site_id():
@@ -73,26 +77,41 @@ class SiteRelated(models.Model):
         super(SiteRelated, self).save(*args, **kwargs)
 
 
-class MultiSiteRelated(models.Model):
+class Star(models.Model):
+    """
+    A rating that can be given to a piece of content.
+    """
+
+    by_comment = models.OneToOneField("generic.ThreadedComment",
+                                      related_name='content_star',
+                                      default=None,
+                                      null=True,
+                                      blank=True)
+
+    value = models.IntegerField(_("Value"))
+    rating_date = models.DateTimeField(_("Rating date"),
+                                       auto_now_add=True, null=True)
+    content_type = models.ForeignKey("contenttypes.ContentType", related_name='+')
+    object_pk = models.IntegerField()
+    content_object = GenericForeignKey("content_type", "object_pk")
+    user = models.ForeignKey(get_user_model_name(), verbose_name=_("Rater"),
+                             null=True, related_name="%(class)ss")
+
+    def __str__(self):
+        return 'rating for %s' % (self.content_object)
 
     class Meta:
-        abstract = True
+        db_table = 'common_star'
+        verbose_name = _("Star")
+        verbose_name_plural = _("Stars")
 
-    sites = models.ManyToManyField("sites.Site", null=True, blank=True)
+    def save(self, *args, **kwargs):
+        """
+        Validate that the rating falls between the min and max values.
+        """
+        valid = map(str, settings.STARS_RANGE)
+        if str(self.value) not in valid:
+            raise ValueError("Invalid rating. %s is not in %s" % (self.value,
+                                                                  ", ".join(valid)))
+        super(Star, self).save(*args, **kwargs)
 
-
-class CurrentSiteInMultiSiteRelatedManager(DjangoCSM):
-
-    def __init__(self, field_name=None, *args, **kwargs):
-        super(DjangoCSM, self).__init__(*args, **kwargs)
-        self.__field_name = field_name
-        self.__is_validated = False
-
-    def get_query_set(self):
-        if not self.__is_validated:
-            self._validate_field_name()
-        ids = [current_site_id()]
-        if 0 not in ids:
-            ids.append(0)
-        lookup = {self.__field_name + "__id__in": ids}
-        return super(DjangoCSM, self).get_query_set().filter(**lookup)
