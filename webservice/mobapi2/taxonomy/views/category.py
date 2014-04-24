@@ -3,8 +3,8 @@ from rest_framework import viewsets, generics
 from rest_framework.decorators import link
 from rest_framework.settings import api_settings
 from taxonomy.models import Category
-from mobapi.taxonomy.serializers.category import CategorySummarySerializer, CategoryDetailSerializer
-from mobapi.warehouse.views.package import PackageViewSet
+from mobapi2.taxonomy.serializers.category import CategorySummarySerializer, CategoryDetailSerializer
+from mobapi2.warehouse.views.package import PackageViewSet
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):

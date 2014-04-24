@@ -88,7 +88,7 @@ class PackageRelatedLatestVersinoMixin(object):
             return None
 
     def get_latest_version_screenshots(self, obj):
-        from mobapi.warehouse.serializers.packageversion import (
+        from mobapi2.warehouse.serializers.packageversion import (
             PackageVersionScreenshotSerializer)
         self.serializer_class_screenshot = PackageVersionScreenshotSerializer
         try:

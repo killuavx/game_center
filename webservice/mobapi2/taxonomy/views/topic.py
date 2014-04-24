@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from rest_framework import viewsets, filters, generics
 from rest_framework.decorators import link
-from mobapi.helpers import get_viewset_by_topic, get_item_model_by_topic
+from mobapi2.helpers import get_viewset_by_topic, get_item_model_by_topic
 from taxonomy.models import Topic, TopicalItem
-from mobapi.taxonomy.serializers.topic import (
+from mobapi2.taxonomy.serializers.topic import (
     TopicSummarySerializer,
     TopicDetailWithPackageSerializer)
 

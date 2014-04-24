@@ -9,7 +9,7 @@ from mobapi2.warehouse.serializers.mixin import (
     PackageRelatedPackageUrlMixin,
     PackageActionsMixin,
 )
-from mobapi.warehouse.serializers.author import AuthorSummarySerializer
+from mobapi2.warehouse.serializers.author import AuthorSummarySerializer
 
 
 class PackageSummarySerializer(PackageRelatedVersionsMixin,

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
-from mobapi.helpers import get_item_model_by_topic
+from mobapi2.helpers import get_item_model_by_topic
 from taxonomy.models import Topic, TopicalItem
-from mobapi.rest_fields import factory_imageurl_field
-from mobapi.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
-from mobapi.taxonomy.serializers import get_url_for_taxonomy
+from mobapi2.rest_fields import factory_imageurl_field
+from mobapi2.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
+from mobapi2.taxonomy.serializers import get_url_for_taxonomy
 
 
 class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
