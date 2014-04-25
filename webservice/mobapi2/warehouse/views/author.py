@@ -12,11 +12,13 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
     model = Author
 
     def get_queryset(self):
-        return Author.objects.activated()
+        if not self.queryset:
+            self.queryset = Author.objects.activated()
+        return self.queryset
 
     @link()
     def packages(self, request, pk, *args, **kwargs):
-        author = generics.get_object_or_404(self.queryset, pk=pk)
+        author = generics.get_object_or_404(self.get_queryset(), pk=pk)
         ViewSet = PackageViewSet
         queryset = author.packages.published()
         list_view = ViewSet.as_view({'get': 'list'}, queryset=queryset)
