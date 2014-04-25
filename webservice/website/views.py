@@ -56,7 +56,9 @@ def _is_breakpoint_continual_download(request):
     return True
 
 def _download_make_event(request, response, packageversion, filetype=None):
-
+    """
+        下载事件的日志记录
+    """
     if _is_breakpoint_continual_download(request):
         return None
 
