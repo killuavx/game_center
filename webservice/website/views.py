@@ -41,8 +41,25 @@ def _download_packageversion_response(packageversion, filetype):
     """
     return response
 
+def _is_breakpoint_continual_download(request):
+    """
+        是否断点续传
+    """
+    request_range = request.META.get('HTTP_RANGE', None)
+    if request_range is None:
+        return False
+
+    bytes_bits = request_range.strip('bytes=').split('-')
+    if str(bytes_bits[0]).isnumeric() and int(bytes_bits[0]) == 0:
+        return False
+
+    return True
 
 def _download_make_event(request, response, packageversion, filetype=None):
+
+    if _is_breakpoint_continual_download(request):
+        return None
+
     kwargs = get_client_event_data(request)
     entrytype = kwargs.get('entrytype', request.GET.get('entrytype', 'web'))
     imei = kwargs.get('imei', request.GET.get('imei', ''))
