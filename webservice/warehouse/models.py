@@ -603,10 +603,10 @@ def package_version_post_save(sender, instance, **kwargs):
 
     if instance.tracker.has_changed('status') \
         or instance.tracker.has_changed('download_count'):
-        aggregate = package.versions \
-            .published() \
+        aggregate = package.versions.published() \
             .aggregate(download_count=models.Sum('download_count'))
-        package.download_count = aggregate.get('download_count', 0)
+        total_count = aggregate.get('download_count', 0)
+        package.download_count = total_count if total_count else 0
 
     if package.tracker.changed():
         package.save()
