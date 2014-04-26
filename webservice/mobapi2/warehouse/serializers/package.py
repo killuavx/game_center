@@ -36,6 +36,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
         'get_latest_version_comments_url')
     actions = serializers.SerializerMethodField('get_action_links')
     tags = serializers.SerializerMethodField('get_tags')
+    star = serializers.SerializerMethodField('get_latest_version_star')
 
     author = AuthorSummarySerializer()
     version_name = serializers.SerializerMethodField('get_latest_version_name')
@@ -50,6 +51,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'package_name',
                   'title',
                   'tags',
+                  'star',
                   'category_name',
                   'categories_names',
                   'version_count',
@@ -97,6 +99,11 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
         'get_latest_version_comments_url')
     tags = serializers.SerializerMethodField('get_tags')
 
+    star = serializers.SerializerMethodField('get_latest_version_star')
+
+    stars_good_rate = serializers.SerializerMethodField('get_latest_version_stars_good_rate')
+    stars_medium_rate = serializers.SerializerMethodField('get_latest_version_stars_good_rate')
+    stars_low_rate = serializers.SerializerMethodField('get_latest_version_stars_good_rate')
 
     actions = serializers.SerializerMethodField('get_action_links')
 
@@ -120,6 +127,10 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'download_size',
                   'comment_count',
                   'comments_url',
+                  'star',
+                  'stars_good_rate',
+                  'stars_medium_rate',
+                  'stars_low_rate',
                   'tags',
                   'category_name',
                   'categories_names',
