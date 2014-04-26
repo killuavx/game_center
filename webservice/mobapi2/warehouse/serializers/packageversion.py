@@ -6,7 +6,7 @@ from mobapi2.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
 from mobapi2.rest_fields import factory_imageurl_field
 from mobapi2.helpers import (
     get_packageversion_comment_queryset,
-    get_packageversion_comments_url)
+    get_packageversion_comments_url, get_object_star)
 from mobapi2.warehouse.serializers.mixin import (
     PackageRelatedCategoryMixin,
     PackageActionsMixin,
@@ -86,6 +86,11 @@ class PackageVersionSerializer(ModelSerializer):
             pass
         return url
 
+    star = serializers.SerializerMethodField('get_star')
+
+    def get_star(self, obj):
+        return get_object_star(obj)
+
     class Meta:
         model = PackageVersion
         fields = ('icon',
@@ -94,6 +99,7 @@ class PackageVersionSerializer(ModelSerializer):
                   'version_name',
                   'screenshots',
                   'whatsnew',
+                  'star',
                   'download',
                   'download_count',
                   'download_size',
@@ -189,12 +195,18 @@ class PackageVersionSummarySerializer(HyperlinkedModelSerializer):
             pass
         return url
 
+    star = serializers.SerializerMethodField('get_star')
+
+    def get_star(self, obj):
+        return get_object_star(obj)
+
     class Meta:
         model = PackageVersion
         fields = ('url',
                   'icon',
                   'version_code',
                   'version_name',
+                  'star',
                   'download',
                   'download_count',
                   'download_size',
@@ -276,6 +288,11 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
             return request.build_absolute_uri(uri)
         return uri
 
+    star = serializers.SerializerMethodField('get_star')
+
+    def get_star(self, obj):
+        return get_object_star(obj)
+
     class Meta:
         model = PackageVersion
         fields = ('url',
@@ -295,6 +312,7 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
                   'whatsnew',
                   'summary',
                   'description',
+                  'star',
                   'author',
                   'screenshots',
                   'actions',

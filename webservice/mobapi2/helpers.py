@@ -77,3 +77,7 @@ def get_packageversion_comments_url(version, router=None):
     view_name = router.get_base_name('comment-list') if router else 'comment-list'
     url = reverse(view_name)
     return "%s?%s" % (url, urlencode(kwargs))
+
+
+def get_object_star(obj):
+    return round(obj.stars_average, 1)

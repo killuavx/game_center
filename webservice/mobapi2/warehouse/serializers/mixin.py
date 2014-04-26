@@ -2,7 +2,7 @@
 from django.core.urlresolvers import reverse
 from mobapi2.helpers import (
     get_packageversion_comment_queryset,
-    get_packageversion_comments_url)
+    get_packageversion_comments_url, get_object_star)
 from mobapi2.settings import IMAGE_COVER_SIZE, IMAGE_ICON_SIZE
 from mobapi2.warehouse.serializers.helpers import (
     get_versions_url,
@@ -54,6 +54,13 @@ class PackageRelatedVersionsMixin(object):
 
 
 class PackageRelatedLatestVersinoMixin(object):
+
+    def get_latest_version_star(self, obj):
+        try:
+            version = obj.versions.latest_published()
+            return get_object_star(version)
+        except:
+            return 0
 
     def get_latest_version_name(self, obj):
         try:
