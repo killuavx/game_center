@@ -7,7 +7,7 @@ class CommentStarSerializerMixin(object):
 
     def get_content_star(self, obj):
         try:
-            return obj.content_star.value
+            return obj.content_star.get().value
         except:
             return None
 
@@ -46,6 +46,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
             Star(value=int(star_val),
                  user=obj.user,
                  content_object=obj.content_object,
+                 ip_address=obj.ip_address,
                  by_comment=obj).save()
 
     class Meta:

@@ -43,4 +43,4 @@ class StarAdmin(admin.ModelAdmin):
     content_title.allow_tags = True
     content_title.short_description = _('Object Title')
 
-admin.site.register(Star, StarAdmin)
+#admin.site.register(Star, StarAdmin)
