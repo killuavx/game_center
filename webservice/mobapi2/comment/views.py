@@ -43,6 +43,7 @@ class CommentViewSet(mixins.CreateModelMixin,
     * `user_icon`: 用户的icon图片地址, 没有则null,
     * `comment`: 评论的内容,
     * `submit_date`: 发表的时间,格式是时间戳,如"1382392569"
+    * `star`: 评星
 
     ----
 
@@ -71,6 +72,8 @@ class CommentViewSet(mixins.CreateModelMixin,
     * 401 HTTP_401_UNAUTHORIZED
         * 未登陆
         * 无效的HTTP Header: Authorization
+    * 403 HTTP_403_FORBIDDEN
+        * 无效评论评星
     * 404 HTTP_404_NOT_FOUND
         * 找不到这款应用
 
@@ -80,13 +83,19 @@ class CommentViewSet(mixins.CreateModelMixin,
     * `user_icon`: 用户的icon图片地址, 没有则null,
     * `comment`: 评论的内容,
     * `submit_date`: 发表的时间,格式是时间戳,如"1382392569"
+    * `star`: 评星
 
     """
 
     authentication_classes = (PlayerTokenAuthentication,)
     permission_classes = (IsAuthenticatedOrReadOnly, )
     serializer_class = CommentSerializer
-    queryset = Comment.objects.published().by_submit_order()
+    model = Comment
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = Comment.objects.visible()
+        return self.queryset.by_submit_order()
 
     def check_paramters(self, querydict):
         ct = 'content_type'
@@ -140,10 +149,15 @@ class CommentViewSet(mixins.CreateModelMixin,
         serializer_class, self.serializer_class = \
             self.serializer_class, CommentCreateSerializer
 
-        sid = transaction.savepoint()
-        response = super(CommentViewSet, self).create(request, *args, **kwargs)
-        transaction.savepoint_commit(sid)
-        self.serializer_class = serializer_class
+        try:
+            sid = transaction.savepoint()
+            response = super(CommentViewSet, self).create(request, *args, **kwargs)
+            transaction.savepoint_commit(sid)
+        except ValueError as e:
+            transaction.savepoint_rollback(sid)
+            response = Response(data={'detail': str(e)},
+                                status=status.HTTP_403_FORBIDDEN)
+            return response
 
         if response.status_code == status.HTTP_201_CREATED:
             serializer = self.serializer_class(self.object)

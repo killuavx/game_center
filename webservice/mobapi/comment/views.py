@@ -11,6 +11,7 @@ from mobapi.authentications import PlayerTokenAuthentication
 from mobapi.comment.serializers import CommentSerializer, CommentCreateSerializer
 from comment.models import Comment
 
+
 class CommentViewSet(mixins.CreateModelMixin,
                      mixins.ListModelMixin,
                      viewsets.GenericViewSet):
@@ -59,7 +60,7 @@ class CommentViewSet(mixins.CreateModelMixin,
         Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
         Content-Type:application/x-www-form-urlencoded
 
-        comment=great%20job
+        comment=great%20job&star=5
 
     #### 响应内容
 
@@ -84,7 +85,12 @@ class CommentViewSet(mixins.CreateModelMixin,
     authentication_classes = (PlayerTokenAuthentication,)
     permission_classes = (IsAuthenticatedOrReadOnly, )
     serializer_class = CommentSerializer
-    queryset = Comment.objects.published().by_submit_order()
+    model = Comment
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = Comment.objects.visible()
+        return self.queryset.by_submit_order()
 
     def check_paramters(self, querydict):
         ct = 'content_type'
@@ -139,7 +145,6 @@ class CommentViewSet(mixins.CreateModelMixin,
             self.serializer_class, CommentCreateSerializer
         response = super(CommentViewSet, self).create(request, *args, **kwargs)
         self.serializer_class = serializer_class
-
         if response.status_code == status.HTTP_201_CREATED:
             serializer = self.serializer_class(self.object)
             response.data = serializer.data
