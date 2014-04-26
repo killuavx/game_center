@@ -14,7 +14,6 @@ class ApiVersionRouter(routers.DefaultRouter):
     def register(self, prefix, viewset, base_name=None):
         if base_name is not None:
             base_name = self.get_base_name(base_name)
-            print(base_name)
         super(ApiVersionRouter, self).register(prefix=prefix, viewset=viewset, base_name=base_name)
 
     def get_default_base_name(self, viewset):

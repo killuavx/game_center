@@ -6,6 +6,7 @@ from mobapi2.settings import IMAGE_ICON_SIZE
 from mobapi2.taxonomy.serializers import get_url_for_taxonomy
 from mobapi2.serializers import (
     HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
+from mobapi2.warehouse.serializers.package import PackageSummarySerializer
 
 
 class CategoryDetailSerializer(HyperlinkedModelSerializer):
@@ -33,6 +34,7 @@ class CategoryDetailSerializer(HyperlinkedModelSerializer):
 
 
 class CategoryRelatedChildrenMixin(object):
+
     def get_children(self, obj):
         qs = obj.children.showed()
         try:
@@ -44,7 +46,21 @@ class CategoryRelatedChildrenMixin(object):
             return list()
 
 
+class CategoryRelatedPackagesMixin(object):
+
+    serializer_class_package = PackageSummarySerializer
+
+    limit_packages = 4
+
+    def get_packages(self, obj):
+        if obj.children.count():
+            return list()
+        packages = obj.packages.published().by_updated_order()[0:self.limit_packages]
+        return PackageSummarySerializer(packages, many=True).data
+
+
 class CategorySummarySerializer(CategoryRelatedChildrenMixin,
+                                CategoryRelatedPackagesMixin,
                                 HyperlinkedModelSerializer):
     PREFIX = 'category'
 
@@ -53,6 +69,8 @@ class CategorySummarySerializer(CategoryRelatedChildrenMixin,
     children = serializers.SerializerMethodField('get_children')
 
     packages_url = serializers.SerializerMethodField('get_items_url')
+
+    packages = serializers.SerializerMethodField('get_packages')
 
     def get_items_url(self, obj):
         return get_url_for_taxonomy(self.context.get('request'),
@@ -70,4 +88,5 @@ class CategorySummarySerializer(CategoryRelatedChildrenMixin,
                   'packages_url',
                   'parent',
                   'children',
+                  'packages',
         )
