@@ -150,7 +150,9 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
 class PackageRankingsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = PackageSummarySerializer
-    filter_backends = (PackageExcludeCategoryOfApplicationFilter, )
+    filter_backends = (
+        PackageExcludeCategoryOfApplicationFilter,
+    )
 
     model = Package
 

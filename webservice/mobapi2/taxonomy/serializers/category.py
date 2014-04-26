@@ -56,7 +56,9 @@ class CategoryRelatedPackagesMixin(object):
         if obj.children.count():
             return list()
         packages = obj.packages.published().by_updated_order()[0:self.limit_packages]
-        return PackageSummarySerializer(packages, many=True).data
+        return self.serializer_class_package(packages,
+                                             context=self.context,
+                                             many=True).data
 
 
 class CategorySummarySerializer(CategoryRelatedChildrenMixin,
