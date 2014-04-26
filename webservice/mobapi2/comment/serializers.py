@@ -3,17 +3,21 @@ from rest_framework import serializers
 from comment.models import Comment
 from toolkit.models import Star
 
+class CommentStarSerializerMixin(object):
 
-class CommentSerializer(serializers.ModelSerializer):
-    user_icon = serializers.SerializerMethodField('get_user_icon_url')
-
-    star = serializers.SerializerMethodField('get_comment_star_value')
-
-    def get_comment_star_value(self, obj):
+    def get_content_star(self, obj):
         try:
             return obj.content_star.value
         except:
             return None
+
+
+class CommentSerializer(CommentStarSerializerMixin,
+                        serializers.ModelSerializer):
+
+    user_icon = serializers.SerializerMethodField('get_user_icon_url')
+
+    star = serializers.SerializerMethodField('get_content_star')
 
     def get_user_icon_url(self, obj):
         try:
@@ -27,23 +31,22 @@ class CommentSerializer(serializers.ModelSerializer):
             'user_name',
             'user_icon',
             'comment',
-            'star',
             'submit_date',
+            'star',
         )
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
 
+    def save_object(self, obj, **kwargs):
+        super(CommentCreateSerializer, self).save_object(obj=obj, **kwargs)
+        if 'star' in self.init_data:
+            from toolkit.models import Star
+            star_val = self.init_data['star']
+            Star(value=int(star_val),
+                 user=obj.user,
+                 content_object=obj.content_object,
+                 by_comment=obj).save()
+
     class Meta:
         model = Comment
-
-    def save_object(self, obj, **kwargs):
-        if 'star' in self.init_data:
-            star = Star(
-                content_object=obj.content_object,
-                user=obj.user,
-                value=self.init_data['star']
-            )
-            obj.content_star = star
-        super(CommentCreateSerializer, self).save_object(obj, **kwargs)
-

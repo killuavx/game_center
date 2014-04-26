@@ -82,20 +82,32 @@ class Star(models.Model):
     A rating that can be given to a piece of content.
     """
 
-    by_comment = models.OneToOneField("generic.ThreadedComment",
-                                      related_name='content_star',
-                                      default=None,
-                                      null=True,
-                                      blank=True)
+    by_comment = models.ForeignKey('generic.ThreadedComment',
+                                   default=None,
+                                   null=True,
+                                   blank=True,
+                                   related_name='content_star',
+                                   on_delete=models.DO_NOTHING
+                                   )
 
     value = models.IntegerField(_("Value"))
     rating_date = models.DateTimeField(_("Rating date"),
                                        auto_now_add=True, null=True)
-    content_type = models.ForeignKey("contenttypes.ContentType", related_name='+')
+    content_type = models.ForeignKey("contenttypes.ContentType",
+                                     related_name='+')
     object_pk = models.IntegerField()
     content_object = GenericForeignKey("content_type", "object_pk")
-    user = models.ForeignKey(get_user_model_name(), verbose_name=_("Rater"),
-                             null=True, related_name="%(class)ss")
+
+    user = models.ForeignKey(get_user_model_name(),
+                             verbose_name=_("Rater"),
+                             default=True,
+                             null=True, blank=True,
+                             related_name="%(class)ss",
+                             on_delete=models.DO_NOTHING
+                             )
+
+    ip_address = models.IPAddressField(blank=True,
+                                       null=True)
 
     def __str__(self):
         return 'rating for %s' % (self.content_object)
