@@ -20,8 +20,9 @@ def get_packageversion_download_size(version):
     return version.get_download_size()
 
 
-def get_packageversion_urls(request, versions):
-    version_uris = [reverse('packageversion-detail', kwargs=dict(pk=version.pk)) for version in versions]
+def get_packageversion_urls(request, versions, router=None):
+    view_name = router.get_base_name('packageversion-detail') if router else 'packageversion-detail'
+    version_uris = [reverse(view_name, kwargs=dict(pk=version.pk)) for version in versions]
     if request:
         version_uris = \
             [request.build_absolute_uri(uri) for uri in version_uris]
@@ -29,8 +30,9 @@ def get_packageversion_urls(request, versions):
     return version_uris
 
 
-def get_versions_url(request, package):
-    uri = "%s?package=%d" % (reverse('packageversion-list'), package.pk)
+def get_versions_url(request, package, router=None):
+    view_name = router.get_base_name('packageversion-list') if router else 'packageversion-list'
+    uri = "%s?package=%d" % (reverse(view_name), package.pk)
     if request:
         return request.build_absolute_uri(uri)
     return uri

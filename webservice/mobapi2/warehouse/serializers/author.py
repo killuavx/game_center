@@ -4,9 +4,11 @@ from rest_framework import serializers
 from mobapi2.rest_fields import factory_imageurl_field
 from warehouse.models import Author
 from mobapi2.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
+from mobapi2.serializers import HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer
 
 
-class AuthorSerializer(serializers.HyperlinkedModelSerializer):
+class AuthorSerializer(HyperlinkedModelSerializer):
+
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     cover = factory_imageurl_field(IMAGE_COVER_SIZE)
@@ -15,8 +17,9 @@ class AuthorSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_packages_url(self, obj):
         request = self.context.get('request')
+        view_name = self.opts.router.get_base_name('author-packages')
         return request.build_absolute_uri(
-            reverse('author-packages', kwargs=dict(pk=obj.pk))
+            reverse(view_name, kwargs=dict(pk=obj.pk))
         )
 
     class Meta:
@@ -24,7 +27,8 @@ class AuthorSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'icon', 'cover', 'name', 'packages_url')
 
 
-class AuthorSummarySerializer(serializers.HyperlinkedModelSerializer):
+class AuthorSummarySerializer(HyperlinkedModelSerializer):
+
     class Meta:
         model = Author
         fields = ('url', 'name')

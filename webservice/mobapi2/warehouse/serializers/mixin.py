@@ -20,8 +20,9 @@ class PackageActionsMixin(object):
         mark_url = None
         try:
             request = self.context.get('request')
+            base_name = self.opts.router.get_base_name('bookmark-detail')
             mark_url = request.build_absolute_uri(
-                reverse('bookmark-detail', kwargs=dict(pk=obj.pk))
+                reverse(base_name, kwargs=dict(pk=obj.pk))
             )
         except AttributeError:
             pass
@@ -49,7 +50,7 @@ class PackageRelatedVersionsMixin(object):
 
     def get_versions_url(self, obj):
         return get_versions_url(request=self.context.get('request'),
-                                package=obj)
+                                package=obj, router=self.opts.router)
 
 
 class PackageRelatedLatestVersinoMixin(object):
@@ -123,7 +124,7 @@ class PackageRelatedLatestVersinoMixin(object):
 
     def get_latest_version_comments_url(self, obj):
         latest_version = obj.versions.latest_published()
-        url = get_packageversion_comments_url(latest_version)
+        url = get_packageversion_comments_url(latest_version, self.opts.router)
         try:
             request = self.context.get('request')
             return request.build_absolute_uri(url)
@@ -136,8 +137,8 @@ class PackageRelatedPackageUrlMixin(object):
 
     def get_related_packages_url(self, obj):
         request = self.context.get('request')
-        related_url = reverse('package-relatedpackages',
-                              kwargs=dict(pk=obj.pk))
+        view_name = self.opts.router.get_base_name('package-relatedpackages')
+        related_url = reverse(view_name, kwargs=dict(pk=obj.pk))
         try:
             related_url = request.build_absolute_uri(related_url)
         except AttributeError:

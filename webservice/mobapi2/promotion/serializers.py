@@ -3,14 +3,18 @@ from rest_framework import serializers
 from promotion.models import Advertisement
 from mobapi2.rest_fields import factory_imageurl_field
 from mobapi2.settings import IMAGE_ADV_COVER_SIZE
+from mobapi2.serializers import (
+    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
 
 
-class AdvertisementSerializer(serializers.HyperlinkedModelSerializer):
+class AdvertisementSerializer(HyperlinkedModelSerializer):
+
     content_url = serializers.SerializerMethodField('get_content_url')
 
     def get_content_url(self, obj):
-        hlid = serializers.HyperlinkedIdentityField(source='content',
-                                                    view_name='package-detail',
+        hlid = serializers.HyperlinkedIdentityField(
+                        source='content',
+                        view_name=self.opts.router.get_base_name('package-detail'),
         )
         hlid.context = self.context
         return hlid.field_to_native(obj.content, 'content_url')

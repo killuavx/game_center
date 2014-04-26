@@ -41,7 +41,6 @@ class CommentCreateSerializer(serializers.ModelSerializer):
     def save_object(self, obj, **kwargs):
         super(CommentCreateSerializer, self).save_object(obj=obj, **kwargs)
         if 'star' in self.init_data:
-            from toolkit.models import Star
             star_val = self.init_data['star']
             Star(value=int(star_val),
                  user=obj.user,

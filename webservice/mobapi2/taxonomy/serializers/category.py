@@ -4,9 +4,11 @@ from taxonomy.models import Category
 from mobapi2.rest_fields import factory_imageurl_field
 from mobapi2.settings import IMAGE_ICON_SIZE
 from mobapi2.taxonomy.serializers import get_url_for_taxonomy
+from mobapi2.serializers import (
+    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
 
 
-class CategoryDetailSerializer(serializers.HyperlinkedModelSerializer):
+class CategoryDetailSerializer(HyperlinkedModelSerializer):
     PREFIX = 'category'
 
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
@@ -17,7 +19,8 @@ class CategoryDetailSerializer(serializers.HyperlinkedModelSerializer):
         return get_url_for_taxonomy(self.context.get('request'),
                                     obj,
                                     obj.packages,
-                                    '%s-packages' % self.PREFIX)
+                                    '%s-packages' % self.PREFIX,
+                                    self.opts.router)
 
     class Meta:
         model = Category
@@ -42,7 +45,7 @@ class CategoryRelatedChildrenMixin(object):
 
 
 class CategorySummarySerializer(CategoryRelatedChildrenMixin,
-                                serializers.HyperlinkedModelSerializer):
+                                HyperlinkedModelSerializer):
     PREFIX = 'category'
 
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
@@ -55,7 +58,8 @@ class CategorySummarySerializer(CategoryRelatedChildrenMixin,
         return get_url_for_taxonomy(self.context.get('request'),
                                     obj,
                                     obj.packages,
-                                    '%s-packages' % self.PREFIX)
+                                    '%s-packages' % self.PREFIX,
+                                    self.opts.router)
 
     class Meta:
         model = Category

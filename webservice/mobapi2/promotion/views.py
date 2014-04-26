@@ -59,7 +59,7 @@ def documentation_advertisement_viewset():
     places = Place.objects.all()
     contents = list()
     for p in places:
-        url = "%s%s/?place=%s" % (host_url, '/api/advertisements', p.slug)
+        url = "%s%s/?place=%s" % (host_url, '/api/v2/advertisements', p.slug)
         a = '[%s](%s)' % (url, url, )
         contents.append("\n * `%s`: %s %s" % (p.slug, p.help_text, a))
 

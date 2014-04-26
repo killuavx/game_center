@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from comment.models import Comment
 from account.models import User as Player
+from mobapi2.serializers import ModelWithRouterSerializer as ModelSerializer
 
 
 class AccountRelatedProfileMixin(object):
@@ -28,8 +29,7 @@ class AccountRelatedProfileMixin(object):
 
     def get_comment_count(self, obj):
         try:
-            return Comment.objects.with_site().published().filter(
-                user=obj).count()
+            return Comment.objects.visible().filter(user=obj).count()
         except:
             return 0
 
@@ -41,8 +41,8 @@ class AccountRelatedProfileMixin(object):
         return 0
 
 
-class AccountDetailSerializer(AccountRelatedProfileMixin,
-                              serializers.ModelSerializer):
+class AccountDetailSerializer(AccountRelatedProfileMixin, ModelSerializer):
+
     email = serializers.SerializerMethodField('get_profile_email')
     phone = serializers.SerializerMethodField('get_profile_phone')
     icon = serializers.SerializerMethodField('get_profile_icon_url')

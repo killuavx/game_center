@@ -13,12 +13,12 @@ def import_module_member(member_name, module_name):
 
 def topic_viewset_model_map():
     _topic_viewset_model_default = [import_module_member('PackageViewSet',
-                                                         'mobapi.warehouse.views.package'),
+                                                         'mobapi2.warehouse.views.package'),
                                     import_module_member('Package',
                                                          'warehouse.models'),
                                     '默认游戏专区']
     _topic_viewset_model_author = [import_module_member('AuthorViewSet',
-                                                        'mobapi.warehouse.views.author'),
+                                                        'mobapi2.warehouse.views.author'),
                                    import_module_member('Author',
                                                         'warehouse.models'),
                                    '默认游戏专区']
@@ -71,8 +71,9 @@ def get_packageversion_comment_queryset(version):
     return version_cmt.filter(is_public=True, is_removed=False)
 
 
-def get_packageversion_comments_url(version):
+def get_packageversion_comments_url(version, router=None):
     ct = ContentType.objects.get_for_model(version)
     kwargs = dict(content_type=ct.pk, object_pk=version.pk)
-    url = reverse('comment-list')
+    view_name = router.get_base_name('comment-list') if router else 'comment-list'
+    url = reverse(view_name)
     return "%s?%s" % (url, urlencode(kwargs))

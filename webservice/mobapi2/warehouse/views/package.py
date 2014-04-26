@@ -155,7 +155,9 @@ class PackageRankingsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     model = Package
 
     def get_queryset(self):
-        return self.model.objects.published().by_rankings_order()
+        if not self.queryset:
+            self.queryset = self.model.objects.published().by_rankings_order()
+        return self.queryset
 
 
 class PackageSearchViewSet(PackageViewSet):
@@ -398,7 +400,9 @@ class PackagePushView(generics.ListAPIView):
     model = Package
 
     def get_queryset(self):
-        return self.model.objects.published()
+        if not self.queryset:
+            self.queryset = self.model.objects.published()
+        return self.queryset
 
     def resort_with_request(self, request, object_list):
         _ids = request.GET.get('ids')

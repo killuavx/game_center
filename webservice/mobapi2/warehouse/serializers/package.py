@@ -10,6 +10,8 @@ from mobapi2.warehouse.serializers.mixin import (
     PackageActionsMixin,
 )
 from mobapi2.warehouse.serializers.author import AuthorSummarySerializer
+from mobapi2.serializers import (
+    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
 
 
 class PackageSummarySerializer(PackageRelatedVersionsMixin,
@@ -17,7 +19,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                                PackageRelatedCategoryMixin,
                                PackageRelatedTagMin,
                                PackageActionsMixin,
-                               serializers.HyperlinkedModelSerializer):
+                               HyperlinkedModelSerializer):
 
     entrytype = 'client'
 
@@ -71,7 +73,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                               PackageRelatedTagMin,
                               PackageActionsMixin,
                               PackageRelatedPackageUrlMixin,
-                              serializers.HyperlinkedModelSerializer):
+                              HyperlinkedModelSerializer):
 
     entrytype = 'client'
 

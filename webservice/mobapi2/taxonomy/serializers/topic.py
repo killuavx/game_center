@@ -5,6 +5,8 @@ from taxonomy.models import Topic, TopicalItem
 from mobapi2.rest_fields import factory_imageurl_field
 from mobapi2.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
 from mobapi2.taxonomy.serializers import get_url_for_taxonomy
+from mobapi2.serializers import (
+    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
 
 
 class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
@@ -23,18 +25,20 @@ class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
         return get_url_for_taxonomy(self.context.get('request'),
                                     obj,
                                     self.get_items_queryset(obj),
-                                    '%s-items' % self.PREFIX)
+                                    '%s-items' % self.PREFIX,
+                                    self.opts.router)
 
     def get_children_url(self, obj):
         return get_url_for_taxonomy(self.context.get('request'),
                                     obj,
                                     obj.children,
-                                    '%s-children' % self.PREFIX)
+                                    '%s-children' % self.PREFIX,
+                                    self.opts.router)
 
 
-class TopicSummarySerializer(
-    TopicRelatedItemCountUrlAndChildrenUrlMixin,
-    serializers.HyperlinkedModelSerializer):
+class TopicSummarySerializer(TopicRelatedItemCountUrlAndChildrenUrlMixin,
+                             HyperlinkedModelSerializer):
+
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     cover = factory_imageurl_field(IMAGE_COVER_SIZE)
@@ -61,7 +65,7 @@ class TopicSummarySerializer(
 
 class TopicDetailWithPackageSerializer(
     TopicRelatedItemCountUrlAndChildrenUrlMixin,
-    serializers.HyperlinkedModelSerializer):
+    HyperlinkedModelSerializer):
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     cover = factory_imageurl_field(IMAGE_COVER_SIZE)

@@ -16,9 +16,12 @@ from mobapi2.warehouse.serializers.author import AuthorSummarySerializer
 from mobapi2.warehouse.serializers.helpers import (
     get_packageversion_download_url,
     get_packageversion_download_size)
+from mobapi2.serializers import (
+    ModelWithRouterSerializer as ModelSerializer,
+    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
 
 
-class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
+class PackageVersionScreenshotSerializer(ModelSerializer):
     large = serializers.SerializerMethodField('get_large_url')
     preview = serializers.SerializerMethodField('get_preview_url')
 
@@ -39,7 +42,7 @@ class PackageVersionScreenshotSerializer(serializers.ModelSerializer):
         fields = ('large', 'preview', 'rotate')
 
 
-class PackageVersionSerializer(serializers.ModelSerializer):
+class PackageVersionSerializer(ModelSerializer):
 
     entrytype = 'client'
 
@@ -75,7 +78,7 @@ class PackageVersionSerializer(serializers.ModelSerializer):
     comments_url = serializers.SerializerMethodField('get_version_comments_url')
 
     def get_version_comments_url(self, obj):
-        url = get_packageversion_comments_url(obj)
+        url = get_packageversion_comments_url(obj, router=self.opts.router)
         try:
             request = self.context.get('request')
             return request.build_absolute_uri(url)
@@ -146,7 +149,7 @@ class PackageVersionRelatedPackageMixin(PackageRelatedCategoryMixin,
             .get_versions_url(obj=obj.package)
 
 
-class PackageVersionSummarySerializer(serializers.HyperlinkedModelSerializer):
+class PackageVersionSummarySerializer(HyperlinkedModelSerializer):
 
     entrytype = 'client'
 
@@ -178,7 +181,7 @@ class PackageVersionSummarySerializer(serializers.HyperlinkedModelSerializer):
     comments_url = serializers.SerializerMethodField('get_version_comments_url')
 
     def get_version_comments_url(self, obj):
-        url = get_packageversion_comments_url(obj)
+        url = get_packageversion_comments_url(obj, self.opts.router)
         try:
             request = self.context.get('request')
             return request.build_absolute_uri(url)
@@ -201,7 +204,7 @@ class PackageVersionSummarySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
-                                     serializers.HyperlinkedModelSerializer):
+                                     HyperlinkedModelSerializer):
 
     entrytype = 'client'
 
@@ -243,7 +246,7 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
     comments_url = serializers.SerializerMethodField('get_version_comments_url')
 
     def get_version_comments_url(self, obj):
-        url = get_packageversion_comments_url(obj)
+        url = get_packageversion_comments_url(obj, router=self.opts.router)
         try:
             request = self.context.get('request')
             return request.build_absolute_uri(url)
@@ -267,7 +270,8 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
 
     def get_version_url(self, obj):
         request = self.context.get('request')
-        uri = "%s?package=%d" % (reverse('packageversion-list'), obj.package.pk)
+        view_name = self.opts.router.get_base_name('packageversion-list')
+        uri = "%s?package=%d" % (reverse(view_name), obj.package.pk)
         if request:
             return request.build_absolute_uri(uri)
         return uri
