@@ -12,13 +12,14 @@ from django.db import models
 from django.db.models.query import QuerySet
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
+from toolkit.managers import CurrentSitePassThroughManager
 from toolkit.fields import StarsField
 from django.utils.translation import ugettext_lazy as _
 import tagging
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 
-from toolkit.models import SiteRelated, CurrentSitePassThroughManager
+from toolkit.models import SiteRelated
 from toolkit.helpers import import_from, sync_status_from
 
 

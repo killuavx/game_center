@@ -5,7 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
-from toolkit.models import SiteRelated, CurrentSitePassThroughManager
+from toolkit.managers import CurrentSitePassThroughManager
+from toolkit.models import SiteRelated
 
 
 class TipsWordQuerySet(QuerySet):

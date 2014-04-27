@@ -7,8 +7,9 @@ from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
+from toolkit.managers import CurrentSitePassThroughManager
 from toolkit.helpers import sync_status_from
-from toolkit.models import SiteRelated, CurrentSitePassThroughManager
+from toolkit.models import SiteRelated
 
 
 class ClientPackageVersionQuerySet(QuerySet):

@@ -200,7 +200,6 @@ INTERNAL_APPS = [
 EXTENDAL_APPS = [
     'toolkit',
     'mobapi',
-    'mobapi2',
     'clientapp',
     'searcher',
     'taxonomy',
@@ -210,6 +209,8 @@ EXTENDAL_APPS = [
     'comment',
     'analysis',
     'webmob',
+    'ranking',
+    'mobapi2',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 

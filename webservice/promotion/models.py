@@ -9,8 +9,9 @@ from django.utils.translation import ugettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
 from model_utils import FieldTracker, Choices
 from model_utils.fields import StatusField
+from toolkit.managers import CurrentSitePassThroughManager
 from toolkit.helpers import sync_status_from
-from toolkit.models import CurrentSitePassThroughManager, SiteRelated
+from toolkit.models import SiteRelated
 
 
 class Place(SiteRelated, models.Model):

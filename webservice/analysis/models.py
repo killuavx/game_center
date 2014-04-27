@@ -1689,11 +1689,12 @@ class DownloadBeginFinishFact(Fact):
 class BaseResult(models.Model):
 
     CYCLE_TYPES = (
-        (0, 'custom'),
+        (0, 'all'),
         (1, 'daily'),
         (2, 'weekly'),
         (3, 'monthly'),
         (4, '3days'),
+        (5, 'custom'),
     )
 
     cycle_type = models.PositiveSmallIntegerField('统计周期',
