@@ -54,8 +54,8 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     paginate_by = None
 
     def get_queryset(self):
-        if not self.queryset:
-            self.queryset = Category.objects
+        if self.queryset is None:
+            self.queryset = Category.objects.all()
         return self.queryset.as_root().showed()
 
     @link()
