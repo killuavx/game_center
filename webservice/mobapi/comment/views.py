@@ -112,8 +112,10 @@ class CommentViewSet(mixins.CreateModelMixin,
         return content_object
 
     def get_queryset(self):
-        return Comment.objects.for_model(self.content_object) \
-            .published().with_site().by_submit_order()
+        if self.queryset is None:
+            self.queryset = Comment.objects.for_model(self.content_object)\
+                .published().by_submit_order()
+        return self.queryset
 
     def list(self, request, *args, **kwargs):
         params = self.check_paramters(copy.deepcopy(request.GET))

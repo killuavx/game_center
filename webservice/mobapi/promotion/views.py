@@ -30,7 +30,7 @@ class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     ordering = ('-relation_advertisement__ordering',)
 
     def get_queryset(self):
-        if not self.queryset:
+        if self.queryset is None:
             self.queryset = self.model.objects.published().by_ordering()
         return self.queryset
 
