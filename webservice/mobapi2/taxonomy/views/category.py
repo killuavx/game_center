@@ -27,13 +27,20 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     * `slug`: 分类唯一标识的名字
     * `packages_url`: 分类软件列表接口
     * `parent`: 父级分类详细信息接口
-    * `children`: 子级分裂列表
+    * `children`: 子级分类列表
+
+    ----
+
+    ## 叶子分类列表接口
+        顶级分类: 游戏 game, 应用 application
+
+        GET /api/categories/{slug}/leafs/
 
     ----
 
     ## 分类应用列表接口
 
-        GET /api/topics/{slug}/packages/?page_size=10
+        GET /api/categories/{slug}/packages/?page_size=10
 
     #### 请求信息
 
@@ -55,14 +62,38 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if not self.queryset:
-            self.queryset = Category.objects
-        return self.queryset.as_root().showed()
+            self.queryset = Category.objects.all()
+        return self.queryset
+
+    def list(self, request, *args, **kwargs):
+        self.get_queryset()
+        orig_queryset, self.queryset = self.queryset, self.queryset.as_root()
+        response = super(CategoryViewSet, self).list(request, *args, **kwargs)
+        self.queryset = orig_queryset
+        return response
 
     @link()
     def packages(self, request, slug, *args, **kwargs):
-        category = self.get_object()
+        category = self.get_object(self.filter_queryset(self.queryset))
         list_view = self.get_packages_list_view(request, category)
         return list_view(request, *args, **kwargs)
+
+    @link()
+    def leafs(self, request, slug, *args, **kwargs):
+        self.get_queryset()
+        category = self.get_object(self.filter_queryset(self.queryset))
+        orig_queryset, self.queryset = self.queryset, category.get_leafnodes()
+        response = super(CategoryViewSet, self).list(request, *args, **kwargs)
+        self.queryset = orig_queryset
+        return response
+
+    def children(self, request, slug, *args, **kwargs):
+        self.get_queryset()
+        category = self.get_object(self.filter_queryset(self.queryset))
+        orig_queryset, self.queryset = self.queryset, category.get_children()
+        response = super(CategoryViewSet, self).list(request, *args, **kwargs)
+        self.queryset = orig_queryset
+        return response
 
     def get_packages_list_view(self, request, category):
         ViewSet = PackageViewSet
