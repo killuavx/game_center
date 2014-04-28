@@ -148,20 +148,6 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         return response
 
 
-class PackageRankingsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    serializer_class = PackageSummarySerializer
-    filter_backends = (
-        PackageExcludeCategoryOfApplicationFilter,
-    )
-
-    model = Package
-
-    def get_queryset(self):
-        if not self.queryset:
-            self.queryset = self.model.objects.published().by_rankings_order()
-        return self.queryset
-
-
 class PackageSearchViewSet(PackageViewSet):
     """ 软件搜索接口
 

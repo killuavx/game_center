@@ -4,7 +4,6 @@ from mobapi2.warehouse.views.author import AuthorViewSet
 from mobapi2.warehouse.views.package import (
     PackageViewSet,
     PackagePushView,
-    PackageRankingsViewSet,
     PackageSearchViewSet,
     PackageUpdateView)
 from mobapi2.taxonomy.views.category import CategoryViewSet
@@ -22,13 +21,15 @@ from mobapi2.account.views import (AccountCreateView,
 from analysis.views.rest_views import EventViewSet
 from mobapi2.clientapp.views import SelfUpdateView
 from mobapi2.rest_router import rest_router
+from mobapi2.ranking.views import PackageRankingViewSet
 
 
 rest_router.register('authors', AuthorViewSet)
 rest_router.register('packages', PackageViewSet)
 rest_router.register('packageversions', PackageVersionViewSet)
 rest_router.register('search', PackageSearchViewSet, base_name='search')
-rest_router.register('rankings', PackageRankingsViewSet, base_name='rankings')
+rest_router.register('rankings', PackageRankingViewSet,
+                     base_name=PackageRankingViewSet.view_name)
 rest_router.register('categories', CategoryViewSet)
 rest_router.register('topics', TopicViewSet)
 rest_router.register('tipswords', TipsWordViewSet)

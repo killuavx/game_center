@@ -60,9 +60,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 
     @link()
     def packages(self, request, slug, *args, **kwargs):
-        queryset = Category.objects.published()
-        category = generics.get_object_or_404(queryset, slug=slug)
-
+        category = self.get_object()
         list_view = self.get_packages_list_view(request, category)
         return list_view(request, *args, **kwargs)
 
