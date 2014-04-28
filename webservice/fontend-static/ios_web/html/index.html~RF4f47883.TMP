@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>首页</title>
+<link href="../css/site.css" media="all" rel="stylesheet" type="text/css" />
+<link href="../css/quick-layout.css" media="all" rel="stylesheet" type="text/css" />
+<noscript>
+    <h1 style="font-size:100%;color:#e53333;display:block;text-align:center">由于您的浏览器禁用了javascript脚本，网页无法正常浏览!</h1>
+</noscript>
+</head>
+
+<body>
+
+<!--头部开始 head-->
+<div class="auto head">
+	
+    <div class="auto width top">
+    	<div class="p10">
+              <div class="cell-bk">
+                    <div class="cell float-three ovh logo">
+                        <h2><a href="#" class="rel"><img src="../img/logo.png"><span class="trans home"></span></a></h2>
+                    </div><!--logo-->
+                    
+                    <div class="cell float-three search">
+                          <div class="cell-bk rel bdc box">
+                          		<form>
+                                	<div class="abs f14 poi select">
+                                    	<span>游戏</span><b class="ios-web-icon"></b>
+                                            <div class="abs drop-down">
+                                                <a href="#">游戏</a>
+                                                <a href="#">软件</a>
+                                                <a href="#">资讯</a>
+                                            </div>
+                                    </div>
+                                    <input type="text" class="f14 key" value="">
+                                    <button class="ios-web-icon bd-none poi abs">搜索</button>
+                                </form>
+                          </div>
+                    </div><!--search-->
+                    
+                    <div class="cell float-three user-switch">
+                          <ul class="r">
+                              <li><a href="#" class="ios-web-icon a1">苹果站</a></li>
+                              <li><a href="#" class="ios-web-icon a2">安卓站</a></li>
+                              <li><a href="#" class="ios-web-icon a3">虫虫助手</a></li>
+                              <li><a href="#" class="ios-web-icon a4">登录/注册</a></li>
+                          </ul>
+                    </div><!--user-switch-->
+              </div><!--cell-bk-->    
+        </div>    
+    </div><!--top-->
+    
+    <!--导航开始 nav-->
+    <div class="cell-bk nav">
+    	<div class="auto rel width">
+              <div class="l f18">
+                      <ul class="cell pct100">
+                          <li class="hover"><a href="index.html" class="a-1">首页</a></li>
+                          <li><a href="game.html" class="a-2">游戏</a></li>
+                          <li><a href="soft.html" class="a-3">软件</a></li>
+                          <li><a href="collection.html" class="a-4">专题</a></li>
+                          <li><a href="masterpiece.html" class="a-5">巨作</a></li>
+                          <li><a href="vendor.html" class="a-6">厂商</a></li>
+                          <li class="rel">
+                          		<a href="top.html" class="a-7">排行<em class="ios-web-icon"></em></a>
+                          		<div class="abs drop-down">
+                                		<a href="#">游戏排行</a>
+                                        <a href="#">软件排行</a>
+                                </div>
+                          </li>
+                          <li><a href="news.html" class="a-8">资讯</a></li>
+                          <li><a href="http://bbs.ccplay.com.cn" class="a-9">论坛</a></li>
+                      </ul>
+              </div><!--l-->
+              
+              <div class="abs">
+                      <div class="mt2 pt10 ios-switch">
+                          <a href="#" class="b-1 hover">iPhone</a><a href="#" class="b-2">iPad</a>
+                      </div>
+              </div><!--abs-->
+        </div><!--width-->
+    </div>
+    <!--导航结束 nav-->
+</div>
+<!--头部结束 head-->
+
+
+<!--广告开始 banner-->
+<div class="rel banner">
+	<div class="ban_pic">
+    	<ul>
+        	<li style="background:url(../img/b2.jpg) no-repeat center"><a href="#" class="auto width"></a></li>
+        </ul>
+    </div>
+    <div class="auto rel bg">
+          <div class="bg-t"></div>
+          <div class="abs bg-l"></div>
+          <div class="abs bg-r"></div>
+          <div class="abs bg-c"></div>
+    </div>
+</div>
+<!--广告结束 banner-->
+
+
+<!--巨作开始 masterpiece-->
+<div class="auto rel width box_btn roll masterpiece">
+	<div class="tj pct100">
+    	
+          <div class="width ovh roll_box">
+              <ul class="box_ul">
+                  <li class="dib rel"><a href="#"><img src="../img/4.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                  <li class="dib rel"><a href="#"><img src="../img/2.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                  <li class="dib rel"><a href="#"><img src="../img/3.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                  <li class="dib rel"><a href="#"><img src="../img/4.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                  <li class="dib rel"><a href="#"><img src="../img/5.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+              </ul>
+          </div><!--roll_box-->
+          
+          <div class="cb rel a_btn roll_btn">
+                <a href="javascript:;" class="ios-web-icon abs prev"></a>
+                <a href="javascript:;" class="ios-web-icon abs next"></a>
+          </div><!--roll_btn-->
+
+    </div><!--pct100-->
+</div>
+<!--巨作结束 masterpiece-->
+
+
+<!--最新发布 热点资讯 最贵应用 multi-->
+<div class="auto rel width multi">
+	<div class="cell-bk">
+          
+          
+          
+          
+          <div class="l pt20 hot-news">
+           		<div class="f18 cell rel t-title">
+                	<h3 class="l n mr30"><span class="abs ios-web-icon"></span>热点资讯</h3>
+                    <ul class="l abs cell-bk pl30 tc f16">
+                    	<li class="ios-web-icon dib pl10 pr10"><a href="#">热点</a></li>
+                        <li class="dib pl10 pr10"><a href="#">评测</a></li>
+                        <li class="dib pl10 pr10"><a href="#">攻略</a></li>
+                        <li class="dib pl10 pr10"><a href="#">资讯</a></li>
+                    </ul>
+                    <a class="r f12 mt5 more">更多></a>
+                </div> <!--t-title-->
+                
+                <div class="news-list">
+                	<div class="time-box-t">
+                    	<div class="time-box-b">
+                                <dl class="cl rel pt20 n-1">
+                                    <dt class="pb10"><h2><a href="news.html">诺基亚将改名微软移动 变身移动设备部门</a></h2><div class="abs tag-time"><a class="ios-web-icon" href="#">新闻</a><span class="db g9 time">04/14</span></div></dt>
+                                    <dd>
+                                        <a href="#" class="l mr15 pic"><img src="http://img3.91.com/uploads/allimg/140421/699-140421100G10-L.jpg" class="loading"></a>  
+                                        <p class="g9 pt10">根据科技博客Nokiapoweruser报道，微软与诺基亚收购交易将很快完成，根据一封发给供应商的信件，微软计划重新命名Nokia Oyj为Microsoft Mobile Oy(微软移动)<a href="#" class="gr">[全文]</a></p>
+                                    </dd>
+                                </dl>
+                                <dl class="cl rel pt20 n-2">
+                                    <dt class="pb10"><h2><a href="news.html">LG Isai FL再曝光 粉红机身配置顶级</a></h2><div class="abs tag-time"><a class="ios-web-icon" href="#">新闻</a><span class="db g9 time">04/14</span></div></dt>
+                                    <dd>
+                                        <a href="#" class="l mr15 pic"><img src="http://img2.91.com/uploads/allimg/140421/151-140421115R30-L.jpg" class="loading"></a>  
+                                        <p class="g9 pt10">Isai FL属于KDDI去年推出的Isai系列，具体的产品型号为LGL24。而考虑到该机顶级的硬件配置，因此LG下代旗舰机型G3和Nexus 6或许也将在外观以及内部配置上与之类似<a href="#" class="gr">[全文]</a></p> 
+                                    </dd>
+                                </dl>
+                                <dl class="cl rel pt20 n-3">
+                                    <dt class="pb10"><h2><a href="news.html">习近平与贾大山交往纪事:曾俯身让对方踩肩翻墙</a></h2><div class="abs tag-time"><a class="ios-web-icon" href="#">新闻</a><span class="db g9 time">04/14</span></div></dt>
+                                    <dd>
+                                        <a href="#" class="l mr15 pic"><img src="http://politics.people.com.cn/NMediaFile/2013/0822/MAIN201308221715274459481320033.jpg"></a>  
+                                        <p class="g9 pt10">农历癸巳年末，河北作家康志刚在其博客上贴发了中共中央总书记习近平于1998年发表的一篇悼念文章《忆大山》，记述了一段尘封的往事，情真意切，感人肺腑。文章经《光明日报》等多家报刊转载后，拜访了几位当事人。旧事重温，感慨良多<a href="#" class="gr">[全文]</a></p>
+                                    </dd>
+                                </dl>
+                                <dl class="cl rel pt20 n-4">
+                                    <dt class="pb10"><h2><a href="news.html">习近平与贾大山交往纪事:曾俯身让对方踩肩翻墙</a></h2><div class="abs tag-time"><a class="ios-web-icon" href="#">新闻</a><span class="db g9 time">04/14</span></div></dt>
+                                    <dd>
+                                        <a href="#" class="l mr15 pic"><img src="http://img2.91.com/uploads/allimg/140421/151-140421115R30-L.jpg" class="loading"></a>  
+                                        <p class="g9">农历癸巳年末，河北作家康志刚在其博客上贴发了中共中央总书记习近平于1998年发表的一篇悼念文章《忆大山》，记述了一段尘封的往事，情真意切，感人肺腑赶到正定，拜访了几位当事人。旧事重温，感慨良多<a href="#" class="gr">[全文]</a></p>
+                                    </dd>
+                                </dl>
+                                <dl class="cl rel pt20 n-1">
+                                    <dt class="pb10"><h2><a href="news.html">诺基亚将改名微软移动 变身移动设备部门</a></h2><div class="abs tag-time"><a class="ios-web-icon" href="#">新闻</a><span class="db g9 time">04/14</span></div></dt>
+                                    <dd>
+                                        <a href="#" class="l mr15 pic"><img src="http://img3.91.com/uploads/allimg/140421/699-140421100G10-L.jpg" class="loading"></a>  
+                                        <p class="g9 pt10">根据科技博客Nokiapoweruser报道，微软与诺基亚收购交易将很快完成，根据一封发给供应商的信件，微软计划重新命名Nokia Oyj为Microsoft Mobile Oy(微软移动)<a href="#" class="gr">[全文]</a></p>
+                                    </dd>
+                                </dl>
+                        </div><!--time-box-b-->
+                     </div><!--time-box-t-->
+                </div><!--news-list-->
+          </div><!-- hot-news-->
+    
+    
+          <div class="l abs pt20 latest-release btn-s-box">
+           		<div class="f18 cell rel t-title">
+                	<h3 class="l n mr30"><span class="abs ios-web-icon"></span>最新发布</h3>
+                    <a class="r f12 mt5 more">更多></a>
+                </div> <!--t-title-->
+                
+                <div class="latest-list pl10 pr10">
+                	<div class="time-box-t">
+                    	<div class="time-box-b">
+                                  <dl class="cell-bk pt15 rel app-list-m">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称游戏</a><span class="abs ios-web-icon star s2"></span></h3>
+                                          <p>999M<em>|</em>9999万+下载</p>
+                                          <p>v1.0.0<em>|</em>04-14</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-m">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称</a><span class="abs ios-web-icon star s2"></span></h3>
+                                          <p>999M<em>|</em>9999万+下载</p>
+                                          <p>v1.0.0<em>|</em>04-14</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-m">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称游戏</a><span class="abs ios-web-icon star s2"></span></h3>
+                                          <p>999M<em>|</em>9999万+下载</p>
+                                          <p>v1.0.0<em>|</em>04-14</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-m">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称</a><span class="abs ios-web-icon star s4"></span></h3>
+                                          <p>999M<em>|</em>9999万+下载</p>
+                                          <p>v1.0.0<em>|</em>04-14</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-m">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏</a><span class="abs ios-web-icon star s1"></span></h3>
+                                          <p>999M<em>|</em>9999万+下载</p>
+                                          <p>v1.0.0<em>|</em>04-14</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-m">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称游戏</a><span class="abs ios-web-icon star s2"></span></h3>
+                                          <p>999M<em>|</em>9999万+下载</p>
+                                          <p>v1.0.0<em>|</em>04-14</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-m">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">名称</a><span class="abs ios-web-icon star s5"></span></h3>
+                                          <p>999M<em>|</em>9999万+下载</p>
+                                          <p>v1.0.0<em>|</em>04-14</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-m">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称游戏</a><span class="abs ios-web-icon star s2"></span></h3>
+                                          <p>999M<em>|</em>9999万+下载</p>
+                                          <p>v1.0.0<em>|</em>04-14</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-m">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称游戏</a><span class="abs ios-web-icon star s4"></span></h3>
+                                          <p>999M<em>|</em>9999万+下载</p>
+                                          <p>v1.0.0<em>|</em>04-14</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-m">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">名称</a><span class="abs ios-web-icon star s5"></span></h3>
+                                          <p>999M<em>|</em>9999万+下载</p>
+                                          <p>v1.0.0<em>|</em>04-14</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                        </div><!--time-box-b-->
+                    </div><!--time-box-t-->
+                </div><!--latest-list-->
+                
+                
+          </div><!--latest-release-->
+          
+          
+          
+          
+          <div class="r abs pt20 most-expensive">
+           		<div class="f18 cell rel t-title">
+                	<h3 class="l n mr30"><span class="abs ios-web-icon"></span>最贵排行</h3>
+                    <a class="r f12 mt5 more">更多></a>
+                </div> <!--t-title-->
+                
+                <div class="most-list pl10 pr10 btn-s-box">
+                	<div class="time-box-t">
+                    	<div class="time-box-b">
+                                  <dl class="cell-bk pt15 rel app-list-l">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称游戏</a><span class="abs ios-web-icon star s1"></span></h3>
+                                          <p>智力游戏<em>|</em>9999万+下载</p>
+                                          <p class="price gr">￥100.00</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-l">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称</a><span class="abs ios-web-icon star s2"></span></h3>
+                                          <p>智力游戏<em>|</em>9999万+下载</p>
+                                          <p class="price gr">￥99.00</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-l">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称</a><span class="abs ios-web-icon star s2"></span></h3>
+                                          <p>智力游戏<em>|</em>9999万+下载</p>
+                                          <p class="price gr">￥99.00</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-l">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称游戏</a><span class="abs ios-web-icon star s3"></span></h3>
+                                          <p>智力游戏<em>|</em>9999万+下载</p>
+                                          <p class="price gr">￥999.00</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-l">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称</a><span class="abs ios-web-icon star s5"></span></h3>
+                                          <p>智力游戏<em>|</em>9999万+下载</p>
+                                          <p class="price gr">￥9999.00</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-l">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称</a><span class="abs ios-web-icon star s2"></span></h3>
+                                          <p>智力游戏<em>|</em>9999万+下载</p>
+                                          <p class="price gr">￥99.00</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-l">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称游戏</a><span class="abs ios-web-icon star s4"></span></h3>
+                                          <p>智力游戏<em>|</em>9999万+下载</p>
+                                          <p class="price gr">￥999.00</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                                  <dl class="cell-bk pt15 rel app-list-l">
+                                      <dt class="abs"><a href="#" class="pic"><img src="../img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dd class="g9">
+                                          <h3 class="n rel g3 f14"><a href="#">游戏名称</a><span class="abs ios-web-icon star s5"></span></h3>
+                                          <p>智力游戏<em>|</em>9999万+下载</p>
+                                          <p class="price gr">￥9999.00</p>
+                                          <div class="btn-s">
+                                                <a href="#" class="a1 install">安装</a>
+                                                <a href="#" class="a2">下载</a>
+                                          </div>
+                                      </dd>
+                                  </dl>
+                        </div><!--time-box-b-->
+                    </div><!--time-box-t-->                
+                </div><!--most-list-->
+          </div><!--most-expensive-->
+          
+          
+    </div><!--cell-bk-->
+</div>
+<!--最新发布 热点资讯 最贵应用  结束 multi-->
+
+<!--游戏 game-->
+<div class="auto mt30 width game">
+		<div class="rel cell-bk app-box">
+        		
+                <div class="left">
+                        <div class="f18 cell rel t-title">
+                            <h3 class="l n mr30">游戏</h3>
+                            <ul class="l abs cell-bk pl30 tc f16">
+                                <li class="ios-web-icon dib pl10 pr10"><a href="#">精品推荐</a></li>
+                                <li class="dib pl10 pr10"><a href="#">装机必备</a></li>
+                                <li class="dib pl10 pr10"><a href="#">最新发布</a></li>
+                                <li class="dib pl10 pr10"><a href="#">许愿兑现</a></li>
+                            </ul>
+                            <a class="r f12 mt5 more">更多></a>
+                        </div> <!--t-title-->
+                        
+                        
+                        
+                        
+        		
+                <div class="tj pt5 app-list-left">
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                最多5个字
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称15
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称18
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/1.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称27
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                </div><!--app-list-left-->
+ 
+                </div><!--left-->
+                
+                
+                
+                
+                
+                
+                <div class="abs right">
+                        <div class="f18 cell rel t-title">
+                            <ul class="l abs cell-bk tc f16">
+                                <li class="ios-web-icon dib"><a href="#">周榜</a></li>
+                                <li class="dib"><a href="#">月榜</a></li>
+                                <li class="dib"><a href="#">总榜</a></li>
+                            </ul>
+                        </div> <!--t-title-->
+                        
+                        
+                        
+                        <div class="app-list-right">
+                        
+                        	<ol>
+                            	<li class="rel hover">
+                                	<b class="l gr">1</b>
+                                    <a href="#" class="l"><img src="../img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">游戏名称游戏名称完</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l gr">2</b>
+                                    <a href="#" class="l"><img src="../img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l gr">3</b>
+                                    <a href="#" class="l"><img src="../img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">4</b>
+                                    <a href="#" class="l"><img src="../img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">5</b>
+                                    <a href="#" class="l"><img src="../img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">6</b>
+                                    <a href="#" class="l"><img src="../img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">7</b>
+                                    <a href="#" class="l"><img src="../img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">8</b>
+                                    <a href="#" class="l"><img src="../img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">9</b>
+                                    <a href="#" class="l"><img src="../img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">10</b>
+                                    <a href="#" class="l"><img src="../img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            </ol>
+                        
+                        </div><!--app-list-right-->
+                        
+                </div><!--right-->
+                
+        </div><!--app-box-->
+        
+        
+            <!--专题开始 project-->
+            <div class="auto rel width box_btn roll ovh project">
+                <div class="tj pct100">
+                    
+                      <div class="width ovh pt10 roll_box">
+                          <ul class="box_ul">
+                              <li class="dib rel"><a href="#"><img src="../img/1.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="../img/2.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="../img/3.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="../img/4.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="../img/5.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                          </ul>
+                      </div><!--roll_box-->
+                      
+                      <div class="cb rel a_btn roll_btn">
+                            <a href="javascript:;" class="ios-web-icon abs prev"></a>
+                            <a href="javascript:;" class="ios-web-icon abs next"></a>
+                      </div><!--roll_btn-->
+            
+                </div><!--pct100-->
+            </div>
+            <!--专题开始 project-->
+
+
+</div>
+<!--游戏 结束 game-->
+
+
+
+
+
+<!--软件 soft-->
+<div class="auto mt30 width soft">
+		<div class="rel cell-bk app-box">
+        		
+                <div class="left">
+                        <div class="f18 cell rel t-title">
+                            <h3 class="l n mr30">软件</h3>
+                            <ul class="l abs cell-bk pl30 tc f16">
+                                <li class="ios-web-icon dib pl10 pr10"><a href="#">精品推荐</a></li>
+                                <li class="dib pl10 pr10"><a href="#">装机必备</a></li>
+                                <li class="dib pl10 pr10"><a href="#">最新发布</a></li>
+                                <li class="dib pl10 pr10"><a href="#">许愿兑现</a></li>
+                            </ul>
+                            <a class="r f12 mt5 more">更多></a>
+                        </div> <!--t-title-->
+                        
+                        
+                        
+                        
+        		
+                <div class="tj pt5 app-list-left">
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/2.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                最多5个字
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/3.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称15
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称18
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                        <div class="dib rel app-list-min">
+                        	<a href="#" class="db tc f14">
+                            	<img src="../img/4.jpg" class="db auto">
+                                <span class="ios-web-icon abs db auto"></span>
+                                游戏名称27
+                                <i class="db n f12 g9">智力游戏</i>
+                            </a>
+                            <div class="btn-s">
+                                  <a href="#" class="a1 install">安装</a>
+                                  <a href="#" class="a2">下载</a>
+                            </div>
+                        </div>
+                </div><!--app-list-left-->
+ 
+                </div><!--left-->
+                
+                
+                
+                
+                
+                
+                <div class="abs right">
+                        <div class="f18 cell rel t-title">
+                            <ul class="l abs cell-bk tc f16">
+                                <li class="ios-web-icon dib"><a href="#">周榜</a></li>
+                                <li class="dib"><a href="#">月榜</a></li>
+                                <li class="dib"><a href="#">总榜</a></li>
+                            </ul>
+                        </div> <!--t-title-->
+                        
+                        
+                        
+                        <div class="app-list-right">
+                        
+                        	<ol>
+                            	<li class="rel hover">
+                                	<b class="l gr">1</b>
+                                    <a href="#" class="l"><img src="../img/4.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">游戏名称游戏名称完</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l gr">2</b>
+                                    <a href="#" class="l"><img src="../img/4.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l gr">3</b>
+                                    <a href="#" class="l"><img src="../img/4.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">4</b>
+                                    <a href="#" class="l"><img src="../img/4.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">5</b>
+                                    <a href="#" class="l"><img src="../img/4.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">6</b>
+                                    <a href="#" class="l"><img src="../img/4.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">7</b>
+                                    <a href="#" class="l"><img src="../img/4.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">8</b>
+                                    <a href="#" class="l"><img src="../img/4.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">9</b>
+                                    <a href="#" class="l"><img src="../img/4.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            	<li class="rel">
+                                	<b class="l">10</b>
+                                    <a href="#" class="l"><img src="../img/4.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">我是90后</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                            </ol>
+                        
+                        </div><!--app-list-right-->
+                        
+                </div><!--right-->
+                
+        </div><!--app-box-->
+        
+        
+            <!--专题开始 project-->
+            <div class="auto rel width box_btn roll ovh project">
+                <div class="tj pct100">
+                    
+                      <div class="width ovh pt10 roll_box">
+                          <ul class="box_ul">
+                              <li class="dib rel"><a href="#"><img src="../img/4.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="../img/2.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="../img/3.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="../img/4.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="../img/5.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                          </ul>
+                      </div><!--roll_box-->
+                      
+                      <div class="cb rel a_btn roll_btn">
+                            <a href="javascript:;" class="ios-web-icon abs prev"></a>
+                            <a href="javascript:;" class="ios-web-icon abs next"></a>
+                      </div><!--roll_btn-->
+            
+                </div><!--pct100-->
+            </div>
+            <!--专题开始 project-->
+
+
+</div>
+<!--软件 结束 soft-->
+
+
+
+
+
+<!--厂商 热帖 新手 开始 bbs-->
+<div class="auto width bbs">
+	<div class="rel cell-bk">
+    
+    	<div class="l pt20 hot-bbs">
+              <div class="f18 cell rel t-title">
+                  <h3 class="l n mr30">热帖</h3>
+                  <ul class="l abs cell-bk tc f16">
+                      <li class="ios-web-icon dib pl10 pr10"><a href="#">热点</a></li>
+                      <li class="dib pl10 pr10"><a href="#">大型</a></li>
+                      <li class="dib pl10 pr10"><a href="#">精品</a></li>
+                      <li class="dib pl10 pr10"><a href="#">综合</a></li>
+                  </ul>
+                  <a class="r f12 mt5 more">更多></a>
+              </div> <!--t-title-->
+              
+              <div class="hot-bbs-list">
+              
+              		<ul>
+                    	<li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                            <p class="cl g9">59个文字描述文字描述文字描描述文字描文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字<a href="#" class="gr">[全文]</a></p>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                    </ul>
+              
+              </div><!--hot-bbs-list-->
+
+        		
+        </div><!--hot-bbs-->
+    
+    
+    	<div class="l pt20 abs vendor">
+              <div class="f18 cell rel t-title">
+                  <h3 class="l n mr30">厂商</h3>
+                  <a class="r f12 mt5 more">更多></a>
+              </div> <!--t-title-->
+              
+              
+              <div class="vendor-list">
+              		<ul>
+                    		<li><a href="#"><img src="../img/v1.png"></a></li>
+                            <li><a href="#"><img src="../img/v2.png"></a></li>
+                            <li><a href="#"><img src="../img/v3.png"></a></li>
+                            <li><a href="#"><img src="../img/v4.png"></a></li>
+                            <li><a href="#"><img src="../img/v5.png"></a></li>
+                            <li><a href="#"><img src="../img/v6.png"></a></li>
+                            <li><a href="#"><img src="../img/v7.png"></a></li>
+                            <li><a href="#"><img src="../img/v8.png"></a></li>
+                    </ul>
+              </div>
+        		
+        </div><!--vendor-->
+    
+    
+    	<div class="r pt20 abs novice-bbs">
+              <div class="f18 cell rel t-title">
+                  <h3 class="l n mr30">新手</h3>
+                  <a class="r f12 mt5 more">更多></a>
+              </div> <!--t-title-->
+              
+              
+              
+              
+              <div class="hot-bbs-list novice-bbs-list">
+              		<a href="#" class="rel top">
+                    		<img src="../img/3.jpg">
+                            <span class="abs tc white png">文字标题栏文字标题栏</span>
+                    </a>
+              		<ul class="pt10">
+                    	<li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                        <li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="../img/3.jpg">标题名称标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                    </ul>
+              
+              </div><!--novice-bbs-list-->
+              
+              
+              
+        		
+        </div><!--novice-bbs-->
+        
+        
+        
+    </div><!--cell-bk-->
+</div>
+<!--厂商 热帖 新手 结束 bbs-->
+
+
+
+<!--美图 开始 mm-pic-->
+<div class="auto width ovh mm-pic">
+	<div class="pt20">
+              <div class="f18 cell rel t-title">
+                  <h3 class="l n mr30">热帖</h3>
+                  <ul class="l abs cell-bk tc f16">
+                      <li class="ios-web-icon dib pl10 pr10"><a href="#">美女</a></li>
+                      <li class="dib pl10 pr10"><a href="#">明星</a></li>
+                      <li class="dib pl10 pr10"><a href="#">风景</a></li>
+                      <li class="dib pl10 pr10"><a href="#">动漫</a></li>
+                      <li class="dib pl10 pr10"><a href="#">创意</a></li>
+                      <li class="dib pl10 pr10"><a href="#">壁纸</a></li>
+                      <li class="dib pl10 pr10"><a href="#">绘画</a></li>
+                  </ul>
+                  <a class="r f12 mt5 more">更多></a>
+              </div> <!--t-title-->
+              
+              
+              <div class="rel mt10 mm-pic-list">
+              		<!--默认图片：width:180px; height:180px  -->
+              		<div class="mm mp1"><a href="#"><img src="../img/1.jpg"></a></div>
+                    <div class="mm mp2"><a href="#"><img src="../img/2.jpg"></a></div>
+                    <div class="mm mp3"><a href="#"><img src="../img/3.jpg" width="364px" height="300px"></a></div>
+                    <div class="mm mp4"><a href="#"><img src="../img/4.jpg" width="382px" height="484px"></a></div>
+                    <div class="mm mp5"><a href="#"><img src="../img/5.jpg" width="364px" height="300px"></a></div>
+                    <div class="mm mp6"><a href="#"><img src="../img/6.jpg"></a></div>
+                    <div class="mm mp7"><a href="#"><img src="../img/6.jpg"></a></div>
+                    <div class="mm mp8"><a href="#"><img src="../img/3.jpg" width="382px" height="484px"></a></div>
+              </div><!--mm-pic-list-->
+    		
+    </div><!--pt20-->
+</div>
+<!--美图 结束 mm-pic-->
+
+
+
+<!--美图 开始 mm-pic-->
+<div class="auto width ovh i-link">
+	<div class="pt20">
+              <div class="f18 cell rel t-title">
+                  <h3 class="l n mr30">友情链接</h3>
+                  <a class="r f12 mt5 more">申请链接></a>
+              </div> <!--t-title-->
+              
+              
+              <div class="rel mt10 i-link-list">                  
+                  <ul>
+                    <li><a href="http://www.shendu.com" target="_blank">深度安卓门户</a></li>
+                    <li><a href="http://www.cncrk.com" target="_blank">起点软件下载</a></li>
+                    <li><a href="http://game.163.com/" target="_blank">网易游戏</a></li>
+                    <li><a href="http://dl.pconline.com.cn/" target="_blank">太平洋下载</a></li>
+                    <li><a href="http://game.mop.com/" target="_blank">猫扑游戏</a></li>
+                    <li><a href="http://www.178.com/" target="_blank">178游戏</a></li>
+                    <li><a href="http://www.cnmo.com/" target="_blank">手机中国</a></li>
+                    <li><a href="http://www.265g.com/" target="_blank">网页游戏</a></li>
+                    <li><a href="http://www.tgbus.com" target="_blank">电玩巴士</a></li>
+                    <li><a href="http://games.ifeng.com/" target="_blank">凤凰游戏</a></li>
+                    <li><a href="http://www.uc.cn/" target="_blank">手机浏览器</a></li>
+                    <li><a href="http://www.gfan.com/" target="_blank">安卓机锋网</a></li>
+                    <li><a href="http://www.139shop.com/" target="_blank">北斗手机</a></li>
+                    <li><a href="http://wan.renren.com/" target="_blank">人人游戏</a></li>
+                    <li><a href="http://sj.zol.com.cn/" target="_blank">ZOL手机</a></li>
+                    <li><a href="http://drivers.mydrivers.com/" target="_blank">驱动之家</a></li>
+                    <li><a href="http://www.07073.com" target="_blank">网页游戏</a></li>
+                    <li><a href="http://game.zol.com.cn/" target="_blank">ZOL游戏</a></li>
+                    <li><a href="http://www.baoruan.com/" target="_blank">宝软网</a></li>
+                    <li><a href="http://bbs.anzhi.com/" target="_blank">安卓论坛</a></li>
+                    <li><a href="http://www.feng.com/" target="_blank">威锋网</a></li>
+                    <li><a href="http://down.52pk.com/" target="_blank">52pk游戏</a></li>
+                    <li><a href="http://www.duote.com/android/" target="_blank">安卓网</a></li>
+                    <li><a href="http://tech.sina.com.cn/3gsoft/" target="_blank">新浪科技</a></li>
+                    <li><a href="http://mobile.yesky.com/" target="_blank">天极手机</a></li>
+                    <li><a href="http://www.enet.com.cn/emobile/" target="_blank">eNet手机</a></li>
+                    <li><a href="http://game.21cn.com/" target="_blank">21cn游戏</a></li>
+                    <li><a href="http://mobile.it168.com" target="_blank">it168手机</a></li>
+                    <li><a href="http://www.dospy.com/" target="_blank">塞班论坛</a></li>
+                    <li><a href="http://www.cngba.com/" target="_blank">玩家网</a></li>
+                    <li><a href="http://www.51wan.com/" target="_blank">51玩游戏</a></li>
+                    <li><a href="http://www.liqucn.com/" target="_blank">历趣市场</a></li>
+                    <li><a href="http://www.appchina.com/" target="_blank">应用汇</a></li>
+                    <li><a href="http://www.manmankan.com/" target="_blank">火影忍者漫画</a></li>
+                    <li><a href="http://www.yxdown.com/" target="_blank">单机游戏</a></li>
+                    <li><a href="http://www.ali213.net/" target="_blank">单机游戏</a></li>
+                    <li><a href="http://www.yue365.com/ " target="_blank">365音乐网</a></li>
+                    <li><a href="http://www.2144.cn/" target="_blank">小游戏</a></li>
+                    <li><a href="http://www.doyo.cn/" target="_blank">单机游戏下载</a></li>
+                    <li><a href="http://www.3533.com/" target="_blank">手机</a></li>
+                    <li><a href="http://www.33lc.com/" target="_blank">绿茶软件下载</a></li>
+                    <li><a href="http://www.juxia.com" target="_blank">聚侠网页游戏</a></li>
+                    <li><a href="http://www.gamedog.cn" target="_blank">游戏狗</a></li>
+                    <li><a href="#" target="_blank">更多友链&gt;&gt;</a></li>
+                  </ul>
+              </div><!--i-link-list-->
+    		
+    </div><!--pt20-->
+</div>
+<!--美图 结束 mm-pic-->
+
+
+<!--底部开始 footer-->
+<div class="footer">
+
+</div>
+<!--底部结束 footer-->
+
+
+
+
+<!--<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>-->
+<script src="http://static.ccplay.com.cn/static/common/js/jquery.min.js"></script>
+
+<script src="http://static.ccplay.com.cn/static/common/js/jquery.SuperSlide.2.1.1.source.js"></script>
+<script src="../js/site.js"></script>
+<script>
+//浏览器宽度自适应
+$(document).ready(function(e) {
+	  resize(); 
+	  $(window).resize(function() {
+		resize();
+	  });
+});
+
+function resize(){
+	var width = $(window).width();
+	var wobj = $("body");
+	if(width > 1250){
+		wobj.attr("id","cc-l");	
+	}else if(width > 1000){
+		wobj.attr("id","cc-m");	
+	}else{
+		wobj.attr("id","cc-s");	
+	}
+}
+</script>
+
+
+<!--[if IE 6]>
+<script src="http://static.ccplay.com.cn/static/common/js/DD_PNG.js"></script>
+<script>
+window.onload = function()
+{
+DD_belatedPNG.fix(".png,.ios-web-icon,.ios-web-icon:hover"}
+</script>
+<![endif]-->
+</html>

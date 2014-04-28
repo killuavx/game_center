@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="description" content="jQuery zxxbox弹出框插件(v3.0)测试页面" />
+<meta name="description" content="jQuery zxxbox弹出框插件(v3.0)" />
+<link rel="stylesheet" href="../css/common.css" type="text/css" />
+</head>
+<body>
+<div class="zxx_out_box">
+    <div class="zxx_in_box">
+        <h1 class="zxx_title">jQuery zxxbox弹出框插件(v3.0)测试页面</h1>
+        <div class="zxx_main_con">
+			<div class="zxx_test_list">
+            	<h3 class="mb10 f14">一、内置弹框</h3>
+            	<p>显示最简单的内置的信息确定提示框：<button id="test1">点击我</button></p>
+                <div class="zxx_code"><div class="mb10 f9"><strong>JS代码：</strong></div><xmp>$("#test1").click(function(){
+    $.zxxbox.remind("你已成功受邀参加威尼斯电影节。");						   
+});</xmp></div>
+            </div>
+            <div class="zxx_test_list">
+            	<p>带回调函数的信息确认提示框：<button id="test2">点击我</button></p>
+                <div class="zxx_code"><div class="mb10 f9"><strong>JS代码：</strong></div><xmp>$("#test2").click(function(){
+    $.zxxbox.remind('美国驻沪领事馆权威发布：上半年<a href="#nogo" title="上海">上海</a>赴美留学3.2万人。', function(){
+        alert("哇哈哈，这是回调函数显示的内容：今年上海的学生签证通过率达到了95%。去年这一数字为90%。");
+    }, {
+        title: "参考消息"	
+    });						   
+});	</xmp></div>
+            </div> 
+            <div class="zxx_test_list">
+            	<p>显示内置的询问提示框：<button id="test3">点击我</button></p>
+                <div class="zxx_code"><div class="mb10 f9"><strong>JS代码：</strong></div><xmp>$("#test3").click(function(){
+    $.zxxbox.ask("确认改变页面的背景色为天蓝色", function(){
+        $("body").css("background-color", "azure");	
+        $.zxxbox.hide();
+    }, null, {
+        title: "友情提示"	
+    });						   
+});</xmp></div>
+            </div>
+            <div class="zxx_test_list">
+            	<h3 class="mb10 f14">二、装载页面上的元素</h3>
+                <p>加载页面上一段登录的HTML：<button id="test4">登录</button></p>
+                <div class="zxx_code">
+                	<div class="mb10 f9"><strong>HTML代码：</strong></div>
+                    <xmp><div id="login" style="padding:40px; display:none;">
+    <p>用户名：<input id="unseName" type="text" size="20" /></p>
+    <p class="mt10 mb10">密&nbsp;&nbsp;码：<input type="text" size="20" /></p>
+    <p><button id="loginBtn">登录</button><button id="cancelBtn">取消</button></p>
+</div></xmp>
+                </div>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$("#test4").click(function(){
+    <span style="color:green;">$("#login").zxxbox();</span><span class="g6">    //或者是$.zxxbox($("#login"));</span>  
+});
+$("#loginBtn").click(function(){
+    <span style="color:gray;">/*
+     *
+     一些登录操作
+    *
+    */</span>
+    alert("登录成功！");
+    $.zxxbox.hide();
+});
+$("#cancelBtn").click(function(){
+    $.zxxbox.hide();						   
+});</pre>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<p>使用a标签的锚点加载页面元素：<a id="test5" href="#login">点击我-登录</a></p>
+                <div class="zxx_code">
+                	<div class="mb10 f9"><strong>HTML代码：</strong></div>
+                    <xmp><a id="test5" href="#login">点击我-登录</a></xmp>
+                </div>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$("#test5").zxxbox();</pre>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<p>a标签本身作为元素被加载：<a href="#" class="ml10 mr10" id="test6">点击我-被装载到弹框</a></p>
+                <div class="zxx_code">
+                	<div class="mb10 f9"><strong>HTML代码：</strong></div>
+                    <xmp><a href="#" class="ml10 mr10" id="test6">点击我-被装载到弹框</a></xmp>
+                </div>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$("#test6").click(function(){
+    $(this).zxxbox({
+        ajaxTagA: false,
+        height: 80   
+    });
+    return false;
+});</pre>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<h3 class="mb10 f14">三、Ajax装载页面外的元素</h3>
+                <p>a标签链接地址加载之图片：<a id="test7" target="_blank" href="http://image.zhangxinxu.com/image/study/s/s512/mm19.jpg">点击我-显示美女图片</a></p>
+                <div class="zxx_code">
+                	<div class="mb10 f9"><strong>HTML代码：</strong></div>
+                    <xmp><a id="test7" target="_blank" href="http://image.zhangxinxu.com/image/study/s/s512/mm19.jpg">点击我-显示美女图片</a></xmp>
+                </div>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$("#test7").zxxbox({
+    bar: false,
+    bgclose: true
+});</pre>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<p>a标签之加载静态页面：<a id="test8" href="html-load.html">点击我-加载HTML静态页</a></p>
+                <div class="zxx_code">
+                	<div class="mb10 f9"><strong>HTML代码：</strong></div>
+                    <xmp><a id="test8" href="html-load.html">点击我-加载HTML静态页</a></xmp>
+                </div>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$("#test7").zxxbox();</pre>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<p>直接使用zxxbhox的ajax方法加载外部数据：<button id="test9">加载</button></p>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$("#test9").click(function(){
+    $.zxxbox.ajax("php-load.php");						   
+});</pre>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<h3 class="mb10 f14">四、zxxbox一些参数使用举例</h3>
+                <p>不显示半透明背景层：<button id="test10">点击我</button></p>
+                 <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <xmp>$("#test10").click(function(){
+    $.zxxbox('<div class="wrap_remind">最近貌似《盗梦空间》很热啊！</div>', {
+        bg: false		 
+    });							
+});</xmp>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<p>不显示标题栏的关闭按钮：<button id="test11">点击我</button></p>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$("#test11").click(function(){
+    $.zxxbox.remind("外滩，一对恋人，女撒娇道:亲爱的，听说过一阵要上映一个特别浪漫的电影，狄仁杰与山楂树之恋...",
+        function(){
+            <span class="g6">//$(this)指代当前弹框的确定按钮jQuery对象
+            //禁用确定按钮</span>
+            $(this).attr("disabled", "disabled");
+        }, {
+            btnclose: false				
+    });					
+});</pre>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<p>弹框可拖拽：<button id="test12">点击我</button></p>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$("#test12").click(function(){
+    $.zxxbox.remind("点击按住标题栏可以进行拖拽~~", null, { drag: true });					
+});</pre>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<p>弹框位置不随滚动条滚动（IE6有晃动）：<button id="test13">点击我</button></p>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$("#test13").click(function(){
+    $.zxxbox.remind("弹框的位置游离于滚动条之外~~", null, { fix: true });					
+});</pre>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<p>弹窗打开后定时关闭：<button id="test14">点击我</button></p>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$("#test14").click(function(){
+    $.zxxbox.remind("此弹框将在3秒钟后关闭，现在倒计时3,2,1...", null, { delay: 3000 });					
+});</pre>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<p>弹窗关闭后触发回调方法：<button id="test15">点击我</button></p>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$("#test15").click(function(){
+    $.zxxbox.remind(
+        "此弹窗关闭后，页面会刷新~~",
+        null,
+        {
+            onclose: function(){ 
+                window.location.href=window.location.href;
+            }
+    });					
+});</pre>
+                </div>
+            </div>
+            <div class="zxx_test_list">
+            	<h3 class="mb10 f14">五、一些复杂情况使用举例</h3>
+            	<p>弹框高度会动态增加：<button id="test16">点击我</button></p>
+                <div class="zxx_code"><xmp>$("#test16").click(function(){
+    var elements = $('<div style="width:400px; padding:20px; display:none;">与70后相比，即将步入30岁的80后大多工作还不够稳定，房子、车子似乎也是很遥远的事情，而且，这其中还有为数可观的大龄青年。在变革的社会中成长起来的80后承担着更多来自现实和心理上的双重压力。迈入而立之年的80后，自己的前方在哪里？自己又能因何而立？<br /><a id="showRelElement" href="javascript:void(0);" rel="beRelElement">显示更多>></a><div id="beRelElement" class="mt10 dn">恐怕，就连孔子也不会想到，2000多年前组合出的4个字——“三十而立”，如今会因为一个叫“80后”的群体，再度引发国人的集体思考。<br /><br />三十而立，那么，何为“立”？最通俗惯常的说法，30岁应该成家立业，有所作为。而最低的要求则是30岁的人应该能依靠自己的本领，独立承担责任，并已确定自己的人生目标与发展方向。</div></div>');
+    $.zxxbox(elements, {
+        onshow: function(){
+            $("#showRelElement").click(function(){
+                var rel = $(this).attr("rel");									
+                if(rel){
+                    $("#"+rel).slideDown(function(){
+                        $.zxxbox.setPosition(true);							  
+                    });	
+                    $(this).hide();
+                }
+                return false;
+            });
+        }
+    });					
+});</xmp></div>
+            </div>
+            <div class="zxx_test_list">
+            	<p>
+                	多a标签加载外部元素（如图片）：
+                    <a class="loadImage" href="http://image.zhangxinxu.com/image/study/s/s512/mm1.jpg">加载图片1</a>
+                    <a class="loadImage ml10" href="http://image.zhangxinxu.com/image/study/s/s512/mm2.jpg">加载图片2</a>
+                    <a class="loadImage ml10" href="http://image.zhangxinxu.com/image/study/s/s512/mm3.jpg">加载图片3</a>
+                </p>
+                <div class="zxx_code">
+                	<div class="mb10 f9"><strong>HTML代码：</strong></div>
+                    <xmp><a class="loadImage" href="http://image.zhangxinxu.com/image/study/s/s512/mm1.jpg">加载图片1</a>
+<a class="loadImage ml10" href="http://image.zhangxinxu.com/image/study/s/s512/mm2.jpg">加载图片2</a>
+<a class="loadImage ml10" href="http://image.zhangxinxu.com/image/study/s/s512/mm3.jpg">加载图片3</a></xmp>
+                </div>
+                <div class="zxx_code">
+                	<h5 class="mb10 f9">JS代码：</h5>
+                    <pre>$(".loadImage").zxxbox({
+    bar: false,
+    bgclose:true
+});</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="login" style="padding:40px; display:none;">
+	<p>用户名：<input id="unseName" type="text" size="20" /></p>
+    <p class="mt10 mb10">密&nbsp;&nbsp;码：<input type="text" size="20" /></p>
+    <p><button id="loginBtn">登录</button><button id="cancelBtn">取消</button></p>
+</div>
+<script src="http://static.ccplay.com.cn/static/common/js/jquery.min.js"></script>
+
+<script type="text/javascript" src="../js/jquery.zxxbox.3.0.js"></script>
+<script>
+$(function(){
+	$("#test1").click(function(){
+		$.zxxbox.remind("你已成功受邀参加威尼斯电影节。");						   
+	});	
+	$("#test2").click(function(){
+		$.zxxbox.remind('美国驻沪领事馆权威发布：上半年<a href="#nogo" title="上海">上海</a>赴美留学3.2万人。', function(){
+			alert("哇哈哈，这是回调函数显示的内容：今年上海的学生签证通过率达到了95%。去年这一数字为90%。");											
+		}, {
+			title: "参考消息"	
+		});						   
+	});	
+	$("#test3").click(function(){
+		$.zxxbox.ask("确认改变页面的背景色为天蓝色", function(){
+			$("body").css("background-color", "azure");	
+			$.zxxbox.hide();
+		}, null, {
+			title: "友情提示"	
+		});						   
+	});
+	$("#test4").click(function(){
+		$("#login").zxxbox();	//或者是$.zxxbox($("#login"));		
+	});
+	$("#loginBtn").click(function(){
+		/*
+		 *
+		 一些登录操作
+		*
+		*/	
+		alert("登录成功！");
+		$.zxxbox.hide();
+	});
+	$("#cancelBtn").click(function(){
+		$.zxxbox.hide();						   
+	});
+	//锚点加载页面元素
+	$("#test5").zxxbox();
+	//a标签本身被加载
+	$("#test6").click(function(){
+		$(this).zxxbox({
+			ajaxTagA: false	,
+			height: 80
+		});
+		return false;
+	});
+	//a标签加载外部图片
+	$("#test7").zxxbox({
+		bar: false,
+		bgclose: true
+	});
+	//a标签加载静态页 
+	$("#test8").zxxbox();
+	//使用zxxbox的Ajax方法加载外部内容
+	$("#test9").click(function(){
+		$.zxxbox.ajax("php-load.php");						   
+	});
+	//不显示半透明背景层
+	$("#test10").click(function(){
+		$.zxxbox('<div class="wrap_remind">最近貌似《盗梦空间》很热啊！</div>', {
+			bg: false		 
+		});							
+	});
+	//不显示关闭按钮
+	$("#test11").click(function(){
+		$.zxxbox.remind("外滩，一对恋人，女撒娇道:亲爱的，听说过一阵要上映一个特别浪漫的电影，狄仁杰与山楂树之恋...",
+			function(){
+				//$(this)指代当前弹框的确定按钮jQuery对象
+				//禁用确定按钮
+				$(this).attr("disabled", "disabled");																	
+			}, {
+				btnclose: false				
+		});					
+	});
+	//弹框可拖拽
+	$("#test12").click(function(){
+		$.zxxbox.remind("点击按住标题栏可以进行拖拽~~", null, { drag: true });					
+	});
+	//弹框页面上位置固定
+	$("#test13").click(function(){
+		$.zxxbox.remind("弹框的位置游离于滚动条之外~~", null, { fix: true });					
+	});
+	//弹窗打开后3秒后定时关闭
+	$("#test14").click(function(){
+		$.zxxbox.remind("此弹框将在3秒钟后关闭，现在倒计时3,2,1...", null, { delay: 3000 });					
+	});
+	//弹框关闭后调用回调函数
+	$("#test15").click(function(){
+		$.zxxbox.remind(
+			"此弹窗关闭后，页面会刷新~~",
+			null,
+			{
+				onclose: function(){ 
+					window.location.href=window.location.href;
+				}
+		});					
+	});
+	//弹框高度会增加
+	$("#test16").click(function(){
+		var elements = $('<div style="width:400px; padding:20px; display:none;">与70后相比，即将步入30岁的80后大多工作还不够稳定，房子、车子似乎也是很遥远的事情，而且，这其中还有为数可观的大龄青年。在变革的社会中成长起来的80后承担着更多来自现实和心理上的双重压力。迈入而立之年的80后，自己的前方在哪里？自己又能因何而立？<br /><a id="showRelElement" href="javascript:void(0);" rel="beRelElement">显示更多>></a><div id="beRelElement" class="mt10 dn">恐怕，就连孔子也不会想到，2000多年前组合出的4个字——“三十而立”，如今会因为一个叫“80后”的群体，再度引发国人的集体思考。<br /><br />三十而立，那么，何为“立”？最通俗惯常的说法，30岁应该成家立业，有所作为。而最低的要求则是30岁的人应该能依靠自己的本领，独立承担责任，并已确定自己的人生目标与发展方向。</div></div>');
+		$.zxxbox(elements, {
+			onshow: function(){
+				$("#showRelElement").click(function(){
+					var rel = $(this).attr("rel");									
+					if(rel){
+						$("#"+rel).slideDown(function(){
+							$.zxxbox.setPosition(true);							  
+						});	
+						$(this).hide();
+					}
+					return false;
+				});
+			}
+		});					
+	});
+	//多a标签加载外部元素
+	$(".loadImage").zxxbox({
+		bar: false,
+		bgclose:true
+	});
+});
+</script>
+</body>
+</html>

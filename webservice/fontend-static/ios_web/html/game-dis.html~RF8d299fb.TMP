@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>天天飞车-游戏-虫虫游戏</title>
+<link href="../css/site.css" media="all" rel="stylesheet" type="text/css" />
+<link href="../css/quick-layout.css" media="all" rel="stylesheet" type="text/css" />
+<noscript>
+    <h1 style="font-size:100%;color:#e53333;display:block;text-align:center">由于您的浏览器禁用了javascript脚本，网页无法正常浏览!</h1>
+</noscript>
+</head>
+<body>
+
+<!--头部开始 head-->
+<div class="auto head">
+	
+    <div class="auto width top">
+    	<div class="p10">
+              <div class="cell-bk">
+                    <div class="cell float-three ovh logo">
+                        <h2><a href="#" class="rel"><img src="../img/logo.png"><span class="trans home"></span></a></h2>
+                    </div><!--logo-->
+                    
+                    <div class="cell float-three search">
+                          <div class="cell-bk rel bdc box">
+                          		<form>
+                                	<div class="abs f14 poi select">
+                                    	<span>游戏</span><b class="ios-web-icon"></b>
+                                            <div class="abs drop-down">
+                                                <a href="#">游戏</a>
+                                                <a href="#">软件</a>
+                                                <a href="#">资讯</a>
+                                            </div>
+                                    </div>
+                                    <input type="text" class="f14 key" value="" x-webkit-speech="">
+                                    <button class="ios-web-icon bd-none poi abs">搜索</button>
+                                </form>
+                          </div>
+                    </div><!--search-->
+                    
+                    <div class="cell float-three user-switch">
+                          <ul class="r">
+                              <li><a href="#" class="ios-web-icon a1">苹果站</a></li>
+                              <li><a href="#" class="ios-web-icon a2">安卓站</a></li>
+                              <li><a href="#" class="ios-web-icon a3">虫虫助手</a></li>
+                              <li><a href="#" class="ios-web-icon a4">登录/注册</a></li>
+                          </ul>
+                    </div><!--user-switch-->
+              </div><!--cell-bk-->    
+        </div>    
+    </div><!--top-->
+    
+    <!--导航开始 nav-->
+    <div class="cell-bk nav">
+    	<div class="auto rel width">
+              <div class="l f18">
+                      <ul class="cell pct100">
+                          <li><a href="index.html" class="a-1">首页</a></li>
+                          <li class="hover"><a href="game.html" class="a-2">游戏</a></li>
+                          <li><a href="game.html" class="a-3">软件</a></li>
+                          <li><a href="collection.html" class="a-4">专题</a></li>
+                          <li><a href="masterpiece.html" class="a-5">巨作</a></li>
+                          <li><a href="vendor.html" class="a-6">厂商</a></li>
+                          <li class="rel">
+                          		<a href="top.html" class="a-7">排行<em class="ios-web-icon"></em></a>
+                          		<div class="abs drop-down">
+                                		<a href="#">游戏排行</a>
+                                        <a href="#">软件排行</a>
+                                </div>
+                          </li>
+                          <li><a href="news.html" class="a-8">资讯</a></li>
+                          <li><a href="http://bbs.ccplay.com.cn" class="a-9">论坛</a></li>
+                      </ul>
+              </div><!--l-->
+              
+              <div class="abs">
+                      <div class="mt2 pt10 ios-switch">
+                          <a href="#" class="b-1 hover">iPhone</a><a href="#" class="b-2">iPad</a>
+                      </div>
+              </div><!--abs-->
+        </div><!--width-->
+    </div>
+    <!--导航结束 nav-->
+</div>
+<!--头部结束 head-->
+
+
+
+<!--应用 开始 app-dis-page-->
+<div class="auto mt30 width app-dis-page">
+
+		<div class="cell-bk ovh">
+        		<div class="cell-bk title">
+                	<h1 class="">天天飞车</h1>
+                </div>
+
+                <div class="l rel left">
+                          网站信息查询：ALEXA排名查询-Google PR查询-收录/反链查询-死链接检测/全站PR查询-网页GZIP压缩检测-PR输出值查询
+搜索优化查询：长尾关键字友情链接检测关键词排名查询关键词密度查询搜索引擎模拟网页META信息百度收录百度权重查询
+域名IP类查询：域名删除时间查询域名WHOIS查询IP查询IP WHOIS查询同IP网站查询备案查询过期域名查询Dns查询NsLookup
+加密解密相关：MD5加密文字加密解密ESCAPE加/解密散列/哈希/BASE64URL加密迅雷,快车,旋风URL加/解密全角半角转换二维码生成
+编码转换相关：Ascii/Native编码互转-Unicode编码-UTF-8编码-简繁体火星文互转-汉字转换拼音-Unix时间戳-URL编码/解码
+HTML相关类： HTML/JS互转-HTML/UBB代码转换-HTML标签检测-HTML代码转换器-JS/HTML格式化-HTML特殊符号对照表
+Js/Css相关类： JS加/解密-JS代码混淆-CSS在线编辑器-Css压缩/格式化-JS混淆加密压缩-正则在线测试HTML/JS/CSS过滤
+其他常用测试：查看网页源代码-拼音字典-OPEN参数生成器-网页代码调试器-在线调色板-网页颜色选择器-颜色代码查询
+其他类别查询：SEO数据风向标-PR更新历史-大小写转换-路由器追踪-HTTP状态查询-超级Ping-端口扫描-网速测试
+
+                </div><!--left-list-->
+                
+                
+
+        		<div class="r pt20 right">
+                        
+                        支持中利器
+                        <div class="cl f14 page">
+                    		<a href="#">上一页</a>
+                            <a href="#">1</a>
+                            <a href="#" class="hover">2</a>
+                            <a href="#">3</a>
+                            <a href="#">4</a>
+                            <a href="#">…</a>
+                            <a href="#">99</a>
+                            <a href="#">下一页</a>
+                       </div>
+                       
+                       
+                </div><!--right-list-->
+                
+                
+                
+        </div><!--cell-bk-->
+</div>
+<!--应用 结束 app-dis-page-->
+
+
+
+
+
+
+<!--底部开始 footer-->
+<div class=" cell-bk ios-web-icon footer">
+
+		<div class="auto width white">
+        		<div class="float-five f-1">
+                		<dl>
+                        	<dt class="f14">关于我们</dt>
+                            <dd><a href="#">公司简介</a></dd>
+                            <dd><a href="#">发展愿景</a></dd>
+                            <dd><a href="#">联系方式</a></dd>
+                            <dd><a href="#">商务合作</a></dd>
+                            <dd><a href="#">诚聘英才</a></dd>
+                        </dl>
+                </div>
+        		<div class="float-five f-2">
+                		<dl>
+                        	<dt class="f14">关注我们</dt>
+                            <dd><a href="#" class="ios-web-icon i-1">新浪微博</a></dd>
+                            <dd><a href="#" class="ios-web-icon i-2">QQ空间</a></dd>
+                            <dd><a href="#" class="ios-web-icon i-3">官方微信</a></dd>
+                        </dl>                
+                </div>
+        		<div class="float-five tc f-3">
+                		<a href="#" class="ios-web-icon f-logo"></a>
+                </div>
+        		<div class="float-five tl f-4">
+                		<dl class="r">
+                        	<dt class="f14">虫虫客户端</dt>
+                            <dd><a href="#" class="ios-web-icon i-4">iPhone版下载</a></dd>
+                            <dd><a href="#" class="ios-web-icon i-5">Android版</a></dd>
+                            <dd><a href="#" class="ios-web-icon i-6">电脑客户端</a></dd>
+                        </dl>  
+                </div>
+        		<div class="float-five tr f-5">
+                		<dl>
+                            <dd>（扫描二维码即可下载）</dd>
+                            <dd><img src="../img/code.png"></dd>
+                        </dl> 
+                </div>
+                <div class="cl tc pt20">Copyright © <script type="text/javascript">var yearStr;now = new Date();yearStr = now.getFullYear();document.write(yearStr);</script> www.ccplay.com.cn. All Rights Reserved</div>
+        </div>
+
+</div>
+<!--底部结束 footer-->
+
+
+
+
+<!--<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>-->
+<script src="http://static.ccplay.com.cn/static/common/js/jquery.min.js"></script>
+<script src="http://static.ccplay.com.cn/static/common/js/jquery.SuperSlide.2.1.1.source.js"></script>
+<script src="../js/site.js"></script>
+<!--[if IE 6]>
+<script src="http://static.ccplay.com.cn/static/common/js/DD_PNG.js"></script>
+<script>
+window.onload = function()
+{
+DD_belatedPNG.fix(".png,.ios-web-icon,.ios-web-icon:hover"}
+</script>
+<![endif]-->
+</html>
