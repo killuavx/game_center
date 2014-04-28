@@ -61,7 +61,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     paginate_by = None
 
     def get_queryset(self):
-        if not self.queryset:
+        if self.queryset is None:
             self.queryset = Category.objects.all()
         return self.queryset
 
@@ -81,16 +81,15 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     @link()
     def leafs(self, request, slug, *args, **kwargs):
         self.get_queryset()
-        category = self.get_object(self.filter_queryset(self.queryset))
+        category = self.get_object()
         orig_queryset, self.queryset = self.queryset, category.get_leafnodes()
         response = super(CategoryViewSet, self).list(request, *args, **kwargs)
         self.queryset = orig_queryset
         return response
 
     def children(self, request, slug, *args, **kwargs):
-        self.get_queryset()
-        category = self.get_object(self.filter_queryset(self.queryset))
-        orig_queryset, self.queryset = self.queryset, category.get_children()
+        category = self.get_object()
+        orig_queryset, self.queryset  = self.queryset, category.children.all()
         response = super(CategoryViewSet, self).list(request, *args, **kwargs)
         self.queryset = orig_queryset
         return response

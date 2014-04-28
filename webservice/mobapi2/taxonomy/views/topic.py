@@ -61,13 +61,13 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
     ordering = ('released_datetime', )
 
     def get_queryset(self):
-        if not self.queryset:
+        if self.queryset is None:
             self.queryset = Topic.objects.published()
         return self.queryset
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        origin_queryset, self.queryset = self.queryset, self.get_queryset().as_root()
+        origin_queryset, self.queryset = queryset, queryset.as_root()
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
         self.queryset = origin_queryset
         return res

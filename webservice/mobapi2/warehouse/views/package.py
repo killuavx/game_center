@@ -123,10 +123,10 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                 )
 
     def get_queryset(self):
-        if self.queryset:
+        if self.queryset is None:
+            self.queryset = self.model.objects
             return self.queryset.published()
         else:
-            self.queryset = self.model.objects
             return self.queryset.published()
 
     def retrieve(self, request, *args, **kwargs):
@@ -260,7 +260,7 @@ class PackageUpdateView(generics.CreateAPIView):
     model = Package
 
     def get_queryset(self):
-        if not self.queryset:
+        if self.queryset is None:
             self.queryset = self.model.objects.published()
         return self.queryset
 
@@ -388,7 +388,7 @@ class PackagePushView(generics.ListAPIView):
     model = Package
 
     def get_queryset(self):
-        if not self.queryset:
+        if self.queryset is None:
             self.queryset = self.model.objects.published()
         return self.queryset
 

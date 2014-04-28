@@ -186,7 +186,12 @@ class AccountCommentPackageView(generics.ListAPIView):
     authentication_classes = (PlayerTokenAuthentication, )
     permission_classes = (IsAuthenticated, )
     serializer_class = PackageSummarySerializer
-    queryset = Package.objects.published()
+    model = Package
+
+    def get_queryset(self):
+        if self.queryset is None:
+            self.queryset = Package.objects.published()
+        return self.queryset
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -306,7 +311,7 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
 
     """
 
-    queryset = Package.objects.published()
+    model = Package
     serializer_class = PackageSummarySerializer
     authentication_classes = (PlayerTokenAuthentication,)
     permission_classes = (IsAuthenticated, )
@@ -318,6 +323,11 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
         'package_name',
     )
     search_fields = tuple()
+
+    def get_queryset(self):
+        if self.queryset is None:
+            self.queryset = Package.objects.published()
+        return self.queryset
 
     def _prepare_queryset(self, request):
         self.queryset = self.queryset.filter(profile=request.user.profile)

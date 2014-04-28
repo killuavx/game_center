@@ -69,7 +69,7 @@ class PackageRankingViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (RankingFilter, )
 
     def get_queryset(self):
-        if not self.queryset:
+        if self.queryset is None:
             self.queryset = self.model.objects.published()
         return self.queryset
 

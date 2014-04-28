@@ -93,7 +93,7 @@ class CommentViewSet(mixins.CreateModelMixin,
     model = Comment
 
     def get_queryset(self):
-        if not self.queryset:
+        if self.queryset is None:
             self.queryset = Comment.objects.visible()
         return self.queryset.by_submit_order()
 
