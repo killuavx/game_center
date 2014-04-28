@@ -124,10 +124,8 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if self.queryset is None:
-            self.queryset = self.model.objects
-            return self.queryset.published()
-        else:
-            return self.queryset.published()
+            self.queryset = self.model.objects.published()
+        return self.queryset.published()
 
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class = self.serializer_class

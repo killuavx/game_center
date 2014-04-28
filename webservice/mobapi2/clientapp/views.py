@@ -44,8 +44,8 @@ class SelfUpdateView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         if self.queryset is None:
-            self.queryset = ClientPackageVersion.objects
-        return self.queryset.published()
+            self.queryset = ClientPackageVersion.objects.published()
+        return self.queryset
 
     def get_object(self, queryset=None):
         queryset = self.filter_queryset(self.get_queryset())
