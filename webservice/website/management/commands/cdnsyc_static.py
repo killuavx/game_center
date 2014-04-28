@@ -38,7 +38,4 @@ class Command(BaseCommand):
             logger.info('end sync process')
         except Exception as e:
             logger.info('COMMAND Exception: %s' %e)
-        else:
-            logger.info('COMMAND Invalid options')
-            self.print_help()
         logger.info('COMMAND END sync static')
