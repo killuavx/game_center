@@ -217,7 +217,7 @@ class FeedbackViewSet(mixins.CreateModelMixin,
         Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
         Content-Type:application/x-www-form-urlencoded
 
-        comment=great&kind=default&email=test@domain.com
+        package_name=com.lion.market&version_name=1.2.2&comment=great&kind=default&email=test@domain.com
 
     #### 响应内容
 
@@ -229,6 +229,8 @@ class FeedbackViewSet(mixins.CreateModelMixin,
 
     ### 新创建的评论数据结构
 
+    * `package_name`: 客户端包名
+    * `version_name`: 客户端版本名
     * `comment`: 反馈内容
     * `kind`: 反馈类型, [默认:default, 建议:suggestion, bug反馈:bugreport]
     * `email`:  联系邮箱
