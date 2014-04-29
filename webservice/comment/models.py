@@ -126,7 +126,7 @@ class Feedback(BaseLetter):
 
     kind = models.ForeignKey(FeedbackType, related_name='feedbacks')
 
-    object_pk = models.PositiveIntegerField(_('object ID'))
+    object_pk = models.IntegerField(_('object ID'))
     content_type = models.ForeignKey(ContentType,
                                      verbose_name=_('content type'),
                                      related_name="content_type_set_for_%(class)s")

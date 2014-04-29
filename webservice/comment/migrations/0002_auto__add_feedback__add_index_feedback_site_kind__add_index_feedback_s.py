@@ -14,11 +14,11 @@ class Migration(SchemaMigration):
             ('site', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['sites.Site'])),
             ('created', self.gf('django.db.models.fields.DateTimeField')(null=True)),
             ('updated', self.gf('django.db.models.fields.DateTimeField')(null=True)),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='content_type_set_for_feedback', to=orm['contenttypes.ContentType'])),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['account.User'], blank=True)),
             ('comment', self.gf('django.db.models.fields.TextField')(max_length=300)),
-            ('kind', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['comment.FeedbackType'])),
-            ('object_pk', self.gf('django.db.models.fields.TextField')()),
+            ('kind', self.gf('django.db.models.fields.related.ForeignKey')(related_name='feedbacks', to=orm['comment.FeedbackType'])),
+            ('object_pk', self.gf('django.db.models.fields.IntegerField')()),
+            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='content_type_set_for_feedback', to=orm['contenttypes.ContentType'])),
             ('status', self.gf('model_utils.fields.StatusField')(default='posted', no_check_for_status=True, max_length=100, blank=True)),
             ('is_owner_ignored', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
@@ -118,12 +118,12 @@ class Migration(SchemaMigration):
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['auth.Permission']", 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'max_length': '30', 'unique': 'True'})
+            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         'auth.group': {
             'Meta': {'object_name': 'Group'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '80', 'unique': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
             'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'to': "orm['auth.Permission']", 'blank': 'True'})
         },
         'auth.permission': {
@@ -140,15 +140,15 @@ class Migration(SchemaMigration):
             'created': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_owner_ignored': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'kind': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['comment.FeedbackType']"}),
-            'object_pk': ('django.db.models.fields.TextField', [], {}),
+            'kind': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'feedbacks'", 'to': "orm['comment.FeedbackType']"}),
+            'object_pk': ('django.db.models.fields.IntegerField', [], {}),
             'site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['sites.Site']"}),
             'status': ('model_utils.fields.StatusField', [], {'default': "'posted'", 'no_check_for_status': 'True', 'max_length': '100', 'blank': 'True'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'null': 'True', 'to': "orm['account.User']", 'blank': 'True'})
         },
         'comment.feedbacktype': {
-            'Meta': {'unique_together': "(('site', 'slug'), ('site', 'title'))", 'object_name': 'FeedbackType'},
+            'Meta': {'ordering': "('-level',)", 'unique_together': "(('site', 'slug'), ('site', 'title'))", 'object_name': 'FeedbackType'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'level': ('django.db.models.fields.IntegerField', [], {'max_length': '5'}),
             'site': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['sites.Site']"}),
@@ -160,7 +160,7 @@ class Migration(SchemaMigration):
             'comment': ('django.db.models.fields.TextField', [], {'max_length': '3000'}),
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'content_type_set_for_comment'", 'to': "orm['contenttypes.ContentType']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'ip_address': ('django.db.models.fields.IPAddressField', [], {'max_length': '15', 'null': 'True', 'blank': 'True'}),
+            'ip_address': ('django.db.models.fields.IPAddressField', [], {'null': 'True', 'max_length': '15', 'blank': 'True'}),
             'is_public': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_removed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'object_pk': ('django.db.models.fields.TextField', [], {}),
