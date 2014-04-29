@@ -433,7 +433,7 @@ class PackageVersion(SiteRelated, models.Model):
             return '/packageversions/%s' % self.pk
 
     def __str__(self):
-        return str(self.version_code)
+        return "%s:%s" %(self.package, self.version_name)
 
     def __hash__(self):
         return int(self.version_code)
