@@ -82,6 +82,8 @@ class BaseLetter(SiteRelated, TimeStamped):
 
     comment = models.TextField(_('comment'), max_length=300)
 
+    ip_address = models.IPAddressField(default=None, null=True, blank=True)
+
     class Meta:
         abstract = True
 
@@ -124,7 +126,8 @@ class Feedback(BaseLetter):
 
     objects = CurrentSitePassThroughManager.for_queryset_class(FeedbackQuerySet)()
 
-    kind = models.ForeignKey(FeedbackType, related_name='feedbacks')
+    kind = models.ForeignKey(FeedbackType,
+                             related_name='feedbacks')
 
     object_pk = models.IntegerField(_('object ID'))
     content_type = models.ForeignKey(ContentType,
@@ -146,6 +149,24 @@ class Feedback(BaseLetter):
     is_owner_ignored = models.BooleanField(default=False)
 
     replies = generic.GenericRelation(Comment)
+
+    contact_email = models.EmailField(verbose_name=_('Contact Email'),
+                                      default=None,
+                                      null=True,
+                                      blank=True,
+                                      )
+
+    contact_phone = models.CharField(verbose_name=_('Contact Phone'),
+                                     default=None,
+                                     null=True,
+                                     blank=True,
+                                     max_length=50)
+
+    contact_im_qq = models.CharField(verbose_name=_('Contact IM QQ'),
+                                     max_length=50,
+                                     default=None,
+                                     blank=True,
+                                     null=True)
 
     def get_absolute_url(self):
         return ''

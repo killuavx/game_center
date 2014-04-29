@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
-from comment.models import Comment
+from comment.models import Comment, Feedback
 from toolkit.models import Star
 
 class CommentStarSerializerMixin(object):
@@ -50,3 +50,9 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
+
+
+class FeedbackSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Feedback

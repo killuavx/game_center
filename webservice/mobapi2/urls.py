@@ -11,7 +11,7 @@ from mobapi2.taxonomy.views.topic import TopicViewSet
 from mobapi2.searcher.views import TipsWordViewSet
 from mobapi2.promotion.views import AdvertisementViewSet
 from mobapi2.account.views import PackageBookmarkViewSet
-from mobapi2.comment.views import CommentViewSet
+from mobapi2.comment.views import CommentViewSet, FeedbackViewSet
 from mobapi2.warehouse.views.packageversion import PackageVersionViewSet
 from mobapi2.account.views import (AccountCreateView,
                                    AccountMyProfileView,
@@ -36,6 +36,7 @@ rest_router.register('tipswords', TipsWordViewSet)
 rest_router.register('advertisements', AdvertisementViewSet)
 rest_router.register('bookmarks', PackageBookmarkViewSet, base_name='bookmark')
 rest_router.register('comments', CommentViewSet)
+rest_router.register('feedbacks', FeedbackViewSet)
 rest_router.register('events', EventViewSet, base_name='event')
 
 

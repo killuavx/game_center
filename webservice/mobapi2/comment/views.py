@@ -9,8 +9,9 @@ from rest_framework import mixins, viewsets, status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from mobapi2.authentications import PlayerTokenAuthentication
-from mobapi2.comment.serializers import CommentSerializer, CommentCreateSerializer
-from comment.models import Comment
+from mobapi2.comment.serializers import CommentSerializer, CommentCreateSerializer, FeedbackSerializer
+from comment.models import Comment, Feedback, FeedbackType
+from clientapp.models import ClientPackageVersion
 
 
 class CommentViewSet(mixins.CreateModelMixin,
@@ -177,7 +178,6 @@ class CommentViewSet(mixins.CreateModelMixin,
             params = self.check_paramters(queryparams)
             data = copy.deepcopy(data)
             data.setdefault('submit_date', now())
-            data.setdefault('site', settings.SITE_ID)
             data.setdefault('user', self.request.user.pk)
             data.setdefault('user_name', self.request.user.username)
             data.setdefault('user_email', self.request.user.profile.email)
@@ -187,3 +187,108 @@ class CommentViewSet(mixins.CreateModelMixin,
         return super(CommentViewSet, self).get_serializer(instance, data,
                                                           files, many, partial)
 
+
+class FeedbackViewSet(mixins.CreateModelMixin,
+                      mixins.ListModelMixin,
+                      viewsets.GenericViewSet):
+    """ 反馈接口
+    ----
+
+    ## 发表反馈接口
+
+    #### 访问方式
+
+        POST /api/v2/feedbacks/
+
+    ## 发表评论接口
+
+    ### 请求数据
+
+    若已经登录用户，请附带token
+
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
+
+    #### 访问方式
+
+    具体的评论列表接口见 应用详情接口[例子](/api/packages/100)里的comments_url
+
+        POST /api/v2/feedbacks/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+        Content-Type:application/x-www-form-urlencoded
+
+        comment=great&kind=default&email=test@domain.com
+
+    #### 响应内容
+
+    * 201 HTTP_201_CREATED
+        * 发表评论成功
+        * 返回刚创建的评论信息
+    * 403 HTTP_403_FORBIDDEN
+        * 提交数据有误
+
+    ### 新创建的评论数据结构
+
+    * `comment`: 反馈内容
+    * `kind`: 反馈类型, [默认:default, 建议:suggestion, bug反馈:bugreport]
+    * `email`:  联系邮箱
+    * `phone`: 联系电话
+    * `im_qq`: qq号
+
+    """
+
+    authentication_classes = (PlayerTokenAuthentication,)
+    serializer_class = FeedbackSerializer
+    model = Feedback
+
+    def list(self, request, *args, **kwargs):
+        return Response(data=dict(detail=''), status=status.HTTP_403_FORBIDDEN)
+
+    def get_queryset(self):
+        if self.queryset is None:
+            self.queryset = Feedback.objects.all()
+        return self.queryset
+
+    def get_serializer(self, instance=None, data=None,
+                       files=None, many=False, partial=False):
+        # create data
+        if not instance and data:
+            params = copy.deepcopy(self.request.QUERY_PARAMS)
+            kind = self.get_kind(params)
+            contacts = self.get_contacts(params)
+            content_type, object_pk = self.get_content_object(params)
+            data = dict(
+                user=self.request.user,
+                kind=kind.pk,
+                content_type=content_type,
+                object_pk=object_pk
+            )
+            data.update(contacts)
+        return super(FeedbackViewSet, self).get_serializer(instance, data,
+                                                           files, many, partial)
+
+    def get_content_object(self, params):
+        ct = ContentType.objects.get_for_model(ClientPackageVersion)
+        content_type, object_pk = ct.pk, 0
+        try:
+            ct_obj = ct.get_object_for_this_type(package_name=params.get('package_name'),
+                                                 version_name=params.get('version_name'))
+            object_pk = ct_obj.pk
+        except ContentType.DoesNotExist:
+            pass
+        return content_type, object_pk
+
+    def get_kind(self, params):
+        kind, _ = FeedbackType.objects.get_or_create(slug=params.get('kind'),
+                                                     defaults=dict(
+                                                         title='默认',
+                                                         level=0,
+                                                     ))
+        return kind
+
+    def get_contacts(self, params):
+        return dict(
+            contact_email=params.get('email', None),
+            contact_phone=params.get('phone', None),
+            contact_im_qq=params.get('im_qq', None)
+        )
