@@ -189,7 +189,6 @@ class CommentViewSet(mixins.CreateModelMixin,
 
 
 class FeedbackViewSet(mixins.CreateModelMixin,
-                      mixins.ListModelMixin,
                       viewsets.GenericViewSet):
     """ 反馈接口
     ----
@@ -281,9 +280,10 @@ class FeedbackViewSet(mixins.CreateModelMixin,
         return content_type, object_pk
 
     def get_kind(self, params):
-        kind, _ = FeedbackType.objects.get_or_create(slug=params.get('kind'),
+        kind_slug = params.get('kind', 'default')
+        kind, _ = FeedbackType.objects.get_or_create(slug=kind_slug,
                                                      defaults=dict(
-                                                         title='默认',
+                                                         title=kind_slug,
                                                          level=0,
                                                      ))
         return kind

@@ -168,9 +168,6 @@ class Feedback(BaseLetter):
                                      blank=True,
                                      null=True)
 
-    def get_absolute_url(self):
-        return ''
-
     def __str__(self):
         return "%s, %s" %(self.content_object, self.comment)
 
