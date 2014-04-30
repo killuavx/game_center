@@ -183,6 +183,16 @@ def updated_datetime_pre_save_with_tracker(sender, instance, **kwargs):
         instance.updated_datetime = now()
 
 
+class LoadingCoverQuerySet(QuerySet):
+
+    def find_covers(self, package_name, version_name=None, **kwargs):
+        if version_name is None:
+            return self.filter(package_name=package_name)
+        else:
+            return self.filter(version__package_name=package_name,
+                               version__version_name=version_name)
+
+
 class LoadingCoverManager(PublishedManager, CurrentSitePassThroughManager):
     pass
 
@@ -202,7 +212,7 @@ class LoadingCover(SiteRelated,
                    Orderable,
                    TimeStamped):
 
-    objects = LoadingCoverManager()
+    objects = LoadingCoverManager.for_queryset_class(LoadingCoverQuerySet)()
 
     title = models.CharField(max_length=200)
 

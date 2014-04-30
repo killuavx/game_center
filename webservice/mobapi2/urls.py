@@ -19,7 +19,7 @@ from mobapi2.account.views import (AccountCreateView,
                                    AccountAuthTokenView,
                                    AccountCommentPackageView)
 from analysis.views.rest_views import EventViewSet
-from mobapi2.clientapp.views import SelfUpdateView
+from mobapi2.clientapp.views import SelfUpdateView, LoadingCoverView
 from mobapi2.rest_router import rest_router
 from mobapi2.ranking.views import PackageRankingViewSet
 
@@ -59,6 +59,7 @@ account_urlpatterns = patterns('',
                            name=_account_basename('commentedpackages')),
                        )
 
+slug_pattern = '[\w_.-]+'
 urlpatterns = rest_router.urls
 urlpatterns += patterns('',
     url(r'^selfupdate/?$', SelfUpdateView.as_view(),
@@ -67,6 +68,11 @@ urlpatterns += patterns('',
         name=rest_router.get_base_name('push-packages')),
     url(r'^updates/?$', PackageUpdateView.as_view(),
         name=rest_router.get_base_name('update-create')),
-    url(r'^accounts/', include(account_urlpatterns))
+    url(r'^accounts/', include(account_urlpatterns)),
+    url(r'^loadingcovers/(?P<package_name>%s)(/(?P<version_name>%s))?' %(slug_pattern,
+                                                                         slug_pattern),
+        LoadingCoverView.as_view(),
+        kwargs=dict(version_name=None),
+        name='loadingcover'),
 )
 

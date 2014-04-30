@@ -7,6 +7,7 @@ from easy_thumbnails.widgets import ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
 from clientapp.models import ClientPackageVersion, LoadingCover
 from toolkit.helpers import sync_status_summary, sync_status_actions
+from toolkit.admin import admin_edit_linktag
 
 
 class ClientPackageVersionAdmin(VersionAdmin):
@@ -110,19 +111,28 @@ class LoadingCoverAdmin(VersionAdmin):
         }),
     )
 
-    list_display = ('pk', 'show_image', 'title', 'status', 'publish_date_since',
+    list_display = ('pk', 'show_image', 'title', 'clientapp', 'status', 'publish_date_since',
                     '_order', 'sync_file_status',)
     list_editable = ('status', '_order',)
     list_filter = ('status',)
 
     def show_image(self, obj):
         try:
-            return mark_safe('<img width="100" src="%s" alt="%s"/>' % \
-                             (obj.image.url, obj.title))
+            return mark_safe('<a href="%s" target="_blank">'
+                             '<img width="100" src="%s" alt="%s"/></a>' % \
+                             (obj.image.url, obj.image.url, obj.title))
         except ValueError:
             return obj.name
     show_image.short_description = _('Image')
     show_image.allow_tags = True
+
+    def clientapp(self, obj):
+        if obj.version:
+            return admin_edit_linktag(obj.version)
+        return obj.package_name
+    clientapp.short_description = 'Client App'
+    clientapp.allow_tags = True
+
 
     def get_action(self, action):
         return ()
@@ -132,7 +142,7 @@ class LoadingCoverAdmin(VersionAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.pk:
-            return self.model._meta.get_all_field_names()
+            return ('package_name', 'version')
         return ()
 
     def sync_file_status(self, obj):
