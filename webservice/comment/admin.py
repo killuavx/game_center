@@ -124,7 +124,6 @@ class FeedbackTypeAdmin(MainAdmin):
         fields = ()
         if obj is not None and obj.pk:
             fields = obj.__class__._meta.get_all_field_names()
-        print(fields)
         return fields
 
     list_display = ('pk', 'title', 'slug', 'level')

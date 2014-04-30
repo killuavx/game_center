@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from django.db import models
 from django.db.models.query import QuerySet
@@ -7,9 +8,10 @@ from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
-from toolkit.managers import CurrentSitePassThroughManager
 from toolkit.helpers import sync_status_from
-from toolkit.models import SiteRelated
+from toolkit.managers import CurrentSitePassThroughManager, PublishedManager
+from toolkit.models import SiteRelated, PublishDisplayable
+from mezzanine.core.models import TimeStamped, Orderable
 
 
 class ClientPackageVersionQuerySet(QuerySet):
@@ -147,7 +149,7 @@ class ClientPackageVersion(SiteRelated, models.Model):
         return sync_status_from(self)
 
     def __str__(self):
-        return "%s:%s" %(self.package_name, self.version_code)
+        return "%s:%s" %(self.package_name, self.version_name)
 
 
 from django.db.models.signals import pre_save
@@ -179,3 +181,61 @@ def updated_datetime_pre_save_with_tracker(sender, instance, **kwargs):
 
     if len(changed):
         instance.updated_datetime = now()
+
+
+class LoadingCoverManager(PublishedManager, CurrentSitePassThroughManager):
+    pass
+
+
+def _clientloading_upload_to_path(instance, filename):
+    extension = filename.split('.')[-1].lower()
+    path = "clientloading/%s" % instance.package_name
+    basename = instance.created.strftime('%Y%m%d-%H%M%S')
+    return '%(path)s/%(filename)s.%(extension)s' % {'path': path,
+                                                    'filename': basename,
+                                                    'extension': extension,
+                                                    }
+
+
+class LoadingCover(SiteRelated,
+                   PublishDisplayable,
+                   Orderable,
+                   TimeStamped):
+
+    objects = LoadingCoverManager()
+
+    title = models.CharField(max_length=200)
+
+    package_name = models.CharField(max_length=200, blank=True)
+
+    version = models.ForeignKey(ClientPackageVersion,
+                                default=None,
+                                null=True,
+                                blank=True)
+
+    image = models.ImageField(upload_to=_clientloading_upload_to_path)
+
+    def clean(self):
+        if not self.package_name and not self.version:
+            raise ValidationError('package_name or version cannot be empty')
+
+        if self.version and not self.package_name:
+            self.package_name = self.version.package_name
+
+        if not self.created:
+            self.created = now()
+
+        self.in_sitemap = False
+
+    class Meta:
+        verbose_name = '封面'
+        verbose_name_plural = '封面图片'
+        index_together = (
+            ('site', '_order'),
+            ('site', 'status'),
+            ('site', 'status', '_order'),
+        )
+        ordering = ('site', '_order')
+
+    def sync_status(self):
+        return sync_status_from(self)

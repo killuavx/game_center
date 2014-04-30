@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from django_widgets import Widget
-from clientapp.models import ClientPackageVersion
 
 class ClientAppLatestDownloadWidget(Widget):
 
     def get_context(self, value=None, options=dict(), context=None):
+        from clientapp.models import ClientPackageVersion
         package_name = options.get('package_name')
         item = None
         if package_name:

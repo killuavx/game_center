@@ -42,5 +42,8 @@ if settings.DEBUG:
     ClientPackageVersion.sync_processor_class = \
         mock_processor_class(ClientPackageVersionProcessor)
 
+    LoadingCover.sync_processor_class = \
+        mock_processor_class(LoadingCoverProcessor)
+
 
 

@@ -5,11 +5,11 @@ from .errors import WorkingDirectoryNotFound
 from .processors.warehouse import PackageVersionProcessor
 from .processors.taxonomy import TopicProcessor, CategoryProcessor
 from .processors.promotion import AdvertisementProcessor
-from .processors.clientapp import ClientPackageVersionProcessor
+from .processors.clientapp import ClientPackageVersionProcessor, LoadingCoverProcessor
 from warehouse.models import PackageVersion
 from promotion.models import Advertisement
 from taxonomy.models import Category, Topic
-from clientapp.models import ClientPackageVersion
+from clientapp.models import ClientPackageVersion, LoadingCover
 from . import feedback_signals as fb_signals
 
 PackageVersion.sync_processor_class = PackageVersionProcessor
@@ -21,6 +21,8 @@ Topic.sync_processor_class = TopicProcessor
 Category.sync_processor_class = CategoryProcessor
 
 ClientPackageVersion.sync_processor_class = ClientPackageVersionProcessor
+
+LoadingCover.sync_processor_class = LoadingCoverProcessor
 
 
 def feedback_start_action(sender, instance, operation, queue, **kwargs):
@@ -55,9 +57,11 @@ pre_save.connect(pre_save_sync_files, sender=Advertisement)
 pre_save.connect(pre_save_sync_files, sender=Category)
 pre_save.connect(pre_save_sync_files, sender=Topic)
 pre_save.connect(pre_save_sync_files, sender=ClientPackageVersion)
+pre_save.connect(pre_save_sync_files, sender=LoadingCover)
 
 post_save.connect(post_save_sync_files, sender=PackageVersion)
 post_save.connect(post_save_sync_files, sender=Advertisement)
 post_save.connect(post_save_sync_files, sender=Category)
 post_save.connect(post_save_sync_files, sender=Topic)
 post_save.connect(post_save_sync_files, sender=ClientPackageVersion)
+post_save.connect(post_save_sync_files, sender=LoadingCover)

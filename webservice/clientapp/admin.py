@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
 from easy_thumbnails.widgets import ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
-from clientapp.models import ClientPackageVersion
+from clientapp.models import ClientPackageVersion, LoadingCover
 from toolkit.helpers import sync_status_summary, sync_status_actions
 
 
@@ -95,4 +95,54 @@ class ClientPackageVersionAdmin(VersionAdmin):
         static_url = '/static/'
         js = [static_url+'js/syncfile.action.js', ]
 
+
+class LoadingCoverAdmin(VersionAdmin):
+
+    fieldsets = (
+        (None, {
+            'fields': (
+                'title',
+                'image',
+                ('package_name', 'version',),
+                ('publish_date', 'expiry_date'),
+                'status',
+            )
+        }),
+    )
+
+    list_display = ('pk', 'show_image', 'title', 'status', 'publish_date_since',
+                    '_order', 'sync_file_status',)
+    list_editable = ('status', '_order',)
+    list_filter = ('status',)
+
+    def show_image(self, obj):
+        try:
+            return mark_safe('<img width="100" src="%s" alt="%s"/>' % \
+                             (obj.image.url, obj.title))
+        except ValueError:
+            return obj.name
+    show_image.short_description = _('Image')
+    show_image.allow_tags = True
+
+    def get_action(self, action):
+        return ()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.pk:
+            return self.model._meta.get_all_field_names()
+        return ()
+
+    def sync_file_status(self, obj):
+        return sync_status_summary(obj) + " | " + sync_status_actions(obj)
+    sync_file_status.short_description = _('Sync Status')
+    sync_file_status.allow_tags = True
+
+    class Media:
+        static_url = '/static/'
+        js = [static_url+'js/syncfile.action.js', ]
+
 admin.site.register(ClientPackageVersion, ClientPackageVersionAdmin)
+admin.site.register(LoadingCover, LoadingCoverAdmin)

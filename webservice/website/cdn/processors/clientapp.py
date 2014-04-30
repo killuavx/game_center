@@ -21,3 +21,18 @@ class ClientPackageVersionProcessor(ModelProcessor):
             raise WorkingDirectoryNotFound(
                 "working direcotry %s not found" % self.instance)
         return dirname(self.instance.download.path)
+
+
+class LoadingCoverProcessor(ModelProcessor):
+
+    def __init__(self, instance):
+        super(LoadingCoverProcessor, self).__init__(instance)
+        self.relative_path = self.get_relative_working_path()
+
+    def get_relative_working_path(self):
+        try:
+            self.instance.image.url
+        except FileNotFoundError:
+            raise WorkingDirectoryNotFound(
+                "working direcotry %s not found" % self.instance)
+        return dirname(self.instance.image.path)
