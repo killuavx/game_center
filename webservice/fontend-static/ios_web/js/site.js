@@ -11,12 +11,29 @@ function resize(){
 	var wobj = $("body");
 	if(width > 1250){
 		wobj.attr("id","cc-l");	
-	}else if(width > 1000){
+	}else if(width > 990){
 		wobj.attr("id","cc-m");	
 	}else{
 		wobj.attr("id","cc-s");	
 	}
 };
+
+
+document.writeln("<a href=\"javascript:;\" title=\"返回顶部\" id=\"toTop\" style=\"position:fixed;right:20px;bottom:-150px; display:block;z-index:9999;text-decoration:none\" class=\"pl20 pr20 pt15 pb15 f28 btn bg-silver white fl b\">▲</a>");
+$(document).ready(function(){
+	$(window).scroll(function(){
+		if($(window).scrollTop()<=100) {
+			$("#toTop").stop(true,false).animate({bottom:"-150px"},50);
+			$("html").attr("ID","");
+		}else{
+			$("#toTop").stop(true,false).animate({bottom:"20px"},50);
+			$("html").attr("ID","head");
+		}
+	});
+	$("#toTop").click(function(){
+		$("body,html").animate({scrollTop:0},50);
+	});
+});
 
 
 
@@ -93,10 +110,26 @@ $(function(){
 	});
 	
 	
+	$(".search").hover(function(){
+		$(this).find(".box").addClass("hover");
+	},function(){
+		$(this).find(".box").removeClass("hover");
+	});
+	
+	
+	
 	$(".maste_lsit").hover(function(){
 		   $(".maste_lsit").removeClass("hover");
 		   $(this).addClass("hover");
 	});
+	
+	
+	$(".t-title li").hover(function(){
+		   $(".t-title li").removeClass("ios-web-icon hover");
+		   $(this).addClass("ios-web-icon hover");
+	});
+	
+	
 	
 	$(".game .app-list-right li").hover(function(){
 		   $(".game .app-list-right li").removeClass("hover");
@@ -107,6 +140,12 @@ $(function(){
 		   $(".soft .app-list-right li").removeClass("hover");
 		   $(this).addClass("hover");
 	});
+	
+	$(".h-game-top-list li").hover(function(){
+		   $(".h-game-top-list li").removeClass("hover");
+		   $(this).addClass("hover");
+	});
+	
 	
 	$(".left-top-list .app-list-right li").hover(function(){
 		   $(".left-top-list .app-list-right li").removeClass("hover");
@@ -291,7 +330,7 @@ $(".pin-box").pin({
       containerSelector: ".width"
 });
 
-$(".nav").pin()
+//$(".nav").pin()
 
 
 
@@ -373,12 +412,6 @@ $(function(){
 
 
 
-
-
-
-
-
-
 $(function() { 	
 	
 	//提示
@@ -395,12 +428,8 @@ $(function() {
 //<div class="p20 f20 white"><i class="icon-exclamation-sign mr10 f28"></i><span class="dib rel">出错啦~</span></div>
 //<div class="p20 f20 white"><i class="icon-minus-sign mr10 f28"></i><span class="dib rel">禁止！~</span></div>
 //<div class="p20 f20 white"><i class="icon-minus-sign mr10 f28"></i><span class="dib rel">禁止！~</span></div>
-
-
-
 	
 	//询问
-
 	$("#box_remind").click(function(){
     $.zxxbox.remind('<span class="db pb15 f16">请输入您注册的电子邮箱，下一步将发送修改密码链接到该邮箱。</span><input class="pct50 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="请输入电子邮箱" id="p-email" datatype="e">', function(){
         //alert("哇哈哈");
@@ -409,26 +438,19 @@ $(function() {
     });						   
 	});
 	
-	
-	
 	$("#box_ask").click(function(){
     $.zxxbox.ask('<span class="f16 tc">文字内字文字内容区域文字内容区域文字内容区域文<br/>字内容区域文字内容区域文字内容区域文字内容区域文字内容区域，<br/>支持HTML 支持HTML 支持HTML</span>', function(){
         $("body").css("background-color", "azure");	
     }, null, {
         title: "友情提示"	,bg: true, fix: true, bgclose:true
     });						   
-	});
-
-
+	});	
 	
 	$("#sub1").click(function(){
 		$.zxxbox($("#box"), {
         title: "标题"	
         });
     });
-	
-
-	
 })
 //弹出框提示 结束
 
@@ -557,6 +579,12 @@ diy_select.prototype={
 
 var TTDiy_select=new diy_select({  //参数可选
 });//如同时使用多个时请保持各class一致.
+
+
+
+	
+
+
 
 
 
