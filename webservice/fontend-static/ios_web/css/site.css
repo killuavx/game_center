@@ -142,10 +142,13 @@ animation: toTopFromBottom .3s forwards;}
 .roll_box{height:125px; *overflow:hidden}
 .roll_box li{margin:0 6px; *float:left}
 .roll_box li img{width:237px; height:125px}
-.roll_box .text,.novice-bbs-list .top span,.r-box .top span{left:0; bottom:0; width:227px; height:30px; line-height:30px; background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,.7)); -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',endColorstr='#B2000000',gradientType=0)";
+.roll_box .text,.novice-bbs-list .top span,.r-box .top span,.bbs-rcd span{left:0; bottom:0; width:227px; height:30px; line-height:30px; background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,.7)); -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',endColorstr='#B2000000',gradientType=0)";
 filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',endColorstr='#B2000000',gradientType=0);
-white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
+white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .roll_btn a{top:-85px}
+
+.roll_box a:hover span,.bbs-rcd a:hover span,.novice-bbs-list .top:hover span,.r-box .top:hover span{background:#e53333}
+
 
 .latest-release,.vendor{width:240px; left:0}
 .hot-news,.hot-bbs{margin-left:260px; margin-right:320px}
@@ -254,7 +257,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
 .novice-bbs-list .top span{width:300px}
 
 /*美图*/
-.mm-pic{height:552px}
+.mm-pic{height:552px; background:#fff}
 .mm{overflow:hidden; position:absolute}
 .mm-pic .t-title li{padding:0 20px}
 .mm img,.mm{width:180px; height:180px}
@@ -289,7 +292,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
 .mm a span{position:absolute; display:inline-block; padding:5px; color:#fff; border-left:2px solid #e53333; bottom:0; left:0; background-color: transparent;
 background-color: rgba(0,0,0,.5);
 filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#7f000000,endColorstr=#7f000000);
-zoom: 1; -moz-border-radius:0 10em 10em 0; -webkit-border-radius:0 10em 10em 0; border-radius:0 10em 10em 0;}
+zoom: 1;}
 .mm a:hover span{left:0px; background:#e53333; padding:5px 15px}
 
 
@@ -380,7 +383,7 @@ zoom: 1; -moz-border-radius:0 10em 10em 0; -webkit-border-radius:0 10em 10em 0; 
 .left-top-list .t-title li{padding:0 20px}
 .left-top-list li {padding:5px}
 .left-top-list li b{width:15px}
-.left-top-list li .ios-web-icon{left:24px; top:5px}
+.left-top-list li span.ios-web-icon{left:24px; top:5px}
 .left-top-list li.hover .btn-s{width:48%}
 
 

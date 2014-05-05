@@ -117,7 +117,6 @@ $(function(){
 	});
 	
 	
-	
 	$(".maste_lsit").hover(function(){
 		   $(".maste_lsit").removeClass("hover");
 		   $(this).addClass("hover");
@@ -141,8 +140,30 @@ $(function(){
 		   $(this).addClass("hover");
 	});
 	
+	
+	
+	$(".rcd-list li").hover(function(){
+		   $(".rcd-list li").removeClass("hover");
+		   $(this).addClass("hover");
+	});
+	
+	$(".down-list li").hover(function(){
+		   $(".down-list li").removeClass("hover");
+		   $(this).addClass("hover");
+	});
+	
 	$(".h-game-top-list li").hover(function(){
 		   $(".h-game-top-list li").removeClass("hover");
+		   $(this).addClass("hover");
+	});
+	
+	$(".most-expensive-list li").hover(function(){
+		   $(".most-expensive-list li").removeClass("hover");
+		   $(this).addClass("hover");
+	});
+	
+	$(".crack-list li").hover(function(){
+		   $(".crack-list li").removeClass("hover");
 		   $(this).addClass("hover");
 	});
 	
