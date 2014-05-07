@@ -6,6 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from account.models import Profile
 from account.models import UserAppBind
 import hashlib
+from account.utils import get_datetime_now
+
 sha_constructor = hashlib.sha1
 
 import logging
@@ -146,13 +148,12 @@ class UserSyncAPI(object):
         qs = Profile.objects.all()
         return unique_value(qs, 'email', email)
 
-    def _random_phone(self):
-        identification = sha_constructor(str(random.random()).encode('utf-8')) \
-                             .hexdigest()[:10]
-        return "%s@%s" %(identification, 'uc.ccplay.com.cn')
+    def _phone(self):
+        now = get_datetime_now()
+        return now.strftime('%Y%m%d%H%M%S%f')
 
     def clean_phone(self):
-        phone = self._random_phone()
+        phone = self._phone()
         qs = Profile.objects.all()
         return unique_value(qs, 'phone', phone)
 
