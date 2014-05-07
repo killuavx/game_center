@@ -4,7 +4,7 @@ from mezzanine.generic.models import ThreadedComment
 from mezzanine.generic.managers import CommentManager as ThreadedCommentManager
 from django.db.models.query import QuerySet
 from model_utils import Choices
-from model_utils.fields import StatusField
+from model_utils.fields import StatusField, MonitorField
 from model_utils.managers import PassThroughManager
 from django.db import models
 from django.conf import settings
@@ -90,6 +90,8 @@ class BaseLetter(SiteRelated, TimeStamped):
 
 class FeedbackType(SiteRelated):
 
+    objects = CurrentSitePassThroughManager()
+
     title = models.CharField(_("Title"), max_length=300)
 
     slug = models.CharField(_("Slug"), max_length=300)
@@ -112,14 +114,14 @@ class FeedbackType(SiteRelated):
 class FeedbackQuerySet(QuerySet):
 
     def visible(self, for_user=None):
-        done = self.model.STATUS.done
+        finished = self.model.STATUS.finished
         confirmed = self.model.STATUS.confirmed
         deleted = self.model.STATUS.deleted
         if for_user is not None:
             return self.filter(user=for_user)\
                 .exclude(Q(status=deleted)| Q(is_owner_ignored=True))
         else:
-            return self.filter(status__in=(done, confirmed))
+            return self.filter(status__in=(finished, confirmed))
 
 
 class Feedback(BaseLetter):
@@ -137,11 +139,11 @@ class Feedback(BaseLetter):
                                                fk_field="object_pk")
 
     STATUS = Choices(
-        ('posted', 'posted', '已提交'), # _('Posted')),
-        ('confirmed', 'confirmed', '已确认'), #_('Confirmed')),
-        ('done', 'done', '已处理'), # _('Done')),
-        ('rejected', 'rejected', '已拒绝'), #_('Rejected')),
-        ('deleted', 'deleted', '已删除'),#  _('Deleted')),
+        ('posted', 'posted', '已提交'),
+        ('confirmed', 'confirmed', '已确认'),
+        ('finished', 'finished', '已处理'),
+        ('rejected', 'rejected', '已拒绝'),
+        ('deleted', 'deleted', '已删除'),
     )
 
     status = StatusField(default=STATUS.posted, blank=True)
@@ -186,3 +188,121 @@ class Feedback(BaseLetter):
         )
         ordering = ('site', 'created')
 
+
+class PetitionPackageVersion(SiteRelated, models.Model):
+    """
+        请愿包
+    """
+
+    objects = CurrentSitePassThroughManager()
+
+    url = models.URLField(blank=True,
+                          null=True)
+
+    title = models.CharField(max_length=300,
+                             null=True,
+                             blank=True)
+
+    package_name = models.CharField(max_length=300,
+                                    blank=True,
+                                    null=True)
+
+    version_name = models.CharField(max_length=300,
+                                    blank=True,
+                                    null=True)
+
+    class Meta:
+        verbose_name = '请愿软件'
+        verbose_name_plural = '请愿软件清单'
+        unique_together = (
+            ('site', 'url', 'title',
+             'package_name',
+             'version_name'),
+        )
+
+    def get_admin_url(self):
+        from mezzanine.utils.urls import admin_url
+        return admin_url(self, "change", self.id)
+
+    def __str__(self):
+        if self.title:
+            return self.title
+        if self.package_name:
+            return "%s:%s" % (self.package_name, self.version_name)
+        if self.url:
+            return self.url
+        return None
+
+
+class PetitionQuerySet(QuerySet):
+
+    def visible(self):
+        finished = self.model.STATUS.finished
+        confirmed = self.model.STATUS.confirmed
+        return self.filter(status__in=(finished, confirmed))
+
+
+class Petition(BaseLetter):
+    """
+        请愿内容
+    """
+
+    objects = CurrentSitePassThroughManager.for_queryset_class(PetitionQuerySet)()
+
+    petition_for = models.ForeignKey(PetitionPackageVersion)
+
+    packageversion = models.ForeignKey('warehouse.PackageVersion',
+                                       blank=True,
+                                       null=True)
+
+    STATUS = Choices(
+        ('posted', 'posted', '已提交'),
+        ('confirmed', 'confirmed', '已确认'),
+        ('rejected', 'rejected', '已拒绝'),
+        ('finished', 'finished', '已完成'),
+        ('deleted', 'deleted', '已删除'),
+    )
+
+    status = StatusField(default=STATUS.posted, blank=True)
+
+    verifier = models.ForeignKey(get_user_model(),
+                                 verbose_name='审核人',
+                                 related_name='confirm_petitions',
+                                 editable=False,
+                                 blank=True,
+                                 null=True)
+
+    confirmed_at = MonitorField(monitor='status',
+                                editable=False,
+                                when=['confirmed'])
+    finished_at = MonitorField(monitor='status',
+                               editable=False,
+                               when=['finished'])
+    rejected_at = MonitorField(monitor='status',
+                               editable=False,
+                               when=['rejected'])
+    deleted_at = MonitorField(monitor='status',
+                              editable=False,
+                              when=['deleted'])
+
+    replies = generic.GenericRelation(Comment)
+
+    def get_absolute_url(self):
+        return '#'
+
+    def get_admin_url(self):
+        from mezzanine.utils.urls import admin_url
+        return admin_url(self, "change", self.id)
+
+    class Meta:
+        verbose_name = '请愿'
+        verbose_name_plural = '请愿列表'
+        index_together = (
+            ('site', 'user', 'created',),
+            ('site', 'user', 'petition_for', 'packageversion',),
+            ('site', 'user', 'petition_for', 'packageversion', 'status', ),
+            ('site', 'user', 'packageversion', ),
+            ('site', 'user', 'packageversion', 'status', ),
+            ('site', 'user', 'packageversion', 'status', 'finished_at'),
+        )
+        ordering = ('created', )

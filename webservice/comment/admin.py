@@ -7,9 +7,10 @@ from django.utils.translation import ugettext_lazy as _
 from reversion.admin import VersionAdmin
 from mezzanine.core.admin import TabularDynamicInlineAdmin as TabularInline
 from mezzanine.generic.admin import ThreadedCommentAdmin
+from mezzanine.utils.urls import admin_url
 from copy import deepcopy
 from django.contrib.comments import get_model as get_comment_model
-from comment.models import FeedbackType, Feedback
+from comment.models import FeedbackType, Feedback, Petition, PetitionPackageVersion
 from django.contrib.contenttypes import generic
 from toolkit.admin import admin_edit_linktag
 
@@ -65,7 +66,8 @@ class MainAdmin(VersionAdmin):
     pass
 
 
-class FeedbackReplyInline(TabularInline, generic.GenericTabularInline):
+class FeedbackReplyInline(TabularInline,
+                          generic.GenericTabularInline):
     ct_field = "content_type"
     ct_fk_field = "object_pk"
     fields = ('comment', 'submit_date')
@@ -131,3 +133,56 @@ class FeedbackTypeAdmin(MainAdmin):
 
 site.register(Feedback, FeedbackAdmin)
 site.register(FeedbackType, FeedbackTypeAdmin)
+
+
+class PetitionPackageVersionAdmin(MainAdmin):
+
+    list_display = ('pk', 'title', 'url', 'package_name', 'version_name', )
+    fields = [
+        'pk',
+        'url', 'title', 'package_name', 'version_name',
+    ]
+    readonly_fields = ('pk',)
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request):
+        return False
+
+    def get_action(self, action):
+        return ()
+
+
+class PetitionAdmin(MainAdmin):
+    inlines = (FeedbackReplyInline, )
+    list_display = ('pk', 'petition_for_link', 'packageversion_link',
+                    'comment',
+                    'status',
+                    'created', 'updated', )
+    readonly_fields = ('petition_for', 'verifier', 'user', 'comment')
+    list_filter = ('status', )
+    date_hierarchy = 'created'
+    raw_id_fields = ('packageversion',)
+
+    def packageversion_link(self, obj):
+        if not obj.packageversion:
+            return None
+        return '<a href="%s" target="_blank">%s</a>' % \
+               (admin_url(self, "change", self.id), str(obj.packageversion))
+    packageversion_link.short_description = 'Package Version'
+
+    def petition_for_link(self, obj):
+        return '<a href="%s" target="_blank">%s</a>' % \
+               (admin_url(self, "change", self.id), str(obj.petition_for))
+    petition_for_link.short_description = Petition._meta.verbose_name
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def get_action(self, action):
+        return ()
+
+
+admin.site.register(Petition, PetitionAdmin)
+admin.site.register(PetitionPackageVersion, PetitionPackageVersionAdmin)
