@@ -137,6 +137,9 @@ class UserSyncAPI(object):
                                             email=email,
                                             phone=phone,
                                             password=password)
+            UserAppBind.objects.create(user=user,
+                                       app=UserAppBind.APPS.app,
+                                       uid=uc_uid)
             return user
 
     def clean_username(self, username):
