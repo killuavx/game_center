@@ -331,7 +331,7 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
         return self.queryset
 
     def _prepare_queryset(self, request):
-        self.queryset = self.queryset.filter(profile=request.user.profile)
+        self.queryset = self.get_queryset().filter(profile=request.user.profile)
 
     def list(self, request, *args, **kwargs):
         self._prepare_queryset(request)
