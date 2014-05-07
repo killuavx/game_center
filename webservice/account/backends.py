@@ -173,18 +173,15 @@ class GameCenterModelBackend(UserSyncAPI,
             return None
 
         if not check_password:
-            logger.info('not check_password')
             self.sync_user(user, password=password)
             return user
 
         if user.check_password(password):
-            logger.info('check_password')
             self.sync_user(user, password=password)
             return user
         return None
 
     def sync_user(self, user, **kwargs):
-        logger.info('%s, %s' %(user, kwargs))
         return self.sync_user_to_ucenter(user, **kwargs)
 
 
@@ -205,5 +202,5 @@ class UCenterModelBackend(UserSyncAPI,
         return user
 
     def sync_user(self, uc_userdata):
-        return self.sync_user(uc_userdata)
+        return self.sync_user_from_ucenter(uc_userdata)
 
