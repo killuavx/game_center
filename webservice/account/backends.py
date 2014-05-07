@@ -8,6 +8,9 @@ from account.models import UserAppBind
 import hashlib
 sha_constructor = hashlib.sha1
 
+import logging
+logger = logging.getLogger('scripts')
+
 
 class GetUserMixin(object):
 
@@ -92,6 +95,7 @@ class UserSyncAPI(object):
 
     def sync_user_to_ucenter(self, user, **kwargs):
         try:
+            logger.info('try get appbind')
             appbind = user.appbinds.filter(app=UserAppBind.APPS.bbs).get()
             return user
         except UserAppBind.DoesNotExist:
@@ -101,9 +105,10 @@ class UserSyncAPI(object):
                                        password=kwargs.get('password'),
                                        )
             uid = int(uid)
-            UserAppBind.objects.create(user=user,
+            bind = UserAppBind.objects.create(user=user,
                                        app=UserAppBind.APPS.bbs,
                                        uid=uid)
+            logger.info('binded: %s, %s, %s'%(bind.user, bind.app, bind.uid))
             return user
 
     def clean_ucenter_username(self, username):
@@ -168,15 +173,18 @@ class GameCenterModelBackend(UserSyncAPI,
             return None
 
         if not check_password:
+            logger.info('not check_password')
             self.sync_user(user, password=password)
             return user
 
         if user.check_password(password):
+            logger.info('check_password')
             self.sync_user(user, password=password)
             return user
         return None
 
     def sync_user(self, user, **kwargs):
+        logger.info('%s, %s' %(user, kwargs))
         return self.sync_user_to_ucenter(user, **kwargs)
 
 
