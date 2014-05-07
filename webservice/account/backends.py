@@ -168,11 +168,11 @@ class GameCenterModelBackend(UserSyncAPI,
             return None
 
         if not check_password:
-            self.sync_user(user)
+            self.sync_user(user, password=password)
             return user
 
         if user.check_password(password):
-            self.sync_user(user)
+            self.sync_user(user, password=password)
             return user
         return None
 
