@@ -58,7 +58,7 @@ def uc_unique_username(api, value, segment='-'):
             if i > 1:
                 value = value.rsplit(segment, 1)[0]
             value = "%s%s%s" % (value, segment, i)
-        code = int(api.uc_user_checkname(value))
+        code = int(api.uc_user_checkname(username=value))
         if code == 1:
             break
         i += 1
@@ -74,7 +74,7 @@ def uc_unique_email(api, email, segment='-'):
                 value = value.rsplit(segment, 1)[0]
             value = "%s%s%s" % (value, segment, i)
         email = "%s@%s" %(value, host)
-        code = int(api.uc_user_checkemail(email))
+        code = int(api.uc_user_checkemail(email=email))
         if code == 1:
             break
         i += 1
@@ -168,6 +168,7 @@ class GameCenterModelBackend(UserSyncAPI,
             return None
 
         if not check_password:
+            self.sync_user(user)
             return user
 
         if user.check_password(password):

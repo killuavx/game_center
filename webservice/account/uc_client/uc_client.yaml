@@ -94,7 +94,7 @@ uc_user_deleteavatar:
 
 uc_user_checkname:
   args:
-    - name: email
+    - name: username
       type: str
   return: int
 
