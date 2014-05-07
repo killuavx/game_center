@@ -5,16 +5,17 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.core import validators
 from django.conf import settings
-from django.contrib.auth.models import (AbstractUser as UserBase)
+from django.contrib.auth.models import (AbstractUser as UserBase, Group)
 from django.dispatch import receiver
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from easy_thumbnails.fields import ThumbnailerImageField
 from guardian.shortcuts import get_perms
-from model_utils import FieldTracker
+from model_utils import FieldTracker, Choices
+from mezzanine.core.models import TimeStamped
 
-from account.managers import UserQuerySet, UserManager, ProfileManager
+from account.managers import UserQuerySet, UserManager, ProfileManager, UserAppBindManager
 
 
 def factory_userprofile_upload_to(basename):
@@ -224,4 +225,40 @@ def post_delete_user(sender, instance, *args, **kwargs):
         instance.gamecenter_profile.delete()
     except Profile.DoesNotExist:
         pass
+
+
+class UserAppBind(TimeStamped, models.Model):
+
+    objects = UserAppBindManager()
+
+    user = models.ForeignKey('account.User',
+                             related_name='appbinds')
+
+    APPS = Choices(
+        (1, 'bbs', 'BBS'),
+    )
+
+    app = models.IntegerField(verbose_name='应用', choices=APPS)
+
+    uid = models.IntegerField(verbose_name='app的用户id')
+
+    class Meta:
+        verbose_name = '用户应用绑定'
+        verbose_name_plural = '用户应用绑定名单'
+        unique_together = (
+            ('user', 'app'),
+            ('app', 'uid', ),
+        )
+        index_together = (
+            ('user', 'app'),
+            ('user', 'created'),
+        )
+
+
+@receiver(post_save, sender=UserAppBind)
+def post_save_userappbind(sender, instance, raw, created, using, update_fields, **kwargs):
+    group_name = "%s_user" % instance.get_app_display().lower()
+    if not instance.user.groups.filter(name=group_name).exists():
+        uc_group, _created = Group.objects.get_or_create(name=group_name)
+        instance.user.groups.add(uc_group)
 

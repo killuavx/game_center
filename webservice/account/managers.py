@@ -17,6 +17,12 @@ class UserQuerySet(QuerySet):
     def published(self):
         return self.filter(is_active=True)
 
+    def get_by_appbind(self, app, uid):
+        return self.get(
+            appbinds__app=app,
+            appbinds__uid=uid,
+        )
+
 
 class UserManager(UserBaseManager, PassThroughManager):
     def create_user(self,
@@ -71,3 +77,12 @@ class ProfileManager(PassThroughManager):
             profiles = profiles.exclude(Q(privacy='closed') | Q(privacy='registered'))
         else: profiles = profiles.exclude(Q(privacy='closed'))
         return profiles
+
+
+class UserAppBindManager(PassThroughManager):
+
+    def all_appbinds(self, app):
+        return self.all().filter(app=app)
+
+    def get_appbind(self, app, uid):
+        return self.all().filter(app=app, uid=uid)

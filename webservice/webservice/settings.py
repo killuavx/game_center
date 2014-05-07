@@ -391,6 +391,7 @@ def NOW():
 
 AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
+    'account.backends.UCenterModelBackend',
     'account.backends.GameCenterModelBackend',
 )
 ANONYMOUS_USER_ID = -1

@@ -8,7 +8,7 @@ from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 from account.forms import mob as account_forms
 from mobapi2.authentications import PlayerTokenAuthentication
-from mobapi2.account.serializers import AccountDetailSerializer
+from mobapi2.account.serializers import AccountDetailSerializer, MultiAppAuthTokenSerializer
 from mobapi2.warehouse.serializers.package import PackageSummarySerializer
 from warehouse.models import Package, PackageVersion
 from comment.models import Comment
@@ -158,6 +158,7 @@ class AccountAuthTokenView(ObtainAuthToken):
 
     """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+    serializer_class = MultiAppAuthTokenSerializer
 
 
 class AccountCommentPackageView(generics.ListAPIView):
