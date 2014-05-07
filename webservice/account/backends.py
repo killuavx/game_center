@@ -120,7 +120,7 @@ class UserSyncAPI(object):
 
         User = get_user_model()
         try:
-            user = User.objects.get_by_appbind(app=UserAppBind.APPS.bbs, uc_uid)
+            user = User.objects.get_by_appbind(UserAppBind.APPS.bbs, uc_uid)
             return user
         except User.DoesNotExist:
             email = self.clean_email(email)
