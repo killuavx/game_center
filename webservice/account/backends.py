@@ -170,9 +170,17 @@ class UserSyncAPI(object):
 class GameCenterModelBackend(UserSyncAPI,
                              GetUserMixin,
                              ModelBackend):
+    """
+        game center 用户登录验证
+    """
 
     def authenticate(self, username=None, password=None,
                      check_password=True, app=None, **kwargs):
+        """
+            username: game center账号
+            password: game center密码
+            app如设置了，表示使用别的登陆方式，略过当前登陆方式
+        """
         if app is not None:
             return None
         User = get_user_model()
@@ -198,8 +206,16 @@ class GameCenterModelBackend(UserSyncAPI,
 class UCenterModelBackend(UserSyncAPI,
                           GetUserMixin,
                           ModelBackend):
+    """
+        ucenter 用户登录验证
+    """
 
     def authenticate(self, username=None, password=None, app=None, **kwargs):
+        """
+            username: game center账号
+            password: game center密码
+            app如设置了，表示使用UCenter登陆方式，否则路过本次验证
+        """
         if app is None:
             return None
 
