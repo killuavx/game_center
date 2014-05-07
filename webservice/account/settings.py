@@ -8,4 +8,4 @@ ACCOUNT_FORBIDDEN_USERNAMES = getattr(settings,
                                       ('signup', 'signout', 'signin',
                                         'activate', 'me', 'password'))
 
-UC_CLIENT_CMD = join(dirname(abspath(__file__)), 'uc_client_api.php')
+UC_CLIENT_CMD = join(dirname(abspath(__file__)), 'uc_client/uc_client_api.php')
