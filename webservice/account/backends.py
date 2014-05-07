@@ -7,6 +7,7 @@ from account.models import Profile
 from account.models import UserAppBind
 import hashlib
 from account.utils import get_datetime_now
+from django.db import transaction
 
 sha_constructor = hashlib.sha1
 
@@ -97,7 +98,6 @@ class UserSyncAPI(object):
 
     def sync_user_to_ucenter(self, user, **kwargs):
         try:
-            logger.info('try get appbind')
             appbind = user.appbinds.filter(app=UserAppBind.APPS.bbs).get()
             return user
         except UserAppBind.DoesNotExist:
@@ -108,9 +108,8 @@ class UserSyncAPI(object):
                                        )
             uid = int(uid)
             bind = UserAppBind.objects.create(user=user,
-                                       app=UserAppBind.APPS.bbs,
-                                       uid=uid)
-            logger.info('binded: %s, %s, %s'%(bind.user, bind.app, bind.uid))
+                                              app=UserAppBind.APPS.bbs,
+                                              uid=uid)
             return user
 
     def clean_ucenter_username(self, username):
@@ -133,14 +132,21 @@ class UserSyncAPI(object):
             email = self.clean_email(email)
             username = self.clean_username(username)
             phone = self.clean_phone()
-            user = User.objects.create_user(username=username,
-                                            email=email,
-                                            phone=phone,
-                                            password=password)
-            UserAppBind.objects.create(user=user,
-                                       app=UserAppBind.APPS.app,
-                                       uid=uc_uid)
-            return user
+
+            sid = transaction.savepoint()
+            try:
+                user = User.objects.create_user(username=username,
+                                                email=email,
+                                                phone=phone,
+                                                password=password)
+                UserAppBind.objects.create(user=user,
+                                           app=UserAppBind.APPS.bbs,
+                                           uid=uc_uid)
+                transaction.savepoint_commit(sid)
+                return user
+            except:
+                transaction.savepoint_rollback(sid)
+                return None
 
     def clean_username(self, username):
         User = get_user_model()
