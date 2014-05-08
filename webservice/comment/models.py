@@ -8,6 +8,7 @@ from model_utils.fields import StatusField, MonitorField
 from model_utils.managers import PassThroughManager
 from django.db import models
 from django.conf import settings
+import tagging
 from tagging.fields import TagField
 
 
@@ -88,9 +89,7 @@ class BaseLetter(SiteRelated, TimeStamped):
         abstract = True
 
 
-class FeedbackType(SiteRelated):
-
-    objects = CurrentSitePassThroughManager()
+class BaseType(SiteRelated):
 
     title = models.CharField(_("Title"), max_length=300)
 
@@ -100,6 +99,14 @@ class FeedbackType(SiteRelated):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        abstract = True
+
+
+class FeedbackType(BaseType):
+
+    objects = CurrentSitePassThroughManager()
 
     class Meta:
         verbose_name = '反馈类型'
@@ -189,6 +196,20 @@ class Feedback(BaseLetter):
         ordering = ('site', 'created')
 
 
+class PetitionType(BaseType):
+
+    objects = CurrentSitePassThroughManager()
+
+    class Meta:
+        verbose_name = '请愿类型'
+        verbose_name_plural = '请愿类型列表'
+        unique_together = (
+            ('site', 'slug'),
+            ('site', 'title'),
+        )
+        ordering = ('-level', )
+
+
 class PetitionPackageVersion(SiteRelated, models.Model):
     """
         请愿包
@@ -252,8 +273,13 @@ class Petition(BaseLetter):
     petition_for = models.ForeignKey(PetitionPackageVersion)
 
     packageversion = models.ForeignKey('warehouse.PackageVersion',
+                                       related_name='petitions',
                                        blank=True,
                                        null=True)
+    tags_text = TagField(
+        verbose_name=_('tags'),
+        default="",
+        blank=True)
 
     STATUS = Choices(
         ('posted', 'posted', '已提交'),
@@ -274,15 +300,23 @@ class Petition(BaseLetter):
 
     confirmed_at = MonitorField(monitor='status',
                                 editable=False,
+                                null=True,
+                                blank=True,
                                 when=['confirmed'])
     finished_at = MonitorField(monitor='status',
                                editable=False,
+                               null=True,
+                               blank=True,
                                when=['finished'])
     rejected_at = MonitorField(monitor='status',
                                editable=False,
+                               null=True,
+                               blank=True,
                                when=['rejected'])
     deleted_at = MonitorField(monitor='status',
                               editable=False,
+                              null=True,
+                              blank=True,
                               when=['deleted'])
 
     replies = generic.GenericRelation(Comment)
@@ -306,3 +340,6 @@ class Petition(BaseLetter):
             ('site', 'user', 'packageversion', 'status', 'finished_at'),
         )
         ordering = ('created', )
+
+
+tagging.register(Petition)

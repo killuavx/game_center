@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from rest_framework import serializers
 from rest_framework.serializers import (
     ModelSerializer,
     ModelSerializerOptions,
@@ -35,3 +36,17 @@ class HyperlinkedWithRouterModelSerializer(HyperlinkedModelSerializer):
             ._get_default_view_name(model)
         return self.opts.router.get_base_name(view_name)
 
+
+class SerializerRelatedField(serializers.RelatedField):
+
+    serializer_class = None
+
+    def __init__(self, serializer_class, *args, **kwargs):
+        self.serializer_class = serializer_class
+        super(SerializerRelatedField, self).__init__(*args, **kwargs)
+
+
+    def to_native(self, value):
+        return self.serializer_class(value,
+                                     many=self.many,
+                                     context=self.context).data

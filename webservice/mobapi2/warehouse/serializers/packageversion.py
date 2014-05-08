@@ -17,6 +17,7 @@ from mobapi2.warehouse.serializers.helpers import (
     get_packageversion_download_url,
     get_packageversion_download_size)
 from mobapi2.serializers import (
+    SerializerRelatedField,
     ModelWithRouterSerializer as ModelSerializer,
     HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
 
@@ -334,4 +335,51 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
                   'versions_url',
                   'related_packages_url',
                   'released_datetime',
+        )
+
+
+class PettionPackageVersionSummarySerializer(PackageVersionSummarySerializer):
+
+    icon = factory_imageurl_field(IMAGE_ICON_SIZE)
+    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
+    download = serializers.SerializerMethodField('get_version_download_url')
+    download_size = serializers.SerializerMethodField(
+        'get_version_download_size')
+    comment_count = serializers.SerializerMethodField(
+        'get_version_comment_count')
+    comments_url = serializers.SerializerMethodField('get_version_comments_url')
+
+    star = serializers.SerializerMethodField('get_star')
+
+    package_name = serializers.RelatedField(source='package.package_name')
+
+    title = serializers.RelatedField(source='package.title')
+
+    summary = serializers.RelatedField(source='package.summary')
+
+    author = SerializerRelatedField(serializer_class=AuthorSummarySerializer,
+                                    source='package.author')
+    class Meta:
+        model = PackageVersion
+        fields = ('url',
+                  'icon',
+                  'cover',
+                  'package_name',
+                  'title',
+                  #'tags',
+                  'petition_tags',
+                  'star',
+                  #'category_name',
+                  #'version_count',
+                  'summary',
+                  'author',
+                  'download',
+                  'download_size',
+                  'download_count',
+                  'comments_url',
+                  'released_datetime',
+                  #'actions',
+                  'version_name',
+                  'version_code',
+                  #'versions_url',
         )

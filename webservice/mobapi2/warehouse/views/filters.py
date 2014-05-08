@@ -104,3 +104,19 @@ class PackageIdsFilter(filters.BaseFilterBackend):
         filter_dict = self.validate(request=request, view=view)
         return qs.filter(**filter_dict)
 
+
+class PetitionPackageVersionFilter(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        from comment.models import Petition
+        finished = Petition.STATUS.finished
+        return queryset.filter(petitions__status=finished) \
+            .order_by('-petitions__finished_at')
+
+
+class PetitionOwnerPackageVersionFilter(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        if request.GET.get('byme'):
+            return queryset.filter(petitions__user=request.user)
+        return queryset

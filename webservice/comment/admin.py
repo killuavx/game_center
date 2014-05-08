@@ -70,12 +70,25 @@ class FeedbackReplyInline(TabularInline,
                           generic.GenericTabularInline):
     ct_field = "content_type"
     ct_fk_field = "object_pk"
-    fields = ('comment', 'submit_date')
-    readonly_fields = ('submit_date',)
+    fields = ('comment', 'user', 'submit_date')
+    readonly_fields = ('submit_date', 'user')
     model = get_comment_model()
 
 
-class FeedbackAdmin(MainAdmin):
+class AdminSaveFormsetCommentMixin(object):
+
+    def save_formset(self, request, form, formset, change):
+        instances = formset.save(commit=False)
+        Comment = get_comment_model()
+        for instance in instances:
+            if isinstance(instance, Comment):
+                instance.user = request.user
+            instance.save()
+        formset.save_m2m()
+
+
+class FeedbackAdmin(AdminSaveFormsetCommentMixin,
+                    MainAdmin):
 
     inlines = (FeedbackReplyInline,)
 
@@ -109,6 +122,9 @@ class FeedbackAdmin(MainAdmin):
             return None
     content_link.allow_tags = True
 
+    def save_formset(self, **kwargs):
+        super(FeedbackAdmin, self).save_formset(**kwargs)
+
 
 class FeedbackTypeAdmin(MainAdmin):
 
@@ -139,28 +155,45 @@ class PetitionPackageVersionAdmin(MainAdmin):
 
     list_display = ('pk', 'title', 'url', 'package_name', 'version_name', )
     fields = [
-        'pk',
         'url', 'title', 'package_name', 'version_name',
     ]
-    readonly_fields = ('pk',)
+    readonly_fields = ()
 
     def has_delete_permission(self, request, obj=None):
         return False
 
-    def has_add_permission(self, request):
-        return False
+    #def has_add_permission(self, request):
+    #    return False
 
     def get_action(self, action):
         return ()
 
 
-class PetitionAdmin(MainAdmin):
+class PetitionAdmin(AdminSaveFormsetCommentMixin,
+                    MainAdmin):
     inlines = (FeedbackReplyInline, )
     list_display = ('pk', 'petition_for_link', 'packageversion_link',
                     'comment',
                     'status',
                     'created', 'updated', )
-    readonly_fields = ('petition_for', 'verifier', 'user', 'comment')
+    #readonly_fields = ('petition_for', 'verifier', 'user', 'comment')
+    fields = (
+        'petition_for', 'packageversion',
+        'comment',
+        'status',
+        'created',
+        'updated',
+        'confirmed_at',
+        'finished_at',
+        'rejected_at',
+        'deleted_at',
+    )
+    readonly_fields = ('created', 'updated',
+                       'confirmed_at',
+                       'finished_at',
+                       'rejected_at',
+                       'deleted_at')
+    list_editable = ('status',)
     list_filter = ('status', )
     date_hierarchy = 'created'
     raw_id_fields = ('packageversion',)
@@ -169,13 +202,17 @@ class PetitionAdmin(MainAdmin):
         if not obj.packageversion:
             return None
         return '<a href="%s" target="_blank">%s</a>' % \
-               (admin_url(self, "change", self.id), str(obj.packageversion))
+               (admin_url(obj.packageversion, "change", obj.packageversion.pk),
+                str(obj.packageversion))
     packageversion_link.short_description = 'Package Version'
+    packageversion_link.allow_tags = True
 
     def petition_for_link(self, obj):
         return '<a href="%s" target="_blank">%s</a>' % \
-               (admin_url(self, "change", self.id), str(obj.petition_for))
+               (admin_url(obj.petition_for, "change", obj.petition_for.pk),
+                str(obj.petition_for))
     petition_for_link.short_description = Petition._meta.verbose_name
+    petition_for_link.allow_tags = True
 
     def has_delete_permission(self, request, obj=None):
         return False
