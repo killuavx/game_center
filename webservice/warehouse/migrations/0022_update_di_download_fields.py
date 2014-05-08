@@ -7,8 +7,9 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
+        """
         from toolkit.fields import file_md5
-        for pv in orm['warehouse.PackageVersion'].objects.all():
+        for pv in orm['warehouse.PackageVersion']._default_manager.all():
             try:
                 pv.di_download_size = pv.di_download.size
                 with open(pv.di_download.path) as f:
@@ -16,6 +17,7 @@ class Migration(DataMigration):
                 pv.save()
             except:
                 pass
+        """
 
     def backwards(self, orm):
         "Write your backwards methods here."

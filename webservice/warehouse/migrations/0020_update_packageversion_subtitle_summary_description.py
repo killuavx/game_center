@@ -7,7 +7,7 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for pv in orm['warehouse.PackageVersion'].objects.all():
+        for pv in orm['warehouse.PackageVersion']._default_manager.all():
             try:
                 package = pv.package
                 pv.subtitle = package.title
