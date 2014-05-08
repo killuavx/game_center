@@ -196,20 +196,6 @@ class Feedback(BaseLetter):
         ordering = ('site', 'created')
 
 
-class PetitionType(BaseType):
-
-    objects = CurrentSitePassThroughManager()
-
-    class Meta:
-        verbose_name = '请愿类型'
-        verbose_name_plural = '请愿类型列表'
-        unique_together = (
-            ('site', 'slug'),
-            ('site', 'title'),
-        )
-        ordering = ('-level', )
-
-
 class PetitionPackageVersion(SiteRelated, models.Model):
     """
         请愿包
