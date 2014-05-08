@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load static %}
+{% load static pages_tags %}
 <html>
 
 <head>
@@ -18,52 +18,12 @@
 
 </head>
 
-
-
 <body>
-
 
 
 <div class="warp">
 
-
-
-    <div class="head">
-
-            <div class="fl head_set">
-
-                    <a href="javascript:;" class="icon pgup">上一页</a>
-
-                    <a href="javascript:;" class="icon pgdn">下一页</a>
-
-                    <a href="javascript:;" class="icon refresh">刷新</a>
-
-            </div><!--head_set-->
-
-            
-
-            <div class="fl head_nav">
-
-                    <a href="index.html" class="hover">首页</a>
-
-                    <a href="game.html">游戏</a>
-
-                    <a href="soft.html">软件</a>
-
-                    <a href="collection.html">专题</a>
-
-                    <a href="masterpiece.html">巨作</a>
-
-                    <a href="vendor.html">厂商</a>
-
-                    <a href="http://bbs.ccplay.com.cn">许愿</a>
-
-            </div><!--head_nav-->
-
-    
-
-    </div><!--head-->
-
+    {% page_menu "pages/menus/iospc_header.html" %}
     {% block main %} {% endblock %}
 
   </div><!--warp-->
