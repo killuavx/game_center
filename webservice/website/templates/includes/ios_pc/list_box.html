@@ -1,4 +1,5 @@
 {% load templateutils_tags %}
+{% load static %}
 <div class="cb box list_box home_{{ type }}">
 
         <div class="fl list_box_left home_{{ type }}_left">
@@ -37,7 +38,7 @@
               {% for i in l %}
               <li>
 
-              <a href="#" class="big_pic"><img src="http://static.ccplay.com.cn/static/PC/img/1.jpg"><span class="icon cover"></span></a>
+              <a href="#" class="big_pic"><img src="{% static 'http://static.ccplay.com.cn/static/PC/img/1.jpg' %}"><span class="icon cover"></span></a>
 
 
 
@@ -106,7 +107,7 @@
                 <li>
                 {% endif %}
 
-                <a href="#" class="big_pic"><img src="http://static.ccplay.com.cn/static/PC/img/1.jpg"><span class="icon cover"></span></a>
+                <a href="#" class="big_pic"><img src="{% static 'http://static.ccplay.com.cn/static/PC/img/1.jpg' %}"><span class="icon cover"></span></a>
 
                 <h2><a href="#"><em class="top">1</em>我是90后</a></h2>
 
