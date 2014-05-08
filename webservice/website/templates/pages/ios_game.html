@@ -1,5 +1,85 @@
 {% extends "iospc_base.html" %}
 {% load templateutils_tags %}
+{% load static %}
 {% block main %}
-akjdkfdj
+<div class="cb box list_box game">
+  <div class="list_box_left game_box">
+    <div class="menu">
+      <ul>
+        {%  mkrange 1 16 as l %}
+        {% for i in l %}
+          {% if forloop.first%}
+            <li><a href="#" class="icon hover">游戏</a></li>
+          {% else %}
+            <li><a href="#">游戏</a></li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="icon title_box">
+      <ul class="fl">
+        <li class="li_1 hover">全部设备</li>
+        <li class="li_2">iPhone</li>
+        <li class="li_4">iPad</li>
+
+        <li class="icon li_5 hover"><span>默认筛选</span>
+        <div class="pop_li_5 pop_menu" style="display: none;">
+        {%  mkrange 1 6 as l %}
+        {% for i in l %}
+          <a href="#">精品推荐</a>
+        {% endfor %}
+        </div>
+        </li>
+        <li class="icon li_6 hover"><span>默认排序</span>
+        <div class="pop_li_6 pop_menu">
+        {%  mkrange 1 6 as l %}
+        {% for i in l %}
+          <a href="#">周榜</a>
+        {% endfor %}
+        </div>
+        </li>
+      </ul>
+    </div><!--title_box-->
+
+    <div class="list left_list">
+      <ul>
+        {%  mkrange 1 21 as l %}
+        {% for i in l %}
+        <li>
+        <a href="dis.html" class="big_pic"><img src="{% static 'http://static.ccplay.com.cn/static/PC/img/1.jpg' %}"><span class="icon cover"></span></a>
+
+        <h2><a href="dis.html">22游戏名称游戏名称游戏名称游戏名称游戏名称游戏名称</a></h2>
+        <p>999M | 100万+下载</p>
+        <p class="price">免费</p>
+        <div class="icon star s2"></div>
+
+        <div class="btn">
+          <span class="bg"></span>
+          <a href="#" class="a1 install">安装</a>
+          <a href="#" class="a2">下载</a>
+        </div>
+
+        </li>
+        {% endfor %}
+      </ul>
+      <div class="c_b"></div>
+    </div><!--list-->
+
+
+
+    <div class="cb page">
+      <a href="#">上一页</a>
+      <a href="#">1</a>
+      <a href="#" class="hover">2</a>
+      <a href="#">3</a>
+      <a href="#">4</a>
+      <a href="#">…</a>
+      <a href="#">99</a>
+      <a href="#">下一页</a>
+    </div>
+
+  </div><!--game_box-->
+
+
+</div>
 {% endblock %}
