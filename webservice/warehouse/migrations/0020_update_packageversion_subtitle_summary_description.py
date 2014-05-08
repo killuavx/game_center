@@ -7,6 +7,7 @@ from django.db import models
 class Migration(DataMigration):
 
     def forwards(self, orm):
+        """
         for pv in orm['warehouse.PackageVersion']._default_manager.all():
             try:
                 package = pv.package
@@ -16,6 +17,7 @@ class Migration(DataMigration):
                 pv.save()
             except:
                 pass
+        """
 
     def backwards(self, orm):
         "Write your backwards methods here."
