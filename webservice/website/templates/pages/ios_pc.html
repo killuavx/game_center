@@ -1,0 +1,53 @@
+{% extends "iospc_base.html" %}
+{% load templateutils_tags %}
+{% block main %}
+
+      <div class="cb box focus">
+
+        <div class="fl focus_left">
+
+          <div class="banner">
+
+            <ul class="banner_ul">
+              {% include "includes/ios_pc/banner.html" %}
+            </ul>
+
+          </div>
+
+          <div class="cb banner_btn">
+
+            <a href="javascript:void(0)" class="unslider-arrow icon prev"></a>
+
+            <a href="javascript:void(0)" class="unslider-arrow icon next"></a>
+
+          </div>
+
+          <div class="num">
+
+            <ul></ul>
+
+          </div>
+
+        </div><!--focus_left-->
+
+
+
+        <div class="fl focus_right">
+
+          111
+
+        </div><!--focus_right-->
+
+      </div><!--focus-->
+
+      {% include "includes/ios_pc/list_box.html" with type="game" %}
+
+      {% include "includes/ios_pc/roll_box.html" with type="masterpiece" %}
+
+      {% include "includes/ios_pc/list_box.html" with type="game" %}
+
+      {% include "includes/ios_pc/roll_box.html" with type="verdor" %}
+
+
+    </div><!--warp-->
+  {% endblock %}

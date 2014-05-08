@@ -1,0 +1,7 @@
+{% load templateutils_tags %}
+{% load static %}
+              {%  mkrange 1 5 as l %}
+              {% for i in l %}
+              <li><a href="#"><img src="{% static 'http://static.ccplay.com.cn/static/PC/img/1.jpg' %}"><span class="bg"></span><span class="text">标题名称标题名称标题名称标题名称</span></a></li>
+              {% endfor %}
+

@@ -1,0 +1,134 @@
+{% load templateutils_tags %}
+<div class="cb box list_box home_{{ type }}">
+
+        <div class="fl list_box_left home_{{ type }}_left">
+
+          <div class="icon title_box">
+
+            <h3 class="fl">
+              {% if type == "game" %}
+                游戏
+              {% else %}
+                软件
+              {% endif %}
+            </h3>
+            <ul class="fl">
+              {%  mkrange 1 5 as l %}
+              {% for i in l %}
+                {% if forloop.first %}
+                  <li class="li_{{i}} hover">装机必备</li>
+                 {% else %}
+                  <li class="li_{{i}}">装机必备</li>
+                {% endif %}
+              {% endfor %}
+
+            </ul>
+
+            <a href="#" class="fr">更多></a>
+
+          </div><!--title_box-->
+
+
+          <div class="list left_list">
+
+            <ul>
+
+              {%  mkrange 1 13 as l %}
+              {% for i in l %}
+              <li>
+
+              <a href="#" class="big_pic"><img src="http://static.ccplay.com.cn/static/PC/img/1.jpg"><span class="icon cover"></span></a>
+
+
+
+              <h2><a href="#">22游戏名称游戏名称游戏名称游戏名称游戏名称游戏名称</a></h2>
+
+              <p>999M | 100万+下载</p>
+
+              <p class="price">免费</p>
+
+              <div class="icon star s2"></div>
+
+
+
+              <div class="btn">
+
+                <span class="bg"></span>
+
+                <a href="#" class="a1 install">安装</a>
+
+                <a href="#" class="a2">下载</a>
+
+              </div>
+
+
+
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+
+
+
+
+        </div>
+
+
+        <div class="fl list_box_right home_{{type}}_right">
+
+
+
+          <div class="icon title_box">
+
+            <ul class="fl">
+
+              <li class="li_1 hover">周榜</li>
+
+              <li class="li_2">月榜</li>
+
+              <li class="li_3">总榜</li>
+
+            </ul>
+
+          </div><!--title_box-->
+
+
+
+          <div class="list right_list">
+
+
+            <ul>
+              {%  mkrange 1 11 as l %}
+              {% for i in l %}
+                {% if forloop.first %}
+                <li class="hover">
+                {% else %}
+                <li>
+                {% endif %}
+
+                <a href="#" class="big_pic"><img src="http://static.ccplay.com.cn/static/PC/img/1.jpg"><span class="icon cover"></span></a>
+
+                <h2><a href="#"><em class="top">1</em>我是90后</a></h2>
+
+                <div class="btn">
+
+                  <span class="bg"></span>
+
+                  <p>999M | 100万+下载</p>
+
+                  <a href="#" class="a1 install">安装</a>
+
+                  <a href="#" class="a2">下载</a>
+
+                </div>
+
+
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+
+
+        </div>
+
+      </div>

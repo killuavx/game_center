@@ -1,0 +1,24 @@
+{% load templateutils_tags %}
+<div class="cb roll home_{{ type }} home_masterpiece">
+
+        <div class="list_box">
+
+          <ul>
+            {% mkrange 1 7 as l %}
+            {% for in in l %}
+              <li><a href="#"><img src="http://static.ccplay.com.cn/static/PC/img/6.jpg"></a></li>
+            {% endfor %}
+
+          </ul>
+
+        </div>
+
+        <div class="cb banner_btn">
+
+          <a href="javascript:void(0)" class="unslider-arrow icon prev"></a>
+
+          <a href="javascript:void(0)" class="unslider-arrow icon next"></a>
+
+        </div>
+
+      </div>
