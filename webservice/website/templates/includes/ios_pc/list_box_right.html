@@ -1,0 +1,58 @@
+{% load templateutils_tags %}
+{% load static %}
+        <div class="fl list_box_right home_{{type}}_right">
+
+
+
+          <div class="icon title_box">
+
+            <ul class="fl">
+
+              <li class="li_1 hover">周榜</li>
+
+              <li class="li_2">月榜</li>
+
+              <li class="li_3">总榜</li>
+
+            </ul>
+
+          </div><!--title_box-->
+
+
+
+          <div class="list right_list">
+
+
+            <ul>
+              {%  mkrange 1 11 as l %}
+              {% for i in l %}
+                {% if forloop.first %}
+                <li class="hover">
+                {% else %}
+                <li>
+                {% endif %}
+
+                <a href="#" class="big_pic"><img src="{% static 'PC/img/1.jpg' %}"><span class="icon cover"></span></a>
+
+                <h2><a href="#"><em class="top">1</em>我是90后</a></h2>
+
+                <div class="btn">
+
+                  <span class="bg"></span>
+
+                  <p>999M | 100万+下载</p>
+
+                  <a href="#" class="a1 install">安装</a>
+
+                  <a href="#" class="a2">下载</a>
+
+                </div>
+
+
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+
+
+        </div>
