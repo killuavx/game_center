@@ -302,6 +302,7 @@ class PackageAdmin(MainAdmin):
     list_editable = ('status', 'tags_text',)
     date_hierarchy = 'released_datetime'
     ordering = ('-released_datetime',)
+    filter_horizontal = ("categories",)
     list_select_related = True
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput}
