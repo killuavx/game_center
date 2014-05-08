@@ -11,9 +11,9 @@ from django.contrib.contenttypes import generic
 from django.db import models
 from django.db.models.query import QuerySet
 from model_utils import Choices, FieldTracker
-from model_utils.fields import StatusField
+from model_utils.fields import StatusField, SplitField
 from toolkit.managers import CurrentSitePassThroughManager
-from toolkit.fields import StarsField
+from toolkit.fields import StarsField, PkgFileField
 from django.utils.translation import ugettext_lazy as _
 import tagging
 from tagging_autocomplete.models import TagAutocompleteField as TagField
@@ -341,7 +341,7 @@ def factory_version_upload_to_path(basename):
 
 class PackageVersion(SiteRelated, models.Model):
 
-    objects =  CurrentSitePassThroughManager\
+    objects = CurrentSitePassThroughManager\
         .for_queryset_class(PackageVersionQuerySet)()
 
     class Meta:
@@ -350,7 +350,6 @@ class PackageVersion(SiteRelated, models.Model):
         unique_together = (
             ('site', 'package', 'version_code'),
         )
-
 
     icon = ThumbnailerImageField(
         default='',
@@ -364,13 +363,13 @@ class PackageVersion(SiteRelated, models.Model):
         blank=True,
     )
 
-    download = models.FileField(
+    download = PkgFileField(
         verbose_name=_('version file'),
         upload_to=factory_version_upload_to_path('application'),
         default='',
         blank=True)
 
-    di_download = models.FileField(
+    di_download = PkgFileField(
         verbose_name=_('version file with data integration'),
         upload_to=factory_version_upload_to_path('application-di'),
         default='',
@@ -395,8 +394,25 @@ class PackageVersion(SiteRelated, models.Model):
     version_code = models.IntegerField(
         verbose_name=_('version code'),
         max_length=8,
-        blank=False,
-        null=False)
+        default=1,
+        blank=False)
+
+    subtitle = models.CharField(
+        verbose_name=_('version subtitle'),
+        default='',
+        blank=True,
+        max_length=128)
+
+    summary = models.CharField(
+        verbose_name=_('summary'),
+        max_length=255,
+        default="",
+        blank=True)
+
+    description = models.TextField(
+        verbose_name=_('description'),
+        default="",
+        blank=True)
 
     whatsnew = models.TextField(
         verbose_name=_("what's new"),
@@ -614,6 +630,19 @@ def package_version_post_save(sender, instance, **kwargs):
     if package.tracker.changed():
         package.save()
         pass
+
+@receiver(pre_save, sender=PackageVersion)
+def package_version_pre_save(sender, instance, **kwargs):
+    if not instance.pk:
+        package = instance.package
+        if not instance.summary:
+            instance.summary = package.summary
+
+        if not instance.subtitle:
+            instance.subtitle = package.title
+
+        if not instance.description:
+            instance.description = package.description
 
 # fix for PackageVersion save to update Package(set auto_now=False) updated_datetime
 @receiver(pre_save, sender=Package)

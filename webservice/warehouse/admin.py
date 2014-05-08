@@ -96,7 +96,14 @@ class PackageVersionAdmin(MainAdmin):
             'fields': ('package', )
         }),
         (_('File'), {
-            'fields': ('icon', 'cover', 'download', 'di_download' )
+            'fields': (
+                       'icon', 'cover',
+                       'subtitle',
+                       'summary',
+                       'description',
+                       ('download', 'download_size', 'download_md5'),
+                       ('di_download', 'di_download_size', 'di_download_md5'),
+            )
         }),
         (_('Version'), {
             'fields': ('version_code', 'version_name', 'whatsnew')
@@ -114,7 +121,13 @@ class PackageVersionAdmin(MainAdmin):
             )
         }),
     )
-    readonly_fields = ('created_datetime', 'updated_datetime',)
+    readonly_fields = ('created_datetime',
+                       'updated_datetime',
+                       'di_download_size',
+                       'di_download_md5',
+                       'download_size',
+                       'download_md5',
+    )
     ordering = ('-updated_datetime', '-version_code',)
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput},
@@ -209,10 +222,19 @@ class PackageVersionInlines(admin.StackedInline):
     model = PackageVersion
     fieldsets = (
         (None, {
-            'fields': ('version_code', 'version_name', 'whatsnew')
+            'fields': (
+                'subtitle',
+                'summary',
+                'description',
+                'version_code', 'version_name',
+                'whatsnew')
         }),
         (_('File'), {
-            'fields': ('icon', 'cover', 'download', 'di_download')
+            'fields': (
+                       'icon', 'cover',
+                       ('download', 'download_size', 'download_md5'),
+                       ('di_download', 'di_download_size', 'di_download_md5'),
+            )
         }),
         (_('Version Statistics'), {
             'fields': (
@@ -229,7 +251,13 @@ class PackageVersionInlines(admin.StackedInline):
     )
     #extra = 1
     max_num = 100
-    readonly_fields = ('created_datetime', 'updated_datetime')
+    readonly_fields = ('created_datetime',
+                       'updated_datetime',
+                       'di_download_size',
+                       'di_download_md5',
+                       'download_size',
+                       'download_md5',
+    )
     ordering = ('-version_code',)
 
     def show_thumbnail(self, obj):
