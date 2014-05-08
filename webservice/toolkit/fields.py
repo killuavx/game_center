@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import io
 from django.conf import settings
 from django.db.models import FloatField, IntegerField, FileField, CharField
 from mezzanine.generic.fields import (
@@ -15,6 +16,18 @@ def file_md5(f, iter_read_size=1024 ** 2 * 8):
             break
         m.update(data)
     return m.hexdigest()
+
+
+def update_pkgfile_meta(instance, fieldname):
+    from toolkit.fields import file_md5
+    import io
+    file_field = getattr(instance, fieldname)
+    if file_field:
+        with io.FileIO(file_field.path) as f:
+            setattr(instance, '%s_md5' % fieldname, file_md5(f))
+        setattr(instance, '%s_size' % fieldname, file_field.size)
+        return instance
+    return None
 
 
 class StarsField(BaseGenericRelation):
@@ -124,7 +137,7 @@ class FileWithMetaField(FileField):
         file = getattr(model_instance, self.attname)
         if file and not file._committed:
             _file_size = file.size
-            with open(file.path, 'rb') as f:
+            with io.FileIO(file.path) as f:
                 _md5_text = file_md5(f)
             setattr(model_instance, self._field_name(self.attname, 'size'), _file_size)
             setattr(model_instance, self._field_name(self.attname, 'md5'), _md5_text)
