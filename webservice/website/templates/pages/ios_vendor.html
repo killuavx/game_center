@@ -10,7 +10,7 @@
                         <ul>
                           {%  mkrange 1 6 as l %}
                           {% for i in l %}
-                            <li><a href="#"><img src="{% static 'http://static.ccplay.com.cn/static/PC/img/1.jpg' %}"></a></li>
+                            <li><a href="#"><img src="{% static 'PC/img/1.jpg' %}"></a></li>
                           {% endfor %}
                         </ul>
                     </div>
@@ -24,7 +24,7 @@
                               {%  mkrange 1 16 as l %}
                               {% for i in l %}
                                 <li>
-                                    <a href="dis.html" class="big_pic"><img src="{% static 'http://static.ccplay.com.cn/static/PC/img/1.jpg"><span class="icon cover' %}"></span></a>
+                                    <a href="dis.html" class="big_pic"><img src="{% static 'PC/img/1.jpg"><span class="icon cover' %}"></span></a>
                                     
                                     <h2><a href="dis.html">22游戏名称游戏名称游戏名称游戏名称游戏名称游戏名称</a></h2>
                                     <p>999M | 100万+下载</p>
@@ -43,18 +43,7 @@
                     </div>
             </div><!--l-->
             
-                     <div class="cb page">
-                            <a href="#">上一页</a>
-                            <a href="#">1</a>
-                            <a href="#" class="hover">2</a>
-                            <a href="#">3</a>
-                            <a href="#">4</a>
-                            <a href="#">…</a>
-                            <a href="#">99</a>
-                            <a href="#">下一页</a>
-                    </div>
-            </div><!--r-->
-            
+    {% include "includes/ios_pc/pagination.html" %}
     
     </div>
 {% endblock %}

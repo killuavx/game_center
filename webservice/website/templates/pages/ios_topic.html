@@ -10,7 +10,7 @@
             <div class="collection_box">            
                 <div class="fl l">
                     <a href="collection_dis.html">
-                            <img src="{% static 'http://static.ccplay.com.cn/static/PC/img/2.jpg' %}">
+                            <img src="{% static 'PC/img/2.jpg' %}">
                             <h3>小色块游戏合集</h3>
                     </a>
                 </div><!--l-->
@@ -22,7 +22,7 @@
                         {% for i in l %}
                           <li class="clone" style="float: left; width: 95px;">
                                 <a href="#">
-                                        <img src="{% static 'http://static.ccplay.com.cn/static/PC/img/4.jpg' %}">
+                                        <img src="{% static 'PC/img/4.jpg' %}">
                                         <span class="name">小小守门员</span>
                                         <div class="icon star s4"></div>
                                         <span class="icon cover"></span>
@@ -46,16 +46,8 @@
             </div><!--collection_box--> 
 
             {% endfor %}
-            <div class="cb page">
-                    <a href="#">上一页</a>
-                    <a href="#">1</a>
-                    <a href="#" class="hover">2</a>
-                    <a href="#">3</a>
-                    <a href="#">4</a>
-                    <a href="#">…</a>
-                    <a href="#">99</a>
-                    <a href="#">下一页</a>
-            </div>
+
+    {% include "includes/ios_pc/pagination.html" %}
     
     </div>
 {% endblock %}
