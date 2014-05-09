@@ -4,11 +4,11 @@ from .common.promotion import BaseSingleAdvWidget
 from .common.promotion import BaseMultiAdvWidget
 
 
-class IospcBannerToprightWidget(BaseSingleAdvWidget, Widget):
+class BannerToprightWidget(BaseSingleAdvWidget, Widget):
 
     template = 'pages/widgets/ios_pc/banner_top_right.html'
 
 
-class IospcBannerTopleftWidget(BaseMultiAdvWidget, Widget):
+class BannerTopleftWidget(BaseMultiAdvWidget, Widget):
 
     template = 'pages/widgets/ios_pc/banner_top_left.html'
