@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import io
 from django.conf import settings
-from django.db.models import FloatField, IntegerField, FileField, CharField
+from django.db.models import FloatField, IntegerField, FileField, CharField, BooleanField, TextField
+from copy import deepcopy
 from mezzanine.generic.fields import (
     BaseGenericRelation)
 from django.core.files import File
@@ -135,7 +136,12 @@ class FileWithMetaField(FileField):
 
     def pre_save(self, model_instance, add):
         file = getattr(model_instance, self.attname)
+        update_flag = False
         if file and not file._committed:
+            update_flag = True
+        file = super(FileWithMetaField, self).pre_save(model_instance, add)
+
+        if update_flag:
             _file_size = file.size
             with io.FileIO(file.path) as f:
                 _md5_text = file_md5(f)
@@ -144,8 +150,7 @@ class FileWithMetaField(FileField):
         elif not file:
             setattr(model_instance, self._field_name(self.attname, 'size'), 0)
             setattr(model_instance, self._field_name(self.attname, 'md5'), None)
-
-        return super(FileWithMetaField, self).pre_save(model_instance, add)
+        return file
 
 
 class PkgFileField(FileWithMetaField):
