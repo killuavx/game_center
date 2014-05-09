@@ -10,7 +10,7 @@
           <div class="banner">
 
             <ul class="banner_ul">
-        {% include_widget BannerTopleftWidget slug='latest-right-left' %}
+        {% include_widget BannerTopleftWidget slug='banner_top_left' %}
             </ul>
 
           </div>
@@ -35,7 +35,7 @@
 
         <div class="fl focus_right">
 
-        {% include_widget BannerToprightWidget slug='latest-right-right' %}
+        {% include_widget BannerToprightWidget slug='banner_top_right' %}
 
         </div><!--focus_right-->
 
@@ -47,8 +47,8 @@
           {% include "pages/widgets/ios_pc/package_list_box_right.html" with type="game" %}
 
       </div>
-
-      {% include "pages/widgets/ios_pc/roll_box.html" with type="masterpiece" %}
+        {% include_widget PackageListBoxWidget slug='home-recommend-game' page=1 %}
+      
 
       <div class="cb box list_box home_soft">
 
@@ -57,6 +57,6 @@
 
       </div>
 
-      {% include "pages/widgets/ios_pc/roll_box.html" with type="verdor" %}
+        {% include_widget PackageListBoxWidget slug='home-recommend-game' page=1 %}
 
   {% endblock %}

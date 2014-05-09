@@ -1,6 +1,7 @@
 {% load templateutils_tags %}
 {% load static %}
+{{ slug }}
               {% for item in items %}
-              <li><a href="item.content.get_absolute_url"><img src="{% static item.cover.url %}"><span class="bg"></span><span class="text">{{ item.title|safe }}</span></a></li>
+              <li><a href="{{ item.content.get_absolute_url }}"><img src="{% static item.cover.url %}"><span class="bg"></span><span class="text">{{ item.title|safe }}</span></a></li>
               {% endfor %}
 

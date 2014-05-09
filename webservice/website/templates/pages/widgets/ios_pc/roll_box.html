@@ -5,9 +5,8 @@
         <div class="list_box">
 
           <ul>
-            {% mkrange 1 7 as l %}
-            {% for in in l %}
-              <li><a href="#"><img src="{% static 'PC/img/6.jpg' %}"></a></li>
+            {% for item in items %}
+              <li><a href="{{ item.get_absolute_url }}"><img src="{% static item.versions.get.icon.url %}"></a></li>
             {% endfor %}
 
           </ul>
