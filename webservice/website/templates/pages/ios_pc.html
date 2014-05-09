@@ -1,5 +1,6 @@
 {% extends "iospc_base.html" %}
 {% load templateutils_tags %}
+{% load widgets %}
 {% block main %}
 
       <div class="cb box focus">
@@ -9,7 +10,7 @@
           <div class="banner">
 
             <ul class="banner_ul">
-              {% include "includes/ios_pc/banner.html" %}
+        {% include_widget  IospcBannerTopleftWidget slug='latest-right-left' %}
             </ul>
 
           </div>
@@ -34,7 +35,7 @@
 
         <div class="fl focus_right">
 
-          111
+        {% include_widget  IospcBannerToprightWidget slug='latest-right-right' %}
 
         </div><!--focus_right-->
 
@@ -42,20 +43,20 @@
 
       <div class="cb box list_box home_game">
 
-          {% include "includes/ios_pc/list_box_left.html" with type="game" %}
-          {% include "includes/ios_pc/list_box_right.html" with type="game" %}
+          {% include "pages/widgets/ios_pc/package_list_box_left.html" with type="game" %}
+          {% include "pages/widgets/ios_pc/package_list_box_right.html" with type="game" %}
 
       </div>
 
-      {% include "includes/ios_pc/roll_box.html" with type="masterpiece" %}
+      {% include "pages/widgets/ios_pc/roll_box.html" with type="masterpiece" %}
 
       <div class="cb box list_box home_soft">
 
-        {% include "includes/ios_pc/list_box_left.html" with type="soft" %}
-        {% include "includes/ios_pc/list_box_right.html" with type="soft" %}
+        {% include "pages/widgets/ios_pc/package_list_box_left.html" with type="soft" %}
+        {% include "pages/widgets/ios_pc/package_list_box_right.html" with type="soft" %}
 
       </div>
 
-      {% include "includes/ios_pc/roll_box.html" with type="verdor" %}
+      {% include "pages/widgets/ios_pc/roll_box.html" with type="verdor" %}
 
   {% endblock %}
