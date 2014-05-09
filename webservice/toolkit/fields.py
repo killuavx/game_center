@@ -1,8 +1,33 @@
 # -*- coding: utf-8 -*-
+import io
 from django.conf import settings
-from django.db.models import FloatField, IntegerField
+from django.db.models import FloatField, IntegerField, FileField, CharField
 from mezzanine.generic.fields import (
     BaseGenericRelation)
+from django.core.files import File
+
+import hashlib
+
+def file_md5(f, iter_read_size=1024 ** 2 * 8):
+    m = hashlib.md5()
+    while True:
+        data = f.read(iter_read_size)
+        if not data:
+            break
+        m.update(data)
+    return m.hexdigest()
+
+
+def update_pkgfile_meta(instance, fieldname):
+    from toolkit.fields import file_md5
+    import io
+    file_field = getattr(instance, fieldname)
+    if file_field:
+        with io.FileIO(file_field.path) as f:
+            setattr(instance, '%s_md5' % fieldname, file_md5(f))
+        setattr(instance, '%s_size' % fieldname, file_field.size)
+        return instance
+    return None
 
 
 class StarsField(BaseGenericRelation):
@@ -80,12 +105,62 @@ class StarsField(BaseGenericRelation):
         return vals_count, rate
 
 
+class FileWithMetaField(FileField):
+
+    def __init__(self, *args, **kwargs):
+        super(FileWithMetaField, self).__init__(*args, **kwargs)
+        self.added_fields = self._get_added_fields()
+
+    def _get_added_fields(self):
+        return {
+            "size": ('%s_size', IntegerField(default=0, editable=False)),
+            "md5": ('%s_md5', CharField(default=None,
+                                        null=True,
+                                        blank=True,
+                                        max_length=40,
+                                        editable=False)),
+        }
+
+    def _field_name(self, attrname, name):
+        return self.added_fields[name][0] % attrname
+
+    def _field_type(self, name):
+        return self.added_fields[name][1]
+
+    def contribute_to_class(self, cls, name):
+        if not cls._meta.abstract:
+            for idx in self.added_fields.keys():
+                cls.add_to_class(self._field_name(name, idx), self._field_type(idx))
+        super(FileWithMetaField, self).contribute_to_class(cls, name)
+
+    def pre_save(self, model_instance, add):
+        file = getattr(model_instance, self.attname)
+        if file and not file._committed:
+            _file_size = file.size
+            with io.FileIO(file.path) as f:
+                _md5_text = file_md5(f)
+            setattr(model_instance, self._field_name(self.attname, 'size'), _file_size)
+            setattr(model_instance, self._field_name(self.attname, 'md5'), _md5_text)
+        elif not file:
+            setattr(model_instance, self._field_name(self.attname, 'size'), 0)
+            setattr(model_instance, self._field_name(self.attname, 'md5'), None)
+
+        return super(FileWithMetaField, self).pre_save(model_instance, add)
+
+
+class PkgFileField(FileWithMetaField):
+    pass
+
+
 # South requires custom fields to be given "rules".
 # See http://south.aeracode.org/docs/customfields.html
 if "south" in settings.INSTALLED_APPS:
     try:
         from south.modelsinspector import add_introspection_rules
-        add_introspection_rules(rules=[((BaseGenericRelation,), [], {})],
+        add_introspection_rules(rules=[
+            ((BaseGenericRelation,), [], {}),
+            ((FileWithMetaField,), [], {})
+        ],
                                 patterns=["toolkit\.fields\."])
     except ImportError:
         pass
