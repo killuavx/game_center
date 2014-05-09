@@ -419,6 +419,11 @@ class PackageVersion(SiteRelated, models.Model):
         default="",
         blank=True)
 
+    tags_text = TagField(
+        verbose_name=_('tags'),
+        default="",
+        blank=True)
+
     STATUS = Choices(
         'draft',
         'unpublished',
@@ -520,6 +525,9 @@ class PackageVersion(SiteRelated, models.Model):
         return sync_status_from(self)
 
 
+tagging.register(PackageVersion)
+
+
 def screenshot_upload_to_path(instance, filename):
     filebasename = basename(filename).lower()
     version = instance.version
@@ -568,10 +576,8 @@ class PackageVersionScreenshot(models.Model):
         except:
             return self.alt
 
-
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-
 
 #@receiver(pre_save, sender=PackageVersion)
 def package_version_pre_save(sender, instance, **kwargs):
@@ -609,7 +615,6 @@ def package_version_pre_save(sender, instance, **kwargs):
             elif instance.tracker.has_changed('icon'):
                 return
 
-
 @receiver(post_save, sender=PackageVersion)
 def package_version_post_save(sender, instance, **kwargs):
     """package sync ...
@@ -645,6 +650,10 @@ def package_version_pre_save(sender, instance, **kwargs):
         if not instance.description:
             instance.description = package.description
 
+        instance.tags_text = " ".join([instance.tags_text, package.tags_text])
+
+
+
 # fix for PackageVersion save to update Package(set auto_now=False) updated_datetime
 @receiver(pre_save, sender=Package)
 def package_pre_save(sender, instance, **kwargs):
@@ -660,6 +669,5 @@ def package_pre_save(sender, instance, **kwargs):
 
     if len(changed):
         instance.updated_datetime = now()
-
 
 

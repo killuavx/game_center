@@ -100,6 +100,7 @@ class PackageVersionAdmin(MainAdmin):
                        'icon', 'cover',
                        'subtitle',
                        'summary',
+                       'tags_text',
                        'description',
                        ('download', 'download_size', 'download_md5'),
                        ('di_download', 'di_download_size', 'di_download_md5'),
@@ -225,6 +226,7 @@ class PackageVersionInlines(admin.StackedInline):
             'fields': (
                 'subtitle',
                 'summary',
+                'tags_text',
                 'description',
                 'version_code', 'version_name',
                 'whatsnew')
