@@ -485,11 +485,12 @@ class PackageVersion(SiteRelated, models.Model):
                 return self.download
 
     def get_download_size(self, filetype=None):
-        download = self.get_download(filetype=filetype)
-        try:
-            return download.size
-        except:
-            return 0
+        if filetype == self.DOWNLOAD_FILETYPE_DI:
+            return self.di_download_size
+        elif filetype == self.DOWNLOAD_FILETYPE_PK:
+            return self.download_size
+        else:
+            return self.di_download_size if self.di_download else self.download_size
 
     def get_download_url(self, filetype=None, is_dynamic=True, **kwargs):
         kwargs.setdefault('entrytype', 'web')
