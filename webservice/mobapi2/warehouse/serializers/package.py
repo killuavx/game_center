@@ -8,8 +8,7 @@ from mobapi2.warehouse.serializers.mixin import (
     PackageRelatedTagMin,
     PackageRelatedPackageUrlMixin,
     PackageActionsMixin,
-)
-from mobapi2.warehouse.serializers.author import AuthorSummarySerializer
+    PackageRelatedAuthorMixin)
 from mobapi2.serializers import (
     HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
 
@@ -18,6 +17,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                                PackageRelatedLatestVersinoMixin,
                                PackageRelatedCategoryMixin,
                                PackageRelatedTagMin,
+                               PackageRelatedAuthorMixin,
                                PackageActionsMixin,
                                HyperlinkedModelSerializer):
 
@@ -38,7 +38,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
     tags = serializers.SerializerMethodField('get_tags')
     star = serializers.SerializerMethodField('get_latest_version_star')
 
-    author = AuthorSummarySerializer()
+    author = serializers.SerializerMethodField('get_author')
     version_name = serializers.SerializerMethodField('get_latest_version_name')
     version_code = serializers.SerializerMethodField('get_latest_version_code')
     versions_url = serializers.SerializerMethodField('get_versions_url')
@@ -74,6 +74,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                               PackageRelatedCategoryMixin,
                               PackageRelatedTagMin,
                               PackageActionsMixin,
+                              PackageRelatedAuthorMixin,
                               PackageRelatedPackageUrlMixin,
                               HyperlinkedModelSerializer):
 
@@ -106,7 +107,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
 
     actions = serializers.SerializerMethodField('get_action_links')
 
-    author = AuthorSummarySerializer()
+    author = serializers.SerializerMethodField('get_author')
 
     related_packages_url = serializers.SerializerMethodField('get_related_packages_url')
 

@@ -419,6 +419,11 @@ class PackageVersion(SiteRelated, models.Model):
         default="",
         blank=True)
 
+    tags_text = TagField(
+        verbose_name=_('tags'),
+        default="",
+        blank=True)
+
     STATUS = Choices(
         'draft',
         'unpublished',
@@ -485,11 +490,12 @@ class PackageVersion(SiteRelated, models.Model):
                 return self.download
 
     def get_download_size(self, filetype=None):
-        download = self.get_download(filetype=filetype)
-        try:
-            return download.size
-        except:
-            return 0
+        if filetype == self.DOWNLOAD_FILETYPE_DI:
+            return self.di_download_size
+        elif filetype == self.DOWNLOAD_FILETYPE_PK:
+            return self.download_size
+        else:
+            return self.di_download_size if self.di_download else self.download_size
 
     def get_download_url(self, filetype=None, is_dynamic=True, **kwargs):
         kwargs.setdefault('entrytype', 'web')
@@ -517,6 +523,9 @@ class PackageVersion(SiteRelated, models.Model):
 
     def sync_status(self):
         return sync_status_from(self)
+
+
+tagging.register(PackageVersion)
 
 
 def screenshot_upload_to_path(instance, filename):
@@ -567,10 +576,8 @@ class PackageVersionScreenshot(models.Model):
         except:
             return self.alt
 
-
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-
 
 #@receiver(pre_save, sender=PackageVersion)
 def package_version_pre_save(sender, instance, **kwargs):
@@ -608,7 +615,6 @@ def package_version_pre_save(sender, instance, **kwargs):
             elif instance.tracker.has_changed('icon'):
                 return
 
-
 @receiver(post_save, sender=PackageVersion)
 def package_version_post_save(sender, instance, **kwargs):
     """package sync ...
@@ -644,6 +650,10 @@ def package_version_pre_save(sender, instance, **kwargs):
         if not instance.description:
             instance.description = package.description
 
+        instance.tags_text = " ".join([instance.tags_text, package.tags_text])
+
+
+
 # fix for PackageVersion save to update Package(set auto_now=False) updated_datetime
 @receiver(pre_save, sender=Package)
 def package_pre_save(sender, instance, **kwargs):
@@ -659,6 +669,5 @@ def package_pre_save(sender, instance, **kwargs):
 
     if len(changed):
         instance.updated_datetime = now()
-
 
 

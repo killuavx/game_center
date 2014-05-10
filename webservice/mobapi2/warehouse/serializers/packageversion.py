@@ -12,7 +12,6 @@ from mobapi2.warehouse.serializers.mixin import (
     PackageActionsMixin,
     PackageRelatedVersionsMixin,
     PackageRelatedPackageUrlMixin)
-from mobapi2.warehouse.serializers.author import AuthorSummarySerializer
 from mobapi2.warehouse.serializers.helpers import (
     get_packageversion_download_url,
     get_packageversion_download_size)
@@ -124,6 +123,7 @@ class PackageVersionRelatedPackageMixin(PackageRelatedCategoryMixin,
             .get_categories_names(obj.package)
 
     def get_author(self, obj):
+        from mobapi2.warehouse.serializers.author import AuthorSummarySerializer
         return AuthorSummarySerializer(obj.package.author,
                                        context=self.context).data
 
@@ -338,7 +338,8 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
         )
 
 
-class PettionPackageVersionSummarySerializer(PackageVersionSummarySerializer):
+class PettionPackageVersionSummarySerializer(PackageVersionRelatedPackageMixin,
+                                             PackageVersionSummarySerializer):
 
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
     cover = factory_imageurl_field(IMAGE_COVER_SIZE)
@@ -357,8 +358,8 @@ class PettionPackageVersionSummarySerializer(PackageVersionSummarySerializer):
 
     summary = serializers.RelatedField(source='package.summary')
 
-    author = SerializerRelatedField(serializer_class=AuthorSummarySerializer,
-                                    source='package.author')
+    author = serializers.SerializerMethodField('get_author')
+
     class Meta:
         model = PackageVersion
         fields = ('url',

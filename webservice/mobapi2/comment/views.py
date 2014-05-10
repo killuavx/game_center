@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import copy
-from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core import exceptions
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.http import Http404
 from django.utils.timezone import now
 from rest_framework import mixins, viewsets, status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -11,7 +12,6 @@ from rest_framework.response import Response
 from mobapi2.authentications import PlayerTokenAuthentication
 from mobapi2.comment.serializers import CommentSerializer, CommentCreateSerializer, FeedbackSerializer
 from comment.models import Comment, Feedback, FeedbackType
-from clientapp.models import ClientPackageVersion
 
 
 class CommentViewSet(mixins.CreateModelMixin,
@@ -269,14 +269,23 @@ class FeedbackViewSet(mixins.CreateModelMixin,
                                                            files, many, partial)
 
     def get_content_object(self, params):
-        ct = ContentType.objects.get_for_model(ClientPackageVersion)
-        content_type, object_pk = ct.pk, 0
         try:
+            from clientapp.models import ClientPackageVersion
+            ct = ContentType.objects.get_for_model(ClientPackageVersion)
             ct_obj = ct.get_object_for_this_type(package_name=params.get('package_name'),
                                                  version_name=params.get('version_name'))
+            content_type = ct.pk
             object_pk = ct_obj.pk
-        except ContentType.DoesNotExist:
-            pass
+        except ObjectDoesNotExist:
+            try:
+                from warehouse.models import PackageVersion
+                ct = ContentType.objects.get_for_model(PackageVersion)
+                ct_obj = ct.get_object_for_this_type(package__package_name=params.get('package_name'),
+                                                     version_name=params.get('version_name'))
+                content_type = ct.pk
+                object_pk = ct_obj.pk
+            except ObjectDoesNotExist:
+                raise Http404()
         return content_type, object_pk
 
     def get_kind(self, params):
