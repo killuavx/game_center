@@ -13,6 +13,14 @@
 
 .crack-page .app-list-right a span.ios-web-icon{left:14px}
 
+.relevant-app{height:165px}
+
+
+#cc-l .relevant-app .app-list-min{width:97px}
+#cc-l .relevant-app .ios-web-icon.auto{left:13px}
+
+
+
 
 
 #cc-s .nav .l li{width:68px}
@@ -27,7 +35,7 @@
 
 
 
-#head #cc-l .search{margin-left:908px}
-#head #cc-l .nav .l li{width:80px}
-#head #cc-m .search{margin-left:764px}
-#head #cc-m  .nav .l li{width:68px}
+#fixed-head #cc-l .search{margin-left:490px}
+#fixed-head #cc-l .nav .l li{width:80px}
+#fixed-head #cc-m .search{margin-left:435px}
+#fixed-head #cc-m  .nav .l li{width:68px}
