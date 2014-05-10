@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.contrib.sites.managers import CurrentSiteManager as DjangoCSM, CurrentSiteManager
+from django.contrib.sites.managers import CurrentSiteManager as DjangoCSM
 from django.db.models import get_models, Q, Manager
+from django.db.models.query import QuerySet
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
-from model_utils.managers import PassThroughManager
+from model_utils.managers import PassThroughManager, PassThroughManagerMixin
 from toolkit.models import current_site_id
 
 
@@ -71,8 +72,8 @@ class CurrentSiteManager(DjangoCSM):
         return super(DjangoCSM, self).get_query_set().filter(**lookup)
 
 
-class CurrentSitePassThroughManager(CurrentSiteManager,
-                                    PassThroughManager):
+class CurrentSitePassThroughManager(PassThroughManagerMixin,
+                                    CurrentSiteManager):
     pass
 
 

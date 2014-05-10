@@ -6,7 +6,7 @@
 (function($) {
 	//给页面装载CSS样式
 	var LG = 'linear-gradient(top, #e53333, #d12525)', CSS = '<style type="text/css">' +
-		'#zxxBlank{position:absolute;z-index:997;left:0;top:0;width:100%;height:0;background: black}' +
+		'#zxxBlank{position:absolute;z-index:997;left:0;top:0;width:100%;height:0;background:url(http://static.ccplay.com.cn/static/common/img/bg_40x40.png) repeat 50% 50%}' +
 		'.wrap_out{z-index:998;left:-9999px; background:url(http://static.ccplay.com.cn/static/common/img/fix-b.png);position:absolute;border-bottom:1px solid #e53333;border-top:1px solid #e53333}' +
 		'.wrap_in{overflow: hidden;font-family:Microsoft Yahei;width:100%}' +
 		'.wrap_bar{background:#fff}' +
@@ -17,7 +17,7 @@
 		'.wrap_body{font-size:14px}' +
 		'.wrap_body p{padding:40px 0}' +
 		'.wrap_remind{background:#fff;width:100%}' +
-		'.wrap_remind p,.submit_bg p,.w750{width:750px;margin-left:auto;margin-right:auto}' +
+		'.wrap_remind .wrap_remind_box,.submit_bg p,.w750{width:750px;padding:20px 0;margin-left:auto;margin-right:auto}' +
 		'.submit_bg{background:#fff;width:100%;text-align:right}' +
 		'.submit_bg p{padding:20px 0}' +
 		'.submit_btn, .cancel_btn{display:inline-block;padding:5px 20px 8px;border:1px solid;cursor:pointer;overflow:visible;font-family:Microsoft Yahei;font-size:16px}' +
@@ -317,7 +317,7 @@
 		},
 		//ask询问方法
 		ask: function(message, sureCall, cancelCall, options) {
-			var element = $('<div class="wrap_remind"><p>'+message+'</p><div class="submit_bg"><p><button id="zxxSureBtn" class="submit_btn">确认</button>&nbsp;&nbsp;<button id="zxxCancelBtn" class="cancel_btn">取消</button></p></div></div>');
+			var element = $('<div class="wrap_remind"><div class="wrap_remind_box">'+message+'</div><div class="submit_bg"><p><button id="zxxSureBtn" class="submit_btn">确认</button>&nbsp;&nbsp;<button id="zxxCancelBtn" class="cancel_btn">取消</button></p></div></div>');
 			$.zxxbox(element, options);
 			//回调方法
 			$("#zxxSureBtn").click(function() {
@@ -334,7 +334,7 @@
 		},
 		//remind提醒方法
 		remind: function(message, callback, options) {
-			var element = $('<div class="wrap_remind"><p>'+message+'</p><div class="submit_bg"><p><button id="zxxSubmitBtn" class="submit_btn">确认</button</p</div></div>');
+			var element = $('<div class="wrap_remind"><div class="wrap_remind_box">'+message+'</div><div class="submit_bg"><p><button id="zxxSubmitBtn" class="submit_btn">确认</button</p</div></div>');
 			$.zxxbox(element, options);
 			$("#zxxSubmitBtn").click(function() {
 				//回调方法
@@ -368,7 +368,7 @@
 		title: "虫虫游戏",
 		shut: "×",
 		index: 999,
-		opacity: 0.5,		
+		opacity: 0.4,		
 		width: "auto",
 		height: "auto",		
 		bar: true, //是否显示标题栏

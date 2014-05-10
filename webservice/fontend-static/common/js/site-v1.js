@@ -1,4 +1,3 @@
-// JavaScript Document
 //浏览器宽度自适应
 $(document).ready(function(e) {
 	  resize(); 
@@ -19,23 +18,27 @@ function resize(){
 };
 
 
-document.writeln("<a href=\"javascript:;\" title=\"返回顶部\" id=\"toTop\" style=\"position:fixed;right:20px;bottom:-150px; display:block;z-index:9999;text-decoration:none\" class=\"pl20 pr20 pt15 pb15 f28 btn bg-silver white fl b\">▲</a>");
+document.writeln("<a href=\"javascript:;\" title=\"我要许愿\" id=\"go-wish\">我要许愿</a>");
+document.writeln("<style>#toTop{width:44px;height:44px;position:fixed;right:20px;bottom:-10px;z-index:9999;display:none;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}#toTop:hover{background-position:left bottom}</style>");
+document.writeln("<a href=\"javascript:;\" title=\"返回顶部\" id=\"toTop\">返回顶部</a>");
 $(document).ready(function(){
 	$(window).scroll(function(){
-		if($(window).scrollTop()<=100) {
-			$("#toTop").stop(true,false).animate({bottom:"-150px"},50);
+		if($(window).scrollTop()<=0) {
 			$("html").attr("ID","");
 		}else{
-			$("#toTop").stop(true,false).animate({bottom:"20px"},50);
-			$("html").attr("ID","head");
+			$("html").attr("ID","fixed-head");
+		}
+		
+		if($(window).scrollTop()<=500) {
+			$("#toTop").stop(true,false).animate({bottom:"-10px",opacity:"0"},50);
+		}else{
+			$("#toTop").stop(true,false).show().animate({bottom:"20px",opacity:"1"},50);
 		}
 	});
 	$("#toTop").click(function(){
-		$("body,html").animate({scrollTop:0},50);
+		$("body,html").animate({scrollTop:0},200);
 	});
 });
-
-
 
 //评分
 $(document).ready(function(){
@@ -80,133 +83,75 @@ $(document).ready(function(){
 
 
 
-
-
 $(function(){
-	$(".logo .rel").hover(function(){
-		$(this).find(".home").fadeIn(200);
-	},function(){
-		$(this).find(".home").fadeOut(200);
-	});
 	
-	$(".box_btn,.collection_box").hover(function(){
-		$(this).find(".a_btn").fadeIn(100);
-	},function(){
-		$(this).find(".a_btn").fadeOut(100);
-	});
+$(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.novice-bbs-list a,.i-link-list a").attr("target","_blank");
 	
-	$(".sort").hover(function(){
-		$(this).find(".sort-menu").fadeIn(100);
-	},function(){
-		$(this).find(".sort-menu").fadeOut(100);
-	});
-	
-	
-	
-	$(".btn-s-box dl,.app-list-min,.maste_lsit").hover(function(){
-		$(this).find(".btn-s").show();
-	},function(){
-		$(this).find(".btn-s").hide();
-	});
-	
-	
+//搜索
 	$(".search").hover(function(){
 		$(this).find(".box").addClass("hover");
 	},function(){
 		$(this).find(".box").removeClass("hover");
-	});
-	
-	
-	$(".maste_lsit").hover(function(){
-		   $(".maste_lsit").removeClass("hover");
-		   $(this).addClass("hover");
-	});
-	
-	
-	$(".t-title li").hover(function(){
-		   $(".t-title li").removeClass("ios-web-icon hover");
-		   $(this).addClass("ios-web-icon hover");
-	});
-	
-	
-	
-	$(".game .app-list-right li").hover(function(){
-		   $(".game .app-list-right li").removeClass("hover");
-		   $(this).addClass("hover");
-	});
-	
-	$(".soft .app-list-right li").hover(function(){
-		   $(".soft .app-list-right li").removeClass("hover");
-		   $(this).addClass("hover");
-	});
-	
-	
-	
-	$(".rcd-list li").hover(function(){
-		   $(".rcd-list li").removeClass("hover");
-		   $(this).addClass("hover");
-	});
-	
-	$(".down-list li").hover(function(){
-		   $(".down-list li").removeClass("hover");
-		   $(this).addClass("hover");
-	});
-	
-	$(".h-game-top-list li").hover(function(){
-		   $(".h-game-top-list li").removeClass("hover");
-		   $(this).addClass("hover");
-	});
-	
-	$(".most-expensive-list li").hover(function(){
-		   $(".most-expensive-list li").removeClass("hover");
-		   $(this).addClass("hover");
-	});
-	
-	$(".crack-list li").hover(function(){
-		   $(".crack-list li").removeClass("hover");
-		   $(this).addClass("hover");
-	});
-	
-	
-	$(".left-top-list .app-list-right li").hover(function(){
-		   $(".left-top-list .app-list-right li").removeClass("hover");
-		   $(this).addClass("hover");
-	});
-	
-	$(".crack-list-right li").hover(function(){
-		   $(".crack-list-right li").removeClass("hover");
-		   $(this).addClass("hover");
 	});	
-	
-	
-	$(".n-top-app-list li").hover(function(){
-		   $(".n-top-app-list li").removeClass("hover");
-		   $(this).addClass("hover");
+//搜索提示
+	$(".key").keyup(function(){
+		var inputvalue = $(".key").val();
+		if(inputvalue  != ""){
+			$('#search-drop').show().animate({opacity:"1"},200);
+		}else if(inputvalue == ""){
+			$("#n_l_closbtn").hide();
+		}
+	});	
+	$(document).ready(function(e) {
+	   var inputvalue = $(".key").val();
+		if(inputvalue  != ""){
+			$('#search-drop').show().animate({opacity:"1"},200);
+		}else if(inputvalue == ""){
+			$('#search-drop').hide().animate({opacity:"0"},200);
+		}
 	});
+	$('.key').blur(function(){
+		$('#search-drop').hide().animate({opacity:"0"},200);
+	});
+//微信
+	$(".weixin-code,#cc-s .down-btn,#cc-m .down-btn").hover(function(){
+       $(this).find("img").fadeIn(300);
+	 }, function(){
+	   $(this).find("img").fadeOut(300);
+	 });
 
+
+//安装 下载按钮
+	function li_btn(eobj,cssClass){
+		eobj.hover(function(){		  
+		   $(this).find(cssClass).show();
+		},function(){
+			 $(this).find(cssClass).hide();
+		});
+	};	
+	li_btn($(".app-list-min,.app-list-xl,.maste_lsit"),".btn-s");
+	li_btn($(".sort"),".sort-menu");
+	li_btn($(".box_btn,.collection_box"),".a_btn");	
+	li_btn($(".logo .rel"),".home");	
+	
+//首个APP展开	
+	function li_hover(eobj,cssClass){
+		eobj.hover(function(){
+		   $(this).siblings().removeClass(cssClass);
+		   $(this).addClass(cssClass);
+		});
+	};	
+	li_hover($(".app-list-right li"),"hover");	
+	li_hover($(".t-title li"),"ios-web-icon");	
 	
 	$(".app-list-right").find("li:first").addClass("hover");
 	$(".hot-bbs .hot-bbs-list").find("li:first").addClass("first");
 	
-	
-	
-	$(".mm-pic-list .mm").hover(function() { // Mouse over
-		$(this)
-			.stop().fadeTo(500, 1)
-			.siblings().stop().fadeTo(500, 0.2);		
-	}, function() { // Mouse out
-		$(this)
-			.stop().fadeTo(500, 1)
-			.siblings().stop().fadeTo(500, 1);
-	});
-
-
-
-//基本资料
+//基本资料-表单验证
 	var info=$(".user-info-form").Validform({
 		tiptype:3,
 		label:"label",
-		showAllError:false,
+		showAllError:true,
 		//ajaxPost:true
 	});	
 	info.addRule([{
@@ -218,11 +163,11 @@ $(function(){
 		ele:":radio:first",	datatype:"*"}
 	]);
 
-//联络信息
+//联络信息-表单验证
 	var contact=$(".user-contact-form").Validform({
 		tiptype:3,
 		label:"label",
-		showAllError:false,
+		showAllError:true,
 		//ajaxPost:true
 	});	
 	contact.addRule([{
@@ -230,11 +175,11 @@ $(function(){
 	]);
 
 
-//修改密码
+//修改密码-表单验证
 	var password=$(".user-password-form").Validform({
 		tiptype:3,
 		label:"label",
-		showAllError:false,	
+		showAllError:true,	
 		//ajaxPost:true
 	});	
 	password.addRule([{
@@ -242,9 +187,9 @@ $(function(){
 		ele:".w200:eq(2)",datatype:"*6-16",recheck:"new_password"}
 	]);
 	
-//注册表单
+//注册表单-表单验证
 	var reg=$(".reg-form").Validform({
-		showAllError:false,	
+		showAllError:true,	
 		tiptype:function(msg,o,cssctl){
 			var objtip=$(".login-tip");
 			cssctl(objtip,o.type);
@@ -253,9 +198,9 @@ $(function(){
 		//ajaxPost:true
 	});
 
-//登录表单
+//登录表单-表单验证
 	var reg=$(".login-form").Validform({
-		showAllError:false,	
+		showAllError:true,	
 		tiptype:function(msg,o,cssctl){
 			var objtip=$(".login-tip");
 			cssctl(objtip,o.type);
@@ -263,10 +208,23 @@ $(function(){
 		},
 		//ajaxPost:true
 	});
-	
-	
 
 	
+
+//我要许愿-表单验证
+	var wish=$(".go-wish-form").Validform({
+		showAllError:true,	
+		tiptype:function(msg,o,cssctl){
+			var objtip=$(".Validform_checktip");
+			cssctl(objtip,o.type);
+			objtip.text(msg);
+		}
+	});	
+	wish.addRule([{
+		ele:".pct50",datatype:"*"}
+	]);
+	
+
 
 });
 
@@ -333,7 +291,7 @@ function get_strong_level ( string, minLength )
 $(".banner").slide({ titCell:".num ul" , mainCell:".ban_pic ul" , autoPlay:true, effect:"fold",delayTime:1500 , autoPage:true });
 
 //专题 巨作
-jQuery(".roll").slide({ mainCell:"ul",vis:0,scroll:3,prevCell:".prev",nextCell:".next",easing:"easeInQuint",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
+jQuery(".roll").slide({ mainCell:"ul",vis:3,scroll:3,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
 
 //详细缩略图
 jQuery(".up_box").slide({ mainCell:"ul",vis:0,scroll:2,prevCell:".prev",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
@@ -341,17 +299,18 @@ jQuery(".up_box").slide({ mainCell:"ul",vis:0,scroll:2,prevCell:".prev",nextCell
 //专题页
 jQuery(".collection_box").slide({ mainCell:".inner-box",vis:0,scroll:1,prevCell:".prev",nextCell:".next",easing:"easeInQuint",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
+//游戏排行榜
+jQuery(".tab-box").slide({ titCell:".info-tag a",mainCell:".info-box-tab" });
 
 
 
-
-
-//initiating jQuery
+//固定APP分类菜单
+//$(".nav").pin()
 $(".pin-box").pin({
-      containerSelector: ".width"
+      containerSelector: ".width"//固定到某个DIV范围内
 });
 
-//$(".nav").pin()
+
 
 
 
@@ -390,14 +349,14 @@ var funPlaceholder = function(element) {
         element.onblur = function() { 
             if (this.value === "") {
                 this.value = placeholder;
-                this.style.color = '#ddd';    
+                this.style.color = '#ccc';    
             }
         };
         
         //样式初始化
         if (element.value === "") {
             element.value = placeholder;
-            element.style.color = '#ddd';    
+            element.style.color = '#ccc';    
         }
     } 
 };
@@ -411,30 +370,40 @@ funPlaceholder(document.getElementById("p-new_password"));
 funPlaceholder(document.getElementById("p-new_password2"));
 funPlaceholder(document.getElementById("p-email"));
 
+funPlaceholder(document.getElementById("wish-game-name"));
+funPlaceholder(document.getElementById("wish-game-ver"));
+funPlaceholder(document.getElementById("wish-game-type"));
+funPlaceholder(document.getElementById("wish-game-note"));
 
 
 
+
+
+
+//弹窗
 $(function(){	
 		//登录
 		$(".open-login").click(function(){
 			$(".login-box").zxxbox({
-				title: "会员登录"	,fix: true, bgclose:true
+				title: "会员登录"	,fix: true
 				});
 		});
 		//注册
 		$(".open-reg").click(function(){
 			$(".reg-box").zxxbox({
-				title: "用户注册"	 ,fix: true, bgclose:true
+				title: "用户注册"	 ,fix: true
 				});
 		});
-});
-
-
-
-
-
-$(function() { 	
-	
+		//许愿
+		$("#go-wish").click(function(){
+			$(".go-wish-box").zxxbox({
+				title: "我要许愿"	 ,fix: true
+				});
+		});
+		
+		
+		
+		
 	//提示
 	$("#win").click(function(){
     $.zxxbox('<div class="p20 f20 white tc"><i class="icon-ok-circle mr10 f28"></i><span class="dib rel">操作成功！</span></div>', {
@@ -448,16 +417,21 @@ $(function() {
 //<div class="p20 f20 white"><i class="icon-remove-circle mr10 f28"></i><span class="dib rel">操作失败！</span></div>
 //<div class="p20 f20 white"><i class="icon-exclamation-sign mr10 f28"></i><span class="dib rel">出错啦~</span></div>
 //<div class="p20 f20 white"><i class="icon-minus-sign mr10 f28"></i><span class="dib rel">禁止！~</span></div>
-//<div class="p20 f20 white"><i class="icon-minus-sign mr10 f28"></i><span class="dib rel">禁止！~</span></div>
 	
 	//询问
 	$("#box_remind").click(function(){
     $.zxxbox.remind('<span class="db pb15 f16">请输入您注册的电子邮箱，下一步将发送修改密码链接到该邮箱。</span><input class="pct50 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="请输入电子邮箱" id="p-email" datatype="e">', function(){
         //alert("哇哈哈");
     }, {
-        title: "找回密码"		,bg: true, fix: true, bgclose:true
+        title: "找回密码"	 ,bg: true, fix: true, bgclose:true
     });						   
 	});
+	
+	
+
+	
+	
+	
 	
 	$("#box_ask").click(function(){
     $.zxxbox.ask('<span class="f16 tc">文字内字文字内容区域文字内容区域文字内容区域文<br/>字内容区域文字内容区域文字内容区域文字内容区域文字内容区域，<br/>支持HTML 支持HTML 支持HTML</span>', function(){
@@ -472,7 +446,30 @@ $(function() {
         title: "标题"	
         });
     });
-})
+	
+	
+	
+	
+	
+});
+
+
+
+//许愿
+document.writeln("<div class=\"bg-white go-wish-box dn\">");
+document.writeln("<form class=\"w750 fw go-wish-form\">");
+document.writeln("<div class=\"pb20\">");
+document.writeln("<input class=\"pct50 bg-white pl10 bg-white bde pt10 pb10 f16 mb10\" type=\"text\" placeholder=\"游戏名称\" id=\"wish-game-name\"><span class=\"g9 ml10\">如：暗影之刃 Shadow Blade</span>");
+document.writeln("<input class=\"pct50 bg-white pl10 bg-white bde pt10 pb10 f16 mb10\" type=\"text\" placeholder=\"版本编号\" id=\"wish-game-ver\"><span class=\"g9 ml10\">如：v1.14.2</span>");
+document.writeln("<input class=\"pct50 bg-white pl10 bg-white bde pt10 pb10 f16 mb10\" type=\"text\" placeholder=\"破解类型\" id=\"wish-game-type\"><span class=\"g9 ml10\">如：无限金币/无限道具/内购/强制购买/免验证等</span>");
+document.writeln("<input class=\"pct50 bg-white pl10 bg-white bde pt10 pb10 f16\" type=\"text\" placeholder=\"备注\" id=\"wish-game-note\"><span class=\"g9 ml10\">对虫虫游戏说的话~</span>");
+document.writeln("</div>");
+document.writeln("<div class=\"db tr pt20 pb20\">");
+document.writeln("<span class=\"Validform_checktip\"></span><button class=\"submit_btn\">提交许愿</button>");
+document.writeln("</div>");
+document.writeln("</form>");
+document.writeln("</div>");
+
 //弹出框提示 结束
 
 
@@ -608,6 +605,132 @@ var TTDiy_select=new diy_select({  //参数可选
 
 
 
+
+//邮箱地址自动完成
+(function($) {
+	$.fn.mailAutoComplete = function(options) {
+		var defaults = {
+			className: "emailist bdc bg-white lh28 poi",
+			email: 	["qq.com","gmail.com","126.com","163.com","hotmail.com","live.nc","sohu.com","sina.com.cn"], //邮件数组
+			zIndex: 2	
+		};
+		// 最终参数
+		var params = $.extend({}, defaults, options || {});
+		
+		// 是否现代浏览器
+		var isModern = typeof window.screenX === "number", visibility = "visibility";
+		// 键值与关键字
+		var key = {
+			"up": 38,
+			"down": 40,
+			"enter": 13,
+			"esc": 27,
+			"tab": 9	
+		};
+		// 组装HTML的方法
+		var fnEmailList = function(input) {
+			var htmlEmailList = '', arrValue = input.value.split("@"), arrEmailNew = [];
+			$.each(params.email, function(index, email) {
+				if (arrValue.length !== 2 || arrValue[1] === "" || email.indexOf(arrValue[1].toLowerCase()) === 0) {			
+					arrEmailNew.push(email);						
+				}
+			});	
+			$.each(arrEmailNew, function(index, email) {
+				htmlEmailList = htmlEmailList + '<li'+ (input.indexSelected===index? ' class="on"':' class="pt2 pb2 pl10"') +'>'+ arrValue[0] + "@" + email +'</li>';	
+			});		
+			return htmlEmailList;			
+		};
+		// 显示还是隐藏
+		var fnEmailVisible = function(ul, isIndexChange) {
+			var value = $.trim(this.value), htmlList = '';
+			if (value === "" || (htmlList = fnEmailList(this)) === "") {
+				ul.css(visibility, "hidden");	
+			} else {
+				isIndexChange && (this.indexSelected = -1);
+				ul.css(visibility, "visible").html(htmlList);
+			}
+		};
+		
+		return $(this).each(function() {
+			this.indexSelected = -1;
+			// 列表容器创建
+			var element = this;
+			var eleUl = $('<ul></ul>').css({
+				position: "absolute",
+				marginTop: element.offsetHeight,
+				minWidth: element.offsetWidth - 2,
+				visibility: "hidden",
+				zIndex: params.zIndex
+			}).addClass(params.className).bind("click", function(e) {
+				var target = e && e.target;
+				if (target && target.tagName.toLowerCase() === "li") {
+					$(element).val(target.innerHTML).trigger("input");
+					$(this).css(visibility, "hidden");
+					element.focus(); // add on 2013-11-20
+				}				
+			});			
+			$(this).before(eleUl);
+			// IE6的宽度
+			if (!window.XMLHttpRequest) { eleUl.width(element.offsetWidth - 2); }	
+			
+			// 不同浏览器的不同事件
+			isModern? $(this).bind("input", function() {
+				fnEmailVisible.call(this, eleUl, true);
+			}): element.attachEvent("onpropertychange", function(e) {				
+				if (e.propertyName !== "value") return;
+				fnEmailVisible.call(element, eleUl, true);		
+			});
+			
+			$(document).bind({
+				"click": function(e) {
+					var target = e && e.target, htmlList = '';
+					if (target == element && element.value && (htmlList = fnEmailList(element, params.email))) {
+						eleUl.css(visibility, "visible").html(htmlList);	
+					} else if (target != eleUl.get(0) && target.parentNode != eleUl.get(0)) {
+						eleUl.css(visibility, "hidden");
+					}
+				},
+				"keydown": function(e) {
+					var eleLi = eleUl.find("li");
+					if (eleUl.css(visibility) === "visible") {
+						switch (e.keyCode) {
+							case key.up: {
+								element.indexSelected--;
+								if (element.indexSelected < 0) {
+									element.indexSelected = -1 + eleLi.length;	
+								}
+								e.preventDefault && e.preventDefault();
+								break;
+							}
+							case key.down: {
+								element.indexSelected++;
+								if (element.indexSelected >= eleLi.length) {
+									element.indexSelected = 0;	
+								}
+								e.preventDefault && e.preventDefault();
+								break;
+							}
+							case key.enter: {		
+								e.preventDefault();		
+								eleLi.get(element.indexSelected) && $(element).val(eleLi.eq(element.indexSelected).html());
+								eleUl.css("visibility", "hidden");
+								break;
+							}
+							case key.tab: case key.esc: {
+								eleUl.css("visibility", "hidden");
+								break;
+							}
+						}
+						if (element.indexSelected !== -1) {
+							eleUl.html(fnEmailList(element));
+						}
+					}
+				}
+			});		
+		});
+	};
+})(jQuery);
+$("#p-email").mailAutoComplete();
 
 
 
