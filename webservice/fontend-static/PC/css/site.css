@@ -6,7 +6,7 @@ Copyright © 2014  www.ccplay.com.cn
         File URL  http://static.ccplay.com.cn/static/pc/css/site.css     
 */
 body,ol,ul,li,h1,h2,h3,h4,h5,h6,p,th,td,dl,dd,form,input,textarea,select{margin:0;padding:0}
-body{font:12px 'Microsoft YaHei UI','Microsoft YaHei',DengXian,SimSun,'Segoe UI',Tahoma,Helvetica,sans-serif;background:#eee;-webkit-text-size-adjust:100%;}
+body{font:12px 'Microsoft YaHei UI','Microsoft YaHei',DengXian,SimSun,'Segoe UI',Tahoma,Helvetica,sans-serif;-webkit-text-size-adjust:100%;}
 h1,h2,h3,h4,h5,h6{font-weight:500; font-size:100%}
 a, button {jing:e xpression(this.onFocus=this.blur());blr:expression(this.onFocus=this.blur()); text-decoration: none; cursor: pointer}
 a:focus{outline: 0}
@@ -24,8 +24,8 @@ p{word-wrap:break-word}
 .c_b{content:".";display:block;height:0;clear:both;visibility:hidden;zoom:1; text-indent:-90000px; font-size:0px;}
 .cb{clear:both;}
 
-.warp{width:817px; margin:0 auto; background:#eeeeee}
-.box{width:797px; margin:0 auto; background:#fff}
+.warp{background:#fff}
+.box{background:#fff; width:800px}
 
 .icon{background:url(../img/icon.png) no-repeat; display:inline-block}
 
@@ -133,14 +133,14 @@ p.price span{color:#e53333; text-decoration:line-through}
 .btn a.download:hover,.btn a.stop:hover{background:#767676;color:#fff}
 
 
-.list_box_right{width:197px; height:435px; background:#fff; overflow:hidden}
-.list_box_right .title_box{width:197px; border:none}
+.list_box_right{width:200px; height:435px; background:#fff; overflow:hidden}
+.list_box_right .title_box{width:200px; border:none}
 .list_box_right .title_box ul{padding-left:37px; width:150px}
 .list_box_right .title_box ul li{width:40px}
 
-.right_list{width:197px; overflow:hidden; z-index:0}
-.right_list ul{background:#fff; width:197px}
-.right_list ul li{clear:both; width:197px; position:relative; height:34px; border-top:1px dotted #ddd; border-left:none; margin:0}
+.right_list{width:200px; overflow:hidden; z-index:0}
+.right_list ul{background:#fff; width:200px}
+.right_list ul li{clear:both; width:200px; position:relative; height:34px; border-top:1px dotted #ddd; border-left:none; margin:0}
 .right_list li.hover{height:80px}
 .right_list .big_pic{left:25px; top:5px}
 .right_list .big_pic img{width:24px; height:24px}
@@ -166,22 +166,22 @@ p.price span{color:#e53333; text-decoration:line-through}
 .right_list li.hover .btn a{left:78px; top:50px; height:22px; line-height:21px}
 .right_list li.hover .btn a.a2{left:133px}
 
-.roll{padding:10px 0; height:100px; overflow:hidden; zoom:1; position:relative; width:817px;}
-.roll .list_box{width:817px; height:100px; overflow:hidden}
+.roll{padding:10px 0; height:100px; overflow:hidden; zoom:1; position:relative; width:800px;}
+.roll .list_box{width:800px; height:100px; overflow:hidden}
 .roll .list_box ul{ overflow:hidden; zoom:1;width:817px;}
 .roll .list_box li{width:190px; height:100px; display:inline-block; background:#fff; float:left; margin-left:10px; _margin-left:5px; margin-right:2px; _margin-right:7px}
 .roll .list_box li img{width:190px; height:100px}
 .roll .unslider-arrow{top:-73px; display:none}  
 
-.list_box .menu{padding-top:10px; border-bottom:2px solid #333; height:37px; position:relative; background:#eee}
+.list_box .menu{padding-top:10px; border-bottom:2px solid #333; height:37px; position:relative}
 .list_box .menu ul{position:absolute}
 .list_box .menu li{float:left}
 .list_box .menu a{display:block; float:left; padding:0 9px; height:37px; line-height:33px; font-size:12px}
 .list_box .menu a:hover{background-color:#333; color:#fff}
-.list_box .menu a.hover{background-position:center -226px; font-size:16px; color:#e53333; height:39px; background-color:#eee}
+.list_box .menu a.hover{background-position:center -226px; font-size:16px; color:#e53333; height:39px}
 
-.game .list_box_left,.game .title_box{border:none; width:797px}
-.game .list{width:797px; height:494px}
+.game .list_box_left,.game .title_box{border:none; width:800px}
+.game .list{width:800px; height:494px}
 .game .list ul{width:805px; height:500px}
 .game .title_box ul {padding-left:15px; width:772px}
 .game .title_box li.li_5{margin-left:10px}
@@ -191,7 +191,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 
 .game .title_box li.li_5:hover,.game .title_box li.li_6:hover{background-color:#e53333; border-color:#e53333;border-radius:3px 3px 0 0 }
 
-.page{padding:13px; background:#fff; text-align:center}
+.page{padding:20px 0; background:#fff; text-align:center; font-size:14px}
 .page a{display:inline-block; padding:2px 7px; border:1px solid #ccc}
 .page a:hover{border-color:#e53333; color:#e53333}
 .page a.hover{border-color:#e53333; background:#e53333; color:#fff}
@@ -228,7 +228,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .collection_title h1{font-size:24px}
 .collection_title p{height:50px; overflow:hidden; padding-top:5px}
 
-.masterpiece{padding-top:10px; background:none; width:797px; overflow:hidden}
+.masterpiece{padding-top:10px; background:none; width:800px; overflow:hidden}
 .masterpiece_box{background:url(../img/list_bg_2.png) no-repeat #fff; height:589px; width:800px}
 .maste_lsit{width:245px; height:274px; padding:10px; position:relative; float:left; margin:0 1px 1px 0; overflow:hidden}
 .maste_lsit img{width:245px; height:180px; padding-bottom:8px}
@@ -240,7 +240,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .maste_lsit .btn a{width:133px; height:34px; line-height:34px; position:absolute; left:0; top:0}
 .maste_lsit .btn a.a2{left:133px}
 
-.vendor {width:797px; height:630px; margin-top:10px}
+.vendor {width:800px; height:630px; margin-top:10px}
 .vendor .l{width:197px; height:630px; background:#e6e6e6; text-align:center}
 .vendor .r{width:600px}
 
@@ -257,7 +257,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 
 .dis {background:none; padding:15px 0 10px 0}
 .dis_box{background:url(../img/dis_l_bg.png) repeat-y #fff}
-.dis .title{height:37px}
+.dis .title{height:37px; padding:0 10px}
 .dis .title h1{font-size:24px}
 .dis .title p{color:#666; padding-top:10px}
 .dis .title .icon{display:inline-block; padding-left:16px; margin-left:5px}
