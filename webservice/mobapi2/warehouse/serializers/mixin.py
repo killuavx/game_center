@@ -173,3 +173,10 @@ class PackageRelatedPackageUrlMixin(object):
         except AttributeError:
             pass
         return related_url
+
+
+class PackageRelatedAuthorMixin(object):
+
+    def get_author(self, obj):
+        from mobapi2.warehouse.serializers.author import AuthorSummarySerializer
+        return AuthorSummarySerializer(obj.author, context=self.context).data

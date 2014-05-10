@@ -6,6 +6,7 @@ from rest_framework.serializers import (
     HyperlinkedModelSerializerOptions,
     HyperlinkedModelSerializer)
 from mobapi2.rest_router import rest_router
+from toolkit.helpers import import_from
 
 
 class ModelSerializerWithRouterOptions(ModelSerializerOptions):
@@ -45,8 +46,12 @@ class SerializerRelatedField(serializers.RelatedField):
         self.serializer_class = serializer_class
         super(SerializerRelatedField, self).__init__(*args, **kwargs)
 
+    def get_serializer_class(self):
+        if isinstance(self.serializer_class, str):
+            self.serializer_class = import_from(self.serializer_class)
+        return self.serializer_class
 
     def to_native(self, value):
-        return self.serializer_class(value,
+        return self.get_serializer_class()(value,
                                      many=self.many,
                                      context=self.context).data
