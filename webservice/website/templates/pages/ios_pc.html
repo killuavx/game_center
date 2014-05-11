@@ -43,10 +43,8 @@
 
       <div class="cb box list_box home_game">
 
-          {% include_widget TopicPackageListBoxWidget slugs='home-recommend-game|home-recommend-game' type='game' %}
-          {% comment %}
+          {% include_widget TopicPackageListBoxWidget slugs='home-recommend-game|topic-kuangye|topic-xiaomo' type='game' %}
           {% include_widget IosPcRankingPackageListWidget type='game' %}
-          {% endcomment %}
 
       </div>
         {% include_widget PackageListBoxWidget slug='home-recommend-game' page=1 %}
@@ -54,10 +52,8 @@
 
       <div class="cb box list_box home_soft">
 
-        {% include_widget TopicPackageListBoxWidget slugs='topic-kuangye|topic-kuangye' type='soft' %}
-          {% comment %}
-        {% include_widget IosPcRankingPackageListWidget type='soft' %}
-          {% endcomment %}
+        {% include_widget TopicPackageListBoxWidget slugs='topic-kuangye|home-recommend-game' type='soft' %}
+        {% include_widget IosPcRankingPackageListWidget type='application' %}
 
 
       </div>
