@@ -14,12 +14,11 @@
               {% endif %}
             </h3>
             <ul class="fl">
-              {%  mkrange 1 5 as l %}
-              {% for i in l %}
+              {% for ele in result %}
                 {% if forloop.first %}
-                <li class="li_{{i}} hover">{{ slug }}</li>
+                <li class="li_{{i}} hover">{{ ele.slug }}</li>
                  {% else %}
-                  <li class="li_{{i}}">{{ slug }}</li>
+                  <li class="li_{{i}}">{{ ele.slug }}</li>
                 {% endif %}
               {% endfor %}
 
@@ -30,12 +29,17 @@
           </div><!--title_box-->
 
 
+        {% for ele in result %}
+          {% if forloop.first %}
           <div class="list left_list">
+          {% else %}
+          <div class="list left_list" style="display: none">
+          {% endif %}
 
             <ul>
 
-              {% for item in items %}
-              {% with version=item.versions.latest_version %}
+              {% for item in ele.items %}
+              {% with version=item.versions.latest_published %}
               <li>
 
               <a href="{{ verison.get_absolute_url }}" class="big_pic"><img src="{{ version.icon.url }}"><span class="icon cover"></span></a>
@@ -69,6 +73,7 @@
               {% endfor %}
             </ul>
           </div>
+        {% endfor %}
 
 
         </div>

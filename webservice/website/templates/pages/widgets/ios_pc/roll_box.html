@@ -6,7 +6,7 @@
 
           <ul>
             {% for item in items %}
-              <li><a href="{{ item.get_absolute_url }}"><img src="{% static item.versions.get.icon.url %}"></a></li>
+              <li><a href="{{ item.get_absolute_url }}"><img src="{% static item.versions.latest_published.icon.url %}"></a></li>
             {% endfor %}
 
           </ul>
