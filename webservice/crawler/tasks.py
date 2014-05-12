@@ -37,6 +37,21 @@ def iosapp_upload_to_path(filename, appid, version_code=1, newname=None):
     return "%s/%s" %(path, basename)
 
 
+def unique_value(queryset, field, value, segment='-'):
+    i = 0
+    while True:
+        if i > 0:
+            if i > 1:
+                value = value.rsplit(segment, 1)[0]
+            value = "%s%s%s" % (value, segment, i)
+        try:
+            queryset.get(**{field: value})
+        except ObjectDoesNotExist:
+            break
+        i += 1
+    return value
+
+
 class BaseTask(object):
 
     def __init__(self):
@@ -74,18 +89,38 @@ class TransformIOSAppDataToPackageVersionTask(BaseTask):
         view_url = content_data['artistViewUrl']
         email = "%s@artistid.ccdev.com" % artist_id
         phone = artist_id
-        author, created = IOSAuthor.objects.get_or_create(
-            artist_id=artist_id,
-            defaults=dict(
-                name=content_data['artistName'],
-                email=email,
-                phone=phone,
-                view_url=view_url,
-                seller_name=content_data.get('sellerName'),
-                seller_url=content_data.get('sellerUrl'),
-                status='unactivated',
+
+        try:
+            author, created = IOSAuthor.objects.get_or_create(
+                artist_id=artist_id,
+                defaults=dict(
+                    name=content_data['artistName'],
+                    email=email,
+                    phone=phone,
+                    view_url=view_url,
+                    seller_name=content_data.get('sellerName'),
+                    seller_url=content_data.get('sellerUrl'),
+                    status='unactivated',
+                )
             )
-        )
+        except IntegrityError:
+            name = unique_value(IOSAuthor.objects.all(),
+                                field='name',
+                                value=content_data['artistName'],
+                                segment=' - ')
+            author, created = IOSAuthor.objects.get_or_create(
+                name=name,
+                defaults=dict(
+                    artist_id=artist_id,
+                    email=email,
+                    phone=phone,
+                    view_url=view_url,
+                    seller_name=content_data.get('sellerName'),
+                    seller_url=content_data.get('sellerUrl'),
+                    status='unactivated',
+                    )
+            )
+
         return author
 
     def create_categories(self, content_data):
