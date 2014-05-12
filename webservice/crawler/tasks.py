@@ -86,7 +86,7 @@ class TransformIOSAppDataToPackageVersionTask(BaseTask):
 
     def create_author(self, content_data):
         artist_id = content_data['artistId']
-        view_url = content_data['artistViewUrl']
+        view_url = content_data.get('artistViewUrl')
         email = "%s@artistid.ccdev.com" % artist_id
         phone = artist_id
 
@@ -380,3 +380,20 @@ class DownloadIOSAppResourceTask(BaseTask):
                 self._update_resource_status_location(item)
         except Exception as e:
             print(e)
+
+    def retry_download_resource(self, status=None):
+        """
+           status in [ 'paused', 'error', 'active', 'posted' ]
+        """
+        qs = self.crawl_resource_doc_class.objects.all()
+        if not status:
+            qs = qs.filter(status__ne='complete')
+        else:
+            qs = qs.filter(status=status)
+
+        for item in qs:
+            _id = self.client.addUri([item.url], {'dir': item.file_dir})
+            item.gid = _id
+            item.updated = now()
+            item.status = 'retry'
+            item.save()
