@@ -424,11 +424,11 @@ class PackageVersion(SiteRelated, models.Model):
         default="",
         blank=True)
 
-    supported_features = models.ManyToManyField('SupportedFeature')
+    supported_features = models.ManyToManyField('SupportedFeature', blank=True)
 
-    supported_languages = models.ManyToManyField('SupportedLanguage')
+    supported_languages = models.ManyToManyField('SupportedLanguage', blank=True)
 
-    supported_devices = models.ManyToManyField('SupportedDevice')
+    supported_devices = models.ManyToManyField('SupportedDevice', blank=True)
 
     STATUS = Choices(
         'draft',
