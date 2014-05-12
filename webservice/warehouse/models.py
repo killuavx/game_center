@@ -387,7 +387,7 @@ class PackageVersion(SiteRelated, models.Model):
 
     version_name = models.CharField(
         verbose_name=_('version name'),
-        max_length=16,
+        max_length=50,
         blank=False,
         null=False)
 
@@ -815,6 +815,19 @@ class IOSPackageVersion(PackageVersion):
 
 """
 from crawler.tasks import *
-task =  TransformIOSAppDataToPackageVersionTask()
-task.parse_app()
+from crawler.models import *
+qs = IOSAppData.objects.all().filter(is_analysised=False)
+task = TransformIOSAppDataToPackageVersionTask()
+def parse_queryset(queryset):
+  for app in queryset:
+    print(app.pk, app.appid)
+    task.parse_app(app)
+    print(app.packageversion_id)
+
+
+def between(queryset, s, e):
+  return queryset.filter(pk__gte=s, pk__lt=e)
+
+s, e = 100000, 120000
+parse_queryset(between(qs, s, e))
 """

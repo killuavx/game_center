@@ -252,7 +252,7 @@ class DownloadIOSAppResourceTask(BaseTask):
                                       )
 
     def get_appdata_resources(self, app, content_data):
-        track_id = content_data['track_id']
+        track_id = app.appid
         version_code = 1
         # [
         #   (url, save_to_relative_path, resource_type, file_alias), ...
