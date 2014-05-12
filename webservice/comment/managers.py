@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-from model_utils.managers import PassThroughManager
-from managers import CurrentSiteManager
+from model_utils.managers import PassThroughManagerMixin
+from toolkit.managers import CurrentSiteManager
 
 
-class LetterManager(CurrentSiteManager,
-                    PassThroughManager):
+class LetterManager(PassThroughManagerMixin, CurrentSiteManager):
     pass
