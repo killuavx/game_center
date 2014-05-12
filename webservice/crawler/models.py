@@ -41,6 +41,12 @@ class IOSAppData(models.Model):
     packageversion_id = models.IntegerField(db_index=True,
                                             null=True, blank=True)
 
+    analysised = models.DateTimeField(null=True, blank=True)
+
+    is_image_downloaded = models.BooleanField(default=False)
+
+    image_downloaded = models.DateTimeField(null=True, blank=True)
+
     def _get_packageversion(self):
         if self.packageversion_id:
             return IOSPackageVersion.objects.get(pk=self.packageversion_id)
@@ -63,8 +69,20 @@ class IOSAppData(models.Model):
 
     packageversion = property(_get_packageversion, _set_packageversion)
 
+    def set_analysised(self, version):
+        self.packageversion = version
+        self.package_name = version.package.package_name
+        self.version_name = version.version_name
+        self.analysised = now()
+        self.is_analysised = True
+
     class Meta:
         index_together = (
+            ('is_free', ),
+            ('analysised', ),
+            ('is_analysised', ),
+            ('is_image_downloaded', ),
+            ('image_downloaded', ),
             ('mainclass', 'subclass'),
         )
         unique_together = (
@@ -81,6 +99,7 @@ class IOSAppData(models.Model):
         return self._content_data
     content_data = property(_get_content_json)
 
+
 import xmlrpc.client
 
 
@@ -88,6 +107,14 @@ rpc_client = xmlrpc.client.ServerProxy("http://localhost:6800/rpc")
 
 
 def iosversion_upload_to_path(version, filename, newname=None):
+    iospackage = version.package.iospackage
+    return iosapp_upload_to_path(filename,
+                                 newname=newname,
+                                 appid=iospackage.track_id,
+                                 version_code=version.version_code)
+
+
+def iosapp_upload_to_path(filename, appid, version_code=1, newname=None):
     basename = os.path.basename(filename)
     if newname:
         name, extension = os.path.splitext(basename)
@@ -98,23 +125,18 @@ def iosversion_upload_to_path(version, filename, newname=None):
             params['extension'] = extension.lstrip('.')
         basename = newname % params if params else newname
 
-    iospackage = version.package.iospackage
-
-    path = "ipackage/%d/v%d" % (iospackage.track_id, version.version_code)
+    path = "ipackage/%d/v%d" % (appid, version_code)
     return "%s/%s" %(path, basename)
 
 
-class TransformIOSAppDataToPackageVersion(object):
-
-    client = rpc_client.aria2
-
-    crawler_resource_doc_class = None
+class BaseTask(object):
 
     def __init__(self):
         SITE_ID_IOS = 2
         os.environ.setdefault('MEZZANINE_SITE_ID', str(SITE_ID_IOS))
-        from crawler.documents import CrawlResource
-        self.crawl_resource_doc_class = CrawlResource
+
+
+class TransformIOSAppDataToPackageVersionTask(BaseTask):
 
     def create_package(self, content_data, author):
         package_name = content_data['bundleId']
@@ -228,41 +250,35 @@ class TransformIOSAppDataToPackageVersion(object):
 
         return version
 
-    def get_appdata_resources(self, content_data, version):
-        download_resources = list()
-        for artwork_size in [60, 100, 512]:
-            key = 'artworkUrl%s' %artwork_size
-            if content_data.get(key):
-                artwork_url = content_data[key]
-                _file_uuid = artwork_url.split('/')[-2]
-                _save_to = iosversion_upload_to_path(
-                    version,
-                    artwork_url,
-                    os.path.join('icons',
-                                  _file_uuid,
-                                  '%(name)s.%(extension)s'))
-                download_resources.append((artwork_url, _save_to, 'icon', key))
+    def parse_app(self, app):
+        content_data = app.content_data
+        if not content_data:
+            return None
 
-        _cnt = 0
-        for url in content_data['screenshotUrls']:
-            _file_uuid = url.split('/')[-2]
-            _save_to = iosversion_upload_to_path(
-                version,
-                url,
-                os.path.join('screenshots', _file_uuid, '%(name)s.%(extension)s'))
-            download_resources.append((url, _save_to, 'screenshot', _cnt))
-            _cnt += 1
+        sid = transaction.savepoint()
+        try:
+            author = self.create_author(content_data)
+            package = self.create_package(content_data, author)
+            version = self.create_packageversion(content_data, package)
+            transaction.savepoint_commit(sid)
+        except Exception as e:
+            print(e)
+            transaction.savepoint_rollback(sid)
+        else:
+            app.set_analysised(version)
+            app.save()
 
-        _cnt = 0
-        for url in content_data['ipadScreenshotUrls']:
-            _file_uuid = url.split('/')[-2]
-            _save_to = iosversion_upload_to_path(
-                version,
-                url,
-                os.path.join('ipadscreenshots', _file_uuid, '%(name)s.%(extension)s'))
-            download_resources.append((url, _save_to, 'ipadscreenshot', _cnt))
-            _cnt += 1
-        return download_resources
+
+class DownloadIOSAppResourceTask(BaseTask):
+
+    client = rpc_client.aria2
+
+    crawl_resource_doc_class = None
+
+    def __init__(self):
+        super(DownloadIOSAppResourceTask, self).__init__()
+        from crawler.documents import CrawlResource
+        self.crawl_resource_doc_class = CrawlResource
 
     def _content_object_id(self, version):
         ct = ContentType.objects.get_for_model(version.__class__)
@@ -270,15 +286,70 @@ class TransformIOSAppDataToPackageVersion(object):
         object_pk = str(version.pk)
         return content_type, object_pk
 
-    def download_remote_resources(self, version, resources):
-        for item in resources:
-            content_type, object_pk = self._content_object_id(version)
-            self.save_download_queue(item,
-                                     content_type=content_type,
-                                     object_pk=object_pk,
-                                     )
+    def download_app_resource(self, app):
+        """
+            下载一个app的资源
+        """
+        content_data = app.content_data
+        if not content_data:
+            return None
+        resources = self.get_appdata_resources(app, content_data)
 
-    def save_download_queue(self, item, **kwargs):
+        content_type, object_pk = self._content_object_id(app)
+        for item in resources:
+            self._save_download_queue(item,
+                                      content_type=content_type,
+                                      object_pk=content_type,
+                                      )
+
+    def get_appdata_resources(self, app, content_data):
+        track_id = content_data['track_id']
+        version_code = 1
+        # [
+        #   (url, save_to_relative_path, resource_type, file_alias), ...
+        # ]
+        download_resources = list()
+
+        # icon
+        for artwork_size in [60, 100, 512]:
+            key = 'artworkUrl%s' %artwork_size
+            if content_data.get(key):
+                artwork_url = content_data[key]
+                _file_uuid = artwork_url.split('/')[-2]
+                _save_to = iosapp_upload_to_path(
+                    filename=artwork_url,
+                    appid=track_id,
+                    version_code=version_code,
+                    newname=os.path.join('icons', _file_uuid,
+                                         '%(name)s.%(extension)s'))
+                download_resources.append((artwork_url, _save_to, 'icon', key))
+
+        # screenshot
+        _cnt = 0
+        for url in content_data['screenshotUrls']:
+            _file_uuid = url.split('/')[-2]
+            _save_to = iosapp_upload_to_path(
+                filename=url,
+                appid=track_id,
+                version_code=version_code,
+                newname=os.path.join('screenshots', _file_uuid, '%(name)s.%(extension)s'))
+            download_resources.append((url, _save_to, 'screenshot', _cnt))
+            _cnt += 1
+
+        # ipad screenshot
+        _cnt = 0
+        for url in content_data['ipadScreenshotUrls']:
+            _file_uuid = url.split('/')[-2]
+            _save_to = iosapp_upload_to_path(
+                filename=url,
+                appid=track_id,
+                version_code=version_code,
+                newname=os.path.join('ipadscreenshots', _file_uuid, '%(name)s.%(extension)s'))
+            download_resources.append((url, _save_to, 'ipadscreenshot', _cnt))
+            _cnt += 1
+        return download_resources
+
+    def _save_download_queue(self, item, **kwargs):
         _file_path = os.path.join(settings.MEDIA_ROOT, item[1])
         _file_dir = os.path.dirname(_file_path)
         _id = self.client.addUri([item[0]], {'dir': _file_dir})
@@ -295,62 +366,35 @@ class TransformIOSAppDataToPackageVersion(object):
         except Exception as e:
             print(e)
 
-    def parse_app(self, app):
+    def checkout_app_resources(self, app):
+        """
+           根据一个app，checkout app所有的资源
+        """
         content_data = app.content_data
         if not content_data:
             return None
 
-        sid = transaction.savepoint()
+        qs = self.crawl_resource_doc_class.objects.by_content_object(app)
+        for item in qs.filter(status__ne='complete'):
+            try:
+                self._update_resource_status_rpc(item)
+            except (ConnectionRefusedError, xmlrpc.client.Fault) as e:
+                self._update_resource_status_location(item)
+            except Exception as e:
+                print(e)
+
         try:
-            author = self.create_author(content_data)
-            package = self.create_package(content_data, author)
-            version = self.create_packageversion(content_data, package)
-            transaction.savepoint_commit(sid)
-        except Exception as e:
-            print(e)
-            transaction.savepoint_rollback(sid)
-        else:
-            app.packageversion = version
-            app.package_name = version.package.package_name
-            app.version_name = version.version_name
+            version = app.packageversion
+            is_published = all(i.status == 'complete' for i in qs)
+            if is_published:
+                version.status = IOSPackageVersion.STATUS.published
+                version.save()
+            app.is_image_downloaded = is_published
+            app.image_downloaded = now()
             app.save()
-
-    def parse_app_resource(self, app):
-        content_data = app.content_data
-        if not content_data:
-            return None
-        version = app.packageversion
-        resources = self.get_appdata_resources(content_data, version)
-        self.download_remote_resources(version, resources)
-
-    def checkout_app_resource(self, app):
-        content_data = app.content_data
-        if not content_data:
-            return None
-        version = app.packageversion
-        try:
-            self._crawl_resource_status_rpc(version)
-        except (ConnectionRefusedError, xmlrpc.client.Fault) as e:
-            self._crawl_resource_status_location(version)
-        self._msg_user_download_error(version)
-        self._update_version_status(version)
-
-    def _msg_user_download_error(self, version):
-        pass
-
-    def _update_version_status(self, version):
-        qs = self.crawl_resource_doc_class.objects \
-            .by_content_object(version)
-        is_published = all(i.status == 'complete' for i in qs)
-        if is_published:
-            version.status = IOSPackageVersion.STATUS.published
-            version.save()
-
-    def _crawl_resource_status_location(self, version):
-        qs = self.crawl_resource_doc_class.objects \
-            .by_content_object(version).filter(status__ne='complete')
-        for item in qs:
-            self._update_resource_status_location(item)
+        except ObjectDoesNotExist:
+            pass
+        self._msg_user_download_error(app)
 
     def _update_resource_status_location(self, item):
         item.updated = now()
@@ -362,17 +406,6 @@ class TransformIOSAppDataToPackageVersion(object):
             item.error_code = '1001'
         item.save()
 
-    def _crawl_resource_status_rpc(self, version):
-        qs = self.crawl_resource_doc_class.objects\
-            .by_content_object(version).filter(status__ne='complete')
-        for item in qs:
-            try:
-                self._update_resource_status_rpc(item)
-            except (ConnectionRefusedError, xmlrpc.client.Fault) as e:
-                raise e
-            except Exception as e:
-                print(e)
-
     def _update_resource_status_rpc(self, item):
         tell_status = self.client.tellStatus(item.gid)
         item.status = tell_status['status']
@@ -381,7 +414,13 @@ class TransformIOSAppDataToPackageVersion(object):
         item.save()
         self.client.removeDownloadResult(item.gid)
 
+    def _msg_user_download_error(self, app):
+        pass
+
     def checkout_each_resource(self):
+        """
+            checkout每个已经完成资源
+        """
         qs = self.crawl_resource_doc_class.objects \
             .filter(status__ne='complete')
         try:
@@ -392,4 +431,3 @@ class TransformIOSAppDataToPackageVersion(object):
                 self._update_resource_status_location(item)
         except Exception as e:
             print(e)
-
