@@ -168,12 +168,12 @@ class Package(SiteRelated, models.Model):
 
     title = models.CharField(
         verbose_name=_('package title'),
-        max_length=128)
+        max_length=255)
 
     package_name = models.CharField(
         verbose_name=_('package name'),
         db_index=True,
-        max_length=128)
+        max_length=255)
 
     summary = models.CharField(
         verbose_name=_('summary'),
@@ -401,7 +401,7 @@ class PackageVersion(SiteRelated, models.Model):
         verbose_name=_('version subtitle'),
         default='',
         blank=True,
-        max_length=128)
+        max_length=255)
 
     summary = models.CharField(
         verbose_name=_('summary'),
