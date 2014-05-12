@@ -248,7 +248,7 @@ class DownloadIOSAppResourceTask(BaseTask):
         for item in resources:
             self._save_download_queue(item,
                                       content_type=content_type,
-                                      object_pk=content_type,
+                                      object_pk=object_pk,
                                       )
 
     def get_appdata_resources(self, app, content_data):
@@ -365,6 +365,20 @@ class DownloadIOSAppResourceTask(BaseTask):
 
     def _msg_user_download_error(self, app):
         pass
+
+    def update_app_status_check_resources(self, app):
+        qs = self.crawl_resource_doc_class.objects.by_content_object(app)
+        try:
+            version = app.packageversion
+            is_published = all(i.status == 'complete' for i in qs)
+            if is_published:
+                version.status = IOSPackageVersion.STATUS.published
+                version.save()
+            app.is_image_downloaded = is_published
+            app.image_downloaded = now()
+            app.save()
+        except ObjectDoesNotExist:
+            pass
 
     def checkout_each_resource(self):
         """
