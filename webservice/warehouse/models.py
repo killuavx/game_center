@@ -85,7 +85,7 @@ class Author(SiteRelated, models.Model):
         )
 
     name = models.CharField(verbose_name=_('author name'),
-                            max_length=64)
+                            max_length=255)
 
     email = models.EmailField(verbose_name=_('email'),
                               unique=True)
@@ -813,3 +813,8 @@ class IOSPackageVersion(PackageVersion):
                                           blank=True)
 
 
+"""
+from crawler.tasks import *
+task =  TransformIOSAppDataToPackageVersionTask()
+task.parse_app()
+"""
