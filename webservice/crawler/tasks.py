@@ -33,7 +33,7 @@ def iosapp_upload_to_path(filename, appid, version_code=1, newname=None):
             params['extension'] = extension.lstrip('.')
         basename = newname % params if params else newname
 
-    path = "ipackage/%d/v%d" % (appid, version_code)
+    path = "ipackage/%d/v%d" % (int(appid), version_code)
     return "%s/%s" %(path, basename)
 
 
