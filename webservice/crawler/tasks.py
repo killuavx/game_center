@@ -4,11 +4,12 @@ import xmlrpc.client
 from dateutil.parser import parse as dateparse
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ObjectDoesNotExist
-from django.db import transaction
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.db import transaction, IntegrityError
 from django.utils.timezone import now
 from warehouse.models import *
 from taxonomy.models import Category
+from django.db import models
 
 rpc_client = xmlrpc.client.ServerProxy("http://localhost:6800/rpc")
 
@@ -172,8 +173,12 @@ class TransformIOSAppDataToPackageVersionTask(BaseTask):
             print(e)
             transaction.savepoint_rollback(sid)
         else:
-            app.set_analysised(version)
-            app.save()
+            try:
+                app.set_analysised(version)
+                app.save()
+            except IntegrityError:
+                app.set_analysised(None)
+                app.save()
 
 
 class DownloadIOSAppResourceTask(BaseTask):

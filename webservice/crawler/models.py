@@ -57,10 +57,14 @@ class IOSAppData(models.Model):
 
     packageversion = property(_get_packageversion, _set_packageversion)
 
-    def set_analysised(self, version):
-        self.packageversion = version
-        self.package_name = version.package.package_name
-        self.version_name = version.version_name
+    def set_analysised(self, version=None):
+        if version:
+            self.packageversion = version
+            self.package_name = version.package.package_name
+            self.version_name = version.version_name
+        else:
+            self.packageversion_id = -1
+            self.package_name = self.version_name = None
         self.analysised = now()
         self.is_analysised = True
 
