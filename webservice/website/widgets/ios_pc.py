@@ -5,6 +5,7 @@ from .masterpiece import MasterpiecePackageListWidget
 from .common.topic import BaseTopicPackageListWidget
 from .common.package import BaseRankingPackageListWidget
 from taxonomy.models import Topic
+from warehouse.models import Package
 
 
 class BannerToprightWidget(BaseSingleAdvWidget, Widget):
@@ -26,19 +27,21 @@ class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
 
     template = 'pages/widgets/ios_pc/package_list_box_left.html'
 
-    def filter_packages_by_category(self, packages, category):
+    def filter_packages_by_category(self, packages, category, limit=12):
         items = []
 
         for pkg in packages:
             for cat in pkg.categories.all():
                 if category in cat.slug:
                     items.append(pkg)
-                    break
+                    if len(items) >= limit:
+                        return items
+                    else:
+                        break
         return items
 
 
     def get_context(self, value=None, options=dict(), context=None):
-        #print (options['slugs'])
         slugs =  options.get('slugs', None)
         type = options.get('type', None)
         result = []
@@ -47,17 +50,25 @@ class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
             slug_lst = slugs.split('|')
             for slug in slug_lst:
                 #print (slug)
-                new_options = options.copy()
-                new_options['slug'] = slug
-                tmp = super(TopicPackageListBoxWidget, self).get_context(value, new_options, context)
-                tmp['items'] = self.filter_packages_by_category(tmp['items'], type)
-                try:
-                    topic = Topic.objects.filter(slug=self.slug).published().get()
-                    tmp['topic_name']  = topic.name
-                except:
-                    pass
-                #print (tmp)
-                result.append(tmp)
+                if slug == 'latest_published':
+                    packages =  Package.objects.all().by_published_order()
+                    items = self.filter_packages_by_category(packages, type)
+                    tmp = {}
+                    tmp['items'] = items
+                    tmp['topic_name']  = '最新发布'
+                    result.append(tmp)
+                else:
+                    new_options = options.copy()
+                    new_options['slug'] = slug
+                    tmp = super(TopicPackageListBoxWidget, self).get_context(value, new_options, context)
+                    tmp['items'] = self.filter_packages_by_category(tmp['items'], type)
+                    try:
+                        topic = Topic.objects.filter(slug=self.slug).published().get()
+                        tmp['topic_name']  = topic.name
+                    except:
+                        pass
+                    #print (tmp)
+                    result.append(tmp)
 
         #print ({'result': result})
         return {'result': result, 'type': type}
