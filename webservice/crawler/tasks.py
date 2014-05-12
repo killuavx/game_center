@@ -385,7 +385,7 @@ class DownloadIOSAppResourceTask(BaseTask):
             checkout每个已经完成资源
         """
         qs = self.crawl_resource_doc_class.objects \
-            .filter(status__ne='complete')
+            .filter(status__ne='complete').filter(status__ne='waiting')
         try:
             for item in qs:
                 self._update_resource_status_rpc(item)
@@ -401,7 +401,7 @@ class DownloadIOSAppResourceTask(BaseTask):
         """
         qs = self.crawl_resource_doc_class.objects.all()
         if not status:
-            qs = qs.filter(status__ne='complete')
+            qs = qs.filter(status__ne='complete', status__ne='waiting')
         else:
             qs = qs.filter(status=status)
 
