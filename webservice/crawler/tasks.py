@@ -334,7 +334,7 @@ class DownloadIOSAppResourceTask(BaseTask):
 
         try:
             version = app.packageversion
-            is_published = all(i.status == 'complete' for i in qs)
+            is_published = qs.count() > 0 and all(i.status == 'complete' for i in qs)
             if is_published:
                 version.status = IOSPackageVersion.STATUS.published
                 version.save()
@@ -370,7 +370,7 @@ class DownloadIOSAppResourceTask(BaseTask):
         qs = self.crawl_resource_doc_class.objects.by_content_object(app)
         try:
             version = app.packageversion
-            is_published = all(i.status == 'complete' for i in qs)
+            is_published = qs.count() > 0 and all(i.status == 'complete' for i in qs)
             if is_published:
                 version.status = IOSPackageVersion.STATUS.published
                 version.save()
