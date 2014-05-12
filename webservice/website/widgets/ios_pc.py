@@ -4,6 +4,7 @@ from .common.promotion import BaseSingleAdvWidget, BaseMultiAdvWidget
 from .masterpiece import MasterpiecePackageListWidget
 from .common.topic import BaseTopicPackageListWidget
 from .common.package import BaseRankingPackageListWidget
+from taxonomy.models import Topic
 
 
 class BannerToprightWidget(BaseSingleAdvWidget, Widget):
@@ -25,19 +26,37 @@ class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
 
     template = 'pages/widgets/ios_pc/package_list_box_left.html'
 
+    def filter_packages_by_category(self, packages, category):
+        items = []
+
+        for pkg in packages:
+            for cat in pkg.categories.all():
+                if category in cat.slug:
+                    items.append(pkg)
+                    break
+        return items
+
+
     def get_context(self, value=None, options=dict(), context=None):
         #print (options['slugs'])
         slugs =  options.get('slugs', None)
         type = options.get('type', None)
         result = []
+
         if slugs:
             slug_lst = slugs.split('|')
             for slug in slug_lst:
                 #print (slug)
                 new_options = options.copy()
                 new_options['slug'] = slug
-                #print (options)
                 tmp = super(TopicPackageListBoxWidget, self).get_context(value, new_options, context)
+                tmp['items'] = self.filter_packages_by_category(tmp['items'], type)
+                try:
+                    topic = Topic.objects.filter(slug=self.slug).published().get()
+                    tmp['topic_name']  = topic.name
+                except:
+                    pass
+                #print (tmp)
                 result.append(tmp)
 
         #print ({'result': result})

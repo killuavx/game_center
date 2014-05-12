@@ -10,7 +10,7 @@
           <div class="banner">
 
             <ul class="banner_ul">
-        {% include_widget BannerTopleftWidget slug='banner_top_left' %}
+        {% include_widget BannerTopleftWidget slug='ios-pc-banner-top-left' %}
             </ul>
 
           </div>
@@ -35,7 +35,7 @@
 
         <div class="fl focus_right">
 
-        {% include_widget BannerToprightWidget slug='banner_top_right' %}
+        {% include_widget BannerToprightWidget slug='ios-pc-banner-top-right' %}
 
         </div><!--focus_right-->
 
@@ -43,7 +43,7 @@
 
       <div class="cb box list_box home_game">
 
-          {% include_widget TopicPackageListBoxWidget slugs='home-recommend-game|topic-kuangye|topic-xiaomo' type='game' %}
+          {% include_widget TopicPackageListBoxWidget slugs='home-recommend-game|homebar-basic-installed' type='game' %}
           {% include_widget IosPcRankingPackageListWidget type='game' %}
 
       </div>
@@ -52,7 +52,7 @@
 
       <div class="cb box list_box home_soft">
 
-        {% include_widget TopicPackageListBoxWidget slugs='topic-kuangye|home-recommend-game' type='soft' %}
+        {% include_widget TopicPackageListBoxWidget slugs='home-recommend-game|homebar-basic-installed' type='application' %}
         {% include_widget IosPcRankingPackageListWidget type='application' %}
 
 
