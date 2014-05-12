@@ -16,7 +16,7 @@ from django.db.models import SlugField
 
 from django.core.urlresolvers import get_callable
 from django.conf import settings
-from toolkit.managers import CurrentSitePassThroughManager, CurrentSiteManager
+from toolkit.managers import CurrentSitePassThroughManager
 from toolkit.helpers import sync_status_from
 from toolkit.models import (SiteRelated,
                             current_site_id)
@@ -111,7 +111,7 @@ class CategoryQuerySet(QuerySet):
         return self.hidden(False)
 
 
-class CategoryManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
+class CategoryManager(TreeManager, CurrentSitePassThroughManager):
     pass
 
 
@@ -201,7 +201,7 @@ class TopicQuerySet(QuerySet):
         return self.order_by('ordering')
 
 
-class TopicManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
+class TopicManager(TreeManager, CurrentSitePassThroughManager):
     pass
 
 
