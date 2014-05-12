@@ -35,9 +35,9 @@
 
         {% for ele in result %}
           {% if forloop.first %}
-          <div class="list left_list">
+          <div class="list left_list tab_{{ forloop.counter0 }}">
           {% else %}
-          <div class="list left_list" style="display: none">
+          <div class="list left_list tab_{{ forloop.counter0 }}" style="display: none">
           {% endif %}
 
             <ul>

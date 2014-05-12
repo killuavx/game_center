@@ -33,6 +33,17 @@
 
 <script src="{% static 'PC/js/site.js' %}"></script>
 
+<script>
+    $('div.list_box_left ul.fl li').click(
+      function() {
+        $(this).siblings().removeClass('hover');
+        $(this).addClass('hover');
+        $(this).parents('div.list_box_left').find('div.left_list').css('display', 'none').filter('.tab_'+$(this).index()).css('display', 'block');
+        console.log($(this).parents('div.list_box_left').find('div.left_list').filter('.tab_'+$(this).index()));
+    });
+    
+
+</script>
 
 
 <!--[if IE 6]>

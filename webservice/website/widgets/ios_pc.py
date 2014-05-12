@@ -68,7 +68,7 @@ class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
                         tmp['topic_name']  = topic.name
                     except:
                         pass
-                    #print (tmp)
+                    print (tmp)
                     result.append(tmp)
 
         #print ({'result': result})
