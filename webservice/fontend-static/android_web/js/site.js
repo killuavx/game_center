@@ -266,13 +266,13 @@ function get_strong_level ( string, minLength )
 //banner
 $(".banner").slide({ titCell:".num ul" , mainCell:".ban_pic ul" , autoPlay:true, effect:"fold",delayTime:1500 , autoPage:true });
 
-//专题 巨作
+//合集 巨作
 jQuery(".roll").slide({ mainCell:"ul",vis:0,scroll:3,prevCell:".prev",nextCell:".next",easing:"easeInQuint",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
 //详细缩略图
 jQuery(".up_box").slide({ mainCell:"ul",vis:0,scroll:2,prevCell:".prev",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
-//专题页
+//合集页
 jQuery(".collection_box").slide({ mainCell:".inner-box",vis:0,scroll:1,prevCell:".prev",nextCell:".next",easing:"easeInQuint",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
 

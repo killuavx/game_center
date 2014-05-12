@@ -18,7 +18,12 @@ function resize(){
 };
 
 
-document.writeln("<a href=\"javascript:;\" title=\"我要许愿\" id=\"go-wish\">我要许愿</a>");
+
+
+
+
+
+//document.writeln("<a href=\"javascript:;\" title=\"我要许愿\" id=\"go-wish\">我要许愿</a>");
 document.writeln("<style>#toTop{width:44px;height:44px;position:fixed;right:20px;bottom:-10px;z-index:9999;display:none;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}#toTop:hover{background-position:left bottom}</style>");
 document.writeln("<a href=\"javascript:;\" title=\"返回顶部\" id=\"toTop\">返回顶部</a>");
 $(document).ready(function(){
@@ -94,25 +99,37 @@ $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.n
 		$(this).find(".box").removeClass("hover");
 	});	
 //搜索提示
-	$(".key").keyup(function(){
+	$(".key").keyup(function(){		
 		var inputvalue = $(".key").val();
 		if(inputvalue  != ""){
 			$('#search-drop').show().animate({opacity:"1"},200);
 		}else if(inputvalue == ""){
-			$("#n_l_closbtn").hide();
-		}
-	});	
-	$(document).ready(function(e) {
-	   var inputvalue = $(".key").val();
-		if(inputvalue  != ""){
-			$('#search-drop').show().animate({opacity:"1"},200);
-		}else if(inputvalue == ""){
-			$('#search-drop').hide().animate({opacity:"0"},200);
-		}
-	});
+			$("#search-drop").hide().animate({opacity:"0"},200);
+		};		
+	});		
+	
 	$('.key').blur(function(){
 		$('#search-drop').hide().animate({opacity:"0"},200);
 	});
+	
+	//登录后
+	jQuery(".user-switch").slide({ type:"menu", titCell:"li", targetCell:"dl", effect:"slideDown", delayTime:300, triggerTime:0,returnDefault:true  });
+	//.change-password
+	//.log-out	
+	
+	$(".change-password").click(function(){
+		$.zxxbox($(".change-password-box"), {
+        title: "修改密码"	, fix: true
+        });
+    });
+	
+	
+	
+	$(".log-out").click(function(){
+    	$.zxxbox('<div class="p20 f20 white tc">安全退出成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});							
+    });
+	
+	
 //微信
 	$(".weixin-code,#cc-s .down-btn,#cc-m .down-btn").hover(function(){
        $(this).find("img").fadeIn(300);
@@ -174,10 +191,16 @@ $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.n
 		ele:".w200:eq(4)",datatype:"*"}
 	]);
 
+//密码加强
+(function(a){a.fn.passwordStrength=function(b){b=a.extend({},a.fn.passwordStrength.defaults,b);this.each(function(){var d=a(this),e=0,c=false,f=a(this).parents("form").find("#pw-strength");d.bind("keyup blur",function(){e=a.fn.passwordStrength.ratepasswd(d.val(),b);e>=0&&c==false&&(c=true);f.find("span").removeClass("gr");if(e<35&&e>=0){f.find("span:first").addClass("gr")}else{if(e<60&&e>=35){f.find("span:lt(2)").addClass("gr")}else{if(e>=60){f.find("span:lt(3)").addClass("gr")}}}if(c&&(d.val().length<b.minLen||d.val().length>b.maxLen)){b.showmsg(d,d.attr("errormsg"),3)}else{if(c){b.showmsg(d,"",2)}}b.trigger(d,!(e>=0))})})};a.fn.passwordStrength.ratepasswd=function(c,d){var b=c.length,e;if(b>=d.minLen&&b<=d.maxLen){e=a.fn.passwordStrength.checkStrong(c)}else{e=-1}return e/4*100};a.fn.passwordStrength.checkStrong=function(d){var e=0,b=d.length;for(var c=0;c<b;c++){e|=a.fn.passwordStrength.charMode(d.charCodeAt(c))}return a.fn.passwordStrength.bitTotal(e)};a.fn.passwordStrength.charMode=function(b){if(b>=48&&b<=57){return 1}else{if(b>=65&&b<=90){return 2}else{if(b>=97&&b<=122){return 4}else{return 8}}}};a.fn.passwordStrength.bitTotal=function(b){var d=0;for(var c=0;c<4;c++){if(b&1){d++}b>>>=1}return d};a.fn.passwordStrength.defaults={minLen:0,maxLen:30,trigger:a.noop}})(jQuery);
+
 
 //修改密码-表单验证
 	var password=$(".user-password-form").Validform({
 		tiptype:3,
+		usePlugin:{
+			passwordstrength:{minLen:6,maxLen:16}
+		},
 		label:"label",
 		showAllError:true,	
 		//ajaxPost:true
@@ -187,9 +210,13 @@ $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.n
 		ele:".w200:eq(2)",datatype:"*6-16",recheck:"new_password"}
 	]);
 	
+	
 //注册表单-表单验证
 	var reg=$(".reg-form").Validform({
-		showAllError:true,	
+		showAllError:true,
+		usePlugin:{
+			passwordstrength:{minLen:6,maxLen:16}
+		},
 		tiptype:function(msg,o,cssctl){
 			var objtip=$(".login-tip");
 			cssctl(objtip,o.type);
@@ -235,54 +262,7 @@ $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.n
 
 
 
-/*----------密码强度-----------*/
-function check_password_strong ( password )
-{
 
-	var strong = get_strong_level ( password, 6 );
-
-	var objS = document.getElementById ( 'pw-strength' );
-
-	if ( strong <=35 && strong > 0 )
-	{
-		objS.className = 'abs g9 dib pw-1';
-	}
-	else if ( strong > 35 && strong < 65 )
-	{
-		objS.className = 'abs g9 dib pw-2';
-	}
-	else if ( strong >=65 )
-	{
-		objS.className = 'abs g9 dib pw-3';
-	}
-	else
-	{
-		objS.className = 'abs g9 dn';
-	}
-}
-
-function get_strong_level ( string, minLength )
-{
-	if ( minLength == null ) minLength = 1;
-	if ( string.length < minLength )
-	{
-		return 0;
-	}
-	var ls = 0;
-	if ( string.match(/([!@#$%^&*()_+\-]+)/ig ) )
-	{
-		ls += 40;
-	}
-	if ( string.match(/([a-z])/ig ) )
-	{
-		ls += 20;
-	}
-	if ( string.match(/([0-9])/ig ) )
-	{
-		ls += 20;
-	}
-	return ls;
-}
 
 
 
@@ -290,13 +270,13 @@ function get_strong_level ( string, minLength )
 //banner
 $(".banner").slide({ titCell:".num ul" , mainCell:".ban_pic ul" , autoPlay:true, effect:"fold",delayTime:1500 , autoPage:true });
 
-//专题 巨作
+//合集 巨作
 jQuery(".roll").slide({ mainCell:"ul",vis:3,scroll:3,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
 
 //详细缩略图
 jQuery(".up_box").slide({ mainCell:"ul",vis:0,scroll:2,prevCell:".prev",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
-//专题页
+//合集页
 jQuery(".collection_box").slide({ mainCell:".inner-box",vis:0,scroll:1,prevCell:".prev",nextCell:".next",easing:"easeInQuint",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
 //游戏排行榜
@@ -406,17 +386,14 @@ $(function(){
 		
 	//提示
 	$("#win").click(function(){
-    $.zxxbox('<div class="p20 f20 white tc"><i class="icon-ok-circle mr10 f28"></i><span class="dib rel">操作成功！</span></div>', {
+    $.zxxbox('<div class="p20 f20 white tc">操作成功！</span></div>', {
         delay: 2000, bar: false, bg: false, fix: true
 //		   	,
 //		     onclose: function(){ 
 //            window.location.href='baidu.com';  // √
 //            }
         });							
-    });	
-//<div class="p20 f20 white"><i class="icon-remove-circle mr10 f28"></i><span class="dib rel">操作失败！</span></div>
-//<div class="p20 f20 white"><i class="icon-exclamation-sign mr10 f28"></i><span class="dib rel">出错啦~</span></div>
-//<div class="p20 f20 white"><i class="icon-minus-sign mr10 f28"></i><span class="dib rel">禁止！~</span></div>
+    });
 	
 	//询问
 	$("#box_remind").click(function(){
@@ -585,6 +562,7 @@ diy_select.prototype={
 			 TTDiy_select_input:'diy_select_input',//用于提交表单的class
 			 TTDiy_select_txt:'diy_select_txt',//diy_select用于显示当前选中内容的容器class
 			 TTDiy_select_btn:'diy_select_txt',//diy_select的打开按钮
+			 TTDiy_select_btn:'diy_select_btn',
 			 TTDiv_select_list:'diy_select_list',//要显示的下拉框内容列表class
 			 TTFcous:'focus'//得到焦点时的class
 		}
@@ -611,7 +589,7 @@ var TTDiy_select=new diy_select({  //参数可选
 	$.fn.mailAutoComplete = function(options) {
 		var defaults = {
 			className: "emailist bdc bg-white lh28 poi",
-			email: 	["qq.com","gmail.com","126.com","163.com","hotmail.com","live.nc","sohu.com","sina.com.cn"], //邮件数组
+			email: 	["qq.com","gmail.com","126.com","163.com","hotmail.com","live.cn","sohu.com","sina.com.cn"], //邮件数组
 			zIndex: 2	
 		};
 		// 最终参数
@@ -636,7 +614,7 @@ var TTDiy_select=new diy_select({  //参数可选
 				}
 			});	
 			$.each(arrEmailNew, function(index, email) {
-				htmlEmailList = htmlEmailList + '<li'+ (input.indexSelected===index? ' class="on"':' class="pt2 pb2 pl10"') +'>'+ arrValue[0] + "@" + email +'</li>';	
+				htmlEmailList = htmlEmailList + '<li'+ (input.indexSelected===index? ' class="on"':'') +'>'+ arrValue[0] + "@" + email +'</li>';	
 			});		
 			return htmlEmailList;			
 		};
@@ -731,6 +709,17 @@ var TTDiy_select=new diy_select({  //参数可选
 	};
 })(jQuery);
 $("#p-email").mailAutoComplete();
+
+
+
+
+
+
+
+
+
+
+
 
 
 

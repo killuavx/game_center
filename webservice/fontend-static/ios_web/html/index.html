@@ -6,6 +6,7 @@
 <meta name="renderer" content="webkit">
 <title>首页</title>
 <link href="http://static.ccplay.com.cn/static/common/css/site-v1.css" media="all" rel="stylesheet" type="text/css" />
+<link href="../css/site.css" media="all" rel="stylesheet" type="text/css" />
 <link href="http://static.ccplay.com.cn/static/common/css/quick-layout.css" media="all" rel="stylesheet" type="text/css" />
 
 <noscript>
@@ -20,7 +21,7 @@
     	<div class="pt10 pb10">
               <div class="cell-bk">
                     <div class="inline-three ovh logo">
-                        <h2><a href="http://static.ccplay.com.cn/static/cc_web/html/index.html" class="rel"><img src="http://static.ccplay.com.cn/static/common/img/logo.png"><span class="trans home"></span></a></h2>
+                        <h2><a href="http://static.ccplay.com.cn/static/cc_web/html/index.html" class="rel"><img src="http://static.ccplay.com.cn/static/common/img/logo.png" title="虫虫游戏 | 免费玩精品"><span class="trans home"></span></a></h2>
                     </div><!--logo-->
                     
                     <div class="inline-three search">
@@ -31,11 +32,11 @@
                                         <div class="diy_select_txt select poi">游戏</div>
                                         <div class="ios-web-icon abs diy_select_btn poi"></div>
                                         <ul class="diy_select_list">
-                                            <li>游戏</li>
-                                            <li>软件</li>
+                                            <li value="1">游戏</li>
+                                            <li value="2">软件</li>
                                         </ul>
                                     </div>
-                                    <input type="search" class="f14 fw key" value="" x-webkit-speech="" required autofocus>
+                                    <input type="search" class="f14 fw key" id="inpIndex-js" name="searchCriteria.keyword" value="" x-webkit-speech="" required autofocus>
                                     <button class="ios-web-icon bd-none poi abs">搜索</button>
                                 </form>
                                 
@@ -63,7 +64,12 @@
                               <li><a href="http://static.ccplay.com.cn/static/ios_web/html/index.html" class="ios-web-icon a1">苹果站</a></li>
                               <li><a href="http://static.ccplay.com.cn/static/android_web/html/index.html" class="ios-web-icon a2">安卓站</a></li>
                               <li><a href="#" class="ios-web-icon a3 open-reg">虫虫助手</a></li>
-                              <li><a href="http://static.ccplay.com.cn/static/ios_web/html/login.html" class="ios-web-icon a4 open-login">登录/注册</a></li>
+                              <li><a href="#" class="ios-web-icon a4 text-db" title="★ＦＸＱＫ★">龚鑫军</a>
+                              			<dl class="abs dn bdc bg-white zx2 f14">
+                                            <dd><a href="#" class="db h24 lh24 pl10 pr10 pt5 pb5 bbc change-password">修改密码</a></dd>
+                                            <dd><a href="#" class="db h24 lh24 pl10 pr10 pt5 pb5 log-out">退出</a></dd>
+                                        </dl>
+                              </li>
                           </ul>
                     </div><!--user-switch-->
               </div><!--cell-bk-->    
@@ -78,7 +84,7 @@
                           <li class="hover"><a href="index.html">首页</a></li>
                           <li><a href="game.html">游戏</a></li>
                           <li><a href="#" id="box_remind">软件</a></li>
-                          <li><a href="collection.html">专题</a></li>
+                          <li><a href="collection.html">合集</a></li>
                           <li><a href="masterpiece.html">巨作</a></li>
                           <li><a href="vendor.html">厂商</a></li>
                           <li class="rel">
@@ -88,12 +94,12 @@
                                         <a href="#">软件排行</a>
                                 </div>
                           </li>
-                          <li><a href="http://bbs.ccplay.com.cn">请愿</a></li>
+                          <li><a href="http://bbs.ccplay.com.cn">许愿</a></li>
                           <li><a href="http://bbs.ccplay.com.cn">论坛</a></li>
                       </ul>
               </div><!--l-->
               
-              <div class="abs">
+              <div class="abs dn">
                       <div class="mt2 pt10 ios-switch">
                           <a href="#" class="b-1 hover">iPhone</a><a href="#" class="b-2">iPad</a>
                       </div>
@@ -163,22 +169,25 @@
           
           
           
-          <!--网游推荐-->
+          <!--付费推荐-->
           <div class="l pt20 hot-news">
           
          		<div class="f18 cell rel t-title">
-                	<h3 class="l n mr30">网游推荐</h3>
+                	<h3 class="l n mr30"><span class="abs ios-web-icon"></span>付费推荐</h3>
                     <a class="r f12 mt5 more">更多></a>
                 </div>
    
                 <div class="crack-rcd">
                 		
+                	<div class="time-box-t">
+                    	<div class="time-box-b">
+                        
                         <dl class="dib rel app-list-xl">
                             <dt class="abs"><a href="game-dis.html" class="pic"><img src="http://static.ccplay.com.cn/static/common/img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
                             <dd class="g9">
                                 <h3 class="n rel g3 f16 pb5 text-db"><a href="game-dis.html">雪地冒险Last Inua An Arctic Adventure</a></h3>
                                 <div class="g9 lh20">怪物猎人P2G》是Capcom推出的第三人称动作游戏，说是目前iOS上最牛逼的动作游戏也不为过。玩家要在游戏中不断的完成任务，获得金钱和装备，并让自己的猎人等级上升，</div>
-                                <div class="l mt5 ios-web-icon star s1"></div>
+                                <p class="l"><span class="price gr">￥100.00</span><span class="ml5 ios-web-icon vt i-phone" title="适用：iPhone"></span></p>
                                 <p class="pt2 r"> 999M<em>|</em>9999万+下载<em>|</em>智力游戏</p>
                             </dd>
                         </dl>
@@ -188,7 +197,7 @@
                             <dd class="g9">
                                 <h3 class="n rel g3 f16 pb5 text-db"><a href="game-dis.html">城堡风暴CastleStorm Free to Siege</a></h3>
                                 <div class="g9 lh20">怪物猎人P2G》是Capcom推出的第三人称动作游戏，说是目前iOS上最牛逼的动作游戏也不为过。玩家要在游戏中不断的完成任务，获得金钱和装备，并让自己的猎人等级上升，</div>
-                                <div class="l mt5 ios-web-icon star s1"></div>
+                                <p class="l"><span class="price gr">￥100.00</span><span class="ml5 ios-web-icon vt i-pad" title="适用：iPad"></span></p>
                                 <p class="pt2 r"> 999M<em>|</em>9999万+下载<em>|</em>智力游戏</p>
                             </dd>
                         </dl>
@@ -198,7 +207,7 @@
                             <dd class="g9">
                                 <h3 class="n rel g3 f16 pb5 text-db"><a href="game-dis.html">怪物猎人P2G MONSTER HUNTER PORTABLE 2nd G for iOS</a></h3>
                                 <div class="g9 lh20">怪物猎人P2G》是Capcom推出的第三人称动作游戏，说是目前iOS上最牛逼的动作游戏也不为过。玩家要在游戏中不断的完成任务，获得金钱和装备，并让自己的猎人等级上升，</div>
-                                <div class="l mt5 ios-web-icon star s1"></div>
+                                <p class="l"><span class="price gr">￥100.00</span><span class="ml5 ios-web-icon vt i-all" title="适用：iPhone、iPad"></span></p>
                                 <p class="pt2 r"> 999M<em>|</em>9999万+下载<em>|</em>智力游戏</p>
                             </dd>
                         </dl>
@@ -208,7 +217,7 @@
                             <dd class="g9">
                                 <h3 class="n rel g3 f16 pb5 text-db"><a href="game-dis.html">战锤40K：杀戮Warhammer 40000 Carnage</a></h3>
                                 <div class="g9 lh20">怪物猎人P2G》是推出的第三人称动作游戏，说是目前iOS上最牛逼的动作游戏也不为过。玩家要在游戏中不断的完成任务，获得金钱和装备，并让自己的猎人等级上升，，唯一的遗憾是手机</div>
-                                <div class="l mt5 ios-web-icon star s1"></div>
+                                <p class="l"><span class="price gr">￥100.00</span><span class="ml5 ios-web-icon vt i-all" title="适用：iPhone、iPad"></span></p>
                                 <p class="pt2 r"> 999M<em>|</em>9999万+下载<em>|</em>智力游戏</p>
                             </dd>
                         </dl>
@@ -218,7 +227,7 @@
                             <dd class="g9">
                                 <h3 class="n rel g3 f16 pb5 text-db"><a href="game-dis.html">雪地冒险Last Inua An Arctic Adventure</a></h3>
                                 <div class="g9 lh20">怪物猎人P2G》是Capcom推出的第三人称动作游戏，说是目前iOS上最牛逼的动作游戏也不为过。玩家要在游戏中不断的完成任务，获得金钱和装备，，，唯一的遗憾是手机</div>
-                                <div class="l mt5 ios-web-icon star s1"></div>
+                                <p class="l"><span class="price gr">￥100.00</span><span class="ml5 ios-web-icon vt i-all" title="适用：iPhone、iPad"></span></p>
                                 <p class="pt2 r"> 999M<em>|</em>9999万+下载<em>|</em>智力游戏</p>
                             </dd>
                         </dl>
@@ -228,15 +237,19 @@
                             <dd class="g9">
                                 <h3 class="n rel g3 f16 pb5 text-db"><a href="game-dis.html">破坏高手：英雄诞生WreckMan Rise of a hero</a></h3>
                                 <div class="g9 lh20">怪物猎人P2G》是Capcom推出的第三人称动作游戏，说是目前iOS上最牛逼的动作游戏也不为过。玩家要在游戏中不断的完成任务，获得金钱和装备，并让自己的猎人等级上升，</div>
-                                <div class="l mt5 ios-web-icon star s1"></div>
+                                <p class="l"><span class="price gr">￥100.00</span><span class="ml5 ios-web-icon vt i-all" title="适用：iPhone、iPad"></span></p>
                                 <p class="pt2 r"> 999M<em>|</em>9999万+下载<em>|</em>智力游戏</p>
                             </dd>
                         </dl>
                 
-                </div>
+                
+                        </div><!--time-box-b-->
+                     </div><!--time-box-t-->
+                     
+                </div><!--crack-rcd-->
 
           </div>
-          <!--网游推荐-->
+          <!--付费推荐-->
           
           
           
@@ -441,13 +454,11 @@
           
           <div class="r abs pt20 most-expensive">
            		<div class="f18 cell rel t-title">
-                	<h3 class="l n mr30"><span class="abs ios-web-icon"></span>最贵排行</h3>
+                	<h3 class="l n mr30">精品网游</h3>
                     <a class="r f12 mt5 more">更多></a>
                 </div> <!--t-title-->
                 
-                <div class="most-list pl10 pr10 btn-s-box">
-                	<div class="time-box-t">
-                    	<div class="time-box-b">
+                <div class="most-list pl10 pr10 pb10 btn-s-box">
                                   <dl class="cell-bk pt15 rel app-list-l">
                                       <dt class="abs"><a href="#" class="pic"><img src="http://static.ccplay.com.cn/static/common/img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
                                       <dd class="g9">
@@ -543,9 +554,7 @@
                                                 <a href="#" class="a2">下载</a>
                                           </div>
                                       </dd>
-                                  </dl>
-                        </div><!--time-box-b-->
-                    </div><!--time-box-t-->                
+                                  </dl>             
                 </div><!--most-list-->
           </div><!--most-expensive-->
           
@@ -554,8 +563,29 @@
 </div>
 <!--最新发布 热点资讯 最贵应用  结束 multi-->
 
+
+
+
+<!--广告-->
+<div class="auto width cc-a-d-box">
+      <div class="rel pt20 cell-bk ovh">
+            <div class="l-box cc-a-d-2">
+              <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg" style="width:940px"></a>
+            </div>
+            
+            <div class="r-box cc-a-d-3">
+              <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/4.jpg" class="pct100"></a>
+            </div>
+            
+      </div>
+</div>
+<!--广告-->
+
+
+
+
 <!--游戏 game-->
-<div class="auto mt30 pt15 width game">
+<div class="auto mt20 width game">
 		<div class="rel cell-bk app-box">
         		
                 <div class="left">
@@ -565,7 +595,6 @@
                                 <li class="dib pl10 pr10 tab"><a href="#">精品推荐</a></li>
                                 <li class="dib pl10 pr10 tab"><a href="#">装机必备</a></li>
                                 <li class="dib pl10 pr10 tab"><a href="#">最新发布</a></li>
-                                <li class="dib pl10 pr10 tab"><a href="#">许愿兑现</a></li>
                             </ul>
                             <a class="r f12 mt5 more">更多></a>
                         </div> <!--t-title-->
@@ -1030,27 +1059,39 @@
                 </div><!--right-->
                 
         </div><!--app-box-->
+        
+        
+        
+        <!--合集开始 project-->
+            <div class="auto rel width box_btn roll ovh project">
+                <div class="tj pct100">
+                    
+                      <div class="width ovh pt10 roll_box">
+                          <ul class="box_ul">
+                              <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/4.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                  <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                  <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/5.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                          </ul>
+                      </div><!--roll_box-->
+                      
+                      <div class="cb rel a_btn roll_btn">
+                            <a href="javascript:;" class="ios-web-icon abs prev"></a>
+                            <a href="javascript:;" class="ios-web-icon abs next"></a>
+                      </div><!--roll_btn-->
+            
+                </div><!--pct100-->
+            </div>
+            <!--合集开始 project-->
+            
+            
+            
 
 </div>
 <!--游戏 结束 game-->
-
-
-
-<!--广告-->
-<div class="auto width cc-a-d-box">
-      <div class="rel pt20 cell-bk ovh">
-            <div class="l-box cc-a-d-2">
-              <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg" style="width:940px"></a>
-            </div>
-            
-            <div class="r-box cc-a-d-3">
-              <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/4.jpg" class="pct100"></a>
-            </div>
-            
-      </div>
-</div>
-<!--广告-->
-
 
 
 
@@ -1065,7 +1106,6 @@
                                 <li class="dib pl10 pr10 tab"><a href="#">精品推荐</a></li>
                                 <li class="dib pl10 pr10 tab"><a href="#">装机必备</a></li>
                                 <li class="dib pl10 pr10 tab"><a href="#">最新发布</a></li>
-                                <li class="dib pl10 pr10 tab"><a href="#">许愿兑现</a></li>
                             </ul>
                             <a class="r f12 mt5 more">更多></a>
                         </div> <!--t-title-->
@@ -1530,26 +1570,43 @@
                 </div><!--right-->
                 
         </div><!--app-box-->
+        
+        
+        
+        
+        <!--合集开始 project-->
+            <div class="auto rel width box_btn roll ovh project">
+                <div class="tj pct100">
+                    
+                      <div class="width ovh pt10 roll_box">
+                          <ul class="box_ul">
+                              <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/4.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                  <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                  <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                              <li class="dib rel"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/5.jpg"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png">标题名称标题名称标题名称标题名称</span></a></li>
+                          </ul>
+                      </div><!--roll_box-->
+                      
+                      <div class="cb rel a_btn roll_btn">
+                            <a href="javascript:;" class="ios-web-icon abs prev"></a>
+                            <a href="javascript:;" class="ios-web-icon abs next"></a>
+                      </div><!--roll_btn-->
+            
+                </div><!--pct100-->
+            </div>
+            <!--合集开始 project-->
+            
+            
+            
+            
 </div>
 <!--软件 结束 soft-->
 
 
 
-
-<!--广告-->
-<div class="auto width cc-a-d-box">
-      <div class="rel pt20 cell-bk ovh">
-            <div class="l-box cc-a-d-2">
-              <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg" style="width:940px"></a>
-            </div>
-            
-            <div class="r-box cc-a-d-3">
-              <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/4.jpg" class="pct100"></a>
-            </div>
-            
-      </div>
-</div>
-<!--广告-->
 
 
 
@@ -1936,6 +1993,35 @@
 </form>
 
 
+
+
+<div class="bg-white change-password-box dn">
+<form class="w750 user-password-form">
+<ul>                                                
+        <li class="p10">
+                <label class="dib w100 tr">旧密码：</label>
+                <input type="password" id="p-password" class="p10 bde w200" placeholder="6-16位旧密码">
+        </li>
+        <li class="p10 rel">
+                <label class="dib w100 tr">新密码：</label>
+                <input type="password" name="new_password" plugin="passwordStrength" class="p10 bde w200 password" placeholder="6-16位新密码" id="p-new_password">
+                <div class="abs g9" id="pw-strength"><span class="s-1">●</span><span class="s-2">●</span><span class="s-3">●</span></div>
+                <div class="passwordStrength" style="display:none;"><b>密码强度：</b> <span>弱</span><span>中</span><span class="last">强</span></div>
+
+        </li>
+        <li class="p10">
+                <label class="dib w100 tr">确认新密码：</label>
+                <input type="password" class="p10 bde w200" id="p-new_password2" placeholder="再次确认新密码">
+        </li>
+</ul>
+
+<div class="db tr pt20 pb20">
+    <span class="Validform_checktip"></span><button class="submit_btn">确认修改</button>
+</div>
+</form>
+</div>
+
+
 <!--<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>-->
 <script src="http://static.ccplay.com.cn/static/common/js/jquery.min.js"></script>
 <script src="http://static.ccplay.com.cn/static/common/js/jquery.SuperSlide.2.1.1.source.js"></script>
@@ -1943,6 +2029,8 @@
 <script src="http://static.ccplay.com.cn/static/common/zxxbox/js/jquery.zxxbox.3.0.js"></script>
 <script src="http://static.ccplay.com.cn/static/common/js/Validform_v5.3.2_min.js"></script>
 <script src="http://static.ccplay.com.cn/static/common/js/site-v1.js"></script>
+<script src="http://static.ccplay.com.cn/static/common/js/jquery-powerFloat.js"></script>
+
 <!--[if IE 6]>
 <!--<script src="http://static.ccplay.com.cn/static/common/js/DD_PNG.js"></script>
 <script>
@@ -1951,7 +2039,5 @@ window.onload = function()
 DD_belatedPNG.fix(".png,.png:hover,.ios-web-icon,.ios-web-icon:hover"}
 </script>-->
 <![endif]-->
-<link href="http://static.ccplay.com.cn/static/common/Font-Awesome-3.2.1/css/font-awesome.min.css" media="all" rel="stylesheet" type="text/css" />
-<link href="http://static.ccplay.com.cn/static/common/Font-Awesome-3.2.1/css/font-awesome-ie7.min.css" media="all" rel="stylesheet" type="text/css" />
 </body>
 </html>
