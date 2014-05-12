@@ -44,6 +44,7 @@ class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
     def get_context(self, value=None, options=dict(), context=None):
         slugs =  options.get('slugs', None)
         type = options.get('type', None)
+        cat = 'application' if type == 'soft' else type
         result = []
 
         if slugs:
@@ -52,7 +53,7 @@ class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
                 #print (slug)
                 if slug == 'latest_published':
                     packages =  Package.objects.all().by_published_order()
-                    items = self.filter_packages_by_category(packages, type)
+                    items = self.filter_packages_by_category(packages, cat)
                     tmp = {}
                     tmp['items'] = items
                     tmp['topic_name']  = '最新发布'
@@ -61,7 +62,7 @@ class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
                     new_options = options.copy()
                     new_options['slug'] = slug
                     tmp = super(TopicPackageListBoxWidget, self).get_context(value, new_options, context)
-                    tmp['items'] = self.filter_packages_by_category(tmp['items'], type)
+                    tmp['items'] = self.filter_packages_by_category(tmp['items'], cat)
                     try:
                         topic = Topic.objects.filter(slug=self.slug).published().get()
                         tmp['topic_name']  = topic.name
@@ -87,6 +88,8 @@ class IosPcRankingPackageListWidget(BaseRankingPackageListWidget):
             return pkgRks[0].packages.all()
 
     def get_context(self, value=None, options=dict(), context=None):
-        items = self.get_list(options.get('type', None))
-        return {'items': items}
+        type = options.get('type', None)
+        cat = 'application' if type == 'soft' else type
+        items = self.get_list(cat)
+        return {'items': items, 'type': type}
 
