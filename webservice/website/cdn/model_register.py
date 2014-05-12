@@ -30,6 +30,9 @@ def feedback_start_action(sender, instance, operation, queue, **kwargs):
 
 
 def pre_save_sync_files(sender, instance, **kwargs):
+    if hasattr(instance, '_sync_files') and instance._sync_files is not None:
+        return
+
     if instance.pk is None:
         instance._sync_files = True
         return
