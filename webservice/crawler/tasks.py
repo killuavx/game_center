@@ -161,6 +161,8 @@ class TransformIOSAppDataToPackageVersionTask(BaseTask):
     def parse_app(self, app):
         content_data = app.content_data
         if not content_data:
+            app.set_analysised(app.ANALYSIS_PACKAGEVERSION_EMPTY)
+            app.save()
             return None
 
         sid = transaction.savepoint()
@@ -177,7 +179,7 @@ class TransformIOSAppDataToPackageVersionTask(BaseTask):
                 app.set_analysised(version)
                 app.save()
             except IntegrityError:
-                app.set_analysised(None)
+                app.set_analysised(app.ANALYSIS_PACKAGEVERSION_DUPLICATION)
                 app.save()
 
 

@@ -33,6 +33,12 @@ class IOSAppData(models.Model):
 
     image_downloaded = models.DateTimeField(null=True, blank=True)
 
+    # package version duplication
+    ANALYSIS_PACKAGEVERSION_DUPLICATION = -1
+
+    # lookup data is empty
+    ANALYSIS_PACKAGEVERSION_EMPTY = 0
+
     def _get_packageversion(self):
         if self.packageversion_id:
             from warehouse.models import IOSPackageVersion
@@ -58,13 +64,13 @@ class IOSAppData(models.Model):
     packageversion = property(_get_packageversion, _set_packageversion)
 
     def set_analysised(self, version=None):
-        if version:
+        if isinstance(version, int) and version <=0:
+            self.packageversion_id = version
+            self.package_name = self.version_name = None
+        elif version and hasattr(version, 'pk'):
             self.packageversion = version
             self.package_name = version.package.package_name
             self.version_name = version.version_name
-        else:
-            self.packageversion_id = -1
-            self.package_name = self.version_name = None
         self.analysised = now()
         self.is_analysised = True
 
@@ -91,4 +97,15 @@ class IOSAppData(models.Model):
         return self._content_data
     content_data = property(_get_content_json)
 
+"""
+from crawler.tasks import *
+from crawler.models import *
+qs = IOSAppData.objects.all().filter(is_analysised=False)
+task = TransformIOSAppDataToPackageVersionTask()
+for app in qs:
+  print(app.pk, app.appid)
+  task.parse_app(app)
+  if app.package_name:
+    print(app.packageversion)
+"""
 
