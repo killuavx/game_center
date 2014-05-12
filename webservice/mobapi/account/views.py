@@ -204,7 +204,7 @@ class AccountCommentPackageView(generics.ListAPIView):
         pkg_ids = PackageVersion.objects.published() \
             .filter(pk__in=version_ids).values_list('package__pk', flat=True)
         pkg_ids = list(pkg_ids)
-        self.queryset = self.queryset.filter(pk__in=pkg_ids)
+        self.queryset = self.get_queryset().filter(pk__in=pkg_ids)
 
         return super(AccountCommentPackageView, self) \
             .get(request=request, *args, **kwargs)
