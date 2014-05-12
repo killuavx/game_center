@@ -18,7 +18,7 @@ def current_site_id():
     site_id = _cur_site_id()
     if site_id == 3:
         return 1
-    return site_id
+    return int(site_id)
 
 
 def current_site():

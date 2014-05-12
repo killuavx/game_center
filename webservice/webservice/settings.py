@@ -211,6 +211,7 @@ EXTENDAL_APPS = [
     'webmob',
     'ranking',
     'mobapi2',
+    'crawler',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
@@ -455,5 +456,8 @@ MOGOENGINE_CLIENT_CMD = '/opt/local/bin/mongo'
 
 FORUM_URL = 'http://bbs.ccplay.com.cn/'
 
-DATABASE_ROUTERS = ['webservice.dbroute_settings.DatawarehouseRouter']
+DATABASE_ROUTERS = [
+    'webservice.dbroute_settings.DatawarehouseRouter',
+    'webservice.dbroute_settings.CrawlerRouter',
+]
 

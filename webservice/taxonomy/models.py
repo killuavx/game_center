@@ -22,7 +22,7 @@ from toolkit.models import (SiteRelated,
                             current_site_id)
 
 slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
-                                'taxonomy.helpers.slugify')
+                                'toolkit.helpers.slugify_unicode')
 slugify = get_callable(slugify_function_path)
 
 

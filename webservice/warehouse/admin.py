@@ -107,7 +107,16 @@ class PackageVersionAdmin(MainAdmin):
             )
         }),
         (_('Version'), {
-            'fields': ('version_code', 'version_name', 'whatsnew')
+            'fields': (
+                'version_code', 'version_name', 'whatsnew'
+            )
+        }),
+        (_('Supported'), {
+            'fields': (
+                'supported_languages',
+                'supported_devices',
+                'supported_features',
+            )
         }),
         (_('Version Statistics'), {
             'fields': (
@@ -129,6 +138,9 @@ class PackageVersionAdmin(MainAdmin):
                        'download_size',
                        'download_md5',
     )
+    filter_horizontal = ("supported_languages",
+                         "supported_devices",
+                         "supported_features")
     ordering = ('-updated_datetime', '-version_code',)
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput},
