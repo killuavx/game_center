@@ -50,6 +50,10 @@ em{padding:0 5px; color:#CCC}
 .s4{background-position:-13px -501px}
 .s5{background-position:1px -501px}
 
+.i-phone{width:16px; height:16px; background-position:-124px -715px}
+.i-pad{width:16px; height:16px; background-position:-102px -715px}
+.i-all{width:16px; height:16px; background-position:-78px -715px}
+
 .btn-s {display:none}
 .btn-s a{display:inline-block; width:49.9%; height:30px; line-height:30px; text-align:center; background:#ccc; letter-spacing:3px; font-size:14px; float:left}
 .btn-s a:hover{background:#bbb; color:#333; text-decoration:none}
@@ -99,8 +103,9 @@ em{padding:0 5px; color:#CCC}
 .search-drop{padding:9px 0 0 60px; opacity:0; z-index:10}
 .search-drop-box{z-index:10; width:358px; border-top:none !important; -moz-box-shadow:0px 2px 5px #CCCCCC; -webkit-box-shadow:0px 2px 5px #CCCCCC; box-shadow:0px 2px 5px #CCCCCC;}
 .search-drop-box a{display:block; padding-left:5px}
-.search-drop-box a:hover,.emailist li:hover{text-decoration:none; background:#f5f5f5; color:#e53333; padding-left:15px}
-.emailist li:hover{padding-left:10px}
+.search-drop-box a:hover,.emailist li:hover,.emailist li.on{text-decoration:none; background:#ddd; color:#e53333; padding-left:15px}
+.emailist li{padding:2px 10px}
+.emailist li:hover,.emailist li.on{padding-left:10px}
 #cc-m .search-drop-box{width:272px}
 #cc-s .search-drop-box{width:188px}
 #fixed-head .search-drop-box{width:288px}
@@ -110,13 +115,13 @@ em{padding:0 5px; color:#CCC}
 /*切换*/
 .user-switch{width:320px!important}
 .user-switch li{float:left; margin-left:16px}
-.user-switch li a{display:inline-block; width:60px; text-align:center; padding-top:35px;-webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale;}
+.user-switch li a.ios-web-icon{display:inline-block; width:60px; text-align:center; padding-top:35px;-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale}
 .user-switch .a1{background-position:12px -169px}
 .user-switch .a2{background-position:-70px -169px}
 .user-switch .a3{background-position:12px -249px}
 .user-switch .a4{background-position:-71px -250px}
-.user-switch a:hover{filter:alpha(opacity=80);opacity: 0.8; background-color:#fff; -webkit-animation: toTopFromBottom .3s forwards;
+.user-switch a.ios-web-icon:hover{filter:alpha(opacity=80);opacity: 0.8; background-color:#fff; -webkit-animation: toTopFromBottom .3s forwards;
 -moz-animation: toTopFromBottom .3s forwards;
 animation: toTopFromBottom .3s forwards;}
 
@@ -183,14 +188,6 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .t-title .hover a,.t-title li.ios-web-icon a{color:#e53333}
 
 /*热点资讯*/
-
-.crack-rcd{padding:0 15px}
-.crack-rcd .app-list-xl{width:100%; padding:0; margin-top:20px}
-.crack-rcd .app-list-xl .lh20{height:40px; overflow:hidden}
-#cc-m .crack-rcd{width:390px}
-
-
-
 .news-list h2{font-weight:600; height:25px; overflow:hidden; *font-size:20px}  
 .news-list dl{margin-left:60px}
 .news-list .pic img{width:125px; height:80px}
@@ -327,7 +324,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .i-link-list li a{color:#999}
 
 
-.footer{background-position:0 -904px; background-repeat:repeat-x; background-color:#333333; padding:50px 0 15px 0}
+.footer{background-position:0 -900px; background-repeat:repeat-x; background-color:#333333; padding:50px 0 15px 0}
 .footer dt{padding-bottom:10px}
 .footer dd{line-height:25px; padding-bottom:5px}
 .footer dd a{color:#999}
@@ -399,7 +396,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .app-dis-page .pic{width:177px; height:177px}
 .cover{background:url(http://static.ccplay.com.cn/static/common/img/app_bg.png) no-repeat; width:177px; height:177px; top:0}
 .instr li{border-bottom:1px solid #e8e8e8; padding:3px 10px}
-.instr li span{padding-left:10px}
+.instr li span{padding-left:10px; color:#333}
 .left-top-list .t-title{background:none}
 .left-top-list .t-title li{padding:0 20px}
 .left-top-list li {padding:5px}
@@ -464,7 +461,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 #rating{position:relative; left:0px; top:0; margin:-45px 0 0 0; text-align:left; width:100px;}
 
 
-/*专题*/
+/*合集*/
 .collection_box{height:175px; border-bottom:1px solid #eee; padding-top:10px; position:relative; background:#fff} 
 .collection_box .l{width:270px; padding-left:10px; text-align:center}
 .collection_box .r{width:979px}
@@ -589,8 +586,7 @@ clear: both; line-height: 1.8em;}
 .reg-page .reg-box dd{margin-left:120px; margin-right:30px}
 .login-box .login-line span,.reg-box .login-line span{background-color:#fff}
 .login-page .login-line span,.reg-page .login-line span{background-color:#f8f8f8}
-#pw-strength {right:10px; top:7px}
-.pw-1 .s-1,.pw-2 .s-1,.pw-2 .s-2,.pw-3 .s-1,.pw-3 .s-2,.pw-3 .s-3{color:#e53333}
+#pw-strength {right:0; top:9px}
 
 #wrapBody .reg-box dt label{width:65px}
 #wrapBody .reg-box dd{margin-left:80px}
@@ -842,8 +838,6 @@ clear: both; line-height: 1.8em;}
 .left-list #pin-box{margin-top:57px}
 
 
-
-
 /*表单验证*/
 /*用户中心*/
 #Validform_msg{display:none}
@@ -852,7 +846,7 @@ input.Validform_error,select.Validform_error,textarea.Validform_error{border-col
 .Validform_wrong,.login-box .Validform_error{color:#e53333}
 .Validform_right{color:#5bc400}
 
-.user-password-form #pw-strength{right:auto; left:300px; top:16px}
+.user-password-form #pw-strength{right:auto; left:300px; top:17px}
 
 .reg-box .Validform_checktip{font-size:16px; height:21px}
 

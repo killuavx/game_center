@@ -17,7 +17,7 @@ body{background:url(http://static.ccplay.com.cn/static/cc_web/img/bg.jpg) repeat
 #fixed-head .search-drop-box{display:none}
 
 .t-title ul li.ios-web-icon{background-position:left 31px}
-
+.footer{padding:50px 0 15px 0; background:url(http://static.ccplay.com.cn/static/cc_web/img/footer-bg.png) repeat-x #333333}
 
 /*游戏推荐*/
 
@@ -173,7 +173,14 @@ body{background:url(http://static.ccplay.com.cn/static/cc_web/img/bg.jpg) repeat
 #fixed-head #cc-m .nav .l li.rel{width:5.4%}
 
 
+
 /*v1*/
+
+
+
+
+
+
 #cc-l .nav .drop-down a {padding: 0 20px}
 .nav .l li,#fixed-head #cc-l .nav .l li{width:6.14%}
 #cc-m .nav .l li,#fixed-head #cc-m .nav .l li{width:5.75%; font-size:18px}
