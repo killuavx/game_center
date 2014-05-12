@@ -401,7 +401,7 @@ class DownloadIOSAppResourceTask(BaseTask):
         """
         qs = self.crawl_resource_doc_class.objects.all()
         if not status:
-            qs = qs.filter(status__ne='complete', status__ne='waiting')
+            qs = qs.filter(status__ne='complete').filter(status__ne='waiting')
         else:
             qs = qs.filter(status=status)
 
