@@ -813,21 +813,3 @@ class IOSPackageVersion(PackageVersion):
                                           blank=True)
 
 
-"""
-from crawler.tasks import *
-from crawler.models import *
-qs = IOSAppData.objects.all().filter(is_analysised=False)
-task = TransformIOSAppDataToPackageVersionTask()
-def parse_queryset(queryset):
-  for app in queryset:
-    print(app.pk, app.appid)
-    task.parse_app(app)
-    print(app.packageversion_id)
-
-
-def between(queryset, s, e):
-  return queryset.filter(pk__gte=s, pk__lt=e)
-
-s, e = 100000, 120000
-parse_queryset(between(qs, s, e))
-"""
