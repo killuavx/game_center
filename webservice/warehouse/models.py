@@ -366,7 +366,7 @@ def package_workspace_path(package):
 
 def packageversion_workspace_path(version):
     if version.package.workspace:
-        prefix = version.package.workspace
+        prefix = version.package.workspace.name
     else:
         prefix = package_workspace_path(version.package)
     return join(prefix, 'v%s' % version.version_code)
@@ -374,7 +374,7 @@ def packageversion_workspace_path(version):
 
 def version_upload_path(instance, filename):
     if instance.workspace:
-        prefix = instance.workspace
+        prefix = instance.workspace.name
     else:
         prefix = packageversion_workspace_path(instance)
     return join(prefix, filename)
@@ -586,7 +586,7 @@ def screenshot_upload_path(instance, filename):
         subdir = "%s%s" % (instance.kind, subdir)
 
     if instance.version.workspace:
-        prefix = instance.version.workspace
+        prefix = instance.version.workspace.name
     else:
         prefix = packageversion_workspace_path(instance.version)
     return join(prefix, subdir, filename)
