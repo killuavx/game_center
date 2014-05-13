@@ -69,7 +69,7 @@ class MultiAppAuthTokenSerializer(AuthTokenSerializer):
     username = serializers.CharField()
     password = serializers.CharField()
 
-    app = serializers.CharField(default=None)
+    app = serializers.CharField(default=None, required=False)
 
     def validate(self, attrs):
         app = attrs.get('app')
