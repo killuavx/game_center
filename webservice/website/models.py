@@ -59,18 +59,35 @@ def get_mptt_categories(pkg):
     return result
 
 
-def get_root_category_slug(cat):
+def get_root_category_slug_by_cat(cat):
     return MPTTModel.get_root(cat).slug
 
 
-def get_packageversion_by_package_name(package_name):
+def get_root_category_slug_by_package(package):
+    cats = get_mptt_categories(package)
+    slug = None
+
+    if cats:
+        slug = get_root_category_slug_by_cat(cats[0])
+
+    return slug
+
+
+
+def get_package_by_package_name(package_name):
     try:
         pkg = Package.objects.get(package_name=package_name)
-        pkgver = pkg.versions.latest_published()
     except:
         return None
 
+    return pkg
 
-    return pkgver
 
+def get_packageversion_by_package(package):
+    try:
+        pv = package.versions.latest_published()
+    except:
+        return None
+
+    return pv
 

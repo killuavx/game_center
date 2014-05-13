@@ -13,7 +13,8 @@ from .response import WidgetHttpResponse
 from toolkit.helpers import get_client_event_data
 from warehouse.models import PackageVersion, Package
 from analysis.documents.event import Event
-from website.models import get_packageversion_by_package_name, get_mptt_categories, get_root_category_slug
+from website.models import get_package_by_package_name, get_packageversion_by_package
+from website.models import get_root_category_slug_by_cat, get_mptt_categories
 
 
 def _download_packageversion_response(packageversion, filetype):
@@ -231,11 +232,11 @@ def cdn_feedback(request, slug, *args, **kwargs):
 def iospc_package_detail_views(request, package_name, *args, **kwargs):
     template = 'iospc/package_detail.html'
     context = {}
-    pkgver = get_packageversion_by_package_name(package_name)
-    cats = get_mptt_categories(pkgver.package)
+    pkg = get_package_by_package_name(package_name)
+    cats = get_mptt_categories(pkg)
     #print (cats)
-    context['pkgver'] =  pkgver
-    context['slug'] = get_root_category_slug(cats[0])
+    context['pkgver'] =  get_packageversion_by_package(pkg)
+    context['slug'] = get_root_category_slug_by_cat(cats[0])
     context['cats'] = ', '.join([ cat.slug for cat in cats ])
 
     return TemplateResponse(request=request, template=template, context=context)
