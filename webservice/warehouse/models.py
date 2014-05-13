@@ -1,11 +1,12 @@
 # -*- encoding=utf-8 -*-
 import datetime
-from os.path import basename
+from os.path import basename, join
+from django.core.exceptions import ObjectDoesNotExist
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 
 from django.conf import settings
 from django.core import exceptions
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, get_callable
 from django.utils.timezone import now
 from django.contrib.contenttypes import generic
 from django.db import models
@@ -21,6 +22,10 @@ from easy_thumbnails.fields import ThumbnailerImageField
 
 from toolkit.models import SiteRelated
 from toolkit.helpers import import_from, sync_status_from
+slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
+                                'toolkit.helpers.slugify_unicode')
+slugify = get_callable(slugify_function_path)
+from mezzanine.core.fields import FileField
 
 
 class AuthorQuerySet(QuerySet):
@@ -248,6 +253,11 @@ class Package(SiteRelated, models.Model):
 
     tracker = FieldTracker()
 
+    workspace = FileField(default=None,
+                          blank=True,
+                          max_length=500,
+                          format='File')
+
     def is_published(self):
         return self.status == self.STATUS.published \
             and self.released_datetime <= now()
@@ -339,6 +349,37 @@ def factory_version_upload_to_path(basename):
     return upload_to
 
 
+def package_workspace_path(package):
+    _id = package.pk
+    subdir = 'package'
+    try:
+        if hasattr(package, 'track_id'):
+            _id = package.track_id
+        else:
+            iospackage = package.iospackage
+            _id = iospackage.track_id
+        subdir = 'ipackage'
+    except ObjectDoesNotExist:
+        pass
+    return join(subdir, str(_id))
+
+
+def packageversion_workspace_path(version):
+    if version.package.workspace:
+        prefix = version.package.workspace
+    else:
+        prefix = package_workspace_path(version.package)
+    return join(prefix, 'v%s' % version.version_code)
+
+
+def version_upload_path(instance, filename):
+    if instance.workspace:
+        prefix = instance.workspace
+    else:
+        prefix = packageversion_workspace_path(instance)
+    return join(prefix, filename)
+
+
 class PackageVersion(SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager\
@@ -353,7 +394,7 @@ class PackageVersion(SiteRelated, models.Model):
 
     icon = ThumbnailerImageField(
         default='',
-        upload_to=factory_version_upload_to_path('icon'),
+        upload_to=version_upload_path,
         blank=True,
     )
 
@@ -365,13 +406,13 @@ class PackageVersion(SiteRelated, models.Model):
 
     download = PkgFileField(
         verbose_name=_('version file'),
-        upload_to=factory_version_upload_to_path('application'),
+        upload_to=version_upload_path,
         default='',
         blank=True)
 
     di_download = PkgFileField(
         verbose_name=_('version file with data integration'),
-        upload_to=factory_version_upload_to_path('application-di'),
+        upload_to=version_upload_path,
         default='',
         blank=True
     )
@@ -452,6 +493,11 @@ class PackageVersion(SiteRelated, models.Model):
     stars = StarsField(verbose_name=_('Star'))
 
     tracker = FieldTracker()
+
+    workspace = FileField(default=None,
+                          blank=True,
+                          max_length=500,
+                          format='File')
 
     def get_absolute_url(self, link_type=0):
         if link_type == 0:
@@ -534,14 +580,16 @@ class PackageVersion(SiteRelated, models.Model):
 tagging.register(PackageVersion)
 
 
-def screenshot_upload_to_path(instance, filename):
-    filebasename = basename(filename).lower()
-    version = instance.version
-    return "package/%(pkg_id)d/v%(version_code)d/screenshot/%(basename)s" % {
-        'pkg_id': version.package_id,
-        'version_code': version.version_code,
-        'basename': filebasename
-    }
+def screenshot_upload_path(instance, filename):
+    subdir = 'screenshots'
+    if instance.kind != instance.KIND.default:
+        subdir = "%s%s" % (instance.kind, subdir)
+
+    if instance.version.workspace:
+        prefix = instance.version.workspace
+    else:
+        prefix = packageversion_workspace_path(instance.version)
+    return join(prefix, subdir, filename)
 
 
 class PackageVersionScreenshot(models.Model):
@@ -549,9 +597,19 @@ class PackageVersionScreenshot(models.Model):
     version = models.ForeignKey(PackageVersion, related_name='screenshots')
 
     image = ThumbnailerImageField(
-        upload_to=screenshot_upload_to_path,
+        upload_to=screenshot_upload_path,
         blank=False
     )
+
+    KIND = Choices(
+        ('default', 'default', 'Default'),
+        ('ipad', 'ipad', 'iPad'),
+    )
+
+    kind = models.CharField(default=KIND.default,
+                            choices=KIND,
+                            max_length=20,
+                            blank=True,)
 
     alt = models.CharField(
         _('image alt'),
@@ -572,6 +630,10 @@ class PackageVersionScreenshot(models.Model):
         default=0,
         choices=ROTATE)
 
+    def save(self, *args, **kwargs):
+        self.kind = slugify(self.kind.replace(" ", ''))
+        return super(PackageVersionScreenshot, self).save(*args, **kwargs)
+
     def delete(self, using=None):
         self.image.delete(save=False)
         super(PackageVersionScreenshot, self).delete(using=using)
@@ -582,8 +644,15 @@ class PackageVersionScreenshot(models.Model):
         except:
             return self.alt
 
+    class Meta:
+        index_together = (
+            ('version', 'kind'),
+        )
+
+
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+
 
 #@receiver(pre_save, sender=PackageVersion)
 def package_version_pre_save(sender, instance, **kwargs):
@@ -674,6 +743,12 @@ def package_pre_save(sender, instance, **kwargs):
 
     if len(changed):
         instance.updated_datetime = now()
+
+@receiver(post_save, sender=Package)
+def package_post_save(sender, instance, created=False, **kwargs):
+    if created:
+        instance.workspace = package_workspace_path(instance)
+        instance.save()
 
 
 class SupportedLanguage(models.Model):

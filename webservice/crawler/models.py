@@ -1,7 +1,10 @@
 import json
+import os
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.timezone import now
+from model_utils import Choices
+from toolkit.fields import PkgFileField
 
 
 class IOSAppData(models.Model):
@@ -97,15 +100,61 @@ class IOSAppData(models.Model):
         return self._content_data
     content_data = property(_get_content_json)
 
-"""
-from crawler.tasks import *
-from crawler.models import *
-qs = IOSAppData.objects.all().filter(is_analysised=False)
-task = TransformIOSAppDataToPackageVersionTask()
-for app in qs:
-  print(app.pk, app.appid)
-  task.parse_app(app)
-  if app.package_name:
-    print(app.packageversion)
-"""
+
+def iosapp_upload_to_path(instance, filename):
+    version_code = 1
+    basename = os.path.basename(filename)
+    appid = int(instance.appid)
+    path = "ipackage/%d/v%d" % (appid, version_code)
+    return "%s/%s" %(path, basename)
+
+
+class IOSBuyInfo(models.Model):
+
+    appdata = models.ForeignKey(IOSAppData, blank=True, null=True)
+
+    appid = models.CharField(max_length=100)
+
+    BUY_STATUS = Choices(
+        (-1, 's01', 's01'),
+        (0, 's0', 's0'),
+        (1, 's1', 's1'),
+        (2, 's2', 's2'),
+        (3, 's3', 's3'),
+        (4, 'ok', 'ok'),
+    )
+
+    buy_status = models.IntegerField(choices=BUY_STATUS, default=0)
+
+    buy_info = models.TextField(default=None, null=True, blank=True)
+
+    ipafile = PkgFileField(upload_to=iosapp_upload_to_path,
+                           max_length=500,
+                           null=True,
+                           blank=True)
+
+    ipafile_name = models.CharField(default=None,
+                                    null=True,
+                                    blank=True,
+                                    max_length=300)
+
+    version = models.CharField(max_length=200, null=True, blank=True)
+
+    short_version = models.CharField(max_length=200, null=True, blank=True)
+
+    account = models.CharField(max_length=255, default=None)
+
+    created = models.DateTimeField(auto_created=True)
+
+    updated = models.DateTimeField(auto_created=True,
+                                   auto_now=True,
+                                   auto_now_add=True)
+
+    class Meta:
+        index_together = (
+            ('appid', ),
+            ('buy_status',),
+            ('updated', ),
+            ('buy_status', 'updated', ),
+        )
 

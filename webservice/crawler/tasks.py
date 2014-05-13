@@ -9,7 +9,9 @@ from django.db import transaction, IntegrityError
 from django.utils.timezone import now
 from warehouse.models import *
 from taxonomy.models import Category
-from django.db import models
+from toolkit.fields import file_md5
+import io
+from crawler.models import IOSAppData, IOSBuyInfo
 
 rpc_client = xmlrpc.client.ServerProxy("http://localhost:6800/rpc")
 
@@ -35,6 +37,11 @@ def iosapp_upload_to_path(filename, appid, version_code=1, newname=None):
 
     path = "ipackage/%d/v%d" % (int(appid), version_code)
     return "%s/%s" %(path, basename)
+
+
+def iosapp_buyinfo_path(filename, appid):
+    basename = os.path.basename(filename)
+    return "ipackage/%d/%s" % (int(appid), basename)
 
 
 def unique_value(queryset, field, value, segment='-'):
@@ -411,3 +418,48 @@ class DownloadIOSAppResourceTask(BaseTask):
             item.updated = now()
             item.status = 'retry'
             item.save()
+
+
+class SyncIOSAppBuyInfoTask(BaseTask):
+
+    def get_appdata(self, appid):
+        qs = IOSAppData.objects.filter(appid=appid)
+        return qs[0]
+
+    def get_buyinfo_queryset(self):
+        return IOSBuyInfo.objects.all()\
+            .filter(buy_status=IOSBuyInfo.BUY_STATUS.ok).filter(ipafile_size=0)
+
+    def sync_buyinfo(self, app, buyinfo):
+        if not buyinfo.ipafile_name:
+            return
+
+        buyinfo.appdata = app
+        buyinfo.ipafile = iosapp_buyinfo_path(buyinfo.ipafile_name, buyinfo.appid)
+        buyinfo.ipafile_size = buyinfo.ipafile.size
+        with io.FileIO(buyinfo.ipafile.path) as f:
+            buyinfo.ipafile_md5 = file_md5(f)
+
+        pn, buyinfo.version, buyinfo.short_version =\
+            buyinfo.ipafile_name.rstrip('.ipa').split('_')
+        buyinfo.updated = now()
+        buyinfo.save()
+
+    def do_sync(self, limit=None):
+        qs = self.get_buyinfo_queryset()
+        if limit:
+            qs = qs[0:limit]
+
+        for buyinfo in qs:
+            print(buyinfo.appid, buyinfo.pk)
+            try:
+                appdata = self.get_appdata(buyinfo.appid)
+            except (ObjectDoesNotExist, IndexError) as e:
+                print(e)
+                continue
+            try:
+                self.sync_buyinfo(appdata, buyinfo)
+            except (FileExistsError, FileNotFoundError) as e:
+                print(e)
+                continue
+

@@ -114,7 +114,9 @@ class FileWithMetaField(FileField):
 
     def _get_added_fields(self):
         return {
-            "size": ('%s_size', IntegerField(default=0, editable=False)),
+            "size": ('%s_size', IntegerField(default=0,
+                                             blank=True,
+                                             editable=False)),
             "md5": ('%s_md5', CharField(default=None,
                                         null=True,
                                         blank=True,
