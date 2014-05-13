@@ -48,10 +48,13 @@ if settings.DEBUG:
         mock_processor_class(LoadingCoverProcessor)
 
 
-def get_mptt_categories(pkg):
+def get_all_categories(pkg):
+    return pkg.categories.all()
+
+
+def get_leaf_categories(cats):
     result =  []
 
-    cats = pkg.categories.all()
     for cat in cats:
         if MPTTModel.is_leaf_node(cat):
             result.append(cat)
@@ -60,18 +63,23 @@ def get_mptt_categories(pkg):
 
 
 def get_root_category_slug_by_cat(cat):
-    return MPTTModel.get_root(cat).slug
+    slug = None
+    root_cat =  MPTTModel.get_root(cat)
+
+    if root_cat:
+        slug =  root_cat.slug
+
+    return slug
 
 
 def get_root_category_slug_by_package(package):
-    cats = get_mptt_categories(package)
+    cats = get_all_categories(package)
     slug = None
 
     if cats:
         slug = get_root_category_slug_by_cat(cats[0])
 
     return slug
-
 
 
 def get_package_by_package_name(package_name):
