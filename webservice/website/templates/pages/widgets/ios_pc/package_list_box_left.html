@@ -19,7 +19,6 @@
                   <li class="li_{{ forloop.counter }} hover">{{ ele.topic_name }}</li>
                 {% elif forloop.last %}
                   <li class="li_{{ forloop.counter }}">{{ ele.topic_name }}</li>
-                  <li class="li_{{ forloop.counter|add:'1' }}"> 许愿兑现 </li>
                 {% else %}
                   <li class="li_{{ forloop.counter }}">{{ ele.topic_name }}</li>
                 {% endif %}
