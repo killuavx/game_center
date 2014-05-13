@@ -27,25 +27,26 @@
 
             </ul>
 
-            <a href="#" class="fr">更多></a>
+            <span class="tab-more">
+              <a href="{{ ele.more_url }}" class="fr">更多></a>
+              <a href="{{ ele.more_url }}" class="fr">更多></a>
+              <a href="{{ ele.more_url }}" class="fr">更多></a>
+            </span>
+
 
           </div><!--title_box-->
 
 
-        {% for ele in result %}
-          {% if forloop.first %}
-          <div class="list left_list tab_{{ forloop.counter0 }}">
-          {% else %}
-          <div class="list left_list tab_{{ forloop.counter0 }}" style="display: none">
-          {% endif %}
+          <div class="list left_list">
 
+          {% for ele in result %}
             <ul>
 
               {% for item in ele.items %}
               {% with version=item.versions.latest_published %}
               <li>
 
-              <a href="{{ verison.get_absolute_url }}" class="big_pic"><img src="{{ version.icon.url }}"><span class="icon cover"></span></a>
+              <a href="{{ item.get_absolute_url }}" class="big_pic"><img src="{{ version.icon.url }}"><span class="icon cover"></span></a>
 
 
 
@@ -73,8 +74,9 @@
               {% endwith %}
               {% endfor %}
             </ul>
+          {% endfor %}
+
           </div>
-        {% endfor %}
 
 
         </div>
