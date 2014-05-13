@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url
+from django.template.response import TemplateResponse
 
 slug_pattern = '[\w_.-]+'
 urlpatterns = patterns('website.views',
@@ -16,6 +17,8 @@ urlpatterns = patterns('website.views',
         url(r'^topics/$', 'topics_view', name='topics_page'),
         url(r'^topics/(?P<slug>%s)' % slug_pattern, 'topic_package_list', name='topic_package_list'),
         url(r'^feedbacks/cdn/(?P<slug>%s)' % slug_pattern, 'cdn_feedback', name='cdn_feedback'),
+
+        url("^social/redirect\.html$", lambda r: TemplateResponse(request=r, template='bd_frontia_jump.html')),
 
 )
 

@@ -37,3 +37,18 @@ class DatawarehouseRouter(object):
         #添加一个私有方法用来判断模型属于哪个应用，并返回应该使用的数据库
         if model._meta.app_label == 'analysis':
             return 'datawarehouse'
+
+        if model._meta.app_label == 'crawler':
+            return 'crawlpool'
+
+
+class CrawlerRouter(DatawarehouseRouter):
+
+    ALLOW_RELATION_APP_LABELS = (
+        'warehouse', 'crawler',
+    )
+
+    def __app_router(self, model):
+        #添加一个私有方法用来判断模型属于哪个应用，并返回应该使用的数据库
+        if model._meta.app_label == 'crawler':
+            return 'crawlpool'

@@ -14,12 +14,12 @@ $(function(){
 		window.location.href=window.location.href;
 	});
 	
-	$(".pgup").click(function(){
-		history.go(-1);
+	$(".pgup").click(function(){		
+		window.history.go(-1);
 	});
 	
 	$(".pgdn").click(function(){
-		history.go(1);
+		window.history.go(1);
 	});
 	
 	

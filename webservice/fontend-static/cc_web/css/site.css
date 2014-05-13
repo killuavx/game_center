@@ -1,4 +1,4 @@
-body{background:url(../img/bg.jpg) repeat-x #eeeeee}
+body{background:url(http://static.ccplay.com.cn/static/cc_web/img/bg.jpg) repeat-x #eeeeee}
 .nav .l li a {letter-spacing: 0px}
 .nav .l li{width:5.375%}
 .nav li a.ios-web-icon{width:45px; text-indent:-9999px}
@@ -10,9 +10,14 @@ body{background:url(../img/bg.jpg) repeat-x #eeeeee}
 .diy_select_btn {width:20px; left:65px}
 .search .key {width:69%}
 
+.search-drop{padding:9px 0 0 85px}
+.search-drop-box{width:333px}
+#cc-m .search-drop-box{width:247px}
+#cc-s .search-drop-box{width:163px}
+#fixed-head .search-drop-box{display:none}
 
 .t-title ul li.ios-web-icon{background-position:left 31px}
-.text-db,.hot-game-list-1 li{white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
+.footer{padding:50px 0 15px 0; background:url(http://static.ccplay.com.cn/static/cc_web/img/footer-bg.png) repeat-x #333333}
 
 /*游戏推荐*/
 
@@ -31,7 +36,7 @@ body{background:url(../img/bg.jpg) repeat-x #eeeeee}
 .info-box:hover{-moz-box-shadow:0px 0px 5px #ccc; -webkit-box-shadow:0px 0px 5px #ccc; box-shadow:0px 0px 5px #ccc;}
 .info-box:hover .info-box-title{background-color:#e53333; color:#fff}
 .info-tag a:hover{text-decoration:none; color:#e53333}
-.info-tag .hover{color:#e53333; border-bottom:2px solid #e53333}
+.info-tag .on{color:#e53333; border-bottom:2px solid #e53333}
 
 
 
@@ -59,13 +64,12 @@ body{background:url(../img/bg.jpg) repeat-x #eeeeee}
 .box2{width:300px}
 #cc-m .box1{width:330px}
 #cc-m .box2{width:300px}
-.l-box{width:940px; margin-right:320px; float:left}
-.r-box{width:300px; right:0; float:right; position:absolute}
+
 
 
 
 .n-info{height:98px}
-.ad_1{height:82px}
+
 .app-list-right{background:none}
 .app-list-right li{padding:5px 0; border-bottom:none}
 .app-list-right a span.ios-web-icon{left:18px; background-position:-132px -662px}
@@ -79,7 +83,7 @@ body{background:url(../img/bg.jpg) repeat-x #eeeeee}
 .app-list-right li.hover b.ios-web-icon{background-position:-99px -794px; width:20px; height:34px; position:absolute; right:0}
 
 
-.ad-2,.ad-3{height:100px; overflow:hidden}
+
 
 .app-list .l .ios-web-icon{width: 70px;height: 70px;background-position: -1px -585px; left:-1px}
 .app-list .l img{width:68px; height:68px}
@@ -90,12 +94,12 @@ body{background:url(../img/bg.jpg) repeat-x #eeeeee}
 .user-list-box a span{padding-top:6px}
 .user-list-box{height:160px; overflow:hidden}
 
-.bbs-rcd {height:100px; overflow:hidden}
+.bbs-rcd {height:100px; overflow:hidden; width:100%}
 .bbs-rcd img,.bbs-rcd a{width:125px; height:100px}
 .bbs-rcd a{margin-left:20px}
 .bbs-rcd span{bottom:0; width:125px}
 
-.ad-4{height:90px}
+
 .mm-pic{height:541px}
 .mm-pic-list{left:-1px}
 
@@ -103,14 +107,6 @@ body{background:url(../img/bg.jpg) repeat-x #eeeeee}
 .vendor-box li{border-top:1px solid #eee}
 .vendor-box a{display:block; padding:2px 0; border:1px solid #fff}
 .vendor-box a:hover{border-color:#e53333}
-
-
-
-
-
-
-
-
 
 
 
@@ -124,7 +120,7 @@ body{background:url(../img/bg.jpg) repeat-x #eeeeee}
 #cc-m .info-box li span{display:none}
 #cc-m .h-game-top-list li span,#cc-m .app-list-right li span{display:inline-block}
 #cc-m .nav li.rel .drop-down a ,#cc-s .nav li.rel .drop-down a {padding: 0 5px}
-#cc-m .l-box{width:680px}
+
 #cc-m .bbs-rcd img,#cc-m .bbs-rcd a{width:135px}
 #cc-m .bbs-rcd a{margin-left:19px}
 #cc-m .bbs-rcd span{width:135px}
@@ -132,20 +128,17 @@ body{background:url(../img/bg.jpg) repeat-x #eeeeee}
 
 
 
-
+#cc-s .focusBox{margin-right:0px}
 #cc-s .nav .l li{width:4.92%}
 #cc-s .nav .f18{font-size:14px}
 #cc-s .nav .l li.rel{width:5.4%}
 #cc-s .nav .l li.bbs-li{width:auto}
 #cc-s .search .key{width: 48%}
-#cc-s .nav .nav-top-a em,#cc-s .focus .r,#cc-s .ad-box .r-box,#cc-s .ad-4{display:none}
+#cc-s .nav .nav-top-a em,#cc-s .focus .r{display:none}
 #cc-s .today-news {width:100%}
 #cc-s .hot-rcd-news,#cc-s .h-game-top-list{width:365px; margin-top:20px}
 
-#cc-s .l-box{margin-right:385px}
-#cc-s .r-box{width:365px}
-#cc-s .focusBox,#cc-s .ad-box .l-box{margin-right:0}
-#cc-s .l-box{width:750px}
+
 #cc-s .h-app .r-box{position:relative; padding-top:20px}
 #cc-s .android-app .r-box{position:absolute; left:0; top:-508px}
 #cc-s .h-bbs .box1,#cc-s .top-list .box1{width:365px}
@@ -164,33 +157,31 @@ body{background:url(../img/bg.jpg) repeat-x #eeeeee}
 
 
 
-#head .nav{position:relative}
-#head .nav .auto{position:fixed; top:0; z-index:10; -moz-box-shadow:0px 2px 5px #ccc; -webkit-box-shadow:0px 2px 5px #ccc; box-shadow:0px 2px 5px #ccc}
-#head #cc-l .search,#head #cc-m .search{position:static; width:33%; top:auto}
-#head #cc-l .search .key{width:69%}
-#head #cc-m .search .key{width:62%}
-#head #cc-s .search .key{width:48%}
+#fixed-head .nav{position:relative}
+#fixed-head .nav .auto{position:fixed; top:0; z-index:10; -moz-box-shadow:0px 2px 5px #ccc; -webkit-box-shadow:0px 2px 5px #ccc; box-shadow:0px 2px 5px #ccc}
+#fixed-head #cc-l .search,#fixed-head #cc-m .search{position:static; width:33%; top:auto}
+#fixed-head #cc-l .search .key{width:69%}
+#fixed-head #cc-m .search .key{width:62%}
+#fixed-head #cc-s .search .key{width:48%}
 
 
-#head .nav .l li a {letter-spacing: 0px}
-#head #cc-l .nav .l li{width:5.375%}
-#head #cc-l .nav .l li.apple-li,#head #cc-l .nav .l li.android-li,#head #cc-l .nav .l li.bbs-li,#head #cc-m .nav .l li.bbs-li{width:auto}
+#fixed-head .nav .l li a {letter-spacing: 0px}
+#fixed-head #cc-l .nav .l li{width:5.375%}
+#fixed-head #cc-l .nav .l li.apple-li,#fixed-head #cc-l .nav .l li.android-li,#fixed-head #cc-l .nav .l li.bbs-li,#fixed-head #cc-m .nav .l li.bbs-li{width:auto}
 
-#head #cc-m  .nav .l li{width:5.05%}
-#head #cc-m .nav .l li.rel{width:5.4%}
-
-
-
+#fixed-head #cc-m .nav .l li{width:5.05%}
+#fixed-head #cc-m .nav .l li.rel{width:5.4%}
 
 
 
-
+/*v1*/
 
 
 
 
 
 
-
-
-
+#cc-l .nav .drop-down a {padding: 0 20px}
+.nav .l li,#fixed-head #cc-l .nav .l li{width:6.14%}
+#cc-m .nav .l li,#fixed-head #cc-m .nav .l li{width:5.75%; font-size:18px}
+#cc-s .nav .l li,#cc-s .nav .l li{width:5.62%}

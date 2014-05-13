@@ -1,0 +1,44 @@
+/*下载页面*/
+.icon,.btn-box a,.down-btn a,.down-btn a:hover{background:url(http://static.ccplay.com.cn/static/cc_web/img/icon.png) no-repeat; display:inline-block}
+.bg-red{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-t1-bg.jpg) repeat-x; height:404px}
+.banner{top:0; right:5%}
+#cc-s .banner{right:0}
+#cc-l .banner{right:13%}
+#cc-s .bg-red .rel img{margin-left:-200px}
+.banner .text{text-indent:-9999999px; width:483px; height:200px; margin-top:30px}
+
+.btn-box{padding-top:24px}
+.btn-box .a1{background-position:0 -205px}
+.btn-box .a1:hover{background-position:0 -324px}
+.btn-box .a1:hover span{color:#e53333 !important}
+.btn-box a{width:93px; height:140px; margin:0 30px}
+.btn-box a span{bottom:0; width:93px; height:39px; padding-top:5px}
+.btn-box .a2{background-position:-93px -205px}
+.btn-box .a2:hover{background-position:-93px -324px}
+.btn-box .a3{background-position:-186px -205px}
+.btn-box .a3:hover{background-position:-186px -324px}
+
+.r{right:0}
+
+.down-btn{width:27%; padding:30px; text-align:left}
+.down-btn dt{float:left}
+#cc-s .down-btn{width:24%}
+
+.down-btn a,.down-btn a:hover{display:block; background-color:#e53333; font-size:24px; padding-left:70px; overflow:hidden}
+.down-btn .a1,.down-btn .a1:hover{background-position:-600px 7px}
+.down-btn .a2,.down-btn .a2:hover{background-position:-600px -88px}
+.down-btn .a3,.down-btn .a3:hover{background-position:-600px -184px}
+#cc-s .down-btn a,#cc-s .down-btn a:hover{padding-left:40px}
+.down-btn img{right:30px; bottom:30px}
+#cc-s .down-btn img,#cc-m .down-btn img{display:none}
+
+.app-list-min{margin:0 8px}
+#cc-s .app-list-min{margin:0 11px}
+#cc-m .app-list-min{margin:0 7px}
+
+
+
+
+
+
+

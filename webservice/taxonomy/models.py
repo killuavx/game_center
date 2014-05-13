@@ -7,7 +7,7 @@ from django.contrib.contenttypes import generic
 from django.db.models.query import QuerySet
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
-from model_utils.managers import PassThroughManager
+from model_utils.managers import PassThroughManager, PassThroughManagerMixin
 from mptt.models import MPTTModel, TreeForeignKey
 from mptt.managers import TreeManager
 
@@ -16,13 +16,13 @@ from django.db.models import SlugField
 
 from django.core.urlresolvers import get_callable
 from django.conf import settings
-from toolkit.managers import CurrentSitePassThroughManager
+from toolkit.managers import CurrentSitePassThroughManager, CurrentSiteManager
 from toolkit.helpers import sync_status_from
 from toolkit.models import (SiteRelated,
                             current_site_id)
 
 slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
-                                'taxonomy.helpers.slugify')
+                                'toolkit.helpers.slugify_unicode')
 slugify = get_callable(slugify_function_path)
 
 
@@ -111,7 +111,7 @@ class CategoryQuerySet(QuerySet):
         return self.hidden(False)
 
 
-class CategoryManager(TreeManager, CurrentSitePassThroughManager):
+class CategoryManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
     pass
 
 
@@ -201,7 +201,7 @@ class TopicQuerySet(QuerySet):
         return self.order_by('ordering')
 
 
-class TopicManager(TreeManager, CurrentSitePassThroughManager):
+class TopicManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
     pass
 
 

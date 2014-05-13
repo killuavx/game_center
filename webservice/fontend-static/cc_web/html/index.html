@@ -12,7 +12,11 @@
 <noscript>
     <h1 style="font-size:100%;color:#e53333;display:block;text-align:center">由于您的浏览器禁用了javascript脚本，网页无法正常浏览!</h1>
 </noscript>
+
+<base target="_blank">
+
 </head>
+<body>
 <!--头部开始 head-->
 <div class="auto head" id="home">
 	
@@ -20,7 +24,7 @@
     	<div class="pt10 pb10">
               <div class="cell-bk">
                     <div class="inline-three ovh logo">
-                        <h2><a href="http://static.ccplay.com.cn/static/cc_web/html/index.html" class="rel"><img src="http://static.ccplay.com.cn/static/common/img/logo.png"><span class="trans home"></span></a></h2>
+                        <h2><a href="http://static.ccplay.com.cn/static/cc_web/html/index.html" class="rel"><img src="http://static.ccplay.com.cn/static/common/img/logo.png" title="虫虫游戏 | 免费玩精品"><span class="trans home"></span></a></h2>
                     </div><!--logo-->
                     
                     <div class="inline-three search">
@@ -33,24 +37,39 @@
                                         <ul class="diy_select_list">
                                             <li>苹果游戏</li>
                                             <li>苹果软件</li>
-                                            <li>苹果资讯</li>
                                             <li>安卓游戏</li>
                                             <li>安卓软件</li>
-                                            <li>安卓资讯</li>
                                         </ul>
                                     </div>
-                                    <input type="search" class="f14 key" value="" x-webkit-speech="">
+                                    <input type="search" class="f14 fw key" value="" x-webkit-speech="" required autofocus>
                                     <button class="ios-web-icon bd-none poi abs">搜索</button>
                                 </form>
+                                
+                                <!--搜索提示-->
+                                <div id="search-drop" class="abs search-drop dn">
+                                	<div class="bdc rel bg-white lh28 f14 search-drop-box">
+                                    	<a href="#" target="_blank">消除之星PopStar!</a>
+                                        <a href="#" target="_blank">狂野飙车7：极速热力</a>
+                                        <a href="#" target="_blank">飞行背囊/火箭飞人 Jetpack</a>
+                                        <a href="#" target="_blank">水果忍者切西瓜 Fruit Ninja</a>
+                                        <a href="#" target="_blank">节奏大师</a>
+                                        <a href="#" target="_blank">神殿逃脱 Temple Run</a>
+                                        <a href="#" target="_blank">地铁跑酷 Subway Surfers</a>
+                                        <a href="#" target="_blank">找你妹</a>
+                                        <a href="#" target="_blank">狂野飙车7：极速热力</a>
+                                        <a href="#" target="_blank">飞行背囊/火箭飞人 Jetpack</a>
+                                    </div>
+                                </div>
+                                <!--搜索提示-->
                           </div>
                     </div><!--search-->
                     
                     <div class="inline-three r user-switch">
                           <ul class="r">
-                              <li><a href="#" id="win" class="ios-web-icon a1">苹果站</a></li>
-                              <li><a href="user.html" class="ios-web-icon a2">安卓站</a></li>
+                              <li><a href="http://static.ccplay.com.cn/static/ios_web/html/index.html" class="ios-web-icon a1">苹果站</a></li>
+                              <li><a href="http://static.ccplay.com.cn/static/android_web/html/index.html" class="ios-web-icon a2">安卓站</a></li>
                               <li><a href="#" class="ios-web-icon a3 open-reg">虫虫助手</a></li>
-                              <li><a href="#" class="ios-web-icon a4 open-login">登录/注册</a></li>
+                              <li><a href="http://static.ccplay.com.cn/static/ios_web/html/login.html" class="ios-web-icon a4 open-login">登录/注册</a></li>
                           </ul>
                     </div><!--user-switch-->
               </div><!--cell-bk-->    
@@ -64,8 +83,8 @@
                       <ul class="cell pct100">
                           <li class="apple-li"><a href="http://static.ccplay.com.cn/static/ios_web/html/index.html" class="ios-web-icon nav-top-apple">苹果站</a></li>
                           <li><a href="http://static.ccplay.com.cn/static/ios_web/html/game.html">游戏</a></li>
-                          <li><a href="#" id="box_remind">软件</a></li>
-                          <li><a href="http://static.ccplay.com.cn/static/ios_web/html/collection.html">专题</a></li>
+                          <li><a href="http://static.ccplay.com.cn/static/ios_web/html/game.html">软件</a></li>
+                          <li><a href="http://static.ccplay.com.cn/static/ios_web/html/collection.html">合集</a></li>
                           <li><a href="http://static.ccplay.com.cn/static/ios_web/html/masterpiece.html">巨作</a></li>
                           <li><a href="http://static.ccplay.com.cn/static/ios_web/html/vendor.html">厂商</a></li>
                           <li class="rel">
@@ -75,15 +94,13 @@
                                         <a href="#">软件排行</a>
                                 </div>
                           </li>
-                          <li><a href="http://static.ccplay.com.cn/static/ios_web/html/news.html">资讯</a></li>
-                          <li><a href="http://bbs.ccplay.com.cn">请愿</a></li>
-                          
+                          <li><a href="http://bbs.ccplay.com.cn">许愿</a></li>                
                           
                           
                           <li class="android-li"><a href="http://static.ccplay.com.cn/static/android_web/html/index.html" class="ios-web-icon nav-top-android">安卓站</a></li>
                           <li><a href="http://static.ccplay.com.cn/static/android_web/html/game.html">游戏</a></li>
-                          <li><a href="#" id="box_remind">软件</a></li>
-                          <li><a href="http://static.ccplay.com.cn/static/android_web/html/collection.html">专题</a></li>
+                          <li><a href="http://static.ccplay.com.cn/static/android_web/html/game.html">软件</a></li>
+                          <li><a href="http://static.ccplay.com.cn/static/android_web/html/collection.html">合集</a></li>
                           <li><a href="http://static.ccplay.com.cn/static/android_web/html/masterpiece.html">巨作</a></li>
                           <li><a href="http://static.ccplay.com.cn/static/android_web/html/vendor.html">厂商</a></li>
                           <li class="rel">
@@ -93,9 +110,7 @@
                                         <a href="#">软件排行</a>
                                 </div>
                           </li>
-                          <li><a href="http://static.ccplay.com.cn/static/android_web/html/news.html">资讯</a></li>
-                          <li><a href="http://bbs.ccplay.com.cn">请愿</a></li>
-                          
+                          <li><a href="http://bbs.ccplay.com.cn">许愿</a></li>                          
                           <li class="bbs-li"><a href="http://bbs.ccplay.com.cn" class="ios-web-icon nav-top-bbs">论坛</a></li>
                       </ul>
               </div><!--l-->
@@ -242,7 +257,7 @@
 <div class="auto width">
 
 
-	<div class="cell-bk rel mt20 pb20 focus">
+	<div class="cell-bk rel mt20 focus">
     
     		<div class="l">
                   <!--焦点图 focusBox-->
@@ -304,7 +319,7 @@
     
     
     
-	<div class="cell-bk h-news">
+	<div class="cell-bk h-news dn">
     
     		<!--今日头条 today-news-->
     		<div class="l box1 mr20 today-news">
@@ -380,7 +395,7 @@
                               </ul>
                         </div><!--pt20 pl20 pr20-->
 
-                        <div class="ovh tc ad_1">
+                        <div class="ovh tc cc-a-d-1">
                               <a href="#">
                                       <img src="http://static.ccplay.com.cn/static/common/img/3.jpg" class="pct100">
                               </a>
@@ -394,13 +409,13 @@
             
             <!--游戏排行榜 h-game-top-news-->
             <div class="r box2 h-game-top-list">
-                  <div class="info-box">
+                  <div class="info-box tab-box">
                   		<h3 class="dib mt20 pt2 pb2 pl10 pr10 f16 info-box-title">游戏排行榜</h3>
                         <div class="r mr20 pt15 tr lh30 f14 info-tag">
-                        	<a href="#" class="dib ml10 hover">苹果</a>
+                        	<a href="#" class="dib ml10 on">苹果</a>
                             <a href="#" class="dib ml10">安卓</a>
                         </div>
-                        <div class="p20">
+                        <div class="p20 info-box-tab">
                         
 
                                 <div class="app-list-right">                                                        
@@ -488,6 +503,95 @@
                                     </ol>
                                 
                                 </div><!--app-list-right-->
+                                
+                                
+                                
+                                <div class="app-list-right">                                                        
+                                    <ol>
+                                        <li class="rel h-n-1 hover">
+                                            <b class="n white l ios-web-icon">1</b>
+                                            <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                            <h3 class="n text-db h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                            <p class="g9">999M<em>|</em>9999万+下载</p>
+                                            <p class="g9">益智游戏</p>
+                                            <p class="price gr"><span class="ios-web-icon star s5"></span></p>
+                                        </li>
+                                        <li class="rel h-n-2">
+                                            <b class="n white l ios-web-icon">2</b>
+                                            <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                            <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                            <p class="g9">999M<em>|</em>9999万+下载</p>
+                                            <p class="g9">益智游戏</p>
+                                            <p class="price gr"><span class="ios-web-icon star s2"></span></p>
+                                        </li>
+                                        <li class="rel h-n-3">
+                                            <b class="n white l ios-web-icon">3</b>
+                                            <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                            <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                            <p class="g9">999M<em>|</em>9999万+下载</p>
+                                            <p class="g9">益智游戏</p>
+                                            <p class="price gr"><span class="ios-web-icon star s3"></span></p>
+                                        </li>
+                                        <li class="rel">
+                                            <b class="n white l ios-web-icon">4</b>
+                                            <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                            <h3 class="n text-db h20"><a href="#" class="f14">游戏名称游戏名称完游戏名称游戏名称完游戏名称游戏名称完</a></h3>
+                                            <p class="g9">999M<em>|</em>9999万+下载</p>
+                                            <p class="g9">益智游戏</p>
+                                            <p class="price gr"><span class="ios-web-icon star s5"></span></p>
+                                        </li>
+                                        <li class="rel">
+                                            <b class="n white l ios-web-icon">5</b>
+                                            <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                            <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                            <p class="g9">999M<em>|</em>9999万+下载</p>
+                                            <p class="g9">益智游戏</p>
+                                            <p class="price gr"><span class="ios-web-icon star s4"></span></p>
+                                        </li>
+                                        <li class="rel">
+                                            <b class="n white l ios-web-icon">6</b>
+                                            <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                            <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                            <p class="g9">999M<em>|</em>9999万+下载</p>
+                                            <p class="g9">益智游戏</p>
+                                            <p class="price gr"><span class="ios-web-icon star s1"></span></p>
+                                        </li>
+                                        <li class="rel">
+                                            <b class="n white l ios-web-icon">7</b>
+                                            <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                            <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                            <p class="g9">999M<em>|</em>9999万+下载</p>
+                                            <p class="g9">益智游戏</p>
+                                            <p class="price gr"><span class="ios-web-icon star s2"></span></p>
+                                        </li>
+                                        <li class="rel">
+                                            <b class="n white l ios-web-icon">8</b>
+                                            <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                            <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                            <p class="g9">999M<em>|</em>9999万+下载</p>
+                                            <p class="g9">益智游戏</p>
+                                            <p class="price gr"><span class="ios-web-icon star s3"></span></p>
+                                        </li>
+                                        <li class="rel">
+                                            <b class="n white l ios-web-icon">9</b>
+                                            <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                            <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                            <p class="g9">999M<em>|</em>9999万+下载</p>
+                                            <p class="g9">益智游戏</p>
+                                            <p class="price gr"><span class="ios-web-icon star s4"></span></p>
+                                        </li>
+                                        <li class="rel">
+                                            <b class="n white l ios-web-icon">10</b>
+                                            <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                            <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                            <p class="g9">999M<em>|</em>9999万+下载</p>
+                                            <p class="g9">益智游戏</p>
+                                            <p class="price gr"><span class="ios-web-icon star s5"></span></p>
+                                        </li>
+                                    </ol>
+                                
+                                </div><!--app-list-right-->
+                                
                         
                         
                         
@@ -505,20 +609,20 @@
 
 
 
-<!--广告位 ad-box-->
-<div class="auto width ad-box">
+<!--广告位 cc-a-d-box-->
+<div class="auto width cc-a-d-box dn">
       <div class="rel pt20 cell-bk ovh">
-            <div class="l-box ad-2">
+            <div class="l-box cc-a-d-2">
               <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg" style="width:940px"></a>
             </div>
             
-            <div class="r-box ad-3">
+            <div class="r-box cc-a-d-3">
               <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/4.jpg" class="pct100"></a>
             </div>
             
       </div>
 </div>
-<!--广告位 ad-box-->
+<!--广告位 cc-a-d-box-->
 
 
 
@@ -527,19 +631,20 @@
 	<div class="pt20 rel cell-bk">
     		
             <div class="l-box">
-            		<div class="info-box">
+            		<div class="info-box tab-box">
                             <h3 class="dib mt20 pt2 pb2 pl10 pr10 f16 info-box-title">苹果游戏</h3>
                             <div class="r mr20 pt15 tr lh30 f14 info-tag">
-                                <a href="#" class="dib ml10 hover">精品推荐</a>
+                                <a href="#" class="dib ml10 on">精品推荐</a>
                                 <a href="#" class="dib ml10">装机必备</a>
                                 <a href="#" class="dib ml10">最新发布</a>
-                                <a href="#" class="dib ml10">许愿兑现</a>
                                 <a href="#" class="dib ml10">更多></a>
                             </div>
                             
                             
                             
-                            <div class="pl20 pr20 pt20">
+                            <div class="pl20 pr20 pt20 info-box-tab">
+                            
+                            
                             	<div class="cell-bk tj">
                             		<div class="dib float-three app-list">
                                     	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
@@ -662,6 +767,259 @@
                                     
                                     
                                 </div><!--cell-bk tj-->
+                                
+                                
+                                
+                                
+                                <div class="cell-bk tj">
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                                </div><!--cell-bk tj-->
+                                
+                                
+                                
+                                <div class="cell-bk tj">
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                                </div><!--cell-bk tj-->
+                                
+                                
                             </div><!--p20-->
                             
                             
@@ -804,19 +1162,18 @@
 	<div class="pt20 rel cell-bk">
     		
             <div class="l-box">
-            		<div class="info-box">
+            		<div class="info-box tab-box">
                             <h3 class="dib mt20 pt2 pb2 pl10 pr10 f16 info-box-title">安卓游戏</h3>
                             <div class="r mr20 pt15 tr lh30 f14 info-tag">
-                                <a href="#" class="dib ml10 hover">精品推荐</a>
+                                <a href="#" class="dib ml10 on">精品推荐</a>
                                 <a href="#" class="dib ml10">装机必备</a>
                                 <a href="#" class="dib ml10">最新发布</a>
-                                <a href="#" class="dib ml10">许愿兑现</a>
                                 <a href="#" class="dib ml10">更多></a>
                             </div>
                             
                             
                             
-                            <div class="pl20 pr20 pt20">
+                            <div class="pl20 pr20 pt20  info-box-tab">
                             	<div class="cell-bk tj">
                             		<div class="dib float-three app-list">
                                     	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
@@ -937,6 +1294,132 @@
                                         <p class="g9">益智游戏</p>
                                     </div>
                                 </div><!--cell-bk tj-->
+                                
+                                
+                                
+                                <div class="cell-bk tj">
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                    
+                                    
+                            		<div class="dib float-three app-list">
+                                    	<a href="#" class="l mr10 rel"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                        <h3 class="n text-db pt5 mb5 h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                        <p class="g9">益智游戏</p>
+                                    </div>
+                                </div><!--cell-bk tj-->
+                                
+                                
+                                
                             </div><!--p20-->
                             
                             
@@ -1065,20 +1548,20 @@
 
 
 
-<!--广告位 ad-box-->
-<div class="auto width ad-box">
+<!--广告位 cc-a-d-box-->
+<div class="auto width cc-a-d-box">
       <div class="rel pt20 cell-bk ovh">
-            <div class="l-box ad-2">
+            <div class="l-box cc-a-d-2">
               <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/5.jpg" style="width:940px"></a>
             </div>
             
-            <div class="r-box ad-3">
+            <div class="r-box cc-a-d-3">
               <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/6.jpg" class="pct100"></a>
             </div>
             
       </div>
 </div>
-<!--广告位 ad-box-->
+<!--广告位 cc-a-d-box-->
 
 
 
@@ -1156,7 +1639,7 @@
                                     </div>
                             </div><!--user-list-box-->
                             
-                            <div class="ovh ad-4">
+                            <div class="ovh cc-a-d-4">
                               <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="w300"></a>
                             </div>
                             
@@ -1181,13 +1664,13 @@
             <div class="l-box">
                     <div class="l mr20 box1 down-list">                    
                     
-                                <div class="info-box">
+                                <div class="info-box tab-box">
                                     <h3 class="dib mt20 pt2 pb2 pl10 pr10 f16 info-box-title">游戏下载榜</h3>
                                     <div class="r mr20 pt15 tr lh30 f14 info-tag">
-                                        <a href="#" class="dib ml10 hover">苹果</a>
+                                        <a href="#" class="dib ml10 on">苹果</a>
                                         <a href="#" class="dib ml10">安卓</a>
                                     </div>
-                                    <div class="p20">
+                                    <div class="p20 info-box-tab">
                                     
             
                                             <div class="app-list-right">                                                        
@@ -1275,6 +1758,95 @@
                                                 </ol>
                                             
                                             </div><!--app-list-right-->
+                                            
+                                            
+                                            
+                                            
+                                            <div class="app-list-right">                                                        
+                                                <ol>
+                                                    <li class="rel h-n-1 hover">
+                                                        <b class="n white l ios-web-icon">1</b>
+                                                        <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                                        <h3 class="n text-db h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                        <p class="g9">益智游戏</p>
+                                                        <p class="price gr"><span class="ios-web-icon star s5"></span></p>
+                                                    </li>
+                                                    <li class="rel h-n-2">
+                                                        <b class="n white l ios-web-icon">2</b>
+                                                        <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                                        <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                        <p class="g9">益智游戏</p>
+                                                        <p class="price gr"><span class="ios-web-icon star s2"></span></p>
+                                                    </li>
+                                                    <li class="rel h-n-3">
+                                                        <b class="n white l ios-web-icon">3</b>
+                                                        <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg"><span class="ios-web-icon abs"></span></a>
+                                                        <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                        <p class="g9">益智游戏</p>
+                                                        <p class="price gr"><span class="ios-web-icon star s3"></span></p>
+                                                    </li>
+                                                    <li class="rel">
+                                                        <b class="n white l ios-web-icon">4</b>
+                                                        <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                        <h3 class="n text-db h20"><a href="#" class="f14">游戏名称游戏名称完游戏名称游戏名称完游戏名称游戏名称完</a></h3>
+                                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                        <p class="g9">益智游戏</p>
+                                                        <p class="price gr"><span class="ios-web-icon star s5"></span></p>
+                                                    </li>
+                                                    <li class="rel">
+                                                        <b class="n white l ios-web-icon">5</b>
+                                                        <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                        <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                        <p class="g9">益智游戏</p>
+                                                        <p class="price gr"><span class="ios-web-icon star s4"></span></p>
+                                                    </li>
+                                                    <li class="rel">
+                                                        <b class="n white l ios-web-icon">6</b>
+                                                        <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                        <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                        <p class="g9">益智游戏</p>
+                                                        <p class="price gr"><span class="ios-web-icon star s1"></span></p>
+                                                    </li>
+                                                    <li class="rel">
+                                                        <b class="n white l ios-web-icon">7</b>
+                                                        <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                        <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                        <p class="g9">益智游戏</p>
+                                                        <p class="price gr"><span class="ios-web-icon star s2"></span></p>
+                                                    </li>
+                                                    <li class="rel">
+                                                        <b class="n white l ios-web-icon">8</b>
+                                                        <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                        <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                        <p class="g9">益智游戏</p>
+                                                        <p class="price gr"><span class="ios-web-icon star s3"></span></p>
+                                                    </li>
+                                                    <li class="rel">
+                                                        <b class="n white l ios-web-icon">9</b>
+                                                        <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                        <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                        <p class="g9">益智游戏</p>
+                                                        <p class="price gr"><span class="ios-web-icon star s4"></span></p>
+                                                    </li>
+                                                    <li class="rel">
+                                                        <b class="n white l ios-web-icon">10</b>
+                                                        <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                        <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                        <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                        <p class="g9">益智游戏</p>
+                                                        <p class="price gr"><span class="ios-web-icon star s5"></span></p>
+                                                    </li>
+                                                </ol>
+                                            
+                                            </div><!--app-list-right-->
                                     
                                     
                                     
@@ -1290,13 +1862,13 @@
                     
                                   
                                   
-                                  <div class="info-box">
+                                  <div class="info-box tab-box">
                                       <h3 class="dib mt20 pt2 pb2 pl10 pr10 f16 info-box-title">游戏好评榜</h3>
                                       <div class="r mr20 pt15 tr lh30 f14 info-tag">
-                                          <a href="#" class="dib ml10 hover">苹果</a>
+                                          <a href="#" class="dib ml10 on">苹果</a>
                                           <a href="#" class="dib ml10">安卓</a>
                                       </div>
-                                      <div class="p20">
+                                      <div class="p20 info-box-tab">
                                       
               
                                               <div class="app-list-right">                                                        
@@ -1384,6 +1956,94 @@
                                                   </ol>
                                               
                                               </div><!--app-list-right-->
+                                              
+                                      
+              
+                                              <div class="app-list-right">                                                        
+                                                  <ol>
+                                                      <li class="rel h-n-1 hover">
+                                                          <b class="n white l ios-web-icon">1</b>
+                                                          <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                                          <h3 class="n text-db h20"><a href="#" class="f14">游戏名称游戏名称完</a></h3>
+                                                          <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                          <p class="g9">益智游戏</p>
+                                                          <p class="price gr"><span class="ios-web-icon star s5"></span></p>
+                                                      </li>
+                                                      <li class="rel h-n-2">
+                                                          <b class="n white l ios-web-icon">2</b>
+                                                          <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                                          <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                          <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                          <p class="g9">益智游戏</p>
+                                                          <p class="price gr"><span class="ios-web-icon star s2"></span></p>
+                                                      </li>
+                                                      <li class="rel h-n-3">
+                                                          <b class="n white l ios-web-icon">3</b>
+                                                          <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span class="ios-web-icon abs"></span></a>
+                                                          <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                          <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                          <p class="g9">益智游戏</p>
+                                                          <p class="price gr"><span class="ios-web-icon star s3"></span></p>
+                                                      </li>
+                                                      <li class="rel">
+                                                          <b class="n white l ios-web-icon">4</b>
+                                                          <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                          <h3 class="n text-db h20"><a href="#" class="f14">游戏名称游戏名称完游戏名称游戏名称完游戏名称游戏名称完</a></h3>
+                                                          <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                          <p class="g9">益智游戏</p>
+                                                          <p class="price gr"><span class="ios-web-icon star s5"></span></p>
+                                                      </li>
+                                                      <li class="rel">
+                                                          <b class="n white l ios-web-icon">5</b>
+                                                          <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                          <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                          <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                          <p class="g9">益智游戏</p>
+                                                          <p class="price gr"><span class="ios-web-icon star s4"></span></p>
+                                                      </li>
+                                                      <li class="rel">
+                                                          <b class="n white l ios-web-icon">6</b>
+                                                          <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                          <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                          <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                          <p class="g9">益智游戏</p>
+                                                          <p class="price gr"><span class="ios-web-icon star s1"></span></p>
+                                                      </li>
+                                                      <li class="rel">
+                                                          <b class="n white l ios-web-icon">7</b>
+                                                          <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                          <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                          <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                          <p class="g9">益智游戏</p>
+                                                          <p class="price gr"><span class="ios-web-icon star s2"></span></p>
+                                                      </li>
+                                                      <li class="rel">
+                                                          <b class="n white l ios-web-icon">8</b>
+                                                          <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                          <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                          <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                          <p class="g9">益智游戏</p>
+                                                          <p class="price gr"><span class="ios-web-icon star s3"></span></p>
+                                                      </li>
+                                                      <li class="rel">
+                                                          <b class="n white l ios-web-icon">9</b>
+                                                          <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                          <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                          <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                          <p class="g9">益智游戏</p>
+                                                          <p class="price gr"><span class="ios-web-icon star s4"></span></p>
+                                                      </li>
+                                                      <li class="rel">
+                                                          <b class="n white l ios-web-icon">10</b>
+                                                          <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                                          <h3 class="n text-db h20"><a href="#" class="f14">我是90后</a></h3>
+                                                          <p class="g9">999M<em>|</em>9999万+下载</p>
+                                                          <p class="g9">益智游戏</p>
+                                                          <p class="price gr"><span class="ios-web-icon star s5"></span></p>
+                                                      </li>
+                                                  </ol>
+                                              
+                                              </div><!--app-list-right-->
                                       
                                       
                                       
@@ -1400,7 +2060,7 @@
                     
                     
                     <!--广告-->
-                    <div class="pt20 l-box ad-2">
+                    <div class="pt20 l-box cc-a-d-2">
                       <a href="#"><img src="http://static.ccplay.com.cn/static/common/img/4.jpg" style="width:940px"></a>
                     </div>
                     <!--广告-->
@@ -1462,7 +2122,7 @@
               
               <div class="rel mt10 mm-pic-list">
               		<!--默认图片：width:180px; height:180px  -->
-              		<div class="mm mp1"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/pic.jpg"><span>标题名称</span></a></div>
+              		<div class="mm mp1"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/pic.jpg"><span>标题名称标题名称标题名称标题名称</span></a></div>
                     <div class="mm mp2"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/2.jpg"><span>标题名称</span></a></div>
                     <div class="mm mp3"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg" width="364px" height="300px"><span>标题名称</span></a></div>
                     <div class="mm mp4"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/4.jpg" width="382px" height="484px"><span>标题名称</span></a></div>
@@ -1548,19 +2208,19 @@
         		<div class="float-five f-1">
                 		<dl>
                         	<dt class="f14">关于我们</dt>
-                            <dd><a href="#">公司简介</a></dd>
-                            <dd><a href="#">发展愿景</a></dd>
-                            <dd><a href="#">联系方式</a></dd>
-                            <dd><a href="#">商务合作</a></dd>
-                            <dd><a href="#">诚聘英才</a></dd>
+                            <dd><a href="about.html">公司简介</a></dd>
+                            <dd><a href="about.html">发展愿景</a></dd>
+                            <dd><a href="about.html">联系方式</a></dd>
+                            <dd><a href="about.html">商务合作</a></dd>
+                            <dd><a href="about.html">诚聘英才</a></dd>
                         </dl>
                 </div>
         		<div class="float-five f-2">
                 		<dl>
                         	<dt class="f14">关注我们</dt>
-                            <dd><a href="#" class="ios-web-icon i-1">新浪微博</a></dd>
-                            <dd><a href="#" class="ios-web-icon i-2">QQ空间</a></dd>
-                            <dd><a href="#" class="ios-web-icon i-3">官方微信</a></dd>
+                            <dd><a href="http://weibo.com/ccyxpt" class="ios-web-icon i-1">新浪微博</a></dd>
+                            <dd><a href="http://t.qq.com/ccyxpt" class="ios-web-icon i-2">QQ空间</a></dd>
+                            <dd class="weixin-code"><a href="#" class="ios-web-icon i-3">官方微信</a><img class="dn abs" src="http://static.ccplay.com.cn/static/common/img/cc-weixin-code.png"></dd>
                         </dl>                
                 </div>
         		<div class="float-five tc f-3">
@@ -1569,9 +2229,9 @@
         		<div class="float-five tl f-4">
                 		<dl class="r">
                         	<dt class="f14">虫虫客户端</dt>
-                            <dd><a href="#" class="ios-web-icon i-4">iPhone版下载</a></dd>
-                            <dd><a href="#" class="ios-web-icon i-5">Android版</a></dd>
-                            <dd><a href="#" class="ios-web-icon i-6">电脑客户端</a></dd>
+                            <dd><a href="http://static.ccplay.com.cn/static/cc_web/html/down.html" class="ios-web-icon i-4">iPhone版下载</a></dd>
+                            <dd><a href="http://static.ccplay.com.cn/static/cc_web/html/down.html" class="ios-web-icon i-5">Android版</a></dd>
+                            <dd><a href="http://static.ccplay.com.cn/static/cc_web/html/down.html" class="ios-web-icon i-6">电脑客户端</a></dd>
                         </dl>  
                 </div>
         		<div class="float-five tr f-5">
@@ -1585,6 +2245,8 @@
 
 </div>
 <!--底部结束 footer-->
+
+
 
 
 <!--<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>-->
@@ -1603,6 +2265,5 @@ window.onload = function()
 DD_belatedPNG.fix(".png,.png:hover,.ios-web-icon,.ios-web-icon:hover"}
 </script>-->
 <![endif]-->
-<link href="http://static.ccplay.com.cn/static/common/Font-Awesome-3.2.1/css/font-awesome.min.css" media="all" rel="stylesheet" type="text/css" />
-<link href="http://static.ccplay.com.cn/static/common/Font-Awesome-3.2.1/css/font-awesome-ie7.min.css" media="all" rel="stylesheet" type="text/css" />
+</body>
 </html>

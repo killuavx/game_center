@@ -239,6 +239,7 @@ class FeedbackViewSet(mixins.CreateModelMixin,
     """
 
     authentication_classes = (PlayerTokenAuthentication,)
+    permission_classes = ()
     serializer_class = FeedbackSerializer
     model = Feedback
 

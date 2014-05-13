@@ -146,6 +146,7 @@ class AccountAuthTokenView(ObtainAuthToken):
 
        1. `username`: 登陆用户名、电话号码或电子邮箱
        1. `password`: 登陆密码
+       1. `app`: 指定登陆平台, 指定参数为bbs, 则以bbs方式登陆，未传值则以默认港式登陆
 
     ## 响应内容
 

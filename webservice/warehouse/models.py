@@ -65,7 +65,8 @@ def factory_author_upload_to(basename):
 
 class Author(SiteRelated, models.Model):
 
-    objects = CurrentSitePassThroughManager.for_queryset_class(AuthorQuerySet)()
+    objects = CurrentSitePassThroughManager\
+        .for_queryset_class(AuthorQuerySet)()
 
 
     icon = ThumbnailerImageField(upload_to=factory_author_upload_to('icon'),
@@ -84,7 +85,7 @@ class Author(SiteRelated, models.Model):
         )
 
     name = models.CharField(verbose_name=_('author name'),
-                            max_length=64)
+                            max_length=255)
 
     email = models.EmailField(verbose_name=_('email'),
                               unique=True)
@@ -167,12 +168,12 @@ class Package(SiteRelated, models.Model):
 
     title = models.CharField(
         verbose_name=_('package title'),
-        max_length=128)
+        max_length=255)
 
     package_name = models.CharField(
         verbose_name=_('package name'),
         db_index=True,
-        max_length=128)
+        max_length=255)
 
     summary = models.CharField(
         verbose_name=_('summary'),
@@ -188,7 +189,6 @@ class Package(SiteRelated, models.Model):
         blank=True)
 
     author = models.ForeignKey(Author, related_name='packages')
-
 
     released_datetime = models.DateTimeField(
         verbose_name=_('released time'),
@@ -387,7 +387,7 @@ class PackageVersion(SiteRelated, models.Model):
 
     version_name = models.CharField(
         verbose_name=_('version name'),
-        max_length=16,
+        max_length=50,
         blank=False,
         null=False)
 
@@ -401,7 +401,7 @@ class PackageVersion(SiteRelated, models.Model):
         verbose_name=_('version subtitle'),
         default='',
         blank=True,
-        max_length=128)
+        max_length=255)
 
     summary = models.CharField(
         verbose_name=_('summary'),
@@ -423,6 +423,12 @@ class PackageVersion(SiteRelated, models.Model):
         verbose_name=_('tags'),
         default="",
         blank=True)
+
+    supported_features = models.ManyToManyField('SupportedFeature', blank=True)
+
+    supported_languages = models.ManyToManyField('SupportedLanguage', blank=True)
+
+    supported_devices = models.ManyToManyField('SupportedDevice', blank=True)
 
     STATUS = Choices(
         'draft',
@@ -653,7 +659,6 @@ def package_version_pre_save(sender, instance, **kwargs):
         instance.tags_text = " ".join([instance.tags_text, package.tags_text])
 
 
-
 # fix for PackageVersion save to update Package(set auto_now=False) updated_datetime
 @receiver(pre_save, sender=Package)
 def package_pre_save(sender, instance, **kwargs):
@@ -669,5 +674,142 @@ def package_pre_save(sender, instance, **kwargs):
 
     if len(changed):
         instance.updated_datetime = now()
+
+
+class SupportedLanguage(models.Model):
+
+    code = models.CharField(unique=True, max_length=10)
+
+    name = models.CharField(unique=True, max_length=50)
+
+    def save(self, *args, **kwargs):
+        if self.pk is None and not self.name:
+            self.name = self.code.lower()
+        return super(SupportedLanguage, self).save(*args, **kwargs)
+
+    def __str__(self):
+        if self.name:
+            return self.name
+        return self.code
+
+
+class SupportedFeature(SiteRelated, models.Model):
+
+    objects = CurrentSitePassThroughManager()
+
+    code = models.CharField(max_length=1024)
+
+    name = models.CharField(default='',
+                            blank=True,
+                            max_length=30)
+
+    def __str__(self):
+        if self.name:
+            return self.name
+        return self.code
+
+    class Meta:
+        unique_together = (
+            ('site', 'code'),
+        )
+
+
+class SupportedDevice(SiteRelated, models.Model):
+
+    objects = CurrentSitePassThroughManager()
+
+    code = models.CharField(unique=True, max_length=150)
+
+    name = models.CharField(default='', blank=True, max_length=50)
+
+    def __str__(self):
+        if self.name:
+            return self.name
+        return self.code
+
+    class Meta:
+        unique_together = (
+            ('site', 'code')
+        )
+
+
+# IOS
+class IOSAuthor(Author):
+
+    objects = CurrentSitePassThroughManager.for_queryset_class(AuthorQuerySet)()
+
+    artist_id = models.IntegerField(verbose_name='artistId', unique=True)
+
+    view_url = models.URLField(verbose_name='artistViewUrl',
+                               max_length=500,
+                               null=True,
+                               blank=True)
+
+    seller_url = models.URLField(verbose_name='sellerUrl',
+                                 max_length=500,
+                                 null=True,
+                                 blank=True)
+
+    seller_name = models.CharField(verbose_name='sellerName',
+                                   null=True,
+                                   blank=True,
+                                   max_length=150)
+
+
+class IOSPackage(Package):
+
+    objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
+
+    track_id = models.IntegerField(verbose_name='trackId', unique=True)
+
+    view_url = models.URLField(verbose_name='trackViewUrl',
+                               max_length=500,
+                               null=True,
+                               blank=True)
+
+    appleuser_rating = models.FloatField(verbose_name='averageUserRating',
+                                         default=None,
+                                         null=True,
+                                         blank=True)
+
+
+class IOSPackageVersion(PackageVersion):
+
+    objects = CurrentSitePassThroughManager \
+        .for_queryset_class(PackageVersionQuerySet)()
+
+    formatted_price = models.CharField(max_length=50,
+                                       null=True,
+                                       blank=True)
+
+    price = models.DecimalField(default=0,
+                                max_digits=12,
+                                decimal_places=3,
+                                db_index=True)
+
+    price_currency = models.CharField(verbose_name='currency',
+                                      max_length=4,
+                                      default=None,
+                                      blank=True,
+                                      null=True)
+
+    appleuser_rating = models.FloatField(verbose_name='averageUserRatingForCurrentVersion',
+                                         default=None,
+                                         null=True,
+                                         blank=True)
+
+    appleformatted_rating = models.CharField(verbose_name='trackContentRating',
+                                             default=None,
+                                             blank=True,
+                                             null=True,
+                                             max_length=12)
+
+    is_support_iphone = models.BooleanField(default=True,
+                                            db_index=True,
+                                            blank=True)
+
+    is_support_ipad = models.BooleanField(default=False,
+                                          db_index=True,
+                                          blank=True)
 
 

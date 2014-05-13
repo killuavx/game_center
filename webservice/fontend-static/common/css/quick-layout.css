@@ -267,7 +267,7 @@ a:hover{color:#e53333;text-decoration:underline}
 .fv{font-family:Verdana}
 .fs{font-family:Simsun}
 .fl{font-family:'Lucida Console'}
-.fw,.fw input,.fw button,.fw textarea,.fw select,.fw option{ font-family:'Microsoft Yahei'}
+.fw,.fw input,.fw button,.fw textarea,.fw select,.fw option{ font-family:"Microsoft YaHei UI","Microsoft YaHei",SimHei}
 
 /* font-style */
 .n{font-weight:normal;font-style:normal}
