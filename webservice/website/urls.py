@@ -20,5 +20,6 @@ urlpatterns = patterns('website.views',
 
         url("^social/redirect\.html$", lambda r: TemplateResponse(request=r, template='bd_frontia_jump.html')),
 
+        url(r'^iospcpackages/(?P<package_name>%s)/$' % (slug_pattern),'iospc_package_detail_views', name='iospcpackage_detail'),
 )
 

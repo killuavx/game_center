@@ -226,3 +226,6 @@ def cdn_feedback(request, slug, *args, **kwargs):
     return HttpResponse(response.render(),
                         mimetype='text/xml; charset=utf-8')
 
+
+def iospc_package_detail_views(self, package_name, *args, **kwargs):
+    return HttpResponse(package_name)
