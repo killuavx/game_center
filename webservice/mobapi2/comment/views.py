@@ -160,6 +160,7 @@ class CommentViewSet(mixins.CreateModelMixin,
                                 status=status.HTTP_403_FORBIDDEN)
             return response
 
+        self.serializer_class = serializer_class
         if response.status_code == status.HTTP_201_CREATED:
             serializer = self.serializer_class(self.object)
             response.data = serializer.data

@@ -50,9 +50,11 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
+        read_only_fields = ('site',)
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Feedback
+        read_only_fields = ('site',)

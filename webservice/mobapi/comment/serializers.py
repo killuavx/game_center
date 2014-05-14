@@ -25,4 +25,5 @@ class CommentSerializer(serializers.ModelSerializer):
 class CommentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
+        read_only_fields = ('site',)
 
