@@ -291,9 +291,9 @@ class Package(SiteRelated, models.Model):
 
     def get_absolute_iospc_url(self, link_type=0):
         if link_type == 0:
-            return '/iospcpackages/%s/' % self.package_name
+            return '/iospc/packages/%s/' % self.package_name
         else:
-            return '/iospcpackages/%s/' % self.pk
+            return '/iospc/packages/%s/' % self.pk
 
 tagging.register(Package)
 

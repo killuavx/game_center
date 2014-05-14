@@ -42,8 +42,8 @@ class PackageListRollBoxWidget(MasterpiecePackageListWidget):
         cat = 'application' if type == 'soft' else type
         tmp = super(PackageListRollBoxWidget, self).get_context(value, options, context)
         tmp['items']  = filter_packages_by_category(tmp['items'], cat)
-        return tmp
 
+        return tmp
 
 
 
