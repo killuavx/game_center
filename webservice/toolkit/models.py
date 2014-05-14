@@ -205,6 +205,8 @@ class Resource(SiteRelated, models.Model):
     KIND = Choices(
         ('icon', 'icon', 'Icon'),
         ('cover', 'cover', 'Cover'),
+        ('screenshot', 'screenshot', 'Screenshot'),
+        ('ipadscreenshot', 'ipadscreenshot', 'iPadScreenshot'),
         ('other', 'other', 'Other'),
     )
 

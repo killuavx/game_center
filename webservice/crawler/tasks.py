@@ -11,6 +11,7 @@ from mongoengine import Q
 from warehouse.models import *
 from taxonomy.models import Category
 from toolkit.fields import file_md5
+from toolkit.models import Resource
 import io
 from crawler.models import IOSAppData, IOSBuyInfo
 
@@ -58,6 +59,13 @@ def unique_value(queryset, field, value, segment='-'):
             break
         i += 1
     return value
+
+
+def content_object_id(obj):
+    ct = ContentType.objects.get_for_model(obj)
+    content_type = str(ct.pk)
+    object_pk = str(obj.pk)
+    return content_type, object_pk
 
 
 class BaseTask(object):
@@ -488,3 +496,63 @@ class SyncIOSPackageVersionFromIOSAppBuyInfoTask(BaseTask):
             version.status = version.STATUS.published
             version.save()
             print(version.pk)
+
+
+class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
+
+    crawl_resource_doc_class = None
+
+    def __init__(self):
+        super(SyncIOSPackageVersionResourceFromCrawlResourceTask, self).__init__()
+        from crawler.documents import CrawlResource
+        self.crawl_resource_doc_class = CrawlResource
+
+    def get_crawl_resource_by(self, content_type, object_pk):
+        return self.crawl_resource_doc_class.objects\
+            .filter(content_type=content_type)\
+            .filter(object_pk=object_pk)\
+            .filter(status='complate')
+
+    def get_appdata_queryset(self):
+        return IOSAppData.objects.filter(is_image_downloaded=True,
+                                         packageversion_id__gt=0).all()
+
+    def do_sync(self, limit=None, start=None):
+        qs = self.get_appdata_queryset()
+        if limit and start:
+            qs = qs[start:start+limit]
+        elif limit:
+            qs = qs[0:limit]
+
+        ct = ContentType.objects.get_for_model(IOSAppData)
+        content_type = str(ct.pk)
+        for app in qs:
+            resources = self.get_crawl_resource_by(content_type=content_type,
+                                                   object_pk=app.pk)
+            for item in resources:
+                print(item.pk)
+                print(item.resource_type, item.relative_path)
+                self.add_to_packageversion(item, app.content_object)
+
+    def add_to_packageversion(self, item, obj):
+
+        if item.resource_type in ('icon', 'screenshot', 'ipadscreenshot'):
+            if item.resource_type == 'icon':
+                alias = item.file_alias.replace('artworkUrl', '')
+                if alias == '60':
+                    obj.icon = item.relative_path
+                    obj.save()
+            else:
+                alias = item.file_alias
+                _kind = 'default' if item.resource_type == 'screenshot' else 'ipad'
+                screenshot = PackageVersionScreenshot(kind=_kind,
+                                                      image=item.relative_path,
+                                                      version=obj)
+                obj.screenshots.add(screenshot)
+
+            res = Resource(kind=item.resource_type, alias=alias,
+                           content_object=obj, file=item.relative_path)
+            obj.resources.add(res)
+            item.is_recorded = True
+            item.resource_id = res.pk
+            item.save()
