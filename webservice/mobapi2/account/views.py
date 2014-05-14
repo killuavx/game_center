@@ -10,6 +10,7 @@ from account.forms import mob as account_forms
 from mobapi2.authentications import PlayerTokenAuthentication
 from mobapi2.account.serializers import AccountDetailSerializer, MultiAppAuthTokenSerializer
 from mobapi2.warehouse.serializers.package import PackageSummarySerializer
+from mobapi2.warehouse.serializers.packageversion import PackageVersionWithMyCommentSummarySerializer
 from warehouse.models import Package, PackageVersion
 from comment.models import Comment
 
@@ -211,7 +212,7 @@ class AccountCommentPackageView(generics.ListAPIView):
 
     authentication_classes = (PlayerTokenAuthentication, )
     permission_classes = (IsAuthenticated, )
-    serializer_class = PackageVersion
+    serializer_class = PackageVersionWithMyCommentSummarySerializer
     model = PackageVersion
     filter_backends = (
         MyCommentedPackageVersionFilter,
