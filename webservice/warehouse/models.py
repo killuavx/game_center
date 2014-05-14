@@ -1,9 +1,9 @@
 # -*- encoding=utf-8 -*-
 import datetime
-from os.path import basename, join
-from django.core.exceptions import ObjectDoesNotExist
+from os.path import join
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.core import exceptions
 from django.core.urlresolvers import reverse, get_callable
@@ -12,16 +12,21 @@ from django.contrib.contenttypes import generic
 from django.db import models
 from django.db.models.query import QuerySet
 from model_utils import Choices, FieldTracker
-from model_utils.fields import StatusField, SplitField
-from toolkit.managers import CurrentSitePassThroughManager
-from toolkit.fields import StarsField, PkgFileField
+from model_utils.fields import StatusField
 from django.utils.translation import ugettext_lazy as _
 import tagging
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 
+from toolkit.managers import CurrentSitePassThroughManager
+from toolkit.fields import StarsField, PkgFileField
 from toolkit.models import SiteRelated
 from toolkit.helpers import import_from, sync_status_from
+from toolkit.storage import package_storage
+from django.core.files.storage import default_storage
+
+storage = package_storage
+
 slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
                                 'toolkit.helpers.slugify_unicode')
 slugify = get_callable(slugify_function_path)
@@ -253,7 +258,7 @@ class Package(SiteRelated, models.Model):
 
     tracker = FieldTracker()
 
-    workspace = FileField(default=None,
+    workspace = FileField(default='',
                           blank=True,
                           max_length=500,
                           format='File')
@@ -408,13 +413,15 @@ class PackageVersion(SiteRelated, models.Model):
         verbose_name=_('version file'),
         upload_to=version_upload_path,
         default='',
+        storage=storage,
         blank=True)
 
     di_download = PkgFileField(
         verbose_name=_('version file with data integration'),
         upload_to=version_upload_path,
         default='',
-        blank=True
+        blank=True,
+        storage=storage,
     )
 
     download_count = models.PositiveIntegerField(
@@ -494,7 +501,7 @@ class PackageVersion(SiteRelated, models.Model):
 
     tracker = FieldTracker()
 
-    workspace = FileField(default=None,
+    workspace = FileField(default='',
                           blank=True,
                           max_length=500,
                           format='File')
@@ -727,6 +734,9 @@ def package_version_pre_save(sender, instance, **kwargs):
 
         instance.tags_text = " ".join([instance.tags_text, package.tags_text])
 
+    if not instance.workspace:
+        instance.workspace = packageversion_workspace_path(instance)
+
 
 # fix for PackageVersion save to update Package(set auto_now=False) updated_datetime
 @receiver(pre_save, sender=Package)
@@ -743,6 +753,9 @@ def package_pre_save(sender, instance, **kwargs):
 
     if len(changed):
         instance.updated_datetime = now()
+
+    if not instance.workspace:
+        instance.workspace = ''
 
 @receiver(post_save, sender=Package)
 def package_post_save(sender, instance, created=False, **kwargs):
