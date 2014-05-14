@@ -466,3 +466,25 @@ class SyncIOSAppBuyInfoTask(BaseTask):
                 print(e)
                 continue
 
+
+class SyncIOSPackageVersionFromIOSAppBuyInfoTask(BaseTask):
+
+    def get_buyinfo_queryset(self):
+        return IOSBuyInfo.objects.all() \
+            .filter(buy_status=IOSBuyInfo.BUY_STATUS.ok)\
+            .filter(appdata__packageversion_id__gt=0) \
+            .exclude(ipafile_size=0)
+
+    def do_sync(self, limit=None, start=None):
+        qs = self.get_buyinfo_queryset()
+        if limit and start:
+            qs = qs[start:start+limit]
+        elif limit:
+            qs = qs[0:limit]
+
+        for buy in qs:
+            version = buy.appdata.packageversion
+            version.download = buy.ipafile
+            version.status = version.STATUS.published
+            version.save()
+            print(version.pk)
