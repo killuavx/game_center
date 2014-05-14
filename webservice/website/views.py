@@ -231,6 +231,7 @@ def cdn_feedback(request, slug, *args, **kwargs):
 
 def iospc_package_detail_views(request, package_name, *args, **kwargs):
     template = 'iospc/package_detail.html'
+
     context = {}
     pkg = get_package_by_package_name(package_name)
     all_cats = get_all_categories(pkg)

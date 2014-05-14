@@ -93,11 +93,8 @@
 
                             <div class="list_box down">
 
-                              {% include_widget IosPcRankingPackageListWidget type=slug %}
+                              {% include_widget IosPcRankingPackageListWidget type=pkgver.package.categories.all.0.get_root.slug %}
 
-                                    
-                              {{  pkgver.package.categories.all.0.parent.slug }}
-                                    
 
                             </div><!--down-->
 
