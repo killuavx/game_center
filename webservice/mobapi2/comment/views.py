@@ -13,6 +13,9 @@ from mobapi2.authentications import PlayerTokenAuthentication
 from mobapi2.comment.serializers import CommentSerializer, CommentCreateSerializer, FeedbackSerializer
 from comment.models import Comment, Feedback, FeedbackType
 
+import logging
+logger = logging.getLogger('scripts')
+
 
 class CommentViewSet(mixins.CreateModelMixin,
                      mixins.ListModelMixin,
@@ -257,9 +260,14 @@ class FeedbackViewSet(mixins.CreateModelMixin,
         # create data
         if not instance and data:
             params = copy.deepcopy(self.request.QUERY_PARAMS)
+            logger.info('get_serializer')
+            logger.info(params)
             kind = self.get_kind(params)
+            logger.info(kind)
             contacts = self.get_contacts(params)
+            logger.info(contacts)
             content_type, object_pk = self.get_content_object(params)
+            logger.info((content_type, object_pk))
             data = dict(
                 user=self.request.user,
                 kind=kind.pk,
@@ -282,8 +290,12 @@ class FeedbackViewSet(mixins.CreateModelMixin,
             try:
                 from warehouse.models import PackageVersion
                 ct = ContentType.objects.get_for_model(PackageVersion)
+                logger.info('get_content_object')
+                logger.info(ct.pk)
                 ct_obj = ct.get_object_for_this_type(package__package_name=params.get('package_name'),
                                                      version_name=params.get('version_name'))
+                logger.info(ct_obj)
+                logger.info('end get_content_object')
                 content_type = ct.pk
                 object_pk = ct_obj.pk
             except ObjectDoesNotExist:
@@ -305,3 +317,4 @@ class FeedbackViewSet(mixins.CreateModelMixin,
             contact_phone=params.get('phone', None),
             contact_im_qq=params.get('im_qq', None)
         )
+
