@@ -60,6 +60,21 @@ class AuthorQuerySet(QuerySet):
         return self.unactivated()
 
 
+def author_workspace_path(author):
+    _id = author.pk
+    subdir = 'author'
+    try:
+        if hasattr(author, 'track_id'):
+            _id = author.artist_id
+        else:
+            iauthor = author.iosauthor
+            _id = iauthor.atrist_id
+        subdir = 'iauthor'
+    except ObjectDoesNotExist:
+        pass
+    return join(subdir, str(_id))
+
+
 def factory_author_upload_to(basename):
     def upload_to(instance, filename):
         extension = filename.split('.')[-1].lower()
@@ -413,6 +428,7 @@ class PackageVersion(SiteRelated, models.Model):
         verbose_name=_('version file'),
         upload_to=version_upload_path,
         default='',
+        max_length=500,
         storage=storage,
         blank=True)
 
@@ -421,6 +437,7 @@ class PackageVersion(SiteRelated, models.Model):
         upload_to=version_upload_path,
         default='',
         blank=True,
+        max_length=500,
         storage=storage,
     )
 
