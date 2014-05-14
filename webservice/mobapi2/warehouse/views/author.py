@@ -13,7 +13,7 @@ class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if self.queryset is None:
-            self.queryset = Author.objects.activated()
+            self.queryset = Author.objects.all()
         return self.queryset
 
     @link()
