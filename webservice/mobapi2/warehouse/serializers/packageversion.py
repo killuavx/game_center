@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from rest_framework import serializers
+from rest_framework.fields import DateField
 from warehouse.models import PackageVersion, PackageVersionScreenshot
 from mobapi2.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
 from mobapi2.rest_fields import factory_imageurl_field
@@ -384,3 +386,156 @@ class PettionPackageVersionSummarySerializer(PackageVersionRelatedPackageMixin,
                   'version_code',
                   #'versions_url',
         )
+
+
+class BasePackageVersionSummarySerializer(PackageVersionRelatedPackageMixin,
+                                          PackageVersionSummarySerializer):
+
+    package_name = serializers.SerializerMethodField('get_package_name')
+
+    title = serializers.SerializerMethodField('get_title')
+
+    author = serializers.SerializerMethodField('get_author')
+
+    icon = factory_imageurl_field(IMAGE_ICON_SIZE)
+
+    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
+
+    download = serializers.SerializerMethodField('get_version_download_url')
+
+    download_size = serializers.SerializerMethodField(
+        'get_version_download_size')
+
+    comment_count = serializers.SerializerMethodField(
+        'get_version_comment_count')
+
+    comments_url = serializers.SerializerMethodField('get_version_comments_url')
+
+    category_name = serializers.SerializerMethodField('get_main_category_name')
+    categories_names = serializers.SerializerMethodField('get_categories_names')
+
+    actions = serializers.SerializerMethodField('get_action_links')
+
+    versions_url = serializers.SerializerMethodField('get_package_versions_url')
+
+    def get_package_versions_url(self, obj):
+        return self.get_versions_url(obj.package)
+
+    version_count = serializers.SerializerMethodField('get_package_version_count')
+    def get_package_version_count(self, obj):
+        return self.get_version_count(obj.package)
+
+    star = serializers.SerializerMethodField('get_star')
+    def get_star(self, obj):
+        return get_object_star(obj)
+
+    class Meta:
+        model = PackageVersion
+        fields = ('url',
+                  'icon',
+                  'cover',
+                  'title',
+                  'package_name',
+                  'version_name',
+                  'version_code',
+                  'version_count',
+                  'versions_url',
+                  'tags',
+                  'star',
+                  'category_name',
+                  'categories_names',
+                  'summary',
+                  'author',
+                  'download',
+                  'download_size',
+                  'download_count',
+                  'comments_url',
+                  'released_datetime',
+                  'actions',
+        )
+
+class PackageVersionWithMyCommentSummarySerializer(
+    BasePackageVersionSummarySerializer):
+
+    package_name = serializers.SerializerMethodField('get_package_name')
+
+    title = serializers.SerializerMethodField('get_title')
+
+    author = serializers.SerializerMethodField('get_author')
+
+    icon = factory_imageurl_field(IMAGE_ICON_SIZE)
+
+    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
+
+    download = serializers.SerializerMethodField('get_version_download_url')
+
+    download_size = serializers.SerializerMethodField(
+        'get_version_download_size')
+
+    comment_count = serializers.SerializerMethodField(
+        'get_version_comment_count')
+
+    comments_url = serializers.SerializerMethodField('get_version_comments_url')
+
+    category_name = serializers.SerializerMethodField('get_main_category_name')
+    categories_names = serializers.SerializerMethodField('get_categories_names')
+
+    actions = serializers.SerializerMethodField('get_action_links')
+
+    versions_url = serializers.SerializerMethodField('get_package_versions_url')
+
+    version_count = serializers.SerializerMethodField('get_package_version_count')
+
+    star = serializers.SerializerMethodField('get_star')
+
+    def _get_comment(self, obj):
+        request = self.context.get('request')
+        if request:
+            try:
+                return get_packageversion_comment_queryset(obj)\
+                    .filter(user=request.user)[0]
+            except (IndexError, ObjectDoesNotExist) as e:
+                pass
+        return None
+
+    comment = serializers.SerializerMethodField('get_comment_content')
+    def get_comment_content(self, obj):
+        comment = self._get_comment(obj)
+        if comment:
+            return comment.comment
+        return ''
+
+    submit_date = serializers.SerializerMethodField('get_comment_submit_date')
+    def get_comment_submit_date(self, obj):
+        comment = self._get_comment(obj)
+        if comment:
+            return DateField().to_native(comment.submit_date)
+        return ''
+
+    class Meta:
+        model = PackageVersion
+        fields = ('url',
+                  'icon',
+                  'cover',
+                  'title',
+                  'package_name',
+                  'version_name',
+                  'version_code',
+                  'version_count',
+                  'versions_url',
+                  'tags',
+                  'star',
+                  'category_name',
+                  'categories_names',
+                  'summary',
+                  'author',
+                  'download',
+                  'download_size',
+                  'download_count',
+                  'comments_url',
+                  'released_datetime',
+                  'actions',
+                  'comment',
+                  'submit_date',
+        )
+

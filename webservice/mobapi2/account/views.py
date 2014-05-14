@@ -9,9 +9,7 @@ from rest_framework.views import APIView
 from account.forms import mob as account_forms
 from mobapi2.authentications import PlayerTokenAuthentication
 from mobapi2.account.serializers import AccountDetailSerializer, MultiAppAuthTokenSerializer
-from mobapi2.warehouse.serializers.package import (
-    PackageSummarySerializer,
-    PackageSummaryWithMyCommentSerializer)
+from mobapi2.warehouse.serializers.package import PackageSummarySerializer
 from warehouse.models import Package, PackageVersion
 from comment.models import Comment
 
@@ -168,24 +166,16 @@ class AccountAuthTokenView(ObtainAuthToken):
     serializer_class = MultiAppAuthTokenSerializer
 
 
-class MyCommentPackageFilter(filters.BaseFilterBackend):
+class MyCommentedPackageVersionFilter(filters.BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         user = request.user
-        logger.info(user)
         qs = Comment.objects.for_model(PackageVersion).visible().by_submit_order()
         version_ids = list(qs.filter(user=user).values_list('object_pk', flat=True))
-        logger.info(version_ids)
         if not version_ids:
             return queryset.none()
-        pkg_ids = PackageVersion.objects.published() \
-            .filter(pk__in=version_ids).values_list('package__pk', flat=True)
-        pkg_ids = list(pkg_ids)
-        logger.info(pkg_ids)
-        if not pkg_ids:
-            return queryset.none()
+        return queryset.filter(pk__in=version_ids)
 
-        return queryset.filter(pk__in=pkg_ids)
 
 class AccountCommentPackageView(generics.ListAPIView):
     """ 已评论软件接口
@@ -221,16 +211,17 @@ class AccountCommentPackageView(generics.ListAPIView):
 
     authentication_classes = (PlayerTokenAuthentication, )
     permission_classes = (IsAuthenticated, )
-    serializer_class = PackageSummaryWithMyCommentSerializer
+    serializer_class = PackageVersion
     model = Package
     filter_backends = (
-        MyCommentPackageFilter,
+        MyCommentedPackageVersionFilter,
     )
 
     def get_queryset(self):
         if self.queryset is None:
-            self.queryset = Package.objects.published()
+            self.queryset = self.serializer_class.objects.published()
         return self.queryset
+
 
 class DjangoDataFilterBackend(filters.DjangoFilterBackend):
     def filter_queryset(self, request, queryset, view):
