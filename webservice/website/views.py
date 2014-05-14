@@ -243,3 +243,11 @@ def iospc_package_detail_views(request, package_name, *args, **kwargs):
     context['cats'] = leaf_cats
 
     return TemplateResponse(request=request, template=template, context=context)
+
+
+def iospc_game_list_views(request, slug, *args, **kwargs):
+    template = 'iospc/package_list.html'
+
+    context = {}
+
+    return TemplateResponse(request=request, template=template, context=context)

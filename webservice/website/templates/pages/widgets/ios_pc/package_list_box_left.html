@@ -9,8 +9,9 @@
             <h3 class="fl">
               {% if type == "game" %}
                 游戏
-              {% else %}
+              {% elif type == 'soft' %}
                 软件
+              {% else %}
               {% endif %}
             </h3>
             <ul class="fl">
@@ -28,9 +29,9 @@
             </ul>
 
             <span class="tab-more">
-              <a href="{{ ele.more_url }}" class="fr">更多></a>
-              <a href="{{ ele.more_url }}" class="fr">更多></a>
-              <a href="{{ ele.more_url }}" class="fr">更多></a>
+              {% for ele in result %}
+                <a href="{{ ele.more_url }}" class="fr">更多></a>
+              {% endfor %}
             </span>
 
 

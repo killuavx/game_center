@@ -290,6 +290,13 @@ class TopicalItemQuerySet(QuerySet):
                     topics__content_type__pk=content_type.pk) \
             .order_by('topics__ordering')
 
+    def filter_items_by_topic(self, topic, item_model, queryset):
+        content_type = ContentType.objects.get_for_model(item_model)
+        return queryset \
+            .filter(topics__topic__pk=topic.pk,
+                    topics__content_type__pk=content_type.pk) \
+            .order_by('topics__ordering')
+
 
 class TopicalItem(SiteRelated, models.Model):
 

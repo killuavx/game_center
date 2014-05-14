@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.core.paginator import Paginator
 from website.cdn.model_register import *
 from warehouse.models import Package, PackageVersion
 from mptt.models import MPTTModel
@@ -99,3 +100,9 @@ def get_packageversion_by_package(package):
 
     return pv
 
+
+def get_all_packages():
+    return Packages.objects.by_published_order(True)
+
+#def get_packages_by_root_category(category):Packages.objects.by_published_order(True)
+#    pass
