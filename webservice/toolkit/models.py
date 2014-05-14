@@ -212,7 +212,7 @@ class Resource(SiteRelated, models.Model):
 
     alias = models.CharField(default='default', blank=True, max_length=50)
 
-    alt = models.CharField(max_length=100, default='')
+    alt = models.CharField(max_length=100, default='', blank=True)
 
     file = FileField(max_length=500,
                      upload_to='temps')
