@@ -1,9 +1,20 @@
 # -*- coding: utf-8 -*-
+import hashlib
 import json
 import re
 from django.utils import importlib
 import unicodedata
 from django.utils.encoding import smart_text
+
+
+def file_md5(f, iter_read_size=1024 ** 2 * 8):
+    m = hashlib.md5()
+    while True:
+        data = f.read(iter_read_size)
+        if not data:
+            break
+        m.update(data)
+    return m.hexdigest()
 
 
 def slugify_unicode(s):
@@ -105,3 +116,28 @@ def get_client_event_data(request):
         except ValueError:
             pass
     return kwargs
+
+
+def current_site_id():
+    """
+        0. combine
+        1. android
+        2. ios
+    """
+    from mezzanine.utils.sites import current_site_id as _cur_site_id
+    site_id = _cur_site_id()
+    if site_id == 3:
+        return 1
+    return int(site_id)
+
+
+def current_site():
+    from mezzanine.utils.sites import current_site_id as _cur_site_id
+    from django.contrib.sites.models import Site
+    site_id = _cur_site_id()
+    return Site.objects.get(pk=site_id)
+
+
+def current_request():
+    from mezzanine.core.request import current_request as _cur_request
+    return _cur_request()

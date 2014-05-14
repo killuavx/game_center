@@ -1,36 +1,20 @@
 # -*- coding: utf-8 -*-
+import io
+from os.path import join
 from django.utils.timesince import timesince
 from django.utils.timezone import now
 from django.contrib.contenttypes.generic import GenericForeignKey
 from django.db import models
 from mezzanine.utils.models import get_user_model_name, base_concrete_model
 from django.utils.translation import ugettext_lazy as _
+from django.core.files.images import ImageFile
+from model_utils.choices import Choices
+
+from django.conf import settings as df_settings
 from toolkit import settings
-
-
-def current_site_id():
-    """
-        0. combine
-        1. android
-        2. ios
-    """
-    from mezzanine.utils.sites import current_site_id as _cur_site_id
-    site_id = _cur_site_id()
-    if site_id == 3:
-        return 1
-    return int(site_id)
-
-
-def current_site():
-    from mezzanine.utils.sites import current_site_id as _cur_site_id
-    from django.contrib.sites.models import Site
-    site_id = _cur_site_id()
-    return Site.objects.get(pk=site_id)
-
-
-def current_request():
-    from mezzanine.core.request import current_request as _cur_request
-    return _cur_request()
+from toolkit.managers import ResourceManager
+from toolkit.fields import FileField
+from toolkit.helpers import file_md5, current_site_id
 
 
 CONTENT_STATUS_DRAFT = 1
@@ -197,3 +181,82 @@ class Star(models.Model):
                                                                   ", ".join(valid)))
         super(Star, self).save(*args, **kwargs)
 
+
+import mimetypes
+mimetypes.init(["pythonclub.org-mimetypes.txt"])
+
+
+def resource_upload_path(instance, filename):
+    if hasattr(instance.content_object, 'workspace'):
+        prefix = instance.content_object.workspace.name
+    else:
+        prefix = 'temps/%s' % now().strftime('%Y%m%d')
+    return join(prefix, instance.kind, filename)
+
+
+class Resource(SiteRelated, models.Model):
+
+    objects = ResourceManager()
+
+    content_type = models.ForeignKey("contenttypes.ContentType", related_name='+')
+    object_pk = models.IntegerField()
+    content_object = GenericForeignKey("content_type", "object_pk")
+
+    KIND = Choices(
+        ('icon', 'icon', 'Icon'),
+        ('cover', 'cover', 'Cover'),
+        ('other', 'other', 'Other'),
+    )
+
+    kind = models.CharField(choices=KIND, max_length=15)
+
+    alias = models.CharField(default='default', blank=True, max_length=50)
+
+    alt = models.CharField(max_length=100, default='')
+
+    file = FileField(max_length=500,
+                     upload_to='temps')
+
+    # file check
+    mime_type = models.CharField(max_length=100, default=None, null=True, blank=True)
+
+    file_md5 = models.CharField(max_length=40, default=None, null=True, blank=True)
+
+    file_size = models.IntegerField(default=0, blank=True)
+
+    width = models.CharField(max_length=6, default=0, blank=True)
+
+    height = models.CharField(max_length=6, default=0, blank=True)
+
+    class Meta:
+        db_table = 'common_resource'
+        index_together = (
+            ('site', 'content_type', ),
+            ('site', 'content_type', 'object_pk',),
+            ('site', 'content_type', 'object_pk', 'kind'),
+        )
+        unique_together = (
+            ('site', 'content_type', 'object_pk', 'kind', 'alias'),
+        )
+        ordering = ('site', 'content_type', 'object_pk', 'kind')
+
+    def check_file_meta(self):
+        if self.file.exists():
+            self.file_size = self.file.filesize
+
+            filepath = join(df_settings.MEDIA_ROOT, self.file.name)
+            with io.FileIO(filepath) as f:
+                self.file_md5 = file_md5(f)
+
+                if self.mime_type and self.mime_type.startswith('image'):
+                    image_file = ImageFile(f)
+                    self.height, self.width = image_file.height, image_file.width
+
+    def save(self, update_meta=False, *args, **kwargs):
+        self.mime_type, _ext = mimetypes.guess_type(self.file.name)
+        if update_meta:
+            self.check_file_meta()
+        return super(Resource, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return "%s,%s:[%s]" % (self.kind, self.alias, self.file.name)

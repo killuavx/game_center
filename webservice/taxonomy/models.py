@@ -17,9 +17,8 @@ from django.db.models import SlugField
 from django.core.urlresolvers import get_callable
 from django.conf import settings
 from toolkit.managers import CurrentSitePassThroughManager, CurrentSiteManager
-from toolkit.helpers import sync_status_from
-from toolkit.models import (SiteRelated,
-                            current_site_id)
+from toolkit.helpers import sync_status_from, current_site_id
+from toolkit.models import (SiteRelated )
 
 slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
                                 'toolkit.helpers.slugify_unicode')

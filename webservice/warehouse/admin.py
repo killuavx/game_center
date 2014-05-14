@@ -1,5 +1,6 @@
 # -*- encoding=utf-8 -*-
 from django.contrib import admin
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
@@ -14,7 +15,9 @@ from easy_thumbnails.exceptions import InvalidImageFormatError
 from toolkit.helpers import sync_status_summary, sync_status_actions
 
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
+from warehouse.models import IOSPackage, IOSAuthor, IOSPackageVersion
 from webservice.admin import AdminFieldBase, AdminField
+from toolkit.admin import ResourceInlines
 
 
 class ImageClearableFileInput(_ImageClearableFileInput):
@@ -50,9 +53,27 @@ class MainAdmin(VersionAdmin):
     pass
 
 
-class PackageVersionScreenshotInlines(StackedInline):
+class PackageVersionScreenshotInlines(admin.StackedInline):
     model = PackageVersionScreenshot
-    #extra = 6
+    extra = 4
+
+    def get_fieldsets(self, request, obj=None):
+        form = self.get_formset(request, obj).form
+        fields = list(form.base_fields) + list(self.get_readonly_fields(request, obj))
+
+        if isinstance(obj, IOSPackageVersion):
+            return [(None, {'fields': fields})]
+        try:
+            iospackageversion = obj.iospackageversion
+            return [(None, {'fields': fields})]
+        except ObjectDoesNotExist:
+            pass
+
+        try:
+            fields.pop(fields.index('kind'))
+        except:
+            pass
+        return [(None, {'fields': fields})]
 
     def show_thumbnail(self, obj):
         try:
@@ -71,7 +92,9 @@ class PackageVersionScreenshotInlines(StackedInline):
 
 class PackageVersionAdmin(MainAdmin):
     model = PackageVersion
-    inlines = (PackageVersionScreenshotInlines, )
+    inlines = (ResourceInlines,
+               PackageVersionScreenshotInlines,
+    )
     list_per_page = 15
     search_fields = ('version_name',
                      'package__package_name',
@@ -95,23 +118,30 @@ class PackageVersionAdmin(MainAdmin):
         (_('Package'), {
             'fields': ('package', )
         }),
-        (_('File'), {
+        (_('Version'), {
+            'classes': ('suit-tab suit-tab-general',
+                        'grp-collapse collapse-closed'),
             'fields': (
-                       'icon', 'cover',
-                       'subtitle',
-                       'summary',
-                       'tags_text',
-                       'description',
-                       ('download', 'download_size', 'download_md5'),
-                       ('di_download', 'di_download_size', 'di_download_md5'),
+                'subtitle',
+                ('version_code', 'version_name',),
+                'summary',
+                'tags_text',
+                'whatsnew',
+                'description',
             )
         }),
-        (_('Version'), {
+        (_('File'), {
+            'classes': ('suit-tab suit-tab-general',
+                        'grp-collapse collapse-closed'),
             'fields': (
-                'version_code', 'version_name', 'whatsnew'
+                'icon', 'cover',
+                ('download', 'download_size', 'download_md5'),
+                ('di_download', 'di_download_size', 'di_download_md5'),
             )
         }),
         (_('Supported'), {
+            'classes': ('suit-tab suit-tab-general',
+                        'grp-collapse collapse-closed'),
             'fields': (
                 'supported_languages',
                 'supported_devices',
@@ -119,8 +149,14 @@ class PackageVersionAdmin(MainAdmin):
             )
         }),
         (_('Version Statistics'), {
+            'classes': ('suit-tab suit-tab-general',
+                        'grp-collapse collapse-closed'),
             'fields': (
                 'download_count',
+                ('stars_count', 'stars_sum', 'stars_average',),
+                ('stars_good_rate', 'stars_good_count',),
+                ('stars_medium_rate', 'stars_medium_count',),
+                ('stars_low_rate', 'stars_low_count'),
             )
         }),
         (_('Status'), {
@@ -137,6 +173,10 @@ class PackageVersionAdmin(MainAdmin):
                        'di_download_md5',
                        'download_size',
                        'download_md5',
+                       'stars_count', 'stars_sum', 'stars_average',
+                       'stars_good_rate', 'stars_good_count',
+                       'stars_medium_rate', 'stars_medium_count',
+                       'stars_low_rate', 'stars_low_count',
     )
     filter_horizontal = ("supported_languages",
                          "supported_devices",
@@ -310,12 +350,12 @@ class PackageAdmin(MainAdmin):
         }),
         (_('Taxonomy'), {
             'classes': ('suit-tab suit-tab-general',
-                        'collapse', 'grp-collapse grp-closed'),
+                        'grp-collapse collapse-closed'),
             'fields': ('tags_text', 'categories')
         }),
         (_('Release'), {
             'classes': ('suit-tab suit-tab-general',
-                        'collapse', 'grp-collapse grp-open'),
+                        'grp-collapse collapse-closed'),
             'fields': ( 'released_datetime', 'status',
                         'created_datetime', 'updated_datetime'
             )

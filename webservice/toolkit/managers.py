@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.managers import CurrentSiteManager as DjangoCSM
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 from django.db.models import get_models, Q, Manager
 from django.db.models.query import QuerySet
+from django.utils.encoding import force_text
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from model_utils.managers import PassThroughManager, PassThroughManagerMixin
-from toolkit.models import current_site_id
+from toolkit.helpers import current_site_id
 
 
 class PublishedManager(Manager):
@@ -76,4 +80,60 @@ class CurrentSitePassThroughManager(PassThroughManagerMixin,
                                     CurrentSiteManager):
     pass
 
+
+class ResourceManager(PassThroughManagerMixin, CurrentSiteManager):
+    """
+        get Resource from model
+        obj.resources.{kind}.{alias}
+    """
+
+    def for_model(self, model):
+        """
+        QuerySet for all for a particular model (either an instance or
+        a class).
+        """
+        ct = ContentType.objects.get_for_model(model)
+        qs = self.get_query_set().filter(content_type=ct)
+        if isinstance(model, models.Model):
+            qs = qs.filter(object_pk=force_text(model._get_pk_val()))
+        return qs
+
+    def __getattr__(self, kind):
+        kind_resources = self.filter(kind=kind)
+        resource_model = self.__dict__['model']
+        instance = self.instance
+        prefetch_cache_name = self.prefetch_cache_name
+
+        class FilterKindDict(dict):
+
+            def count(self):
+                return kind_resources.count()
+
+            def __getattr__(self, alias):
+                return kind_resources.get(alias=alias)
+
+            def __getitem__(self, alias):
+                if isinstance(alias, int):
+                    return kind_resources[alias]
+                return kind_resources.get(alias=alias)
+
+            def __setattr__(self, alias, value):
+                if instance(value, resource_model):
+                    value.kind, value.alias = kind, alias
+                    value.content_object = instance
+                    resource = value
+                else:
+                    resource = resource_model(kind=kind,
+                                              alias=alias,
+                                              content_object=instance,
+                                              file=value)
+                getattr(instance, prefetch_cache_name).add(resource)
+
+            def __iter__(self):
+                return kind_resources
+
+            def __repr__(self):
+                return '<FilterKindDict: %s>' % kind
+
+        return FilterKindDict()
 

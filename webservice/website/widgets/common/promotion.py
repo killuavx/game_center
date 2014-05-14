@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from promotion.models import Place, Advertisement
 
 class BaseMultiAdvWidget(object):
 
     slug = None
 
     def get_list(self, slug, max_items=None):
+        from promotion.models import Place, Advertisement
         try:
             place = Place.objects.get(slug=slug)
 
@@ -33,6 +33,7 @@ class BaseSingleAdvWidget(object):
     slug = None
 
     def get_object(self, slug):
+        from promotion.models import Place, Advertisement
         try:
             place = Place.objects.get(slug=slug)
             return place.advertisements.published()[0]

@@ -1,5 +1,6 @@
 from django.db import models
 from model_utils.managers import PassThroughManager
+from toolkit.helpers import current_site_id
 from toolkit.managers import (CurrentSitePassThroughManager,
                               PublishedManager,
                               CurrentSiteManager,)
@@ -8,7 +9,6 @@ from toolkit.models import (
     PublishDisplayable)
 from mezzanine.core.managers import DisplayableManager
 from mezzanine.core.models import Displayable, Orderable, TimeStamped
-from toolkit.models import current_site_id
 #from django.utils.translation import ugettext_lazy as _
 
 

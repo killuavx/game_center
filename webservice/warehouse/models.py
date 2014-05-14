@@ -19,11 +19,10 @@ from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 
 from toolkit.managers import CurrentSitePassThroughManager
-from toolkit.fields import StarsField, PkgFileField
+from toolkit.fields import StarsField, PkgFileField, MultiResourceField
 from toolkit.models import SiteRelated
 from toolkit.helpers import import_from, sync_status_from
 from toolkit.storage import package_storage
-from django.core.files.storage import default_storage
 
 storage = package_storage
 
@@ -356,19 +355,6 @@ class PackageVersionQuerySet(QuerySet):
         return self.published().latest('version_code')
 
 
-def factory_version_upload_to_path(basename):
-    def upload_to(instance, filename):
-        extension = filename.split('.')[-1].lower()
-        path = "package/%d/v%d" % (
-            int(instance.package.pk), int(instance.version_code))
-        return '%(path)s/%(filename)s.%(extension)s' % {'path': path,
-                                                        'filename': basename,
-                                                        'extension': extension,
-        }
-
-    return upload_to
-
-
 def package_workspace_path(package):
     _id = package.pk
     subdir = 'package'
@@ -420,7 +406,7 @@ class PackageVersion(SiteRelated, models.Model):
 
     cover = ThumbnailerImageField(
         default='',
-        upload_to=factory_version_upload_to_path('cover'),
+        upload_to=version_upload_path,
         blank=True,
     )
 
@@ -522,6 +508,8 @@ class PackageVersion(SiteRelated, models.Model):
                           blank=True,
                           max_length=500,
                           format='File')
+
+    resources = MultiResourceField()
 
     def get_absolute_url(self, link_type=0):
         if link_type == 0:

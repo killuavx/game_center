@@ -461,3 +461,5 @@ DATABASE_ROUTERS = [
     'webservice.dbroute_settings.CrawlerRouter',
 ]
 
+
+DEFAULT_FILE_STORAGE = 'toolkit.storage.QiniuResourceFileStorage'

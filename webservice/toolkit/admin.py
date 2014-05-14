@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from django.contrib.contenttypes.generic import GenericTabularInline, GenericStackedInline
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
-from toolkit.models import Star
+from toolkit.models import Star, Resource
 
 
 def admin_edit_url(object):
@@ -44,3 +45,13 @@ class StarAdmin(admin.ModelAdmin):
     content_title.short_description = _('Object Title')
 
 #admin.site.register(Star, StarAdmin)
+
+
+class ResourceInlines(GenericStackedInline):
+    model = Resource
+    ct_field = "content_type"
+    ct_fk_field = "object_pk"
+    fields = ('file', 'kind', 'alias', 'alt', 'file_size', 'file_md5', )
+    ordering = ('kind', 'alias', )
+    readonly_fields = ('file_size', 'file_md5')
+

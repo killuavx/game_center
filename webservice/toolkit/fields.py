@@ -1,22 +1,12 @@
 # -*- coding: utf-8 -*-
 import io
 from django.conf import settings
-from django.db.models import FloatField, IntegerField, FileField, CharField, BooleanField, TextField
-from copy import deepcopy
+from django.db.models import FloatField, IntegerField, CharField
 from mezzanine.generic.fields import (
     BaseGenericRelation)
-from django.core.files import File
-
-import hashlib
-
-def file_md5(f, iter_read_size=1024 ** 2 * 8):
-    m = hashlib.md5()
-    while True:
-        data = f.read(iter_read_size)
-        if not data:
-            break
-        m.update(data)
-    return m.hexdigest()
+from toolkit.helpers import file_md5
+from django.db.models import FileField as DFileField
+from mezzanine.core.fields import FileField
 
 
 def update_pkgfile_meta(instance, fieldname):
@@ -34,16 +24,16 @@ def update_pkgfile_meta(instance, fieldname):
 class StarsField(BaseGenericRelation):
 
     related_model = "toolkit.Star"
-    fields = {"%s_count": IntegerField(default=0, editable=False),
-              "%s_sum": IntegerField(default=0, editable=False),
-              "%s_average": FloatField(default=0, editable=False),
+    fields = {"%s_count": IntegerField(verbose_name='Count', default=0, editable=False),
+              "%s_sum": IntegerField(verbose_name='Sum', default=0, editable=False),
+              "%s_average": FloatField(verbose_name='Average', default=0, editable=False),
 
-              "%s_good_count": IntegerField(default=0, editable=False),
-              "%s_good_rate": FloatField(default=0, editable=False),
-              "%s_medium_count": IntegerField(default=0, editable=False),
-              "%s_medium_rate": FloatField(default=0, editable=False),
-              "%s_low_count": IntegerField(default=0, editable=False),
-              "%s_low_rate": FloatField(default=0, editable=False),
+              "%s_good_count": IntegerField(verbose_name='Good Count', default=0, editable=False),
+              "%s_good_rate": FloatField(verbose_name='Good Rate', default=0, editable=False),
+              "%s_medium_count": IntegerField(verbose_name='Medium Count', default=0, editable=False),
+              "%s_medium_rate": FloatField(verbose_name='Medium Rate', default=0, editable=False),
+              "%s_low_count": IntegerField(verbose_name='Low Count', default=0, editable=False),
+              "%s_low_rate": FloatField(verbose_name='Low Rate', default=0, editable=False),
     }
 
     def related_items_changed(self, instance, related_manager):
@@ -106,7 +96,7 @@ class StarsField(BaseGenericRelation):
         return vals_count, rate
 
 
-class FileWithMetaField(FileField):
+class FileWithMetaField(DFileField):
 
     def __init__(self, *args, **kwargs):
         super(FileWithMetaField, self).__init__(*args, **kwargs)
@@ -158,6 +148,19 @@ class FileWithMetaField(FileField):
 class PkgFileField(FileWithMetaField):
     pass
 
+
+class MultiResourceField(BaseGenericRelation):
+
+    related_model = "toolkit.Resource"
+    fields = {
+        '%s_count': IntegerField(default=0, blank=True, editable=False),
+    }
+
+    def related_items_changed(self, instance, related_manager):
+        resources = related_manager.all()
+        count_field = '%s_count' % self.related_field_name
+        setattr(instance, count_field, resources.count())
+        instance.save()
 
 # South requires custom fields to be given "rules".
 # See http://south.aeracode.org/docs/customfields.html
