@@ -220,7 +220,7 @@ class AccountCommentPackageView(generics.ListAPIView):
 
     def get_queryset(self):
         if self.queryset is None:
-            self.queryset = self.serializer_class.objects.published()
+            self.queryset = self.model.objects.published()
         return self.queryset
 
 
