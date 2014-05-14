@@ -23,7 +23,8 @@ def filter_packages_by_category(packages, category, limit=12):
 
     for pkg in packages:
         for cat in pkg.categories.all():
-            if category in cat.slug:
+            #if category in cat.slug:
+            if cat.get_root().slug == category:
                 items.append(pkg)
                 if len(items) >= limit:
                     return items
