@@ -197,16 +197,16 @@ class AccountCommentPackageView(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        qs = Comment.objects.with_site().published().by_submit_order()
+        qs = Comment.objects.visible().by_submit_order()
         version_ids = list(
             qs.filter(user=user).values_list('object_pk', flat=True))
         pkg_ids = PackageVersion.objects.published() \
             .filter(pk__in=version_ids).values_list('package__pk', flat=True)
         pkg_ids = list(pkg_ids)
-        self.queryset = self.queryset.filter(pk__in=pkg_ids)
+        self.queryset = self.get_queryset().filter(versions__in=pkg_ids)
 
         return super(AccountCommentPackageView, self) \
-            .get(request=request, *args, **kwargs)
+            .get(request, *args, **kwargs)
 
 
 class DjangoDataFilterBackend(filters.DjangoFilterBackend):
