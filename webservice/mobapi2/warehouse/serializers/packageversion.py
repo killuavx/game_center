@@ -11,6 +11,7 @@ from mobapi2.helpers import (
     get_packageversion_comments_url, get_object_star, get_object_stars_rate)
 from mobapi2.warehouse.serializers.mixin import (
     PackageRelatedCategoryMixin,
+    PackageRelatedTagMin,
     PackageActionsMixin,
     PackageRelatedVersionsMixin,
     PackageRelatedPackageUrlMixin)
@@ -21,6 +22,7 @@ from mobapi2.serializers import (
     SerializerRelatedField,
     ModelWithRouterSerializer as ModelSerializer,
     HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
+
 
 
 class PackageVersionScreenshotSerializer(ModelSerializer):
@@ -389,6 +391,7 @@ class PettionPackageVersionSummarySerializer(PackageVersionRelatedPackageMixin,
 
 
 class BasePackageVersionSummarySerializer(PackageVersionRelatedPackageMixin,
+                                          PackageRelatedTagMin,
                                           PackageVersionSummarySerializer):
 
     package_name = serializers.SerializerMethodField('get_package_name')
@@ -487,6 +490,8 @@ class PackageVersionWithMyCommentSummarySerializer(
     version_count = serializers.SerializerMethodField('get_package_version_count')
 
     star = serializers.SerializerMethodField('get_star')
+
+    tags = serializers.SerializerMethodField('get_tags')
 
     def _get_comment(self, obj):
         request = self.context.get('request')
