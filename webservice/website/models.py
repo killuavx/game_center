@@ -4,6 +4,8 @@ from django.core.paginator import Paginator
 from website.cdn.model_register import *
 from warehouse.models import Package, PackageVersion
 from mptt.models import MPTTModel
+from taxonomy.models import Category
+
 
 
 def mock_processor_class(processor_class):
@@ -99,6 +101,20 @@ def get_packageversion_by_package(package):
         return None
 
     return pv
+
+
+def filter_packages_by_category_slug(packages, slug):
+    try:
+        root_cat = Category.objects.get(slug=slug)
+    except:
+        return []
+
+    cats = root_cat.get_descendants(True)
+    pkgs =  packages.filter(categories__in=cats)
+    if not pkgs:
+        return []
+
+    return  pkgs.distinct().by_published_order()
 
 
 def get_all_packages():

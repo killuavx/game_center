@@ -4,7 +4,7 @@ from .common.promotion import BaseSingleAdvWidget, BaseMultiAdvWidget
 from .masterpiece import MasterpiecePackageListWidget
 from .common.topic import BaseTopicPackageListWidget
 from .common.package import BaseRankingPackageListWidget
-from taxonomy.models import Topic, Category, TopicalItem
+from taxonomy.models import Topic, TopicalItem
 from warehouse.models import Package
 
 
@@ -18,28 +18,12 @@ class BannerTopleftWidget(BaseMultiAdvWidget, Widget):
     template = 'pages/widgets/ios_pc/banner_top_left.html'
 
 
-def filter_packages_by_category_slug(packages, slug):
-    try:
-        root_cat = Category.objects.get(slug=slug)
-    except:
-        return []
-
-    cats = root_cat.get_descendants(True)
-    #print (cats)
-    pkgs =  packages.filter(categories__in=cats)
-
-    if not pkgs:
-        return []
-
-    return  pkgs.distinct().by_published_order()
-
-
-
 class PackageListRollBoxWidget(MasterpiecePackageListWidget):
 
     template = 'pages/widgets/ios_pc/roll_box.html'
 
     def get_list(self, type):
+        from website.models import filter_packages_by_category_slug
         return filter_packages_by_category_slug(Package.objects.published(), type)
 
     def get_context(self, value=None, options=dict(), context=None):
@@ -58,6 +42,7 @@ class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
     template = 'pages/widgets/ios_pc/package_list_box_left.html'
 
     def get_packages_by_category_slug(self, packages, slug):
+        from website.models import filter_packages_by_category_slug
         return filter_packages_by_category_slug(packages, slug)
 
     def get_packages_by_topic_slug(self, packages, slug):
