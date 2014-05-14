@@ -7,6 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db import transaction, IntegrityError
 from django.utils.timezone import now
+from mongoengine import Q
 from warehouse.models import *
 from taxonomy.models import Category
 from toolkit.fields import file_md5
@@ -392,7 +393,7 @@ class DownloadIOSAppResourceTask(BaseTask):
             checkout每个已经完成资源
         """
         qs = self.crawl_resource_doc_class.objects \
-            .filter(status__ne='complete').filter(status__ne='waiting')
+            .filter(Q(status__ne='complete') | Q(status__ne='waiting'))
         try:
             for item in qs:
                 self._update_resource_status_rpc(item)
@@ -408,7 +409,7 @@ class DownloadIOSAppResourceTask(BaseTask):
         """
         qs = self.crawl_resource_doc_class.objects.all()
         if not status:
-            qs = qs.filter(status__ne='complete').filter(status__ne='waiting')
+            qs = qs.filter(Q(status__ne='complete') | Q(status__ne='waiting'))
         else:
             qs = qs.filter(status=status)
 
@@ -445,9 +446,11 @@ class SyncIOSAppBuyInfoTask(BaseTask):
         buyinfo.updated = now()
         buyinfo.save()
 
-    def do_sync(self, limit=None):
+    def do_sync(self, limit=None, start=None):
         qs = self.get_buyinfo_queryset()
-        if limit:
+        if limit and start:
+            qs = qs[start:start+limit]
+        elif limit:
             qs = qs[0:limit]
 
         for buyinfo in qs:
