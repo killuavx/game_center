@@ -52,7 +52,7 @@
 
                                     <ul class="instr">
 
-                                      <li>评分<span><span class="icon star s{{ pkgver.stars_average|floatformat:"0" }}"></span>12345人评分</span></li>
+                                      <li>评分<span><span class="icon star s{{ pkgver.stars_average|floatformat:"0" }}"></span>{{ pkgver.stars_count }}人评分</span></li>
 
                                       <li>厂商<span>{{ pkgver.package.author.name }}</span></li>
 
@@ -62,11 +62,26 @@
 
                                         <li>大小<span>{{ pkgver.get_download_size|default:0|filesizeformat }}</span></li>
 
-                                        <li>类别<span>{{ cats }}</span></li>
+                                        <li>类别<span>
+                                          {% for cat in cats %}
+                                           {{ cat.slug }}
+                                          {% endfor %}
+                                        
+                                        </span></li>
 
-                                        <li>语言<span>简体中文</span></li>
+                                        <li>语言<span>
+                                          {% for lang in  pkgver.supported_languages.all %}
+                                           {{ lang.name }}
+                                          {% endfor %}
+                                        
+                                        </span></li>
+                                          {% for dev in  pkgver.supported_devices.all %}
+                                           {{ dev.name }}
+                                          {% endfor %}
 
-                                        <li>适用<span>2.1及以上</span></li>
+                                        <li>适用<span>
+                                        
+                                        </span></li>
 
                                         <li>下载<span>{{ pkgver.package.download_count|intwordcn }}+</span></li>
 

@@ -239,6 +239,6 @@ def iospc_package_detail_views(request, package_name, *args, **kwargs):
     #print (cats)
     context['pkgver'] =  get_packageversion_by_package(pkg)
     context['slug'] = get_root_category_slug_by_package(pkg)
-    context['cats'] = ', '.join([ cat.slug for cat in leaf_cats ])
+    context['cats'] = leaf_cats
 
     return TemplateResponse(request=request, template=template, context=context)
