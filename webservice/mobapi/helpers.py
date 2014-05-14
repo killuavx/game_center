@@ -67,8 +67,7 @@ def get_viewset_by_topic(topic):
 
 
 def get_packageversion_comment_queryset(version):
-    version_cmt = Comment.objects.for_model(version)
-    return version_cmt.filter(is_public=True, is_removed=False)
+    return Comment.objects.for_model(version).visible()
 
 
 def get_packageversion_comments_url(version):

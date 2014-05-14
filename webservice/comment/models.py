@@ -6,17 +6,42 @@ from django.db.models.query import QuerySet
 from model_utils import Choices
 from model_utils.fields import StatusField, MonitorField
 from model_utils.managers import PassThroughManager
+from toolkit.managers import CurrentSitePassThroughManager
 from django.db import models
 from django.conf import settings
 import tagging
 from tagging.fields import TagField
 
 
-class CommentManager(PassThroughManager, ThreadedCommentManager):
+class CommentManager(CurrentSitePassThroughManager, ThreadedCommentManager):
     pass
 
 
 class CommentQuerySet(QuerySet):
+
+    def visible(self):
+        """
+        Return the comments that are visible based on the
+        ``COMMENTS_XXX_VISIBLE`` settings. When these settings
+        are set to ``True``, the relevant comments are returned
+        that shouldn't be shown, and are given placeholders in
+        the template ``generic/includes/comment.html``.
+        """
+        from mezzanine.conf import settings as mz_settings
+        mz_settings.use_editable()
+        visible = self.all()
+        if not mz_settings.COMMENTS_UNAPPROVED_VISIBLE:
+            visible = visible.filter(is_public=True)
+        if not mz_settings.COMMENTS_REMOVED_VISIBLE:
+            visible = visible.filter(is_removed=False)
+        return visible
+
+    def count_queryset(self):
+        """
+        Called from ``CommentsField.related_items_changed`` to store
+        the comment count against an item each time a comment is saved.
+        """
+        return self.visible().count()
 
     def published(self):
         return self.filter(is_removed=False, is_public=True)
