@@ -16,6 +16,10 @@ from warehouse.models import Package, PackageVersion
 from comment.models import Comment
 
 
+import logging
+logger = logging.getLogger('scripts')
+
+
 def errors_flat_to_str(errors):
     messages = []
     for field, _messages in errors.items():
@@ -164,6 +168,25 @@ class AccountAuthTokenView(ObtainAuthToken):
     serializer_class = MultiAppAuthTokenSerializer
 
 
+class MyCommentPackageFilter(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        user = request.user
+        logger.info(user)
+        qs = Comment.objects.for_model(PackageVersion).visible().by_submit_order()
+        version_ids = list(qs.filter(user=user).values_list('object_pk', flat=True))
+        logger.info(version_ids)
+        if not version_ids:
+            return queryset.none()
+        pkg_ids = PackageVersion.objects.published() \
+            .filter(pk__in=version_ids).values_list('package__pk', flat=True)
+        pkg_ids = list(pkg_ids)
+        logger.info(pkg_ids)
+        if not pkg_ids:
+            return queryset.none()
+
+        return queryset.filter(pk__in=pkg_ids)
+
 class AccountCommentPackageView(generics.ListAPIView):
     """ 已评论软件接口
 
@@ -200,25 +223,14 @@ class AccountCommentPackageView(generics.ListAPIView):
     permission_classes = (IsAuthenticated, )
     serializer_class = PackageSummaryWithMyCommentSerializer
     model = Package
+    filter_backends = (
+        MyCommentPackageFilter,
+    )
 
     def get_queryset(self):
         if self.queryset is None:
             self.queryset = Package.objects.published()
         return self.queryset
-
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        qs = Comment.objects.for_model(PackageVersion).visible().by_submit_order()
-        version_ids = list(
-            qs.filter(user=user).values_list('object_pk', flat=True))
-        pkg_ids = PackageVersion.objects.published() \
-            .filter(pk__in=version_ids).values_list('package__pk', flat=True)
-        pkg_ids = list(pkg_ids)
-        self.queryset = self.get_queryset().filter(versions__in=pkg_ids)
-
-        return super(AccountCommentPackageView, self) \
-            .get(request, *args, **kwargs)
-
 
 class DjangoDataFilterBackend(filters.DjangoFilterBackend):
     def filter_queryset(self, request, queryset, view):

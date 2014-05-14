@@ -14,6 +14,8 @@ from mobapi2.warehouse.serializers.mixin import (
 from mobapi2.serializers import (
     HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
 
+import logging
+logger = logging.getLogger('scripts')
 
 class PackageSummarySerializer(PackageRelatedVersionsMixin,
                                PackageRelatedLatestVersinoMixin,
@@ -205,11 +207,19 @@ class PackageSummaryWithMyCommentSerializer(PackageSummarySerializer):
     version_code = serializers.SerializerMethodField('get_latest_version_code')
     versions_url = serializers.SerializerMethodField('get_versions_url')
 
+    def _get_comment(self, obj):
+        request = self.context.get('request')
+        logger.info('start get comment')
+        logger.info(request.user)
+        qs = self.get_latest_version_comment(obj).filter(user=request.user)
+        logger.info('end get comment')
+        comment = qs[0]
+        return comment
+
     comment = serializers.SerializerMethodField('get_comment')
     def get_comment(self, obj):
         try:
-            request = self.context.get('request')
-            comment = self.get_latest_version_comment(obj).filter(user=request.user)[0]
+            comment = self._get_comment(obj)
             return comment.comment
         except (AttributeError, ObjectDoesNotExist) as e:
             return None
@@ -217,8 +227,7 @@ class PackageSummaryWithMyCommentSerializer(PackageSummarySerializer):
     submit_date = serializers.SerializerMethodField('get_comment_submit_date')
     def get_comment_submit_date(self, obj):
         try:
-            request = self.context.get('request')
-            comment = self.get_latest_version_comment(obj).filter(user=request.user)[0]
+            comment = self._get_comment(obj)
             return DateField().to_native(comment.submit_date)
         except (AttributeError, ObjectDoesNotExist) as e:
             return None
