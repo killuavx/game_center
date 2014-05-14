@@ -55,56 +55,62 @@ class PackageRelatedVersionsMixin(object):
 
 class PackageRelatedLatestVersinoMixin(object):
 
+    _package_latest_version_maps = dict()
+
+    def _latest_version(self, obj):
+        if obj.pk not in self._package_latest_version_maps:
+            self._package_latest_version_maps[obj.pk] = obj.versions.latest_published()
+        return self._package_latest_version_maps[obj.pk]
+
     def get_latest_version_stars_good_rate(self, obj):
         try:
-            version = obj.versions.latest_published()
-            version.stars_good_rate
+            version = self._latest_version(obj)
             return get_object_stars_rate(version, 'good')
         except:
             return 0
 
     def get_latest_version_stars_medium_rate(self, obj):
         try:
-            version = obj.versions.latest_published()
+            version = self._latest_version(obj)
             return get_object_stars_rate(version, 'medium')
         except:
             return 0
 
     def get_latest_version_stars_low_rate(self, obj):
         try:
-            version = obj.versions.latest_published()
+            version = self._latest_version(obj)
             return get_object_stars_rate(version, 'low')
         except:
             return 0
 
     def get_latest_version_star(self, obj):
         try:
-            version = obj.versions.latest_published()
+            version = self._latest_version(obj)
             return get_object_star(version)
         except:
             return 0
 
     def get_latest_version_name(self, obj):
         try:
-            return obj.versions.latest_published().version_name
+            return self._latest_version(obj).version_name
         except:
             return ''
 
     def get_latest_version_code(self, obj):
         try:
-            return obj.versions.latest_published().version_code
+            return self._latest_version(obj).version_code
         except:
             return ''
 
     def get_latest_version_whatsnew(self, obj):
         try:
-            return obj.versions.latest_published().whatsnew
+            return self._latest_version(obj).whatsnew
         except:
             return ''
 
     def get_latest_version_cover_url(self, obj):
         try:
-            version = obj.versions.latest_published()
+            version = self._latest_version(obj)
             if IMAGE_COVER_SIZE is None:
                 return version.cover.url
             return version.cover[IMAGE_COVER_SIZE].url
@@ -113,7 +119,8 @@ class PackageRelatedLatestVersinoMixin(object):
 
     def get_latest_version_icon_url(self, obj):
         try:
-            return obj.versions.latest_published().icon[IMAGE_ICON_SIZE].url
+            version = self._latest_version(obj)
+            return version.icon[IMAGE_ICON_SIZE].url
         except:
             return None
 
@@ -122,7 +129,7 @@ class PackageRelatedLatestVersinoMixin(object):
             PackageVersionScreenshotSerializer)
         self.serializer_class_screenshot = PackageVersionScreenshotSerializer
         try:
-            latest_version = obj.versions.latest_published()
+            latest_version = self._latest_version(obj)
             screenshots_serializer = self.serializer_class_screenshot(
                 latest_version.screenshots.all(),
                 many=True)
@@ -131,7 +138,7 @@ class PackageRelatedLatestVersinoMixin(object):
             return dict()
 
     def get_latest_version_download(self, obj):
-        latest_version = obj.versions.latest_published()
+        latest_version = self._latest_version(obj)
         kwargs = dict()
         if hasattr(self, 'entrytype'):
             kwargs['entrytype'] = self.entrytype
@@ -140,19 +147,19 @@ class PackageRelatedLatestVersinoMixin(object):
                                                **kwargs)
 
     def get_latest_version_download_count(self, obj):
-        latest_version = obj.versions.latest_published()
+        latest_version = self._latest_version(obj)
         return latest_version.download_count
 
     def get_latest_version_download_size(self, obj):
-        latest_version = obj.versions.latest_published()
+        latest_version = self._latest_version(obj)
         return get_packageversion_download_size(latest_version)
 
     def get_latest_version_comment_count(self, obj):
-        latest_version = obj.versions.latest_published()
+        latest_version = self._latest_version(obj)
         return get_packageversion_comment_queryset(latest_version).count()
 
     def get_latest_version_comments_url(self, obj):
-        latest_version = obj.versions.latest_published()
+        latest_version = self._latest_version(obj)
         url = get_packageversion_comments_url(latest_version, self.opts.router)
         try:
             request = self.context.get('request')
@@ -160,6 +167,11 @@ class PackageRelatedLatestVersinoMixin(object):
         except AttributeError:
             pass
         return url
+
+    def get_latest_version_comment(self, obj):
+        latest_version = self._latest_version(obj)
+        return get_packageversion_comment_queryset(latest_version)\
+            .by_submit_order()
 
 
 class PackageRelatedPackageUrlMixin(object):

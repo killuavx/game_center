@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
+from rest_framework.fields import DateField
 from warehouse.models import Package
 from mobapi2.warehouse.serializers.mixin import (
     PackageRelatedVersionsMixin,
@@ -179,3 +181,71 @@ class PackageUpdateSummarySerializer(PackageSummarySerializer):
                   'is_updatable',
         )
 
+
+class PackageSummaryWithMyCommentSerializer(PackageSummarySerializer):
+    entrytype = 'client'
+
+    icon = serializers.SerializerMethodField('get_latest_version_icon_url')
+    cover = serializers.SerializerMethodField('get_latest_version_cover_url')
+    category_name = serializers.SerializerMethodField('get_main_category_name')
+    categories_names = serializers.SerializerMethodField('get_categories_names')
+    version_count = serializers.SerializerMethodField('get_version_count')
+    download = serializers.SerializerMethodField(
+        'get_latest_version_download')
+    download_size = serializers.SerializerMethodField(
+        'get_latest_version_download_size')
+    comments_url = serializers.SerializerMethodField(
+        'get_latest_version_comments_url')
+    actions = serializers.SerializerMethodField('get_action_links')
+    tags = serializers.SerializerMethodField('get_tags')
+    star = serializers.SerializerMethodField('get_latest_version_star')
+
+    author = serializers.SerializerMethodField('get_author')
+    version_name = serializers.SerializerMethodField('get_latest_version_name')
+    version_code = serializers.SerializerMethodField('get_latest_version_code')
+    versions_url = serializers.SerializerMethodField('get_versions_url')
+
+    comment = serializers.SerializerMethodField('get_comment')
+    def get_comment(self, obj):
+        try:
+            request = self.context.get('request')
+            comment = self.get_latest_version_comment(obj).filter(user=request.user)[0]
+            return comment.comment
+        except (AttributeError, ObjectDoesNotExist) as e:
+            return None
+
+    submit_date = serializers.SerializerMethodField('get_comment_submit_date')
+    def get_comment_submit_date(self, obj):
+        try:
+            request = self.context.get('request')
+            comment = self.get_latest_version_comment(obj).filter(user=request.user)[0]
+            return DateField().to_native(comment.submit_date)
+        except (AttributeError, ObjectDoesNotExist) as e:
+            return None
+
+    class Meta:
+        model = Package
+        fields = ('url',
+                  'icon',
+                  'cover',
+                  'package_name',
+                  'title',
+                  'tags',
+                  'star',
+                  'category_name',
+                  'categories_names',
+                  'version_count',
+                  'summary',
+                  'author',
+                  'download',
+                  'download_size',
+                  'download_count',
+                  'comments_url',
+                  'released_datetime',
+                  'actions',
+                  'version_name',
+                  'version_code',
+                  'versions_url',
+                  'comment',
+                  'submit_date',
+        )

@@ -9,7 +9,9 @@ from rest_framework.views import APIView
 from account.forms import mob as account_forms
 from mobapi2.authentications import PlayerTokenAuthentication
 from mobapi2.account.serializers import AccountDetailSerializer, MultiAppAuthTokenSerializer
-from mobapi2.warehouse.serializers.package import PackageSummarySerializer
+from mobapi2.warehouse.serializers.package import (
+    PackageSummarySerializer,
+    PackageSummaryWithMyCommentSerializer)
 from warehouse.models import Package, PackageVersion
 from comment.models import Comment
 
@@ -175,6 +177,15 @@ class AccountCommentPackageView(generics.ListAPIView):
     * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
     * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
 
+    ## 列表软件结构
+
+    * 响应内容跟一般软件接口结构基本相同, 参考[/api/v2/packages/](PackageSummarySerializer)
+    * 新增字段
+        * `comment`: 评论内容
+        * `submit_date`: 发表时间, 时间戳(秒)
+
+
+
     ## 响应内容
 
     * 200 HTTP_200_OK
@@ -187,7 +198,7 @@ class AccountCommentPackageView(generics.ListAPIView):
 
     authentication_classes = (PlayerTokenAuthentication, )
     permission_classes = (IsAuthenticated, )
-    serializer_class = PackageSummarySerializer
+    serializer_class = PackageSummaryWithMyCommentSerializer
     model = Package
 
     def get_queryset(self):
@@ -197,7 +208,7 @@ class AccountCommentPackageView(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        qs = Comment.objects.visible().by_submit_order()
+        qs = Comment.objects.for_model(PackageVersion).visible().by_submit_order()
         version_ids = list(
             qs.filter(user=user).values_list('object_pk', flat=True))
         pkg_ids = PackageVersion.objects.published() \
