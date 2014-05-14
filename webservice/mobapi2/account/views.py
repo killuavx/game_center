@@ -212,7 +212,7 @@ class AccountCommentPackageView(generics.ListAPIView):
     authentication_classes = (PlayerTokenAuthentication, )
     permission_classes = (IsAuthenticated, )
     serializer_class = PackageVersion
-    model = Package
+    model = PackageVersion
     filter_backends = (
         MyCommentedPackageVersionFilter,
     )
