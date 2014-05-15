@@ -185,6 +185,7 @@ class TransformIOSAppDataToPackageVersionTask(BaseTask):
                 status=IOSPackageVersion.STATUS.unpublished,
                 is_support_iphone=is_support_iphone,
                 is_support_ipad=is_support_ipad,
+                released_datetime=package.released_datetime,
                 )
             )
 
