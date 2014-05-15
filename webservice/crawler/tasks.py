@@ -516,11 +516,12 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
     def get_crawl_resource_objects(self, content_type):
         return self.crawl_resource_doc_class.objects.filter(status='complete') \
             .filter(content_type=str(content_type)) \
-            .filter(is_recorded__ne=True).values_list('object_pk', flat=True)
+            .filter(is_recorded__ne=True)
 
     def get_appdata_queryset(self):
         return IOSAppData.objects.filter(is_image_downloaded=True,
                                          packageversion_id__gt=0).all()
+
 
     def do_sync(self, limit=None, start=None):
         qs = self.get_appdata_queryset()
@@ -562,20 +563,23 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
             item.resource_id = res.pk
             item.save()
 
-    def do_sync_by_crawl_objects(self, limit=None, start=None):
+    def get_appdata(self, pk):
+        return IOSAppData.objects.get(pk=int(pk))
+
+    def do_sync_by_crawl_resource_item(self, limit=None, start=None):
         ct = ContentType.objects.get_for_model(IOSAppData)
-        content_type = str(ct.pk)
-        qs = self.get_crawl_resource_objects(content_type)
+        qs = self.get_crawl_resource_objects(content_type=ct.pk)
         if limit and start:
             qs = qs[start:start+limit]
         elif limit:
             qs = qs[0:limit]
 
-        for app in qs:
-            print("======%s=======" % app.pk)
-            resources = self.get_crawl_resource_by(content_type=content_type,
-                                                   object_pk=str(app.pk))
-            for item in resources:
-                print(item.pk)
-                print(item.resource_type, item.relative_path)
+        for item in qs:
+            print("======%s:%s=======" % (item.content_type, item.object_pk ))
+            try:
+                app = self.get_appdata(item.object_pk)
                 self.add_to_packageversion(item, app.packageversion)
+            except (ObjectDoesNotExist, IntegrityError) as e:
+                print(e)
+                continue
+            print(item.resource_type, item.relative_path)
