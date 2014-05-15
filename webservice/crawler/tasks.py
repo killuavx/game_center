@@ -508,10 +508,9 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
         self.crawl_resource_doc_class = CrawlResource
 
     def get_crawl_resource_by(self, content_type, object_pk):
-        return self.crawl_resource_doc_class.objects\
-            .filter(content_type=content_type)\
-            .filter(object_pk=object_pk)\
-            .filter(status='complate')
+        return self.crawl_resource_doc_class.objects.filter(status='complete') \
+            .filter(content_type=str(content_type)) \
+            .filter(object_pk=str(object_pk))
 
     def get_appdata_queryset(self):
         return IOSAppData.objects.filter(is_image_downloaded=True,
@@ -527,15 +526,15 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
         ct = ContentType.objects.get_for_model(IOSAppData)
         content_type = str(ct.pk)
         for app in qs:
+            print("======%s=======" % app.pk)
             resources = self.get_crawl_resource_by(content_type=content_type,
-                                                   object_pk=app.pk)
+                                                   object_pk=str(app.pk))
             for item in resources:
                 print(item.pk)
                 print(item.resource_type, item.relative_path)
-                self.add_to_packageversion(item, app.content_object)
+                self.add_to_packageversion(item, app.packageversion)
 
     def add_to_packageversion(self, item, obj):
-
         if item.resource_type in ('icon', 'screenshot', 'ipadscreenshot'):
             if item.resource_type == 'icon':
                 alias = item.file_alias.replace('artworkUrl', '')
