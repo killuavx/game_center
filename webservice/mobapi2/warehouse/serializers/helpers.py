@@ -48,10 +48,10 @@ def get_packageversion_supported_languages(version):
     desc_langs = []
     if len(lang_codes):
         if 'ZH' in lang_codes:
-            lang_codes.pop(lang_codes.index('ZH'))
+            del lang_codes[lang_codes.index('ZH')]
             desc_langs.append(lang_desc_maps['ZH'])
         if 'EN' in lang_codes:
-            lang_codes.pop(lang_codes.index('EN'))
+            del lang_codes[lang_codes.index('EN')]
             desc_langs.append(lang_desc_maps['EN'])
         if len(lang_codes):
             desc_langs.append(lang_desc_maps['_'])
