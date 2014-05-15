@@ -419,14 +419,9 @@ class BasePackageVersionSummarySerializer(PackageVersionRelatedPackageMixin,
 
     actions = serializers.SerializerMethodField('get_action_links')
 
-    versions_url = serializers.SerializerMethodField('get_package_versions_url')
+    versions_url = serializers.SerializerMethodField('get_versions_url')
 
-    def get_package_versions_url(self, obj):
-        return self.get_versions_url(obj.package)
-
-    version_count = serializers.SerializerMethodField('get_package_version_count')
-    def get_package_version_count(self, obj):
-        return self.get_version_count(obj.package)
+    version_count = serializers.SerializerMethodField('get_version_count')
 
     star = serializers.SerializerMethodField('get_star')
     def get_star(self, obj):
@@ -485,9 +480,9 @@ class PackageVersionWithMyCommentSummarySerializer(
 
     actions = serializers.SerializerMethodField('get_action_links')
 
-    versions_url = serializers.SerializerMethodField('get_package_versions_url')
+    versions_url = serializers.SerializerMethodField('get_versions_url')
 
-    version_count = serializers.SerializerMethodField('get_package_version_count')
+    version_count = serializers.SerializerMethodField('get_version_count')
 
     star = serializers.SerializerMethodField('get_star')
 
