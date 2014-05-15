@@ -7,7 +7,8 @@ from mobapi2.settings import IMAGE_COVER_SIZE, IMAGE_ICON_SIZE
 from mobapi2.warehouse.serializers.helpers import (
     get_versions_url,
     get_packageversion_download_url,
-    get_packageversion_download_size)
+    get_packageversion_download_size,
+    get_packageversion_supported_languages)
 
 
 class PackageRelatedTagMin(object):
@@ -172,6 +173,10 @@ class PackageRelatedLatestVersinoMixin(object):
         latest_version = self._latest_version(obj)
         return get_packageversion_comment_queryset(latest_version)\
             .by_submit_order()
+
+    def get_latest_version_supported_languages(self, obj):
+        latest_version = self._latest_version(obj)
+        return get_packageversion_supported_languages(latest_version)
 
 
 class PackageRelatedPackageUrlMixin(object):

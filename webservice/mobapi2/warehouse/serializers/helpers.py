@@ -36,3 +36,25 @@ def get_versions_url(request, package, router=None):
     if request:
         return request.build_absolute_uri(uri)
     return uri
+
+
+def get_packageversion_supported_languages(version):
+    lang_desc_maps = dict(
+        zh='中文',
+        en='英文',
+        _='其他'
+    )
+    lang_codes = version.supported_languages.values_list('code', flat=True)
+    desc_langs = []
+    if len(lang_codes):
+        if 'zh' in lang_codes:
+            lang_codes.pop(lang_codes.index('zh'))
+            desc_langs.append(lang_desc_maps['zh'])
+        if 'en' in lang_codes:
+            lang_codes.pop(lang_codes.index('en'))
+            desc_langs.append(lang_desc_maps['en'])
+        if len(lang_codes):
+            desc_langs.append(lang_desc_maps['_'])
+    else:
+        desc_langs.append(lang_desc_maps['_'])
+    return ",".join(desc_langs)

@@ -17,7 +17,8 @@ from mobapi2.warehouse.serializers.mixin import (
     PackageRelatedPackageUrlMixin)
 from mobapi2.warehouse.serializers.helpers import (
     get_packageversion_download_url,
-    get_packageversion_download_size)
+    get_packageversion_download_size,
+    get_packageversion_supported_languages)
 from mobapi2.serializers import (
     SerializerRelatedField,
     ModelWithRouterSerializer as ModelSerializer,
@@ -310,6 +311,11 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
     def get_stars_low_rate(self, obj):
         return get_object_stars_rate(obj, 'low')
 
+
+    supported_languages = serializers.SerializerMethodField('get_supported_languages')
+    def get_supported_languages(self, obj):
+        return get_packageversion_supported_languages(obj)
+
     class Meta:
         model = PackageVersion
         fields = ('url',
@@ -339,6 +345,7 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
                   'versions_url',
                   'related_packages_url',
                   'released_datetime',
+                  'supported_languages'
         )
 
 

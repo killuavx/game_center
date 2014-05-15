@@ -85,6 +85,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     * `released_datetime`: 发布时间(时间戳)
     * `whatsnew`: 版本跟新内容说明
     * `description`: 详细介绍
+    * `supported_languages`: 支持语言,如:“中文,英文,其他”
     * `screenshots`: 截图列表
         * 'large': 大截图
         * 'preview': 预览截图

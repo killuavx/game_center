@@ -73,6 +73,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
         )
 
 
+
 class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                               PackageRelatedVersionsMixin,
                               PackageRelatedCategoryMixin,
@@ -117,6 +118,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
 
     versions_url = serializers.SerializerMethodField('get_versions_url')
 
+    supported_languages = serializers.SerializerMethodField('get_latest_version_supported_languages')
+
     class Meta:
         model = Package
         fields = ('url',
@@ -147,6 +150,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'actions',
                   'versions_url',
                   'related_packages_url',
+                  'supported_languages',
         )
 
 
