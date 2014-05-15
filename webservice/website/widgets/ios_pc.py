@@ -70,7 +70,7 @@ class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
         packages = self.get_packages_by_category_slug(Package.objects.all(), category_slug)
         result = []
 
-        if slugs:
+        if slugs and packages:
             for slug in slugs.split('|'):
                 result.append(self.get_packages_by_topic_slug(packages, slug))
 

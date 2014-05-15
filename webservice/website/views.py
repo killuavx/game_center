@@ -2,7 +2,7 @@
 from os.path import splitext
 from urllib.parse import urlsplit
 from mezzanine.conf import settings
-from django.core.paginator import EmptyPage
+from django.core.paginator import EmptyPage, Paginator
 
 from django.http import Http404, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect
@@ -15,6 +15,7 @@ from warehouse.models import PackageVersion, Package
 from analysis.documents.event import Event
 from website.models import get_package_by_package_name, get_packageversion_by_package
 from website.models import get_root_category_slug_by_package, get_all_categories, get_leaf_categories
+from website.models import filter_packages_by_category_slug, get_all_packages
 
 
 def _download_packageversion_response(packageversion, filetype):
@@ -245,9 +246,12 @@ def iospc_package_detail_views(request, package_name, *args, **kwargs):
     return TemplateResponse(request=request, template=template, context=context)
 
 
-def iospc_package_list_views(request, slug, *args, **kwargs):
+def iospc_packages_list_views(request, slug, *args, **kwargs):
     template = 'iospc/package_list.html'
 
-    context = {}
+    all_packages = get_all_packages()
+    packages = filter_packages_by_category_slug(all_packages, slug)
+
+    context = {'packages': packages[:20]}
 
     return TemplateResponse(request=request, template=template, context=context)
