@@ -181,6 +181,8 @@ class PackageVersionAdmin(MainAdmin):
     filter_horizontal = ("supported_languages",
                          "supported_devices",
                          "supported_features")
+    list_filter = ('status',)
+    date_hierarchy = 'released_datetime'
     ordering = ('-updated_datetime', '-version_code',)
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput},
