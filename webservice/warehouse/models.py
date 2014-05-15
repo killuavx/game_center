@@ -402,12 +402,14 @@ class PackageVersion(SiteRelated, models.Model):
         default='',
         upload_to=version_upload_path,
         blank=True,
+        max_length=500,
     )
 
     cover = ThumbnailerImageField(
         default='',
         upload_to=version_upload_path,
         blank=True,
+        max_length=500,
     )
 
     download = PkgFileField(
@@ -610,6 +612,7 @@ class PackageVersionScreenshot(models.Model):
 
     image = ThumbnailerImageField(
         upload_to=screenshot_upload_path,
+        max_length=500,
         blank=False
     )
 
