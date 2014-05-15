@@ -513,6 +513,11 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
             .filter(object_pk=str(object_pk)) \
             .filter(is_recorded__ne=True)
 
+    def get_crawl_resource_objects(self, content_type):
+        return self.crawl_resource_doc_class.objects.filter(status='complete') \
+            .filter(content_type=str(content_type)) \
+            .filter(is_recorded__ne=True).values_list('object_pk', flat=True)
+
     def get_appdata_queryset(self):
         return IOSAppData.objects.filter(is_image_downloaded=True,
                                          packageversion_id__gt=0).all()
@@ -556,3 +561,21 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
             item.is_recorded = True
             item.resource_id = res.pk
             item.save()
+
+    def do_sync_by_crawl_objects(self, limit=None, start=None):
+        ct = ContentType.objects.get_for_model(IOSAppData)
+        content_type = str(ct.pk)
+        qs = self.get_crawl_resource_objects(content_type)
+        if limit and start:
+            qs = qs[start:start+limit]
+        elif limit:
+            qs = qs[0:limit]
+
+        for app in qs:
+            print("======%s=======" % app.pk)
+            resources = self.get_crawl_resource_by(content_type=content_type,
+                                                   object_pk=str(app.pk))
+            for item in resources:
+                print(item.pk)
+                print(item.resource_type, item.relative_path)
+                self.add_to_packageversion(item, app.packageversion)
