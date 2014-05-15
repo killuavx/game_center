@@ -40,19 +40,19 @@ def get_versions_url(request, package, router=None):
 
 def get_packageversion_supported_languages(version):
     lang_desc_maps = dict(
-        zh='中文',
-        en='英文',
+        ZH='中文',
+        EN='英文',
         _='其他'
     )
     lang_codes = version.supported_languages.values_list('code', flat=True)
     desc_langs = []
     if len(lang_codes):
-        if 'zh' in lang_codes:
-            lang_codes.pop(lang_codes.index('zh'))
-            desc_langs.append(lang_desc_maps['zh'])
-        if 'en' in lang_codes:
-            lang_codes.pop(lang_codes.index('en'))
-            desc_langs.append(lang_desc_maps['en'])
+        if 'ZH' in lang_codes:
+            lang_codes.pop(lang_codes.index('ZH'))
+            desc_langs.append(lang_desc_maps['ZH'])
+        if 'EN' in lang_codes:
+            lang_codes.pop(lang_codes.index('EN'))
+            desc_langs.append(lang_desc_maps['EN'])
         if len(lang_codes):
             desc_langs.append(lang_desc_maps['_'])
     else:
