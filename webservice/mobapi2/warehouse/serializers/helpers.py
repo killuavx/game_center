@@ -44,7 +44,7 @@ def get_packageversion_supported_languages(version):
         EN='英文',
         _='其他'
     )
-    lang_codes = version.supported_languages.values_list('code', flat=True)
+    lang_codes = list(version.supported_languages.values_list('code', flat=True))
     desc_langs = []
     if len(lang_codes):
         if 'ZH' in lang_codes:
