@@ -510,7 +510,8 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
     def get_crawl_resource_by(self, content_type, object_pk):
         return self.crawl_resource_doc_class.objects.filter(status='complete') \
             .filter(content_type=str(content_type)) \
-            .filter(object_pk=str(object_pk))
+            .filter(object_pk=str(object_pk)) \
+            .filter(is_recorded__ne=True)
 
     def get_appdata_queryset(self):
         return IOSAppData.objects.filter(is_image_downloaded=True,
