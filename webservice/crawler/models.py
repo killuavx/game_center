@@ -66,6 +66,11 @@ class IOSAppData(models.Model):
 
     packageversion = property(_get_packageversion, _set_packageversion)
 
+    @classmethod
+    def covert_normal_version(cls, pv):
+        from warehouse.models import PackageVersion
+        pv.__class__ = PackageVersion
+
     def set_analysised(self, version=None):
         if isinstance(version, int) and version <=0:
             self.packageversion_id = version
