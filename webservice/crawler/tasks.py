@@ -522,7 +522,6 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
         return IOSAppData.objects.filter(is_image_downloaded=True,
                                          packageversion_id__gt=0).all()
 
-
     def do_sync(self, limit=None, start=None):
         qs = self.get_appdata_queryset()
         if limit and start:
@@ -542,6 +541,10 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
                 self.add_to_packageversion(item, app.packageversion)
 
     def add_to_packageversion(self, item, obj):
+        if not obj:
+            return
+        obj = IOSAppData.covert_normal_version(obj)
+
         if item.resource_type in ('icon', 'screenshot', 'ipadscreenshot'):
             if item.resource_type == 'icon':
                 alias = item.file_alias.replace('artworkUrl', '')
