@@ -12,7 +12,7 @@ from mezzanine.core.admin import (TabularDynamicInlineAdmin as TabularInline,
 from reversion.admin import VersionAdmin
 from django.core.urlresolvers import reverse
 from easy_thumbnails.exceptions import InvalidImageFormatError
-from toolkit.helpers import sync_status_summary, sync_status_actions
+from toolkit.helpers import sync_status_summary, sync_status_actions, iosappdata_listtag, current_site_id
 
 from warehouse.models import Package, Author, PackageVersion, PackageVersionScreenshot
 from warehouse.models import IOSPackage, IOSAuthor, IOSPackageVersion
@@ -265,6 +265,17 @@ class PackageVersionAdmin(MainAdmin):
     sync_file_action.allow_tags = True
     publish_path_check_links.allow_tags = True
     publish_path_check_links.short_description = _('Sync Links')
+
+    def iosappdata_listlink(self, obj):
+        return iosappdata_listtag(obj.package.package_name, '查看ios原始数据')
+    iosappdata_listlink.allow_tags = True
+    iosappdata_listlink.short_description = 'iOS App Data'
+
+    def get_list_display(self, request):
+        fields = self.list_display
+        if current_site_id() == 2:
+            return fields + ('iosappdata_listlink', )
+        return fields
 
     class Media:
         #from django.conf import settings

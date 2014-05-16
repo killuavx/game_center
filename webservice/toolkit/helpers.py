@@ -2,6 +2,7 @@
 import hashlib
 import json
 import re
+from django.core.urlresolvers import reverse
 from django.utils import importlib
 import unicodedata
 from django.utils.encoding import smart_text
@@ -141,3 +142,15 @@ def current_site():
 def current_request():
     from mezzanine.core.request import current_request as _cur_request
     return _cur_request()
+
+
+def admin_changelist_url(object):
+    return reverse('admin:%s_%s_changelist' %(object._meta.app_label,
+                                          object._meta.module_name), args=())
+
+
+def iosappdata_listtag(package_name, content=None, target='_blank'):
+    from crawler.models import IOSAppData
+    url = "%s?q=%s" %(admin_changelist_url(IOSAppData), package_name)
+    return '<a href="%s" target="%s">%s</a>' % (url, target, content or package_name)
+
