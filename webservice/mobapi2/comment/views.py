@@ -7,7 +7,8 @@ from django.db import transaction
 from django.http import Http404
 from django.utils.timezone import now
 from rest_framework import mixins, viewsets, status
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from mobapi2.authentications import PlayerTokenAuthentication
 from mobapi2.comment.serializers import CommentSerializer, CommentCreateSerializer, FeedbackSerializer
@@ -88,8 +89,8 @@ class CommentViewSet(mixins.CreateModelMixin,
 
     """
 
-    authentication_classes = (PlayerTokenAuthentication,)
-    permission_classes = (IsAuthenticatedOrReadOnly, )
+    authentication_classes = ()
+    permission_classes = ()
     serializer_class = CommentSerializer
     model = Comment
 
@@ -135,7 +136,11 @@ class CommentViewSet(mixins.CreateModelMixin,
 
         return super(CommentViewSet, self).list(request, *args, **kwargs)
 
+    @authentication_classes((PlayerTokenAuthentication, ))
+    @permission_classes((IsAuthenticated,))
     def create(self, request, *args, **kwargs):
+        # set IsAuthenticatedOrReadOnly
+        self.permission_classes = (IsAuthenticatedOrReadOnly, )
         params = self.check_paramters(copy.deepcopy(request.GET))
         bad = Response({'detail': 'Bad Request'},
                        status=status.HTTP_400_BAD_REQUEST)
@@ -164,6 +169,9 @@ class CommentViewSet(mixins.CreateModelMixin,
         if response.status_code == status.HTTP_201_CREATED:
             serializer = self.serializer_class(self.object)
             response.data = serializer.data
+        # set empty permission
+        self.permission_classes = ()
+
         return response
 
     def pre_save(self, obj):
