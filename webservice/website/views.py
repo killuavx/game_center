@@ -253,7 +253,7 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
     all_packages = get_all_packages()
     packages = filter_packages_by_category_slug(all_packages, slug)
     pkgs, page_sign = paginize_packages(request, packages)
-    context = {'pkgs': pkgs, 'slug': slug}
+    context = {'pkgs': pkgs, 'slug': slug, 'page_sign': page_sign}
 
     return TemplateResponse(request=request, template=template, context=context)
 
@@ -279,7 +279,7 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
             packages = cat_packages
 
     pkgs, page_sign = paginize_packages(request, packages)
-    context = {'pkgs': pkgs, 'slug': cat_slug, 'other_slug': other_slug}
+    context = {'pkgs': pkgs, 'slug': cat_slug, 'other_slug': other_slug, 'page_sign': page_sign}
     #print (context['other_slug'])
 
     return TemplateResponse(request=request, template=template, context=context)
