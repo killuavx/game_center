@@ -259,19 +259,19 @@ def iospc_packages_cat_list_views(request, slug, page, *args, **kwargs):
     return TemplateResponse(request=request, template=template, context=context)
 
 
-def iospc_packages_topic_list_views(request, cat_slug, topic_slug, page, *args, **kwargs):
+def iospc_packages_topic_list_views(request, cat_slug, other_slug, page, *args, **kwargs):
     template = 'iospc/package_list.html'
     all_packages = get_all_packages()
     cat_packages = filter_packages_by_category_slug(all_packages, cat_slug)
 
-    if is_topic_slug(topic_slug):
-        topic_slug = get_topic_slug(topic_slug, cat_slug)
+    if is_topic_slug(other_slug):
+        topic_slug = get_topic_slug(other_slug, cat_slug)
         topic = get_topic_by_slug(topic_slug)
         packages = filter_packages_by_topic(cat_packages, topic)
-    elif topic_slug == 'latest':
+    elif other_slug == 'latest':
         packages = cat_packages.by_published_order()
     else:
-        lang = get_supported_language(topic_slug)
+        lang = get_supported_language(other_slug)
         #print (lang)
         if lang:
             packages = filter_packages_by_supported_language(cat_packages, lang)
@@ -279,6 +279,7 @@ def iospc_packages_topic_list_views(request, cat_slug, topic_slug, page, *args, 
             packages = cat_packages
 
     pkgs = paginize_packages(packages, page)
-    context = {'pkgs': pkgs, 'slug': cat_slug}
+    context = {'pkgs': pkgs, 'slug': cat_slug, 'other_slug': other_slug}
+    print (context['other_slug'])
 
     return TemplateResponse(request=request, template=template, context=context)

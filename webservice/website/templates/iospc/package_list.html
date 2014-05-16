@@ -32,8 +32,22 @@
                                 <li class="li_1 hover">全部设备</li>
                                 <li class="li_2">iPhone</li>
                                 <li class="li_4">iPad</li>-->
-                                
-                                <li class="icon li_5 hover"><span>默认筛选</span>
+
+                                <li class="icon li_5 hover"><span>
+                                  {% if other_slug == 'recommend' %}
+                                    精品推荐
+                                  {% elif other_slug == 'install' %}
+                                    装机必备
+                                  {% elif other_slug == 'latest' %}
+                                    最新发布
+                                  {% elif other_slug == 'zh'%}
+                                    中文
+                                  {% elif other_slug == 'en' %}
+                                    英文
+                                  {% else %}
+                                    默认筛选
+                                {% endif %}
+                              </span>
                                     <div class="pop_li_5 pop_menu" style="display: none;">
                                         <a href="/iospc/packages/game/recommend">精品推荐</a>
                                         <a href="/iospc/packages/game/install">装机必备</a>
@@ -111,4 +125,9 @@
     </div>
 
     
+    <script>
+    
+    
+    </script>
     {% endblock %}
+

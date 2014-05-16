@@ -22,6 +22,6 @@ urlpatterns = patterns('website.views',
 
         url(r'^iospc/package/(?P<package_name>%s)/$' % (slug_pattern),'iospc_package_detail_views', name='iospc_package_detail'),
         url(r'^iospc/packages/(?P<slug>%s)/(?:(?P<page>\d+)/)?$' % slug_pattern, 'iospc_packages_cat_list_views', name='iospc_packages_list'),
-        url(r'^iospc/packages/(?P<cat_slug>%s)/(?P<topic_slug>\w+)/(?:(?P<page>\d+)/)?$' % slug_pattern, 'iospc_packages_topic_list_views', name='iospc_packages_topic_list'),
+        url(r'^iospc/packages/(?P<cat_slug>%s)/(?P<other_slug>\w+)/(?:(?P<page>\d+)/)?$' % slug_pattern, 'iospc_packages_topic_list_views', name='iospc_packages_topic_list'),
 )
 
