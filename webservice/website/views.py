@@ -248,22 +248,22 @@ def iospc_package_detail_views(request, package_name, *args, **kwargs):
     return TemplateResponse(request=request, template=template, context=context)
 
 
-def iospc_packages_cat_list_views(request, slug, page, *args, **kwargs):
+def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
     template = 'iospc/package_list.html'
-
     all_packages = get_all_packages()
     packages = filter_packages_by_category_slug(all_packages, slug)
-    pkgs = paginize_packages(packages, page)
+    pkgs, page_sign = paginize_packages(request, packages)
     context = {'pkgs': pkgs, 'slug': slug}
 
     return TemplateResponse(request=request, template=template, context=context)
 
 
-def iospc_packages_topic_list_views(request, cat_slug, other_slug, page, *args, **kwargs):
+def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwargs):
     template = 'iospc/package_list.html'
     all_packages = get_all_packages()
     cat_packages = filter_packages_by_category_slug(all_packages, cat_slug)
 
+    print (other_slug)
     if is_topic_slug(other_slug):
         topic_slug = get_topic_slug(other_slug, cat_slug)
         topic = get_topic_by_slug(topic_slug)
@@ -278,8 +278,8 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, page, *args, 
         else:
             packages = cat_packages
 
-    pkgs = paginize_packages(packages, page)
+    pkgs, page_sign = paginize_packages(request, packages)
     context = {'pkgs': pkgs, 'slug': cat_slug, 'other_slug': other_slug}
-    print (context['other_slug'])
+    #print (context['other_slug'])
 
     return TemplateResponse(request=request, template=template, context=context)

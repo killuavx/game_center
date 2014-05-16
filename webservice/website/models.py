@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.core.paginator import EmptyPage, Paginator
+from django.core.paginator import EmptyPage, Paginator, PageNotAnInteger
 from website.cdn.model_register import *
 from warehouse.models import Package, PackageVersion, SupportedLanguage
 from mptt.models import MPTTModel
@@ -145,16 +145,23 @@ def get_topic_by_slug(slug):
     return topic
 
 
-def paginize_packages(packages, page, per_page=2):
-    pg = Paginator(packages, per_page)
-    page = 1 if page is None else int(page)
+def paginize_packages(request, packages, per_page=20):
+    page_sign = 'page'
+
+    page = request.GET.get(page_sign)
+
+    paginator = Paginator(packages, per_page)
 
     try:
-        pkgs = pg.page(page)
+        pkgs = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        pkgs  = paginator.page(1)
     except EmptyPage:
-        pkgs = []
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        pkgs = paginator.page(paginator.num_pages)
 
-    return pkgs
+    return pkgs, page_sign
 
 
 def filter_packages_by_topic(packages, topic):
