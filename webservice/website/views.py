@@ -262,3 +262,6 @@ def iospc_packages_list_views(request, slug, page, *args, **kwargs):
     context = {'pkgs': pkgs, 'pg': pg, 'slug': slug}
 
     return TemplateResponse(request=request, template=template, context=context)
+
+
+#def iospc_packages_list_views(request, slug, page, *args, **kwargs):

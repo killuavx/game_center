@@ -35,12 +35,11 @@
                                 
                                 <li class="icon li_5 hover"><span>默认筛选</span>
                                     <div class="pop_li_5 pop_menu" style="display: none;">
-                                        <a href="#">精品推荐</a>
-                                        <a href="#">装机必备</a>
-                                        <a href="#">最新发布</a>
-                                        <a href="#">许愿兑现</a>
-                                        <a href="#">中文</a>
-                                        <a href="#">英文</a>
+                                        <a href="/iospc/packages/game/recommend">精品推荐</a>
+                                        <a href="/iospc/packages/game/install">装机必备</a>
+                                        <a href="/iospc/packages/game/latest">最新发布</a>
+                                        <a href="/iospc/packages/game/chinese">中文</a>
+                                        <a href="/iospc/packages/game/english">英文</a>
                                     </div>
                                 </li>
                                 <li class="icon li_6"><span>默认排序</span>
@@ -94,13 +93,13 @@
                     
               <div class="cb page">
                 {% if pkgs.has_previous %} 
-                <a href="{% url 'iospc_package_list' slug=slug page=pkgs.previous_page_number  %}">上一页</a>
+                <a href="{% url 'iospc_packages_list' slug=slug page=pkgs.previous_page_number  %}">上一页</a>
                 {% endif %} 
                 {% for i in pg.page_range %}
-                <a href="{% url 'iospc_package_list' slug=slug page=i %}">{{ i }}</a>
+                <a href="{% url 'iospc_packages_list' slug=slug page=i %}">{{ i }}</a>
                 {% endfor %}
                 {% if pkgs.has_next %} 
-                <a href="{% url 'iospc_package_list' slug=slug page=pkgs.next_page_number %}">下一页</a>
+                <a href="{% url 'iospc_packages_list' slug=slug page=pkgs.next_page_number %}">下一页</a>
                 {% endif %} 
               </div>
                     
