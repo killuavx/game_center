@@ -118,7 +118,8 @@ def filter_packages_by_category_slug(packages, slug):
 
 
 def get_all_packages():
-    return Package.objects.by_published_order(True)
+    return Package.objects.published()
+
 
 #def get_packages_by_root_category(category):Packages.objects.by_published_order(True)
 #    pass

@@ -57,7 +57,7 @@
                     
                     <div class="list left_list" style="position: relative; width: 805px; height: 500px;">
                             <ul style="position: absolute; width: 805px; left: 0px; top: 0px;">
-                              {% for item in packages %}
+                              {% for item in pkgs %}
                               {% with version=item.versions.latest_published %}
                                 <li>
                                   <a href="{{ item.get_absolute_iospc_url }}" class="big_pic"><img src="{{ version.icon.url }}"><span class="icon cover"></span></a>
@@ -92,17 +92,17 @@
                     </div><!--list-->
                     
                     
-                    
-                    <div class="cb page">
-                            <a href="#">上一页</a>
-                            <a href="#">1</a>
-                            <a href="#" class="hover">2</a>
-                            <a href="#">3</a>
-                            <a href="#">4</a>
-                            <a href="#">…</a>
-                            <a href="#">99</a>
-                            <a href="#">下一页</a>
-                    </div>
+              <div class="cb page">
+                {% if pkgs.has_previous %} 
+                <a href="{% url 'iospc_package_list' slug=slug page=pkgs.previous_page_number  %}">上一页</a>
+                {% endif %} 
+                {% for i in pg.page_range %}
+                <a href="{% url 'iospc_package_list' slug=slug page=i %}">{{ i }}</a>
+                {% endfor %}
+                {% if pkgs.has_next %} 
+                <a href="{% url 'iospc_package_list' slug=slug page=pkgs.next_page_number %}">下一页</a>
+                {% endif %} 
+              </div>
                     
             </div><!--game_box-->
             

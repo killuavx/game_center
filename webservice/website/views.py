@@ -246,12 +246,19 @@ def iospc_package_detail_views(request, package_name, *args, **kwargs):
     return TemplateResponse(request=request, template=template, context=context)
 
 
-def iospc_packages_list_views(request, slug, *args, **kwargs):
+def iospc_packages_list_views(request, slug, page, *args, **kwargs):
     template = 'iospc/package_list.html'
-
+    per_page = 20
     all_packages = get_all_packages()
     packages = filter_packages_by_category_slug(all_packages, slug)
 
-    context = {'packages': packages[:20]}
+    pg = Paginator(packages, per_page)
+    page = 1 if page is None else int(page)
+    try:
+        pkgs = pg.page(page)
+    except EmptyPage:
+        pkgs = []
+
+    context = {'pkgs': pkgs, 'pg': pg, 'slug': slug}
 
     return TemplateResponse(request=request, template=template, context=context)

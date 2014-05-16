@@ -15,11 +15,11 @@
 
             <div class="fl head_nav">
 
-                    <a href="index.html" class="hover">首页</a>
+                    <a href="/ios_pc">首页</a>
 
-                    <a href="game.html">游戏</a>
+                    <a href="{% url 'iospc_package_list' 'game' %}">游戏</a>
 
-                    <a href="soft.html">软件</a>
+                    <a href="{% url 'iospc_package_list' 'soft' %}">软件</a>
 
                     <a href="collection.html">专题</a>
 
@@ -31,6 +31,5 @@
 
             </div><!--head_nav-->
 
-    
 
     </div><!--head-->
