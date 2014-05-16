@@ -1,7 +1,8 @@
 {% extends "iospc_base.html" %}
 {% load templateutils_tags %}
-{% load util_tags %}
 {% load widgets %}
+{% load util_tags %}
+{% load widgets url_tags %}
 {% load static %}
 {% block main %} 
     
@@ -11,20 +12,20 @@
                     <div class="menu">
                             <ul>
                                 <li><a href="#" class="icon hover">全部游戏</a></li>
-                                <li><a href="#">破解</a></li>
-                                <li><a href="#">大型</a></li>
-                                <li><a href="#">休闲</a></li>
-                                <li><a href="#">棋牌</a></li>
-                                <li><a href="#">动作</a></li>
-                                <li><a href="#">战略</a></li>
-                                <li><a href="#">射击</a></li>
-                                <li><a href="#">赛车</a></li>
-                                <li><a href="#">角色</a></li>
-                                <li><a href="#">冒险</a></li>
-                                <li><a href="#">格斗</a></li>
-                                <li><a href="#">体育</a></li>
-                                <li><a href="#">网游</a></li>
-                                <li><a href="#">儿童</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">破解</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">大型</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">休闲</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">棋牌</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">动作</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">战略</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">射击</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">赛车</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">角色</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">冒险</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">格斗</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">体育</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">网游</a></li>
+                                <li><a href="{% qurl request.get_full_path cat='crack' %}">儿童</a></li>
                             </ul>
                     </div>
                     <div class="icon title_box">
@@ -108,17 +109,17 @@
               <div class="cb page">
                 <span class="step-links">
                     {% if pkgs.has_previous %}
-                      <a hre="?page={{ pkgs.previous_page_number }}">上一页</a>
+                      <a hre="{% qurl request.get_full_path page=pkgs.previous_page_number %}">上一页</a>
                     {% endif %}
 
                     {% if pkgs.paginator.num_pages > 1%}
                       {% for i in pkgs.paginator.page_range %}
-                        <a href="?page={{ i }}">{{ i  }}</a>
+                        <a href="{% qurl request.get_full_path page=i %}">{{ i  }}</a>
                       {% endfor %}
                     {% endif %}
 
                     {% if pkgs.has_next %}
-                      <a href="?page={{ pkgs.next_page_number }}">下一页</a>
+                      <a href="{% qurl request.get_full_path page=pkgs.next_page_number %}">下一页</a>
                     {% endif %}
                 </span>
 

@@ -164,6 +164,20 @@ def paginize_packages(request, packages, per_page=20):
     return pkgs, page_sign
 
 
+def get_category_slug(request):
+    cat_sign = 'cat'
+
+    slug = request.GET.get(cat_sign)
+    if slug is None or slug == '':
+        return False
+
+    category_slug_dic = {
+        'crack': 'crack-game',
+    }
+
+    return category_slug_dic.get(slug)
+
+
 def filter_packages_by_topic(packages, topic):
     return TopicalItem.objects.filter_items_by_topic(topic, Package, packages)
 

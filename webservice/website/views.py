@@ -18,6 +18,7 @@ from website.models import get_root_category_slug_by_package, get_all_categories
 from website.models import filter_packages_by_category_slug, get_all_packages
 from website.models import is_topic_slug, get_topic_slug, get_topic_by_slug, filter_packages_by_topic
 from website.models import paginize_packages, get_supported_language, filter_packages_by_supported_language
+from website.models import get_category_slug
 
 
 def _download_packageversion_response(packageversion, filetype):
@@ -252,6 +253,9 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
     template = 'iospc/package_list.html'
     all_packages = get_all_packages()
     packages = filter_packages_by_category_slug(all_packages, slug)
+    category_slug = get_category_slug(request)
+    if category_slug != False:
+        packages = filter_packages_by_category_slug(packages, category_slug)
     pkgs, page_sign = paginize_packages(request, packages)
     context = {'pkgs': pkgs, 'slug': slug, 'page_sign': page_sign}
 
