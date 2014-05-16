@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.core.paginator import EmptyPage, Paginator
 from website.cdn.model_register import *
-from warehouse.models import Package, PackageVersion
+from warehouse.models import Package, PackageVersion, SupportedLanguage
 from mptt.models import MPTTModel
 from taxonomy.models import Category, TopicalItem
 
@@ -136,12 +136,11 @@ def get_topic_slug(topic_slug, cat_slug):
 
 
 def get_topic_by_slug(slug):
-    topic = None
 
     try:
         topic = Topic.objects.filter(slug=slug).published().get()
     except:
-        pass
+        topic = None
 
     return topic
 
@@ -158,12 +157,18 @@ def paginize_packages(packages, page, per_page=20):
     return pkgs
 
 
-def get_filtered_packages_by_topic(packages, topic):
+def filter_packages_by_topic(packages, topic):
     return TopicalItem.objects.filter_items_by_topic(topic, Package, packages)
 
 
+def get_supported_language(slug):
+    try:
+        lang = SupportedLanguage.objects.get(code=slug.upper())
+    except:
+        lang = None
 
+    return lang
 
-
-
+def filter_packages_by_supported_language(packages, lang):
+    return packages.filter(versions__supported_languages__in=[lang])
 
