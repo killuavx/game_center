@@ -13,6 +13,7 @@ from mptt.admin import MPTTModelAdmin
 from mezzanine.core.admin import (TabularDynamicInlineAdmin as TabularInline,
                                   StackedDynamicInlineAdmin as StackedInline)
 from reversion.admin import VersionAdmin
+from toolkit.admin import ResourceInlines
 
 from easy_thumbnails.exceptions import InvalidImageFormatError
 
@@ -39,6 +40,7 @@ class CategoryAdmin(MPTTModelAdmin, VersionAdmin):
     list_editable = ('is_hidden',)
     list_filter = ('is_hidden',)
     #inlines = (CategorizedPackageInline,)
+    inlines = (ResourceInlines, )
 
     mptt_level_indent = 20
     sortable = 'ordering'
@@ -132,6 +134,7 @@ class TopicAdmin(MPTTModelAdmin, VersionAdmin):
     list_editable = ('status', 'is_hidden')
     mptt_level_indent = 20
     sortable = 'ordering'
+    inlines = (ResourceInlines, )
 
     def show_icon_or_cover(self, obj):
         try:

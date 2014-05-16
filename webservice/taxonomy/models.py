@@ -19,6 +19,7 @@ from django.conf import settings
 from toolkit.managers import CurrentSitePassThroughManager, CurrentSiteManager
 from toolkit.helpers import sync_status_from, current_site_id
 from toolkit.models import (SiteRelated )
+from toolkit.fields import MultiResourceField
 
 slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
                                 'toolkit.helpers.slugify_unicode')
@@ -63,6 +64,8 @@ class Taxonomy(SiteRelated, models.Model):
         default=False,
         blank=True,
         help_text=_('can visit from font side but hidden'))
+
+    resources = MultiResourceField()
 
     def save(self, update_site=False, *args, **kwargs):
         if not self.slug:
