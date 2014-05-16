@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.timezone import now
 from model_utils import Choices
 from toolkit.fields import PkgFileField
+import requests
 
 
 class IOSAppData(models.Model):
@@ -69,7 +70,10 @@ class IOSAppData(models.Model):
     @classmethod
     def covert_normal_version(cls, pv):
         from warehouse.models import PackageVersion
+        print(type(pv))
+        print(pv)
         pv.__class__ = PackageVersion
+        return pv
 
     def set_analysised(self, version=None):
         if isinstance(version, int) and version <=0:
@@ -104,6 +108,23 @@ class IOSAppData(models.Model):
             self._content_data = content
         return self._content_data
     content_data = property(_get_content_json)
+
+
+    LOOKUP_URL_MARK = 'https://itunes.apple.com/%(location)slookup?id=%(track_id)s'
+
+    @classmethod
+    def lookup_url(cls, appid, location=''):
+        if len(location):
+            location = location + '/'
+        return cls.LOOKUP_URL_MARK % {'location': location, 'track_id': appid}
+
+    @classmethod
+    def lookup_request(cls, appid, location=''):
+        url = cls.lookup_url(appid, location)
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response
+        return None
 
 
 def iosapp_upload_to_path(instance, filename):

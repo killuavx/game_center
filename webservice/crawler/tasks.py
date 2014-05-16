@@ -15,7 +15,6 @@ from toolkit.models import Resource
 import io
 from crawler.models import IOSAppData, IOSBuyInfo
 
-rpc_client = xmlrpc.client.ServerProxy("http://localhost:6800/rpc")
 
 
 def iosversion_upload_to_path(version, filename, newname=None):
@@ -73,6 +72,9 @@ class BaseTask(object):
     def __init__(self):
         SITE_ID_IOS = 2
         os.environ.setdefault('MEZZANINE_SITE_ID', str(SITE_ID_IOS))
+
+    def __del__(self):
+        os.environ.pop('MEZZANINE_SITE_ID')
 
 
 class TransformIOSAppDataToPackageVersionTask(BaseTask):
@@ -237,14 +239,14 @@ class TransformIOSAppDataToPackageVersionTask(BaseTask):
 
 class DownloadIOSAppResourceTask(BaseTask):
 
-    client = rpc_client.aria2
-
     crawl_resource_doc_class = None
 
-    def __init__(self):
+    def __init__(self, allow_overwrite=True):
         super(DownloadIOSAppResourceTask, self).__init__()
         from crawler.documents import CrawlResource
         self.crawl_resource_doc_class = CrawlResource
+        self.allow_overwrite=allow_overwrite
+        self.client = xmlrpc.client.ServerProxy("http://localhost:6800/rpc").aria2
 
     def _content_object_id(self, version):
         ct = ContentType.objects.get_for_model(version.__class__)
@@ -262,11 +264,14 @@ class DownloadIOSAppResourceTask(BaseTask):
         resources = self.get_appdata_resources(app, content_data)
 
         content_type, object_pk = self._content_object_id(app)
+        gids = []
         for item in resources:
-            self._save_download_queue(item,
-                                      content_type=content_type,
-                                      object_pk=object_pk,
-                                      )
+            _gid = self._save_download_queue(item,
+                                            content_type=content_type,
+                                            object_pk=object_pk,
+                                            )
+            gids.append(_gid)
+        return gids
 
     def get_appdata_resources(self, app, content_data):
         track_id = app.appid
@@ -319,18 +324,24 @@ class DownloadIOSAppResourceTask(BaseTask):
         _file_path = os.path.join(settings.MEDIA_ROOT, item[1])
         _file_dir = os.path.dirname(_file_path)
         _id = self.client.addUri([item[0]], {'dir': _file_dir})
+        url, relative_path, resource_type, file_alias = item
         try:
-            self.crawl_resource_doc_class(
-                gid=_id,
-                url=item[0],
-                relative_path=item[1],
-                resource_type=item[2],
-                file_alias=str(item[3]),
-                file_dir=_file_dir,
-                file_path=_file_path,
-                **kwargs).save()
+            self.crawl_resource_doc_class.objects.filter(
+                relative_path=relative_path,
+                **kwargs
+            ).update_one(
+                upsert=True,
+                set__gid=_id,
+                set__url=url,
+                set__relative_path=relative_path,
+                set__resource_type=relative_path,
+                set__file_alias=str(file_alias),
+                set__file_dir=_file_dir,
+                set__file_path=_file_path,
+            )
         except Exception as e:
             print(e)
+        return _id
 
     def checkout_app_resources(self, app):
         """
@@ -541,31 +552,63 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
                 print(item.resource_type, item.relative_path)
                 self.add_to_packageversion(item, app.packageversion)
 
-    def add_to_packageversion(self, item, obj):
-        if not obj:
+
+    def add_to_packageversion(self, item, version):
+        if not version:
             return
-        obj = IOSAppData.covert_normal_version(obj)
+        version = IOSAppData.covert_normal_version(version)
 
         if item.resource_type in ('icon', 'screenshot', 'ipadscreenshot'):
             if item.resource_type == 'icon':
                 alias = item.file_alias.replace('artworkUrl', '')
-                if alias == '60':
-                    obj.icon = item.relative_path
-                    obj.save()
+                self._update_icon(version, item)
             else:
                 alias = item.file_alias
-                _kind = 'default' if item.resource_type == 'screenshot' else 'ipad'
-                screenshot = PackageVersionScreenshot(kind=_kind,
-                                                      image=item.relative_path,
-                                                      version=obj)
-                obj.screenshots.add(screenshot)
 
-            res = Resource(kind=item.resource_type, alias=alias,
-                           content_object=obj, file=item.relative_path)
-            obj.resources.add(res)
+            if item.resource_type.endswith('screenshot'):
+                self._upsert_screenshot(version, item)
+
+            res = self._upsert_resource(version, item, alias)
+
             item.is_recorded = True
             item.resource_id = res.pk
             item.save()
+
+    def _update_icon(self, version, item):
+        version.icon = item.relative_path
+        version.save()
+
+    def _upsert_screenshot(self, version, item):
+        kind = 'default' if item.resource_type == 'screenshot' else 'ipad'
+        screenshot, created = version.screenshots.get_or_create(kind=kind,
+                                          image=item.relative_path)
+        return screenshot
+
+    def _upsert_resource(self, version, item, alias):
+        res, created = version.resources.get_or_create(
+            kind=item.resource_type,
+            alias=alias,
+            content_object=version,
+            file=item.relative_path
+        )
+        return res
+
+    def sync_resourcefiles_to_version(self, app):
+        """
+            同步已下载的资源文件到PackageVersion上
+        """
+        if not app.packageversion:
+            return None
+
+        version = IOSAppData.covert_normal_version(app.packageversion)
+
+        ct = ContentType.objects.get_for_model(IOSAppData)
+        crawl_resources = self.get_crawl_resource_by(ct.pk, app.pk)
+        for crawl_res in crawl_resources:
+            self.add_to_packageversion(crawl_res, version)
+
+        return True
+
 
     def get_appdata(self, pk):
         return IOSAppData.objects.get(pk=int(pk))
