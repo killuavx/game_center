@@ -89,10 +89,14 @@ class CommentViewSet(mixins.CreateModelMixin,
 
     """
 
-    authentication_classes = ()
-    permission_classes = ()
     serializer_class = CommentSerializer
     model = Comment
+
+    def get_authenticators(self):
+        return []
+
+    def get_permissions(self):
+        return []
 
     def get_queryset(self):
         if self.queryset is None:
