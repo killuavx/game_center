@@ -105,8 +105,7 @@ class IOSAppDataAdmin(MainAdmin):
     def _fetch_cache_package_version(self, obj):
         if not hasattr(obj, '_package'):
             try:
-                package = Package.objects.get(
-                    package_name=obj.package_name)
+                package = Package.objects.get(package_name=obj.package_name)
                 obj._package = package
             except Package.DoesNotExist:
                 pass

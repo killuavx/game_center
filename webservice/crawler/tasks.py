@@ -556,7 +556,7 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
     def add_to_packageversion(self, item, version):
         if not version:
             return
-        version = IOSAppData.covert_normal_version(version)
+        version = IOSAppData.convert_normal_version(version)
 
         if item.resource_type in ('icon', 'screenshot', 'ipadscreenshot'):
             if item.resource_type == 'icon':
@@ -600,7 +600,7 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
         if not app.packageversion:
             return None
 
-        version = IOSAppData.covert_normal_version(app.packageversion)
+        version = IOSAppData.convert_normal_version(app.packageversion)
 
         ct = ContentType.objects.get_for_model(IOSAppData)
         crawl_resources = self.get_crawl_resource_by(ct.pk, app.pk)
