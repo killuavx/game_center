@@ -12,6 +12,7 @@ from warehouse.models import *
 from taxonomy.models import Category
 from toolkit.fields import file_md5
 from toolkit.models import Resource
+from django.core.files import File
 import io
 from crawler.models import IOSAppData, IOSBuyInfo
 
@@ -575,8 +576,9 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
             item.save()
 
     def _update_icon(self, version, item):
-        version.icon = item.relative_path
-        version.save()
+        with io.FileIO(item.file_path) as f:
+            version.icon = File(f)
+            version.save()
 
     def _upsert_screenshot(self, version, item):
         kind = 'default' if item.resource_type == 'screenshot' else 'ipad'
