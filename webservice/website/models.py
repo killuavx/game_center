@@ -145,7 +145,7 @@ def get_topic_by_slug(slug):
     return topic
 
 
-def paginize_packages(packages, page, per_page=20):
+def paginize_packages(packages, page, per_page=2):
     pg = Paginator(packages, per_page)
     page = 1 if page is None else int(page)
 
