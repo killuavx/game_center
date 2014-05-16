@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage, Paginator
 from website.cdn.model_register import *
 from warehouse.models import Package, PackageVersion
 from mptt.models import MPTTModel
-from taxonomy.models import Category
-
+from taxonomy.models import Category, TopicalItem
 
 
 def mock_processor_class(processor_class):
@@ -121,5 +120,50 @@ def get_all_packages():
     return Package.objects.published()
 
 
-#def get_packages_by_root_category(category):Packages.objects.by_published_order(True)
-#    pass
+def is_topic_slug(slug):
+    return slug in ['recommend', 'install']
+
+
+def get_topic_slug(topic_slug, cat_slug):
+
+    dic = {
+        'recommend': ''.join(['home-recommend-', cat_slug]),
+        'install': 'homebar-basic-installed',
+    }
+
+    #print (dic.get(topic_slug, None))
+    return  dic.get(topic_slug, None)
+
+
+def get_topic_by_slug(slug):
+    topic = None
+
+    try:
+        topic = Topic.objects.filter(slug=slug).published().get()
+    except:
+        pass
+
+    return topic
+
+
+def paginize_packages(packages, page, per_page=20):
+    pg = Paginator(packages, per_page)
+    page = 1 if page is None else int(page)
+
+    try:
+        pkgs = pg.page(page)
+    except EmptyPage:
+        pkgs = []
+
+    return pkgs
+
+
+def get_filtered_packages_by_topic(packages, topic):
+    return TopicalItem.objects.filter_items_by_topic(topic, Package, packages)
+
+
+
+
+
+
+

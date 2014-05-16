@@ -16,6 +16,8 @@ from analysis.documents.event import Event
 from website.models import get_package_by_package_name, get_packageversion_by_package
 from website.models import get_root_category_slug_by_package, get_all_categories, get_leaf_categories
 from website.models import filter_packages_by_category_slug, get_all_packages
+from website.models import is_topic_slug, get_topic_slug, get_topic_by_slug, get_filtered_packages_by_topic
+from website.models import paginize_packages
 
 
 def _download_packageversion_response(packageversion, filetype):
@@ -248,20 +250,41 @@ def iospc_package_detail_views(request, package_name, *args, **kwargs):
 
 def iospc_packages_list_views(request, slug, page, *args, **kwargs):
     template = 'iospc/package_list.html'
-    per_page = 20
+
     all_packages = get_all_packages()
     packages = filter_packages_by_category_slug(all_packages, slug)
-
-    pg = Paginator(packages, per_page)
-    page = 1 if page is None else int(page)
-    try:
-        pkgs = pg.page(page)
-    except EmptyPage:
-        pkgs = []
-
-    context = {'pkgs': pkgs, 'pg': pg, 'slug': slug}
+    pkgs = paginize_packages(packages, page)
+    context = {'pkgs': pkgs, 'slug': slug}
 
     return TemplateResponse(request=request, template=template, context=context)
 
 
-#def iospc_packages_list_views(request, slug, page, *args, **kwargs):
+def iospc_packages_topic_list_views(request, cat_slug, topic_slug, page, *args, **kwargs):
+
+    all_packages = get_all_packages()
+
+    cat_packages = filter_packages_by_category_slug(all_packages, cat_slug)
+
+
+   # print (topic_slug)
+    if is_topic_slug(topic_slug):
+        topic_slug = get_topic_slug(topic_slug, cat_slug)
+        #print (topic_slug)
+        topic = get_topic_by_slug(topic_slug)
+        #print (topic)
+        packages = get_filtered_packages_by_topic(cat_packages, topic)
+        print (len(packages))
+    return  HttpResponse('hello')
+
+
+    print (topic_slug)
+#
+    #template = 'iospc/package_list.html'
+    #return TemplateResponse(request=request, template=template, context=context)
+
+
+   # print (cat_slug, topic_slug, page)
+    #print (get_filter_slug(cat_slug, topic_slug))
+
+
+    return HttpResponse('hello')
