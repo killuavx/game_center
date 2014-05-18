@@ -4,7 +4,7 @@ from django.core.paginator import EmptyPage, Paginator, PageNotAnInteger
 from website.cdn.model_register import *
 from warehouse.models import Package, PackageVersion, SupportedLanguage
 from mptt.models import MPTTModel
-from taxonomy.models import Category, TopicalItem
+from taxonomy.models import Category, TopicalItem, Topic
 
 
 def mock_processor_class(processor_class):
@@ -210,3 +210,17 @@ def get_supported_language(slug):
 def filter_packages_by_supported_language(packages, lang):
     return packages.filter(versions__supported_languages__in=[lang])
 
+
+def get_all_topics():
+    return Topic.objects.all()
+
+
+def get_all_collections():
+    collections = []
+    topics = get_all_topics()
+
+    for tp in topics:
+        lst = tp.get_children()
+        collections.extend(lst)
+
+    return collections

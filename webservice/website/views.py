@@ -18,7 +18,7 @@ from website.models import get_root_category_slug_by_package, get_all_categories
 from website.models import filter_packages_by_category_slug, get_all_packages
 from website.models import is_topic_slug, get_topic_slug, get_topic_by_slug, filter_packages_by_topic
 from website.models import paginize_packages, get_supported_language, filter_packages_by_supported_language
-from website.models import get_category_slug, get_all_sub_cats
+from website.models import get_category_slug, get_all_sub_cats, get_all_collections
 
 
 def _download_packageversion_response(packageversion, filetype):
@@ -250,7 +250,7 @@ def iospc_package_detail_views(request, package_name, *args, **kwargs):
 
 
 def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
-    template = 'iospc/package_list.html'
+    template = 'iospc/packages_list.html'
     all_packages = get_all_packages()
     packages = filter_packages_by_category_slug(all_packages, slug)
     category_slug, category_query = get_category_slug(request)
@@ -272,7 +272,7 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
 
 
 def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwargs):
-    template = 'iospc/package_list.html'
+    template = 'iospc/packages_list.html'
     all_packages = get_all_packages()
     cat_packages = filter_packages_by_category_slug(all_packages, cat_slug)
 
@@ -305,4 +305,14 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
 
 
 def iospc_packages_collectios_list_views(request, *args, **kwargs):
-    return HttpResponse('hello')
+
+    template = 'iospc/collections_list.html'
+
+    collections = get_all_collections()
+    #print (collections)
+    #return HttpResponse('heello')
+    context = {
+        'collections': collections,
+    }
+
+    return TemplateResponse(request=request, template=template, context=context)
