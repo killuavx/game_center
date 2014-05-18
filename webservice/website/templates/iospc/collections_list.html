@@ -22,7 +22,7 @@
                       {% for pkg in item.packages %} 
                         {% with version=pkg.versions.latest_published %}
                           <li style="float: left; width: 95px;">
-                              <a href="#">
+                          <a href="{{ pkg.get_absolute_iospc_url }}">
                                       <img src="{{ version.icon.url }}">
                                       <span class="name">{{ pkg.title }}</span>
                                       <div class="icon star s{{ version.star_average|floatformat:0}}"></div>
