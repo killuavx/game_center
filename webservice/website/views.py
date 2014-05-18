@@ -8,6 +8,7 @@ from django.http import Http404, HttpResponseBadRequest, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.core.urlresolvers import resolve
 
 from .response import WidgetHttpResponse
 from toolkit.helpers import get_client_event_data
@@ -332,7 +333,7 @@ def iospc_packages_collectios_list_views(request, *args, **kwargs):
 def iospc_collection_detail_views(request, slug, *args, **kwargs):
 
     template = 'iospc/collection_detail.html'
-
+    packages = []
     collection = get_topic_by_slug(slug)
     if collection:
         packages = get_packages_by_topic(collection)
@@ -341,4 +342,13 @@ def iospc_collection_detail_views(request, slug, *args, **kwargs):
         'collection': collection,
         'packages': packages,
     }
+
+    if slug == 'topic-xiaomo' and 'iospc_masterpiece_packages' \
+            == resolve(request.path_info).url_name: # for masterpiece
+        items, page_query = paginize_items(request, packages, 2)
+        template = 'iospc/masterpiece_packages.html'
+        context =  {
+            'items': items,
+            'page_query': page_query,
+        }
     return TemplateResponse(request=request, template=template, context=context)
