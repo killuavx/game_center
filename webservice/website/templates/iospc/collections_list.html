@@ -7,11 +7,11 @@
 {% block main %} 
     
 <div class="cb box collection">
-    
+          {% for collection in collections %}
             <div class="collection_box">            
                 <div class="fl l">
                     <a href="collection_dis.html">
-                            <img src="../img/2.jpg">
+                      <img src="{% static collection.cover.url %}">
                             <h3>小色块游戏合集</h3>
                     </a>
                 </div><!--l-->
@@ -43,7 +43,7 @@
                   <div class="cb date">更新日期：2014-04-08 | 共 21 个应用</div>
                 </div><!--r-->
             </div><!--collection_box--> 
-            
+          {% endfor %} 
                     
             <div class="cb page">
                     <a href="#">上一页</a>

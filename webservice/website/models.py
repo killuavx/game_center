@@ -212,7 +212,7 @@ def filter_packages_by_supported_language(packages, lang):
 
 
 def get_all_topics():
-    return Topic.objects.all()
+    return Topic.objects.published()
 
 
 def get_all_collections():
