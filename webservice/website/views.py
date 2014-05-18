@@ -235,7 +235,7 @@ def cdn_feedback(request, slug, *args, **kwargs):
 
 
 def iospc_package_detail_views(request, package_name, *args, **kwargs):
-    template = 'iospc/package_detail.html'
+    template = 'iospc/package-detail.html'
 
     context = {}
     pkg = get_package_by_package_name(package_name)
@@ -251,7 +251,7 @@ def iospc_package_detail_views(request, package_name, *args, **kwargs):
 
 
 def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
-    template = 'iospc/packages_list.html'
+    template = 'iospc/categorized-packages-list.html'
     all_packages = get_all_packages()
     packages = filter_packages_by_category_slug(all_packages, slug)
     category_slug, category_query = get_category_slug(request)
@@ -273,7 +273,7 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
 
 
 def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwargs):
-    template = 'iospc/packages_list.html'
+    template = 'iospc/categorized-packages-list.html'
     all_packages = get_all_packages()
     cat_packages = filter_packages_by_category_slug(all_packages, cat_slug)
 
@@ -307,7 +307,7 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
 
 def iospc_packages_collectios_list_views(request, *args, **kwargs):
 
-    template = 'iospc/collections_list.html'
+    template = 'iospc/collections-packages-list.html'
 
     collections = get_all_collections()
 
@@ -332,7 +332,7 @@ def iospc_packages_collectios_list_views(request, *args, **kwargs):
 
 def iospc_collection_detail_views(request, slug, *args, **kwargs):
 
-    template = 'iospc/collection_detail.html'
+    template = 'iospc/collection-packages.html'
     packages = []
     collection = get_topic_by_slug(slug)
     if collection:
@@ -346,7 +346,7 @@ def iospc_collection_detail_views(request, slug, *args, **kwargs):
     if slug == 'topic-xiaomo' and 'iospc_masterpiece_packages' \
             == resolve(request.path_info).url_name: # for masterpiece
         items, page_query = paginize_items(request, packages, 2)
-        template = 'iospc/masterpiece_packages.html'
+        template = 'iospc/masterpiece-packages.html'
         context =  {
             'items': items,
             'page_query': page_query,
@@ -355,7 +355,7 @@ def iospc_collection_detail_views(request, slug, *args, **kwargs):
 
 
 def iospc_vendors_list_views(request, slug, pk, *args, **kwargs):
-    template = 'iospc/vendors_packages.html'
+    template = 'iospc/vendors-packages.html'
 
     vendors = []
     current_vendor = None
