@@ -166,12 +166,12 @@ def get_topic_by_slug(slug):
     return topic
 
 
-def paginize_items(request, packages, per_page=20):
+def paginize_items(request, items, per_page=20):
     page_query = 'page'
 
     page = request.GET.get(page_query)
 
-    paginator = Paginator(packages, per_page)
+    paginator = Paginator(items, per_page)
 
     try:
         pkgs = paginator.page(page)

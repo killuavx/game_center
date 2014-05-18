@@ -261,7 +261,7 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
     sub_cats = get_all_sub_cats(slug)
 
     context = {
-        'pkgs': pkgs,
+        'items': pkgs,
         'slug': slug,
         'cats': sub_cats,
         'page_query': page_query,
@@ -294,7 +294,7 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
     sub_cats = get_all_sub_cats(cat_slug)
     pkgs, page_query = paginize_items(request, packages)
     context = {
-        'pkgs': pkgs,
+        'items': pkgs,
         'cats': sub_cats,
         'slug': cat_slug,
         'other_slug': other_slug,
@@ -317,11 +317,12 @@ def iospc_packages_collectios_list_views(request, *args, **kwargs):
             'collection': collection,
             'packages': packages,
         })
-    #print (collections)
-    #return HttpResponse('heello')
+
+    items, page_query = paginize_items(request, result, 2)
+
     context = {
-        'collections': collections,
-        'items': result,
+        'items': items,
+        'page_query': page_query,
     }
 
     return TemplateResponse(request=request, template=template, context=context)

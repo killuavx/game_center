@@ -52,7 +52,7 @@
                     
                     <div class="list left_list" style="position: relative; width: 805px; height: 500px;">
                             <ul style="position: absolute; width: 805px; left: 0px; top: 0px;">
-                              {% for item in pkgs %}
+                              {% for item in items %}
                               {% with version=item.versions.latest_published %}
                                 <li>
                                   <a href="{{ item.get_absolute_iospc_url }}" class="big_pic"><img src="{{ version.icon.url }}"><span class="icon cover"></span></a>
@@ -87,24 +87,7 @@
                     </div><!--list-->
                     
                     
-              <div class="cb page">
-                <span class="step-links">
-                    {% if pkgs.has_previous %}
-                      <a hre="{% qurl request.get_full_path page=pkgs.previous_page_number %}">上一页</a>
-                    {% endif %}
-
-                    {% if pkgs.paginator.num_pages > 1%}
-                      {% for i in pkgs.paginator.page_range %}
-                        <a href="{% qurl request.get_full_path page=i %}">{{ i  }}</a>
-                      {% endfor %}
-                    {% endif %}
-
-                    {% if pkgs.has_next %}
-                      <a href="{% qurl request.get_full_path page=pkgs.next_page_number %}">下一页</a>
-                    {% endif %}
-                </span>
-
-              </div>
+                    {% include 'includes/iospc_pagination.html' %}
                     
             </div><!--game_box-->
             
