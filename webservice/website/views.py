@@ -18,7 +18,7 @@ from website.models import get_root_category_slug_by_package, get_all_categories
 from website.models import filter_packages_by_category_slug, get_all_packages
 from website.models import is_topic_slug, get_topic_slug, get_topic_by_slug, filter_packages_by_topic
 from website.models import paginize_packages, get_supported_language, filter_packages_by_supported_language
-from website.models import get_category_slug
+from website.models import get_category_slug, get_all_sub_cats
 
 
 def _download_packageversion_response(packageversion, filetype):
@@ -257,7 +257,16 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
     if category_slug != False:
         packages = filter_packages_by_category_slug(packages, category_slug)
     pkgs, page_query = paginize_packages(request, packages)
-    context = {'pkgs': pkgs, 'slug': slug, 'page_query': page_query, 'category_query': category_query}
+
+    sub_cats = get_all_sub_cats(slug)
+
+    context = {
+        'pkgs': pkgs,
+        'slug': slug,
+        'cats': sub_cats,
+        'page_query': page_query,
+        'category_query': category_query
+    }
 
     return TemplateResponse(request=request, template=template, context=context)
 
@@ -282,8 +291,14 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
         else:
             packages = cat_packages
 
+    sub_cats = get_all_sub_cats(cat_slug)
     pkgs, page_query = paginize_packages(request, packages)
-    context = {'pkgs': pkgs, 'slug': cat_slug, 'other_slug': other_slug, 'page_query': page_query}
-    #print (context['other_slug'])
+    context = {
+        'pkgs': pkgs,
+        'cats': sub_cats,
+        'slug': cat_slug,
+        'other_slug': other_slug,
+        'page_query': page_query,
+    }
 
     return TemplateResponse(request=request, template=template, context=context)

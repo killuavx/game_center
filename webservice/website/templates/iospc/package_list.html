@@ -12,20 +12,10 @@
                     <div class="menu">
                             <ul>
                                 <li><a href="#" class="icon hover">全部游戏</a></li>
-                                <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?cat=crack">破解</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">大型</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">休闲</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">棋牌</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">动作</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">战略</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">射击</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">赛车</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">角色</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">冒险</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">格斗</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">体育</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">网游</a></li>
-                                <li><a href="/iospc/packages/game/?cat=crack">儿童</a></li>
+
+                                {% for cat in cats %}
+                                <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query}}={{cat.slug }}">{{ cat.name|truncatewords:2 }}</a></li>
+                                {% endfor %}
                             </ul>
                     </div>
                     <div class="icon title_box">
@@ -55,15 +45,6 @@
                                         <a href="/iospc/packages/game/latest">最新发布</a>
                                         <a href="/iospc/packages/game/zh">中文</a>
                                         <a href="/iospc/packages/game/en">英文</a>
-                                    </div>
-                                </li>
-                                <li class="icon li_6"><span>默认排序</span>
-                                    <div class="pop_li_6 pop_menu" style="display: none;">
-                                        <a href="#">周榜</a>
-                                        <a href="#">月榜</a>
-                                        <a href="#">总榜</a>
-                                        <a href="#">最贵</a>
-                                        <a href="#">免费</a>
                                     </div>
                                 </li>
                             </ul>

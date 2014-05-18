@@ -128,8 +128,13 @@ def filter_packages_by_category_slug(packages, slug):
     return  pkgs.distinct().by_published_order()
 
 
-def get_all_sub_categories(slug):
-    pass
+def get_all_sub_cats(slug):
+    root_cat = get_root_category_by_slug(slug)
+
+    if root_cat is None:
+        return []
+    else:
+        return root_cat.get_descendants()
 
 
 def get_all_packages():
