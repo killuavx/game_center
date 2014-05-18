@@ -302,3 +302,7 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
     }
 
     return TemplateResponse(request=request, template=template, context=context)
+
+
+def iospc_packages_collectios_list_views(request, *args, **kwargs):
+    return HttpResponse('hello')
