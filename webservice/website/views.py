@@ -333,5 +333,12 @@ def iospc_collection_detail_views(request, slug, *args, **kwargs):
 
     template = 'iospc/collection_detail.html'
 
-    context = {}
+    collection = get_topic_by_slug(slug)
+    if collection:
+        packages = get_packages_by_topic(collection)
+
+    context = {
+        'collection': collection,
+        'packages': packages,
+    }
     return TemplateResponse(request=request, template=template, context=context)
