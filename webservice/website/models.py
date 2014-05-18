@@ -224,3 +224,13 @@ def get_all_collections():
         collections.extend(lst)
 
     return collections
+
+
+def get_packages_by_topic(topic):
+    try:
+        packages = TopicalItem.objects.get_items_by_topic(topic=topic, item_model=Package).published()
+    except:
+        packages = []
+
+    return packages
+
