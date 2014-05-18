@@ -16,7 +16,7 @@ from warehouse.models import PackageVersion, Package
 from analysis.documents.event import Event
 from website.models import get_package_by_package_name, get_packageversion_by_package
 from website.models import get_root_category_slug_by_package, get_all_categories, get_leaf_categories
-from website.models import filter_packages_by_category_slug, get_all_packages
+from website.models import filter_packages_by_category_slug, get_all_packages, get_authors_by_topic
 from website.models import is_topic_slug, get_topic_slug, get_topic_by_slug, filter_packages_by_topic
 from website.models import paginize_items, get_supported_language, filter_packages_by_supported_language
 from website.models import get_category_slug, get_all_sub_cats, get_all_collections, get_packages_by_topic
@@ -351,4 +351,36 @@ def iospc_collection_detail_views(request, slug, *args, **kwargs):
             'items': items,
             'page_query': page_query,
         }
+    return TemplateResponse(request=request, template=template, context=context)
+
+
+def iospc_vendors_list_views(request, slug, pk, *args, **kwargs):
+    template = 'iospc/vendors_packages.html'
+
+    vendors = []
+    current_vendor = None
+    topic = get_topic_by_slug(slug)
+    if topic:
+        vendors = get_authors_by_topic(topic)
+        #print (vendors.count())
+        if vendors and pk:
+            try:
+                current_vendor = vendors.get(pk=pk)
+            except:
+                pass
+
+    if vendors and current_vendor is None:
+        current_vendor = vendors[0]
+
+    packages = current_vendor.packages.published()
+    items, page_query = paginize_items(request, packages, 1)
+
+    #print (len(items))
+    context = {
+        'current_vendor': current_vendor,
+        'items': items,
+        'vendors': vendors,
+        'page_query': page_query,
+    }
+
     return TemplateResponse(request=request, template=template, context=context)

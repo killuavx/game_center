@@ -116,6 +116,9 @@ class Author(SiteRelated, models.Model):
     def get_absolute_url(self):
         return '/authors/%s' % self.pk
 
+    def get_absolute_iospc_url(self):
+        return reverse('iospc_vendors_list', kwargs={'slug': 'spec-top-author', 'pk': self.pk})
+
 
 class PackageQuerySet(QuerySet):
 

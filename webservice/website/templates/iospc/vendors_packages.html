@@ -1,0 +1,57 @@
+{% extends "iospc_base.html" %}
+{% load templateutils_tags %}
+{% load widgets %}
+{% load util_tags %}
+{% load widgets url_tags %}
+{% load static %}
+{% block main %} 
+    
+
+<div class="cb box vendor">
+            
+            <div class="fl l">
+                    <div class="list_menu">
+                        <ul>
+                          {% for vendor in vendors %}
+                          {% comment %}
+                          <li><a href="{{ vendor.get_absolute_url }}"><img src="{{ vendor.cover.url }}"></a></li>
+                          {% endcomment %}
+                          <li><a href="{{ vendor.get_absolute_iospc_url }}"><img src="{{vendor}}"></a></li>
+                          {% endfor %}
+                        </ul>
+                    </div>
+            </div><!--l-->
+            
+            
+            <div class="fr r">
+            
+                    <div class="list left_list">
+                        <ul>
+                           {% for item in items %}
+                            <li>
+                                <a href="#" class="big_pic"><img src="../img/1.jpg"><span class="icon cover"></span></a>
+                                
+                                <h2><a href="#">22游戏名称游戏名称游戏名称游戏名称游戏名称游戏名称</a></h2>
+                                <p>999M | 100万+下载</p>
+                                <p class="price">免费</p>
+                                <div class="icon star s2"></div>
+                                
+                                <div class="btn">
+                                        <span class="bg"></span>
+                                        <a href="#" class="a1 install">安装</a>
+                                        <a href="#" class="a2">下载</a>
+                                </div>
+                                
+                            </li>
+                            {% endfor %}
+                          </ul>
+                    </div>
+            
+                    {% include 'includes/iospc_pagination.html' %}
+            </div><!--r-->
+            
+    
+    </div>
+    
+    {% endblock %}
+

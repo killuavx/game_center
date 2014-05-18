@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.core.paginator import EmptyPage, Paginator, PageNotAnInteger
 from website.cdn.model_register import *
-from warehouse.models import Package, PackageVersion, SupportedLanguage
+from warehouse.models import Package, PackageVersion, SupportedLanguage, Author
 from mptt.models import MPTTModel
 from taxonomy.models import Category, TopicalItem, Topic
 
@@ -100,7 +100,6 @@ def get_packageversion_by_package(package):
         return None
 
     return pv
-
 
 
 def get_root_category_by_slug(slug):
@@ -207,6 +206,7 @@ def get_supported_language(slug):
 
     return lang
 
+
 def filter_packages_by_supported_language(packages, lang):
     return packages.filter(versions__supported_languages__in=[lang])
 
@@ -234,3 +234,11 @@ def get_packages_by_topic(topic):
 
     return packages
 
+
+def get_authors_by_topic(topic):
+    try:
+        authors = TopicalItem.objects.get_items_by_topic(topic=topic, item_model=Author)
+    except:
+        authors = []
+
+    return authors
