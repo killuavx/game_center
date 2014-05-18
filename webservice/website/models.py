@@ -102,10 +102,22 @@ def get_packageversion_by_package(package):
     return pv
 
 
-def filter_packages_by_category_slug(packages, slug):
+
+def get_root_category_by_slug(slug):
     try:
         root_cat = Category.objects.get(slug=slug)
     except:
+        root_cat = None
+
+    return root_cat
+
+
+
+def filter_packages_by_category_slug(packages, slug):
+
+    root_cat = get_root_category_by_slug(slug)
+
+    if root_cat is None:
         return []
 
     cats = root_cat.get_descendants(True)
@@ -114,6 +126,10 @@ def filter_packages_by_category_slug(packages, slug):
         return []
 
     return  pkgs.distinct().by_published_order()
+
+
+def get_all_sub_categories(slug):
+    pass
 
 
 def get_all_packages():
@@ -171,11 +187,7 @@ def get_category_slug(request):
     if slug is None or slug == '':
         return False, category_query
 
-    category_slug_dic = {
-        'crack': 'crack-game',
-    }
-
-    return category_slug_dic.get(slug), category_query
+    return slug, category_query
 
 
 def filter_packages_by_topic(packages, topic):
