@@ -253,11 +253,11 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
     template = 'iospc/package_list.html'
     all_packages = get_all_packages()
     packages = filter_packages_by_category_slug(all_packages, slug)
-    category_slug = get_category_slug(request)
+    category_slug, cat_sign = get_category_slug(request)
     if category_slug != False:
         packages = filter_packages_by_category_slug(packages, category_slug)
     pkgs, page_sign = paginize_packages(request, packages)
-    context = {'pkgs': pkgs, 'slug': slug, 'page_sign': page_sign}
+    context = {'pkgs': pkgs, 'slug': slug, 'page_sign': page_sign, 'cat_sign': cat_sign}
 
     return TemplateResponse(request=request, template=template, context=context)
 

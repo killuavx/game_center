@@ -169,13 +169,13 @@ def get_category_slug(request):
 
     slug = request.GET.get(cat_sign)
     if slug is None or slug == '':
-        return False
+        return False, cat_sign
 
     category_slug_dic = {
         'crack': 'crack-game',
     }
 
-    return category_slug_dic.get(slug)
+    return category_slug_dic.get(slug), cat_sign
 
 
 def filter_packages_by_topic(packages, topic):
