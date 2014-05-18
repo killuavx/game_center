@@ -146,9 +146,9 @@ def get_topic_by_slug(slug):
 
 
 def paginize_packages(request, packages, per_page=20):
-    page_sign = 'page'
+    page_query = 'page'
 
-    page = request.GET.get(page_sign)
+    page = request.GET.get(page_query)
 
     paginator = Paginator(packages, per_page)
 
@@ -161,21 +161,21 @@ def paginize_packages(request, packages, per_page=20):
         # If page is out of range (e.g. 9999), deliver last page of results.
         pkgs = paginator.page(paginator.num_pages)
 
-    return pkgs, page_sign
+    return pkgs, page_query
 
 
 def get_category_slug(request):
-    cat_sign = 'cat'
+    category_query = 'cat'
 
-    slug = request.GET.get(cat_sign)
+    slug = request.GET.get(category_query)
     if slug is None or slug == '':
-        return False, cat_sign
+        return False, category_query
 
     category_slug_dic = {
         'crack': 'crack-game',
     }
 
-    return category_slug_dic.get(slug), cat_sign
+    return category_slug_dic.get(slug), category_query
 
 
 def filter_packages_by_topic(packages, topic):
