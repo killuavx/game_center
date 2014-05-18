@@ -17,7 +17,7 @@ from website.models import get_package_by_package_name, get_packageversion_by_pa
 from website.models import get_root_category_slug_by_package, get_all_categories, get_leaf_categories
 from website.models import filter_packages_by_category_slug, get_all_packages
 from website.models import is_topic_slug, get_topic_slug, get_topic_by_slug, filter_packages_by_topic
-from website.models import paginize_packages, get_supported_language, filter_packages_by_supported_language
+from website.models import paginize_items, get_supported_language, filter_packages_by_supported_language
 from website.models import get_category_slug, get_all_sub_cats, get_all_collections, get_packages_by_topic
 
 
@@ -256,7 +256,7 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
     category_slug, category_query = get_category_slug(request)
     if category_slug != False:
         packages = filter_packages_by_category_slug(packages, category_slug)
-    pkgs, page_query = paginize_packages(request, packages)
+    pkgs, page_query = paginize_items(request, packages)
 
     sub_cats = get_all_sub_cats(slug)
 
@@ -292,7 +292,7 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
             packages = cat_packages
 
     sub_cats = get_all_sub_cats(cat_slug)
-    pkgs, page_query = paginize_packages(request, packages)
+    pkgs, page_query = paginize_items(request, packages)
     context = {
         'pkgs': pkgs,
         'cats': sub_cats,

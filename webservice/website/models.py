@@ -166,7 +166,7 @@ def get_topic_by_slug(slug):
     return topic
 
 
-def paginize_packages(request, packages, per_page=20):
+def paginize_items(request, packages, per_page=20):
     page_query = 'page'
 
     page = request.GET.get(page_query)
