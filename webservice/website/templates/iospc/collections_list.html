@@ -11,7 +11,7 @@
           {% with collection=item.collection %}
             <div class="collection_box">            
                 <div class="fl l">
-                    <a href="collection_dis.html">
+                  <a href="{{ collection.get_absolute_iospc_url }}">
                       <img src="{% static collection.cover.url %}">
                       <h3>{{ collection.name }}</h3>
                     </a>
