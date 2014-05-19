@@ -14,13 +14,13 @@
                                 {% if category_slug or other_slug %}
                                 <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}">全部游戏</a></li>
                                 {% else %}
-                                <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}" class="hover">全部游戏</a></li>
+                                <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}" class="icon hover">全部游戏</a></li>
                                 {% endif %}
 
 
                                 {% for cat in cats %}
                                   {% if category_slug == cat.slug %}
-                                    <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query }}={{ cat.slug }}" class="hover">{{ cat.name|truncatewords:2 }}</a></li>
+                                    <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query }}={{ cat.slug }}" class="icon hover">{{ cat.name|truncatewords:2 }}</a></li>
                                   {% else %}
                                     <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query }}={{ cat.slug }}">{{ cat.name|truncatewords:2 }}</a></li>
                                   {% endif %}
