@@ -11,7 +11,7 @@
             <div class="list_box_left game_box">
                     <div class="menu">
                             <ul>
-                                {% if category_slug or other_slug %}
+                                {% if category_slug %}
                                 <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}">全部游戏</a></li>
                                 {% else %}
                                 <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}" class="icon hover">全部游戏</a></li>
