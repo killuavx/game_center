@@ -211,6 +211,22 @@ def filter_packages_by_supported_language(packages, lang):
     return packages.filter(versions__supported_languages__in=[lang])
 
 
+#def filter_packages_by_supported_language(packages, lang):
+#    pkgs = []
+#
+#    for pkg in packages:
+#        flag = False
+#        try:
+#            flag = lang in pkg.versions.latest_published().supported_languages.all()
+#        except:
+#            pass
+#
+#        if flag:
+#            pkgs.append(pkg)
+#
+#    return pkgs
+
+
 def get_all_topics():
     return Topic.objects.published()
 
