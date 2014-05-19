@@ -268,7 +268,7 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
         packages = filter_packages_by_category_slug(packages, category_slug)
     pkgs, page_query = paginize_items(request, packages)
 
-    sub_cats = get_all_sub_cats(slug)
+    sub_cats = get_all_sub_cats(slug)[:10]
 
     context = {
         'items': pkgs,
@@ -276,6 +276,7 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
         'cats': sub_cats,
         'page_query': page_query,
         'category_query': category_query,
+        'category_slug': category_slug,
         'current_page': slug,
     }
 
@@ -287,7 +288,7 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
     all_packages = get_all_packages()
     cat_packages = filter_packages_by_category_slug(all_packages, cat_slug)
 
-    print (other_slug)
+    #print (request)
     if is_topic_slug(other_slug):
         topic_slug = get_topic_slug(other_slug, cat_slug)
         topic = get_topic_by_slug(topic_slug)
@@ -302,7 +303,7 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
         else:
             packages = cat_packages
 
-    sub_cats = get_all_sub_cats(cat_slug)
+    sub_cats = get_all_sub_cats(cat_slug)[:10]
     pkgs, page_query = paginize_items(request, packages)
     context = {
         'items': pkgs,
@@ -310,6 +311,7 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
         'slug': cat_slug,
         'other_slug': other_slug,
         'page_query': page_query,
+        'category_query': 'cat',
         'current_page': 'topic',
     }
 

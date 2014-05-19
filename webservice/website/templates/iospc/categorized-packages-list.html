@@ -11,44 +11,56 @@
             <div class="list_box_left game_box">
                     <div class="menu">
                             <ul>
-                                <li><a href="#" class="icon hover">全部游戏</a></li>
+                                {% if category_slug or other_slug %}
+                                <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}">全部游戏</a></li>
+                                {% else %}
+                                <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}" class="hover">全部游戏</a></li>
+                                {% endif %}
+
 
                                 {% for cat in cats %}
-                                <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query}}={{cat.slug }}">{{ cat.name|truncatewords:2 }}</a></li>
+                                  {% if category_slug == cat.slug %}
+                                    <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query }}={{ cat.slug }}" class="hover">{{ cat.name|truncatewords:2 }}</a></li>
+                                  {% else %}
+                                    <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query }}={{ cat.slug }}">{{ cat.name|truncatewords:2 }}</a></li>
+                                  {% endif %}
                                 {% endfor %}
                             </ul>
                     </div>
                     <div class="icon title_box">
-                            <ul class="fl"><!--
-                                <li class="li_1 hover">全部设备</li>
-                                <li class="li_2">iPhone</li>
-                                <li class="li_4">iPad</li>-->
+                      <div class="tag">
+                          {% if other_slug == 'recommend' %}
+                            <a href="/iospc/packages/game/recommend" class="hover">精品推荐</a>
+                          {% else %}
+                            <a href="/iospc/packages/game/recommend">精品推荐</a>
+                          {% endif %}
 
-                                <li class="icon li_5 hover"><span>
-                                  {% if other_slug == 'recommend' %}
-                                    精品推荐
-                                  {% elif other_slug == 'install' %}
-                                    装机必备
-                                  {% elif other_slug == 'latest' %}
-                                    最新发布
-                                  {% elif other_slug == 'zh'%}
-                                    中文
-                                  {% elif other_slug == 'en' %}
-                                    英文
-                                  {% else %}
-                                    默认筛选
-                                {% endif %}
-                              </span>
-                                    <div class="pop_li_5 pop_menu" style="display: none;">
-                                        <a href="/iospc/packages/game/recommend">精品推荐</a>
-                                        <a href="/iospc/packages/game/install">装机必备</a>
-                                        <a href="/iospc/packages/game/latest">最新发布</a>
-                                        <a href="/iospc/packages/game/zh">中文</a>
-                                        <a href="/iospc/packages/game/en">英文</a>
-                                    </div>
-                                </li>
-                            </ul>
+                          {% if other_slug == 'install' %}
+                            <a href="/iospc/packages/game/install" class="hover">装机必备</a>
+                          {% else %}
+                            <a href="/iospc/packages/game/install">装机必备</a>
+                          {% endif %}
+
+                          {% if other_slug == 'latest' %}
+                            <a href="/iospc/packages/game/latest" class="hover">最新发布</a>
+                          {% else %}
+                            <a href="/iospc/packages/game/latest">最新发布</a>
+                          {% endif %}
+
+                          {% if other_slug == 'zh'%}
+                            <a href="/iospc/packages/game/zh" class="hover">中文</a>
+                          {% else %}
+                            <a href="/iospc/packages/game/zh">中文</a>
+                          {% endif %}
+
+                          {% if other_slug == 'en' %}
+                            <a href="/iospc/packages/game/en"class="hover">英文</a>                            
+                          {% else %}
+                            <a href="/iospc/packages/game/en">英文</a>                            
+                          {% endif %}
+                       </div>
                     </div><!--title_box-->
+
                     
                     <div class="list left_list" style="position: relative; width: 805px; height: 500px;">
                             <ul style="position: absolute; width: 805px; left: 0px; top: 0px;">
