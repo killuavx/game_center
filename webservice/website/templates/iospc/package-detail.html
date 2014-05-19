@@ -205,26 +205,16 @@
 
                                     </div>
 
-                                    
-                                    {% get_comment_list for pkgver as comment_list %}
-                                    {% for comment in comment_list %}
-                                      {{ comment }}
-                                    {% endfor %} 
-
-
-                                    {% get_comment_count for pkgver as comment_count %}
-
-                                    <p>This event has {{ comment_count }} comments.</p> 
-
+                                  {% for item in items %} 
                                     <div class="review_list">
 
                                          <dl class="cb">
 
                                                 <dt class="icon fl user" title="name"></dt>
 
-                                                <dd class="d1"><span class="icon fl star s4"></span><span class="fr">2014-04-07 19:16</span></dd>
+                                                <dd class="d1"><span class="icon fl star s{{ item.user.stars.all.0.value }}"></span><span class="fr">{{ item.submit_date|date:'Y-m-d H:i'}}</span></dd>
 
-                                                <dd class="d2">以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、</dd>
+                                                <dd class="d2">{{ item.comment }}</dd>
 
                                                 <dd class="d3"><a href="#" class="r1"><span class="icon"></span>0</a><a href="#" class="r2"><span class="icon"></span>0</a></dd>
 
@@ -233,54 +223,10 @@
                                          <div class="c_b"></div>
 
                                     </div>
+                                    {% endfor %}
 
-                                    <div class="review_list i_reply">
+                              {% include 'includes/iospc_pagination.html' %}
 
-                                         <dl class="cb">
-
-                                                <dt class="icon fl user" title="name"></dt>
-
-                                                <dd class="d1"><span class="icon fl star s4"></span><span class="fr">2014-04-07 19:16</span></dd>
-
-                                                <dd class="d2">以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、</dd>
-
-                                                <dd class="d3"><a href="#" class="r1"><span class="icon"></span>1</a><a href="#" class="r2"><span class="icon"></span>2</a></dd>
-
-                                         </dl>
-
-                                         <div class="c_b"></div>
-
-                                    </div>
-
-                                    
-
-                                    
-
-            <div class="cb page">
-
-                    <a href="#">上一页</a>
-
-                    <a href="#">1</a>
-
-                    <a href="#" class="hover">2</a>
-
-                    <a href="#">3</a>
-
-                    <a href="#">4</a>
-
-                    <a href="#">…</a>
-
-                    <a href="#">99</a>
-
-                    <a href="#">下一页</a>
-
-            </div>
-
-            
-
-            
-
-            
 
                             </div><!--down-->
 

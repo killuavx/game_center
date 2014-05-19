@@ -5,6 +5,7 @@ from website.cdn.model_register import *
 from warehouse.models import Package, PackageVersion, SupportedLanguage, Author
 from mptt.models import MPTTModel
 from taxonomy.models import Category, TopicalItem, Topic
+from django.contrib.comments import Comment
 
 
 def mock_processor_class(processor_class):
@@ -258,3 +259,10 @@ def get_authors_by_topic(topic):
         authors = []
 
     return authors
+
+
+def get_comments_by_packageversion(packageversion):
+    comments = Comment.objects.filter(object_pk=packageversion.pk)\
+               .filter(is_public=True, is_removed=False)
+    return comments
+

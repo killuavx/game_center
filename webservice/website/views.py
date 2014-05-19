@@ -20,6 +20,7 @@ from website.models import filter_packages_by_category_slug, get_all_packages, g
 from website.models import is_topic_slug, get_topic_slug, get_topic_by_slug, filter_packages_by_topic
 from website.models import paginize_items, get_supported_language, filter_packages_by_supported_language
 from website.models import get_category_slug, get_all_sub_cats, get_all_collections, get_packages_by_topic
+from website.models import get_comments_by_packageversion
 
 
 def _download_packageversion_response(packageversion, filetype):
@@ -255,6 +256,11 @@ def iospc_package_detail_views(request, package_name, *args, **kwargs):
     context['sub_cat_name'] = category.name if category else ''
     context['sub_cat_slug'] = category.slug if category else ''
     context['package_title'] = pkg.title if pkg.title else ''
+    comments = get_comments_by_packageversion(context['pkgver'])
+    items, page_query = paginize_items(request, comments, 1)
+    context['items'] = items
+    context['page_query'] = page_query
+    print (len(items))
 
     return TemplateResponse(request=request, template=template, context=context)
 
