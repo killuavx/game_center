@@ -30,33 +30,34 @@
                     <div class="icon title_box">
                       <div class="tag">
                           {% if other_slug == 'recommend' %}
-                            <a href="/iospc/packages/game/recommend" class="hover">精品推荐</a>
+                            <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='recommend' %}" class="hover">精品推荐</a>
+
                           {% else %}
-                            <a href="/iospc/packages/game/recommend">精品推荐</a>
+                            <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='recommend' %}">精品推荐</a>
                           {% endif %}
 
                           {% if other_slug == 'install' %}
-                            <a href="/iospc/packages/game/install" class="hover">装机必备</a>
+                            <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='install' %}" class="hover">装机必备</a>
                           {% else %}
-                            <a href="/iospc/packages/game/install">装机必备</a>
+                            <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='install' %}">装机必备</a>
                           {% endif %}
 
                           {% if other_slug == 'latest' %}
-                            <a href="/iospc/packages/game/latest" class="hover">最新发布</a>
+                            <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='latest' %}" class="hover">最新发布</a>
                           {% else %}
-                            <a href="/iospc/packages/game/latest">最新发布</a>
+                            <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='latest' %}">最新发布</a>
                           {% endif %}
 
                           {% if other_slug == 'zh'%}
-                            <a href="/iospc/packages/game/zh" class="hover">中文</a>
+                            <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='zh' %}" class="hover">中文</a>
                           {% else %}
-                            <a href="/iospc/packages/game/zh">中文</a>
+                            <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='zh' %}">中文</a>
                           {% endif %}
 
                           {% if other_slug == 'en' %}
-                            <a href="/iospc/packages/game/en"class="hover">英文</a>                            
+                            <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='en' %}" class="hover">英文</a>                            
                           {% else %}
-                            <a href="/iospc/packages/game/en">英文</a>                            
+                            <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='en' %}">英文</a>                            
                           {% endif %}
                        </div>
                     </div><!--title_box-->
