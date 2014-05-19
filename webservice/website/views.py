@@ -237,15 +237,24 @@ def cdn_feedback(request, slug, *args, **kwargs):
 def iospc_package_detail_views(request, package_name, *args, **kwargs):
     template = 'iospc/package-detail.html'
 
-    context = {}
     pkg = get_package_by_package_name(package_name)
     all_cats = get_all_categories(pkg)
     leaf_cats = get_leaf_categories(all_cats)
-    #print (cats)
-    #print (cats)
+
+    context = {}
     context['pkgver'] =  get_packageversion_by_package(pkg)
     context['slug'] = get_root_category_slug_by_package(pkg)
     context['cats'] = leaf_cats
+    context['current_page'] = context['slug']
+    try:
+        category = pkg.categories.all()[0]
+    except:
+        category = ''
+
+    context['root_cat'] = context['slug']
+    context['sub_cat_name'] = category.name if category else ''
+    context['sub_cat_slug'] = category.slug if category else ''
+    context['package_title'] = pkg.title if pkg.title else ''
 
     return TemplateResponse(request=request, template=template, context=context)
 
@@ -266,7 +275,8 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
         'slug': slug,
         'cats': sub_cats,
         'page_query': page_query,
-        'category_query': category_query
+        'category_query': category_query,
+        'current_page': slug,
     }
 
     return TemplateResponse(request=request, template=template, context=context)
@@ -300,6 +310,7 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
         'slug': cat_slug,
         'other_slug': other_slug,
         'page_query': page_query,
+        'current_page': 'topic',
     }
 
     return TemplateResponse(request=request, template=template, context=context)
@@ -324,6 +335,7 @@ def iospc_packages_collectios_list_views(request, *args, **kwargs):
     context = {
         'items': items,
         'page_query': page_query,
+        'current_page': 'collection',
     }
 
     return TemplateResponse(request=request, template=template, context=context)
@@ -341,6 +353,7 @@ def iospc_collection_detail_views(request, slug, *args, **kwargs):
     context = {
         'collection': collection,
         'packages': packages,
+        'current_page': 'collection',
     }
 
     if slug == 'topic-xiaomo' and 'iospc_masterpiece_packages' \
@@ -350,7 +363,9 @@ def iospc_collection_detail_views(request, slug, *args, **kwargs):
         context =  {
             'items': items,
             'page_query': page_query,
+            'current_page': 'masterpiece',
         }
+
     return TemplateResponse(request=request, template=template, context=context)
 
 
@@ -381,6 +396,7 @@ def iospc_vendors_list_views(request, slug, pk, *args, **kwargs):
         'items': items,
         'vendors': vendors,
         'page_query': page_query,
+        'current_page': 'vendor',
     }
 
     return TemplateResponse(request=request, template=template, context=context)
