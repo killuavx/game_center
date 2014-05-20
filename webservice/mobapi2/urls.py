@@ -18,7 +18,7 @@ from mobapi2.account.views import (AccountCreateView,
                                    AccountSignoutView,
                                    AccountAuthTokenView,
                                    AccountCommentPackageView)
-from analysis.views.rest_views import EventViewSet
+from mobapi2.event.views import EventViewSet
 from mobapi2.clientapp.views import SelfUpdateView, LoadingCoverView
 from mobapi2.rest_router import rest_router
 from mobapi2.ranking.views import PackageRankingViewSet
