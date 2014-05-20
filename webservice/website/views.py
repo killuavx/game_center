@@ -274,7 +274,7 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
         packages = filter_packages_by_category_slug(packages, category_slug)
     pkgs, page_query = paginize_items(request, packages)
 
-    sub_cats = get_all_sub_cats(slug)[:10]
+    sub_cats = get_all_sub_cats(slug)
 
     context = {
         'items': pkgs,
@@ -309,7 +309,7 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
         else:
             packages = cat_packages
 
-    sub_cats = get_all_sub_cats(cat_slug)[:10]
+    sub_cats = get_all_sub_cats(cat_slug)
     pkgs, page_query = paginize_items(request, packages)
     context = {
         'items': pkgs,

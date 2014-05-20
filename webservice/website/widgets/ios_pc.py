@@ -10,17 +10,17 @@ from warehouse.models import Package
 
 class BannerToprightWidget(BaseSingleAdvWidget, Widget):
 
-    template = 'pages/widgets/ios_pc/banner_top_right.html'
+    template = 'pages/widgets/iospc/banner_top_right.html'
 
 
 class BannerTopleftWidget(BaseMultiAdvWidget, Widget):
 
-    template = 'pages/widgets/ios_pc/banner_top_left.html'
+    template = 'pages/widgets/iospc/banner_top_left.html'
 
 
 class PackageListRollBoxWidget(MasterpiecePackageListWidget):
 
-    template = 'pages/widgets/ios_pc/roll_box.html'
+    template = 'pages/widgets/iospc/roll_box.html'
 
     def get_list(self, type):
         from website.models import filter_packages_by_category_slug
@@ -39,7 +39,7 @@ class PackageListRollBoxWidget(MasterpiecePackageListWidget):
 
 class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
 
-    template = 'pages/widgets/ios_pc/package_list_box_left.html'
+    template = 'pages/widgets/iospc/package_list_box_left.html'
 
     def get_packages_by_category_slug(self, packages, slug):
         from website.models import filter_packages_by_category_slug
@@ -80,7 +80,7 @@ class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
 
 class IosPcRankingPackageListWidget(BaseRankingPackageListWidget):
 
-    template = 'pages/widgets/ios_pc/package_list_box_right.html'
+    template = 'pages/widgets/iospc/package_list_box_right.html'
 
     def get_list(self, type):
         from ranking.models import PackageRanking
