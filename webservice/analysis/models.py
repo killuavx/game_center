@@ -423,7 +423,7 @@ class DeviceOSDim(Dimension):
 
     platform = deepcopy(platform)
 
-    os_version = models.CharField(max_length=50,
+    os_version = models.CharField(max_length=300,
                                   default=UNDEFINED)
 
     class Meta:
@@ -526,7 +526,7 @@ class DeviceModelDim(Dimension):
     设备类型
     """
 
-    manufacturer = models.CharField(max_length=150, db_index=True)
+    manufacturer = models.CharField(max_length=300, db_index=True)
 
     device_name = models.CharField(max_length=255, default='')
 
@@ -1845,3 +1845,16 @@ class SumDownloadProductResult(BaseResult):
             ('cycle_type', 'start_date', 'end_date', ),
         )
         ordering = ('-start_date', 'productkey')
+
+
+from django.conf import settings
+
+if "south" in settings.INSTALLED_APPS:
+    try:
+        from south.modelsinspector import add_introspection_rules
+        add_introspection_rules(rules=[
+            ((ReserveBooleanField,), [], {}),
+        ],
+                                patterns=["analysis\.models\."])
+    except ImportError:
+        pass
