@@ -8,9 +8,23 @@
 <link href="http://static.ccplay.com.cn/static/common/css/site-v1.css" media="all" rel="stylesheet" type="text/css" />
 <link href="../css/down.css" media="all" rel="stylesheet" type="text/css" />
 <link href="http://static.ccplay.com.cn/static/common/css/quick-layout.css" media="all" rel="stylesheet" type="text/css" />
-</head><noscript>
+<script>
+//判断设备跳转
+(function(W){
+		  if(/iphone/i.test(navigator.userAgent.toLowerCase())){W.location.href = 'http://baidu.com';  
+	}else if(/ipad/i.test(navigator.userAgent.toLowerCase())){W.location.href = 'http://qq.com';
+    }else if(/samsung|HTC|android/i.test(navigator.userAgent.toLowerCase())){W.location.href = 'http://www.sina.com.cn';}
+})(window)
+</script>
+
+<noscript>
     <h1 style="font-size:100%;color:#e53333;display:block;text-align:center">由于您的浏览器禁用了javascript脚本，网页无法正常浏览!</h1>
 </noscript>
+<base target="_blank">
+
+
+</head>
+
 
 <body>
 
@@ -147,12 +161,13 @@
                 	<a href="#" class="a1 btn btn-red text-db">iPhone版下载</a>
                     <span class="db tc gr p20">扫描二维码即可下载</span>
                     <dl class="lh30">
-                    	<dt>适用系统：</dt><dd>iOS 5.0及以上</dd>
-                        <dt>软件大小：</dt><dd>40.6MB</dd>
-                        <dt>软件版本：</dt><dd>3.1 正式版</dd>
-                        <dt>更新日期：</dt><dd>2014.04.25</dd>
+                    	<dt>适用系统：</dt><dd>iOS 6.0及以上</dd>
+                        <dt>软件大小：</dt><dd>00.00MB</dd>
+                        <dt>软件版本：</dt><dd>1.0 正式版</dd>
+                        <dt>更新日期：</dt><dd>0000.00.00</dd>
                     </dl>
                     <img src="http://static.ccplay.com.cn/static/common/img/code.png" class="abs">
+                    <div style="position:absolute; height:200px; background:#ccc; width:100%; left:0; top:0; opacity:.8; font-size:36px; text-align:center; padding-top:100px">即将上线<br/>敬请期待</div>
                 </div>
 				<div class="dib f14 rel down-btn">
                 	<a href="#" class="a2 btn btn-red text-db">Android版下载</a>
@@ -167,14 +182,13 @@
                 </div>
 				<div class="dib f14 rel down-btn">
                 	<a href="#" class="a3 btn btn-red text-db">电脑客户端下载</a>
-                    <span class="db tc gr p20">扫描二维码即可下载</span>
+                    <span class="db tc gr p20">&nbsp;</span>
                     <dl class="lh30">
                     	<dt>适用系统：</dt><dd>iOS 5.0及以上</dd>
                         <dt>软件大小：</dt><dd>40.6MB</dd>
                         <dt>软件版本：</dt><dd>3.1 正式版</dd>
                         <dt>更新日期：</dt><dd>2014.04.25</dd>
                     </dl>
-                    <img src="http://static.ccplay.com.cn/static/common/img/code.png" class="abs">
                 </div>
                 
                 
@@ -555,7 +569,7 @@
 <script src="http://static.ccplay.com.cn/static/common/zxxbox/js/jquery.zxxbox.3.0.js"></script>
 <script src="http://static.ccplay.com.cn/static/common/js/Validform_v5.3.2_min.js"></script>
 <script src="http://static.ccplay.com.cn/static/common/js/site-v1.js"></script>
-
+<script src="../js/down.js"></script>
 <!--[if IE 6]>
 <script src="http://static.ccplay.com.cn/static/common/js/DD_PNG.js"></script>
 <script>

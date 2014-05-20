@@ -14,7 +14,7 @@ a:focus,input,select,textarea{outline:0;resize: none}
 :-ms-input-placeholder{color:#ddd}
 ::-moz-selection{background:#ff7900;color:#fff}
 
-::selection{background:#e53333;color:#fff}
+::selection{background:#ffe5e5;color:#e53333}
 ::-webkit-scrollbar-track-piece{background: #333}
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-button{display: none}
@@ -28,10 +28,10 @@ a:focus,input,select,textarea{outline:0;resize: none}
 .re-1{border:1px solid #ffdd99; background:#fff9ed;}
 .re-2{border:1px solid #c9d9ee; background:#ecf8ff;}
 .re-3{border:1px solid #adcd3c; background:#f2fddb;}
-.width,.banner .bg,.banner .bg-c,.logo,.right-list,.left-list,.right,.collection_box .r,.nav .l li,.nav .l li a,.logo,.logo a,.float-three,.num li,.l-box,.r-box,a,.css3,#pw-strength,#pw-strength span,.Validform_checktip,.Validform_right,.mm a span,.search button,.nav li a,.nav a,.info-box-title,.info-box:hover{transition: 0.5s; -moz-transition: 0.5s; -o-transition: 0.5s; -webkit-transition: 0.5s;}
+/*.width,.banner .bg,.banner .bg-c,.logo,.right-list,.left-list,.right,.collection_box .r,.nav .l li,.nav .l li a,.logo,.logo a,.float-three,.num li,.l-box,.r-box,a,.css3,#pw-strength,#pw-strength span,.Validform_checktip,.Validform_right,.mm a span,.search button,.nav li a,.nav a,.info-box-title,.info-box:hover{transition: 0.5s; -moz-transition: 0.5s; -o-transition: 0.5s; -webkit-transition: 0.5s;}*/
 
 .ios-web-icon{background:url(http://static.ccplay.com.cn/static/common/img/ios_web_icon.png) no-repeat; display:inline-block}
-.drop-down{z-index:9; width:100%; left:0; *top:33px; display:none; -moz-box-shadow:0px 5px 5px #A3A3A3; -webkit-box-shadow:0px 5px 5px #A3A3A3; box-shadow:0px 5px 5px #A3A3A3;}
+.drop-down{z-index:9; width:100%; left:0; *top:33px; display:none; -webkit-box-shadow: 0px 6px 24px -4px gray;-moz-box-shadow: 0px 6px 24px -4px gray;box-shadow: 0px 6px 24px -4px gray;}
 .drop-down a{display:block}
 
 .a_btn{display:none}
@@ -39,7 +39,7 @@ a:focus,input,select,textarea{outline:0;resize: none}
 .a_btn a:hover{background-position:0 -450px}
 .a_btn a.next{background-position:-38px -394px; right:0}
 .a_btn a.next:hover{background-position:-38px -450px;}
-.a_btn a:active,.btn-s a:active,.nav a:active,.submit_btn:active, .cancel_btn:active{outline:none;-webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);-moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);box-shadow: inset 0 2px 4px rgba(0,0,0,.15)}
+.a_btn a:active,.btn-s a:active,.nav a:active,.submit_btn:active, .cancel_btn:active,.user-switch li dl{outline:none;-webkit-box-shadow: 0px 6px 24px -4px gray;-moz-box-shadow: 0px 6px 24px -4px gray;box-shadow: 0px 6px 24px -4px gray;}
 .price{text-decoration:line-through}
 em{padding:0 5px; color:#CCC}
 
@@ -77,6 +77,11 @@ em{padding:0 5px; color:#CCC}
 .l-box{width:940px; margin-right:320px; float:left}
 .r-box{width:300px; right:0; float:right; position:absolute}
 
+#cc-m .cc-a-d-2 img{margin-left:-130px}
+#cc-s .cc-a-d-2 img{margin-left:-95px}
+
+
+
 .text-db,.hot-game-list-1 li{white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
 
 /*头部*/
@@ -92,7 +97,7 @@ em{padding:0 5px; color:#CCC}
 .diy_select_btn,.diy_select_txt{float:left;height:35px; line-height:35px}
 .diy_select_txt{width:60px;}
 .diy_select_txt,.diy_select_list li{text-indent:10px;overflow:hidden}
-.diy_select_list{position:absolute;top:35px;left:-1px;z-index:88888;border-top:none;width:100%;display:none;_top:29px; background-color:#fff; border:1px solid #e53333;-moz-box-shadow:0px 2px 5px #CCCCCC; -webkit-box-shadow:0px 2px 5px #CCCCCC; box-shadow:0px 2px 5px #CCCCCC;}
+.diy_select_list{position:absolute;top:35px;left:-1px;z-index:88888;border-top:none;width:100%;display:none;_top:29px; background-color:#fff; border:1px solid #e53333;-webkit-box-shadow: 0px 6px 24px -4px gray;-moz-box-shadow: 0px 6px 24px -4px gray;box-shadow: 0px 6px 24px -4px gray;}
 .diy_select_list li{list-style:none;height:35px;line-height:35px;cursor:default;_background:#fff}
 .diy_select_list li.focus{background:#b72929;color:#fff}
 .diy_select_btn {background-position:-162px -459px; width:20px; height:35px; left:40px; border-right:1px solid #b8b8b8}
@@ -101,7 +106,7 @@ em{padding:0 5px; color:#CCC}
 .search button:hover,.search .hover button{background-position:-120px -370px; background-color:#b72929}
 
 .search-drop{padding:9px 0 0 60px; opacity:0; z-index:10}
-.search-drop-box{z-index:10; width:358px; border-top:none !important; -moz-box-shadow:0px 2px 5px #CCCCCC; -webkit-box-shadow:0px 2px 5px #CCCCCC; box-shadow:0px 2px 5px #CCCCCC;}
+.search-drop-box{z-index:10; width:358px; border-top:none !important; -webkit-box-shadow: 0px 6px 24px -4px gray;-moz-box-shadow: 0px 6px 24px -4px gray;box-shadow: 0px 6px 24px -4px gray;}
 .search-drop-box a{display:block; padding-left:5px}
 .search-drop-box a:hover,.emailist li:hover,.emailist li.on{text-decoration:none; background:#ddd; color:#e53333; padding-left:15px}
 .emailist li{padding:2px 10px}
@@ -157,7 +162,37 @@ animation: toTopFromBottom .3s forwards;}
 	.num{z-index:3; top:-220px}
 	.num li {display:inline-block; width: 4px; height: 4px; overflow:hidden; margin:0 5px; border: 2px solid #fff; border-radius: 6px; cursor: pointer; background:#fff; text-indent:-9999px}
 	.num li.on { background:none; opacity: 1; width: 20px; height: 6px; position:relative; top:1px}
-	
+
+
+.banner-page .arrow { display:block; position:absolute; top:35px; z-index:9; width:67px; height:130px; opacity:0; filter:alpha(opacity=25); cursor:pointer; outline:none; background-image:url(http://images.apple.com/global/elements/fix-b.png);
+	-webkit-transition:.25s opacity linear;
+	   -moz-transition:.25s opacity linear;
+	        transition:.25s opacity linear;
+}
+
+.banner-page a:hover{background-color: rgba(0,0,0,.1);
+-webkit-border-radius: 8px;
+-moz-border-radius: 8px;
+border-radius: 8px;}
+.banner-page a:active{background-color: rgba(0,0,0,.2)}
+
+.banner:hover .banner-page .arrow { opacity:.75; filter:alpha(opacity=75); }
+.banner-page .arrow:hover { opacity:.8; filter:alpha(opacity=80); }
+.banner-page .arrow.disabled { display:none; }
+.banner-page .arrow b { display:block; overflow:hidden; width:67px; height:130px; text-indent:-9999px; background:no-repeat 0 0; background-size:67px 130px}
+
+.banner-page .arrow.prev { left:0; -webkit-border-radius:0 8px 8px 0;
+-moz-border-radius:0 8px 8px 0;
+border-radius: 0 8px 8px 0; }
+.banner-page .arrow.prev b { float:left; background-image:url(http://static.ccplay.com.cn/static/common/img/p_previous.png); }
+
+.banner-page .arrow.next {right:0; -webkit-border-radius:8px 0 0 8px;
+-moz-border-radius:8px 0 0 8px;
+border-radius:8px 0 0 8px}
+.banner-page .arrow.next b { float:right; background-image:url(http://static.ccplay.com.cn/static/common/img/p_next.png); }
+
+
+
 	
 /*巨作*/
 .masterpiece{margin-top:-180px; *overflow:hidden; z-index:2}
@@ -320,7 +355,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 
 /*友情链接*/
 .i-link-list ul{text-align:justify}
-.i-link-list li{width: 81px; line-height: 24px; display:inline-block; *float:left}
+.i-link-list li{line-height: 24px; display:inline-block; *float:left; margin-right:15px}
 .i-link-list li a{color:#999}
 
 
@@ -480,13 +515,14 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .collection-dis .app-list-xl{width:23.6%}
 
 /*巨作*/
-.maste_lsit{width:370px; height:370px; padding:10px; border:5px solid #ffffff; position:relative; float:left; margin:0 10px 20px 10px}
+.masterpiece{margin-bottom:60px}
+.maste_lsit{width:270px; height:200px; padding:10px; border:5px solid #ffffff; position:relative; float:left; margin:0 5px 20px 10px}
 .masterpiece .hover{border-color:#ffe5e5}
-.maste_lsit img{width:370px; height:270px; padding-bottom:8px}
+.maste_lsit img{width:270px; height:135px; padding-bottom:8px}
 .maste_lsit h3{font-size:18px; font-weight:100}
 .maste_lsit .des{padding:4px 0; height:30px; _line-height:18px; overflow:hidden; margin-bottom:8px}
 .maste_lsit .star{left:0px; top:2px; margin-top:3px}
-.maste_lsit .btn-s{display: table; width: 371px; left:10px; bottom:110px; table-layout: fixed; word-wrap: break-word; z-index:99}
+.maste_lsit .btn-s{display: table; width: 271px; left:10px; bottom:75px; table-layout: fixed; word-wrap: break-word; z-index:99}
 
 /*厂商*/
 .vendor-page .pin-box{width:240px}
@@ -715,11 +751,7 @@ clear: both; line-height: 1.8em;}
 #cc-m .app-dis-page .right,#cc-m .user-page .right{width:779px}
 #cc-m .left-top-list .t-title li{padding:0 18px}
 #cc-m .collection_box .r{width:719px}
-#cc-m .maste_lsit{margin:0 50px 40px 50px}
-
-#cc-m .maste_lsit{width:300px; height:320px; margin:0}
-#cc-m .maste_lsit img{width:300px; height:220px;}
-#cc-m .maste_lsit .btn-s{width: 301px}
+#cc-m .maste_lsit{margin:0 10px 20px 20px}
 
 #cc-m .vendor-page .left-list,#cc-m .vendor-page .pin-box{width:180px}
 #cc-m .vendor-page .right-list{margin-left:180px; width:780px}
@@ -785,10 +817,7 @@ clear: both; line-height: 1.8em;}
 #cc-s .left-top-list .t-title li{padding:0 18px}
 #cc-s .collection_box .r{width:469px}
 #cc-s .collection_box .inner dl{width:20%}
-
-#cc-s .maste_lsit{width:330px; height:340px; margin:0 5px 20px 8px}
-#cc-s .maste_lsit img{width:330px; height:240px;}
-#cc-s .maste_lsit .btn-s{width: 331px}
+#cc-s .maste_lsit{margin:0 10px 20px 40px}
 
 #cc-s .vendor-page .left-list,#cc-s .vendor-page .pin-box{width:180px}
 #cc-s .vendor-page .right-list{margin-left:180px; width:530px}
@@ -817,7 +846,7 @@ clear: both; line-height: 1.8em;}
 
 
 /*跟随滚动条*/
-#fixed-head .nav{position:fixed; top:0; z-index:10}
+#fixed-head .nav{position:fixed; top:0; z-index:10;opacity:.85;}
 #fixed-head .pin-wrapper .nav{-moz-box-shadow:0px 2px 5px #ccc; -webkit-box-shadow:0px 2px 5px #ccc; box-shadow:0px 2px 5px #ccc;}
 #fixed-head #cc-l .nav .l li{width:72px}
 #fixed-head #cc-m  .nav .l li{width:60px}

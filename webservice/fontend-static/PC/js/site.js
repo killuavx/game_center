@@ -1,11 +1,17 @@
 //app install
 $(".focus").slide({ titCell:".num ul" , mainCell:".banner_ul" , autoPlay:true, effect:"leftLoop",delayTime:700 , autoPage:true });
 
-jQuery(".home_vendor,.home_masterpiece").slide({ mainCell:"ul",vis:4,scroll:4,prevCell:".prev",easing:"easeInQuint",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
+jQuery(".roll").slide({ mainCell:"ul",vis:4,scroll:4,prevCell:".prev",easing:"easeInQuint",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true});
 
 jQuery(".collection_box").slide({ mainCell:"ul",vis:5,scroll:5,prevCell:".prev",nextCell:".next",easing:"easeInQuint",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
 jQuery(".up_box").slide({ mainCell:"ul",vis:2,scroll:2,prevCell:".prev",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
+
+jQuery(".box-tab").slide({ titCell:".title_box li", mainCell:".list", targetCell:".tab-more a", effect:"fold",titOnClassName:"hover",});	
+
+
+/*jQuery(".vendor").slide({ titCell:".list_menu li", mainCell:".left_list", effect:"fold", titOnClassName:"hover",});*/	
+
 
 
 $(function(){
