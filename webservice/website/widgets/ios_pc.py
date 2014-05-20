@@ -23,7 +23,7 @@ class PackageListRollBoxWidget(MasterpiecePackageListWidget):
     template = 'pages/widgets/iospc/roll_box.html'
 
     def get_list(self, type):
-        from website.models import filter_packages_by_category_slug
+        from website.ios_pc_models import filter_packages_by_category_slug
         return filter_packages_by_category_slug(Package.objects.published(), type)
 
     def get_context(self, value=None, options=dict(), context=None):
@@ -42,7 +42,7 @@ class TopicPackageListBoxWidget(BaseTopicPackageListWidget):
     template = 'pages/widgets/iospc/package_list_box_left.html'
 
     def get_packages_by_category_slug(self, packages, slug):
-        from website.models import filter_packages_by_category_slug
+        from website.ios_pc_models import filter_packages_by_category_slug
         return filter_packages_by_category_slug(packages, slug)
 
     def get_packages_by_topic_slug(self, packages, slug):
