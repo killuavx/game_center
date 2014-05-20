@@ -20,9 +20,9 @@
 
                                 {% for cat in cats %}
                                   {% if category_slug == cat.slug %}
-                                    <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query }}={{ cat.slug }}" class="icon hover">{{ cat.name|truncatewords:2 }}</a></li>
+                                    <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query }}={{ cat.slug }}" class="icon hover">{{ cat.name|slice:"2" }}</a></li>
                                   {% else %}
-                                    <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query }}={{ cat.slug }}">{{ cat.name|truncatewords:2 }}</a></li>
+                                    <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query }}={{ cat.slug }}">{{ cat.name|slice:"2" }}</a></li>
                                   {% endif %}
                                 {% endfor %}
                             </ul>
@@ -48,8 +48,7 @@
                             <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='latest' %}">最新发布</a>
                           {% endif %}
 
-                          {% if other_slug == 'zh'%}
-                            <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='zh' %}" class="hover">中文</a>
+                          {% if other_slug == 'zh'%} <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='zh' %}" class="hover">中文</a>
                           {% else %}
                             <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='zh' %}">中文</a>
                           {% endif %}
