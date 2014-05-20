@@ -5,8 +5,6 @@ from rest_framework import exceptions
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import TokenAuthentication, get_authorization_header
 from account.models import User as Player
-import logging
-logger = logging.getLogger('scripts')
 
 
 class ExpiringTokenAuthentication(TokenAuthentication):
@@ -38,15 +36,13 @@ class PlayerTokenAuthentication(TokenAuthentication):
         if not auth or auth[0].lower() != b'token':
             return None
 
-        logger.info(auth)
-
         if len(auth) == 1:
             msg = 'Invalid token header. No credentials provided.'
             raise exceptions.AuthenticationFailed(msg)
         elif len(auth) > 2:
             msg = 'Invalid token header. Token string should not contain spaces.'
             raise exceptions.AuthenticationFailed(msg)
-        elif auth[1] == 'null':
+        elif auth[1] == b'null':
             return None
 
         return self.authenticate_credentials(auth[1])
