@@ -1,0 +1,34 @@
+{% extends "iospc_base.html" %}
+{% load templateutils_tags %}
+{% load static %}
+{% block main %}
+
+<div class="cb box masterpiece">
+            
+            <div class="masterpiece_box">
+            
+              {%  mkrange 1 7 as l %}
+              {% for i in l %}
+                <div class="maste_lsit">
+                    <a href="dis.html">
+                            <img src="{% static 'PC/img/1.jpg' %}">
+                            <h3 class="fl">标题名称</h3>
+                            <div class="fr icon star s2"></div>
+                    </a>
+                    <p class="cb des">描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述</p>
+                    <p class="fl">999M | 100万+下载</p>
+                    <p class="fr price"><span>￥130.00</span></p>
+                    <div class="btn" style="display: none;">
+                        <a href="#" class="a1 install">安装</a>
+                        <a href="#" class="a2">下载</a>
+                    </div>
+                </div><!--maste_lsit-->
+              {% endfor %}
+                
+            </div><!--masterpiece_box-->
+            
+               
+    {% include "includes/ios_pc/pagination.html" %}
+    
+    </div>
+{% endblock %}

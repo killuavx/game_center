@@ -7,6 +7,7 @@ from webservice.module_settings.script_local import *
 DEBUG = TEMPLATE_DEBUG = True
 
 import os
+
 HOST_URL = os.getenv('GC_HOST_URL', '')
 MEDIA_URL = 'http://media.ccplay.com.cn/%s/' % MEDIA_URL.strip('/')
 STATIC_URL = 'http://static.ccplay.com.cn/%s/'% STATIC_URL.strip('/')

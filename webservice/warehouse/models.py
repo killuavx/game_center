@@ -140,6 +140,9 @@ class Author(SiteRelated, models.Model):
     def get_absolute_url(self):
         return '/authors/%s' % self.pk
 
+    def get_absolute_iospc_url(self):
+        return reverse('iospc_vendors_list', kwargs={'slug': 'spec-top-author', 'pk': self.pk})
+
 
 class PackageQuerySet(QuerySet):
 
@@ -318,6 +321,11 @@ class Package(SiteRelated, models.Model):
         else:
             return '/packages/%s/' % self.pk
 
+    def get_absolute_iospc_url(self, link_type=0):
+        if link_type == 0:
+            return '/iospc/package/%s/' % self.package_name
+        else:
+            return '/iospc/package/%s/' % self.pk
 
 tagging.register(Package)
 

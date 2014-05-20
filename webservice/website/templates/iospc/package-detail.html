@@ -1,0 +1,247 @@
+{% extends "iospc_base.html" %}
+{% load templateutils_tags %}
+{% load util_tags %}
+{% load widgets %}
+{% load static %}
+{% load comments %}
+    {% block main %} 
+    
+    <div class="location">当前位置：<a href="/ios_pc">首页</a><em>»</em><a href="{% url 'iospc_packages_cat_list' slug=root_cat %}">{% if root_cat == 'game' %}游戏{% else %}软件{% endif %}</a><em>»</em><a href="{% url 'iospc_packages_cat_list' slug=slug %}?cat={{sub_cat_slug}}">{{ sub_cat_name }}</a><em>»</em><a href="">{{ package_title }}</a></div> <div class="cb box dis"> 
+
+            <div class="title">
+
+              <h1 class="fl"> {{ pkgver.subtitle }}</h1>
+
+                    <p class="fr">
+
+                            <span class="icon ad">有广告</span>
+
+                            <span class="icon wifi no">不需要wifi</span>
+
+                            <span class="icon google">需要Google</span>
+
+                    </p>
+
+            </div><!--title-->
+
+            
+
+            <div class="dis_box">
+
+                    <div class="cb fl l">
+
+                            <div class="up">
+
+                                    <div class="pic">
+
+                                           <img src="{% static pkgver.icon.url %}">
+
+                                            <span class="icon cover"></span>
+
+                                    </div>
+
+                                    <div class="btn">
+
+                                        <a href="{{ pkgver.get_download_url }}" class="a1 install">安装</a>
+
+                                        <a href="{{ pkgver.get_download_url }}" class="a2">下载</a>
+
+                                    </div>
+
+                                    
+
+                                    <ul class="instr">
+
+                                      <li>评分<span><span class="icon star s{{ pkgver.stars_average|floatformat:"0" }}"></span>{{ pkgver.stars_count }}人评分</span></li>
+
+                                      <li>厂商<span>{{ pkgver.package.author.name }}</span></li>
+
+                                      <li>发布<span>{{ pkgver.released_datetime }}</span></li>
+
+                                      <li>版本<span>{{ pkgver.version_name }}</span></li>
+
+                                        <li>大小<span>{{ pkgver.get_download_size|default:0|filesizeformat }}</span></li>
+
+                                        <li>类别<span>
+                                          {% for cat in cats %}
+                                           {{ cat.slug }}
+                                          {% endfor %}
+                                        
+                                        </span></li>
+
+                                        <li>语言<span>
+                                          {% for lang in  pkgver.supported_languages.all %}
+                                           {{ lang.name }}
+                                          {% endfor %}
+                                        
+                                        </span></li>
+                                          {% for dev in  pkgver.supported_devices.all %}
+                                           {{ dev.name }}
+                                          {% endfor %}
+
+                                        <li>适用<span>
+                                        
+                                        </span></li>
+
+                                        <li>下载<span>{{ pkgver.package.download_count|intwordcn }}+</span></li>
+
+                                    </ul>
+
+                            </div><!--up-->
+
+                            
+
+                            <div class="list_box down">
+
+                              {% include_widget IosPcRankingPackageListWidget type=pkgver.package.categories.all.0.get_root.slug %}
+
+
+                            </div><!--down-->
+
+                    </div><!--l-->
+
+                    
+
+                    <div class="fr r">
+
+                            <div class="up up_box">
+
+                            
+
+                                <div class="up_pic">
+
+                                    <ul>
+                                      {%  for sh in pkgver.screenshots.all %}
+
+                                      <li><img title="{{ forloop.counter }}" src="{{ sh.image.url }}"></li>
+
+                                      {% endfor %}
+
+                                    </ul>
+
+                                    
+
+                                </div> <!--up_pic-->   
+
+                                
+
+                                <div class="cb banner_btn">
+
+                                      <a href="javascript:void(0)" class="unslider-arrow icon prev"></a>
+
+                                      <a href="javascript:void(0)" class="unslider-arrow icon next"></a>
+
+                                </div>
+
+
+
+                            </div><!--up-->
+
+                            
+
+                            <div class="down">
+
+                                    <h3>应用介绍</h3>
+
+                                    <div class="text_inner">
+                                      {{ pkgver.summary }}
+                                    </div><!--text_inner-->
+
+                                    <h3>新版特性</h3>
+
+                                    <div class="text_inner">
+
+                                      <ul><li>{{ pkgver.whatsnew }}</li></ul>
+
+                                    </div><!--text_inner-->
+
+                                    
+
+                                    <div class="review">
+
+                                        <h3 class="fl">应用评论</h3>
+
+                                        <span class="fr login">请先登录，再来评分。</span>
+
+                                        <form action="" class="cb" method="get">
+
+                                            <textarea></textarea>
+
+                                            <div class="fl review_btn">
+
+                                                    <div id="rating_cont">
+
+                                                              <div id="rating_btns">
+
+                                                            <ul>
+
+                                                                <li title="很差">1</li>
+
+                                                                <li title="一般">2</li>
+
+                                                                <li title="好">3</li>
+
+                                                                <li title="很好">4</li>
+
+                                                                <li title="非常好">5</li>
+
+                                                            </ul>
+
+                                                        </div>
+
+                                                          <div id="rating_on" ></div>
+
+                                                        <div id="rating" class="fr">点击星星来评分</div>
+
+                                                       </div>
+
+                                                    <input type="hidden" id="rating_output" name="rating_output" value="" />
+
+                                            </div>
+
+                                            <button class="fr">发表评论</button>
+
+                                        </form>
+
+                                    </div>
+
+                                  {% for item in items %} 
+                                    <div class="review_list">
+
+                                         <dl class="cb">
+
+                                                <dt class="icon fl user" title="name"></dt>
+
+                                                <dd class="d1"><span class="icon fl star s{{ item.user.stars.all.0.value }}"></span><span class="fr">{{ item.submit_date|date:'Y-m-d H:i'}}</span></dd>
+
+                                                <dd class="d2">{{ item.comment }}</dd>
+
+
+                                         </dl>
+
+                                         <div class="c_b"></div>
+
+                                    </div>
+                                    {% endfor %}
+
+                              {% include 'includes/iospc_pagination.html' %}
+
+
+                            </div><!--down-->
+
+                            <div class="c_b"></div>
+
+                    </div><!--r-->
+
+                    
+
+                    <div class="c_b"></div>
+
+            </div><!--dis_box-->
+
+            <div class="c_b"></div>
+
+    </div><!--dis-->
+
+    
+    {% endblock %}

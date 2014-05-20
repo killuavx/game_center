@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+{% load static pages_tags %}
+<html>
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>首页</title>
+
+<link href="http://static.ccplay.com.cn/static/PC/css/site.css" media="all" rel="stylesheet" type="text/css" />
+
+<noscript>
+
+    <h1 style="font-size:100%;color:#e53333;display:block;text-align:center">由于您的浏览器禁用了javascript脚本，网页无法正常浏览!</h1>
+
+</noscript>
+
+</head>
+
+<body>
+
+<div class="warp">
+    <div class="head">
+
+            <div class="fl head_set">
+
+                    <a href="javascript:;" class="icon pgup">上一页</a>
+
+                    <a href="javascript:;" class="icon pgdn">下一页</a>
+
+                    <a href="javascript:;" class="icon refresh">刷新</a>
+
+            </div><!--head_set-->
+
+            
+            {{ current_page }}
+
+            <div class="fl head_nav">
+
+                    <a href="/ios_pc">首页</a>
+
+                    {% if current_page == 'game' %}
+                      <a href="{% url 'iospc_packages_cat_list' 'game' %}" class="hover" >游戏</a>
+                    {% else %}
+                      <a href="{% url 'iospc_packages_cat_list' 'game' %}" >游戏</a>
+                    {% endif %}
+                                                  
+                    {% if current_page == 'soft' %}
+                      <a href="{% url 'iospc_packages_cat_list' 'soft' %}" class="hover">软件</a>
+                    {% else %}
+                      <a href="{% url 'iospc_packages_cat_list' 'soft' %}">软件</a>
+                    {% endif %}
+
+                    {% if current_page == 'collection' %}
+                      <a href="{% url 'iospc_packages_collections_list' %}" class="hover">合集</a>
+                    {% else %}
+                      <a href="{% url 'iospc_packages_collections_list' %}">合集</a>
+                    {% endif %}
+
+                    {% if current_page == 'masterpiece' %}
+                      <a href=" {% url 'iospc_masterpiece_packages' 'topic-xiaomo' %}" class="hover">巨作</a>
+                    {% else %}
+                      <a href=" {% url 'iospc_masterpiece_packages' 'topic-xiaomo' %}">巨作</a>
+                    {% endif %}
+
+                    {% if current_page == 'vendor' %}
+                      <a href="{% url 'iospc_vendors_list' slug='spec-top-author' %}" class="hover">厂商</a>
+                    {% else %}
+                      <a href="{% url 'iospc_vendors_list' slug='spec-top-author' %}">厂商</a>
+                    {% endif %}
+                    <a href="http://bbs.ccplay.com.cn">许愿</a>
+
+            </div><!--head_nav-->
+
+
+    </div><!--head-->
+    {% block main %} {% endblock %}
+
+  </div><!--warp-->
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+
+<script src="http://static.ccplay.com.cn/static/common/js/jquery.SuperSlide.2.1.1.source.js"></script>
+
+<script src="http://static.ccplay.com.cn/static/PC/js/site.js"></script>
+
+
+<!--[if IE 6]>
+
+<script src="{% static 'common/js/DD_PNG.js' %}"></script>
+
+<script>
+
+window.onload = function()
+
+{
+
+DD_belatedPNG.fix(".icon,.icon:hover");
+
+}
+
+</script>
+
+<![endif]-->
+
+</body>
+
+</html>

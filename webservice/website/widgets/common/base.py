@@ -49,7 +49,7 @@ class BaseListWidget(PaginatorPageMixin, Widget):
 
         return per_page, page
 
-    def get_context(self, value=None, options=dict(), context=None):
+    def get_context(self, value=None, options=dict(), context=None, pagination=True):
         per_page, page = self.get_paginator_vars(options)
         paginator = Paginator(self.get_list(), per_page=per_page)
         items = paginator.page(page)

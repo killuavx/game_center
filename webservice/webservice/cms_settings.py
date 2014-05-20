@@ -89,6 +89,7 @@ PAGE_MENU_TEMPLATES = (
     (1, "Top navigation bar", "pages/menus/header.haml"),
     (2, "Left-hand tree", "pages/menus/tree.html"),
     (3, "Footer", "pages/menus/footer_links.haml"),
+    (4, "Ios pc navigation", "pages/menus/iospc_header.haml"),
 )
 
 replace_idx = INTERNAL_APPS.index('suit')
