@@ -1,0 +1,18 @@
+{% load widgets url_tags %}
+
+              <div class="cb page">
+                  {% if items.has_previous %}
+                    <a hre="{% qurl request.get_full_path page=items.previous_page_number %}">上一页</a>
+                  {% endif %}
+
+                  {% if items.paginator.num_pages > 1%}
+                    {% for i in items.paginator.page_range %}
+                      <a href="{% qurl request.get_full_path page=i %}">{{ i  }}</a>
+                    {% endfor %}
+                  {% endif %}
+
+                  {% if items.has_next %}
+                    <a href="{% qurl request.get_full_path page=items.next_page_number %}">下一页</a>
+                  {% endif %}
+
+              </div>

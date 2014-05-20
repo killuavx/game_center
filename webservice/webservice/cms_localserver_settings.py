@@ -13,6 +13,12 @@ STATIC_URL = 'http://static.ccplay.com.cn/%s/'% STATIC_URL.strip('/')
 PUBLISH_MEDIA_URL = MEDIA_URL
 PUBLISH_STATIC_URL = STATIC_URL
 
+#HOST_URL = os.getenv('GC_HOST_URL', 'http://gc.ccplay.com.cn')
+#MEDIA_URL = HOST_URL + MEDIA_URL
+#STATIC_URL = HOST_URL + STATIC_URL
+#PUBLISH_MEDIA_URL= MEDIA_URL
+#PUBLISH_STATIC_URL = STATIC_URL
+
 EXTENDAL_APPS.append('django_nose')
 EXTENDAL_APPS.append('django_jenkins')
 EXTENDAL_APPS.append('fts')

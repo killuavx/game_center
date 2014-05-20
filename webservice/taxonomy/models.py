@@ -13,6 +13,7 @@ from mptt.managers import TreeManager
 
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.db.models import SlugField
+from django.core.urlresolvers import reverse
 
 from django.core.urlresolvers import get_callable
 from django.conf import settings
@@ -283,11 +284,21 @@ class Topic(MPTTModel, Taxonomy):
     def get_absolute_url(self):
         return ('topic_package_list', (), dict(slug=self.slug))
 
+    def get_absolute_iospc_url(self):
+        return reverse('iospc_collection_detail', kwargs=dict(slug=self.slug))
+
 
 class TopicalItemQuerySet(QuerySet):
     def get_items_by_topic(self, topic, item_model):
         content_type = ContentType.objects.get_for_model(item_model)
         return item_model.objects \
+            .filter(topics__topic__pk=topic.pk,
+                    topics__content_type__pk=content_type.pk) \
+            .order_by('topics__ordering')
+
+    def filter_items_by_topic(self, topic, item_model, queryset):
+        content_type = ContentType.objects.get_for_model(item_model)
+        return queryset \
             .filter(topics__topic__pk=topic.pk,
                     topics__content_type__pk=content_type.pk) \
             .order_by('topics__ordering')

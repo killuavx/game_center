@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+{% load static pages_tags %}
+<html>
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<title>首页</title>
+
+<link href="http://static.ccplay.com.cn/static/PC/css/site.css" media="all" rel="stylesheet" type="text/css" />
+
+<noscript>
+
+    <h1 style="font-size:100%;color:#e53333;display:block;text-align:center">由于您的浏览器禁用了javascript脚本，网页无法正常浏览!</h1>
+
+</noscript>
+
+</head>
+
+<body>
+
+<div class="warp">
+    <div class="head">
+
+            <div class="fl head_set">
+
+                    <a href="javascript:;" class="icon pgup">上一页</a>
+
+                    <a href="javascript:;" class="icon pgdn">下一页</a>
+
+                    <a href="javascript:;" class="icon refresh">刷新</a>
+
+            </div><!--head_set-->
+
+            
+            <div class="fl head_nav">
+              <a href="/iospc" {% if request.path_info == '/iospc/' %}class="hover"{% endif %}>首页</a>
+              <a href="{% url 'iospc_packages_cat_list' 'game' %}" {% if current_page == 'game' %}class="hover"{% endif %}>游戏</a>
+              <a href="{% url 'iospc_packages_cat_list' 'soft' %}" {% if current_page == 'soft' %} class="hover"{% endif %}>软件</a>
+              <a href="{% url 'iospc_packages_collections_list' %}" {% if current_page == 'collection' %}class="hover"{% endif %}>合集</a>
+              <a href="{% url 'iospc_masterpiece_packages' 'topic-xiaomo' %}" {% if current_page == 'masterpiece' %}class="hover"{% endif %}>巨作</a>
+              <a href="{% url 'iospc_vendors_list' slug='spec-top-author' %}" {% if current_page == 'vendor' %}class="hover"{% endif %}>厂商</a>
+              <a href="http://bbs.ccplay.com.cn">许愿</a>
+            </div><!--head_nav-->
+              {{ page.slug }}
+              {{ request.path_info }}
+
+
+
+    </div><!--head-->
+    {% block main %} {% endblock %}
+
+  </div><!--warp-->
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+
+<script src="http://static.ccplay.com.cn/static/common/js/jquery.SuperSlide.2.1.1.source.js"></script>
+
+<script src="http://static.ccplay.com.cn/static/PC/js/site.js"></script>
+
+
+<!--[if IE 6]>
+
+<script src="{% static 'common/js/DD_PNG.js' %}"></script>
+
+<script>
+
+window.onload = function()
+
+{
+
+DD_belatedPNG.fix(".icon,.icon:hover");
+
+}
+
+</script>
+
+<![endif]-->
+
+</body>
+
+</html>

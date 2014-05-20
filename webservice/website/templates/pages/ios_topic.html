@@ -1,0 +1,53 @@
+{% extends "iospc_base.html" %}
+{% load templateutils_tags %}
+{% load static %}
+{% block main %}
+
+<div class="cb box collection">
+              {%  mkrange 1 6 as l %}
+              {% for i in l %}
+    
+            <div class="collection_box">            
+                <div class="fl l">
+                    <a href="collection_dis.html">
+                            <img src="{% static 'PC/img/2.jpg' %}">
+                            <h3>小色块游戏合集</h3>
+                    </a>
+                </div><!--l-->
+                
+                <div class="fl r">
+                    <div class="inner">
+                        <ul style="width: 1700px; position: relative; overflow: hidden; padding: 0px; margin: 0px; left: -100px;">
+                        {%  mkrange 1 16 as l %}
+                        {% for i in l %}
+                          <li class="clone" style="float: left; width: 95px;">
+                                <a href="#">
+                                        <img src="{% static 'PC/img/4.jpg' %}">
+                                        <span class="name">小小守门员</span>
+                                        <div class="icon star s4"></div>
+                                        <span class="icon cover"></span>
+                                </a>
+                                <div class="btn">
+                                    <a href="#" class="update">更新</a>
+                                    <a href="#">取消</a>
+                                </div>
+                            </li>
+                          {% endfor %}
+                       </ul>
+                    </div><!--inner-->
+                    
+                    <div class="cb banner_btn">
+                          <a href="javascript:void(0)" class="unslider-arrow icon prev prevStop" style="display: inline;"></a>
+                          <a href="javascript:void(0)" class="unslider-arrow icon next" style="display: none;"></a>
+                    </div>
+
+                    <div class="cb date">更新日期：2014-04-08 | 共 21 个应用</div>
+                </div><!--r-->
+            </div><!--collection_box--> 
+
+            {% endfor %}
+
+    {% include "includes/iospc/pagination.html" %}
+    
+    </div>
+{% endblock %}

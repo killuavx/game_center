@@ -19,6 +19,4 @@ urlpatterns = patterns('website.views',
         url(r'^feedbacks/cdn/(?P<slug>%s)' % slug_pattern, 'cdn_feedback', name='cdn_feedback'),
 
         url("^social/redirect\.html$", lambda r: TemplateResponse(request=r, template='bd_frontia_jump.html')),
-
 )
-
