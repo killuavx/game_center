@@ -14,13 +14,13 @@ from .response import WidgetHttpResponse
 from toolkit.helpers import get_client_event_data
 from warehouse.models import PackageVersion, Package
 from analysis.documents.event import Event
-from website.models import get_package_by_package_name, get_packageversion_by_package
-from website.models import get_root_category_slug_by_package, get_all_categories, get_leaf_categories
-from website.models import filter_packages_by_category_slug, get_all_packages, get_authors_by_topic
-from website.models import is_topic_slug, get_topic_slug, get_topic_by_slug, filter_packages_by_topic
-from website.models import paginize_items, get_supported_language, filter_packages_by_supported_language
-from website.models import get_category_slug, get_all_sub_cats, get_all_collections, get_packages_by_topic
-from website.models import get_comments_by_packageversion
+from website.ios_pc_models import get_package_by_package_name, get_packageversion_by_package
+from website.ios_pc_models import get_root_category_slug_by_package, get_all_categories, get_leaf_categories
+from website.ios_pc_models import filter_packages_by_category_slug, get_all_packages, get_authors_by_topic
+from website.ios_pc_models import is_topic_slug, get_topic_slug, get_topic_by_slug, filter_packages_by_topic
+from website.ios_pc_models import paginize_items, get_supported_language, filter_packages_by_supported_language
+from website.ios_pc_models import get_category_slug, get_all_sub_cats, get_all_collections, get_packages_by_topic
+from website.ios_pc_models import get_comments_by_packageversion
 
 
 def _download_packageversion_response(packageversion, filetype):
