@@ -11,7 +11,7 @@
             <div class="list_box_left game_box">
                     <div class="menu">
                             <ul>
-                              <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}" {% if not category_slug %}class="icon hover"{% endif %}>全部游戏</a></li>
+                              <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}" {% if not category_slug %}class="icon hover"{% endif %}>全部{% if slug == 'game' %}游戏{% else %}软件{% endif %}</a></li>
                               {% for cat in cats %}
                                 <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query }}={{ cat.slug }}" {% if category_slug == cat.slug %}class="icon hover"{% endif %}>{{ cat.name|slice:"2" }}</a></li>
                               {% endfor %}
