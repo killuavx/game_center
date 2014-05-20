@@ -90,12 +90,12 @@ class Migration(SchemaMigration):
         'analysis.activatenewreservefact': {
             'Meta': {'ordering': "('-date',)", '_ormbases': ['analysis.ActivateFact'], 'db_table': "'fact_activate_newreserve'", 'object_name': 'ActivateNewReserveFact'},
             'activatefact_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['analysis.ActivateFact']", 'primary_key': 'True', 'unique': 'True'}),
-            'is_new_package': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'is_new_package_version': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'is_new_product': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'is_new_product_channel': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'is_new_product_package': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'is_new_product_package_version': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'})
+            'is_new_package': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_package_version': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_product': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_product_channel': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_product_package': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_product_package_version': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'})
         },
         'analysis.baidupushdim': {
             'Meta': {'object_name': 'BaiduPushDim', 'unique_together': "(('channel_id', 'user_id', 'app_id'),)", 'db_table': "'dim_baidupush'"},
