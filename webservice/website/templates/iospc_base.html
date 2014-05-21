@@ -32,10 +32,9 @@
                     <a href="javascript:;" class="icon refresh">刷新</a>
 
             </div><!--head_set-->
-
             
             <div class="fl head_nav">
-              <a href="/iospc" {% if request.path_info == '/iospc/' %}class="hover"{% endif %}>首页</a>
+              <a href="/{{ page.slug }}" {% if page.slug == 'iospc' %}class="hover"{% endif %}>首页</a>
               <a href="{% url 'iospc_packages_cat_list' 'game' %}" {% if current_page == 'game' %}class="hover"{% endif %}>游戏</a>
               <a href="{% url 'iospc_packages_cat_list' 'soft' %}" {% if current_page == 'soft' %} class="hover"{% endif %}>软件</a>
               <a href="{% url 'iospc_collections_list' %}" {% if current_page == 'collection' %}class="hover"{% endif %}>合集</a>
@@ -43,8 +42,11 @@
               <a href="{% url 'iospc_vendors_list' slug='spec-top-author' %}" {% if current_page == 'vendor' %}class="hover"{% endif %}>厂商</a>
               <a href="http://bbs.ccplay.com.cn">许愿</a>
             </div><!--head_nav-->
+            {% comment %}
               {{ page.slug }}
               {{ request.path_info }}
+            {% endcomment %}
+
 
 
 

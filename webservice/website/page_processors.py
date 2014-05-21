@@ -53,3 +53,11 @@ def masterpiece_fill(request, page):
             raise Http404()
 
     return data
+
+
+game_page_slug = 'iospc/game'
+@processor_for(game_page_slug)
+def game_page(request, page):
+    data = dict()
+    if request.method == "GET":
+        return {'game':  'hello' }
