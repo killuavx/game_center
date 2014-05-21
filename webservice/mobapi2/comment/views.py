@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import copy
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import resolve
 from django.core import exceptions
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.http import Http404
 from django.utils.timezone import now
-from rest_framework import mixins, viewsets, status
+from rest_framework import mixins, viewsets, status, generics
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
@@ -91,6 +92,7 @@ class CommentViewSet(mixins.CreateModelMixin,
 
     serializer_class = CommentSerializer
     model = Comment
+    content_object = None
 
     def get_authenticators(self):
         return []
@@ -100,7 +102,7 @@ class CommentViewSet(mixins.CreateModelMixin,
 
     def get_queryset(self):
         if self.queryset is None:
-            self.queryset = Comment.objects.visible()
+            self.queryset = Comment.objects.for_model(self.content_object).visible()
         return self.queryset.by_submit_order()
 
     def check_paramters(self, querydict):
@@ -122,10 +124,6 @@ class CommentViewSet(mixins.CreateModelMixin,
             pk=params.get('object_pk'))
         return content_object
 
-    def get_queryset(self):
-        return Comment.objects.for_model(self.content_object) \
-            .published().with_site().by_submit_order()
-
     def list(self, request, *args, **kwargs):
         params = self.check_paramters(copy.deepcopy(request.GET))
         bad = Response({'detail': 'Bad Request'},
@@ -140,11 +138,26 @@ class CommentViewSet(mixins.CreateModelMixin,
 
         return super(CommentViewSet, self).list(request, *args, **kwargs)
 
-    @authentication_classes((PlayerTokenAuthentication, ))
-    @permission_classes((IsAuthenticated,))
+    def _retry_initial_for_check_creation_authentication(self, request):
+        if hasattr(request, '_authenticator'):
+            del request._authenticator
+        if hasattr(request, '_user'):
+            del request._user
+        if hasattr(request, '_auth'):
+            del request._auth
+
+        request.authenticators = [PlayerTokenAuthentication()]
+        self.perform_authentication(request)
+        self.permission_classes = (IsAuthenticated, )
+        self.check_permissions(request=request)
+        self.permission_classes = ()
+
+        # Perform content negotiation and store the accepted info on the request
+        neg = self.perform_content_negotiation(request)
+        request.accepted_renderer, request.accepted_media_type = neg
+
     def create(self, request, *args, **kwargs):
-        # set IsAuthenticatedOrReadOnly
-        self.permission_classes = (IsAuthenticatedOrReadOnly, )
+        self._retry_initial_for_check_creation_authentication(request)
         params = self.check_paramters(copy.deepcopy(request.GET))
         bad = Response({'detail': 'Bad Request'},
                        status=status.HTTP_400_BAD_REQUEST)
@@ -173,8 +186,6 @@ class CommentViewSet(mixins.CreateModelMixin,
         if response.status_code == status.HTTP_201_CREATED:
             serializer = self.serializer_class(self.object)
             response.data = serializer.data
-        # set empty permission
-        self.permission_classes = ()
 
         return response
 
