@@ -376,9 +376,10 @@ class DownloadIOSAppResourceTask(BaseTask):
 
     def _update_resource_status_location(self, item):
         item.updated = now()
-        if os.path.isfile(item.file_path):
+        fname = os.path.join(settings.MEDIA_ROOT, item.relative_path)
+        if os.path.isfile(fname):
             item.status = 'complete'
-            item.file_size = os.path.getsize(item.file_path)
+            item.file_size = os.path.getsize(fname)
         else:
             item.status = 'error'
             item.error_code = '1001'
@@ -610,7 +611,6 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
             self.add_to_packageversion(crawl_res, version)
 
         return True
-
 
     def get_appdata(self, pk):
         return IOSAppData.objects.get(pk=int(pk))
