@@ -54,6 +54,12 @@ class AdvertisementAdmin(VersionAdmin):
                    'released_datetime',
                    'status')
 
+    def get_readonly_fields(self, request, obj=None):
+        fields = self.readonly_fields
+        if obj and obj.pk:
+            return fields + ('content_type', 'object_id')
+        return fields
+
     def show_cover(self, obj):
         try:
             return mark_safe('<img src="%s" alt="%s"/>' % \
