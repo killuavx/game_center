@@ -1,5 +1,4 @@
 {% load widgets url_tags %} 
-               {{ items.number }}
               <div class="cb page">
                 {% if items.number > 1 %}
                     <a href="{% qurl request.get_full_path page=items.previous_page_number %}">上一页</a>
