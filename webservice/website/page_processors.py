@@ -5,6 +5,14 @@ from mezzanine.pages.page_processors import processor_for
 from taxonomy.models import Category, Topic
 from mezzanine.conf import settings
 
+from website.ios_pc_models import get_package_by_package_name, get_packageversion_by_package
+from website.ios_pc_models import get_root_category_slug_by_package, get_all_categories, get_leaf_categories
+from website.ios_pc_models import filter_packages_by_category_slug, get_all_packages, get_authors_by_topic
+from website.ios_pc_models import is_topic_slug, get_topic_slug, get_topic_by_slug, filter_packages_by_topic
+from website.ios_pc_models import paginize_items, get_supported_language, filter_packages_by_supported_language
+from website.ios_pc_models import get_category_slug, get_all_sub_cats, get_all_collections, get_packages_by_topic
+from website.ios_pc_models import get_comments_by_packageversion
+
 
 categories_page_slug = 'categories'
 @processor_for(categories_page_slug)
@@ -51,5 +59,33 @@ def masterpiece_fill(request, page):
             data['topic'] = Topic.objects.get(slug=settings.GC_TOPICS_MASTERPIECE_SLUG)
         except Topic.DoesNotExist as e:
             raise Http404()
+
+    return data
+
+
+game_page_slug = 'iospc/game'
+@processor_for(game_page_slug)
+def game_page(request, page):
+    slug = 'game'
+
+    if request.method == "GET":
+        all_packages = get_all_packages()
+        packages = filter_packages_by_category_slug(all_packages, slug)
+        pkgs, page_query, limit_range = paginize_items(request, packages)
+        category_slug, category_query = get_category_slug(request)
+        if category_slug != False:
+            packages = filter_packages_by_category_slug(packages, category_slug)
+        sub_cats = get_leaf_categories(get_all_sub_cats(slug))
+
+    data = {
+        'items': pkgs,
+        'slug': slug,
+        'cats': sub_cats,
+        'page_query': page_query,
+        'category_query': category_query,
+        'category_slug': category_slug,
+        'current_page': slug,
+        'limit_range': limit_range,
+    }
 
     return data
