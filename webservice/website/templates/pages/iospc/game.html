@@ -1,7 +1,47 @@
 {% extends "iospc_base.html" %}
 {% load pages_tags %}
 {% load templateutils_tags %}
-{% load widgets %}
+{% load util_tags %}
+{% load widgets url_tags %}
+{% load static %}
 {% block main %}
-  game page
+
+<div class="cb box list_box game">
+    
+            <div class="list_box_left game_box">
+                    <div class="menu">
+                            <ul>
+                              <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}" {% if not category_slug %}class="icon hover"{% endif %}>全部{% if slug == 'game' %}游戏{% else %}软件{% endif %}</a></li>
+                              {% for cat in cats %}
+                                <li><a href="{% url 'iospc_packages_cat_list' slug=slug %}?{{ category_query }}={{ cat.slug }}" {% if category_slug == cat.slug %}class="icon hover"{% endif %}>{{ cat.name|slice:"2" }}</a></li>
+                              {% endfor %}
+                            </ul>
+                    </div>
+                    <div class="icon title_box">
+                      <div class="tag">
+                        <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='recommend' %}" {% if other_slug == 'recommend' %}class="hover"{% endif %}>精品推荐</a>
+                        <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='install' %}" {% if other_slug == 'install' %}class="hover"{% endif %}>装机必备</a>
+                        <a href="{% url 'iospc_packages_other_list' cat_slug=slug other_slug='latest' %}" {% if other_slug == 'latest' %}class="hover"{% endif %}>最新发布</a>
+                        <a href="{% url 'iospc_packages_other_list' cat_slug=slug other_slug='zh' %}" {% if other_slug == 'zh'%}class="hover"{% endif %}>中文</a>
+                        <a href="{% url 'iospc_packages_other_list' cat_slug=slug other_slug='en' %}" {% if other_slug == 'en' %}class="hover"{% endif %}>英文</a>                            
+                       </div>
+                    </div><!--title_box-->
+
+                    <div class="list left_list" style="position: relative; width: 805px; height: 500px;">
+                      <ul style="position: absolute; width: 805px; left: 0px; top: 0px;">
+                        {% for item in items %}
+                          {% with version=item.versions.latest_published %}
+                            {% include "includes/package-detail.html" with verison=version item=item %}
+                          {% endwith %}
+                        {% endfor %}
+                        </ul>
+                        <div class="c_b" style="position: absolute; width: 805px; left: 0px; top: 0px; display: none;"></div>
+                    </div><!--list-->
+                    
+                    
+                    {% include 'includes/iospc_pagination.html' %}
+                    
+            </div><!--game_box-->
+            
+    </div>
 {% endblock %}
