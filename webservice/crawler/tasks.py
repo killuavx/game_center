@@ -546,14 +546,18 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
         ct = ContentType.objects.get_for_model(IOSAppData)
         content_type = str(ct.pk)
         for app in qs:
-            print("======%s=======" % app.pk)
+            print("===============%s===================" % app.pk)
             resources = self.get_crawl_resource_by(content_type=content_type,
                                                    object_pk=str(app.pk))
             for item in resources:
-                print(item.pk)
+                try:
+                    self.add_to_packageversion(item, app.packageversion)
+                except (ObjectDoesNotExist, IntegrityError) as e:
+                    print(e)
+                    continue
+                except Exception as e:
+                    print(e)
                 print(item.resource_type, item.relative_path)
-                self.add_to_packageversion(item, app.packageversion)
-
 
     def add_to_packageversion(self, item, version):
         if not version:
@@ -632,3 +636,4 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
                 print(e)
                 continue
             print(item.resource_type, item.relative_path)
+
