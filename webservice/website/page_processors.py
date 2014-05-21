@@ -67,15 +67,34 @@ game_page_slug = 'iospc/game'
 @processor_for(game_page_slug)
 def game_page(request, page):
     slug = 'game'
+    other_slug = None
 
     if request.method == "GET":
         all_packages = get_all_packages()
         packages = filter_packages_by_category_slug(all_packages, slug)
-        pkgs, page_query, limit_range = paginize_items(request, packages)
         category_slug, category_query = get_category_slug(request)
         if category_slug != False:
             packages = filter_packages_by_category_slug(packages, category_slug)
+        elif request.GET.get('topic', None):
+            other_slug = request.GET.get('topic')
+            topic_slug = get_topic_slug(other_slug, slug)
+            topic = get_topic_by_slug(topic_slug)
+            packages = filter_packages_by_topic(packages, topic)
+        elif request.GET.get('pub', None) == 'latest':
+            other_slug = request.GET.get('pub')
+            packages = packages.by_published_order()
+        elif request.GET.get('lang', None):
+            other_slug = request.GET.get('lang')
+            lang = get_supported_language(other_slug)
+            if lang:
+                packages = filter_packages_by_supported_language(packages, lang)
+            else:
+                packages = []
+        else:
+            packages = []
+
         sub_cats = get_leaf_categories(get_all_sub_cats(slug))
+        pkgs, page_query, limit_range = paginize_items(request, packages)
 
     data = {
         'items': pkgs,
@@ -84,7 +103,7 @@ def game_page(request, page):
         'page_query': page_query,
         'category_query': category_query,
         'category_slug': category_slug,
-        'current_page': slug,
+        'other_slug': other_slug,
         'limit_range': limit_range,
     }
 
