@@ -171,7 +171,7 @@ def paginize_items(request, items, per_page=20):
 
 
 def get_category_slug(request):
-    category_query = 'subcat'
+    category_query = 'cat'
 
     slug = request.GET.get(category_query)
     if slug is None or slug == '':

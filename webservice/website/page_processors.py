@@ -72,6 +72,9 @@ def game_page(request, page):
         all_packages = get_all_packages()
         packages = filter_packages_by_category_slug(all_packages, slug)
         pkgs, page_query, limit_range = paginize_items(request, packages)
+        category_slug, category_query = get_category_slug(request)
+        if category_slug != False:
+            packages = filter_packages_by_category_slug(packages, category_slug)
         sub_cats = get_leaf_categories(get_all_sub_cats(slug))
 
     data = {
@@ -79,8 +82,8 @@ def game_page(request, page):
         'slug': slug,
         'cats': sub_cats,
         'page_query': page_query,
-        'category_query': 'subcat',
-        'category_slug': 'game',
+        'category_query': category_query,
+        'category_slug': category_slug,
         'current_page': slug,
         'limit_range': limit_range,
     }
