@@ -21,9 +21,9 @@
                       <div class="tag">
                         <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='recommend' %}" {% if other_slug == 'recommend' %}class="hover"{% endif %}>精品推荐</a>
                         <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='install' %}" {% if other_slug == 'install' %}class="hover"{% endif %}>装机必备</a>
-                        <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='latest' %}" {% if other_slug == 'latest' %}class="hover"{% endif %}>最新发布</a>
-                        <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='zh' %}" {% if other_slug == 'zh'%}class="hover"{% endif %}>中文</a>
-                        <a href="{% url 'iospc_packages_topic_list' cat_slug=slug other_slug='en' %}" {% if other_slug == 'en' %}class="hover"{% endif %}>英文</a>                            
+                        <a href="{% url 'iospc_packages_other_list' cat_slug=slug other_slug='latest' %}" {% if other_slug == 'latest' %}class="hover"{% endif %}>最新发布</a>
+                        <a href="{% url 'iospc_packages_other_list' cat_slug=slug other_slug='zh' %}" {% if other_slug == 'zh'%}class="hover"{% endif %}>中文</a>
+                        <a href="{% url 'iospc_packages_other_list' cat_slug=slug other_slug='en' %}" {% if other_slug == 'en' %}class="hover"{% endif %}>英文</a>                            
                        </div>
                     </div><!--title_box-->
 

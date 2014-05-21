@@ -257,8 +257,9 @@ def iospc_package_detail_views(request, package_name, *args, **kwargs):
     context['sub_cat_slug'] = category.slug if category else ''
     context['package_title'] = pkg.title if pkg.title else ''
     comments = get_comments_by_packageversion(context['pkgver'])
-    items, page_query = paginize_items(request, comments, 1)
+    items, page_query, limit_range = paginize_items(request, comments, 1)
     context['items'] = items
+    context['limit_range'] = limit_range
     context['page_query'] = page_query
     print (len(items))
 
@@ -272,9 +273,9 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
     category_slug, category_query = get_category_slug(request)
     if category_slug != False:
         packages = filter_packages_by_category_slug(packages, category_slug)
-    pkgs, page_query = paginize_items(request, packages)
+    pkgs, page_query, limit_range = paginize_items(request, packages)
 
-    sub_cats = get_all_sub_cats(slug)
+    sub_cats = get_leaf_categories(get_all_sub_cats(slug))
 
     context = {
         'items': pkgs,
@@ -284,17 +285,18 @@ def iospc_packages_cat_list_views(request, slug, *args, **kwargs):
         'category_query': category_query,
         'category_slug': category_slug,
         'current_page': slug,
+        'limit_range': limit_range,
     }
 
     return TemplateResponse(request=request, template=template, context=context)
 
 
 def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwargs):
+
     template = 'iospc/categorized-packages-list.html'
     all_packages = get_all_packages()
     cat_packages = filter_packages_by_category_slug(all_packages, cat_slug)
 
-    #print (request)
     if is_topic_slug(other_slug):
         topic_slug = get_topic_slug(other_slug, cat_slug)
         topic = get_topic_by_slug(topic_slug)
@@ -309,8 +311,8 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
         else:
             packages = cat_packages
 
-    sub_cats = get_all_sub_cats(cat_slug)
-    pkgs, page_query = paginize_items(request, packages)
+    sub_cats = get_leaf_categories(get_all_sub_cats(cat_slug))
+    pkgs, page_query, limit_range = paginize_items(request, packages)
     context = {
         'items': pkgs,
         'cats': sub_cats,
@@ -319,12 +321,13 @@ def iospc_packages_topic_list_views(request, cat_slug, other_slug, *args, **kwar
         'page_query': page_query,
         'category_query': 'cat',
         'current_page': 'topic',
+        'limit_range': limit_range,
     }
 
     return TemplateResponse(request=request, template=template, context=context)
 
 
-def iospc_packages_collectios_list_views(request, *args, **kwargs):
+def iospc_collectios_list_views(request, *args, **kwargs):
 
     template = 'iospc/collections-packages-list.html'
 
@@ -338,12 +341,13 @@ def iospc_packages_collectios_list_views(request, *args, **kwargs):
             'packages': packages,
         })
 
-    items, page_query = paginize_items(request, result, 2)
+    items, page_query, limit_range = paginize_items(request, result, 2)
 
     context = {
         'items': items,
         'page_query': page_query,
         'current_page': 'collection',
+        'limit_range': limit_range,
     }
 
     return TemplateResponse(request=request, template=template, context=context)
@@ -355,6 +359,7 @@ def iospc_collection_detail_views(request, slug, *args, **kwargs):
     template = 'iospc/collection-packages.html'
     packages = []
     collection = get_topic_by_slug(slug)
+
     if collection:
         packages = get_packages_by_topic(collection)
 
@@ -366,12 +371,13 @@ def iospc_collection_detail_views(request, slug, *args, **kwargs):
 
     if slug == 'topic-xiaomo' and 'iospc_masterpiece_packages' \
             == resolve(request.path_info).url_name: # for masterpiece
-        items, page_query = paginize_items(request, packages, 2)
+        items, page_query, limit_range = paginize_items(request, packages, 2)
         template = 'iospc/masterpiece-packages.html'
         context =  {
             'items': items,
             'page_query': page_query,
             'current_page': 'masterpiece',
+            'limit_range': limit_range,
         }
 
     return TemplateResponse(request=request, template=template, context=context)
@@ -396,7 +402,7 @@ def iospc_vendors_list_views(request, slug, pk, *args, **kwargs):
         current_vendor = vendors[0]
 
     packages = current_vendor.packages.published()
-    items, page_query = paginize_items(request, packages, 1)
+    items, page_query, limit_range = paginize_items(request, packages, 1)
 
     #print (len(items))
     context = {
@@ -405,6 +411,7 @@ def iospc_vendors_list_views(request, slug, pk, *args, **kwargs):
         'vendors': vendors,
         'page_query': page_query,
         'current_page': 'vendor',
+        'limit_range': limit_range,
     }
 
     return TemplateResponse(request=request, template=template, context=context)
