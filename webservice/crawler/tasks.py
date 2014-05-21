@@ -335,7 +335,7 @@ class DownloadIOSAppResourceTask(BaseTask):
                 set__gid=_id,
                 set__url=url,
                 set__relative_path=relative_path,
-                set__resource_type=relative_path,
+                set__resource_type=resource_type,
                 set__file_alias=str(file_alias),
                 set__file_dir=_file_dir,
                 set__file_path=_file_path,
