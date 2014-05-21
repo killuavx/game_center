@@ -581,9 +581,9 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
             item.save()
 
     def _update_icon(self, version, item):
-        with io.FileIO(item.file_path) as f:
-            version.icon = File(f)
-            version.save()
+        fname = os.path.join(settings.MEDIA_ROOT, item.relative_path)
+        version.icon = item.relative_path
+        version.save()
 
     def _upsert_screenshot(self, version, item):
         kind = 'default' if item.resource_type == 'screenshot' else 'ipad'
