@@ -592,13 +592,17 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
         return screenshot
 
     def _upsert_resource(self, version, item, alias):
-        res, created = version.resources.get_or_create(
+        resource = Resource(
             kind=item.resource_type,
             alias=alias,
             content_object=version,
             file=item.relative_path
         )
-        return res
+        try:
+            version.resources.add(resource)
+        except IntegrityError as e:
+            print(e)
+        return resource
 
     def sync_resourcefiles_to_version(self, app):
         """
