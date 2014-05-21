@@ -101,6 +101,8 @@ class Author(SiteRelated, models.Model):
                                   blank=True,
                                   default='')
 
+    resources = MultiResourceField()
+
     class Meta:
         verbose_name = _('Author')
         verbose_name_plural = _('Authors')
