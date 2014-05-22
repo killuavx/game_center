@@ -498,7 +498,7 @@ class AuthorAdmin(MainAdmin):
         ThumbnailerImageField: {'widget': ImageClearableFileInput},
     }
 
-    inlines = (PackageInline, )
+    inlines = (ResourceInlines, PackageInline, )
 
     actions = ['make_published', 'make_unpublished']
 

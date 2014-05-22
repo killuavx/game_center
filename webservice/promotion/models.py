@@ -1,5 +1,5 @@
 # -*- encoding=utf-8 -*-
-from os.path import basename
+from os.path import basename, dirname
 from django.db import models
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
@@ -9,9 +9,13 @@ from django.utils.translation import ugettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
 from model_utils import FieldTracker, Choices
 from model_utils.fields import StatusField
+from toolkit.fields import MultiResourceField
 from toolkit.managers import CurrentSitePassThroughManager
 from toolkit.helpers import sync_status_from
 from toolkit.models import SiteRelated
+from copy import deepcopy
+
+from mezzanine.core.fields import FileField
 
 
 class Place(SiteRelated, models.Model):
@@ -74,6 +78,11 @@ class Advertisement(SiteRelated, models.Model):
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(AdvertisementQuerySet)()
 
+    workspace = FileField(default='',
+                          blank=True,
+                          max_length=500,
+                          format='File')
+
     cover = ThumbnailerImageField(
         verbose_name=_('advertisement cover'),
         upload_to=advertisement_upload_to,
@@ -95,6 +104,8 @@ class Advertisement(SiteRelated, models.Model):
                                     blank=True,
                                     null=True,
     )
+
+    resources = MultiResourceField()
 
     STATUS = Choices(
         ('draft', _('Draft')),
@@ -155,7 +166,7 @@ class Advertisement_Places(models.Model):
         )
 
 
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
 
@@ -181,4 +192,7 @@ def advertisement_pre_save(sender, instance, **kwargs):
         and instance.status == sender.STATUS.published \
         and not instance.released_datetime:
         instance.released_datetime = now()
+
+    if instance.workspace == '':
+        instance.workspace = dirname(instance.cover.name)
 

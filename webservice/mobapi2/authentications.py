@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import pytz
 from django.utils.timezone import datetime, timedelta
+from rest_framework import exceptions
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import TokenAuthentication, get_authorization_header
 from account.models import User as Player
 
 
@@ -28,6 +29,23 @@ class ExpiringTokenAuthentication(TokenAuthentication):
 
 
 class PlayerTokenAuthentication(TokenAuthentication):
+
+    def authenticate(self, request):
+        auth = get_authorization_header(request).split()
+
+        if not auth or auth[0].lower() != b'token':
+            return None
+
+        if len(auth) == 1:
+            msg = 'Invalid token header. No credentials provided.'
+            raise exceptions.AuthenticationFailed(msg)
+        elif len(auth) > 2:
+            msg = 'Invalid token header. Token string should not contain spaces.'
+            raise exceptions.AuthenticationFailed(msg)
+        elif auth[1] == b'null':
+            return None
+
+        return self.authenticate_credentials(auth[1])
 
     def authenticate_credentials(self, key):
         user, token = super(PlayerTokenAuthentication, self) \

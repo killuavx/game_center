@@ -99,10 +99,12 @@ class ResourceManager(PassThroughManagerMixin, CurrentSiteManager):
         return qs
 
     def __getattr__(self, kind):
-        kind_resources = self.filter(kind=kind)
+        if 'model' not in self.__dict__:
+            raise AttributeError('%s has not attribute %s' % (self.__class__, kind))
         resource_model = self.__dict__['model']
-        instance = self.instance
-        prefetch_cache_name = self.prefetch_cache_name
+        if kind not in resource_model.KIND:
+            raise AttributeError('%s not in %s' % (kind, resource_model.KIND))
+        kind_resources = self.filter(kind=kind)
 
         class FilterKindDict(dict):
 
@@ -116,18 +118,6 @@ class ResourceManager(PassThroughManagerMixin, CurrentSiteManager):
                 if isinstance(alias, int):
                     return kind_resources[alias]
                 return kind_resources.get(alias=alias)
-
-            def __setattr__(self, alias, value):
-                if instance(value, resource_model):
-                    value.kind, value.alias = kind, alias
-                    value.content_object = instance
-                    resource = value
-                else:
-                    resource = resource_model(kind=kind,
-                                              alias=alias,
-                                              content_object=instance,
-                                              file=value)
-                getattr(instance, prefetch_cache_name).add(resource)
 
             def __iter__(self):
                 return kind_resources

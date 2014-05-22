@@ -335,7 +335,7 @@ class DownloadIOSAppResourceTask(BaseTask):
                 set__gid=_id,
                 set__url=url,
                 set__relative_path=relative_path,
-                set__resource_type=relative_path,
+                set__resource_type=resource_type,
                 set__file_alias=str(file_alias),
                 set__file_dir=_file_dir,
                 set__file_path=_file_path,
@@ -376,9 +376,10 @@ class DownloadIOSAppResourceTask(BaseTask):
 
     def _update_resource_status_location(self, item):
         item.updated = now()
-        if os.path.isfile(item.file_path):
+        fname = os.path.join(settings.MEDIA_ROOT, item.relative_path)
+        if os.path.isfile(fname):
             item.status = 'complete'
-            item.file_size = os.path.getsize(item.file_path)
+            item.file_size = os.path.getsize(fname)
         else:
             item.status = 'error'
             item.error_code = '1001'
@@ -545,14 +546,18 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
         ct = ContentType.objects.get_for_model(IOSAppData)
         content_type = str(ct.pk)
         for app in qs:
-            print("======%s=======" % app.pk)
+            print("===============%s===================" % app.pk)
             resources = self.get_crawl_resource_by(content_type=content_type,
                                                    object_pk=str(app.pk))
             for item in resources:
-                print(item.pk)
+                try:
+                    self.add_to_packageversion(item, app.packageversion)
+                except (ObjectDoesNotExist, IntegrityError) as e:
+                    print(e)
+                    continue
+                except Exception as e:
+                    print(e)
                 print(item.resource_type, item.relative_path)
-                self.add_to_packageversion(item, app.packageversion)
-
 
     def add_to_packageversion(self, item, version):
         if not version:
@@ -576,9 +581,9 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
             item.save()
 
     def _update_icon(self, version, item):
-        with io.FileIO(item.file_path) as f:
-            version.icon = File(f)
-            version.save()
+        fname = os.path.join(settings.MEDIA_ROOT, item.relative_path)
+        version.icon = item.relative_path
+        version.save()
 
     def _upsert_screenshot(self, version, item):
         kind = 'default' if item.resource_type == 'screenshot' else 'ipad'
@@ -587,13 +592,17 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
         return screenshot
 
     def _upsert_resource(self, version, item, alias):
-        res, created = version.resources.get_or_create(
+        resource = Resource(
             kind=item.resource_type,
             alias=alias,
             content_object=version,
             file=item.relative_path
         )
-        return res
+        try:
+            version.resources.add(resource)
+        except IntegrityError as e:
+            print(e)
+        return resource
 
     def sync_resourcefiles_to_version(self, app):
         """
@@ -610,7 +619,6 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
             self.add_to_packageversion(crawl_res, version)
 
         return True
-
 
     def get_appdata(self, pk):
         return IOSAppData.objects.get(pk=int(pk))
@@ -632,3 +640,4 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
                 print(e)
                 continue
             print(item.resource_type, item.relative_path)
+

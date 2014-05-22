@@ -5,6 +5,7 @@ from django.contrib import admin
 from reversion.admin import VersionAdmin
 from promotion.models import Place, Advertisement, Advertisement_Places
 from toolkit.helpers import sync_status_summary, sync_status_actions
+from toolkit.admin import ResourceInlines
 from mezzanine.core.admin import (TabularDynamicInlineAdmin as TabularInline,
                                   StackedDynamicInlineAdmin as StackedInline)
 
@@ -46,12 +47,18 @@ class AdvertisementAdmin(VersionAdmin):
     )
     list_display_links = ('show_cover', 'title', )
     readonly_fields = ('updated_datetime', 'created_datetime',)
-    inlines = (AdvertisementPlacesInline, )
+    inlines = (ResourceInlines, AdvertisementPlacesInline, )
     search_fields = ('title',)
     list_filter = ('content_type',
                    'places__slug',
                    'released_datetime',
                    'status')
+
+    def get_readonly_fields(self, request, obj=None):
+        fields = self.readonly_fields
+        if obj and obj.pk:
+            return fields + ('content_type', 'object_id')
+        return fields
 
     def show_cover(self, obj):
         try:

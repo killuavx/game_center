@@ -10,10 +10,13 @@ function resize(){
 	var wobj = $("body");
 	if(width > 1250){
 		wobj.attr("id","cc-l");	
+		jQuery(".roll").slide({ mainCell:"ul",vis:5,scroll:1,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
 	}else if(width > 990){
 		wobj.attr("id","cc-m");	
+		jQuery(".roll").slide({ mainCell:"ul",vis:4,scroll:1,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
 	}else{
 		wobj.attr("id","cc-s");	
+		jQuery(".roll").slide({ mainCell:"ul",vis:3,scroll:1,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
 	}
 };
 
@@ -27,17 +30,29 @@ function resize(){
 document.writeln("<style>#toTop{width:44px;height:44px;position:fixed;right:20px;bottom:-10px;z-index:9999;display:none;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}#toTop:hover{background-position:left bottom}</style>");
 document.writeln("<a href=\"javascript:;\" title=\"返回顶部\" id=\"toTop\">返回顶部</a>");
 $(document).ready(function(){
+	var index = 0;
+	var _window = $(window);
+	var _html = $("html");
+	var _toTop = $("#toTop");
 	$(window).scroll(function(){
-		if($(window).scrollTop()<=0) {
-			$("html").attr("ID","");
+		/*var currentIndex = _window.scrollTop();
+		if(currentIndex > index){
+			_html.attr("ID","");
 		}else{
-			$("html").attr("ID","fixed-head");
+			_html.attr("ID","fixed-head");
+		}
+		index = currentIndex;*/
+		
+		if($(window).scrollTop()<=0) {
+			_html.attr("ID","");
+		}else{
+			_html.attr("ID","fixed-head");
 		}
 		
 		if($(window).scrollTop()<=500) {
-			$("#toTop").stop(true,false).animate({bottom:"-10px",opacity:"0"},50);
+			_toTop.stop(true,false).animate({bottom:"-10px",opacity:"0"},50);
 		}else{
-			$("#toTop").stop(true,false).show().animate({bottom:"20px",opacity:"1"},50);
+			_toTop.stop(true,false).show().animate({bottom:"20px",opacity:"1"},50);
 		}
 	});
 	$("#toTop").click(function(){
@@ -162,6 +177,7 @@ $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.n
 	li_hover($(".t-title li"),"ios-web-icon");	
 	
 	$(".app-list-right").find("li:first").addClass("hover");
+	$(".t-title").find("li:first").addClass("ios-web-icon");
 	$(".hot-bbs .hot-bbs-list").find("li:first").addClass("first");
 	
 //基本资料-表单验证
@@ -260,18 +276,11 @@ $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.n
 
 
 
-
-
-
-
-
-
-
 //banner
-$(".banner").slide({ titCell:".num ul" , mainCell:".ban_pic ul" , autoPlay:true, effect:"fold",delayTime:1500 , autoPage:true });
+$(".banner").slide({ titCell:".num ul" , mainCell:".ban_pic ul" , autoPlay:true,autoPage:true });
 
 //合集 巨作
-jQuery(".roll").slide({ mainCell:"ul",vis:3,scroll:3,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
+
 
 //详细缩略图
 jQuery(".up_box").slide({ mainCell:"ul",vis:0,scroll:2,prevCell:".prev",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
@@ -281,6 +290,14 @@ jQuery(".collection_box").slide({ mainCell:".inner-box",vis:0,scroll:1,prevCell:
 
 //游戏排行榜
 jQuery(".tab-box").slide({ titCell:".info-tag a",mainCell:".info-box-tab" });
+//游戏排行榜
+jQuery(".tab-box-o").slide({ titCell:".t-title li",mainCell:".info-box-tab" });
+
+//厂商
+jQuery(".tab-box-vendor").slide({ titCell:".left-nav a",mainCell:".info-box-tab",titOnClassName:"hover"});
+
+
+
 
 
 
