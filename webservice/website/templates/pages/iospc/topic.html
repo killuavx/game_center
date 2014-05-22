@@ -8,12 +8,13 @@
     
 <div class="cb box list_box game collection_dis">
     
-            <div class="collection_title" style="background:url({% static collection.cover.url %}) no-repeat #443822; color:#cbbda3">
-              <h1> {{ collection.name }}</h1>
-                <p>{{ collection.summary }}</p>
-                <span class="date">更新日期：{{ collection.updated_datetime.date }} | 共 {{ packages.count }} 个应用</span>
-            </div>
-    
+        <div class="collection_title">
+          <img src="{{ collection.cover.url }}">
+                        <h1>{{ collection.name }}</h1>
+                        <p>{{ collection.summary }}</p>
+                        <span class="date">{{ collection.updated_datetime.date }} | 共 {{ packages.count }} 个应用</span>
+                        <div class="c_b"></div>
+                    </div>
             <div class="list_box_left game_box">
                     
                     <div class="list left_list">

@@ -10,7 +10,7 @@
 
             <ul class="fl">
 
-              <li class="li_1">总榜</li>
+              <li class="li_1 hover">总榜</li>
 
             </ul>
 
@@ -19,9 +19,19 @@
           <div class="list right_list">
 
             <ul>
-              {% for package in items %}
-                {% with version=package.versions.latest_published %}
-                  {% include "includes/package-detail.html" with verison=version item=item %}
+              {% for item in items %}
+                {% with version=item.versions.latest_published %}
+                  <li class="">
+                  <a href="{{ item.get_absolute_iospc_url }}" class="big_pic"><img src="{{ version.icon.url }}"><span class="icon cover"></span></a>
+                  <h2><a href="{{ item.get_absolute_iospc_url }}"><em class="top">{{ forloop.counter }}</em>{{ item.title }}</a></h2>
+                  <div class="btn">
+                  <span class="bg"></span>
+                  <p>{{ version.get_download_size|default:0|filesizeformat }} | {{ item.download_count|intwordcn }}+下载</p>
+                  <a href="{{ version.get_download_url }}" class="a1 install">安装</a>
+                  <a href="{{ version.get_download_url }}" class="a2">下载</a>
+                  </div>
+                  </li>
+
                 {% endwith %}
               {% endfor %}
             </ul>
