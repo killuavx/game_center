@@ -5,6 +5,33 @@ from mptt.models import MPTTModel
 from taxonomy.models import Category, TopicalItem, Topic
 from django.contrib.comments import Comment
 
+def get_limit_range(p, r, n=10):
+    # p - request page number
+    # r - paginator.page_range
+    # n - num of links on a page
+
+    l = r[-1]
+    if n >= l:
+        return r
+    x, y = divmod(p, n)
+    m = n//2
+    if y > 0:
+        if p-m <= 0:
+            return range(1, 2*m+1)
+        elif p+m > l:
+            end = l
+        else:
+            end = p+m
+        return range(end-n+1, end+1)
+    else:
+        if p-m <= 0:
+            return range(1, 2*m+1)
+        elif p+m > l:
+            end = l+1
+            return range(end-n, end)
+        else:
+            end = p+m
+        return range(p-m, end)
 
 def get_all_categories(pkg):
     return pkg.categories.all()
@@ -132,12 +159,15 @@ def paginize_items(request, items, per_page=20):
         pkgs = paginator.page(page)
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
-        pkgs  = paginator.page(1)
+        page = 1
+        pkgs  = paginator.page(page)
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         pkgs = paginator.page(paginator.num_pages)
 
-    return pkgs, page_query
+    limit_range = get_limit_range(int(page), paginator.page_range)
+
+    return pkgs, page_query, limit_range
 
 
 def get_category_slug(request):

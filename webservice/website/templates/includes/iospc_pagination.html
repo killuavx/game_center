@@ -1,17 +1,16 @@
-{% load widgets url_tags %}
-
+{% load widgets url_tags %} 
               <div class="cb page">
-                  {% if items.has_previous %}
-                    <a hre="{% qurl request.get_full_path page=items.previous_page_number %}">上一页</a>
+                {% if items.number > 1 %}
+                    <a href="{% qurl request.get_full_path page=items.previous_page_number %}">上一页</a>
                   {% endif %}
 
                   {% if items.paginator.num_pages > 1%}
-                    {% for i in items.paginator.page_range %}
-                      <a href="{% qurl request.get_full_path page=i %}">{{ i  }}</a>
+                    {% for i in limit_range %}
+                    <a href="{% qurl request.get_full_path page=i %}" {% if items.number == i %}class="hover"{% endif %}>{{ i }}</a>
                     {% endfor %}
                   {% endif %}
 
-                  {% if items.has_next %}
+                  {% if items.number < items.paginator.num_pages %}
                     <a href="{% qurl request.get_full_path page=items.next_page_number %}">下一页</a>
                   {% endif %}
 
