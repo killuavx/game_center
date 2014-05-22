@@ -5,6 +5,9 @@ from rest_framework.decorators import link
 from mobapi2.warehouse.views.package import PackageViewSet
 from mobapi2.ranking.serializers import PackageRankingSummarySerializer
 from ranking.models import PackageRanking
+from rest_framework_extensions.cache.mixins import CacheResponseMixin
+from rest_framework_extensions.cache.decorators import cache_response
+from mobapi2 import cache_keyconstructors as ckc
 
 
 class RankingFilter(filters.BaseFilterBackend):
@@ -38,7 +41,8 @@ class RankingFilter(filters.BaseFilterBackend):
         return queryset.filter(cycle_type=cycle_type)
 
 
-class PackageRankingViewSet(viewsets.ReadOnlyModelViewSet):
+class PackageRankingViewSet(CacheResponseMixin,
+                            viewsets.ReadOnlyModelViewSet):
     """ 软件接口
 
     ## API访问形式
@@ -73,6 +77,7 @@ class PackageRankingViewSet(viewsets.ReadOnlyModelViewSet):
             self.queryset = self.model.objects.published()
         return self.queryset
 
+    @cache_response(key_func=ckc.LookupListKeyConstructor())
     @link()
     def packages(self, request, pk, *args, **kwargs):
         ranking = self.get_object()
