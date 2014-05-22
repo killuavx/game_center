@@ -134,11 +134,12 @@ class Author(SiteRelated, models.Model):
         ('rejected', 'rejected', _('Rejected'))
     )
 
-    status = StatusField(verbose_name=_('status'))
+    status = StatusField(verbose_name=_('status'), )
 
     workspace = FileField(default='',
                           blank=True,
                           max_length=500,
+                          help_text='!!切勿随意修改!!',
                           format='File')
 
     def sync_status(self):

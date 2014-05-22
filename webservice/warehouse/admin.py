@@ -493,7 +493,6 @@ class AuthorAdmin(MainAdmin):
     list_display_links = ('name', 'show_icon',)
     list_filter = ('status', )
     ordering = ('name',)
-    readonly_fields = ('workspace', )
 
     show_icon = AdminIconField(allow_tags=True,
                                short_description=_('Icon'))
