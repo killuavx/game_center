@@ -186,6 +186,7 @@ INTERNAL_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
+    'rest_framework_extensions',
     'tagging',
     'tagging_autocomplete',
     'djrill',
@@ -360,6 +361,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ],
+}
+
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60
 }
 
 #SLUGFIELD_SLUGIFY_FUNCTION = ''

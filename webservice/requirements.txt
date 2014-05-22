@@ -18,6 +18,7 @@ django-sizefield
 #-e git+git://github.com/Soaa-/django-nested-inlines.git#egg=django-nested-inlines
 django-rest-swagger
 djangorestframework==2.3.7
+drf-extensions
 #django-userena
 django-comments-xtd==1.2a1
 
