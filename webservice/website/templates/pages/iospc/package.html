@@ -6,7 +6,7 @@
 {% load comments %}
     {% block main %} 
     
-    <div class="location">当前位置：<a href="/iospc">首页</a><em>»</em><a href="{% url 'iospc_packages_cat_list' slug=root_cat %}">{% if root_cat == 'game' %}游戏{% else %}软件{% endif %}</a><em>»</em><a href="{% url 'iospc_packages_cat_list' slug=slug %}?cat={{sub_cat_slug}}">{{ sub_cat_name }}</a><em>»</em><a href="">{{ package_title }}</a></div> <div class="cb box dis"> 
+    <div class="location">当前位置：<a href="/iospc/home">首页</a><em>»</em><a href="/iospc/{{ root_cat }}s">{% if root_cat == 'game' %}游戏{% else %}软件{% endif %}</a><em>»</em><a href="/iospc/{{ root_cat }}s/?cat={{ sub_cat_slug }}"</a>{{ sub_cat_name }}<em>»</em><a href="">{{ package_title }}</a></div> <div class="cb box dis"> 
 
             <div class="title">
 
