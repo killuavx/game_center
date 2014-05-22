@@ -21,6 +21,7 @@ class PackageVersionProcessor(ModelProcessor):
                 "working direcotry %s '%s' not found" % (self.instance, path))
         return dirname(self.instance.icon.name)
 
+
 class AuthorProcessor(ModelProcessor):
 
     def __init__(self, instance):
