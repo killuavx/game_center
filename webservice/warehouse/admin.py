@@ -486,17 +486,26 @@ class PackageInline(TabularInline):
 
 class AuthorAdmin(MainAdmin):
     model = Author
-    list_display = ( 'pk', 'show_icon', 'name', 'email', 'phone')
+    list_display = ( 'pk', 'show_icon', 'name', 'email', 'phone',
+                     'sync_file_action',
+    )
     search_fields = ( 'name', 'email', 'phone')
     list_display_links = ('name', 'show_icon',)
     list_filter = ('status', )
     ordering = ('name',)
+    readonly_fields = ('workspace', )
 
     show_icon = AdminIconField(allow_tags=True,
                                short_description=_('Icon'))
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput},
     }
+
+    def sync_file_action(self, obj):
+        return sync_status_summary(obj) + " | " + sync_status_actions(obj)
+    sync_file_action.allow_tags = True
+    sync_file_action.short_description = _('Sync Status')
+
 
     inlines = (ResourceInlines, PackageInline, )
 
@@ -512,7 +521,6 @@ class AuthorAdmin(MainAdmin):
 
     make_unpublished.short_description = _(
         'Make selected Authors as unactivated')
-
 
     def suit_row_attributes(self, obj, request):
         css_class = {
@@ -531,6 +539,11 @@ class AuthorAdmin(MainAdmin):
         form.base_fields['email'].initial = email
         return form
 
+    class Media:
+        #from django.conf import settings
+        #static_url = getattr(settings, 'STATIC_URL', '/static')
+        static_url = '/static/'
+        js = [static_url+'js/syncfile.action.js', ]
 
 admin.site.register(PackageVersion, PackageVersionAdmin)
 admin.site.register(Package, PackageAdmin)

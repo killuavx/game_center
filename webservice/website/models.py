@@ -27,6 +27,8 @@ def mock_processor_class(processor_class):
     return MockProcessor
 
 if settings.DEBUG:
+    Author.sync_processor_class = \
+        mock_processor_class(AuthorProcessor)
     PackageVersion.sync_processor_class = \
         mock_processor_class(PackageVersionProcessor)
 
