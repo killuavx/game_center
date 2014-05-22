@@ -80,7 +80,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
 
         origin_queryset, self.queryset = \
             self.queryset, self.get_queryset().filter(parent=topic)
-        self.ordering = ('ordering', )
+        self.ordering = ('-updated_datetime', )
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
         return res
 
