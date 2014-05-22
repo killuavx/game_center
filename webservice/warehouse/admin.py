@@ -56,6 +56,7 @@ class MainAdmin(VersionAdmin):
 class PackageVersionScreenshotInlines(admin.StackedInline):
     model = PackageVersionScreenshot
     fields= ('image', 'alt', 'rotate')
+    extra = 4
 
     def get_fieldsets(self, request, obj=None):
         fields = list(self.fields) + list(self.get_readonly_fields(request, obj))
