@@ -68,6 +68,7 @@ iospc_games_page_slug = 'iospc/games'
 def games_page(request, page):
     slug = 'game'
     other_slug = None
+    package_query = 'name'
     data  = {}
 
     if request.method == "GET":
@@ -106,6 +107,7 @@ def games_page(request, page):
             'category_slug': category_slug,
             'other_slug': other_slug,
             'limit_range': limit_range,
+            'package_query': package_query,
         }
 
     return data
@@ -226,5 +228,40 @@ def topic_page(request, page):
             'current_page': 'collection',
         }
 
+
+    return data
+
+
+iospc_game_page_slug = 'iospc/game'
+@processor_for(iospc_game_page_slug)
+def game_page(request, page):
+    other_slug = None
+    package_query = 'name'
+    data  = {}
+
+    if request.method == "GET":
+        package_name = request.GET.get(package_query, None)
+        pkg = get_package_by_package_name(package_name)
+        all_cats = get_all_categories(pkg)
+        leaf_cats = get_leaf_categories(all_cats)
+
+        data['pkgver'] = get_packageversion_by_package(pkg)
+        data['slug'] = get_root_category_slug_by_package(pkg)
+        data['cats'] = leaf_cats
+        data['current_page'] = data['slug']
+        try:
+            category = pkg.categories.all()[0]
+        except:
+            category = ''
+
+        data['root_cat'] = 'game'
+        data['sub_cat_name'] = category.name if category else ''
+        data['sub_cat_slug'] = category.slug if category else ''
+        data['package_title'] = pkg.title if pkg.title else ''
+        comments = get_comments_by_packageversion(data['pkgver'])
+        items, page_query, limit_range = paginize_items(request, comments, 1)
+        data['items'] = items
+        data['limit_range'] = limit_range
+        data['page_query'] = page_query
 
     return data
