@@ -55,9 +55,6 @@ class ResourceInlines(GenericStackedInline):
     ordering = ('kind', 'alias', )
     readonly_fields = ('file_size', 'file_md5')
 
-    def get_readonly_fields(self, request, obj=None):
-        fields = self.readonly_fields
-        if obj and obj.pk:
-            fields = self.fields
-        return fields
+    def has_change_permission(self, request, obj=None):
+        return False
 
