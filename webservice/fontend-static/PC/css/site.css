@@ -53,7 +53,7 @@ p{word-wrap:break-word}
 	.banner {position: relative; width:600px; height:190px; overflow:hidden}
 	.banner ul li {float: left; width:600px; height:190px}
 	.banner ul li img{width:600px; height:190px}
-	.banner ul li span{position:absolute; width:585px; height:35px; line-height:35px; font-size:14px; color:#fff; padding-left:15px; bottom:0}
+	.banner ul li span{position:absolute; width:585px; height:35px; line-height:35px; font-size:14px; color:#fff; padding-left:15px; bottom:0; left:0}
 	.banner ul li span.bg{background:#000;  filter:alpha(opacity=60); opacity: 0.6;}
 	.banner_btn{position:relative}
 	.unslider-arrow{display:inline-block; position:absolute; width:31px; height:45px; top:-130px; display:none; opacity: 0.6;}
@@ -78,13 +78,13 @@ p{word-wrap:break-word}
 .focus_right{width:197px; height:190px; background:#FFC}	
 
 .list_box_left{border-right:1px solid #ccc; width:599px; background:#fff; overflow:hidden}
-.list_box .title_box{background-position:0 -269px; background-repeat:repeat-x; width:597px; height:40px; *height:44px; border-left:2px solid #e53333; z-index:999;}
+.list_box .title_box{ background:#f4f5f6; width:597px; height:40px; *height:44px; border-left:2px solid #e53333; z-index:999;}
 
 .list_box .title_box h3{font-size:20px}
 .list_box .title_box h3,.list_box .title_box a{line-height:40px; padding:0 15px; color:#e53333}
 .list_box .title_box a:hover{color:#d12525}
 
-.list_box .title_box ul {width:300px; padding:8px 0 0 80px}
+.list_box .title_box ul {width:300px; padding:8px 0 0 123px}
 .list_box .title_box ul li{float:left; height:22px; line-height:22px; display:block; border:1px solid #333; width:70px; margin-left:-1px; text-align:center; background-color:#fff; cursor:pointer; z-index:999999}
 .list_box .title_box ul li:hover{background-color:#666; color:#fff}
 .list_box .title_box ul li.li_1{border-radius:3px 0 0 3px}
@@ -223,6 +223,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .collection_box .l{width:270px; padding-left:10px; text-align:center}
 .collection_box .r{width:517px;}
 
+
 .collection_box .l img{width:270px; height:135px}
 .collection_box .l h3{font-size:16px; margin-top:7px}
 
@@ -240,8 +241,9 @@ p.price span{color:#e53333; text-decoration:line-through}
 .collection_box .date{padding:9px 10px 0 0; text-align:right; color:#666}
 
 .collection_dis{background:none}
-.collection_title{height:127px; border-bottom:1px solid #eee; padding:10px 0 0 285px}
-.collection_title h1{font-size:24px}
+.collection_title{border-bottom:1px solid #eee; padding-right:10px; background:url(http://static.ccplay.com.cn/static/common/img/collection_bg.png) #333 center center; color:#FFF}
+.collection_title img{width:300px; float:left; margin-right:20px}
+.collection_title h1{font-size:24px; padding-top:10px}
 .collection_title p{height:50px; overflow:hidden; padding-top:5px}
 
 .masterpiece{background:none; width:800px; overflow:hidden}
