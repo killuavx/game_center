@@ -136,6 +136,8 @@ class Author(SiteRelated, models.Model):
 
     status = StatusField(verbose_name=_('status'), )
 
+    tracker = FieldTracker()
+
     workspace = FileField(default='',
                           blank=True,
                           max_length=500,
