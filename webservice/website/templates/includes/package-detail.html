@@ -1,7 +1,7 @@
 {% load util_tags %}
 <li>
-  <a href="{{ item.get_absolute_iospc_url }}" class="big_pic"><img src="{{ version.icon.url }}"><span class="icon cover"></span></a>
-  <h2><a href="{{ item.get_absolute_iospc_url }}">{{ item.title }}</a></h2>
+<a href="/{{ page.slug|slice:"-1" }}?{{ package_query }}={{ item.package_name }}" class="big_pic"><img src="{{ version.icon.url }}"><span class="icon cover"></span></a>
+  <h2><a href="/{{ page.slug|slice:"-1" }}?{{ package_query }}={{ item.package_name }}">{{ item.title }}</a></h2>
   <p>{{ version.get_download_size|default:0|filesizeformat }} | {{ item.download_count|intwordcn }}+下载</p>
   <p class="price">免费</p>
   <div class="icon star s{{ version.stars_average|floatformat:"0" }}"></div>
