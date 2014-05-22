@@ -12,7 +12,7 @@ class AdvertisementProcessor(ModelProcessor):
 
     def get_relative_working_path(self):
         if self.instance.workspace:
-            return self.instance.workspace
+            return str(self.instance.workspace)
         try:
             self.instance.cover.size
         except FileNotFoundError:

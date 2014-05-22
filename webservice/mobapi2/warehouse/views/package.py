@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 import copy
-from django.core import exceptions
-from rest_framework import viewsets, filters, mixins, status, generics
+from rest_framework import viewsets, filters, status, generics
 from rest_framework.decorators import link
 from rest_framework.parsers import JSONParser, FormParser
 from rest_framework.response import Response
 from warehouse.models import Package
-from taxonomy.models import Category
 from mobapi2.warehouse.serializers.package import (
     PackageSummarySerializer,
     PackageDetailSerializer,
@@ -24,6 +22,7 @@ from rest_framework_extensions.key_constructor import (
     bits,
     constructors
 )
+from mobapi2 import cache_keyconstructors as ckc
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -132,7 +131,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         self.serializer_class = list_serializer_class
         return response
 
-    @cache_response(key_func=default_list_cache_key_func)
+    @cache_response(key_func=ckc.LookupOrderingListKeyConstructor())
     @link()
     def relatedpackages(self, request, *args, **kwargs):
 
