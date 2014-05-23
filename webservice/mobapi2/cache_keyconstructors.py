@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
+
 from django.utils.encoding import force_text
 from rest_framework_extensions.key_constructor import (bits, constructors)
 from django.core.cache import cache
 from django.utils.timezone import now
-from toolkit.helpers import current_site_id
+
+from mobapi2.helpers import make_cache_key
 
 
 class OrderingKeyBit(bits.QueryParamsKeyBit):
@@ -78,10 +81,6 @@ class PackageLookupConstructor(constructors.DefaultKeyConstructor):
     package = PackageLookupKeyBit()
 
 
-def make_cache_key(prefix):
-    return "%s.%s.%s" %('api', current_site_id(), prefix)
-
-
 class UpdatedAtKeyBit(bits.KeyBitBase):
 
     content_type = 'default'
@@ -103,12 +102,46 @@ class UpdatedAtKeyBit(bits.KeyBitBase):
         return force_text(value)
 
 
-class ContentObjectUpdatedAtContructor(constructors.DefaultKeyConstructor):
+class CommentUpdatedAtKeyBit(bits.QueryParamsKeyBit):
 
-    content_object = ContentObjectKeyBit()
+    target = 'comment'
 
-    updated_at = UpdatedAtKeyBit()
+    content_object_params = ('content_type', 'object_pk')
 
-    def __init__(self, content_type=None, **kwargs):
-        super(ContentObjectUpdatedAtContructor, self).__init__(**kwargs)
-        self.updated_at = UpdatedAtKeyBit(content_type=content_type)
+    def get_data(self, **kwargs):
+        kwargs['params'] = deepcopy(self.content_object_params)
+        data = super(CommentUpdatedAtKeyBit, self).get_data(**kwargs)
+        key = self.get_key(**data)
+        return self.get_cache_value(key)
+
+    def get_key(self, **data):
+        return "-".join([self.get_prefix_key(), self.get_params_key(**data)])
+
+    def get_prefix_key(self):
+        return make_cache_key('updated_at_timestamp:%s' % self.target)
+
+    def get_params_key(self, **params):
+        _params = {}
+        for k in self.content_object_params:
+            v = params.get(k) if params.get(k) else 0
+            _params[k] = v
+        return ":".join([
+            str(_params['content_type']),
+            str(_params['object_pk']),
+        ])
+
+    def get_cache_value(self, key):
+        value = cache.get(key, None)
+        if not value:
+            value = now().astimezone().isoformat()
+            cache.set(key, value=value)
+        return force_text(value)
+
+
+class CommentListKeyConstructor(constructors.DefaultKeyConstructor):
+
+    comment_updated_at = CommentUpdatedAtKeyBit()
+
+    pagination = bits.PaginationKeyBit()
+
+

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.db.models import Q
+from django.utils.translation import ugettext_lazy as _
 from mezzanine.generic.models import ThreadedComment
 from mezzanine.generic.managers import CommentManager as ThreadedCommentManager
 from django.db.models.query import QuerySet
 from model_utils import Choices
 from model_utils.fields import StatusField, MonitorField
-from model_utils.managers import PassThroughManager
 from toolkit.managers import CurrentSitePassThroughManager
 from django.db import models
 from django.conf import settings
@@ -73,6 +73,8 @@ class Comment(ThreadedComment):
             except:pass
 
         return super(Comment, self).avatar_link()
+    avatar_link.allow_tags = True
+    avatar_link.short_description = _("User")
 
     class Meta:
         proxy = True
@@ -93,9 +95,7 @@ moderator.register(PackageVersion, PackageVersionModerator)
 # feedback
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from django.utils.translation import ugettext_lazy as _
 from toolkit.models import SiteRelated
-from toolkit.managers import CurrentSitePassThroughManager
 from mezzanine.core.models import TimeStamped
 from django.contrib.auth import get_user_model
 

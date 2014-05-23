@@ -4,7 +4,6 @@ from django.contrib import admin
 from django.contrib.admin import site
 from django.contrib.admin.sites import NotRegistered
 from django.utils.translation import ugettext_lazy as _
-from reversion.admin import VersionAdmin
 from mezzanine.core.admin import TabularDynamicInlineAdmin as TabularInline
 from mezzanine.generic.admin import ThreadedCommentAdmin
 from mezzanine.utils.urls import admin_url
@@ -14,12 +13,14 @@ from comment.models import FeedbackType, Feedback, Petition, PetitionPackageVers
 from django.contrib.contenttypes import generic
 from toolkit.admin import admin_edit_linktag
 
+Comment = get_comment_model()
+
 
 class CommentReplyInline(TabularInline):
     fk_name = 'replied_to'
     fields = ('comment', 'submit_date')
     readonly_fields = ('submit_date',)
-    model = get_comment_model()
+    model = Comment
 
 
 class CommentAdmin(ThreadedCommentAdmin):
@@ -49,20 +50,14 @@ class CommentAdmin(ThreadedCommentAdmin):
 generic_comments = getattr(settings, "COMMENTS_APP", "") == "mezzanine.generic"
 if generic_comments and not settings.COMMENTS_DISQUS_SHORTNAME:
     try:
-        site.unregister(get_comment_model())
+        site.unregister(Comment)
     except NotRegistered:
         pass
-    site.register(get_comment_model(), CommentAdmin)
 
-try:
-    site.unregister(get_comment_model())
-except NotRegistered:
-    pass
-else:
-    site.register(get_comment_model(), CommentAdmin)
+site.register(Comment, CommentAdmin)
 
 
-class MainAdmin(VersionAdmin):
+class MainAdmin(admin.ModelAdmin):
     pass
 
 
@@ -72,14 +67,13 @@ class FeedbackReplyInline(TabularInline,
     ct_fk_field = "object_pk"
     fields = ('comment', 'user', 'submit_date')
     readonly_fields = ('submit_date', 'user')
-    model = get_comment_model()
+    model = Comment
 
 
 class AdminSaveFormsetCommentMixin(object):
 
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
-        Comment = get_comment_model()
         for instance in instances:
             if isinstance(instance, Comment):
                 instance.user = request.user

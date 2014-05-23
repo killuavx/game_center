@@ -411,6 +411,8 @@ LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 
 AAPT_CMD = join(PROJECT_PATH, 'warehouse/utils/android-tools-linux-x64/aapt')
 
+COMMENTS_APP = 'comment'
+
 #COMMENTS_POST_PUBLISHED = False
 HAYSTACK_CONNECTIONS = {
     'default': {

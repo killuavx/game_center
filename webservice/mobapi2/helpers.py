@@ -88,3 +88,7 @@ def get_object_stars_rate(obj, rate_type):
     """
     rate = getattr(obj, 'stars_%s_rate'%rate_type, 0)
     return round(rate, 3)
+
+
+def make_cache_key(prefix, app='api'):
+    return "%s.%s" %(app, prefix)
