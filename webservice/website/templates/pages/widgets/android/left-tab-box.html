@@ -10,9 +10,9 @@
                             </ul>
                             
                             <div class="rel tab-more">
+                              {% for item in result %}
                             	<a class="r f12 mt5 more" href="#1">更多></a>
-                            	<a class="r f12 mt5 more" href="#2">更多></a>
-                            	<a class="r f12 mt5 more" href="#3">更多></a>
+                              {% endfor %}
                             </div>
                         </div> <!--t-title-->
                         
@@ -21,11 +21,11 @@
                 <div class="info-box-tab">
                             
                             <div class="tj pt5 app-list-left">
-                                {%  mkrange 1 28 as fnum %}
-                                 {% for i in fnum %}
+                                 {% for item in result.items %}
+                                {% with version=item.versions.latest_published %}
                                     <div class="dib rel app-list-min">
                                         <a href="#" class="db tc f14">
-                                            <img src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
+                                          <img src="{{ item.cover.url }}" class="db auto">
                                             <span class="ios-web-icon abs db auto"></span>
                                             最多5个字
                                             <i class="db n f12 g9">智力游戏</i>
@@ -35,6 +35,7 @@
                                               <a href="#" class="a2">下载</a>
                                         </div>
                                     </div>
+                            {% endwith %}
                                 {% endfor %}
                             </div><!--app-list-left-->
                 

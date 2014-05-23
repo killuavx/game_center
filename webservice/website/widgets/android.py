@@ -106,8 +106,6 @@ class HomeTabsPackageListWidget(BaseTopicPackageListWidget):
         else:
             try:
                 topic = Topic.objects.filter(slug=slug).published().get()
-                print (slug)
-                print (topic)
                 tmp['items'] = TopicalItem.objects.filter_items_by_topic(topic, Package, packages)
                 tmp['topic_name']  = topic.name
             except:
@@ -131,6 +129,6 @@ class HomeTabsPackageListWidget(BaseTopicPackageListWidget):
             for slug in slugs.split('|'):
                 result.append(self.get_packages_by_topic_slug(packages, slug))
 
-        #print ({'result': result})
+        print ({'result': result})
         return {'result': result, 'cat': cat_dic.get(cat)}
 
