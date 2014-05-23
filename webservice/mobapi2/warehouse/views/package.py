@@ -188,7 +188,7 @@ class PackageSearchViewSet(PackageViewSet):
         if not q or not (q and q.strip()):
             data = {'detail': 'Not Allow without search parameter'
                               ' /api/search/?q={q}'}
-            return Response(data, status=status.HTTP_403_FORBIDDEN)
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
 
         return super(PackageViewSet, self).list(request, *args, **kwargs)
 
