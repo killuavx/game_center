@@ -304,7 +304,8 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .hot-bbs-list li.first{padding:13px 0; *padding:7px 0}
 .hot-bbs-list li.first h4{font-size:20px}
 .hot-bbs-list li .f10{padding-right:5px}
-.hot-bbs-list li p{padding-left:40px; line-height:23px; *line-height:20px}
+.hot-bbs-list li p{padding-left:40px; line-height:23px; *line-height:20px; display:none}
+.hot-bbs-list li.first p{display:inline-block}
 .hot-bbs-list li img{width:24px; height:24px; margin-right:10px}
 .hot-bbs-list li .ios-web-icon{background-position:-131px -662px; width:26px; height:26px; left:4px}
 /*厂商*/
@@ -445,7 +446,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .left-top-list li.hover .btn-s{width:48%}
 
 
-.app-dis-page .title .ios-web-icon{padding-left:16px; margin-left:5px}
+.app-dis-page .title .ios-web-icon{padding-left:16px; margin-left:5px; display:none}
 .app-dis-page .ad{background-position:-166px -166px}
 .app-dis-page .ad.no{background-position:-166px -133px}
 
@@ -550,6 +551,14 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .vendor-page .left-nav li a.v7:hover,.vendor-page .left-nav li a.v7.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v7.png)}
 .vendor-page .left-nav li a.v8{background-image:url(http://static.ccplay.com.cn/static/common/img/v8.png)}
 .vendor-page .left-nav li a.v8:hover,.vendor-page .left-nav li a.v8.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v8.png)}
+.vendor-page .left-nav li a.v9{background-image:url(http://static.ccplay.com.cn/static/common/img/v9.png)}
+.vendor-page .left-nav li a.v9:hover,.vendor-page .left-nav li a.v9.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v9.png)}
+.vendor-page .left-nav li a.v10{background-image:url(http://static.ccplay.com.cn/static/common/img/v10.png)}
+.vendor-page .left-nav li a.v10:hover,.vendor-page .left-nav li a.v10.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v10.png)}
+.vendor-page .left-nav li a.v11{background-image:url(http://static.ccplay.com.cn/static/common/img/v11.png)}
+.vendor-page .left-nav li a.v11:hover,.vendor-page .left-nav li a.v11.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v11.png)}
+.vendor-page .left-nav li a.v12{background-image:url(http://static.ccplay.com.cn/static/common/img/v12.png)}
+.vendor-page .left-nav li a.v12:hover,.vendor-page .left-nav li a.v12.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v12.png)}
 
 /*排行*/
 .top-page .app-list-xl{width:100%; padding:15px 0; border-bottom:1px solid #e8e8e8}
@@ -688,7 +697,7 @@ clear: both; line-height: 1.8em;}
 
 
 /*			cc-l			*/
-#cc-l .user-switch{width:33%\0 !important}
+#cc-l .user-switch{width:400px !important}
 #cc-l .roll_box li{margin:0 12px 0 3px}
 #cc-l .t-title li{padding:0 20px}
 #cc-l .right .t-title li{padding:0}
