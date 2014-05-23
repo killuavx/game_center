@@ -5,11 +5,11 @@
 {% block main %}
 
 <!--广告开始 banner-->
-{%  include_widget HomeTopBannersWidget slug='android-home-top-banner' %}
+{% include_widget HomeTopBannersWidget slug='android-home-top-banner' %}
 <!--广告结束 banner-->
 
 <!--巨作开始 masterpiece-->
-{%  include_widget HomeMasterpiecePackageListWidget slug='game-masterpiece' %}
+{% include_widget HomeMasterpiecePackageListWidget slug='game-masterpiece' %}
 <!--巨作结束 masterpiece-->
 
 <!--最新发布 热点资讯 最贵应用 multi-->
@@ -20,7 +20,7 @@
     <!--首发破解-->
           
     <!--最新发布-->
-    {% include "pages/android/home/latest-release.html" %}
+    {% include_widget LatestPackageListWidget slug='game' %}
     <!--最新发布-->
           
     {% include "pages/android/home/selected-webgames.html" %}
