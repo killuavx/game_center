@@ -160,6 +160,8 @@ class MultiResourceField(BaseGenericRelation):
         resources = related_manager.all()
         count_field = '%s_count' % self.related_field_name
         setattr(instance, count_field, resources.count())
+        # set to call cdn sync action
+        instance._sync_files = True
         instance.save()
 
 # South requires custom fields to be given "rules".

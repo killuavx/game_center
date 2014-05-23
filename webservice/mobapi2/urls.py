@@ -69,10 +69,9 @@ urlpatterns += patterns('',
     url(r'^updates/?$', PackageUpdateView.as_view(),
         name=rest_router.get_base_name('update-create')),
     url(r'^accounts/', include(account_urlpatterns)),
-    url(r'^loadingcovers/(?P<package_name>%s)(/(?P<version_name>%s))?' %(slug_pattern,
+    url(r'^loadingcovers/(?P<package_name>%s)(/(?P<version_name>%s))?/?' %(slug_pattern,
                                                                          slug_pattern),
         LoadingCoverView.as_view(),
-        kwargs=dict(version_name=None),
-        name='loadingcover'),
+        name=rest_router.get_base_name('loadingcover')),
 )
 

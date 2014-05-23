@@ -1,3 +1,9 @@
+.logo a{display:inline-block; height:50px; background:url(http://static.ccplay.com.cn/static/ios_web/img/logo.png) no-repeat}
+.logo a img{opacity: 0; filter: alpha(opacity=0)}
+.login .logo a{background-image: url(http://static.ccplay.com.cn/static/common/img/user-icon.png);
+background-repeat: no-repeat;}
+
+
 /*v1*/
 .multi{margin-top:-60px}
 .hot-news .t-title{border-bottom-color:#e53333}
@@ -26,3 +32,26 @@
 #fixed-head #cc-m .nav .l li,#fixed-head #cc-l .nav .l li{width:8%}
 #fixed-head #cc-m .nav .l li a,#fixed-head #cc-l .nav .l li a{letter-spacing:5px}
 #fixed-head #cc-l .nav li .drop-down a{letter-spacing:0; padding:0 10px}
+
+#fixed-head .login .nav .l li a{letter-spacing:0 !important}
+
+.about-page{min-height:800px}
+.about-page ol li{list-style:decimal}
+
+.about-page .info p{margin-bottom:30px; text-indent:2em}
+.about-page .bg{background:#f5f5f5 no-repeat right bottom}
+.about-page .bg h1{line-height:55px; padding-left:45px}
+.job-btn a:hover{color:#e53333; text-decoration:none; border-color:#e53333}
+.p-about .bg{background-image:url(http://static.ccplay.com.cn/static/ios_web/img/about_t.jpg)}
+.p-contact .bg{background-image:url(http://static.ccplay.com.cn/static/ios_web/img/contact_t.jpg)}
+.p-vision .bg{background-image:url(http://static.ccplay.com.cn/static/ios_web/img/vision_t.jpg)}
+
+
+.latest-release h3 span,.hot-news h3 span{display:none}
+
+
+
+
+
+
+

@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 import copy
-from django.core import exceptions
-from rest_framework import viewsets, filters, mixins, status, generics
+from rest_framework import viewsets, filters, status, generics
 from rest_framework.decorators import link
 from rest_framework.parsers import JSONParser, FormParser
 from rest_framework.response import Response
 from warehouse.models import Package
-from taxonomy.models import Category
 from mobapi2.warehouse.serializers.package import (
     PackageSummarySerializer,
     PackageDetailSerializer,
@@ -16,19 +14,15 @@ from mobapi2.warehouse.views.filters import (
     SolrSearchFilter,
     RelatedPackageSearchFilter)
 from django.http import Http404
-
-
-class PackageExcludeCategoryOfApplicationFilter(filters.BaseFilterBackend):
-    _exclude_category_slug = 'application'
-
-    def filter_queryset(self, request, queryset, view):
-        try:
-            exclude_pkg_pks = Category.objects \
-                .get(slug=self._exclude_category_slug).packages \
-                .values_list('pk', flat=True)
-            return queryset.exclude(pk__in=exclude_pkg_pks)
-        except exceptions.ObjectDoesNotExist:
-            return queryset
+from rest_framework_extensions.cache.decorators import cache_response
+from rest_framework_extensions.utils import (
+    default_list_cache_key_func,
+    default_object_cache_key_func)
+from rest_framework_extensions.key_constructor import (
+    bits,
+    constructors
+)
+from mobapi2 import cache_keyconstructors as ckc
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -128,6 +122,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             self.queryset = self.model.objects.published()
         return self.queryset.published()
 
+    @cache_response(key_func=default_object_cache_key_func)
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class = self.serializer_class
         self.serializer_class = self.serializer_class_detail
@@ -136,6 +131,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         self.serializer_class = list_serializer_class
         return response
 
+    @cache_response(key_func=ckc.LookupOrderingListKeyConstructor())
     @link()
     def relatedpackages(self, request, *args, **kwargs):
 
@@ -145,6 +141,20 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         self.related_package_list = self.object_list
 
         return response
+
+    @cache_response(key_func=default_list_cache_key_func)
+    def list(self, request, *args, **kwargs):
+        return super(PackageViewSet, self).list(request, *args, **kwargs)
+
+
+class PackageSearchListKeyConstructor(constructors.DefaultKeyConstructor):
+
+    q = bits.QueryParamsKeyBit(params=['q'])
+
+    pagination = bits.PaginationKeyBit()
+
+
+package_search_cache_list_key_func = PackageSearchListKeyConstructor()
 
 
 class PackageSearchViewSet(PackageViewSet):
@@ -170,6 +180,7 @@ class PackageSearchViewSet(PackageViewSet):
     search_ordering = ('-released_datetime', )
     #ordering = ('-updated_datetime', )
 
+    @cache_response(key_func=package_search_cache_list_key_func)
     def list(self, request, *args, **kwargs):
         querydict = copy.deepcopy(dict(request.GET))
         q = querydict.get('q')
@@ -178,12 +189,25 @@ class PackageSearchViewSet(PackageViewSet):
             data = {'detail': 'Not Allow without search parameter'
                               ' /api/search/?q={q}'}
             return Response(data, status=status.HTTP_403_FORBIDDEN)
-        return super(PackageSearchViewSet, self).list(request, *args, **kwargs)
 
-    def retrieve(self, request, *args, **kwargs):
-        response = super(PackageSearchViewSet, self) \
-            .retrieve(request, *args, **kwargs)
-        return response
+        return super(PackageViewSet, self).list(request, *args, **kwargs)
+
+
+class UpdatePostKeyBit(bits.KeyBitDictBase):
+
+    def get_source_dict(self, *args, **kwargs):
+        request = kwargs.get('request')
+        return request.DATA
+
+    def get_data(self, **kwargs):
+        kwargs['params'] = []
+        kwargs['params'].append('versions')
+        return super(UpdatePostKeyBit, self).get_data(**kwargs)
+
+
+class UpdatePostKeyConstructor(constructors.DefaultKeyConstructor):
+
+    versions = UpdatePostKeyBit()
 
 
 class PackageUpdateView(generics.CreateAPIView):
@@ -270,6 +294,7 @@ class PackageUpdateView(generics.CreateAPIView):
             sorted_pkg_idx[v.get('package_name')] = v
         return sorted_pkg_idx
 
+    @cache_response(key_func=UpdatePostKeyConstructor())
     def post(self, request, *args, **kwargs):
         try:
             versions = request.DATA.pop('versions')
@@ -305,6 +330,19 @@ class PackageUpdateView(generics.CreateAPIView):
 
     def _filter_ignore_disupdatable(self, datalist):
         return list(filter(lambda e: e['is_updatable'], datalist))
+
+
+class IdsKeyBit(bits.QueryParamsKeyBit):
+
+    def get_data(self, **kwargs):
+        kwargs['params'] = []
+        kwargs['params'].append('ids')
+        return super(IdsKeyBit, self).get_data(**kwargs)
+
+
+class PushListKeyConstructor(constructors.DefaultListKeyConstructor):
+
+    ids = IdsKeyBit()
 
 
 class PackagePushView(generics.ListAPIView):
@@ -400,6 +438,7 @@ class PackagePushView(generics.ListAPIView):
             resorted[index] = obj
         return resorted
 
+    @cache_response(key_func=PushListKeyConstructor())
     def list(self, request, *args, **kwargs):
         self.object_list = self.filter_queryset(self.get_queryset())
         self.object_list = self.resort_with_request(request=request, object_list=self.object_list)

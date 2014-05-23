@@ -6,6 +6,11 @@ from taxonomy.models import Topic, TopicalItem
 from mobapi2.taxonomy.serializers.topic import (
     TopicSummarySerializer,
     TopicDetailWithPackageSerializer)
+from rest_framework_extensions.cache.decorators import cache_response
+from rest_framework_extensions.utils import (
+    default_list_cache_key_func,
+    default_object_cache_key_func)
+from mobapi2 import cache_keyconstructors as ckc
 
 
 class TopicViewSet(viewsets.ReadOnlyModelViewSet):
@@ -65,6 +70,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
             self.queryset = Topic.objects.published()
         return self.queryset
 
+    @cache_response(key_func=default_list_cache_key_func)
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         origin_queryset, self.queryset = queryset, queryset.as_root()
@@ -72,6 +78,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         self.queryset = origin_queryset
         return res
 
+    @cache_response(key_func=ckc.LookupListKeyConstructor())
     @link()
     def children(self, request, slug, *args, **kwargs):
         """子专区列表"""
@@ -80,10 +87,11 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
 
         origin_queryset, self.queryset = \
             self.queryset, self.get_queryset().filter(parent=topic)
-        self.ordering = ('ordering', )
+        self.ordering = ('-updated_datetime', )
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
         return res
 
+    @cache_response(key_func=ckc.LookupOrderingListKeyConstructor())
     @link()
     def items(self, request, slug, *args, **kwargs):
         topic = generics.get_object_or_404(self.get_queryset(), slug=slug)
@@ -114,7 +122,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = TopicalItem.objects.get_items_by_topic(topic, model)
         return queryset
 
-
+    @cache_response(key_func=default_object_cache_key_func)
     def retrieve(self, request, *args, **kwargs):
         origin_serializer_class, self.serializer_class = \
             self.serializer_class, TopicDetailWithPackageSerializer

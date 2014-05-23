@@ -105,7 +105,7 @@ $(document).ready(function(){
 
 $(function(){
 	
-$(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.novice-bbs-list a,.i-link-list a").attr("target","_blank");
+$(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.novice-bbs-list a,.i-link-list a,#home a,.hot-game a,.focusBox_pic a,.h-app a,.cc-a-d-box a,.h-bbs a,.top-list a,.footer a").attr("target","_blank");
 	
 //搜索
 	$(".search").hover(function(){
@@ -174,10 +174,8 @@ $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.n
 		});
 	};	
 	li_hover($(".app-list-right li"),"hover");	
-	li_hover($(".t-title li"),"ios-web-icon");	
 	
 	$(".app-list-right").find("li:first").addClass("hover");
-	$(".t-title").find("li:first").addClass("ios-web-icon");
 	$(".hot-bbs .hot-bbs-list").find("li:first").addClass("first");
 	
 //基本资料-表单验证
@@ -277,7 +275,7 @@ $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.n
 
 
 //banner
-$(".banner").slide({ titCell:".num ul" , mainCell:".ban_pic ul" , autoPlay:true,autoPage:true });
+$(".banner").slide({ titCell:".num ul" , mainCell:".ban_pic ul" , autoPlay:true, autoPage:true });
 
 //合集 巨作
 
@@ -288,13 +286,11 @@ jQuery(".up_box").slide({ mainCell:"ul",vis:0,scroll:2,prevCell:".prev",nextCell
 //合集页
 jQuery(".collection_box").slide({ mainCell:".inner-box",vis:0,scroll:1,prevCell:".prev",nextCell:".next",easing:"easeInQuint",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
-//游戏排行榜
-jQuery(".tab-box").slide({ titCell:".info-tag a",mainCell:".info-box-tab" });
-//游戏排行榜
-jQuery(".tab-box-o").slide({ titCell:".t-title li",mainCell:".info-box-tab" });
+//游戏
+jQuery(".tab-box").slide({ titCell:".info-tag a",mainCell:".info-box-tab"});
 
-//厂商
-jQuery(".tab-box-vendor").slide({ titCell:".left-nav a",mainCell:".info-box-tab",titOnClassName:"hover"});
+//游戏排行榜
+jQuery(".tab-box-o").slide({ titCell:".t-title li",mainCell:".info-box-tab",targetCell:".tab-more a", titOnClassName:"ios-web-icon"});
 
 
 
@@ -306,28 +302,6 @@ jQuery(".tab-box-vendor").slide({ titCell:".left-nav a",mainCell:".info-box-tab"
 $(".pin-box").pin({
       containerSelector: ".width"//固定到某个DIV范围内
 });
-
-
-
-
-
-
-//滑动TBA
-//var TabbedContent = {
-//	init: function() {	
-//		$(".tab").mouseover(function() {		
-//			var background = $(this).parent().find(".ios-web-icon");	
-//			$(background).animate({
-//				left: $(this).position()['left']
-//			}, {
-//				duration: 300
-//			});		
-//		});
-//	}
-//}
-//$(document).ready(function() {
-//	TabbedContent.init();
-//});
 
 
 
@@ -397,6 +371,24 @@ $(function(){
 				title: "我要许愿"	 ,fix: true
 				});
 		});
+		//关于我们
+		$("#about").click(function(){
+			$("#about-box").zxxbox({
+				title: "关于我们"	 ,fix: true, bgclose:true
+				});
+		});
+		//发展愿景
+		$("#vision").click(function(){
+			$("#vision-box").zxxbox({
+				title: "发展愿景"	 ,fix: true, bgclose:true
+				});
+		});
+		//联系方式
+		$("#contact").click(function(){
+			$("#contact-box").zxxbox({
+				title: "联系方式"	 ,fix: true, bgclose:true
+				});
+		});
 		
 		
 		
@@ -423,10 +415,6 @@ $(function(){
 	
 	
 
-	
-	
-	
-	
 	$("#box_ask").click(function(){
     $.zxxbox.ask('<span class="f16 tc">文字内字文字内容区域文字内容区域文字内容区域文<br/>字内容区域文字内容区域文字内容区域文字内容区域文字内容区域，<br/>支持HTML 支持HTML 支持HTML</span>', function(){
         $("body").css("background-color", "azure");	

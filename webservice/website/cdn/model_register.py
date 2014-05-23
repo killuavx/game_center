@@ -2,15 +2,17 @@
 from django.db.models.signals import post_save, pre_save
 from .core import Feedback
 from .errors import WorkingDirectoryNotFound
-from .processors.warehouse import PackageVersionProcessor
+from .processors.warehouse import PackageVersionProcessor, AuthorProcessor
 from .processors.taxonomy import TopicProcessor, CategoryProcessor
 from .processors.promotion import AdvertisementProcessor
 from .processors.clientapp import ClientPackageVersionProcessor, LoadingCoverProcessor
-from warehouse.models import PackageVersion
+from warehouse.models import PackageVersion, Author
 from promotion.models import Advertisement
 from taxonomy.models import Category, Topic
 from clientapp.models import ClientPackageVersion, LoadingCover
 from . import feedback_signals as fb_signals
+
+Author.sync_processor_class = AuthorProcessor
 
 PackageVersion.sync_processor_class = PackageVersionProcessor
 
@@ -55,6 +57,7 @@ def post_save_sync_files(sender, instance, **kwargs):
 
 #fb_signals.start_action.connect(feedback_start_action, sender=Feedback)
 
+pre_save.connect(pre_save_sync_files, sender=Author)
 pre_save.connect(pre_save_sync_files, sender=PackageVersion)
 pre_save.connect(pre_save_sync_files, sender=Advertisement)
 pre_save.connect(pre_save_sync_files, sender=Category)
@@ -62,6 +65,7 @@ pre_save.connect(pre_save_sync_files, sender=Topic)
 pre_save.connect(pre_save_sync_files, sender=ClientPackageVersion)
 pre_save.connect(pre_save_sync_files, sender=LoadingCover)
 
+post_save.connect(post_save_sync_files, sender=Author)
 post_save.connect(post_save_sync_files, sender=PackageVersion)
 post_save.connect(post_save_sync_files, sender=Advertisement)
 post_save.connect(post_save_sync_files, sender=Category)

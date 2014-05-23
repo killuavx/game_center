@@ -50,8 +50,8 @@ em{padding:0 5px; color:#CCC}
 .s4{background-position:-13px -501px}
 .s5{background-position:1px -501px}
 
-.i-phone{width:16px; height:16px; background-position:-124px -715px}
-.i-pad{width:16px; height:16px; background-position:-102px -715px}
+.i-phone{width:16px; height:17px; background-position:-124px -715px}
+.i-pad{width:17px; height:16px; background-position:-102px -715px}
 .i-all{width:16px; height:16px; background-position:-78px -715px}
 
 .btn-s {display:none}
@@ -118,17 +118,20 @@ em{padding:0 5px; color:#CCC}
 #fixed-head #cc-s .search-drop-box{display:none}
 
 /*切换*/
-.user-switch{width:320px!important}
-.user-switch li{float:left; margin-left:16px}
-.user-switch li a.ios-web-icon{display:inline-block; width:60px; text-align:center; padding-top:35px;-webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale}
+.user-switch li{float:left; margin-left:11px; position:relative}
+.user-switch li a.ios-web-icon{display:inline-block; width:55px; text-align:center; padding-top:35px;-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale; white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
+.user-switch .a0{background-position:-84px -850px}
 .user-switch .a1{background-position:12px -169px}
-.user-switch .a2{background-position:-70px -169px}
+.user-switch .a2{background-position:-73px -169px}
 .user-switch .a3{background-position:12px -249px}
-.user-switch .a4{background-position:-71px -250px}
+.user-switch .a4{background-position:-74px -250px}
 .user-switch a.ios-web-icon:hover{filter:alpha(opacity=80);opacity: 0.8; background-color:#fff; -webkit-animation: toTopFromBottom .3s forwards;
 -moz-animation: toTopFromBottom .3s forwards;
 animation: toTopFromBottom .3s forwards;}
+
+.user-switch li dl{right:0; width:120px}
+.user-switch li dl a:hover{background-color:#f5f5f5; text-decoration:none}
 
 /*导航*/
 .nav{height:57px; background:#e53333; z-index:10}
@@ -204,7 +207,8 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',end
 white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .roll_btn a{top:-85px}
 
-.roll_box a:hover span,.bbs-rcd a:hover span,.novice-bbs-list .top:hover span,.r-box .top:hover span,.mm a:hover span{background:#e53333}
+.novice-bbs-list .top:hover span,.r-box .top:hover span,.bbs-rcd:hover span,.mm a:hover span{background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,1))}
+
 
 
 .latest-release,.vendor{width:240px; left:0}
@@ -220,7 +224,8 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .t-title li a{color:#777}
 .t-title li{background-position: center 31px; height:37px; *display:inline}
 .t-title li a{text-decoration:none}
-.t-title .hover a,.t-title li.ios-web-icon a{color:#e53333}
+.t-title .hover a,.t-title li.ios-web-icon a,.t-title li a:hover{color:#e53333}
+.tab-more{z-index:10}
 
 /*热点资讯*/
 .news-list h2{font-weight:600; height:25px; overflow:hidden; *font-size:20px}  
@@ -508,7 +513,8 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .collection_box .a_btn a{top:-95px}
 
 .collection_dis{padding-top:10px; background:none}
-.collection_title{height:120px; border-bottom:1px solid #eee; padding:15px 10px 0 285px}
+.collection_title{border-bottom:1px solid #eee; background:url(http://static.ccplay.com.cn/static/common/img/collection_bg.png) #333 center center; color:#FFF}
+.collection_title img{width:400px}
 .collection_title h1{font-size:24px}
 .collection_title p{height:50px; overflow:hidden; padding-top:5px}
 .more-dl a{width:230px; height:94px; line-height:94px; border:2px dotted #ccc}
@@ -610,7 +616,7 @@ clear: both; line-height: 1.8em;}
 
 .login .logo{width:225px; height:57px;}
 .login .logo img{display:none}
-.login .logo a{height:57px; width:225px; background-position:0 -18px}
+.login .logo h2 a{height:57px; width:225px; background-position:0 -19px}
 
 .login-page,.reg-page{padding:50px 0}
 .login-page .box,.reg-page .box{border-top:2px solid #e53333; margin:2% 10% 5% 60%; background-color:#f8f8f8}
@@ -678,12 +684,11 @@ clear: both; line-height: 1.8em;}
 
 #go-wish{width:44px;height:44px;position:fixed;right:20px;bottom:64px;z-index:9999;display:block;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-wish.png) no-repeat}#go-wish:hover{background-position:left bottom}
 
-.about-page .info p{margin-bottom:30px; text-indent:2em}
-
 
 
 
 /*			cc-l			*/
+#cc-l .user-switch{width:33%\0 !important}
 #cc-l .roll_box li{margin:0 12px 0 3px}
 #cc-l .t-title li{padding:0 20px}
 #cc-l .right .t-title li{padding:0}
@@ -732,6 +737,8 @@ clear: both; line-height: 1.8em;}
 #cc-m .hot-news .t-title ul,#cc-m .hot-bbs .t-title ul{*padding:0; *width:65%}
 #cc-m .app-box .left .t-title ul{margin-left:-30px}
 #cc-m .hot-bbs .hot-bbs-list li h4{width:320px}
+#cc-m .user-switch{width:330px!important}
+#cc-m .user-switch li{margin-left:5px}
 
 #cc-m .mm{width:165px}
 #cc-m .mp2{left:169px}
@@ -774,7 +781,7 @@ clear: both; line-height: 1.8em;}
 
 #cc-s .home{top:0}
 #cc-s .search .key{width:56%}
-#cc-s .user-switch{width:250px!important}
+#cc-s .user-switch{width:290px!important}
 #cc-s .user-switch li{margin-left:0px}
 #cc-s .nav .l li{float:left; width:8%; *width:66px}
 #cc-s .nav .l li a{letter-spacing:0}
@@ -858,7 +865,7 @@ clear: both; line-height: 1.8em;}
 #fixed-head #cc-s .login .nav .l li a{padding:0 13px}
 #fixed-head .nav .l li a{letter-spacing:0px}
 #fixed-head #cc-l .search,#fixed-head #cc-m .search{position:fixed; z-index:11; width:25%; top:3px}
-#fixed-head .search .box{background-color:#fff; border-color:#e53333}
+#fixed-head .search .box{background:rgba(255, 255, 255, 0.9); border-color:#e53333}
 #fixed-head #cc-l .search{margin-left:320px; width:350px}
 #fixed-head #cc-l .search .key{width:70%}
 #fixed-head #cc-m .search{margin-left:280px; width:230px}

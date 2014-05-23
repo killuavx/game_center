@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from easy_thumbnails.exceptions import InvalidImageFormatError
 from rest_framework import serializers
 from mobapi2.rest_fields import factory_imageurl_field
 from warehouse.models import Author
@@ -15,7 +17,16 @@ class AuthorSerializer(HyperlinkedModelSerializer):
 
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
-    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
+    cover = serializers.SerializerMethodField('get_cover')
+    def get_cover(self, obj):
+        try:
+            return obj.resources.cover.new20.file.url
+        except ObjectDoesNotExist:
+            try:
+                return obj.cover[IMAGE_COVER_SIZE].url
+            except (ValueError, KeyError, InvalidImageFormatError):
+                return None
+        return None
 
     packages_url = serializers.SerializerMethodField('get_packages_url')
 

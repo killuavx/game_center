@@ -1,6 +1,7 @@
 # -*- encoding=utf-8 -*-
 import datetime
-from os.path import join
+import os
+from os.path import join, splitext
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -70,19 +71,20 @@ def author_workspace_path(author):
             _id = iauthor.atrist_id
         subdir = 'iauthor'
     except ObjectDoesNotExist:
-        pass
-    return join(subdir, str(_id))
+        dt_path = now().strftime("%Y%m%d%H%M/%S-%f")
+        subdir = "author/%s" % dt_path
+        _id = ''
+    return join(subdir, str(_id)).rstrip('/')
 
 
 def factory_author_upload_to(basename):
+
     def upload_to(instance, filename):
-        extension = filename.split('.')[-1].lower()
-        dt_path = now().strftime("%Y%m%d%H%M/%S-%f")
-        path = "author/%s" % dt_path
-        return '%(path)s/%(filename)s.%(extension)s' % {'path': path,
-                                                        'filename': basename,
-                                                        'extension': extension,
-        }
+        extension =  splitext(filename)[1].lstrip('.')
+        if not instance.workspace:
+            instance.workspace = author_workspace_path(instance)
+        relative_path = instance.workspace
+        return "%s/%s.%s" % (relative_path, basename, extension)
 
     return upload_to
 
@@ -132,7 +134,18 @@ class Author(SiteRelated, models.Model):
         ('rejected', 'rejected', _('Rejected'))
     )
 
-    status = StatusField(verbose_name=_('status'))
+    status = StatusField(verbose_name=_('status'), )
+
+    tracker = FieldTracker()
+
+    workspace = FileField(default='',
+                          blank=True,
+                          max_length=500,
+                          help_text='!!切勿随意修改!!',
+                          format='File')
+
+    def sync_status(self):
+        return sync_status_from(self)
 
     def __str__(self):
         return str(self.name)
@@ -780,6 +793,11 @@ def package_post_save(sender, instance, created=False, **kwargs):
     if created:
         instance.workspace = package_workspace_path(instance)
         instance.save()
+
+@receiver(pre_save, sender=Author)
+def author_pre_save(sender, instance, **kwargs):
+    if not instance.workspace:
+        instance.workspace = author_workspace_path(instance)
 
 
 class SupportedLanguage(models.Model):

@@ -107,8 +107,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
 
     star = serializers.SerializerMethodField('get_latest_version_star')
     stars_good_rate = serializers.SerializerMethodField('get_latest_version_stars_good_rate')
-    stars_medium_rate = serializers.SerializerMethodField('get_latest_version_stars_good_rate')
-    stars_low_rate = serializers.SerializerMethodField('get_latest_version_stars_good_rate')
+    stars_medium_rate = serializers.SerializerMethodField('get_latest_version_stars_medium_rate')
+    stars_low_rate = serializers.SerializerMethodField('get_latest_version_stars_low_rate')
 
     actions = serializers.SerializerMethodField('get_action_links')
 

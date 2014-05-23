@@ -55,11 +55,11 @@ class MainAdmin(VersionAdmin):
 
 class PackageVersionScreenshotInlines(admin.StackedInline):
     model = PackageVersionScreenshot
+    fields= ('image', 'alt', 'rotate')
     extra = 4
 
     def get_fieldsets(self, request, obj=None):
-        form = self.get_formset(request, obj).form
-        fields = list(form.base_fields) + list(self.get_readonly_fields(request, obj))
+        fields = list(self.fields) + list(self.get_readonly_fields(request, obj))
 
         if isinstance(obj, IOSPackageVersion):
             return [(None, {'fields': fields})]
@@ -88,6 +88,9 @@ class PackageVersionScreenshotInlines(admin.StackedInline):
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput}
     }
+
+    class Meta:
+        auto_created = False
 
 
 class PackageVersionAdmin(MainAdmin):
@@ -486,7 +489,9 @@ class PackageInline(TabularInline):
 
 class AuthorAdmin(MainAdmin):
     model = Author
-    list_display = ( 'pk', 'show_icon', 'name', 'email', 'phone')
+    list_display = ( 'pk', 'show_icon', 'name', 'email', 'phone',
+                     'sync_file_action',
+    )
     search_fields = ( 'name', 'email', 'phone')
     list_display_links = ('name', 'show_icon',)
     list_filter = ('status', )
@@ -497,6 +502,12 @@ class AuthorAdmin(MainAdmin):
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput},
     }
+
+    def sync_file_action(self, obj):
+        return sync_status_summary(obj) + " | " + sync_status_actions(obj)
+    sync_file_action.allow_tags = True
+    sync_file_action.short_description = _('Sync Status')
+
 
     inlines = (ResourceInlines, PackageInline, )
 
@@ -512,7 +523,6 @@ class AuthorAdmin(MainAdmin):
 
     make_unpublished.short_description = _(
         'Make selected Authors as unactivated')
-
 
     def suit_row_attributes(self, obj, request):
         css_class = {
@@ -531,6 +541,11 @@ class AuthorAdmin(MainAdmin):
         form.base_fields['email'].initial = email
         return form
 
+    class Media:
+        #from django.conf import settings
+        #static_url = getattr(settings, 'STATIC_URL', '/static')
+        static_url = '/static/'
+        js = [static_url+'js/syncfile.action.js', ]
 
 admin.site.register(PackageVersion, PackageVersionAdmin)
 admin.site.register(Package, PackageAdmin)
