@@ -189,7 +189,8 @@ class PackageSearchViewSet(PackageViewSet):
             data = {'detail': 'Not Allow without search parameter'
                               ' /api/search/?q={q}'}
             return Response(data, status=status.HTTP_403_FORBIDDEN)
-        return super(PackageSearchViewSet, self).list(request, *args, **kwargs)
+
+        return super(PackageViewSet, self).list(request, *args, **kwargs)
 
 
 class UpdatePostKeyBit(bits.KeyBitDictBase):
