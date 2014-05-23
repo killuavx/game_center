@@ -42,13 +42,16 @@ a:hover{color:#e53333}
 #scbar { border-color: #eee; }	
 
 
+a#bbsmobile img{display:none; position:absolute}
+a#bbsmobile:hover img{display:inline-block; top:20px}
 #lg_fwin_dialog_cover{background:url(http://static.ccplay.com.cn/static/common/img/bg_40x40.png) repeat 50% 50%;opacity: 0.4;width: 100%;
 height: 100%;
 position: fixed;
 left: 0;
 top: 0;}
-
-.bm_h{border-bottom-color:#e53333}
+.bm_h{border-bottom-color:#ccc}
+.plc .po {border-top: 1px dotted #CDCDCD; opacity:.1}
+table:hover .plc .po{opacity:1}
 .wp{}
 
 button,button span,button strong{font-size:16px}
@@ -83,7 +86,7 @@ button,button span,button strong{font-size:16px}
 .widthauto .switchwidth{background-position:0 -38px}
 .widthauto .switchwidth:hover{background-position:0 -56px}
 
-#scrolltop{width:44px;height:44px;position:fixed; right:20px; bottom:20px;z-index:9999;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}
+#scrolltop{width:44px;height:44px;position:fixed; right:20px; bottom:20px;z-index:100;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}
 #scrolltop:hover{background-position:left bottom}
 
 
@@ -160,12 +163,15 @@ box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.7
 
 
 /*APP推荐 .bbs-app-recommended*/
-#framecn871V {height:103px; overflow:hidden}
+#framecn871V {height:113px; overflow:hidden}
 .column .frame{border:none}
 .column p.xs2{display:none}
 
-
-
+.bbs-app-recommended .block{margin:0}
+.bbs-app-recommended .frame-1-1-1-l,.bbs-app-recommended .frame-1-1-1-c,.bbs-app-recommended .frame-1-1-1-r{width:auto}
+.bbs-app-recommended .frame-1-1-1-r{float:left}
+.bbs-app-recommended li{margin:10px 0 0 23px}
+.bbs-app-recommended li p{padding-top:5px}
 
 
 
