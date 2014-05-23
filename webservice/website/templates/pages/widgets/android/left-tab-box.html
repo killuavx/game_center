@@ -1,0 +1,45 @@
+{% load templateutils_tags %}
+
+               <div class="left tab-box-o">
+                        <div class="f18 cell rel t-title">
+                          <h3 class="l n mr30">{{ cat }}</h3>
+                            <ul class="l abs cell-bk pl30 tc f16">
+                                 {% for item in result %}
+                                 <li class="dib pl10 pr10 tab"><a href="#">{{ item.topic_name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                            
+                            <div class="rel tab-more">
+                            	<a class="r f12 mt5 more" href="#1">更多></a>
+                            	<a class="r f12 mt5 more" href="#2">更多></a>
+                            	<a class="r f12 mt5 more" href="#3">更多></a>
+                            </div>
+                        </div> <!--t-title-->
+                        
+                        
+                        
+                <div class="info-box-tab">
+                            
+                            <div class="tj pt5 app-list-left">
+                                {%  mkrange 1 28 as fnum %}
+                                 {% for i in fnum %}
+                                    <div class="dib rel app-list-min">
+                                        <a href="#" class="db tc f14">
+                                            <img src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
+                                            <span class="ios-web-icon abs db auto"></span>
+                                            最多5个字
+                                            <i class="db n f12 g9">智力游戏</i>
+                                        </a>
+                                        <div class="btn-s">
+                                              <a href="#" class="a1 install">安装</a>
+                                              <a href="#" class="a2">下载</a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div><!--app-list-left-->
+                
+                
+                
+                 </div> <!--info-box-tab--> 
+ 
+           </div><!--left-->
