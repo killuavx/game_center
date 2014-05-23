@@ -114,7 +114,7 @@ $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.n
 		$(this).find(".box").removeClass("hover");
 	});	
 //搜索提示
-	$(".key").keyup(function(){		
+	/*$(".key").keyup(function(){		
 		var inputvalue = $(".key").val();
 		if(inputvalue  != ""){
 			$('#search-drop').show().animate({opacity:"1"},200);
@@ -125,7 +125,7 @@ $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.n
 	
 	$('.key').blur(function(){
 		$('#search-drop').hide().animate({opacity:"0"},200);
-	});
+	});*/
 	
 	//登录后
 	jQuery(".user-switch").slide({ type:"menu", titCell:"li", targetCell:"dl", effect:"slideDown", delayTime:300, triggerTime:0,returnDefault:true  });

@@ -29,7 +29,7 @@ p{word-wrap:break-word}
 
 .icon{background:url(../img/icon.png) no-repeat; display:inline-block}
 
-.head{height:42px; background:#eee; color:#fff}
+.head{height:42px; background:#d5d8db; color:#fff}
 	.head_set a{width:30px; height:42px; display:block; text-indent:-9999px; float:left; margin-left:10px}
 	.ban{cursor:not-allowed}
 	.pgup{background-position:0 5px}
@@ -44,8 +44,8 @@ p{word-wrap:break-word}
 
 .head_nav{padding-left:50px}
 	.head_nav a{color:#333; display:block; float:left; width:80px; text-align:center; line-height:42px; font-size:16px}
-	.head_nav a:hover{background:#ccc; color:#333}
-	.head_nav a.hover{background:#d12525; color:#fff}
+	.head_nav a:hover{background:#ccc}
+	.head_nav a.hover{background:#fff}
 
 .focus{height:190px}
 
@@ -259,16 +259,39 @@ p.price span{color:#e53333; text-decoration:line-through}
 .maste_lsit .btn a.a2{left:133px}
 
 .vendor {width:800px; height:630px;}
-.vendor .l{width:197px; height:630px; background:#e6e6e6; text-align:center}
+.vendor .l{width:197px; height:630px; text-align:center}
 .vendor .r{width:600px}
-
-.vendor .l li{padding:15px 0; border-left:3px solid #e6e6e6}
-.vendor .l li:hover{background:#eee; border-left:3px solid #eee}
-.vendor .l li.hover{background:#fff; border-left:3px solid #e53333}
-.vendor .l img{width:150px; height:58px}
 
 .vendor .list{height:594px; margin:0}
 .vendor .list ul{height:620px}
+
+.vendor .left-nav li a{height:61px; width:197px; display:block; text-align:center; background-position: center center; background-repeat:no-repeat; background-size:60% 80%; background-color:#f8f8f8; border-bottom: 1px solid #e8e8e8}
+.vendor .left-nav li a:hover,.vendor .left-nav li a.hover{background-color:#fff}
+.vendor .left-nav li a.hover{border-left:3px solid #e53333}
+.vendor .left-nav li a.v1{background-image:url(http://static.ccplay.com.cn/static/common/img/v1.png)}
+.vendor .left-nav li a.v1:hover,.vendor .left-nav li a.v1.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v1.png)}
+.vendor .left-nav li a.v2{background-image:url(http://static.ccplay.com.cn/static/common/img/v2.png)}
+.vendor .left-nav li a.v2:hover,.vendor .left-nav li a.v2.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v2.png)}
+.vendor .left-nav li a.v3{background-image:url(http://static.ccplay.com.cn/static/common/img/v3.png)}
+.vendor .left-nav li a.v3:hover,.vendor .left-nav li a.v3.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v3.png)}
+.vendor .left-nav li a.v4{background-image:url(http://static.ccplay.com.cn/static/common/img/v4.png)}
+.vendor .left-nav li a.v4:hover,.vendor .left-nav li a.v4.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v4.png)}
+.vendor .left-nav li a.v5{background-image:url(http://static.ccplay.com.cn/static/common/img/v5.png)}
+.vendor .left-nav li a.v5:hover,.vendor .left-nav li a.v5.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v5.png)}
+.vendor .left-nav li a.v6{background-image:url(http://static.ccplay.com.cn/static/common/img/v6.png)}
+.vendor .left-nav li a.v6:hover,.vendor .left-nav li a.v6.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v6.png)}
+.vendor .left-nav li a.v7{background-image:url(http://static.ccplay.com.cn/static/common/img/v7.png)}
+.vendor .left-nav li a.v7:hover,.vendor .left-nav li a.v7.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v7.png)}
+.vendor .left-nav li a.v8{background-image:url(http://static.ccplay.com.cn/static/common/img/v8.png)}
+.vendor .left-nav li a.v8:hover,.vendor .left-nav li a.v8.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v8.png)}
+.vendor .left-nav li a.v9{background-image:url(http://static.ccplay.com.cn/static/common/img/v9.png)}
+.vendor .left-nav li a.v9:hover,.vendor .left-nav li a.v9.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v9.png)}
+.vendor .left-nav li a.v10{background-image:url(http://static.ccplay.com.cn/static/common/img/v10.png)}
+.vendor .left-nav li a.v10:hover,.vendor .left-nav li a.v10.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v10.png)}
+.vendor .left-nav li a.v11{background-image:url(http://static.ccplay.com.cn/static/common/img/v11.png)}
+.vendor .left-nav li a.v11:hover,.vendor .left-nav li a.v11.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v11.png)}
+.vendor .left-nav li a.v12{background-image:url(http://static.ccplay.com.cn/static/common/img/v12.png)}
+.vendor .left-nav li a.v12:hover,.vendor .left-nav li a.v12.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v12.png)}
 
 .vendor .page{padding:7px 0 0 0 }
 
@@ -280,7 +303,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .dis .title{height:37px; padding:0 10px}
 .dis .title h1{font-size:24px}
 .dis .title p{color:#666; padding-top:10px}
-.dis .title .icon{display:inline-block; padding-left:16px; margin-left:5px}
+.dis .title .icon{display:inline-block; padding-left:16px; margin-left:5px; display:none}
 .dis .ad{background-position:-146px -16px}
 .dis .ad.no{background-position:-146px 2px}
 
