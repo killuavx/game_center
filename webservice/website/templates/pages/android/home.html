@@ -1,9 +1,13 @@
 {% extends "pages/android/base.html" %}
+{% load widgets %}
+{% load pages_tags mezzanine_tags  %}
+ {% load staticfiles cache %}
+{% load widgets url_tags %}
+
 {% block main %}
 
-
 <!--广告开始 banner-->
-{%  include "pages/android/home/home-top-banner.html" %}
+{%  include_widget AndoridHomeTopBannerWidget with slug='android-home-top-banner' %}
 <!--广告结束 banner-->
 
 <!--巨作开始 masterpiece-->

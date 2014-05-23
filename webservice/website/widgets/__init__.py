@@ -8,3 +8,4 @@ from .categories import *
 from .latest import *
 from .masterpiece import *
 from .topics import *
+from .android import *
