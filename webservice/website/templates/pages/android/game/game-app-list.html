@@ -1,0 +1,61 @@
+{% load templateutils_tags %}
+
+<div class="auto mt30 width app-list-page">
+        
+        <div class="cell">
+                <div class="f18 cell rel t-title">
+                    <h3 class="l n mr30">iPhone游戏</h3>
+                    <ul class="l abs cell-bk f16">
+                        <li class="ios-web-icon dib pl10 pr10 tab"><a href="#">全部游戏</a></li>
+                        <li class="dib pl10 pr10 tab"><a href="#">精品推荐</a></li>
+                        <li class="dib pl10 pr10 tab"><a href="#">装机必备</a></li>
+                        <li class="dib pl10 pr10 tab"><a href="#">最新发布</a></li>
+                    </ul>
+                                        
+                </div> <!--t-title-->
+        </div>
+        
+        <div class="rel cell-bk">
+                
+                
+                
+                <div class="l left-list">
+                    <div class="pin-wrapper" style="height: 534px;"><div class="pin-box" id="" style="">
+                        <ul class="f14 left-nav">
+                            <li>
+                                </li><li><a href="#">全部<span class="r">565556</span></a></li>
+                                {%  mkrange 1 12 as fnum %}
+                                {% for i in fnum %}
+                                <li><a href="#" class="hover">游戏分类<span class="r">13</span></a></li>
+                                {% endfor %}
+                            
+                        </ul>
+                     </div></div>
+                </div><!--left-list-->
+                
+                
+
+                <div class="l btn-s-box tj p20 right-list">
+                      {%  mkrange 1 26 as fnum %}
+                      {% for i in fnum %}
+                        <dl class="dib rel app-list-xl">
+                            <dt class="abs"><a href="game-dis.html" class="pic" target="_blank"><img src="http://static.ccplay.com.cn/static/common/img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                            <dd class="g9 pt5">
+                                <h3 class="n rel g3 f16"><a href="game-dis.html" target="_blank">游戏名称游戏</a></h3>
+                                <p>999M<em>|</em>9999万+下载</p>
+                                <p>智力游戏</p>
+                                <div class="ios-web-icon star s1"></div>
+                                <div class="btn-s" style="display: none;">
+                                      <a href="#" class="a1 install" target="_blank">安装</a>
+                                      <a href="#" class="a2" target="_blank">下载</a>
+                                </div>
+                            </dd>
+                        </dl>
+                      {% endfor %}
+                {% include "pages/android/includes/pagination.html" %}
+                </div><!--right-list-->
+                
+                
+                
+        </div><!--cell-bk-->
+</div>

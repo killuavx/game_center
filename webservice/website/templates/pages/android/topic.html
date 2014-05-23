@@ -1,0 +1,16 @@
+{% extends "pages/android/base.html" %}
+{% load templateutils_tags %}
+
+{% block main %}
+
+<!--合集 开始 collection-->
+<div class="auto mt30 width collection">
+   <div class="cell-bk">
+    {%  mkrange 1 6 as fnum %}
+    {% for i in fnum %}
+      {% include "pages/android/topics/collection-box.html" %}
+    {% endfor %}
+<!--合集 结束 collection-->
+    </div>
+  </div>
+{% endblock %}

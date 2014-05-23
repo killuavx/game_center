@@ -1,0 +1,16 @@
+{% extends "pages/android/base.html" %}
+{% load templateutils_tags %}
+{% block main %}
+
+<!--排行 开始 top-page-->
+
+<div class="auto mt30 width top-page">
+<div class="pb30 cell-bk btn-s-box">
+
+{%  mkrange 1 4 as fnum %}
+{% for i in fnum %}
+{% include "pages/android/rank/ranking.html" %}
+{% endfor %}
+</div>
+</div>
+{% endblock %}
