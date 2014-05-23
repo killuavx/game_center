@@ -147,6 +147,16 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         return super(PackageViewSet, self).list(request, *args, **kwargs)
 
 
+class PackageSearchListKeyConstructor(constructors.DefaultKeyConstructor):
+
+    q = bits.QueryParamsKeyBit(params=['q'])
+
+    pagination = bits.PaginationKeyBit()
+
+
+package_search_cache_list_key_func = PackageSearchListKeyConstructor()
+
+
 class PackageSearchViewSet(PackageViewSet):
     """ 软件搜索接口
 
@@ -170,7 +180,7 @@ class PackageSearchViewSet(PackageViewSet):
     search_ordering = ('-released_datetime', )
     #ordering = ('-updated_datetime', )
 
-    @cache_response(key_func=default_list_cache_key_func)
+    @cache_response(key_func=package_search_cache_list_key_func)
     def list(self, request, *args, **kwargs):
         querydict = copy.deepcopy(dict(request.GET))
         q = querydict.get('q')
