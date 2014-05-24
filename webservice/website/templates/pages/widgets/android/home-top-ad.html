@@ -3,10 +3,11 @@
 
 <div class="auto width cc-a-d-box">
       <div class="rel pt20 cell-bk ovh">
-            <div class="l-box cc-a-d-2">
-      {% for item in items %}
-      <a href="{{ item.content.get_absolute_url }}"><img src="{{ item.cover.url }}"></a>
-            </div>
-      {% endfor %}
+      <div class="l-box cc-a-d-2">
+        <a href="{{ items.0.content.get_absolute_url }}"><img src="{{ item.cover.url }}"></a>
+      </div>
+      <div class="r-box cc-a-d-3">
+        <a href="{{ items.1.content.get_absolute_url }}"><img src="{{ item.cover.url }}"></a>
+      </div>
       </div>
 </div>
