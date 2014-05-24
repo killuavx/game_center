@@ -111,7 +111,7 @@ class HomeTabsPackageListWidget(BaseTopicPackageListWidget):
             except:
                 pass
 
-        #print (tmp)
+        print (tmp)
         return tmp
 
 
@@ -129,6 +129,7 @@ class HomeTabsPackageListWidget(BaseTopicPackageListWidget):
             for slug in slugs.split('|'):
                 result.append(self.get_packages_by_topic_slug(packages, slug))
 
-        print ({'result': result})
+        #print ({'result': result})
+        print (len(result))
         return {'result': result, 'cat': cat_dic.get(cat)}
 
