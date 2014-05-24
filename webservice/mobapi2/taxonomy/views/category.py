@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
-from rest_framework import viewsets, generics
+from rest_framework import viewsets
 from rest_framework.decorators import link
 from rest_framework.settings import api_settings
+from rest_framework_extensions.cache.decorators import cache_response
+from rest_framework_extensions.utils import (
+    default_list_cache_key_func,
+    default_object_cache_key_func)
+
+from mobapi2 import cache_keyconstructors as ckc
 from taxonomy.models import Category
 from mobapi2.taxonomy.serializers.category import CategorySummarySerializer, CategoryDetailSerializer
 from mobapi2.warehouse.views.package import PackageViewSet
@@ -65,6 +71,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
             self.queryset = Category.objects.all()
         return self.queryset
 
+    @cache_response(key_func=default_list_cache_key_func)
     def list(self, request, *args, **kwargs):
         self.get_queryset()
         orig_queryset, self.queryset = self.queryset, self.queryset.as_root()
@@ -72,12 +79,14 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         self.queryset = orig_queryset
         return response
 
+    @cache_response(key_func=ckc.LookupOrderingListKeyConstructor())
     @link()
     def packages(self, request, slug, *args, **kwargs):
         category = self.get_object(self.filter_queryset(self.queryset))
         list_view = self.get_packages_list_view(request, category)
         return list_view(request, *args, **kwargs)
 
+    @cache_response(key_func=ckc.LookupListKeyConstructor())
     @link()
     def leafs(self, request, slug, *args, **kwargs):
         self.get_queryset()
@@ -107,6 +116,7 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         list_view.max_paginate_by = 50
         return list_view
 
+    @cache_response(key_func=default_object_cache_key_func)
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class, self.serializer_class = self.serializer_class, CategoryDetailSerializer
         origin_queryset, self.queryset = self.queryset, Category.objects.all()

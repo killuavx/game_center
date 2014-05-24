@@ -790,7 +790,6 @@ def package_post_save(sender, instance, created=False, **kwargs):
 def author_pre_save(sender, instance, **kwargs):
     if not instance.workspace:
         instance.workspace = author_workspace_path(instance)
-        print(instance.workspace)
 
 
 class SupportedLanguage(models.Model):

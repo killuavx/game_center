@@ -55,11 +55,11 @@ class MainAdmin(VersionAdmin):
 
 class PackageVersionScreenshotInlines(admin.StackedInline):
     model = PackageVersionScreenshot
+    fields= ('image', 'alt', 'rotate')
     extra = 4
 
     def get_fieldsets(self, request, obj=None):
-        form = self.get_formset(request, obj).form
-        fields = list(form.base_fields) + list(self.get_readonly_fields(request, obj))
+        fields = list(self.fields) + list(self.get_readonly_fields(request, obj))
 
         if isinstance(obj, IOSPackageVersion):
             return [(None, {'fields': fields})]
@@ -88,6 +88,9 @@ class PackageVersionScreenshotInlines(admin.StackedInline):
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput}
     }
+
+    class Meta:
+        auto_created = False
 
 
 class PackageVersionAdmin(MainAdmin):

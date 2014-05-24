@@ -9,6 +9,10 @@ from mobapi2.warehouse.serializers.packageversion import (
     PackageVersionSummarySerializer,
     PackageVersionDetailSerializer,
 )
+from rest_framework_extensions.cache.decorators import cache_response
+from rest_framework_extensions.utils import (
+    default_list_cache_key_func,
+    default_object_cache_key_func)
 
 
 class PackageVersionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -25,6 +29,7 @@ class PackageVersionViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         return self.model.objects.published()
 
+    @cache_response(key_func=default_object_cache_key_func)
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class, self.serializer_class = \
             self.serializer_class, PackageVersionDetailSerializer
@@ -33,6 +38,7 @@ class PackageVersionViewSet(viewsets.ReadOnlyModelViewSet):
         self.serializer_class = list_serializer_class
         return response
 
+    @cache_response(key_func=default_list_cache_key_func)
     def list(self, request, *args, **kwargs):
         querydict = copy.deepcopy(dict(request.GET))
         q = querydict.get('package')

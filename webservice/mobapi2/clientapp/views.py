@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from rest_framework import generics, status, filters, views
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from mobapi2.clientapp.serializers import ClientPackageVersionSerializer
 from clientapp.models import ClientPackageVersion, LoadingCover
+from rest_framework_extensions.cache.decorators import cache_response
+from mobapi2 import cache_keyconstructors as ckc
 
 
 class SelfUpdateView(generics.RetrieveAPIView):
@@ -52,6 +53,7 @@ class SelfUpdateView(generics.RetrieveAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         return queryset.latest_version()
 
+    @cache_response(key_func=ckc.PackageFilterKeyConstructor())
     def get(self, request, *args, **kwargs):
         try:
             self.object = self.get_object()
@@ -83,6 +85,7 @@ class LoadingCoverView(views.APIView):
 
     permission_classes = ()
 
+    @cache_response(key_func=ckc.PackageLookupConstructor())
     def get(self, request, package_name, version_name=None, *args, **kwargs):
         qs = LoadingCover.objects.published().order_by('-_order')
         q = qs.find_covers(package_name, version_name)

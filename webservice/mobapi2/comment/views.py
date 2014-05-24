@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 import copy
 from django.contrib.contenttypes.models import ContentType
-from django.core.urlresolvers import resolve
 from django.core import exceptions
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.http import Http404
 from django.utils.timezone import now
-from rest_framework import mixins, viewsets, status, generics
-from rest_framework.decorators import authentication_classes, permission_classes
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework import mixins, viewsets, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from mobapi2.authentications import PlayerTokenAuthentication
 from mobapi2.comment.serializers import CommentSerializer, CommentCreateSerializer, FeedbackSerializer
-from comment.models import Comment, Feedback, FeedbackType
+from comment.models import Feedback, FeedbackType
+from rest_framework_extensions.cache.decorators import cache_response
+from mobapi2.utils import comment_list_cache_key_func
+from comment import get_model as get_comment_model
 
 
 class CommentViewSet(mixins.CreateModelMixin,
@@ -91,7 +92,7 @@ class CommentViewSet(mixins.CreateModelMixin,
     """
 
     serializer_class = CommentSerializer
-    model = Comment
+    model = get_comment_model()
     content_object = None
 
     def get_authenticators(self):
@@ -102,7 +103,7 @@ class CommentViewSet(mixins.CreateModelMixin,
 
     def get_queryset(self):
         if self.queryset is None:
-            self.queryset = Comment.objects.for_model(self.content_object).visible()
+            self.queryset = self.model.objects.for_model(self.content_object).visible()
         return self.queryset.by_submit_order()
 
     def check_paramters(self, querydict):
@@ -124,6 +125,7 @@ class CommentViewSet(mixins.CreateModelMixin,
             pk=params.get('object_pk'))
         return content_object
 
+    @cache_response(key_func=comment_list_cache_key_func)
     def list(self, request, *args, **kwargs):
         params = self.check_paramters(copy.deepcopy(request.GET))
         bad = Response({'detail': 'Bad Request'},
