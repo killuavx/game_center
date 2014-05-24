@@ -6,6 +6,7 @@ from .common.promotion import BaseMultiAdvWidget
 from .common.base import BaseListWidget
 from .common.topic import BaseTopicPackageListWidget
 from .common.package import BaseRankingPackageListWidget
+from .common.webspide import BaseForumThreadPanelWdiget
 from .masterpiece import MasterpiecePackageListWidget
 
 
@@ -154,3 +155,13 @@ class HomeRankingPackageListWidget(BaseRankingPackageListWidget):
         #print(len(items))
         return {'items': items, 'cat': self.cat}
 
+
+
+class HomeHotBbsWidget(BaseForumThreadPanelWdiget, Widget):
+
+    template = 'pages/widgets/android/hot-bbs.html'
+
+
+class HomeNoviceBbsWidget(BaseForumThreadPanelWdiget, Widget):
+
+    template = 'pages/widgets/android/novice-bbs.html'
