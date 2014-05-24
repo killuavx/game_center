@@ -2,5 +2,5 @@
 {% load templateutils_tags %}
 {% load widgets %}
 {% block main %}
-  {% include_widget CategoriesListWidget slug='game' %}
+  {% include_widget CategoriesListWidget slug='game' cat=cat topic=topic pub=pub %}
 {% endblock %}

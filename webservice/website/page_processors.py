@@ -53,3 +53,18 @@ def masterpiece_fill(request, page):
             raise Http404()
 
     return data
+
+
+android_game_page_slug = 'android/game'
+@processor_for(android_game_page_slug)
+def android_game(request, page):
+    data = dict()
+    if request.method == "GET":
+        cat = request.GET.get('cat', None)
+        topic = request.GET.get('topic', None)
+        pub = request.GET.get('pub', None)
+        data['cat'] = cat
+        data['topic'] = topic
+        data['pub'] = pub
+
+    return data
