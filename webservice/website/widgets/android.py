@@ -42,9 +42,9 @@ def filter_packages_by_category(packages, cat):
     cats = cat.get_descendants(True)
     pkgs =  packages.filter(categories__in=cats)
     if not pkgs:
-        return []
+        return pkgs.none()
 
-    return  pkgs.distinct().by_published_order()
+    return  pkgs.distinct()
 
 
 def filter_packages_by_category_slug(packages, slug):
@@ -52,14 +52,14 @@ def filter_packages_by_category_slug(packages, slug):
     cat = get_category_by_slug(slug)
 
     if cat is None:
-        return []
+        return packages.none()
 
     cats = cat.get_descendants(True)
     pkgs =  packages.filter(categories__in=cats)
     if not pkgs:
-        return []
+        return pkgs.none()
 
-    return  pkgs.distinct().by_published_order()
+    return  pkgs.distinct()
 
 
 class HomeTopBannersWidget(BaseMultiAdvWidget, Widget):
