@@ -198,7 +198,7 @@ class HomeNoviceBbsWidget(BaseForumThreadPanelWdiget, Widget):
 
 class CategoriesListWidget(BaseListWidget):
 
-    template = 'pages/widgets/android/cats-left-list.html'
+    template = 'pages/widgets/android/game-app-list.html'
     slug = None
 
     def get_categorized_pagckages(self, packages, cat):
@@ -228,6 +228,8 @@ class CategoriesListWidget(BaseListWidget):
             items=items,
             root_cat=root_cat,
             root_packages = root_packages,
+            current_packages = root_packages,
+            current_cat = root_cat,
         )
 
         return options
