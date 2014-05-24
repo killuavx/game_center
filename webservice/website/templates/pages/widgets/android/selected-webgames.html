@@ -12,9 +12,9 @@
         {% for item in items|slice:"6" %}
         {% with version=item.versions.latest_published %}
                                   <dl class="cell-bk pt15 rel app-list-l">
-                                      <dt class="abs"><a href="{{ item.get_absolute_url }}" class="pic"><img src="{{ version.icon.url }}"><span class="ios-web-icon abs"></span></a></dt>
+                                      <dt class="abs"><a title="链接名称" href="{{ item.get_absolute_url }}" class="pic"><img alt="图片名称" src="{{ version.icon.url }}"><span class="ios-web-icon abs"></span></a></dt>
                                       <dd class="g9">
-                                          <h3 class="n rel g3 f14"><a href="{{ item.get_absolute_url }}">{{ item.title|slice:"4" }}</a><span class="abs ios-web-icon star s1"></span></h3>
+                                          <h3 class="n rel g3 f14"><a title="链接名称" href="{{ item.get_absolute_url }}">{{ item.title }}</a><span class="abs ios-web-icon star s1"></span></h3>
                                           <p>{{ item.summary }}</p>
                                           <p>智力游戏<em>|</em>{{ item.download_count|intwordcn }}+下载</p>
                                           <div class="btn-s">

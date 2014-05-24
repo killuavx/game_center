@@ -8,7 +8,7 @@
               <ul class="box_ul">
                   {% for item in items %}
                   {% with version=item.versions.latest_published %}
-                  <li class="dib rel"><a href="{{ version.get_absolute_url }}"><img src="{{ version.icon.url }}"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png"> {{ item.title }}</span></a></li>
+                  <li class="dib rel"><a title="链接名称" href="{{ version.get_absolute_url }}"><img alt="图片名称" src="{{ version.icon.url }}"><span class="bg"></span><span class="abs tc ovh pl5 pr5 white text png"> {{ item.title }}</span></a></li>
                   {% endwith %}
                   {% endfor %}
               </ul>

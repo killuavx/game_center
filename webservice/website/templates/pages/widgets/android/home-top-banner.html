@@ -5,7 +5,7 @@
   <div class="ban_pic">
     <ul class="auto tc">
       {% for item in items %}
-      <li style="background:url({{ item.cover.url }}) repeat-x center"><a href="{{ item.content.get_absolute_url }}" style="background:url({{ item.cover.url }}) no-repeat center top" class="auto width"></a></li>
+      <li style="background:url({{ item.cover.url }}) repeat-x center"><a title="链接名称" href="{{ item.content.get_absolute_url }}" style="background:url({{ item.cover.url }}) no-repeat center top" class="auto width"></a></li>
       {% endfor %}
     </ul>
   </div>
