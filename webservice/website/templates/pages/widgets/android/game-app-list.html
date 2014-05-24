@@ -22,9 +22,9 @@
                 
                 <div class="l left-list">
                         <ul class="f14 left-nav">
-                                <li><a href="{{ page.get_absolute_url }}" class="hoever">全部<span class="r">{{ root_packages.count }}</span></a></li>
+                                <li><a href="{{ page.get_absolute_url }}">全部<span class="r">{{ root_packages.count }}</span></a></li>
                                 {% for item in items %}
-                                <li><a href="{{ page.get_absolute_url }}">{{ item.cat.name }}<span class="r">{{ item.packages.count }}</span></a></li>
+                                <li><a href="{{ page.get_absolute_url }}?cat={{ item.cat.slug }}" {% if item.cat.slug == current_cat.slug %}class="hover" {% endif %}>{{ item.cat.name }}<span class="r">{{ item.packages.count }}</span></a></li>
                                 {% endfor %}
                             
                         </ul>
