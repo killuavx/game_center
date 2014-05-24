@@ -11,6 +11,19 @@ from .masterpiece import MasterpiecePackageListWidget
 from mptt.models import MPTTModel
 
 
+def get_topic_by_slug(slug):
+    try:
+        topic = Topic.objects.filter(slug=slug).published().get()
+    except:
+        topic = None
+
+    return topic
+
+
+def filter_packages_by_topic(packages, topic):
+    return TopicalItem.objects.filter_items_by_topic(topic, Package, packages)
+
+
 def get_leaf_categories(cats):
     result =  []
 
@@ -200,11 +213,9 @@ class CategoriesListWidget(BaseListWidget):
 
     template = 'pages/widgets/android/game-app-list.html'
     slug = None
-    cat_slug = None
-    topic_slug = None
-    pub_slug = None
     current_cat = None
-    current_packages = []
+    current_topic = None
+    current_packages = None
 
     def get_categorized_pagckages(self, packages, cat):
         return filter_packages_by_category(packages, cat)
@@ -217,11 +228,11 @@ class CategoriesListWidget(BaseListWidget):
         leaf_cats = get_leaf_categories(cats)
         return leaf_cats
 
-    def get_all_items(self, root_packages, cats):
+    def get_all_items(self, cat_slug, root_packages, cats):
         items = []
         for cat in cats:
             packages = self.get_categorized_pagckages(root_packages, cat)
-            if cat.slug == self.cat_slug:
+            if cat.slug == cat_slug:
                 self.current_packages = packages
                 self.current_cat = cat
             items.append({'cat': cat, 'packages': packages})
@@ -229,29 +240,51 @@ class CategoriesListWidget(BaseListWidget):
         return items
 
 
+    def get_packages_by_topic_slug(self, topic_slug, packages):
+        topic = get_topic_by_slug(topic_slug)
+        if not topic:
+            return
+        self.current_topic = topic
+        self.current_packages = filter_packages_by_topic(packages, topic)
+
+
+    def get_latest_packages(self, packages):
+        self.current_packages = packages.by_published_order()
+        self.current_topic = {}
+        self.current_topic['slug'] = 'latest'
+        self.current_topic['name'] = '最新发布'
+
+
     def get_context(self, value=None, options=dict(), context=None):
         items = []
         self.slug = options.get('slug', None)
-        self.cat_slug = options.get('cat', None)
-        self.topic_slug = options.get('topic', None)
-        self.pub_slug = options.get('pub', None)
+        cat_slug = options.get('cat', None)
+        topic_slug = options.get('topic', None)
+        pub_slug = options.get('pub', None)
         root_cat = get_category_by_slug(self.slug)
         all_packages = self.get_all_published_packages()
         root_packages = self.get_categorized_pagckages(all_packages, root_cat)
         cats = self.get_list()
-        items = self.get_all_items(root_packages, cats)
-        #print (self.current_cat)
-        #print (self.current_packages)
+        items = self.get_all_items(cat_slug, root_packages, cats)
+        if self.current_cat is None:
+            if topic_slug:
+                self.get_packages_by_topic_slug(topic_slug, root_packages)
+            elif pub_slug:
+                self.get_latest_packages(root_packages)
 
-
+        if not self.current_cat and not self.current_topic:
+            self.current_packages = root_packages
 
         options.update(
             items=items,
             root_cat=root_cat,
             root_packages = root_packages,
             current_packages = self.current_packages,
-            current_cat = self.current_cat
+            current_cat = self.current_cat,
+            current_topic = self.current_topic,
         )
+        print (options['current_cat'])
+        print (options['current_topic'])
 
         return options
 

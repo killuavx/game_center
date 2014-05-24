@@ -6,12 +6,14 @@
         <div class="cell">
                 <div class="f18 cell rel t-title">
                     <h3 class="l n mr30">安卓游戏</h3>
+                    {% if not current_cat %}
                     <ul class="l abs cell-bk f16">
-                        <li class="dib pl10 pr10 tab"><a href="#">全部游戏</a></li>
-                        <li class="dib pl10 pr10 tab"><a href="#">精品推荐</a></li>
-                        <li class="dib pl10 pr10 tab"><a href="#">装机必备</a></li>
-                        <li class="dib pl10 pr10 tab"><a href="#">最新发布</a></li>
+                        <li class="dib pl10 pr10 tab {% if not current_cat and not current_topic %}ios-web-icon{% endif %}"><a href="{{ page.get_absolute_url }}">全部游戏</a></li>
+                        <li class="dib pl10 pr10 tab {% if current_topic.slug == 'home-recommend-game' %}ios-web-icon{% endif %}"><a href="{{ page.get_absolute_url }}?topic=home-recommend-game">精品推荐</a></li>
+                        <li class="dib pl10 pr10 tab {% if current_topic.slug == 'homebar-basic-installed' %}ios-web-icon{% endif %}"><a href="{{ page.get_absolute_url }}?topic=homebar-basic-installed">装机必备</a></li>
+                        <li class="dib pl10 pr10 tab {% if current_topic.slug == 'latest' %}ios-web-icon{% endif %}"><a href="{{ page.get_absolute_url }}?pub=latest">最新发布</a></li>
                     </ul>
+                    {% endif %}
                                         
                 </div> <!--t-title-->
         </div>
@@ -22,9 +24,9 @@
                 
                 <div class="l left-list">
                         <ul class="f14 left-nav">
-                                <li><a href="{{ page.get_absolute_url }}">全部<span class="r">{{ root_packages.count }}</span></a></li>
+                          <li><a href="{{ page.get_absolute_url }}" {% if not current_cat and not current_topic %}class="hover"{% endif %}>全部<span class="r">{{ root_packages.count }}</span></a></li>
                                 {% for item in items %}
-                                <li><a href="{{ page.get_absolute_url }}?cat={{ item.cat.slug }}" {% if item.cat.slug == current_cat.slug %}class="hover" {% endif %}>{{ item.cat.name }}<span class="r">{{ item.packages.count }}</span></a></li>
+                                <li><a href="{{ page.get_absolute_url }}?cat={{ item.cat.slug }}" {% if item.cat.slug == current_cat.slug %}class="hover"{% endif %}>{{ item.cat.name }}<span class="r">{{ item.packages.count }}</span></a></li>
                                 {% endfor %}
                             
                         </ul>
