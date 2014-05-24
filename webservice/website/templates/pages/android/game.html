@@ -1,4 +1,25 @@
 {% extends "pages/android/base.html" %}
+{% load templateutils_tags %}
+{% load widgets %}
 {% block main %}
-{% include "pages/android/game/game-app-list.html" %}
+<div class="auto mt30 width app-list-page">
+
+  <div class="cell">
+    <div class="f18 cell rel t-title">
+      <h3 class="l n mr30">安卓游戏</h3>
+      <ul class="l abs cell-bk f16">
+        <li class="ios-web-icon dib pl10 pr10 tab"><a href="#">全部游戏</a></li>
+        <li class="dib pl10 pr10 tab"><a href="#">精品推荐</a></li>
+        <li class="dib pl10 pr10 tab"><a href="#">装机必备</a></li>
+        <li class="dib pl10 pr10 tab"><a href="#">最新发布</a></li>
+      </ul>
+
+    </div> <!--t-title-->
+  </div>
+
+  <div class="rel cell-bk">
+  {% include_widget CategoriesListWidget slug='game' %}
+    {% include "pages/android/game/apps-right-list.html" %}
+  </div><!--cell-bk-->
+</div>
 {% endblock %}

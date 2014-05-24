@@ -8,24 +8,53 @@ from .common.topic import BaseTopicPackageListWidget
 from .common.package import BaseRankingPackageListWidget
 from .common.webspide import BaseForumThreadPanelWdiget
 from .masterpiece import MasterpiecePackageListWidget
+from mptt.models import MPTTModel
 
 
-def get_root_category_by_slug(slug):
+def get_leaf_categories(cats):
+    result =  []
+
+    for cat in cats:
+        if MPTTModel.is_leaf_node(cat):
+            result.append(cat)
+
+    return result
+
+
+def get_all_sub_cats(slug):
+    cat = get_category_by_slug(slug)
+
+    if cat is None:
+        return []
+    else:
+        return cat.get_descendants()
+
+
+def get_category_by_slug(slug):
     try:
-        root_cat = Category.objects.get(slug=slug)
+        cat = Category.objects.get(slug=slug)
     except:
-        root_cat = None
+        cat = None
 
-    return root_cat
+    return cat
+
+def filter_packages_by_category(packages, cat):
+    cats = cat.get_descendants(True)
+    pkgs =  packages.filter(categories__in=cats)
+    if not pkgs:
+        return []
+
+    return  pkgs.distinct().by_published_order()
+
 
 def filter_packages_by_category_slug(packages, slug):
 
-    root_cat = get_root_category_by_slug(slug)
+    cat = get_category_by_slug(slug)
 
-    if root_cat is None:
+    if cat is None:
         return []
 
-    cats = root_cat.get_descendants(True)
+    cats = cat.get_descendants(True)
     pkgs =  packages.filter(categories__in=cats)
     if not pkgs:
         return []
@@ -165,3 +194,46 @@ class HomeHotBbsWidget(BaseForumThreadPanelWdiget, Widget):
 class HomeNoviceBbsWidget(BaseForumThreadPanelWdiget, Widget):
 
     template = 'pages/widgets/android/novice-bbs.html'
+
+
+class CategoriesListWidget(BaseListWidget):
+
+    template = 'pages/widgets/android/cats-left-list.html'
+    slug = None
+
+    def get_categorized_pagckages(self, packages, cat):
+        return filter_packages_by_category(packages, cat)
+
+    def get_all_published_packages(self):
+        return Package.objects.published()
+
+    def get_list(self):
+        cats = get_all_sub_cats(self.slug)
+        leaf_cats = get_leaf_categories(cats)
+        return leaf_cats
+
+    def get_context(self, value=None, options=dict(), context=None):
+        items = []
+        self.slug = options.get('slug', None)
+        root_cat = get_category_by_slug(self.slug)
+        all_packages = self.get_all_published_packages()
+        root_packages = self.get_categorized_pagckages(all_packages, root_cat)
+
+        cats = self.get_list()
+        for cat in cats:
+            packages = self.get_categorized_pagckages(root_packages, cat)
+            items.append({'cat': cat, 'packages': packages})
+
+        options.update(
+            items=items,
+            root_cat=root_cat,
+            root_packages = root_packages,
+        )
+
+        return options
+
+
+class AppsListWidget(Widget):
+
+    template = 'pages/widgets/android/cats-left-list.html'
+
