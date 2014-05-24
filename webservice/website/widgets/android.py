@@ -151,6 +151,6 @@ class HomeRankingPackageListWidget(BaseRankingPackageListWidget):
     def get_context(self, value=None, options=dict(), context=None):
         self.cat = options.get('cat', None)
         items = self.get_list()
-        print(len(items))
+        #print(len(items))
         return {'items': items, 'cat': self.cat}
 
