@@ -186,6 +186,7 @@ INTERNAL_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_swagger',
+    'rest_framework_extensions',
     'tagging',
     'tagging_autocomplete',
     'djrill',
@@ -362,6 +363,10 @@ REST_FRAMEWORK = {
     ],
 }
 
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60
+}
+
 #SLUGFIELD_SLUGIFY_FUNCTION = ''
 TAGGING_AUTOCOMPLETE_JS_BASE_URL = '/media/js'
 MANDRILL_API_KEY = "brack3t-is-awesome"
@@ -405,6 +410,8 @@ LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
 #LOGOUT_URL = '/accounts/signout/'
 
 AAPT_CMD = join(PROJECT_PATH, 'warehouse/utils/android-tools-linux-x64/aapt')
+
+COMMENTS_APP = 'comment'
 
 #COMMENTS_POST_PUBLISHED = False
 HAYSTACK_CONNECTIONS = {
