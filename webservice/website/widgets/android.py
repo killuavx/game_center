@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.paginator import Paginator
 from django_widgets import Widget
 from warehouse.models import Package
 from taxonomy.models import Category, Topic, TopicalItem
@@ -10,6 +11,34 @@ from .common.webspide import BaseForumThreadPanelWdiget
 from .masterpiece import MasterpiecePackageListWidget
 from mptt.models import MPTTModel
 
+
+def get_limit_range(p, r, n=10):
+    # p - request page number
+    # r - paginator.page_range
+    # n - num of links on a page
+
+    l = r[-1]
+    if n >= l:
+        return r
+    x, y = divmod(p, n)
+    m = n//2
+    if y > 0:
+        if p-m <= 0:
+            return range(1, 2*m+1)
+        elif p+m > l:
+            end = l
+        else:
+            end = p+m
+        return range(end-n+1, end+1)
+    else:
+        if p-m <= 0:
+            return range(1, 2*m+1)
+        elif p+m > l:
+            end = l+1
+            return range(end-n, end)
+        else:
+            end = p+m
+        return range(p-m, end)
 
 def get_topic_by_slug(slug):
     try:
@@ -254,11 +283,22 @@ class CategoriesListWidget(BaseListWidget):
         self.current_topic['slug'] = 'latest'
         self.current_topic['name'] = '最新发布'
 
+    def paginize_items(self, options):
+        per_page, page = self.get_paginator_vars(options)
+        self.page = page
+        paginator = Paginator(self.current_packages, per_page=self.per_page)
+        current_page = paginator.page(page)
+        return current_page
+
+    def get_limit_pages_range(self, page, range):
+        return get_limit_range(page, range)
 
     def get_context(self, value=None, options=dict(), context=None):
+        #print (options)
         items = []
         self.current_cat = None
         self.current_topic = None
+        self.page = None
         self.slug = options.get('slug', None)
         cat_slug = options.get('cat', None)
         topic_slug = options.get('topic', None)
@@ -277,11 +317,17 @@ class CategoriesListWidget(BaseListWidget):
         if not self.current_cat and not self.current_topic:
             self.current_packages = root_packages
 
+        current_page = self.paginize_items(options)
+        limit_range = self.get_limit_pages_range(self.page, current_page.paginator.page_range)
+        #print (current_page.number)
+
         options.update(
             items=items,
             root_cat=root_cat,
             root_packages = root_packages,
-            current_packages = self.current_packages,
+            current_packages = current_page,
+            current_page = current_page,
+            limit_range = limit_range,
             current_cat = self.current_cat,
             current_topic = self.current_topic,
         )

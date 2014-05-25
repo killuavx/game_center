@@ -35,7 +35,7 @@
                 
 
                 <div class="l btn-s-box tj p20 right-list">
-                      {% for item in current_packages|slice:"20" %}
+                      {% for item in current_page %}
                       {% with version=item.versions.latest_published %}
                         <dl class="dib rel app-list-xl">
                             <dt class="abs"><a href="{{ item.get_absolute_url }}" class="pic" target="_blank"><img src="{{ version.icon.url }}"><span class="ios-web-icon abs"></span></a></dt>
