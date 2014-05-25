@@ -257,6 +257,8 @@ class CategoriesListWidget(BaseListWidget):
 
     def get_context(self, value=None, options=dict(), context=None):
         items = []
+        self.current_cat = None
+        self.current_topic = None
         self.slug = options.get('slug', None)
         cat_slug = options.get('cat', None)
         topic_slug = options.get('topic', None)
@@ -283,8 +285,8 @@ class CategoriesListWidget(BaseListWidget):
             current_cat = self.current_cat,
             current_topic = self.current_topic,
         )
-        print (options['current_cat'])
-        print (options['current_topic'])
+        #print (options['current_cat'])
+        #print (options['current_topic'])
 
         return options
 
