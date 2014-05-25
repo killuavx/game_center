@@ -70,3 +70,19 @@ def android_game(request, page):
         data['page_num'] = page_num
 
     return data
+
+android_app_page_slug = 'android/application'
+@processor_for(android_app_page_slug)
+def android_app(request, page):
+    data = dict()
+    if request.method == "GET":
+        cat = request.GET.get('cat', None)
+        topic = request.GET.get('topic', None)
+        pub = request.GET.get('pub', None)
+        page_num = request.GET.get('page', None)
+        data['cat'] = cat
+        data['topic'] = topic
+        data['pub'] = pub
+        data['page_num'] = page_num
+
+    return data

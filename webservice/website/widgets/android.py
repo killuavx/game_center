@@ -238,9 +238,9 @@ class HomeNoviceBbsWidget(BaseForumThreadPanelWdiget, Widget):
     template = 'pages/widgets/android/novice-bbs.html'
 
 
-class CategoriesListWidget(BaseListWidget):
+class CategoriesPackagesListWidget(BaseListWidget):
 
-    template = 'pages/widgets/android/game-app-list.html'
+    template = 'pages/widgets/android/app-list.html'
     slug = None
     current_cat = None
     current_topic = None
@@ -281,7 +281,6 @@ class CategoriesListWidget(BaseListWidget):
         self.current_packages = packages.by_published_order()
         self.current_topic = {}
         self.current_topic['slug'] = 'latest'
-        self.current_topic['name'] = '最新发布'
 
     def paginize_items(self, options):
         per_page, page = self.get_paginator_vars(options)
@@ -292,6 +291,15 @@ class CategoriesListWidget(BaseListWidget):
 
     def get_limit_pages_range(self, page, range):
         return get_limit_range(page, range)
+
+    def get_translated_slug(self):
+        dic = {
+            'game': '游戏',
+            'application': '软件',
+        }
+
+        return dic.get(self.slug, None)
+
 
     def get_context(self, value=None, options=dict(), context=None):
         #print (options)
@@ -330,14 +338,9 @@ class CategoriesListWidget(BaseListWidget):
             limit_range = limit_range,
             current_cat = self.current_cat,
             current_topic = self.current_topic,
+            translated_slug = self.get_translated_slug(),
         )
         #print (options['current_cat'])
         #print (options['current_topic'])
 
         return options
-
-
-class AppsListWidget(Widget):
-
-    template = 'pages/widgets/android/cats-left-list.html'
-
