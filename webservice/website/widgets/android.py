@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+import datetime
 from django.core.paginator import Paginator
+from django.utils.timezone import now
+from mptt.models import MPTTModel
 from django_widgets import Widget
 from warehouse.models import Package
 from taxonomy.models import Category, Topic, TopicalItem
@@ -9,7 +12,6 @@ from .common.topic import BaseTopicPackageListWidget
 from .common.package import BaseRankingPackageListWidget
 from .common.webspide import BaseForumThreadPanelWdiget
 from .masterpiece import MasterpiecePackageListWidget
-from mptt.models import MPTTModel
 
 
 def get_limit_range(p, r, n=10):
@@ -352,4 +354,52 @@ class CrackTopBannersWidget(BaseMultiAdvWidget, Widget):
 
 
 class CrackPackagesListWidget(BaseListWidget):
-    template = 'pages/widgets/android/app-list.html'
+
+    template = 'pages/widgets/android/crack-app-list.html'
+    crack_cat = None
+
+    def get_all_crack_packages(self, slug):
+        crack_cat = get_category_by_slug(slug)
+        self.crack_cat = crack_cat
+
+        if not crack_cat:
+            return Package.objects.none()
+
+        return crack_cat.packages.all()
+
+
+    def get_crack_packages_by_delta_days(self, packages, date):
+        return packages.filter(released_datetime__startswith=date)
+
+    def get_date(self, delta_days):
+        return now().date()-datetime.timedelta(days=delta_days)
+
+
+    def get_context(self, value=None, options=dict(), context=None):
+        slug = options.get('slug', None)
+        all_crack_packages = self.get_all_crack_packages(slug)
+        all_crack_packages_published = all_crack_packages.published()
+        crack_packages_today = self.get_crack_packages_by_delta_days(\
+            all_crack_packages_published, self.get_date(2))
+        crack_packages_yesterday = self.get_crack_packages_by_delta_days(\
+            all_crack_packages_published, self.get_date(4))
+        crack_packages_yesterday_before = self.get_crack_packages_by_delta_days\
+            (all_crack_packages_published, self.get_date(5))
+
+        someday = self.get_date(36)
+        crack_packages_someday = self.get_crack_packages_by_delta_days(\
+            all_crack_packages_published, someday)
+        crack_packages_tomorrow = self.get_crack_packages_by_delta_days(\
+            all_crack_packages, self.get_date(-1))
+
+        options.update(
+            crack_packages_today = crack_packages_today,
+            crack_packages_yesterday = crack_packages_yesterday,
+            crack_packages_yesterday_before = crack_packages_yesterday_before,
+            crack_packages_someday  = crack_packages_someday,
+            crack_packages_tomorrow = crack_packages_tomorrow,
+            cat = self.crack_cat,
+            someday = someday,
+        )
+
+        return options
