@@ -353,7 +353,7 @@ class CrackTopBannersWidget(BaseMultiAdvWidget, Widget):
    template='pages/widgets/android/crack-top-banner.html'
 
 
-class CrackPackagesListWidget(BaseListWidget):
+class FirstReleaseCrackPackagesListWidget(BaseListWidget):
 
     template = 'pages/widgets/android/crack-first-release.html'
     crack_cat = None

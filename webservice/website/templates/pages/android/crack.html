@@ -5,7 +5,8 @@
 {% block main %}
 {% include_widget CrackTopBannersWidget slug='android-home-top-banner' %}
 {% if not type or type == 'first_release' %}
-{% include_widget CrackPackagesListWidget slug='crack-game' %}
-{% endif %}
+{% include_widget FirstReleaseCrackPackagesListWidget slug='crack-game' %}
+{% elif type == 'all' %}
 {{ type }}
+{% endif %}
 {% endblock %}
