@@ -419,9 +419,9 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
 
     def get_absolute_iospc_url(self, link_type=0):
         if link_type == 0:
-            return '/iospc/package/%s/' % self.package_name
+            return '/iospc/package/?name=%s' % self.package_name
         else:
-            return '/iospc/package/%s/' % self.pk
+            return '/iospc/package/?id=%s' % self.pk
 
 
 tagging.register(Package)

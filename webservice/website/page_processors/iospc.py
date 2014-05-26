@@ -171,9 +171,9 @@ def topic_page(request, page):
     return data
 
 
-iospc_game_page_slug = 'iospc/game'
-@processor_for(iospc_game_page_slug)
-def game_page(request, page):
+iospc_package_page_slug = 'iospc/package'
+@processor_for(iospc_package_page_slug)
+def package_page(request, page):
     other_slug = None
     package_query = 'name'
     data  = {}
@@ -193,7 +193,7 @@ def game_page(request, page):
         except:
             category = ''
 
-        data['root_cat'] = 'game'
+        data['root_cat'] = data['slug']
         data['sub_cat_name'] = category.name if category else ''
         data['sub_cat_slug'] = category.slug if category else ''
         data['package_title'] = pkg.title if pkg.title else ''
