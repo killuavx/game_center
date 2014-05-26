@@ -9,7 +9,7 @@ from rest_framework import serializers
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from comment.models import Comment
 from account.models import User as Player
-from mobapi2.serializers import ModelWithRouterSerializer as ModelSerializer
+from mobapi2.serializers import ModelSerializer
 
 
 def filter_keys(data):

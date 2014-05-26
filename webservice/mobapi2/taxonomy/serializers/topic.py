@@ -5,9 +5,7 @@ from taxonomy.models import Topic, TopicalItem
 from mobapi2.rest_fields import factory_imageurl_field
 from mobapi2.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
 from mobapi2.taxonomy.serializers import get_url_for_taxonomy
-from mobapi2.serializers import (
-    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
-from mobapi2.warehouse.serializers.package import PackageSummarySerializer
+from mobapi2.serializers import HyperlinkedModelSerializer
 from warehouse.models import Package
 
 

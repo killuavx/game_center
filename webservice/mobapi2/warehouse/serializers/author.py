@@ -6,9 +6,7 @@ from rest_framework import serializers
 from mobapi2.rest_fields import factory_imageurl_field
 from warehouse.models import Author
 from mobapi2.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
-from mobapi2.serializers import (
-    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer
-)
+from mobapi2.serializers import HyperlinkedModelSerializer
 
 
 class AuthorSerializer(HyperlinkedModelSerializer):

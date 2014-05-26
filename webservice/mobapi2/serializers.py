@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
+
 from rest_framework import serializers
 from rest_framework.serializers import (
-    ModelSerializer,
+    ModelSerializer as RFModelSerializer,
     ModelSerializerOptions,
     HyperlinkedModelSerializerOptions,
-    HyperlinkedModelSerializer)
+    HyperlinkedModelSerializer as RFHyperlinkedModelSerializer)
+from django.db import models
+
 from mobapi2.rest_router import rest_router
+from mobapi2.rest_fields import DateTimeField
 from toolkit.helpers import import_from
 
 
@@ -16,9 +21,20 @@ class ModelSerializerWithRouterOptions(ModelSerializerOptions):
         super(ModelSerializerWithRouterOptions, self).__init__(meta)
 
 
-class ModelWithRouterSerializer(ModelSerializer):
+_serializer_field_mapping = deepcopy(RFModelSerializer.field_mapping)
+_serializer_field_mapping.update({
+    models.DateTimeField: DateTimeField
+})
+
+
+class ModelWithRouterSerializer(RFModelSerializer):
+
+    field_mapping = _serializer_field_mapping
 
     _options_class = ModelSerializerWithRouterOptions
+
+
+ModelSerializer = ModelWithRouterSerializer
 
 
 class HyperlinkedModelSerializerWithRouterOptions(HyperlinkedModelSerializerOptions):
@@ -28,7 +44,15 @@ class HyperlinkedModelSerializerWithRouterOptions(HyperlinkedModelSerializerOpti
         super(HyperlinkedModelSerializerWithRouterOptions, self).__init__(meta)
 
 
-class HyperlinkedWithRouterModelSerializer(HyperlinkedModelSerializer):
+_hlink_serializer_field_mapping = deepcopy(RFHyperlinkedModelSerializer.field_mapping)
+_hlink_serializer_field_mapping.update({
+    models.DateTimeField: DateTimeField
+})
+
+
+class HyperlinkedWithRouterModelSerializer(RFHyperlinkedModelSerializer):
+
+    field_mapping = _hlink_serializer_field_mapping
 
     _options_class = HyperlinkedModelSerializerWithRouterOptions
 
@@ -36,6 +60,9 @@ class HyperlinkedWithRouterModelSerializer(HyperlinkedModelSerializer):
         view_name = super(HyperlinkedWithRouterModelSerializer, self)\
             ._get_default_view_name(model)
         return self.opts.router.get_base_name(view_name)
+
+
+HyperlinkedModelSerializer = HyperlinkedWithRouterModelSerializer
 
 
 class SerializerRelatedField(serializers.RelatedField):

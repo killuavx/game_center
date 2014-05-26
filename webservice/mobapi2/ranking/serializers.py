@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 from ranking.models import PackageRanking
-from mobapi2.serializers import HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer
+from mobapi2.serializers import HyperlinkedModelSerializer
 from mobapi2.warehouse.serializers.package import PackageSummarySerializer
 
 

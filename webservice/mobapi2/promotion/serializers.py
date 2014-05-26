@@ -3,8 +3,7 @@ from rest_framework import serializers
 from promotion.models import Advertisement
 from mobapi2.rest_fields import factory_imageurl_field
 from mobapi2.settings import IMAGE_ADV_COVER_SIZE
-from mobapi2.serializers import (
-    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
+from mobapi2.serializers import HyperlinkedModelSerializer
 
 
 class AdvertisementSerializer(HyperlinkedModelSerializer):
