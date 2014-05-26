@@ -13,7 +13,7 @@ from django.db import models
 
 from mobapi2.rest_router import rest_router
 from mobapi2.rest_fields import DateTimeField
-from mobapi2.settings import GC_RESOURCE_ALIAS
+from mobapi2.settings import GC_RESOURCE_ALIAS, IMAGE_COVER_SIZE
 from toolkit.helpers import import_from
 
 
@@ -25,7 +25,7 @@ class GetResourceFileMixin(object):
 
 class ModelGetResourceMixin(GetResourceFileMixin):
 
-    DEFAULT_COVER_SIZE = None
+    DEFAULT_COVER_SIZE = IMAGE_COVER_SIZE
 
     def get_cover(self, obj):
         try:
