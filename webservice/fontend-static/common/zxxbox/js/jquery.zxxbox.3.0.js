@@ -57,7 +57,7 @@
 							myImg.onload = function() {
 								var w = myImg.width, h = myImg.height;
 								if (w > 0) {
-									var element = $('<img src="'+ href +'" width="'+ w +'" height="'+ h +'" />');
+									var element = $('<img alt="图片名称" src="'+ href +'" width="'+ w +'" height="'+ h +'" />');
 									options.protect = false;
 									$.zxxbox(element, options);
 								}
@@ -312,7 +312,7 @@
 		},
 		//预载
 		loading: function() {
-			var element = $('<div class="wrap_remind"><img src="http://static.ccplay.com.cn/static/common/img/loading_red.gif" style="padding:20px"/></div>');
+			var element = $('<div class="wrap_remind"><img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/loading_red.gif" style="padding:20px"/></div>');
 			$.zxxbox(element, { bar: false });
 		},
 		//ask询问方法
