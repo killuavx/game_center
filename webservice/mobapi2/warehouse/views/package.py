@@ -25,6 +25,7 @@ from rest_framework_extensions.key_constructor import (
 from mobapi2 import cache_keyconstructors as ckc
 
 
+
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     """ 软件接口
 
@@ -111,15 +112,11 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                        RelatedPackageSearchFilter
     )
     filter_fields = ('package_name', 'title', 'categories')
-    ordering = ('-released_datetime',
-                '-updated_datetime',
-                'title',
-                'package_name'
-                )
+    ordering = ('-released_datetime', )
 
     def get_queryset(self):
         if self.queryset is None:
-            self.queryset = self.model.objects.published()
+            self.queryset = self.model.objects.all()
         return self.queryset.published()
 
     @cache_response(key_func=default_object_cache_key_func)

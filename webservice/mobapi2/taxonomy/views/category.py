@@ -79,7 +79,6 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         self.queryset = orig_queryset
         return response
 
-    @cache_response(key_func=ckc.LookupOrderingListKeyConstructor())
     @link()
     def packages(self, request, slug, *args, **kwargs):
         category = self.get_object(self.filter_queryset(self.queryset))
@@ -106,7 +105,6 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     def get_packages_list_view(self, request, category):
         ViewSet = PackageViewSet
         queryset = category.packages.all()
-        queryset = queryset.published()
         list_view = ViewSet.as_view({'get': 'list'}, queryset=queryset)
         return list_view
 
