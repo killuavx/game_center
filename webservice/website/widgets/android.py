@@ -248,8 +248,8 @@ class CategoriesPackagesListWidget(BaseListWidget):
     current_topic = None
     current_packages = None
 
-    def get_categorized_pagckages(self, packages, cat):
-        return filter_packages_by_category(packages, cat)
+#    def get_categorized_pagckages(self, packages, cat):
+#        return filter_packages_by_category(packages, cat)
 
     def get_all_published_packages(self):
         return Package.objects.published()
@@ -262,7 +262,8 @@ class CategoriesPackagesListWidget(BaseListWidget):
     def get_all_items(self, cat_slug, root_packages, cats):
         items = []
         for cat in cats:
-            packages = self.get_categorized_pagckages(root_packages, cat)
+            #packages = self.get_categorized_pagckages(root_packages, cat)
+            packages = cat.packages.published()
             if cat.slug == cat_slug:
                 self.current_packages = packages
                 self.current_cat = cat
@@ -406,4 +407,37 @@ class FirstReleaseCrackPackagesListWidget(BaseListWidget):
             someday = someday,
         )
 
+        return options
+
+
+class AllCrackPackagesListWidget(FirstReleaseCrackPackagesListWidget):
+    template = 'pages/widgets/android/crack-all.html'
+
+    def paginize_items(self, options):
+        per_page, page = self.get_paginator_vars(options)
+        self.page = page
+        paginator = Paginator(self.current_packages, per_page=self.per_page)
+        current_page = paginator.page(page)
+        return current_page
+
+    def get_limit_pages_range(self, page, range):
+        return get_limit_range(page, range)
+
+    def get_context(self, value=None, options=dict(), context=None):
+        slug = options.get('slug', None)
+        all_crack_packages = self.get_all_crack_packages(slug)
+        #print (all_crack_packages)
+        all_crack_packages_published  = None
+        if all_crack_packages:
+            all_crack_packages_published = all_crack_packages.published()
+        if all_crack_packages_published:
+            self.current_packages = all_crack_packages_published
+            current_page = self.paginize_items(options)
+            limit_range = self.get_limit_pages_range(self.page, current_page.paginator.page_range)
+            options.update(
+                current_page = current_page,
+                limit_range = limit_range,
+            )
+
+        #print (options)
         return options
