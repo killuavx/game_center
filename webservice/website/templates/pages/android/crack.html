@@ -4,10 +4,12 @@
 
 {% block main %}
 {% include_widget CrackTopBannersWidget slug='android-home-top-banner' %}
-{% if not type or type == 'first_release' %}
+{% if topic  %}
+{% include_widget CrackTopicPackagesListWidget topic=topic page_num=page_num %}
+{% elif not type or type == 'first_release' %}
 {% include_widget FirstReleaseCrackPackagesListWidget slug='crack-game' %}
 {% elif type == 'all' %}
 {% include_widget AllCrackPackagesListWidget slug='crack-game' page_num=page_num %}
-{{ type }}
 {% endif %}
+{{ topic }}
 {% endblock %}

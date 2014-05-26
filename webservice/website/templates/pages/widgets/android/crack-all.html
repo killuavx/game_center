@@ -15,9 +15,9 @@
 
         <li class="dib pl10 pr10 tab"><a title="链接名称" href="crack.html">首发破解</a></li>
 
-        <li class="ios-web-icon dib pl10 pr10 tab"><a title="链接名称" href="crack-dis.html">全部破解</a></li>
+        <li class="dib pl10 pr10 tab {% if type == 'all' %}ios-web-icon{% endif %}"><a title="链接名称" href="crack-dis.html">全部破解</a></li>
 
-        <li class="dib pl10 pr10 tab"><a title="链接名称" href="#">破解推荐</a></li>
+        <li class="dib pl10 pr10 tab {% if topic %}ios-web-icon{% endif %}"><a title="链接名称" href="#">破解推荐</a></li>
 
       </ul>
 

@@ -441,3 +441,34 @@ class AllCrackPackagesListWidget(FirstReleaseCrackPackagesListWidget):
 
         #print (options)
         return options
+
+
+class CrackTopicPackagesListWidget(BaseListWidget):
+    template = 'pages/widgets/android/crack-all.html'
+
+    def get_list(self):
+        pass
+
+    def paginize_items(self, options):
+        per_page, page = self.get_paginator_vars(options)
+        self.page = page
+        paginator = Paginator(self.current_packages, per_page=self.per_page)
+        current_page = paginator.page(page)
+        return current_page
+
+    def get_limit_pages_range(self, page, range):
+        return get_limit_range(page, range)
+
+    def get_context(self, value=None, options=dict(), context=None):
+        #topic = options.get('topic', None)
+        topic = get_topic_by_slug('home-recommend-game')
+        packages = filter_packages_by_topic(Package.objects.published(), topic)
+        self.current_packages = packages
+        if self.current_packages:
+            current_page = self.paginize_items(options)
+            limit_range = self.get_limit_pages_range(self.page, current_page.paginator.page_range)
+            options.update(
+                current_page = current_page,
+                limit_range = limit_range,
+            )
+        return options

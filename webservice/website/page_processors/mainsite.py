@@ -93,9 +93,11 @@ android_crack_page_slug = 'android/crack'
 def android_crack(request, page):
     data = dict()
     if request.method == "GET":
-        type = request.GET.get('type', None)
+        typl = request.GET.get('type', None)
+        topic = request.GET.get('topic', None)
         page_num = request.GET.get('page', None)
         data['page_num'] = page_num
-        data['type'] = type
+        data['type'] = typl
+        data['topic'] = topic
 
     return data
