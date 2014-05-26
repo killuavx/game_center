@@ -1,0 +1,10 @@
+-extends "pc_base.haml"
+-load url_tags
+
+-block main
+  .location><
+    当前位置：
+    %a{:href => "{% url 'page' slug='pc/index' %}"} 首页
+    - for bc in breadcrumbs
+      %em »
+      %a{:href => "#"}= bc.bcname

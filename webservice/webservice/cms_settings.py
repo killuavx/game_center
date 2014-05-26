@@ -90,6 +90,7 @@ PAGE_MENU_TEMPLATES = (
     (2, "Left-hand tree", "pages/menus/tree.html"),
     (3, "Footer", "pages/menus/footer_links.haml"),
     (4, "Android navigation menu", "pages/menus/android/navigation.html"),
+    (5, "iOS PC Navigation Menus", "pages/pc/menu/header.haml"),
 )
 
 replace_idx = INTERNAL_APPS.index('suit')

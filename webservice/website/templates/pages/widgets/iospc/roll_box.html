@@ -1,0 +1,24 @@
+{% load templateutils_tags %}
+{% load static %}
+<div class="cb roll home_{{ type }} home_masterpiece">
+
+        <div class="list_box">
+
+          <ul>
+            {% for item in items %}
+              <li><a href="{{ item.get_absolute_url }}"><img src="{% static item.versions.latest_published.icon.url %}"></a></li>
+            {% endfor %}
+
+          </ul>
+
+        </div>
+
+        <div class="cb banner_btn">
+
+          <a href="javascript:void(0)" class="unslider-arrow icon prev"></a>
+
+          <a href="javascript:void(0)" class="unslider-arrow icon next"></a>
+
+        </div>
+
+      </div>

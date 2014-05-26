@@ -1,0 +1,19 @@
+    <div class="head">
+            <div class="fl head_set">
+                    <a href="javascript:;" class="icon pgup">上一页</a>
+                    <a href="javascript:;" class="icon pgdn">下一页</a>
+                    <a href="javascript:;" class="icon refresh">刷新</a>
+            </div><!--head_set-->
+
+            <div class="fl head_nav">
+              {% for page in page_branch %}
+                {% if page.in_menu %}
+                  {% if page.is_current_or_ascendant or page.is_primary %}
+                  <a href="{{ page.get_absolute_url }}" {% if page.is_current_or_ascendant %}class="hover"{% endif %}>{{ page.title }}</a>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+              <a href="http://bbs.ccplay.com.cn">许愿</a>
+            </div><!--head_nav-->
+
+    </div><!--head-->

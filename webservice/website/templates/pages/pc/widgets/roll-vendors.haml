@@ -1,0 +1,10 @@
+-load url_tags
+.list_box
+  %ul
+    -for item in items
+      %li<
+        %a{:href => "{% absolute_url item product='pc' %}"}<
+          %img{:src => "={item.cover.url}"}/
+.cb.banner_btn
+  %a.unslider-arrow.icon.prev{:href => "javascript:void(0)"}
+  %a.unslider-arrow.icon.next{:href => "javascript:void(0)"}

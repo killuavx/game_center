@@ -7,11 +7,15 @@ from webservice.module_settings.script_local import *
 DEBUG = TEMPLATE_DEBUG = True
 
 import os
-HOST_URL = os.getenv('GC_HOST_URL', '')
-MEDIA_URL = 'http://media.ccplay.com.cn/%s/' % MEDIA_URL.strip('/')
-#MEDIA_URL = 'http://android.ccplay.com.cn:8000/%s/' % MEDIA_URL.strip('/')
-#STATIC_URL = 'http://static.ccplay.com.cn/%s/'% STATIC_URL.strip('/')
-STATIC_URL = 'http://gc.ccplay.com.cn/%s/'% STATIC_URL.strip('/')
+#HOST_URL = os.getenv('GC_HOST_URL', '')
+#MEDIA_URL = 'http://media.ccplay.com.cn/%s/' % MEDIA_URL.strip('/')
+##MEDIA_URL = 'http://android.ccplay.com.cn:8000/%s/' % MEDIA_URL.strip('/')
+##STATIC_URL = 'http://static.ccplay.com.cn/%s/'% STATIC_URL.strip('/')
+#STATIC_URL = 'http://gc.ccplay.com.cn/%s/'% STATIC_URL.strip('/')
+
+HOST_URL = os.getenv('GC_HOST_URL', 'http://gc.ccplay.com.cn')
+MEDIA_URL = 'http://0.0.0.0:8080/%s/' % MEDIA_URL.strip('/')
+STATIC_URL = 'http://0.0.0.0:8080/%s/'% STATIC_URL.strip('/')
 PUBLISH_MEDIA_URL = MEDIA_URL
 PUBLISH_STATIC_URL = STATIC_URL
 

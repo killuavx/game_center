@@ -36,6 +36,7 @@ class BaseSingleAdvWidget(object):
         from promotion.models import Place, Advertisement
         try:
             place = Place.objects.get(slug=slug)
+            #print (slug)
             return place.advertisements.published()[0]
         except (Place.DoesNotExist, Advertisement.DoesNotExist):
             return None
@@ -49,4 +50,5 @@ class BaseSingleAdvWidget(object):
             slug=self.slug,
             item=options.get('item', item),
         )
+        #print (options)
         return options

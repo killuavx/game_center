@@ -20,6 +20,7 @@ urlpatterns = patterns("",
                        url(r'^admin/cdn/', include('website.cdn.urls')),
                        url(r'^admin/toolkit/', include('toolkit.urls')),
                        url(r'^tagging_autocomplete/', include('tagging_autocomplete.urls')),
+                       url(r'^pc/', include('website.urls_pc')),
                        )
 if "mezzanine.boot" in settings.INSTALLED_APPS:
     from mezzanine.core.views import direct_to_template
@@ -46,6 +47,11 @@ if settings.DEBUG:
                            url(r'^static/(?P<path>.*)$', 'django.views.static.serve',
                                {'document_root': settings.STATIC_ROOT, 'show_indexes': True}),
                            ) + urlpatterns
+
+
+#urlpatterns += patterns("",
+#   url(r'^iospc/', include('website.ios_pc_urls')),
+#)
 
 from easy_thumbnails.signals import saved_file
 from easy_thumbnails.signal_handlers import generate_aliases_global

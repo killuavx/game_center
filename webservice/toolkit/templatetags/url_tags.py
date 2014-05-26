@@ -2,6 +2,7 @@
 """qurl is a tag to append, remove or replace query string parameters from an url (preserve order)"""
 
 import re
+from django.core.exceptions import ObjectDoesNotExist
 from django.template import Library, Node, TemplateSyntaxError
 from urllib.parse import urlparse, parse_qsl, urlunparse, urlencode
 from django.utils.encoding import smart_str
@@ -88,3 +89,47 @@ class QURLNode(Node):
             return ''
         else:
             return url
+
+
+def absolute_url(context, inst, **kwargs):
+    product = kwargs.get('product')
+    #if not hasattr(inst, 'get_absolute_url_as'):
+    #    return None
+    get_url_as = getattr(inst, 'get_absolute_url_as')
+    url = get_url_as(product)
+    if 'request' in context:
+        return context['request'].build_absolute_uri(url)
+    return url
+
+register.assignment_tag(absolute_url, takes_context=True, name='absolute_url_as')
+register.simple_tag(absolute_url, takes_context=True)
+
+
+def download_url(context, pv, **kwargs):
+    url = pv.get_download_url(**kwargs)
+    if 'request' in context:
+        return context['request'].build_absolute_uri(url)
+    return url
+
+register.assignment_tag(download_url, takes_context=True, name='download_url_as')
+register.simple_tag(download_url, takes_context=True)
+
+
+def resource_url(inst_or_resources, kind='cover', alias='default'):
+    if alias == 'default' and kind in ('cover', 'icon'):
+        try:
+            return getattr(inst_or_resources, kind).url
+        except (ValueError, AttributeError):
+            pass
+
+    if hasattr(inst_or_resources, 'model') and inst_or_resources.model:
+        try:
+            res = getattr(inst_or_resources, kind)[alias]
+            return res.file.url
+        except ObjectDoesNotExist:
+            pass
+    return ''
+
+
+register.assignment_tag(resource_url, name='resource_url_as')
+register.simple_tag(resource_url)

@@ -69,11 +69,7 @@ class IOSAppData(models.Model):
 
     @classmethod
     def convert_normal_version(cls, pv):
-        from warehouse.models import PackageVersion
-        print(type(pv))
-        print(pv)
-        pv.__class__ = PackageVersion
-        return pv
+        return pv.as_android()
 
     def set_analysised(self, version=None):
         if isinstance(version, int) and version <=0:

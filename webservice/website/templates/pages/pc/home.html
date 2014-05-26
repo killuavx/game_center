@@ -1,0 +1,50 @@
+{% extends "pc_base.haml" %}
+{% load util_tags %}
+{% load widgets %}
+{% block main %}
+<div class="cb box focus">
+{% include_widget PCBannerWidget slug='banner-pc' %}
+</div><!--focus-->
+
+{% settings_value 'GC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS' as topic_slugs %}
+<div class="cb box list_box home_game">
+    <div class="fl list_box_left home_game_left box-tab">
+
+    {% include_widget PCHomeComplexPackageListWidget title='游戏' cat_slug='game' topic_slugs=topic_slugs %}
+
+    </div><!--home_game_left-->
+
+    <div class="fl list_box_right home_game_right">
+
+    {% include_widget PCRankingPackageListWidget cat_slug='game' max_items=10 %}
+
+    </div><!--home_game_right-->
+
+</div><!--home_game-->
+
+<div class="cb roll home_masterpiece">
+{% include_widget PCRollMasterpiecesWidget max_items=8 %}
+</div><!--home_masterpiece-->
+
+
+<div class="cb box list_box home_soft">
+
+    <div class="fl list_box_left home_soft_left">
+
+    {% include_widget PCHomeComplexPackageListWidget title='软件' cat_slug='application' topic_slugs=topic_slugs %}
+
+    </div><!--home_soft_left-->
+
+    <div class="fl list_box_right home_soft_right">
+
+    {% include_widget PCRankingPackageListWidget cat_slug='application' max_items=10 %}
+
+    </div><!--home_soft_right-->
+
+</div><!--home_soft-->
+
+
+<div class="cb roll home_vendor">
+    {% include_widget PCRollVendorsWidget max_items=8 %}
+</div><!--home_vendor-->
+{% endblock %}
