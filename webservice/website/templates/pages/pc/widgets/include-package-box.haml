@@ -1,0 +1,23 @@
+-load url_tags util_tags
+{% absolute_url_as package product="pc" as detail_url %}
+-with version=package.versions.latest_published
+  %li><
+    %a.big_pic{:href => "={detail_url}"}><
+      %img{:src => "{% resource_url version 'icon' %}" }
+      %span.icon.cover
+    %h2<
+      %a{:href => "={detail_url}"}= package.title
+    %p {{ version.get_download_size|filesizeformat }} | {{ version.download_count|default:0|intwordcn }}+下载
+    -if version.is_ios
+      -with iversion=version.as_ios
+        -if not version.as_ios.is_free
+          %p.price><
+            %span= iversion.formatted_price
+        -else
+          %p.price 免费
+    %div.icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
+    {% download_url_as version entrytype='pc' as dw_url %}
+    .btn><
+      %span.bg
+      %a.a1.install{:href => "={dw_url}"} 安装
+      %a.a2{:href => "={dw_url}"} 下载

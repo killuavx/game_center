@@ -7,6 +7,8 @@ class PaginatorPageMixin(object):
 
     list_page_var = 'list_page'
 
+    per_page = 10
+
     def set_list_page(self, list_page, options, context):
         list_page_var = options.get('list_page_var') \
             if options.get('list_page_var') else self.list_page_var
@@ -16,21 +18,6 @@ class PaginatorPageMixin(object):
         list_page_var = options.get('list_page_var') \
             if options.get('list_page_var') else self.list_page_var
         return list_page_var, context.get(list_page_var)
-
-
-class BaseListWidget(PaginatorPageMixin, Widget):
-
-    more_url = None
-
-    title = None
-
-    per_page = 10
-
-    def get_more_url(self):
-        return self.more_url
-
-    def get_list(self):
-        return list()
 
     def get_paginator_vars(self, options):
         if 'max_items' in options:
@@ -48,6 +35,19 @@ class BaseListWidget(PaginatorPageMixin, Widget):
             page = 1
 
         return per_page, page
+
+
+class BaseListWidget(PaginatorPageMixin, Widget):
+
+    more_url = None
+
+    title = None
+
+    def get_more_url(self):
+        return self.more_url
+
+    def get_list(self):
+        return list()
 
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
         per_page, page = self.get_paginator_vars(options)

@@ -8,6 +8,10 @@ register = Library()
 
 @register.assignment_tag()
 def resolve(lookup, target):
+    """
+    {% resolve some_list some_index as value %}
+    {% resolve some_dict some_dict_key as value %}
+    """
     try:
         return Variable(lookup).resolve(target)
     except VariableDoesNotExist:
@@ -23,23 +27,19 @@ def print_timestamp(timestamp):
         return None
     return datetime.datetime.fromtimestamp(ts)
 
-"""
-Template tags for working with lists.
-
-You'll use these in templates thusly::
-
-    {% load listutil %}
-    {% for sublist in mylist|parition:"3" %}
-        {% for item in mylist %}
-            do something with {{ item }}
-        {% endfor %}
-    {% endfor %}
-"""
-
 
 @register.filter
 def partition(thelist, n):
     """
+    Template tags for working with lists.
+    You'll use these in templates thusly::
+
+        {% for sublist in mylist|parition:"3" %}
+            {% for item in mylist %}
+                do something with {{ item }}
+            {% endfor %}
+        {% endfor %}
+
     Break a list into ``n`` pieces. The last list may be larger than the rest if
     the list doesn't break cleanly. That is::
 
@@ -139,3 +139,21 @@ def intwordcn(value):
             new_value = value / float(large_number)
             return _check_for_float(new_value, *converters(new_value))
     return value
+
+
+@register.assignment_tag
+def queryset_filter(qs, **kwargs):
+    return qs.filter(**kwargs)
+
+
+@register.filter_function
+def queryset_order_by(queryset, args):
+    args = [x.strip() for x in args.split(',')]
+    return queryset.order_by(*args)
+
+
+@register.assignment_tag
+def settings_value(name):
+    from mezzanine.conf import settings
+    return getattr(settings, name, None)
+

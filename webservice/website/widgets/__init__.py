@@ -8,4 +8,4 @@ from .categories import *
 from .latest import *
 from .masterpiece import *
 from .topics import *
-from .ios_pc import *
+from .pc import *

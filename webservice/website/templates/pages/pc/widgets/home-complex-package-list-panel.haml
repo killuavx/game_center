@@ -1,0 +1,21 @@
+-load static
+-load util_tags url_tags templateutils_tags
+.icon.title_box
+  %h3.fl= title
+  %ul.fl
+    -for grp in result
+      -if forloop.first
+        %li.li_1.hover= grp.name
+      -else
+        %li{:class => "li_={forloop.counter}"}= grp.name
+  %span.tab-more<
+    -for grp in result
+      %a.fr{:href => "={grp.more_url}"} 更多 &gt;
+/ title_box
+
+.list.left_list
+  -for grp in result
+    %ul<
+      -for pkg in grp.packages
+        {% include "pages/pc/widgets/include-package-box.haml" with package=pkg only %}
+/ list

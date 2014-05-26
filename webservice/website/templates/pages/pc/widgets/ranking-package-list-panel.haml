@@ -1,0 +1,25 @@
+-load util_tags url_tags
+.icon.title_box
+  %ul.fl
+    %li.li_1.hover= ranking.title
+/ title_box
+.list.right_list
+  %ul
+    -for package in items
+      -with version=package.versions.latest_published
+        %li{:class => "{% if forloop.first %}hover{% endif %}"}><
+          {% absolute_url_as package product="pc" as detail_url %}
+          -with version=package.versions.latest_published
+            %a.big_pic{:href => "#"}
+              %img{:src => "{% resource_url version 'icon' %}"}
+                %span.icon.cover
+            %h2
+              %a{:href => "={detail_url}"}>
+                %em{:class => "{% if forloop.counter <= 3 %}top{% endif %}"}= forloop.counter
+                = package.title
+            {% download_url_as version entrytype='pc' as dw_url %}
+            .btn
+              %span.bg
+              %p {{ version.get_download_size|filesizeformat }} | {{ version.download_count|default:0|intwordcn }}+下载
+              %a.a1.install{:href => "={dw_url}"} 安装
+              %a.a2{:href => "={dw_url}"} 下载

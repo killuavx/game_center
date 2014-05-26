@@ -21,7 +21,7 @@ from easy_thumbnails.fields import ThumbnailerImageField
 
 from toolkit.managers import CurrentSitePassThroughManager
 from toolkit.fields import StarsField, PkgFileField, MultiResourceField
-from toolkit.models import SiteRelated
+from toolkit.models import SiteRelated, ModelAbsoluteUrlMixin
 from toolkit.helpers import import_from, sync_status_from
 from toolkit.storage import package_storage
 
@@ -89,7 +89,87 @@ def factory_author_upload_to(basename):
     return upload_to
 
 
-class Author(SiteRelated, models.Model):
+class PlatformBase(object):
+
+    _is_base = True
+
+    PLATFORM_BASE = 'base'
+
+    PLATFORM_IOS = 'ios'
+
+    PLATFORM_ANDROID = 'android'
+
+    _platform = PLATFORM_BASE
+
+    @property
+    def platform(self):
+        return self._platform
+
+    @property
+    def is_base(self):
+        return self._is_base
+
+    @property
+    def is_ios_model(self):
+        if self.is_base:
+            return False
+
+        if self.platform == self.PLATFORM_IOS:
+            return True
+
+        return False
+
+    @property
+    def is_ios(self):
+        if self.is_ios_model:
+            return True
+        try:
+            name = self._meta.module_name
+            attr = getattr(self, 'ios%s' % name)
+        except (AttributeError, ObjectDoesNotExist) as e:
+            return False
+        else:
+            return True
+
+    @property
+    def as_ios(self):
+        if self.is_ios_model:
+            return self
+
+        if self.is_ios:
+            name = self._meta.module_name
+            if name.startswith('ios'):
+                return self
+            else:
+                return getattr(self, 'ios%s' % name)
+        return None
+
+    @property
+    def is_android(self):
+        return not self.is_ios
+
+    @property
+    def is_android_model(self):
+        if self.is_base:
+            return True
+        return False
+
+    @property
+    def as_android(self):
+        return self.as_base
+
+    @property
+    def as_base(self):
+        if self.is_ios_model:
+            name = self._meta.module_name
+            name = name.lstrip('ios')
+            ptr = '%s_ptr' % name
+            return getattr(self.as_ios, ptr)
+        else:
+            return self
+
+
+class Author(PlatformBase, SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(AuthorQuerySet)()
@@ -192,7 +272,8 @@ class PackageQuerySet(QuerySet):
             .exclude(status=self.model.STATUS.published)
 
 
-class Package(SiteRelated, models.Model):
+class Package(PlatformBase, ModelAbsoluteUrlMixin,
+              SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
 
@@ -342,6 +423,7 @@ class Package(SiteRelated, models.Model):
         else:
             return '/iospc/package/%s/' % self.pk
 
+
 tagging.register(Package)
 
 
@@ -409,7 +491,8 @@ def version_upload_path(instance, filename):
     return join(prefix, filename)
 
 
-class PackageVersion(SiteRelated, models.Model):
+class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
+                     SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(PackageVersionQuerySet)()
@@ -858,7 +941,14 @@ class SupportedDevice(SiteRelated, models.Model):
 
 
 # IOS
-class IOSAuthor(Author):
+class IOSPlatform(PlatformBase):
+
+    _is_base = False
+
+    _platform = PlatformBase.PLATFORM_IOS
+
+
+class IOSAuthor(IOSPlatform, Author):
 
     objects = CurrentSitePassThroughManager.for_queryset_class(AuthorQuerySet)()
 
@@ -880,7 +970,7 @@ class IOSAuthor(Author):
                                    max_length=150)
 
 
-class IOSPackage(Package):
+class IOSPackage(IOSPlatform, Package):
 
     objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
 
@@ -897,7 +987,7 @@ class IOSPackage(Package):
                                          blank=True)
 
 
-class IOSPackageVersion(PackageVersion):
+class IOSPackageVersion(IOSPlatform, PackageVersion):
 
     objects = CurrentSitePassThroughManager \
         .for_queryset_class(PackageVersionQuerySet)()
@@ -936,4 +1026,6 @@ class IOSPackageVersion(PackageVersion):
                                           db_index=True,
                                           blank=True)
 
+    def is_free(self):
+        return self.price.is_zero()
 

@@ -4,7 +4,7 @@ from django.conf.urls import patterns, url
 
 slug_pattern = '[\w_.-]+'
 
-urlpatterns = patterns('website.views',
+urlpatterns = patterns('website.views.iospc',
     url(r'^package/(?P<package_name>%s)/$' % (slug_pattern),'iospc_package_detail_views', name='iospc_package_detail'),
     url(r'^collections/$', 'iospc_collectios_list_views', name='iospc_collections_list'),
     url(r'^topic/(?P<slug>%s)/$' % slug_pattern, 'iospc_collection_detail_views', name='iospc_masterpiece_packages'),

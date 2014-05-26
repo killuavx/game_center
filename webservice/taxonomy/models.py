@@ -19,7 +19,7 @@ from django.core.urlresolvers import get_callable
 from django.conf import settings
 from toolkit.managers import CurrentSitePassThroughManager, CurrentSiteManager
 from toolkit.helpers import sync_status_from, current_site_id
-from toolkit.models import (SiteRelated )
+from toolkit.models import SiteRelated
 from toolkit.fields import MultiResourceField
 
 slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
@@ -118,7 +118,26 @@ class CategoryManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
     pass
 
 
-class Category(MPTTModel, Taxonomy):
+class CategoryAbsoluteUrlMixin(object):
+
+    _top_slugs = ('game', 'application')
+
+    def get_absolute_url_as(self, product, pagetype='default'):
+        if product == 'pc':
+            if self.slug in self._top_slugs:
+                # mezzanine.pages.views.page
+                view_name = 'page'
+                page_slug = "%s/%s" % (product, self.slug)
+                return reverse(view_name, kwargs=dict(slug=page_slug))
+            else:
+                view_name = 'website.views.%s.%s_page' % (product, self.get_root().slug)
+                return reverse(view_name, kwargs=dict(slug=self.slug))
+        return None
+
+
+class Category(CategoryAbsoluteUrlMixin,
+               MPTTModel, Taxonomy):
+
     objects = CategoryManager.for_queryset_class(CategoryQuerySet)()
 
     parent = TreeForeignKey('self', null=True, blank=True,
@@ -156,9 +175,8 @@ class Category(MPTTModel, Taxonomy):
 
     tracker = FieldTracker()
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('category_package_list', (), dict(slug=self.slug))
+        return reverse('category_package_list', kwargs=dict(slug=self.slug))
 
     def __str__(self):
         return str(self.name)
@@ -208,7 +226,27 @@ class TopicManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
     pass
 
 
-class Topic(MPTTModel, Taxonomy):
+class TopicAbsoluteUrlMixin(object):
+
+    _spec_topics = {'home-recommend-game': 'masterpieces',
+                    'spec-choice-topic': 'collections'}
+
+    def get_absolute_url_as(self, product, pagetype='detail'):
+        if product == 'pc':
+            if pagetype == 'detail':
+                view_name = 'website.views.%s.topic_detail' % product
+                return reverse(view_name, kwargs=dict(slug=self.slug))
+
+            if pagetype == 'special' and self.slug in self._spec_topics:
+                # mezzanine.pages.views.page
+                view_name = 'page'
+                page_slug = "%s/%s" % (product, self._spec_topics[self.slug])
+                return reverse(view_name, kwargs=dict(slug=page_slug))
+        return None
+
+
+class Topic(MPTTModel, Taxonomy, TopicAbsoluteUrlMixin):
+
     objects = TopicManager.for_queryset_class(TopicQuerySet)()
 
     parent = TreeForeignKey('self', null=True, blank=True,
