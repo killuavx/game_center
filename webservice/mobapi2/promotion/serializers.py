@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
 from promotion.models import Advertisement
-from mobapi2.rest_fields import factory_imageurl_field
 from mobapi2.settings import IMAGE_ADV_COVER_SIZE
-from mobapi2.serializers import HyperlinkedModelSerializer
+from mobapi2.serializers import HyperlinkedModelSerializer, ModelGetResourceMixin
 
 
-class AdvertisementSerializer(HyperlinkedModelSerializer):
+class AdvertisementGetResourceMixin(ModelGetResourceMixin):
+
+    DEFAULT_COVER_SIZE = IMAGE_ADV_COVER_SIZE
+
+
+class AdvertisementSerializer(AdvertisementGetResourceMixin,
+                              HyperlinkedModelSerializer):
 
     content_url = serializers.SerializerMethodField('get_content_url')
 
@@ -23,7 +28,7 @@ class AdvertisementSerializer(HyperlinkedModelSerializer):
     def get_content_type(self, obj):
         return str(obj.content_type).lower()
 
-    cover = factory_imageurl_field(IMAGE_ADV_COVER_SIZE)
+    cover = serializers.SerializerMethodField('get_cover')
 
     class Meta:
         model = Advertisement
