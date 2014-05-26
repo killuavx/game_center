@@ -7,9 +7,14 @@
     <div class="f18 cell rel t-title">
       <h3 class="l n mr30"><span class="abs ios-web-icon"></span>破解游戏</h3>
       <ul class="l abs cell-bk f16">
-        <li class="ios-web-icon dib pl10 pr10 tab"><a href="crack.html">首发破解</a></li>
-        <li class="dib pl10 pr10 tab"><a href="crack-dis.html">全部破解</a></li>
-        <li class="dib pl10 pr10 tab"><a href="#">破解推荐</a></li>
+
+        <li class="dib pl10 pr10 tab {% if not type and not topic %}ios-web-icon{% endif %}"><a title="链接名称" href="/android/crack/">首发破解</a></li>
+
+
+        <li class="dib pl10 pr10 tab {% if type == 'all' %}ios-web-icon{% endif %}"><a title="链接名称" href="/android/crack/?type=all">全部破解</a></li>
+
+        <li class="dib pl10 pr10 tab {% if topic %}ios-web-icon{% endif %}"><a title="链接名称" href="/android/crack/?topic=all">破解推荐</a></li>
+
       </ul>   
 
       <a href="#" class="r btn db f16 p5 btn-green white qy-btn">我要许愿破解</a>                             

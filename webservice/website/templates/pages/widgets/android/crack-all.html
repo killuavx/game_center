@@ -13,11 +13,11 @@
 
       <ul class="l abs cell-bk f16">
 
-        <li class="dib pl10 pr10 tab"><a title="链接名称" href="crack.html">首发破解</a></li>
+        <li class="dib pl10 pr10 tab {% if not type and not topic %}ios-web-icon{% endif %}"><a title="链接名称" href="/android/crack/">首发破解</a></li>
 
-        <li class="dib pl10 pr10 tab {% if type == 'all' %}ios-web-icon{% endif %}"><a title="链接名称" href="crack-dis.html">全部破解</a></li>
+        <li class="dib pl10 pr10 tab {% if type == 'all' %}ios-web-icon{% endif %}"><a title="链接名称" href="/android/crack/?type=all">全部破解</a></li>
 
-        <li class="dib pl10 pr10 tab {% if topic %}ios-web-icon{% endif %}"><a title="链接名称" href="#">破解推荐</a></li>
+        <li class="dib pl10 pr10 tab {% if topic %}ios-web-icon{% endif %}"><a title="链接名称" href="/android/crack/?topic=all">破解推荐</a></li>
 
       </ul>
 
