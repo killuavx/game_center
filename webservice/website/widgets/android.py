@@ -380,34 +380,30 @@ class CrackPackagesListWidget(BaseListWidget):
 
 
     def get_context(self, value=None, options=dict(), context=None):
-        type = options.get('type', None)
         slug = options.get('slug', None)
         all_crack_packages = self.get_all_crack_packages(slug)
         all_crack_packages_published = all_crack_packages.published()
-        if type is None or type == 'first_release':
-            crack_packages_today = self.get_crack_packages_by_delta_days(\
-                all_crack_packages_published, self.get_date(2))
-            crack_packages_yesterday = self.get_crack_packages_by_delta_days(\
-                all_crack_packages_published, self.get_date(4))
-            crack_packages_yesterday_before = self.get_crack_packages_by_delta_days\
-                (all_crack_packages_published, self.get_date(5))
+        crack_packages_today = self.get_crack_packages_by_delta_days(\
+            all_crack_packages_published, self.get_date(2))
+        crack_packages_yesterday = self.get_crack_packages_by_delta_days(\
+            all_crack_packages_published, self.get_date(4))
+        crack_packages_yesterday_before = self.get_crack_packages_by_delta_days\
+            (all_crack_packages_published, self.get_date(5))
 
-            someday = self.get_date(36)
-            crack_packages_someday = self.get_crack_packages_by_delta_days(\
-                all_crack_packages_published, someday)
-            crack_packages_tomorrow = self.get_crack_packages_by_delta_days(\
-                all_crack_packages, self.get_date(-1), True)
+        someday = self.get_date(36)
+        crack_packages_someday = self.get_crack_packages_by_delta_days(\
+            all_crack_packages_published, someday)
+        crack_packages_tomorrow = self.get_crack_packages_by_delta_days(\
+            all_crack_packages, self.get_date(-1), True)
 
-            options.update(
-                crack_packages_today = crack_packages_today,
-                crack_packages_yesterday = crack_packages_yesterday,
-                crack_packages_yesterday_before = crack_packages_yesterday_before,
-                crack_packages_someday  = crack_packages_someday,
-                crack_packages_tomorrow = crack_packages_tomorrow,
-                cat = self.crack_cat,
-                someday = someday,
-            )
-        elif type == 'all':
-            self.template = 'pages/widgets/android/crack-first-release-app-list.html'
+        options.update(
+            crack_packages_today = crack_packages_today,
+            crack_packages_yesterday = crack_packages_yesterday,
+            crack_packages_yesterday_before = crack_packages_yesterday_before,
+            crack_packages_someday  = crack_packages_someday,
+            crack_packages_tomorrow = crack_packages_tomorrow,
+            cat = self.crack_cat,
+            someday = someday,
+        )
 
         return options
