@@ -10,7 +10,7 @@
         %li{:class => "{% if forloop.first %}hover{% endif %}"}><
           {% absolute_url_as package product="pc" as detail_url %}
           -with version=package.versions.latest_published
-            %a.big_pic{:href => "#"}
+            %a.big_pic{:href => "={detail_url}"}
               %img{:src => "{% resource_url version 'icon' %}"}
                 %span.icon.cover
             %h2
