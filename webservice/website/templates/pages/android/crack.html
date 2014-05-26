@@ -4,5 +4,6 @@
 
 {% block main %}
 {% include_widget CrackTopBannersWidget slug='android-home-top-banner' %}
-{% include_widget CrackPackagesListWidget slug='crack-game' %}
+{% include_widget CrackPackagesListWidget slug='crack-game' type=type page_num=page_num %}
+{{ type }}
 {% endblock %}

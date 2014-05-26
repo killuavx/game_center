@@ -86,3 +86,16 @@ def android_app(request, page):
         data['page_num'] = page_num
 
     return data
+
+
+android_crack_page_slug = 'android/crack'
+@processor_for(android_crack_page_slug)
+def android_crack(request, page):
+    data = dict()
+    if request.method == "GET":
+        type = request.GET.get('type', None)
+        page_num = request.GET.get('page', None)
+        data['page_num'] = page_num
+        data['type'] = type
+
+    return data
