@@ -115,32 +115,25 @@ p.price span{color:#e53333; text-decoration:line-through}
 .s4{background-position:-15px -91px}
 .s5{background-position:-1px -91px}
 
-.list .btn{display:none}
-.list .bg{width:110px; height:44px; top:53px; left:83px; background:#fff; filter:alpha(opacity=80); opacity: 0.8;}
-.btn a{display:inline-block; width:55px; height:29px; line-height:29px; text-align:center; background:#ccc; left:83px; top:53px; letter-spacing:3px; font-family:宋体; font-size:12px}
-.btn a:hover{background:#bbb; color:#333}
-.btn a.a2{left:138px}
-.btn a.a1{color:#fff}
-.btn a.install{background:#e53333;color:#fff}
-.btn a.cancel{background:#429aef;color:#fff}
-.btn a.update{background:#5bc400;color:#fff}
-.btn a.open{background:#ff9933;color:#fff}
-.btn a.download,.bupdatetn a.stop{background:#999999;color:#fff}
-
-.btn a.install:hover{background:#d12525;color:#fff}
-.btn a.cancel:hover{background:#1779d8;color:#fff}
-.btn a.update:hover{background:#4b9d03;color:#fff}
-.btn a.open:hover{background:#ff7b33;color:#fff}
-.btn a.stop,.btn a.stop:hover{background:#eee; color:#bbb;cursor:not-allowed}
-.btn a.download:hover{background:#767676;color:#fff}
+.list .btn{bottom:1px; right:0; display:none}
+.btn a{display:inline-block; position:relative !important; float:left; width:60px; height:29px; line-height:29px; text-align:center; background:#429aef; font-family:宋体; font-size:12px;color:#fff}
+.btn a:hover{background:#1779d8}
+.btn .a1{background:#5bc400}
+.btn .a1:hover,.install-popup a:hover{background:#4b9d03}
+.btn .no{background:#CCC !important; color:#aaa !important; cursor:no-drop}
+.btn .a2.no{border-left:1px solid #ddd}
 
 
 
-.btn a:hover,.btn a:focus{text-decoration:none;background-image:linear-gradient(to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)); color:#fff}
-.btn a:focus{outline:thin dotted;outline:5px auto -webkit-focus-ring-color;outline-offset:-2px; color:#fff}
-.btn a:active{outline:none;-webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);-moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);box-shadow: inset 0 2px 4px rgba(0,0,0,.15); color:#fff}
+.btn a:hover,.btn a:focus,.install-popup a:focus{text-decoration:none;background-image:linear-gradient(to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)); color:#fff}
+.btn a:focus,.install-popup a:focus{outline:thin dotted;outline:5px auto -webkit-focus-ring-color;outline-offset:-2px; color:#fff}
+.btn a:active,.install-popup a:active{outline:none;-webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);-moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);box-shadow: inset 0 2px 4px rgba(0,0,0,.15); color:#fff}
 
 
+.install-popup{background:#5bc400; position:absolute; font-family:宋体; width:120px; z-index:99999}
+.install-popup i{display:none}
+.install-popup span,.install-popup a{padding:2px 5px; display:block; color:#FF6; border-top:1px solid #51ae00}
+.install-popup a:hover i{display:inline-block; margin-right:5px}
 
 
 
@@ -173,9 +166,8 @@ p.price span{color:#e53333; text-decoration:line-through}
 .right_list li.hover h2{padding-left:19px; width:160px}
 .right_list li.hover em{margin-left:-18px} 
 .right_list li.hover p{left:78px; top:30px;}
-.right_list li.hover .btn{display:block}
-.right_list li.hover .btn a{left:78px; top:50px; height:22px; line-height:21px}
-.right_list li.hover .btn a.a2{left:133px}
+.right_list li.hover .btn{display:block; right:5px}
+.right_list li.hover .btn p{left:0; top:-22px}
 
 .roll{padding:10px 0; height:100px; overflow:hidden; zoom:1; position:relative; width:800px;}
 .roll .list_box{width:800px; height:100px; overflow:hidden}
@@ -227,18 +219,18 @@ p.price span{color:#e53333; text-decoration:line-through}
 .collection_box .l img{width:270px; height:135px}
 .collection_box .l h3{font-size:16px; margin-top:7px}
 
-.collection_box .inner{height:135px; width:511px; overflow:hidden; position:relative; padding-left:6px}
-.collection_box .inner ul{width:540px;height:135px}
-.collection_box .inner li{width:95px; height:135px; float:left; margin:15px 0 0 5px; text-align:center; position:relative}
+.collection_box .inner{height:145px; width:511px; overflow:hidden; position:relative; padding-left:6px}
+.collection_box .inner ul{width:540px}
+.collection_box .inner li{width:95px; height:130px; float:left; margin:15px 0 0 5px; text-align:center; position:relative}
 .collection_box .inner img{width:68px; height:68px}
 .collection_box .inner .name{font-size:14px; height:25px; line-height:33px; margin-bottom:2px; overflow:hidden; display:inline-block}
 
-.collection_box .btn{position:absolute; top:70px; left:9px; *left:0px; margin-left:0px; background:#fff; width:85px; height:60px; padding:3px 0 0 5px; display:none}
-.collection_box .btn a{display:block; height:24px; line-height:24px; width:68px}
+.collection_box .btn{position:absolute; bottom:0; left:9px; *left:0px; margin-left:0px; background:#fff; width:85px; height:60px; padding:0 0 0 5px; display:none}
+.collection_box .btn a{display:block; width:68px}
 .collection_box .cover{position:absolute; left:12px; top:-2px}
 .collection_box .star{top:5px; left:2px}
 .collection_box .banner_btn{top:21px}
-.collection_box .date{padding:9px 10px 0 0; text-align:right; color:#666}
+.collection_box .date{padding:0 10px 0 0; text-align:right; color:#666}
 
 .collection_dis{background:none}
 .collection_title{border-bottom:1px solid #eee; padding-right:10px; background:url(http://static.ccplay.com.cn/static/common/img/collection_bg.png) #333 center center; color:#FFF}
@@ -255,8 +247,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .maste_lsit .des{padding:4px 0; height:30px; _line-height:18px; overflow:hidden; margin-bottom:4px}
 .maste_lsit .star{left:0px; top:2px; margin-top:3px}
 .maste_lsit .btn{position:absolute; left:10px; bottom:95px; height:34px; width:250px; overflow:hidden; display:none}
-.maste_lsit .btn a{width:133px; height:34px; line-height:34px; position:absolute; left:0; top:0}
-.maste_lsit .btn a.a2{left:133px}
+.maste_lsit .btn a{width:125px; height:34px; line-height:34px}
 
 .vendor {width:800px; height:630px;}
 .vendor .l{width:197px; height:630px; text-align:center}
@@ -314,8 +305,8 @@ p.price span{color:#e53333; text-decoration:line-through}
 .dis .google.no{background-position:-144px -73px}
 
 .dis .l{width:197px; border-top:2px solid #e53333}
-.dis .l .up,.dis .r .up{height:477px; background:#e6e6e6;}
-.dis .r{width:600px; background:#fff; border-top:2px solid #333}
+.dis .l .up,.dis .r .up{background:#e6e6e6;}
+.dis .r{width:603px; background:#fff; border-top:2px solid #333}
 .dis .l .down{height:500px; width:196px; overflow:hidden}
 .dis .l .down .right_list{height:395px}
 .dis .r .up{background:#fff;}
@@ -324,15 +315,15 @@ p.price span{color:#e53333; text-decoration:line-through}
 .dis .pic img{width:150px; height:150px}
 .dis .up .cover{background:url(../img/cover.png) no-repeat; width:197px; height:197px; position:absolute; top:0; left:0}
 
-.dis .up .btn{width:130px; margin:0 auto}
+.dis .up .btn{width:130px; height:80px; margin:0 auto}
 .dis .up .btn a{display:block; height:30px; width:130px; line-height:27px; text-align:center; margin-bottom:10px; font-size:14px}
 
 .instr{color:#555; padding-top:10px; position:relative}
-.instr li{height:20px; line-height:20px; border-top:1px solid #dadada; padding:0 10px}
-.instr span{color:#888; padding-left:10px; height:20px; width:140px; overflow:hidden; display:inline-block}
-.instr .star{left:0; top:-3px; _top:-1px; width:68px; height:12px; padding-left:0; position:relative}
+.instr li{border-top:1px solid #dadada; padding:4px 10px; vertical-align:text-top; clear:both}
+.instr span{color:#888; padding-left:10px; width:140px; overflow:hidden; display:inline-block; float:right}
+.instr .star{left:0; top:0px; _top:-1px; width:68px; height:12px; padding-left:0; position:relative}
 
-.dis .r .up,.dis .r .up .up_box{width:580px; height:477px; overflow:hidden; position:relative; padding:10px}
+.dis .r .up,.dis .r .up .up_box{width:580px; overflow:hidden; position:relative; padding:10px}
 .dis .r .up ul{padding:10px}
 .dis .r .up li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
 .dis .r .up img{width:280px; height:467px}
