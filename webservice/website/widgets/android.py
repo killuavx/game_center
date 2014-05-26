@@ -344,3 +344,12 @@ class CategoriesPackagesListWidget(BaseListWidget):
         #print (options['current_topic'])
 
         return options
+
+
+class CrackTopBannersWidget(BaseMultiAdvWidget, Widget):
+
+   template='pages/widgets/android/crack-top-banner.html'
+
+
+class CrackPackagesListWidget(BaseListWidget):
+    template = 'pages/widgets/android/app-list.html'
