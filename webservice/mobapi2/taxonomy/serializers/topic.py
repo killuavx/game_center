@@ -19,9 +19,9 @@ class TopicRelatedItemsMixin(object):
         model = get_item_model_by_topic(obj)
         if model is Package:
             return queryset.published()\
-                .by_updated_order()
+                .by_published_order(True)
         else:
-            return queryset.published()
+            return queryset
 
     def get_items_queryset(self, obj):
         return TopicalItem.objects \
@@ -104,6 +104,7 @@ class TopicSummarySerializer(TopicRelatedItemCountUrlAndChildrenUrlMixin,
 class TopicDetailWithPackageSerializer(
     TopicRelatedItemCountUrlAndChildrenUrlMixin,
     HyperlinkedModelSerializer):
+
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
     cover = factory_imageurl_field(IMAGE_COVER_SIZE)
