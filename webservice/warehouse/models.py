@@ -402,6 +402,7 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
                     )
                 )
         super(Package, self).clean()
+        self.updated_datetime = now()
 
     def __str__(self):
         return self.title
@@ -606,7 +607,7 @@ class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
 
     created_datetime = models.DateTimeField(auto_now_add=True)
 
-    updated_datetime = models.DateTimeField(auto_now=True, auto_now_add=True)
+    updated_datetime = models.DateTimeField(auto_now=False, auto_now_add=True)
 
     stars = StarsField(verbose_name=_('Star'))
 
@@ -618,6 +619,10 @@ class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
                           format='File')
 
     resources = MultiResourceField()
+
+    def clean(self):
+        super(PackageVersion, self).clean()
+        self.updated_datetime = now()
 
     def get_absolute_url(self, link_type=0):
         if link_type == 0:
@@ -864,9 +869,6 @@ def package_pre_save(sender, instance, **kwargs):
         changed.pop('updated_datetime')
     except KeyError:
         pass
-
-    if len(changed):
-        instance.updated_datetime = now()
 
     if not instance.workspace:
         instance.workspace = ''

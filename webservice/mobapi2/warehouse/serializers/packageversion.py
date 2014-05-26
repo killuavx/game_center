@@ -19,11 +19,7 @@ from mobapi2.warehouse.serializers.helpers import (
     get_packageversion_download_url,
     get_packageversion_download_size,
     get_packageversion_supported_languages)
-from mobapi2.serializers import (
-    SerializerRelatedField,
-    ModelWithRouterSerializer as ModelSerializer,
-    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
-
+from mobapi2.serializers import ModelSerializer,HyperlinkedModelSerializer
 
 
 class PackageVersionScreenshotSerializer(ModelSerializer):

@@ -55,34 +55,29 @@ em{padding:0 5px; color:#CCC}
 .i-all{width:16px; height:16px; background-position:-78px -715px}
 
 .btn-s {display:none}
-.btn-s a{display:inline-block; width:49.9%; height:30px; line-height:30px; text-align:center; background:#ccc; letter-spacing:3px; font-size:14px; float:left}
-.btn-s a:hover{background:#bbb; color:#333; text-decoration:none}
-.btn-s a.a2{}
-.btn-s a.a1{color:#fff}
-.btn-s a.install{background:#e53333;color:#fff}
-.btn-s a.cancel{background:#429aef;color:#fff}
-.btn-s a.update{background:#5bc400;color:#fff}
-.btn-s a.open{background:#ff9933;color:#fff}
-.btn-s a.download,.bupdatetn a.stop{background:#999999;color:#fff}
-
-.btn-s a.install:hover{background:#d12525;color:#fff}
-.btn-s a.cancel:hover{background:#1779d8;color:#fff}
-.btn-s a.update:hover{background:#4b9d03;color:#fff}
-.btn-s a.open:hover{background:#ff7b33;color:#fff}
-.btn-s a.download:hover,.btn-s a.stop:hover{background:#767676;color:#fff}
+.btn-s a{display:inline-block; width:49.9%; height:30px; line-height:28px; text-align:center;color:#fff; background:#429aef; letter-spacing:3px; font-size:14px; float:left}
+.btn-s a:hover{background:#1779d8; color:#fff; text-decoration:none}
+.btn-s a.install{background:#5bc400}
+.btn-s a.install:hover{background:#4b9d03}
 
 .cc-a-d-1{height:82px}
-.cc-a-d-2,.cc-a-d-3{height:100px; overflow:hidden}
+.cc-a-d-2,.cc-a-d-3{height:100px; overflow:hidden; position:relative;}
 .cc-a-d-4{height:90px}
 .l-box{width:940px; margin-right:320px; float:left}
 .r-box{width:300px; right:0; float:right; position:absolute}
+.cc-a-d-3 a.swf-a{position:absolute; left:0; top:0; width:100%; height:100%; display:block;z-index: 10;
+background-color: #fff;
+filter: alpha(opacity=0);
+opacity: 0;}
 
 #cc-m .cc-a-d-2 img{margin-left:-130px}
 #cc-s .cc-a-d-2 img{margin-left:-95px}
 
 
 
-.text-db,.hot-game-list-1 li{white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
+.text-db,.hot-game-list-1 li,.app-list-min a,.app-list-m dd a,.app-list-l dd a,.app-list-xl h3{white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
+.app-list-m dd a,.app-list-l dd a{display:inline-block; width:98px}
+.app-list-l dd a{width:110px}
 
 /*头部*/
 .head .top,.hot-game{background-color:#fff}
@@ -248,7 +243,6 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .app-list-m dd,.app-list-l dd{padding-left:55px}
 .app-list-m .star{right:5px; top:3px}
 .app-list-m .btn-s{position:absolute; top:37px; width:70%}
-
 .latest-release .time-box-t{background-position:23px bottom; padding-bottom:15px}
 .latest-release .time-box-b{background-position:23px bottom}
 
@@ -413,7 +407,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .sort-menu a:hover{background-color:#e53333; color:#fff}
 
 .app-list-xl{width:32%; height:94px; padding:0 0 20px 10px; *float:left}
-.app-list-xl h3{padding:5px 0}
+.app-list-xl h3{padding:5px 0; width:100%}
 .app-list-xl img{width:92px; height:92px; margin-left:1px}
 .app-list-xl dt .ios-web-icon{width:94px; height:94px; background-position:0 -736px; left:0; top:-1px}
 .app-list-xl dd{padding-left:100px}

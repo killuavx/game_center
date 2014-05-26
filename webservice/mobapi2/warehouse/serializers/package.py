@@ -11,8 +11,7 @@ from mobapi2.warehouse.serializers.mixin import (
     PackageRelatedPackageUrlMixin,
     PackageActionsMixin,
     PackageRelatedAuthorMixin)
-from mobapi2.serializers import (
-    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
+from mobapi2.serializers import HyperlinkedModelSerializer
 
 import logging
 logger = logging.getLogger('scripts')

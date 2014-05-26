@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.contrib.contenttypes.generic import GenericTabularInline, GenericStackedInline
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from django import forms
 from toolkit.models import Star, Resource
 from copy import deepcopy
 
@@ -48,11 +49,35 @@ class StarAdmin(admin.ModelAdmin):
 #admin.site.register(Star, StarAdmin)
 
 
+def get_resource_choices():
+    from django.conf import settings
+    _aliases = []
+    if hasattr(settings, 'GC_RESOURCE_ALIASES'):
+        _aliases = getattr(settings, 'GC_RESOURCE_ALIASES')
+
+    return list(zip(_aliases, _aliases))
+
+
+class ResourceForm(forms.ModelForm):
+
+    class Meta:
+        model = Resource
+        widgets = {
+            'alias': forms.Select()
+        }
+
+
 class ResourceInlines(GenericStackedInline):
     model = Resource
+    form = ResourceForm
     ct_field = "content_type"
     ct_fk_field = "object_pk"
     fields = ('file', 'kind', 'alias', 'alt', 'file_size', 'file_md5', )
     ordering = ('kind', 'alias', )
     readonly_fields = ('file_size', 'file_md5')
 
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        # Add some logic here to base your choices on.
+        if db_field.name == 'alias':
+            kwargs['widget'].choices = get_resource_choices()
+        return super(ResourceInlines, self).formfield_for_dbfield(db_field, **kwargs)

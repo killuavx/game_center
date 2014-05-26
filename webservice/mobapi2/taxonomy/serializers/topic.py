@@ -3,11 +3,9 @@ from rest_framework import serializers
 from mobapi2.helpers import get_item_model_by_topic, get_viewset_by_topic
 from taxonomy.models import Topic, TopicalItem
 from mobapi2.rest_fields import factory_imageurl_field
-from mobapi2.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
+from mobapi2.settings import IMAGE_ICON_SIZE
 from mobapi2.taxonomy.serializers import get_url_for_taxonomy
-from mobapi2.serializers import (
-    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
-from mobapi2.warehouse.serializers.package import PackageSummarySerializer
+from mobapi2.serializers import HyperlinkedModelSerializer, ModelGetResourceMixin
 from warehouse.models import Package
 
 
@@ -19,9 +17,9 @@ class TopicRelatedItemsMixin(object):
         model = get_item_model_by_topic(obj)
         if model is Package:
             return queryset.published()\
-                .by_updated_order()
+                .by_published_order(True)
         else:
-            return queryset.published()
+            return queryset
 
     def get_items_queryset(self, obj):
         return TopicalItem.objects \
@@ -69,13 +67,19 @@ class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
                                     self.opts.router)
 
 
+class TopicGetResourceMixin(ModelGetResourceMixin):
+    pass
+
+
+
 class TopicSummarySerializer(TopicRelatedItemCountUrlAndChildrenUrlMixin,
                              TopicRelatedItemsMixin,
+                             TopicGetResourceMixin,
                              HyperlinkedModelSerializer):
 
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
-    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
+    cover = serializers.SerializerMethodField('get_default_cover')
 
     items_url = serializers.SerializerMethodField('get_items_url')
 
@@ -103,10 +107,12 @@ class TopicSummarySerializer(TopicRelatedItemCountUrlAndChildrenUrlMixin,
 
 class TopicDetailWithPackageSerializer(
     TopicRelatedItemCountUrlAndChildrenUrlMixin,
+    TopicGetResourceMixin,
     HyperlinkedModelSerializer):
+
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
-    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
+    cover = serializers.SerializerMethodField('get_default_cover')
 
     items_url = serializers.SerializerMethodField('get_items_url')
 
