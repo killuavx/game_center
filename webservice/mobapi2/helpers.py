@@ -92,3 +92,21 @@ def get_object_stars_rate(obj, rate_type):
 
 def make_cache_key(prefix, app='api'):
     return "%s.%s" %(app, prefix)
+
+
+from urllib import parse
+
+def get_category_packages_url(category, router=None, request=None):
+    viewname = 'package-list'
+    reverse_viewname = router.get_base_name(viewname) if router else viewname
+    path = reverse(reverse_viewname)
+    urlp = list(parse.urlparse(path))
+    qp = parse.parse_qsl(urlp[4])
+
+    qp.append(('categories', category.pk))
+
+    urlp[4] = parse.urlencode(qp, True)
+    url = parse.urlunparse(urlp)
+    if request:
+        return request.build_absolute_uri(url)
+    return url
