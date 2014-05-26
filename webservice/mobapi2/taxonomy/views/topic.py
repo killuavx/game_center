@@ -67,13 +67,12 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if self.queryset is None:
-            self.queryset = Topic.objects.published()
-        return self.queryset
+            self.queryset = Topic.objects.all()
+        return self.queryset.published()
 
     @cache_response(key_func=default_list_cache_key_func)
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        origin_queryset, self.queryset = queryset, queryset.as_root()
+        origin_queryset, self.queryset = self.queryset, self.get_queryset().as_root()
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
         self.queryset = origin_queryset
         return res
@@ -89,6 +88,8 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
             self.queryset, self.get_queryset().filter(parent=topic)
         self.ordering = ('-updated_datetime', )
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
+        self.queryset = origin_queryset
+        self.ordering = ('released_datetime', )
         return res
 
     @cache_response(key_func=ckc.LookupOrderingListKeyConstructor())
@@ -103,7 +104,6 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = self.item_list_view_queryset(topic)
         # FIXME 重构此处queryset，使之与ViewSet.queryset可以合并查询
         # FIXME 重构此处，预先检查有无filter backend, OrderingFilter, 如果有OrderingFilter并有filter查询请求，则使用指定排序
-        queryset = queryset.published()
         # ignore filter backend ordering
         # using queryset pass by TopicalItem.ordering,
         ViewSet = self.item_list_view(topic)
