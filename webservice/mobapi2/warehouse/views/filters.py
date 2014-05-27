@@ -120,3 +120,52 @@ class PetitionOwnerPackageVersionFilter(filters.BaseFilterBackend):
         if request.GET.get('byme'):
             return queryset.filter(petitions__user=request.user)
         return queryset
+
+
+from rest_framework.filters import django_filters
+
+
+class DjangoFilterWithCustomFilterSetBackend(filters.DjangoFilterBackend):
+
+    custom_filter_set = None
+
+    def get_filter_class(self, view, queryset=None):
+        if self.custom_filter_set:
+            return self.custom_filter_set
+        return None
+
+
+def factory_topicalitem_filterbackend(for_model):
+
+    class TopicalItemFilterSet(filters.FilterSet):
+
+        strict = False
+
+        topic_slug = django_filters.CharFilter(name='topics__topic__slug')
+
+        order_by_field = 'ordering'
+        order_by = (
+            ('topical', 'Topical Ordering'),
+        )
+
+        def get_order_by(self, order_value):
+            if order_value == 'topical':
+                return ['topics__ordering']
+            return super(TopicalItemFilterSet, self).get_order_by(order_value)
+
+
+        class Meta:
+            model = for_model
+            fields = ['topic_slug', ]
+            order_by = ['topical', 'released_datetime' ]
+
+    class TopicalItemFilterBackend(DjangoFilterWithCustomFilterSetBackend):
+
+        custom_filter_set = TopicalItemFilterSet
+
+    return TopicalItemFilterBackend
+
+
+from warehouse.models import Package, Author
+TopicalPackageFilter = factory_topicalitem_filterbackend(Package)
+TopicalAuthorFilter = factory_topicalitem_filterbackend(Author)
