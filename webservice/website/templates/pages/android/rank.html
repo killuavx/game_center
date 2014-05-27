@@ -1,16 +1,16 @@
 {% extends "pages/android/base.html" %}
 {% load templateutils_tags %}
 {% block main %}
+{% load widgets %}
 
 <!--排行 开始 top-page-->
 
 <div class="auto mt30 width top-page">
 <div class="pb30 cell-bk btn-s-box">
 
-{%  mkrange 1 4 as fnum %}
-{% for i in fnum %}
-{% include "pages/android/rank/ranking.html" %}
-{% endfor %}
+{% include_widget RankPackageListWidget cat_slug='game' ranking_slug='hotgame' class='down-top' %}
+{% include_widget RankPackageListWidget cat_slug='game' ranking_slug='newstargame' class='rcd-top' %}
+{% include_widget RankPackageListWidget cat_slug='game' ranking_slug='boygame' class='cc-top' %}
 </div>
 </div>
 {% endblock %}

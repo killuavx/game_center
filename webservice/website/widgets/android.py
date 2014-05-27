@@ -14,6 +14,7 @@ from .common.webspide import BaseForumThreadPanelWdiget
 from .masterpiece import MasterpiecePackageListWidget
 from .common.category import BaseTopicAuthorPackageListWidget
 from .common.base import PaginatorPageMixin
+from .pc.home import PCRankingPackageListWidget
 
 
 def get_limit_range(p, r, n=10):
@@ -605,3 +606,19 @@ class VendorPackageListWidget(PaginatorPageMixin, BaseTopicAuthorPackageListWidg
         #print(limit_range)
         return options
 
+class RankPackageListWidget(PCRankingPackageListWidget):
+    template='pages/widgets/android/ranking.html'
+
+    def get_context(self, value, options):
+
+        cat_slug = options.get('cat_slug', None)
+        ranking_slug = options.get('ranking_slug', None)
+#        print(ranking_slug)
+#        print(cat_slug)
+        ranking = self.get_ranking(cat_slug, ranking_slug)
+        options.update(
+            ranking = ranking,
+            items = ranking.packages.published(),
+        )
+
+        return options
