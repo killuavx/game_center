@@ -17,7 +17,7 @@
           %p.price 免费
     %div.icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
     {% download_url_as version entrytype='pc' as dw_url %}
-    .btn><
+    .btn{:download_url => "={dw_url}"}><
       %span.bg
-      %a.a1.install{:href => "={dw_url}"} 安装
-      %a.a2{:href => "={dw_url}"} 下载
+      %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+      %a.a2{:href => "javascript:;", :class => "app-download-btn-js"} 下载
