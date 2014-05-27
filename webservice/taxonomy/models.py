@@ -360,7 +360,13 @@ class TopicalItem(SiteRelated, models.Model):
 
     class Meta:
         unique_together = (('topic', 'content_type', 'object_id'),)
-        index_together = (('topic', 'content_type'), )
+        index_together = (
+            ('site', 'topic'),
+            ('site', 'topic', 'content_type'),
+            ('site', 'topic', 'content_type', 'object_id'),
+            ('site', 'topic', 'content_type', 'object_id', 'ordering'),
+            ('topic', 'content_type'),
+        )
         ordering = ('ordering', )
         verbose_name = _('topical item')
         verbose_name_plural = _('topical items')
