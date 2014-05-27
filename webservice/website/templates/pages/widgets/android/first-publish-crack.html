@@ -16,9 +16,9 @@
         {% for item in items|slice:"6" %}
         {% with version=item.versions.latest_published %}
         <dl class="dib rel app-list-xl">
-          <dt class="abs"><a title="链接名称" href="{{ item.get_absolute_url }}" class="pic"><img alt="图片名称" src="{{ version.icon.url }}"><span class="ios-web-icon abs"></span></a></dt>
+          <dt class="abs"><a title="链接名称" href="{{ item.get_package_url }}" class="pic"><img alt="图片名称" src="{{ version.icon.url }}"><span class="ios-web-icon abs"></span></a></dt>
           <dd class="g9">
-          <h3 class="n rel g3 f16 pb5 text-db"><a title="链接名称" href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
+          <h3 class="n rel g3 f16 pb5 text-db"><a title="链接名称" href="{{ item.get_package_url }}">{{ item.title }}</a></h3>
           <div class="g9 lh20">{{ item.summary }}</div>
           <div class="l mt5 ios-web-icon star s{{ version.stars_average|floatformat:"0" }}"></div>
           <p class="pt2 r">{{ version.get_download_size|default:0|filesizeformat }} <em>|</em>{{ item.download_count|intwordcn }}+下载<em>|</em>{{ cat.name }}</p>

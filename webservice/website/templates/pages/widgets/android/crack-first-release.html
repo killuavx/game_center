@@ -33,8 +33,8 @@
               {% for item in crack_packages_tomorrow %}
               {% with version=item.versions.latest_published %}
               <li class="rel">
-              <a href="{{ item.get_absolute_url }}" class="l"><img src="{{ version.icon.url }}"><span class="ios-web-icon abs"></span></a>
-              <h3 class="n"><a href="{{ item.get_absolute_url }}">{{ item.title }} </a></h3>
+              <a href="{{ item.get_package_url }}" class="l"><img src="{{ version.icon.url }}"><span class="ios-web-icon abs"></span></a>
+              <h3 class="n"><a href="{{ item.get_package_url }}">{{ item.title }} </a></h3>
               <p class="g9">{{ cat.name }}<em>|</em>{{ item.download_count|intwordcn }}+下载</p>
               <p class="g9">破解说明：破解内购</p>
               </li>
@@ -60,7 +60,7 @@
               {% for item in crack_packages_today %}
               {% with version=item.versions.latest_published %}
               <div class="dib rel app-list-min">
-                <a href="{{ item.get_absolute_url }}" class="db tc f14" target="_blank">
+                <a href="{{ item.get_package_url }}" class="db tc f14" target="_blank">
                   <img src="{{ version.icon.url }}" class="db auto">
                   <span class="ios-web-icon abs db auto"></span>
                   {{ item.title }} 
@@ -81,7 +81,7 @@
               {% for item in crack_packages_yesterday %}
               {% with version=item.versions.latest_published %}
               <div class="dib rel app-list-min">
-                <a href="{{ item.get_absolute_url }}" class="db tc f14" target="_blank">
+                <a href="{{ item.get_package_url }}" class="db tc f14" target="_blank">
                   <img src="{{ version.icon.url }}" class="db auto">
                   <span class="ios-web-icon abs db auto"></span>
                   {{ item.title }} 
@@ -102,7 +102,7 @@
               {% for item in crack_packages_yesterday_before %}
               {% with version=item.versions.latest_published %}
               <div class="dib rel app-list-min">
-                <a href="{{ item.get_absolute_url }}" class="db tc f14" target="_blank">
+                <a href="{{ item.get_package_url }}" class="db tc f14" target="_blank">
                   <img src="{{ version.icon.url }}" class="db auto">
                   <span class="ios-web-icon abs db auto"></span>
                   {{ item.title }} 
@@ -123,7 +123,7 @@
               {% for item in crack_packages_someday %}
               {% with version=item.versions.latest_published %}
               <div class="dib rel app-list-min">
-                <a href="{{ item.get_absolute_url }}" class="db tc f14" target="_blank">
+                <a href="{{ item.get_package_url }}" class="db tc f14" target="_blank">
                   <img src="{{ version.icon.url }}" class="db auto">
                   <span class="ios-web-icon abs db auto"></span>
                   {{ item.title }} 

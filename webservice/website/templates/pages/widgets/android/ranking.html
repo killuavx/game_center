@@ -11,9 +11,9 @@
       {% for item in items %}
       {% with version=item.versions.latest_published %}
       <dl class="dib rel app-list-xl {% if forloop.counter < 4 %}top-{{forloop.counter}} {% endif %}">
-        <dt class="abs"><a href="{{ item.get_absolute_url }}" class="pic" target="_blank"><img src="{{ version.icon.url }}"><span class="ios-web-icon abs"></span></a></dt>
+        <dt class="abs"><a href="{{ item.get_package_url }}" class="pic" target="_blank"><img src="{{ version.icon.url }}"><span class="ios-web-icon abs"></span></a></dt>
         <dd class="g9 pt5">
-        <h3 class="n rel g3 f16"><a href="{{ item.get_absolute_url }}" target="_blank">{{ item.title }}</a></h3>
+        <h3 class="n rel g3 f16"><a href="{{ item.get_package_url }}" target="_blank">{{ item.title }}</a></h3>
         <p>{{ version.get_download_size|default:0|filesizeformat }} | {{ item.download_count|intwordcn }}+下载</p>
         <p>{{ item.categories.all.0.name }}</p>
         <div class="ios-web-icon star s{{ version.stars_average|floatformat:"0" }}"></div>

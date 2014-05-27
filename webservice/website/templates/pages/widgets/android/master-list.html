@@ -7,7 +7,7 @@
     {% for item in items %}
     {% with version=item.versions.latest_published %}
     <div class="maste_lsit">
-      <a title="链接名称" href="{{ item.get_absolute_url }}">
+      <a title="链接名称" href="{{ item.get_package_url }}">
         <img alt="图片名称" src="{{ version.icon.url }}">
         <h3 class="l">{{ item.title|slice:"11" }}</h3>
         <div class="r ios-web-icon star s{{ version.stars_average|floatformat:"0" }}"></div>
