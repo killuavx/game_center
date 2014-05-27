@@ -21,6 +21,7 @@ def version_data(context, version, **kwargs):
 
     return dict(
         appid=appid,
+        title=package.title,
         package_name=version.package.package_name,
         version_name=version.version_name,
         download_url=dw_url,
