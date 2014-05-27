@@ -169,7 +169,26 @@ class PlatformBase(object):
             return self
 
 
-class Author(PlatformBase, SiteRelated, models.Model):
+class AuthorAbsoluteUrlMixin(object):
+
+    PAGE_TYPE_DETAIL = 'detail'
+
+    PAGE_TYPE_LIST = 'list'
+
+    def get_absolute_url_as(self, product, pagetype=PAGE_TYPE_LIST):
+        if product == 'pc':
+            if pagetype == self.PAGE_TYPE_DETAIL:
+                view_name = 'website.views.%s.author_detail' % product
+                return reverse(view_name, kwargs=dict(pk=self.pk))
+            else:
+                view_name = 'mezzanine.pages.views.page'
+                page_slug = '%s/vendors' % product
+                return reverse(view_name, kwargs=dict(slug=page_slug)) \
+                       + "#author_%s" % self.pk
+        return None
+
+
+class Author(AuthorAbsoluteUrlMixin, PlatformBase, SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(AuthorQuerySet)()
