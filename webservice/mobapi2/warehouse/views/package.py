@@ -12,7 +12,9 @@ from mobapi2.warehouse.serializers.package import (
 from mobapi2.warehouse.views.filters import (
     PackageIdsFilter,
     SolrSearchFilter,
-    RelatedPackageSearchFilter)
+    RelatedPackageSearchFilter,
+    TopicalPackageFilter,
+    )
 from django.http import Http404
 from rest_framework_extensions.cache.decorators import cache_response
 from rest_framework_extensions.utils import (
@@ -23,7 +25,6 @@ from rest_framework_extensions.key_constructor import (
     constructors
 )
 from mobapi2 import cache_keyconstructors as ckc
-
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -109,7 +110,8 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (filters.OrderingFilter,
                        filters.DjangoFilterBackend,
                        filters.SearchFilter,
-                       RelatedPackageSearchFilter
+                       RelatedPackageSearchFilter,
+                       TopicalPackageFilter,
     )
     filter_fields = ('package_name', 'title', 'categories')
     ordering = ('-released_datetime', )

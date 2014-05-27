@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
-from mobapi2.helpers import get_item_model_by_topic, get_viewset_by_topic
+from mobapi2.helpers import (
+    get_item_model_by_topic,
+    get_viewset_by_topic,
+    get_topic_packages_url,
+    get_topic_authors_url,
+    )
+
 from taxonomy.models import Topic, TopicalItem
 from mobapi2.rest_fields import factory_imageurl_field
 from mobapi2.settings import IMAGE_ICON_SIZE
-from mobapi2.taxonomy.serializers import get_url_for_taxonomy
 from mobapi2.serializers import HyperlinkedModelSerializer, ModelGetResourceMixin
-from warehouse.models import Package
+from mobapi2.taxonomy.serializers import get_url_for_taxonomy
+from warehouse.models import Package, Author
 
 
 class TopicRelatedItemsMixin(object):
@@ -53,11 +59,19 @@ class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
         return self.get_items_queryset(obj).published().count()
 
     def get_items_url(self, obj):
-        return get_url_for_taxonomy(self.context.get('request'),
-                                    obj,
-                                    self.get_items_queryset(obj),
-                                    '%s-items' % self.PREFIX,
-                                    self.opts.router)
+        model = get_item_model_by_topic(obj)
+        if model is Package or issubclass(model, Package):
+            return get_topic_packages_url(obj,
+                                          router=self.opts.router,
+                                          request=self.context.get('request')
+                                          )
+        elif model is Author or issubclass(model, Author):
+            return get_topic_authors_url(obj,
+                                         router=self.opts.router,
+                                         request=self.context.get('request')
+            )
+        else:
+            return None
 
     def get_children_url(self, obj):
         return get_url_for_taxonomy(self.context.get('request'),
