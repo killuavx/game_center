@@ -1,4 +1,4 @@
--load url_tags util_tags
+-load url_tags util_tags pc_tags
 {% absolute_url_as package product="pc" as detail_url %}
 -with version=package.versions.latest_published
   %li><
@@ -16,8 +16,8 @@
         -else
           %p.price 免费
     %div.icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
-    {% download_url_as version entrytype='pc' as dw_url %}
-    .btn{:download_url => "={dw_url}"}><
+    {% version_data_as version entrytype='pc' as json %}
+    .btn{"data-json" => "={json}" }><
       %span.bg
       %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
       %a.a2{:href => "javascript:;", :class => "app-download-btn-js"} 下载

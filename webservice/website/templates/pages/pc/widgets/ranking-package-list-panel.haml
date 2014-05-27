@@ -1,4 +1,4 @@
--load util_tags url_tags
+-load util_tags url_tags pc_tags
 .icon.title_box
   %ul.fl
     %li.li_1.hover= ranking.title
@@ -17,8 +17,8 @@
               %a{:href => "={detail_url}"}>
                 %em{:class => "{% if forloop.counter <= 3 %}top{% endif %}"}= forloop.counter
                 = package.title
-            {% download_url_as version entrytype='pc' as dw_url %}
-            .btn
+            {% version_data_as version entrytype='pc' as json %}
+            .btn{"data-json" => "={json}" }><
               %span.bg
               %p {{ version.get_download_size|filesizeformat }} | {{ version.download_count|default:0|intwordcn }}+下载
               %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装

@@ -92,11 +92,11 @@ class QURLNode(Node):
 
 
 def absolute_url(context, inst, **kwargs):
-    product = kwargs.get('product')
+    product = kwargs.pop('product', None)
     #if not hasattr(inst, 'get_absolute_url_as'):
     #    return None
     get_url_as = getattr(inst, 'get_absolute_url_as')
-    url = get_url_as(product)
+    url = get_url_as(product, **kwargs)
     if 'request' in context:
         return context['request'].build_absolute_uri(url)
     return url
