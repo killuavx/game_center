@@ -1,6 +1,7 @@
 {% extends "pages/android/base.html" %}
 {% load templateutils_tags %}
-{% block main %}
+{% load widgets %}
 
-{% include "pages/android/vendors/vendor-app-list.html" %}
+{% block main %}
+{% include_widget VendorPackageListWidget id=id %}
 {% endblock %}

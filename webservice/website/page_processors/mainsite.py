@@ -101,3 +101,16 @@ def android_crack(request, page):
         data['topic'] = topic
 
     return data
+
+
+android_vendor_page_slug = 'android/vendor'
+@processor_for(android_vendor_page_slug)
+def android_vendor(request, page):
+    data = dict()
+    if request.method == "GET":
+        id = request.GET.get('id', None)
+        page_num = request.GET.get('page', None)
+        data['page_num'] = page_num
+        data['id'] = id
+
+    return data

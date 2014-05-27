@@ -1,4 +1,6 @@
+
 {% load templateutils_tags %}
+{% load util_tags %}
 
 <div class="auto mt30 width app-list-page vendor-page">
         
@@ -18,17 +20,6 @@
                 <div class="l left-list">
                         <ul class="f14 left-nav">
                                 {% for vendor in vendors %}
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
                                 <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
                                 {% endfor %}
                         </ul>

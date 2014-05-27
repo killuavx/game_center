@@ -12,6 +12,8 @@ from .common.topic import BaseTopicPackageListWidget
 from .common.package import BaseRankingPackageListWidget
 from .common.webspide import BaseForumThreadPanelWdiget
 from .masterpiece import MasterpiecePackageListWidget
+from .common.category import BaseTopicAuthorPackageListWidget
+from .common.base import PaginatorPageMixin
 
 
 def get_limit_range(p, r, n=10):
@@ -534,3 +536,72 @@ class CollectionPackagesListWidget(BaseListWidget):
 
 class MasterpiecePackagesListWidget(BaseTopicPackageListWidget):
     template = 'pages/widgets/android/master-list.html'
+
+
+class VendorPackageListWidget(PaginatorPageMixin, BaseTopicAuthorPackageListWidget, Widget):
+    template = 'pages/widgets/android/vendor-app-list.html'
+    current_vendor = None
+    current_packages = None
+
+    def get_vendors(self):
+        return self.get_topic_authors()
+
+    def paginize_items(self, options):
+        per_page, page = self.get_paginator_vars(options)
+        self.page = page
+        paginator = Paginator(self.current_packages, per_page=self.per_page)
+        current_page = paginator.page(page)
+        return current_page
+
+    def get_limit_pages_range(self, page, range):
+        return get_limit_range(page, range)
+
+    def get_list(self):
+        items = []
+        for vendor in self.vendors:
+            packages = self.get_package_list_by(vendor)
+            if vendor.id == self.vendor_id:
+                self.current_vendor = vendor
+                self.current_packages = packages
+            items.append({'vendor': vendor, 'packages': packages})
+
+        return items
+
+
+    def get_context(self, value=None, options=dict(), context=None):
+        current_page = None
+        limit_range = None
+        self.current_vendor = None
+        self.current_packages = None
+        self.vendor_id = None
+        self.slug = options.get('slug', self.slug)
+        try:
+            self.vendor_id = int(options.get('id', None))
+        except:
+            self.vendor_id = None
+
+        #print (self.vendor_id)
+        self.vendors = self.get_vendors()
+        options.update(
+            vendors = self.vendors,
+        )
+        items = self.get_list()
+
+        if not self.current_vendor and items:
+            self.current_vendor = items[0]['vendor']
+            self.current_packages = items[0]['packages']
+
+        print (self.current_packages)
+        if self.current_packages:
+            current_page = self.paginize_items(options)
+            limit_range = self.get_limit_pages_range(self.page, current_page.paginator.page_range)
+            options.update(
+                current_vendor = self.current_vendor,
+                current_packages = self.current_packages,
+                current_page = current_page,
+                limit_range = limit_range,
+            )
+#        print( current_page )
+#        print(limit_range)
+        return options
+
