@@ -8,6 +8,8 @@ def version_data(context, version, **kwargs):
     entrytype = kwargs.pop('entrytype', None)
     is_dynamic = kwargs.pop('is_dynamic', False)
     try:
+        if is_dynamic is False:
+            entrytype = None
         dw_url = version.get_download_url(entrytype=entrytype,
                                           is_dynamic=is_dynamic)
     except Exception as e:
