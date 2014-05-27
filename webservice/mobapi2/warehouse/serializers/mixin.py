@@ -63,6 +63,13 @@ class PackageRelatedLatestVersinoMixin(object):
             self._package_latest_version_maps[obj.pk] = obj.versions.latest_published()
         return self._package_latest_version_maps[obj.pk]
 
+    def get_latest_version_title(self, obj):
+        try:
+            version = self._latest_version(obj)
+            return version.subtitle
+        except:
+            return obj.title
+
     def get_latest_version_stars_good_rate(self, obj):
         try:
             version = self._latest_version(obj)

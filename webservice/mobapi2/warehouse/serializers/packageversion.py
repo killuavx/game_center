@@ -224,7 +224,7 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
 
     package_name = serializers.SerializerMethodField('get_package_name')
 
-    title = serializers.SerializerMethodField('get_title')
+    title = serializers.CharField(source='subtitle')
 
     author = serializers.SerializerMethodField('get_author')
 
@@ -399,7 +399,8 @@ class BasePackageVersionSummarySerializer(PackageVersionRelatedPackageMixin,
 
     package_name = serializers.SerializerMethodField('get_package_name')
 
-    title = serializers.SerializerMethodField('get_title')
+    #title = serializers.SerializerMethodField('get_title')
+    title = serializers.CharField(source='subtitle')
 
     author = serializers.SerializerMethodField('get_author')
 
@@ -460,7 +461,7 @@ class PackageVersionWithMyCommentSummarySerializer(
 
     package_name = serializers.SerializerMethodField('get_package_name')
 
-    title = serializers.SerializerMethodField('get_title')
+    title = serializers.CharField(source='subtitle')
 
     author = serializers.SerializerMethodField('get_author')
 
