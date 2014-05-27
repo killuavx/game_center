@@ -1,24 +1,27 @@
 {% load templateutils_tags %}
+{% load util_tags %}
 
 <div class="auto mt30 width masterpiece">
   <div class="cell-bk mb30">
 
-{% for item in items %}
-<div class="maste_lsit">
-                    <a href="dis.html">
-                            <img src="http://static.ccplay.com.cn/static/android_web/img/m-1.jpg">
-                            <h3 class="l">标题名称</h3>
-                            <div class="r ios-web-icon star s2"></div>
-                    </a>
-                    <p class="cl des g9">描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述</p>
-                    <p class="l g9">999M | 100万+下载</p>
-                    <p class="r g9">智力游戏</p>
-                    <div class="btn-s abs" style="display: none;">
-                        <a href="#" class="a1 install">安装</a>
-                        <a href="#" class="a2">下载</a>
-                    </div>
-                </div>
+    {% for item in items %}
+    {% with version=item.versions.latest_published %}
+    <div class="maste_lsit">
+      <a title="链接名称" href="{{ item.get_absolute_url }}">
+        <img alt="图片名称" src="{{ version.icon.url }}">
+        <h3 class="l">{{ item.title|slice:"11" }}</h3>
+        <div class="r ios-web-icon star s{{ version.stars_average|floatformat:"0" }}"></div>
+      </a>
+      <p class="cl des g9">{{ item.summary }}</p>
+      <p>{{ version.get_download_size|default:0|filesizeformat }} | {{ item.download_count|intwordcn }}+下载</p>
+      <p class="r g9">{{ item.categories.all.0.name }}</p>
+      <div class="btn-s abs" style="display: none;">
+        <a href="{{ version.get_download_url }}" class="a1 install">安装</a>
+        <a href="{{ version.get_download_url }}" class="a2">下载</a>
+      </div>
+    </div>
 
-{% endfor %}
+    {% endwith %}
+    {% endfor %}
   </div>
 </div>
