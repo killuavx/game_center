@@ -2,6 +2,8 @@
 from rest_framework import serializers
 from comment.models import Comment, Feedback
 from toolkit.models import Star
+from mobapi2.serializers import ModelSerializer
+
 
 class CommentStarSerializerMixin(object):
 
@@ -12,8 +14,7 @@ class CommentStarSerializerMixin(object):
             return None
 
 
-class CommentSerializer(CommentStarSerializerMixin,
-                        serializers.ModelSerializer):
+class CommentSerializer(CommentStarSerializerMixin, ModelSerializer):
 
     user_icon = serializers.SerializerMethodField('get_user_icon_url')
 
@@ -36,7 +37,7 @@ class CommentSerializer(CommentStarSerializerMixin,
         )
 
 
-class CommentCreateSerializer(serializers.ModelSerializer):
+class CommentCreateSerializer(ModelSerializer):
 
     def save_object(self, obj, **kwargs):
         super(CommentCreateSerializer, self).save_object(obj=obj, **kwargs)
@@ -53,7 +54,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ('site',)
 
 
-class FeedbackSerializer(serializers.ModelSerializer):
+class FeedbackSerializer(ModelSerializer):
 
     class Meta:
         model = Feedback

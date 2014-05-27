@@ -8,6 +8,7 @@
 
 {% settings_value 'GC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS' as topic_slugs %}
 <div class="cb box list_box home_game">
+
     <div class="fl list_box_left home_game_left box-tab">
 
     {% include_widget PCHomeComplexPackageListWidget title='游戏' cat_slug='game' topic_slugs=topic_slugs %}
@@ -22,8 +23,11 @@
 
 </div><!--home_game-->
 
+{% settings_value 'GC_TOPICS_MASTERPIECE_SLUG' as masterpiece_slug %}
 <div class="cb roll home_masterpiece">
-{% include_widget PCRollMasterpiecesWidget max_items=8 %}
+
+{% include_widget PCRollMasterpiecesWidget slug=masterpiece_slug max_items=8 %}
+
 </div><!--home_masterpiece-->
 
 
@@ -43,8 +47,10 @@
 
 </div><!--home_soft-->
 
-
+{% settings_value 'GC_TOPICS_VENDOR_SLUG' as vendor_slug %}
 <div class="cb roll home_vendor">
-    {% include_widget PCRollVendorsWidget max_items=8 %}
+
+{% include_widget PCRollVendorsWidget slug=vendor_slug max_items=8 %}
+
 </div><!--home_vendor-->
 {% endblock %}

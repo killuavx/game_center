@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
-from mobapi2.helpers import get_item_model_by_topic, get_viewset_by_topic
+from mobapi2.helpers import (
+    get_item_model_by_topic,
+    get_viewset_by_topic,
+    get_topic_packages_url,
+    get_topic_authors_url,
+    )
+
 from taxonomy.models import Topic, TopicalItem
 from mobapi2.rest_fields import factory_imageurl_field
-from mobapi2.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
+from mobapi2.settings import IMAGE_ICON_SIZE
+from mobapi2.serializers import HyperlinkedModelSerializer, ModelGetResourceMixin
 from mobapi2.taxonomy.serializers import get_url_for_taxonomy
-from mobapi2.serializers import (
-    HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
-from mobapi2.warehouse.serializers.package import PackageSummarySerializer
-from warehouse.models import Package
+from warehouse.models import Package, Author
 
 
 class TopicRelatedItemsMixin(object):
@@ -19,9 +23,9 @@ class TopicRelatedItemsMixin(object):
         model = get_item_model_by_topic(obj)
         if model is Package:
             return queryset.published()\
-                .by_updated_order()
+                .by_published_order(True)
         else:
-            return queryset.published()
+            return queryset
 
     def get_items_queryset(self, obj):
         return TopicalItem.objects \
@@ -55,11 +59,19 @@ class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
         return self.get_items_queryset(obj).published().count()
 
     def get_items_url(self, obj):
-        return get_url_for_taxonomy(self.context.get('request'),
-                                    obj,
-                                    self.get_items_queryset(obj),
-                                    '%s-items' % self.PREFIX,
-                                    self.opts.router)
+        model = get_item_model_by_topic(obj)
+        if model is Package or issubclass(model, Package):
+            return get_topic_packages_url(obj,
+                                          router=self.opts.router,
+                                          request=self.context.get('request')
+                                          )
+        elif model is Author or issubclass(model, Author):
+            return get_topic_authors_url(obj,
+                                         router=self.opts.router,
+                                         request=self.context.get('request')
+            )
+        else:
+            return None
 
     def get_children_url(self, obj):
         return get_url_for_taxonomy(self.context.get('request'),
@@ -69,13 +81,19 @@ class TopicRelatedItemCountUrlAndChildrenUrlMixin(object):
                                     self.opts.router)
 
 
+class TopicGetResourceMixin(ModelGetResourceMixin):
+    pass
+
+
+
 class TopicSummarySerializer(TopicRelatedItemCountUrlAndChildrenUrlMixin,
                              TopicRelatedItemsMixin,
+                             TopicGetResourceMixin,
                              HyperlinkedModelSerializer):
 
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
-    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
+    cover = serializers.SerializerMethodField('get_default_cover')
 
     items_url = serializers.SerializerMethodField('get_items_url')
 
@@ -103,10 +121,12 @@ class TopicSummarySerializer(TopicRelatedItemCountUrlAndChildrenUrlMixin,
 
 class TopicDetailWithPackageSerializer(
     TopicRelatedItemCountUrlAndChildrenUrlMixin,
+    TopicGetResourceMixin,
     HyperlinkedModelSerializer):
+
     icon = factory_imageurl_field(IMAGE_ICON_SIZE)
 
-    cover = factory_imageurl_field(IMAGE_COVER_SIZE)
+    cover = serializers.SerializerMethodField('get_default_cover')
 
     items_url = serializers.SerializerMethodField('get_items_url')
 

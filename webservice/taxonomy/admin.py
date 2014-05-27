@@ -134,7 +134,7 @@ class TopicAdmin(MPTTModelAdmin, VersionAdmin):
     list_editable = ('status', 'is_hidden')
     mptt_level_indent = 20
     sortable = 'ordering'
-    inlines = (ResourceInlines, )
+    inlines = (ResourceInlines, TopicInline,)
 
     def show_icon_or_cover(self, obj):
         try:
@@ -158,7 +158,6 @@ class TopicAdmin(MPTTModelAdmin, VersionAdmin):
     sync_file_status.short_description = _('Sync Status')
     sync_file_status.allow_tags = True
 
-    inlines = (TopicInline,)
 
     class Media:
         #from django.conf import settings

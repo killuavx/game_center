@@ -17,11 +17,11 @@ class PackageStorage(LazyObject):
 
 class QiniuPackageFileStorage(FileSystemStorage):
 
-    HOST_MARK = 'http://%s.qiniudn.com/'
+    HOST_MARK = 'http://m-%s.ccplay.com.cn/'
 
     BUCKET = Choices(
-        ('sf-ios', 'ios', 'IOS'),
-        ('sf-android', 'android', 'Android'),
+        ('ios', 'ios', 'IOS'),
+        ('android', 'android', 'Android'),
     )
 
     def get_host_url(self, name):

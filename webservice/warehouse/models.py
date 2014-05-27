@@ -169,7 +169,26 @@ class PlatformBase(object):
             return self
 
 
-class Author(PlatformBase, SiteRelated, models.Model):
+class AuthorAbsoluteUrlMixin(object):
+
+    PAGE_TYPE_DETAIL = 'detail'
+
+    PAGE_TYPE_LIST = 'list'
+
+    def get_absolute_url_as(self, product, pagetype=PAGE_TYPE_LIST):
+        if product == 'pc':
+            if pagetype == self.PAGE_TYPE_DETAIL:
+                view_name = 'website.views.%s.author_detail' % product
+                return reverse(view_name, kwargs=dict(pk=self.pk))
+            else:
+                view_name = 'mezzanine.pages.views.page'
+                page_slug = '%s/vendors' % product
+                return reverse(view_name, kwargs=dict(slug=page_slug)) \
+                       + "#author_%s" % self.pk
+        return None
+
+
+class Author(AuthorAbsoluteUrlMixin, PlatformBase, SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(AuthorQuerySet)()
@@ -402,6 +421,7 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
                     )
                 )
         super(Package, self).clean()
+        self.updated_datetime = now()
 
     def __str__(self):
         return self.title
@@ -606,7 +626,7 @@ class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
 
     created_datetime = models.DateTimeField(auto_now_add=True)
 
-    updated_datetime = models.DateTimeField(auto_now=True, auto_now_add=True)
+    updated_datetime = models.DateTimeField(auto_now=False, auto_now_add=True)
 
     stars = StarsField(verbose_name=_('Star'))
 
@@ -618,6 +638,10 @@ class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
                           format='File')
 
     resources = MultiResourceField()
+
+    def clean(self):
+        super(PackageVersion, self).clean()
+        self.updated_datetime = now()
 
     def get_absolute_url(self, link_type=0):
         if link_type == 0:
@@ -864,9 +888,6 @@ def package_pre_save(sender, instance, **kwargs):
         changed.pop('updated_datetime')
     except KeyError:
         pass
-
-    if len(changed):
-        instance.updated_datetime = now()
 
     if not instance.workspace:
         instance.workspace = ''

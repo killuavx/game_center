@@ -56,8 +56,8 @@ class BaseTopicPackageListWidget(base.BaseListWidget):
             packages = TopicalItem.objects\
                 .get_items_by_topic(topic=topic, item_model=Package)
             return packages
-        except (Topic.DoesNotExist, Package.DoesNotExist):
-            return list()
+        except (Topic.DoesNotExist, Package.DoesNotExist) as e:
+            return Package.objects.none()
 
     def get_context(self, value=None, options=dict(), context=None):
         self.slug = options.get('slug') if options.get('slug') else self.slug

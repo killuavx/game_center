@@ -13,9 +13,9 @@ class OrderingKeyBit(bits.QueryParamsKeyBit):
 
     def get_data(self, **kwargs):
         kwargs['params'] = []
-        if hasattr(kwargs['view_instance'], 'ordering'):
-            kwargs['params'].append('ordering')
-        return super(OrderingKeyBit, self).get_data(**kwargs)
+        kwargs['params'].append('ordering')
+        data = super(OrderingKeyBit, self).get_data(**kwargs)
+        return data
 
 
 class LookupKeyBit(bits.KeyBitBase):
@@ -31,6 +31,7 @@ class LookupListKeyConstructor(constructors.DefaultKeyConstructor):
 
 
 class LookupOrderingListKeyConstructor(LookupListKeyConstructor):
+
     ordering = OrderingKeyBit()
 
 

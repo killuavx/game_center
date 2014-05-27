@@ -7,6 +7,7 @@ from mobapi2.taxonomy.serializers import get_url_for_taxonomy
 from mobapi2.serializers import (
     HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
 from mobapi2.warehouse.serializers.package import PackageSummarySerializer
+from mobapi2.helpers import get_category_packages_url
 
 
 class CategoryDetailSerializer(HyperlinkedModelSerializer):
@@ -17,11 +18,9 @@ class CategoryDetailSerializer(HyperlinkedModelSerializer):
     packages_url = serializers.SerializerMethodField('get_items_url')
 
     def get_items_url(self, obj):
-        return get_url_for_taxonomy(self.context.get('request'),
-                                    obj,
-                                    obj.packages,
-                                    '%s-packages' % self.PREFIX,
-                                    self.opts.router)
+        return get_category_packages_url(obj,
+                                         router=self.opts.router,
+                                         request=self.context.get('request'))
 
     class Meta:
         model = Category
@@ -55,7 +54,7 @@ class CategoryRelatedPackagesMixin(object):
     def get_packages(self, obj):
         if obj.children.count():
             return list()
-        packages = obj.packages.published().by_updated_order()[0:self.limit_packages]
+        packages = obj.packages.published().by_published_order(True)[0:self.limit_packages]
         return self.serializer_class_package(packages,
                                              context=self.context,
                                              many=True).data
@@ -75,11 +74,9 @@ class CategorySummarySerializer(CategoryRelatedChildrenMixin,
     packages = serializers.SerializerMethodField('get_packages')
 
     def get_items_url(self, obj):
-        return get_url_for_taxonomy(self.context.get('request'),
-                                    obj,
-                                    obj.packages,
-                                    '%s-packages' % self.PREFIX,
-                                    self.opts.router)
+        return get_category_packages_url(obj,
+                                         router=self.opts.router,
+                                         request=self.context.get('request'))
 
     class Meta:
         model = Category

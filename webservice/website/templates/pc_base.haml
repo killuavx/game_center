@@ -6,11 +6,14 @@
     %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}/
     %meta{:content => "IE=EmulateIE7, IE=9", "http-equiv" => "X-UA-Compatible"}/
     %meta{:content => "IE=edge,chrome=1", "http-equiv" => "X-UA-Compatible"}
-      %meta{:content => "webkit", :name => "renderer"}
-        %title {% block meta_title %}{% endblock %}
-        %link{:href => "{% static 'PC/css/site.css' %}", :media => "all", :rel => "stylesheet", :type => "text/css"}/
-        %noscript
-          %h1{:style => "font-size:100%;color:#e53333;display:block;text-align:center"} 由于您的浏览器禁用了javascript脚本，网页无法正常浏览!
+    %meta{:content => "webkit", :name => "renderer"}
+    %meta{"http-equiv" => "pragma", :content => "no-cache"}
+    %meta{"http-equiv" => "Cache-Control", :content => "no-cache, must-revalidate"}
+    %meta{"http-equiv" => "expires", :content => "0"}
+    %title {% block meta_title %}{% endblock %}
+    %link{:href => "{% static 'PC/css/site.css' %}", :media => "all", :rel => "stylesheet", :type => "text/css"}/
+    %noscript
+      %h1{:style => "font-size:100%;color:#e53333;display:block;text-align:center"} 由于您的浏览器禁用了javascript脚本，网页无法正常浏览!
   %body
     .warp
       {% page_menu page.parent "pages/pc/menu/header.haml" %}
@@ -19,6 +22,7 @@
     %script{:src => "http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"}
     %script{:src => "{% static 'common/js/jquery.SuperSlide.2.1.1.source.js' %}"}
     %script{:src => "{% static 'PC/js/site.js' %}"}
+    %script{:src => "http://static1.ccplay.com.cn/static/PC/js/ccplayButtonState.js"}
     /[if IE 6]
       <script src="{% static 'common/js/DD_PNG.js' %}"></script>
       <script>window.onload = function() { DD_belatedPNG.fix(".icon,.icon:hover"); }</script>

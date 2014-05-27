@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from rest_framework import serializers
 from clientapp.models import ClientPackageVersion
+from mobapi2.serializers import ModelSerializer
 
 
-class ClientPackageVersionSerializer(serializers.ModelSerializer):
+class ClientPackageVersionSerializer(ModelSerializer):
+
     download = serializers.SerializerMethodField('get_download_url')
 
     def get_download_url(self, obj):

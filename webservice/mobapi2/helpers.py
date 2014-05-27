@@ -92,3 +92,115 @@ def get_object_stars_rate(obj, rate_type):
 
 def make_cache_key(prefix, app='api'):
     return "%s.%s" %(app, prefix)
+
+
+from urllib import parse
+
+
+class BaseWarehouseApiUrlEncode(object):
+
+    viewname = None
+
+    topic_param = 'topic_slug'
+    topic = None
+
+    ordering = None
+    ordering_param = 'ordering'
+
+    def __init__(self, request=None, router=None, **kwargs):
+        self.request = request
+        self.router = router
+
+        self.topic = kwargs.get('topic')
+        self.ordering = kwargs.get('ordering')
+
+    def reverse_path(self):
+        if self.router:
+            reverse_viewname = self.router.get_base_name(self.viewname)
+        else:
+            reverse_viewname = self.viewname
+        return reverse(reverse_viewname)
+
+    def get_queryparams(self, qp=None):
+        if qp is None:
+            qp = []
+
+        if self.topic:
+            qp.append((self.topic_param, self.topic.slug))
+
+        if self.ordering:
+            qp.append((self.ordering_param, self.ordering))
+
+        return qp
+
+    def get_url(self):
+        path = self.reverse_path()
+        urlp = list(parse.urlparse(path))
+        qp = parse.parse_qsl(urlp[4])
+
+        qp = self.get_queryparams(qp)
+
+        urlp[4] = parse.urlencode(qp, True)
+        url = parse.urlunparse(urlp)
+        if self.request:
+            return self.request.build_absolute_uri(url)
+        return url
+
+
+class AuthorListApiUrlEncode(BaseWarehouseApiUrlEncode):
+
+    viewname = 'author-list'
+
+
+class PackageListApiUrlEncode(BaseWarehouseApiUrlEncode):
+
+    viewname = 'package-list'
+
+    category_param = 'categories'
+    category = None
+
+    def __init__(self, **kwargs):
+        super(PackageListApiUrlEncode, self).__init__(**kwargs)
+        self.category = kwargs.get('category')
+
+    def get_queryparams(self, qp=None):
+        qp = super(PackageListApiUrlEncode, self).get_queryparams(qp)
+        if self.category:
+            qp.append((self.category_param, self.category.pk))
+        return qp
+
+
+def get_category_packages_url(category, ordering=None, router=None, request=None):
+    if ordering is None:
+        ordering = '-released_datetime'
+    apiencode = PackageListApiUrlEncode(category=category,
+                                        ordering=ordering,
+                                        request=request,
+                                        router=router)
+    url = apiencode.get_url()
+    print(url)
+    return url
+
+
+def get_topic_packages_url(topic, ordering=None, router=None, request=None):
+    if ordering is None:
+        ordering = 'topical'
+    apiencode = PackageListApiUrlEncode(topic=topic,
+                                        ordering=ordering,
+                                        request=request,
+                                        router=router)
+    url = apiencode.get_url()
+    print(url)
+    return url
+
+
+def get_topic_authors_url(topic, ordering=None, router=None, request=None):
+    if ordering is None:
+        ordering = 'topical'
+    apiencode = AuthorListApiUrlEncode(topic=topic,
+                                       ordering=ordering,
+                                       request=request,
+                                       router=router)
+    url = apiencode.get_url()
+    print(url)
+    return url
