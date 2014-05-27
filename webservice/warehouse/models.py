@@ -703,7 +703,8 @@ class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
         if kwargs:
             part = list(urlparse(url))
             query_idx = 4
-            query_params = list(parse_qsl(part[query_idx])) + list(kwargs.items())
+            _args = list(filter(lambda x: x[0] is None, kwargs.items()))
+            query_params = list(parse_qsl(part[query_idx])) + _args
             part[query_idx] = urlencode(query_params)
             url = urlunparse(part)
         return url
