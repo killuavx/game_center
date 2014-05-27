@@ -532,4 +532,5 @@ class CollectionPackagesListWidget(BaseListWidget):
         #print (options)
         return options
 
-
+class MasterpiecePackagesListWidget(BaseTopicPackageListWidget):
+    template = 'pages/widgets/android/master-list.html'

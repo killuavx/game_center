@@ -1,17 +1,10 @@
 {% extends "pages/android/base.html" %}
 {% load templateutils_tags %}
+{% load widgets %}
 {% block main %}
 
 <!--巨作 开始 masterpiece-->
 
-<div class="auto mt30 width masterpiece">
-  <div class="cell-bk mb30">
-
-{%  mkrange 1 9 as fnum %}
-{% for i in fnum %}
-{% include "pages/android/topics/master-list.html" %}
-{% endfor %}
-  </div>
-</div>
+{% include_widget MasterpiecePackagesListWidget slug='masterpiece' %}
 <!--巨作 结束 masterpiece-->
 {% endblock %}
