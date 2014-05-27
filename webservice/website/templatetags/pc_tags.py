@@ -13,7 +13,14 @@ def version_data(context, version, **kwargs):
     if context.get('request'):
         dw_url = context['request'].build_absolute_uri(dw_url)
 
+    package = version.package
+    if package.is_ios:
+        appid = package.as_ios.track_id
+    else:
+        appid = package.pk
+
     return dict(
+        appid=appid,
         package_name=version.package.package_name,
         version_name=version.version_name,
         download_url=dw_url,
