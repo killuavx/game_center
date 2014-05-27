@@ -7,6 +7,9 @@
     %meta{:content => "IE=EmulateIE7, IE=9", "http-equiv" => "X-UA-Compatible"}/
     %meta{:content => "IE=edge,chrome=1", "http-equiv" => "X-UA-Compatible"}
     %meta{:content => "webkit", :name => "renderer"}
+    %meta{"http-equiv" => "pragma", :content => "no-cache"}
+    %meta{"http-equiv" => "Cache-Control", :content => "no-cache, must-revalidate"}
+    %meta{"http-equiv" => "expires", :content => "0"}
     %title {% block meta_title %}{% endblock %}
     %link{:href => "{% static 'PC/css/site.css' %}", :media => "all", :rel => "stylesheet", :type => "text/css"}/
     %noscript
