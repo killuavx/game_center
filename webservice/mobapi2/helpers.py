@@ -96,7 +96,8 @@ def make_cache_key(prefix, app='api'):
 
 from urllib import parse
 
-def get_category_packages_url(category, router=None, request=None):
+
+def get_category_packages_url(category, ordering=None, router=None, request=None):
     viewname = 'package-list'
     reverse_viewname = router.get_base_name(viewname) if router else viewname
     path = reverse(reverse_viewname)
@@ -104,6 +105,12 @@ def get_category_packages_url(category, router=None, request=None):
     qp = parse.parse_qsl(urlp[4])
 
     qp.append(('categories', category.pk))
+
+    if ordering is None:
+        ordering = '-released_datetime'
+    ordering_param = 'ordering'
+    qp = list(filter(lambda nv: not(nv[0] == ordering_param), qp))
+    qp.append((ordering_param, ordering,))
 
     urlp[4] = parse.urlencode(qp, True)
     url = parse.urlunparse(urlp)
