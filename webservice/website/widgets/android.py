@@ -591,7 +591,7 @@ class VendorPackageListWidget(PaginatorPageMixin, BaseTopicAuthorPackageListWidg
             self.current_vendor = items[0]['vendor']
             self.current_packages = items[0]['packages']
 
-        print (self.current_packages)
+        #print (self.current_packages)
         if self.current_packages:
             current_page = self.paginize_items(options)
             limit_range = self.get_limit_pages_range(self.page, current_page.paginator.page_range)
@@ -601,7 +601,7 @@ class VendorPackageListWidget(PaginatorPageMixin, BaseTopicAuthorPackageListWidg
                 current_page = current_page,
                 limit_range = limit_range,
             )
-#        print( current_page )
-#        print(limit_range)
+        #print( current_page )
+        #print(limit_range)
         return options
 
