@@ -248,8 +248,8 @@ class CategoriesPackagesListWidget(BaseListWidget):
     current_topic = None
     current_packages = None
 
-#    def get_categorized_pagckages(self, packages, cat):
-#        return filter_packages_by_category(packages, cat)
+    def get_categorized_pagckages(self, packages, cat):
+        return filter_packages_by_category(packages, cat)
 
     def get_all_published_packages(self):
         return Package.objects.published()
