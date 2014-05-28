@@ -1,0 +1,21 @@
+<div>
+  {% for item in current_page %} 
+  <div class="review_list">
+
+    <dl class="cb">
+
+      <dt class="icon fl user" title="name"></dt>
+
+      <dd class="d1"><span class="icon fl star s{{ item.user.stars.all.0.value }}"></span><span class="fr">{{ item.submit_date|date:'Y-m-d H:i'}}</span></dd>
+
+      <dd class="d2">{{ item.comment }}</dd>
+
+
+    </dl>
+
+    <div class="c_b"></div>
+
+  </div>
+  {% endfor %}
+
+</div>

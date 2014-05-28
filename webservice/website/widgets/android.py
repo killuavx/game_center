@@ -15,6 +15,7 @@ from .masterpiece import MasterpiecePackageListWidget
 from .common.category import BaseTopicAuthorPackageListWidget
 from .common.base import PaginatorPageMixin
 from .pc.home import PCRankingPackageListWidget
+from django.contrib.comments import Comment
 
 
 def get_limit_range(p, r, n=10):
@@ -607,6 +608,7 @@ class VendorPackageListWidget(PaginatorPageMixin, BaseTopicAuthorPackageListWidg
         return options
 
 class RankPackageListWidget(PCRankingPackageListWidget):
+
     template='pages/widgets/android/ranking.html'
 
     def get_context(self, value, options):
@@ -625,3 +627,38 @@ class RankPackageListWidget(PCRankingPackageListWidget):
 class RankPackageDetailListWidget(RankPackageListWidget):
 
     template='pages/widgets/android/package-rank.html'
+
+
+class PackageVersionCommentListWidget(BaseListWidget):
+
+    template='pages/widgets/android/comment.html'
+    per_page = 1
+
+    def get_list(self):
+        comments = Comment.objects.filter(object_pk=self.pkgv.pk)\
+                .filter(is_public=True, is_removed=False)
+        return comments
+
+    def paginize_items(self, options):
+        per_page, page = self.get_paginator_vars(options)
+        self.page = page
+        paginator = Paginator(self.comments, per_page=self.per_page)
+        current_page = paginator.page(page)
+        return current_page
+
+    def get_limit_pages_range(self, page, range):
+        return get_limit_range(page, range)
+
+    def get_context(self, value=None, options=dict(), context=None):
+        self.pkgv = options.get('pkgv', None)
+        self.comments = self.get_list()
+
+        if self.comments:
+            current_page = self.paginize_items(options)
+            limit_range = self.get_limit_pages_range(self.page, current_page.paginator.page_range)
+            options.update(
+                current_page = current_page,
+                limit_range = limit_range,
+            )
+
+        return options

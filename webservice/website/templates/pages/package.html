@@ -167,32 +167,14 @@
         </div>
 
 
-        {% include "pages/android/package/comment.html" %} 
+      {% include_widget PackageVersionCommentListWidget pkgv=pkgv page_num=page_num %}
 
       </div><!--down-->
-
-
-      <div class="cl f14 page">
-        <a title="链接名称" href="#">上一页</a>
-        <a title="链接名称" href="#">1</a>
-        <a title="链接名称" href="#" class="hover">2</a>
-        <a title="链接名称" href="#">3</a>
-        <a title="链接名称" href="#">4</a>
-        <a title="链接名称" href="#">···</a>
-        <a title="链接名称" href="#">99</a>
-        <a title="链接名称" href="#">下一页</a>
-      </div>
-
-
+      {% include "pages/android/includes/pagination.html" %}
     </div><!--right-->
 
 
 
   </div><!--cell-bk-->
 </div>
-{{ name }}
-{{ page_num }}
-{{ pkg.package_name }}
-{{ pkgv.code }}
-{{ related_pkgs.count }}
 {% endblock %}
