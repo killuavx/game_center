@@ -1,1 +1,43 @@
 -extends "pc_base.haml"
+-load widgets url_tags
+{% block main %}
+.cb.box.list_box.game
+
+  .list_box_left.game_box
+    {% widget PCCategorySelectorWidget root_category=root_category %}
+    .menu
+      %ul
+        -for cat in category_selectlist|slice:":12"
+          -ifequal category.pk cat.pk
+            %li.icon.hover
+              %a{:href => "javascript:;"}><
+                {% if forloop.first %}全部{% endif %}{{ cat.name }}
+          -else
+            %li
+              %a{:href => "{% qurl request.get_full_path category=cat.pk topic=None lang=None page=None %}"}><
+                {% if forloop.first %}全部{% endif %}{{ cat.name }}
+    .title_box.icon
+      .tag
+        -for select in second_selectlist
+          -if select.params.lang != lang or select.params.topic != topic.pk
+            %a{:href => "{% qurl request.get_full_path topic=select.params.topic lang=select.params.lang page=None %}"}= select.name
+          -else
+            %a.hover{:href => "javascript:;"}= select.name
+    / title_box
+    {% endwidget %}
+
+    {% widget PCCategoryComplexPackageList category=category topic=topic lang=lang per_page=20 page=request.GET.page %}
+    .left_list.list
+      %ul><
+        -for package in items
+          {% include "pages/pc/widgets/include-package-box.haml" with pacakge=package %}
+      .c_b
+    / left_list
+
+    {% include "includes/pc_pagination.html" with current_page=items %}
+    {% endwidget %}
+
+  / game_box
+/ game
+
+{% endblock %}

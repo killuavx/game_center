@@ -56,4 +56,16 @@ register_setting(
         'basic-installed',
         'NONE'
     )),
-    )
+)
+
+register_setting(
+    name="GC_PC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS",
+    description="PC对分类下的应用列表筛选的专区列表",
+    editable=True,
+    default=",".join((
+        'home-recommend-game',
+        #'recommend-pc',
+        'basic-installed',
+        'NONE'
+    )),
+)

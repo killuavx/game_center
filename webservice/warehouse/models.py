@@ -268,13 +268,16 @@ class PackageQuerySet(QuerySet):
 
     def by_published_order(self, newest=None):
         qs = self.published()
+        return qs.by_released(newest=newest)
+
+    def by_released_order(self, newest=None):
         field = 'released_datetime'
         if newest is None:
-            return qs
+            return self
         elif newest is True:
-            return qs.order_by('-' + field)
+            return self.order_by('-' + field)
         else:
-            return qs.order_by('+' + field)
+            return self.order_by('+' + field)
 
     def by_rankings_order(self):
         return self.order_by('-download_count')
