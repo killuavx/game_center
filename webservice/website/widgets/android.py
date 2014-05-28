@@ -607,7 +607,7 @@ class VendorPackageListWidget(PaginatorPageMixin, BaseTopicAuthorPackageListWidg
         return options
 
 class RankPackageListWidget(PCRankingPackageListWidget):
-    template='pages/widgets/android/home-ranking.html'
+    template='pages/widgets/android/ranking.html'
 
     def get_context(self, value, options):
 
