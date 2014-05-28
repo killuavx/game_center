@@ -2,6 +2,7 @@
 import datetime
 from django.core.paginator import Paginator
 from django.utils.timezone import now
+from django.contrib.comments import Comment
 from mptt.models import MPTTModel
 from django_widgets import Widget
 from warehouse.models import Package
@@ -15,7 +16,6 @@ from .masterpiece import MasterpiecePackageListWidget
 from .common.category import BaseTopicAuthorPackageListWidget
 from .common.base import PaginatorPageMixin
 from .pc.home import PCRankingPackageListWidget
-from django.contrib.comments import Comment
 
 
 def get_limit_range(p, r, n=10):
@@ -632,7 +632,7 @@ class RankPackageDetailListWidget(RankPackageListWidget):
 class PackageVersionCommentListWidget(BaseListWidget):
 
     template='pages/widgets/android/comment.html'
-    per_page = 1
+    per_page = 10
 
     def get_list(self):
         comments = Comment.objects.filter(object_pk=self.pkgv.pk)\
@@ -652,6 +652,7 @@ class PackageVersionCommentListWidget(BaseListWidget):
     def get_context(self, value=None, options=dict(), context=None):
         self.pkgv = options.get('pkgv', None)
         self.comments = self.get_list()
+        print (self.comments)
 
         if self.comments:
             current_page = self.paginize_items(options)
@@ -661,4 +662,5 @@ class PackageVersionCommentListWidget(BaseListWidget):
                 limit_range = limit_range,
             )
 
+        print(options)
         return options
