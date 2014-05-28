@@ -68,7 +68,7 @@ def author_workspace_path(author):
             _id = author.artist_id
         else:
             iauthor = author.iosauthor
-            _id = iauthor.atrist_id
+            _id = iauthor.artist_id
         subdir = 'iauthor'
     except ObjectDoesNotExist:
         dt_path = now().strftime("%Y%m%d%H%M/%S-%f")
