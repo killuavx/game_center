@@ -1,1 +1,37 @@
 {% extends "pc_base.haml" %}
+{% load widgets util_tags url_tags %}
+{% block main %}
+<div class="cb box vendor">
+
+    <div class="fl l">
+        <div class="list_menu">
+            {% settings_value 'GC_TOPICS_VENDOR_SLUG' as vendor_slug %}
+            <ul class="left-nav">
+{% widget PCVendorNavListWidget author=author slug=vendor_slug max_items=10 %} {% for cur_author in items %}
+                <li>
+                    <a href="{% absolute_url cur_author product='pc' %}" {% if cur_author.is_current %}class="hover"{% endif %}>
+                    <img src="{% resource_url cur_author.resources 'cover' 'pc' %}" />
+                    </a>
+                </li>
+{% endfor %} {% endwidget %}
+            </ul>
+        </div>
+    </div><!--l-->
+
+    <div class="fr r">
+
+{% widget PCVendorPackageListWidget author=author per_page=1 page=request.GET.page %}
+        <div class="list left_list">
+            <ul>
+    {% for package in items %}
+                {% include "pages/pc/widgets/include-package-box.haml" with package=package %}
+    {% endfor %}
+            </ul>
+        </div>
+    {% include "includes/pc_pagination.haml" with current_page=items %}
+{% endwidget %}
+
+    </div><!--r-->
+
+</div>
+{% endblock %}

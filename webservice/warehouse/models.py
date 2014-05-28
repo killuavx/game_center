@@ -184,7 +184,7 @@ class AuthorAbsoluteUrlMixin(object):
                 view_name = 'mezzanine.pages.views.page'
                 page_slug = '%s/vendors' % product
                 return reverse(view_name, kwargs=dict(slug=page_slug)) \
-                       + "#author_%s" % self.pk
+                           + "?author=%s" % self.pk
         return None
 
 

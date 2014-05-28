@@ -6,7 +6,14 @@ from website.widgets.common.base import PaginatorPageMixin
 from website.widgets.common.promotion import BaseMultiAdvWidget
 from website.widgets.common.author import BaseTopicAuthorPanelWidget
 from website.widgets.common.topic import BaseTopicPackageListWidget
+from website.widgets.common.base import BaseWidgetFilterBackend, FilterWidgetMixin
 
+__all__ = ['PCBannerWidget',
+           'PCRollMasterpiecesWidget',
+           'PCRollVendorsWidget',
+           'PCHomeComplexPackageListWidget',
+           'PCRankingPackageListWidget',
+           ]
 
 class PCBannerWidget(BaseMultiAdvWidget, Widget):
 
@@ -26,34 +33,6 @@ class PCRollVendorsWidget(BaseTopicAuthorPanelWidget, Widget):
 class PCRollMasterpiecesWidget(BaseTopicPackageListWidget, Widget):
 
     template = 'pages/pc/widgets/roll-place.haml'
-
-
-class BaseWidgetFilterBackend(object):
-
-    def filter_queryset(self, request, queryset, widget):
-        """
-        Return a filtered queryset.
-        """
-        raise NotImplementedError(".filter_queryset() must be overridden.")
-
-
-class FilterWidgetMixin(object):
-
-    filter_backends = ()
-
-    def filter_queryset(self, queryset):
-        """
-        Given a queryset, filter it with whichever filter backend is in use.
-
-        You are unlikely to want to override this method, although you may need
-        to call it either from a list view, or from a custom `get_object`
-        method if you want to apply the configured filtering backend to the
-        default queryset.
-        """
-        filter_backends = self.filter_backends or []
-        for backend in filter_backends:
-            queryset = backend().filter_queryset(self.request, queryset, self)
-        return queryset
 
 
 class BaseComplexPackageListWidget(FilterWidgetMixin, PaginatorPageMixin):

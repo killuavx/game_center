@@ -6,7 +6,7 @@ from . import base
 class BasePackageListWidget(base.BaseListWidget):
 
     def get_list(self):
-        return Package.objects.by_published_order(True)
+        return Package.objects.all()
 
 
 class BasePackageVersionListWidget(base.BaseListWidget):
