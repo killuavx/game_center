@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from mezzanine.conf import settings
 from django.core.paginator import EmptyPage, Paginator
+from django.contrib.auth import authenticate, login
 
 from django.http import Http404
 from django.template.response import TemplateResponse
@@ -93,5 +94,11 @@ def topic_package_list(request, slug, template='pages/topics/detail.html',
             raise Http404()
         return response
 
+    return TemplateResponse(request=request, template=template, context=context)
+
+
+def login_view(request):
+    template = 'login.html'
+    context = {}
     return TemplateResponse(request=request, template=template, context=context)
 
