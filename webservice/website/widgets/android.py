@@ -135,13 +135,13 @@ class HomeTopAdWidget(BaseMultiAdvWidget, Widget):
    template='pages/widgets/android/home-top-ad.html'
 
 
-class HomeMasterpiecePackageListWidget(MasterpiecePackageListWidget):
+class HomeMasterpiecePackageListWidget(MasterpiecePackageListWidget, Widget):
 
     per_page = 10
     template = 'pages/widgets/android/masterpiece.html'
 
 
-class LatestPackageListWidget(BaseListWidget):
+class LatestPackageListWidget(BaseListWidget, Widget):
 
     template = 'pages/widgets/android/latest-release.html'
     cat = None
@@ -175,17 +175,17 @@ class LatestPackageListWidget(BaseListWidget):
         return options
 
 
-class CategorizedPackageListWidget(LatestPackageListWidget):
+class CategorizedPackageListWidget(LatestPackageListWidget, Widget):
 
     template = 'pages/widgets/android/first-publish-crack.html'
 
 
-class HomeTopicsPackageListWidget(BaseTopicPackageListWidget):
+class HomeTopicsPackageListWidget(BaseTopicPackageListWidget, Widget):
 
     template = 'pages/widgets/android/selected-webgames.html'
 
 
-class HomeTabsPackageListWidget(BaseTopicPackageListWidget):
+class HomeTabsPackageListWidget(BaseTopicPackageListWidget, Widget):
 
     template = 'pages/widgets/android/left-tab-box.html'
     cat = None
@@ -229,7 +229,7 @@ class HomeTabsPackageListWidget(BaseTopicPackageListWidget):
         return {'result': result, 'cat': cat_dic.get(cat)}
 
 
-class HomeRankingPackageListWidget(BaseRankingPackageListWidget):
+class HomeRankingPackageListWidget(BaseRankingPackageListWidget, Widget):
 
     template = 'pages/widgets/android/right-ranking-box.html'
     cat = None
@@ -629,7 +629,7 @@ class RankPackageDetailListWidget(RankPackageListWidget):
     template='pages/widgets/android/package-rank.html'
 
 
-class PackageVersionCommentListWidget(BaseListWidget):
+class PackageVersionCommentListWidget(BaseListWidget, Widget):
 
     template='pages/widgets/android/comment.html'
     per_page = 10
@@ -651,6 +651,9 @@ class PackageVersionCommentListWidget(BaseListWidget):
 
     def get_context(self, value=None, options=dict(), context=None):
         self.pkgv = options.get('pkgv', None)
+       # print (self.pkgv)
+       # print (self.pkgv == '')
+       # return {}
         self.comments = self.get_list()
         print (self.comments)
 
@@ -662,5 +665,5 @@ class PackageVersionCommentListWidget(BaseListWidget):
                 limit_range = limit_range,
             )
 
-        print(options)
+        #print(options)
         return options
