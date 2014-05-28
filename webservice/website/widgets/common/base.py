@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from django.core.paginator import Paginator
 import six
 from copy import deepcopy
-
 
 class PaginatorPageMixin(object):
 
@@ -46,6 +44,8 @@ class BaseListWidget(PaginatorPageMixin):
 
     max_paging_links = 10
 
+    request = None
+
     def get_more_url(self):
         return self.more_url
 
@@ -54,6 +54,7 @@ class BaseListWidget(PaginatorPageMixin):
 
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
         from mezzanine.utils.views import paginate
+        self.request = context.get('request')
         per_page, page = self.get_paginator_vars(options)
         items = paginate(self.get_list(),
                          page_num=page,

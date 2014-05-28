@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+from django.db.models.query import EmptyQuerySet
 from django.core.paginator import Paginator
 from django_widgets import Widget
 from website.widgets.common.base import PaginatorPageMixin
 from website.widgets.common.promotion import BaseMultiAdvWidget
 from website.widgets.common.author import BaseTopicAuthorPanelWidget
-from website.widgets.common.topic import BaseTopicPackageListWidget
+from website.widgets.common.topic import BaseTopicPackageListWidget, ItemListByTopicFilterBackend
 from website.widgets.common.base import BaseWidgetFilterBackend, FilterWidgetMixin
 
 __all__ = ['PCBannerWidget',
@@ -46,24 +47,23 @@ class BaseComplexPackageListWidget(FilterWidgetMixin, PaginatorPageMixin):
                 .values_list('pk', flat=True))
             return queryset.filter(categories__pk__in=cat_ids).distinct()
 
-    class ByTopicFilterBackend(BaseWidgetFilterBackend):
+    class ByTopicFilterBackend(ItemListByTopicFilterBackend):
+
+        topic_param = 'current_topic'
 
         def filter_queryset(self, request, queryset, widget):
-            from taxonomy.models import TopicalItem
-            if widget.current_topic:
-                queryset = TopicalItem.objects\
-                    .filter_items_by_topic(topic=widget.current_topic,
-                                           item_model=queryset.model,
-                                           queryset=queryset)
-            return queryset
+            if not getattr(widget, self.topic_param):
+                return queryset
+            return super(BaseComplexPackageListWidget.ByTopicFilterBackend, self)\
+                .filter_queryset(request, queryset, widget)
 
     class OrderByFilterBackend(BaseWidgetFilterBackend):
 
         def filter_queryset(self, request, queryset, widget):
-            if not widget.current_topic:
+            if not widget.current_topic and\
+                    not isinstance(queryset, EmptyQuerySet):
                 return queryset.by_published_order(True)
             return queryset
-
 
     filter_backends = ()
 

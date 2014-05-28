@@ -1,43 +1,16 @@
 {% extends "pc_base.haml" %}
-{% load templateutils_tags %}
-{% load widgets %}
-{% load util_tags %}
-{% load widgets url_tags %}
-{% load static %}
-{% block main %} 
-    
+{% load widgets url_tags util_tags %}
+{% block main %}
 <div class="cb box masterpiece">
-            
-            <div class="masterpiece_box">
-
-              {% for item in items %}
-                {% with version=item.versions.latest_published %}
-                <div class="maste_lsit">
-                    <a href="{{ item.get_absolute_iospc_url }}">
-                            <img src="{{ version.icon.url }}">
-                            <h3 class="fl">{{ item.title }}</h3>
-                            <div class="icon star s{{ version.stars_average|floatformat:"0"}}"></div>
-                    </a>
-                    <p class="cb des">{{ item.description }}</p>
-                    <p class="fl">{{ version.get_download_size|default:0|filesizeformat }} | {{ item.download_count|intwordcn }}+下载</p>
-                    <p class="fr price"><span>￥130.00</span></p>
-                    <div class="btn" style="display: none;">
-                        <a href="{{ version.get_download_url }}#" class="a1 install">安装</a>
-                        <a href="{{ version.get_download_url }}" class="a2">下载</a>
-                    </div>
-                </div><!--maste_lsit-->
-
-                  {% endwith %}
-                {% endfor %}
-            
-            </div>
-               
-            {% include 'includes/iospc_pagination.html' %}
-    
+    {% settings_value 'GC_TOPICS_MASTERPIECE_SLUG' as masterpiece_slug %}
+    {% widget PCMasterpiecePackageListWidget slug=masterpiece_slug page=request.GET.page per_page=9 %}
+    <div class="masterpiece_box">
+{% for package in items %}
+    {% include "pages/pc/widgets/masterpiece-package-list.haml" %}
+{% endfor %}
     </div>
-
-    <script>
-    
-    </script>
-    {% endblock %}
+    {% include 'includes/pc_pagination.html' with current_page=items %}
+    {% endwidget %}
+</div>
+{% endblock %}
 

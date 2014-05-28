@@ -57,7 +57,6 @@ class AuthorPackageWidgetFilter(BaseWidgetFilterBackend):
 
 
 class PCVendorPackageListWidget(PCVendorCurrentAuthorMixin,
-                                FilterWidgetMixin,
                                 BasePackageListWidget,
                                 Widget):
 
@@ -72,15 +71,10 @@ class PCVendorPackageListWidget(PCVendorCurrentAuthorMixin,
 
     per_page = 18
 
-    def get_list(self):
-        qs = super(PCVendorPackageListWidget, self).get_list().published()
-        return self.filter_queryset(qs)
-
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
         self.author = options.get('author')
         if not self.author:
             self.author = self.get_current_author(context)
-        self.request = context.get('request')
         return super(PCVendorPackageListWidget, self).get_context(value=value,
                                                                   options=options,
                                                                   context=context,
