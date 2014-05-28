@@ -9,7 +9,7 @@ body,ol,ul,li,h1,h2,h3,h4,h5,h6,p,th,td,dl,dd,form,input,textarea,select{margin:
 body{font:12px 'Microsoft YaHei UI','Microsoft YaHei',DengXian,SimSun,'Segoe UI',Tahoma,Helvetica,sans-serif;-webkit-text-size-adjust:100%;}
 h1,h2,h3,h4,h5,h6{font-weight:500; font-size:100%}
 a, button {jing:e xpression(this.onFocus=this.blur());blr:expression(this.onFocus=this.blur()); text-decoration: none; cursor: pointer}
-a:focus{outline: 0}
+a:focus{outline:0}
 a{color:#2d374b}
 a:hover{color:#e53333}
 em{font-style:normal}
@@ -123,11 +123,13 @@ p.price span{color:#e53333; text-decoration:line-through}
 .btn .no{background:#CCC !important; color:#aaa !important; cursor:no-drop}
 .btn .a2.no{border-left:1px solid #ddd}
 
+.btn .update{background:#ff9933}
+.btn .update:hover{background:#ff7b33}
 
 
 .btn a:hover,.btn a:focus,.install-popup a:focus{text-decoration:none;background-image:linear-gradient(to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)); color:#fff}
 .btn a:focus,.install-popup a:focus{outline:thin dotted;outline:5px auto -webkit-focus-ring-color;outline-offset:-2px; color:#fff}
-.btn a:active,.install-popup a:active{outline:none;-webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);-moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);box-shadow: inset 0 2px 4px rgba(0,0,0,.15); color:#fff}
+.btn a:active,.install-popup a:active{outline:0;-webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);-moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);box-shadow: inset 0 2px 4px rgba(0,0,0,.15); color:#fff; jing:e xpression(this.onFocus=this.blur());blr:expression(this.onFocus=this.blur());}
 
 
 .install-popup{background:#5bc400; position:absolute; font-family:宋体; width:120px; z-index:99999}
@@ -185,7 +187,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .list_box .menu a.hover{background-position:center -226px; font-size:16px; color:#e53333; height:39px}
 .list_box .tag{padding-left:10px}
 .list_box .tag a{line-height:35px; color:#333; padding:5px}
-.list_box .tag a.hover{color:#e53333; font-weight:bold}
+.list_box .tag a.hover,.location .red{color:#e53333; font-weight:bold}
 .list_box .tag a:hover{background:#333; color:#fff}
 
 .game .list_box_left,.game .title_box{border:none; width:800px}
@@ -257,8 +259,11 @@ p.price span{color:#e53333; text-decoration:line-through}
 .vendor .list ul{height:620px}
 
 .vendor .left-nav li a{height:61px; width:197px; display:block; text-align:center; background-position: center center; background-repeat:no-repeat; background-size:60% 80%; background-color:#f8f8f8; border-bottom: 1px solid #e8e8e8}
+.vendor .left-nav li a img{width:150px; height:46px; padding:7px 0;}
+
 .vendor .left-nav li a:hover,.vendor .left-nav li a.hover{background-color:#fff}
 .vendor .left-nav li a.hover{border-left:3px solid #e53333}
+.vendor .left-nav li a.hover img{margin-left:-5px}
 .vendor .left-nav li a.v1{background-image:url(http://static.ccplay.com.cn/static/common/img/v1.png)}
 .vendor .left-nav li a.v1:hover,.vendor .left-nav li a.v1.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v1.png)}
 .vendor .left-nav li a.v2{background-image:url(http://static.ccplay.com.cn/static/common/img/v2.png)}
