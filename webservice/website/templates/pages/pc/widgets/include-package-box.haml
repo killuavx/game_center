@@ -10,14 +10,14 @@
     %p {{ version.get_download_size|filesizeformat }} | {{ version.download_count|default:0|intwordcn }}+下载
     -if version.is_ios
       -with iversion=version.as_ios
-        -if not version.as_ios.is_free
+        -if not iversion.is_free
           %p.price><
             %span= iversion.formatted_price
         -else
           %p.price 免费
-    %div.icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
+    .icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
     {% version_data_as version entrytype='pc' as json %}
-    .btn{"data-json" => "={json}" }><
+    .btn{:style => "display:none;", "data-json" => "={json}" }><
       %span.bg
       %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
       %a.a2{:href => "javascript:;", :class => "app-download-btn-js"} 下载

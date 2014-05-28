@@ -228,16 +228,20 @@ class TopicManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
 
 class TopicAbsoluteUrlMixin(object):
 
+    PAGE_TYPE_DETAIL = 'detail'
+
+    PAGE_TYPE_SPECIAL = 'special'
+
     _spec_topics = {'home-recommend-game': 'masterpieces',
                     'spec-choice-topic': 'collections'}
 
-    def get_absolute_url_as(self, product, pagetype='detail'):
+    def get_absolute_url_as(self, product, pagetype=PAGE_TYPE_DETAIL):
         if product == 'pc':
-            if pagetype == 'detail':
+            if pagetype == self.PAGE_TYPE_DETAIL:
                 view_name = 'website.views.%s.topic_detail' % product
                 return reverse(view_name, kwargs=dict(slug=self.slug))
 
-            if pagetype == 'special' and self.slug in self._spec_topics:
+            if pagetype == self.PAGE_TYPE_SPECIAL and self.slug in self._spec_topics:
                 # mezzanine.pages.views.page
                 view_name = 'page'
                 page_slug = "%s/%s" % (product, self._spec_topics[self.slug])
