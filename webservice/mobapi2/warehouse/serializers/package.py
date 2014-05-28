@@ -13,8 +13,6 @@ from mobapi2.warehouse.serializers.mixin import (
     PackageRelatedAuthorMixin)
 from mobapi2.serializers import HyperlinkedModelSerializer
 
-import logging
-logger = logging.getLogger('scripts')
 
 class PackageSummarySerializer(PackageRelatedVersionsMixin,
                                PackageRelatedLatestVersinoMixin,
@@ -28,6 +26,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
+    title = serializers.SerializerMethodField('get_latest_version_title')
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
     version_count = serializers.SerializerMethodField('get_version_count')
@@ -86,6 +85,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
+    title = serializers.SerializerMethodField('get_latest_version_title')
     version_name = serializers.SerializerMethodField('get_latest_version_name')
     version_code = serializers.SerializerMethodField('get_latest_version_code')
     whatsnew = serializers.SerializerMethodField('get_latest_version_whatsnew')
@@ -157,6 +157,7 @@ class PackageUpdateSummarySerializer(PackageSummarySerializer):
 
     entrytype = 'client'
 
+    title = serializers.SerializerMethodField('get_latest_version_title')
     version_code = serializers.SerializerMethodField('get_latest_version_code')
     version_name = serializers.SerializerMethodField('get_latest_version_name')
     download = serializers.SerializerMethodField('get_latest_version_download')
@@ -192,6 +193,7 @@ class PackageSummaryWithMyCommentSerializer(PackageSummarySerializer):
 
     icon = serializers.SerializerMethodField('get_latest_version_icon_url')
     cover = serializers.SerializerMethodField('get_latest_version_cover_url')
+    title = serializers.SerializerMethodField('get_latest_version_title')
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
     version_count = serializers.SerializerMethodField('get_version_count')
@@ -212,10 +214,7 @@ class PackageSummaryWithMyCommentSerializer(PackageSummarySerializer):
 
     def _get_comment(self, obj):
         request = self.context.get('request')
-        logger.info('start get comment')
-        logger.info(request.user)
         qs = self.get_latest_version_comment(obj).filter(user=request.user)
-        logger.info('end get comment')
         comment = qs[0]
         return comment
 

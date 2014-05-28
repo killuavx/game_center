@@ -1,7 +1,26 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.timezone import now
-from django_widgets import Widget
 from . import base
+from .package import BasePackageListWidget
+
+
+class ItemListByTopicFilterBackend(base.BaseWidgetFilterBackend):
+
+    topic_param = 'topic'
+
+    def filter_queryset(self, request, queryset, widget):
+        from taxonomy.models import TopicalItem
+        if hasattr(widget, self.topic_param) \
+            and getattr(widget, self.topic_param):
+            topic = getattr(widget, self.topic_param)
+            queryset = TopicalItem.objects \
+                .filter_items_by_topic(topic=topic,
+                                       item_model=queryset.model,
+                                       queryset=queryset)
+        else:
+            return queryset.none()
+        return queryset
 
 
 class BaseTopicListWidget(base.BaseListWidget):
@@ -17,7 +36,7 @@ class BaseTopicListWidget(base.BaseListWidget):
             return list()
 
 
-class BaseTopicInformationWidget(Widget):
+class BaseTopicInformationWidget(object):
 
     slug = None
 
@@ -44,22 +63,23 @@ class BaseTopicInformationWidget(Widget):
         return options
 
 
-class BaseTopicPackageListWidget(base.BaseListWidget):
+class BaseTopicPackageListWidget(BasePackageListWidget):
+
+    filter_backends = (ItemListByTopicFilterBackend, )
 
     slug = None
 
-    def get_list(self):
-        from taxonomy.models import Topic, TopicalItem
-        from warehouse.models import Package
-        try:
-            topic = Topic.objects.filter(slug=self.slug).published().get()
-            packages = TopicalItem.objects\
-                .get_items_by_topic(topic=topic, item_model=Package)
-            return packages
-        except (Topic.DoesNotExist, Package.DoesNotExist) as e:
-            return Package.objects.none()
+    topic = None
+
+    def get_topic(self):
+        from taxonomy.models import Topic
+        return Topic.objects.filter(slug=self.slug).published().get()
 
     def get_context(self, value=None, options=dict(), context=None):
         self.slug = options.get('slug') if options.get('slug') else self.slug
+        try:
+            self.topic = self.get_topic()
+        except ObjectDoesNotExist:
+            pass
         return super(BaseTopicPackageListWidget, self)\
             .get_context(value=value, options=options, context=context)

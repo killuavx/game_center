@@ -1,23 +1,23 @@
 -load url_tags util_tags pc_tags
 {% absolute_url_as package product="pc" as detail_url %}
 -with version=package.versions.latest_published
-  %li><
-    %a.big_pic{:href => "={detail_url}"}><
-      %img{:src => "{% resource_url version 'icon' %}" }
-      %span.icon.cover
-    %h2<
-      %a{:href => "={detail_url}"}= package.title
-    %p {{ version.get_download_size|filesizeformat }} | {{ version.download_count|default:0|intwordcn }}+下载
+  .maste_lsit<
+    %a{:href => "={detail_url}"}<
+      %img{:alt => "", :src => "{% resource_url version.resources 'cover' 'pc' %}"}
+      %h3.fl= package.title
+      .fr.icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
+    %p.cb.des= packge.summary
+    %p.fl {{ version.get_download_size|filesizeformat }} | {{ version.download_count|default:0|intwordcn }}+下载
     -if version.is_ios
       -with iversion=version.as_ios
         -if not iversion.is_free
-          %p.price><
+          %p.fr.price><
             %span= iversion.formatted_price
         -else
-          %p.price 免费
-    .icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
+          %p.fr 免费
     {% version_data_as version entrytype='pc' as json %}
-    .btn{:style => "display:none;", "data-json" => "={json}" }><
+    .btn{:style => "display:none;",  "data-json" => "={json}"}><
       %span.bg
       %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
       %a.a2{:href => "javascript:;", :class => "app-download-btn-js"} 下载
+  / maste_lsit

@@ -2,7 +2,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseNotFound
 from django.template.response import TemplateResponse
-from taxonomy.models import Category
+from taxonomy.models import Category, Topic, TopicalItem
 from warehouse.models import Package, PackageVersion
 
 template404 = 'pages/pc/errors/404.html'
@@ -86,3 +86,20 @@ def category_page(request, slug,
         )
     )
 
+
+def topic_detail(request, slug,
+                 template_name='pages/pc/collections/detail.haml',
+                 *args, **kwargs):
+    try:
+        topic = Topic.objects.published().get(slug=slug)
+        topic.packages_count = TopicalItem.objects\
+            .get_items_by_topic(topic, Package).published().count()
+    except ObjectDoesNotExist:
+        return TemplateResponseNotFound(request, template=template404)
+
+    return TemplateResponse(
+        request=request, template=template_name,
+        context=dict(
+            topic=topic
+        )
+    )

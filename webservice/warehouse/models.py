@@ -68,7 +68,7 @@ def author_workspace_path(author):
             _id = author.artist_id
         else:
             iauthor = author.iosauthor
-            _id = iauthor.atrist_id
+            _id = iauthor.artist_id
         subdir = 'iauthor'
     except ObjectDoesNotExist:
         dt_path = now().strftime("%Y%m%d%H%M/%S-%f")
@@ -184,7 +184,7 @@ class AuthorAbsoluteUrlMixin(object):
                 view_name = 'mezzanine.pages.views.page'
                 page_slug = '%s/vendors' % product
                 return reverse(view_name, kwargs=dict(slug=page_slug)) \
-                       + "#author_%s" % self.pk
+                           + "?author=%s" % self.pk
         return None
 
 
@@ -703,7 +703,8 @@ class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
         if kwargs:
             part = list(urlparse(url))
             query_idx = 4
-            query_params = list(parse_qsl(part[query_idx])) + list(kwargs.items())
+            _args = list(filter(lambda x: x[0] is None, kwargs.items()))
+            query_params = list(parse_qsl(part[query_idx])) + _args
             part[query_idx] = urlencode(query_params)
             url = urlunparse(part)
         return url

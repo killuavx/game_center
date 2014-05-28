@@ -230,3 +230,25 @@ class UCenterModelBackend(UserSyncAPI,
     def sync_user(self, uc_userdata):
         return self.sync_user_from_ucenter(uc_userdata)
 
+
+class GameCenterProfileBackend(GetUserMixin):
+
+    def authenticate(self, username=None, password=None, app=None, **kwargs):
+        """
+            username: game center profile 电话号码/电子邮箱
+            password: game center密码
+            app如设置了，表示使用别的登陆方式，略过当前登陆方式
+        """
+        if app is not None:
+            return None
+        try:
+            user = Profile.objects.get(phone__iexact=username).user
+        except ObjectDoesNotExist:
+            try:
+                user = Profile.objects.get(email__iexact=username).user
+            except ObjectDoesNotExist:
+                return None
+
+        if user.check_password(password):
+            return user
+        return None

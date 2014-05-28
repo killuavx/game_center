@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from django_widgets import Widget
-from django.core.paginator import Paginator
-
+import six
+from copy import deepcopy
 
 class PaginatorPageMixin(object):
 
@@ -37,11 +36,15 @@ class PaginatorPageMixin(object):
         return per_page, page
 
 
-class BaseListWidget(PaginatorPageMixin, Widget):
+class BaseListWidget(PaginatorPageMixin):
 
     more_url = None
 
     title = None
+
+    max_paging_links = 10
+
+    request = None
 
     def get_more_url(self):
         return self.more_url
@@ -50,17 +53,67 @@ class BaseListWidget(PaginatorPageMixin, Widget):
         return list()
 
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
+        from mezzanine.utils.views import paginate
+        self.request = context.get('request')
         per_page, page = self.get_paginator_vars(options)
-        paginator = Paginator(self.get_list(), per_page=per_page)
-        items = paginator.page(page)
-        options.update(
+        items = paginate(self.get_list(),
+                         page_num=page,
+                         per_page=per_page,
+                         max_paging_links=self.max_paging_links)
+        data = deepcopy(options)
+        data.update(
             title=options.get('title', self.title),
             more_url=self.get_more_url(),
             items=items,
             page=page,
-            per_page=per_page
+            per_page=per_page,
+            paginator=items.paginator,
         )
         self.set_list_page(items, options, context)
-        return options
+        return data
 
 
+class BaseWidgetFilterBackend(object):
+
+    def filter_queryset(self, request, queryset, widget):
+        """
+        Return a filtered queryset.
+        """
+        raise NotImplementedError(".filter_queryset() must be overridden.")
+
+
+class FilterWidgetMixin(object):
+
+    filter_backends = ()
+
+    def filter_queryset(self, queryset):
+        """
+        Given a queryset, filter it with whichever filter backend is in use.
+
+        You are unlikely to want to override this method, although you may need
+        to call it either from a list view, or from a custom `get_object`
+        method if you want to apply the configured filtering backend to the
+        default queryset.
+        """
+        filter_backends = self.filter_backends or []
+        for backend in filter_backends:
+            queryset = backend().filter_queryset(self.request, queryset, self)
+        return queryset
+
+
+class OrderingFitler(BaseWidgetFilterBackend):
+
+    ordering_param = 'ordering'
+
+    def get_ordering(self, widget):
+        ordering = getattr(widget, self.ordering_param, None)
+        if isinstance(ordering, six.string_types):
+            return (ordering,)
+        return ordering
+
+    def filter_queryset(self, request, queryset, widget):
+        ordering = self.get_ordering(widget)
+        if ordering:
+            return queryset.order_by(*ordering)
+
+        return queryset

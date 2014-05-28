@@ -5,15 +5,28 @@ register = Library()
 
 
 def version_data(context, version, **kwargs):
-    entrytype = None
-    if 'entrytype' in kwargs:
-        entrytype = kwargs.pop('entrytype')
+    entrytype = kwargs.pop('entrytype', None)
+    is_dynamic = kwargs.pop('is_dynamic', False)
+    try:
+        if is_dynamic is False:
+            entrytype = None
+        dw_url = version.get_download_url(entrytype=entrytype,
+                                          is_dynamic=is_dynamic)
+    except Exception as e:
+        dw_url = ''
 
-    dw_url = version.get_download_url(entrytype=entrytype)
-    if context.get('request'):
+    if dw_url and context.get('request'):
         dw_url = context['request'].build_absolute_uri(dw_url)
 
+    package = version.package
+    if package.is_ios:
+        appid = package.as_ios.track_id
+    else:
+        appid = package.pk
+
     return dict(
+        appid=appid,
+        title=package.title,
         package_name=version.package.package_name,
         version_name=version.version_name,
         download_url=dw_url,

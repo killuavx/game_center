@@ -286,10 +286,11 @@ class FeedbackViewSet(mixins.CreateModelMixin,
             contacts = self.get_contacts(params)
             content_type, object_pk = self.get_content_object(params)
             data = dict(
-                user=self.request.user,
+                user_id=self.request.user.pk,
                 kind=kind.pk,
                 content_type=content_type,
-                object_pk=object_pk
+                object_pk=object_pk,
+                comment=data.get('comment')
             )
             data.update(contacts)
         return super(FeedbackViewSet, self).get_serializer(instance, data,
