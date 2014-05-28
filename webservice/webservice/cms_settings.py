@@ -184,7 +184,7 @@ FILEBROWSER_SELECT_FORMATS = {
     'Package': ['iOSApp', 'AndroidApp']
 }
 
-GC_RESOURCE_ALIASES = ('default', 'gc20', 'pc')
+GC_RESOURCE_ALIASES = ('default', 'gc20', 'pc', 'mainsite')
 
 FILEBROWSER_DIRECTORY = ''
 

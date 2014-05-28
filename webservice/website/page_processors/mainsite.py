@@ -125,3 +125,17 @@ def android_vendor(request, page):
         data['id'] = id
 
     return data
+
+
+android_package_page_slug = 'package'
+@processor_for(android_package_page_slug)
+def android_package(request, page):
+    data = dict()
+    if request.method == "GET":
+        name = request.GET.get('name', None)
+        page_num = request.GET.get('page', None)
+        data['page_num'] = page_num
+        data['name'] = name
+
+
+    return data

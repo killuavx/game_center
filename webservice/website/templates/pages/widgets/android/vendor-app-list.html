@@ -20,7 +20,7 @@
                 <div class="l left-list">
                         <ul class="f14 left-nav">
                                 {% for vendor in vendors %}
-                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"></a></li>
+                                <li><a href="{{ page.get_absolute_url }}?id={{ vendor.id }}" class="v{{ forloop.counter }} {% if current_vendor.id == vendor.id %}hover{% endif %}"><img src="{{ vendor.cover.url }}" ></a></li>
                                 {% endfor %}
                         </ul>
                 </div><!--left-list-->
