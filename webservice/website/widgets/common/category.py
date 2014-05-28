@@ -57,7 +57,7 @@ class BaseTopicAuthorPackageListWidget(object):
     slug = 'spec-top-author'
 
     def get_package_list_by(self, author):
-        return author.packages.by_published_order(newest=True)
+        return author.packages.published().by_released_order(newest=True)
 
     def get_topic_authors(self):
         topic = Topic.objects.get(slug=self.slug)
