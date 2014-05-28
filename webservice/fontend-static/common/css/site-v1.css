@@ -14,14 +14,6 @@ a:focus,input,select,textarea{outline:0;resize: none}
 :-ms-input-placeholder{color:#ddd}
 ::-moz-selection{background:#ff7900;color:#fff}
 
-::selection{background:#ffe5e5;color:#e53333}
-::-webkit-scrollbar-track-piece{background: #333}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-button{display: none}
-::-webkit-scrollbar-track, ::-webkit-scrollbar-track-piece {background: -webkit-gradient(linear, left)}
-::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:horizontal {border-radius: 6px;background: #e53333}
-::-webkit-scrollbar-thumb:hover {background: #cf2929}
-::-webkit-scrollbar-thumb:active {background: #d12525}
 
 /*		公共		*/
 .width {width: 1260px}
@@ -279,7 +271,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .app-list-right,.vendor-list,.novice-bbs-list,.left-list,.app-dis-page .left,.pin-box,.news-page .r-box,.user-page .left{background:#f8f8f8}
 .app-list-right li,.hot-bbs-list li{height:24px; padding:5px 10px; line-height:24px; border-bottom:1px solid #e8e8e8}
 .app-list-right img{width:24px; height:24px; margin:0 5px}
-.app-list-right h3{font-size:12px}
+.app-list-right h3{font-size:12px; height:20px; overflow:hidden}
 .app-list-right b{display:inline-block; width:20px; text-align:center}
 .app-list-right a span.ios-web-icon{width:26px; height:26px; background-position:-127px -313px; left:34px}
 .app-list-right p{display:none; height:23px; overflow:hidden}
@@ -304,6 +296,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .hot-bbs-list li .ios-web-icon{background-position:-131px -662px; width:26px; height:26px; left:4px}
 /*厂商*/
 .vendor-list li{border-bottom:1px solid #e8e8e8; text-align:center}
+.vendor-list li a img{width:150px; height:46px; padding-top:7px;}
 .vendor-list li a{display:block; height:60px; border:1px solid #f8f8f8}
 .vendor-list li a:hover{border-color:#e53333}
 /*新手*/
@@ -425,7 +418,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 
 /*详细页*/
 .title{height:35px; border-bottom:2px solid #ccc}
-.title h1{width:240px}
+.title h1{padding:15px}
 .app-dis-page .left{width:240px; border-top:2px solid #e53333; margin-top:-2px; z-index:2; padding-bottom:99999px; margin-bottom:-99999px}
 .app-dis-page .right,.user-page .right{width:1019px}
 .app-dis-page .pic{width:177px; height:177px}
@@ -529,6 +522,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .vendor-page .pin-box{width:240px}
 .vendor-page .left-nav li a{height:60px; text-align:center; background-position: center center; background-repeat:no-repeat; background-size:60% 80%}
 .vendor-page .left-nav li a:hover{background-color:#fff}
+.vendor-page .left-nav li a img{width:150px; height:46px; padding:7px 0;}
 .vendor-page .left-nav li a.v1{background-image:url(http://static.ccplay.com.cn/static/common/img/v1.png)}
 .vendor-page .left-nav li a.v1:hover,.vendor-page .left-nav li a.v1.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v1.png)}
 .vendor-page .left-nav li a.v2{background-image:url(http://static.ccplay.com.cn/static/common/img/v2.png)}
@@ -764,7 +758,7 @@ clear: both; line-height: 1.8em;}
 #cc-m .maste_lsit{margin:0 10px 20px 20px}
 
 #cc-m .vendor-page .left-list,#cc-m .vendor-page .pin-box{width:180px}
-#cc-m .vendor-page .right-list{margin-left:180px; width:780px}
+#cc-m .vendor-page .right-list{ width:780px}
 #cc-m .vendor-page .app-list-xl{width:31.5%}
 #cc-m .vendor-page .left-nav li a{background-size:70% 70%}
 #cc-m .news-page .l-box{width:680px}
@@ -830,7 +824,7 @@ clear: both; line-height: 1.8em;}
 #cc-s .maste_lsit{margin:0 10px 20px 40px}
 
 #cc-s .vendor-page .left-list,#cc-s .vendor-page .pin-box{width:180px}
-#cc-s .vendor-page .right-list{margin-left:180px; width:530px}
+#cc-s .vendor-page .right-list{width:530px}
 #cc-s .vendor-page .app-list-xl{width:45%}
 #cc-s .vendor-page .left-nav li a{background-size:70% 70%}
 
