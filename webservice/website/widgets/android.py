@@ -260,7 +260,7 @@ class HomeNoviceBbsWidget(BaseForumThreadPanelWdiget, Widget):
     template = 'pages/widgets/android/novice-bbs.html'
 
 
-class CategoriesPackagesListWidget(BaseListWidget):
+class CategoriesPackagesListWidget(BaseListWidget, Widget):
 
     template = 'pages/widgets/android/app-list.html'
     slug = None
@@ -374,7 +374,7 @@ class CrackTopBannersWidget(BaseMultiAdvWidget, Widget):
    template='pages/widgets/android/crack-top-banner.html'
 
 
-class FirstReleaseCrackPackagesListWidget(BaseListWidget):
+class FirstReleaseCrackPackagesListWidget(BaseListWidget, Widget):
 
     template = 'pages/widgets/android/crack-first-release.html'
     crack_cat = None
@@ -463,7 +463,7 @@ class AllCrackPackagesListWidget(FirstReleaseCrackPackagesListWidget):
         return options
 
 
-class CrackTopicPackagesListWidget(BaseListWidget):
+class CrackTopicPackagesListWidget(BaseListWidget, Widget):
     template = 'pages/widgets/android/crack-all.html'
 
     def get_list(self):
@@ -494,7 +494,7 @@ class CrackTopicPackagesListWidget(BaseListWidget):
         return options
 
 
-class CollectionPackagesListWidget(BaseListWidget):
+class CollectionPackagesListWidget(BaseListWidget, Widget):
 
     template = 'pages/widgets/android/collection-box.html'
 
@@ -536,7 +536,7 @@ class CollectionPackagesListWidget(BaseListWidget):
         #print (options)
         return options
 
-class MasterpiecePackagesListWidget(BaseTopicPackageListWidget):
+class MasterpiecePackagesListWidget(BaseTopicPackageListWidget, Widget):
     template = 'pages/widgets/android/master-list.html'
 
 
@@ -651,9 +651,6 @@ class PackageVersionCommentListWidget(BaseListWidget, Widget):
 
     def get_context(self, value=None, options=dict(), context=None):
         self.pkgv = options.get('pkgv', None)
-       # print (self.pkgv)
-       # print (self.pkgv == '')
-       # return {}
         self.comments = self.get_list()
         print (self.comments)
 

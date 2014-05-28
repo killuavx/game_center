@@ -8,7 +8,7 @@
 
   <div class="cell-bk ovh">
 
-    <div class="pb10 location">当前位置：<a href="index.html">首页</a><em>»</em><a title="链接名称" href="game.html">{{ cat.get_root.name }}</a><em>»</em><a title="链接名称" href="game.html">{{ cat.name }}</a><em>»</em><a title="链接名称" href="">{{ pkg.title }}</a></div>
+    <div class="pb10 location">当前位置：<a href="index.html">首页</a><em>»</em><a title="链接名称" href="game.html">{% if cat.get_root.slug == 'game' %}游戏{% else %}软件{% endif %}</a><em>»</em><a title="链接名称" href="game.html">{{ cat.name }}</a><em>»</em><a title="链接名称" href="">{{ pkg.title }}</a></div>
 
     <div class="cell-bk title">
       <h1 class="l n dib tc">{{ pkg.title }}</h1>
