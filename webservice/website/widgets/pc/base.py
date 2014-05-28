@@ -106,7 +106,7 @@ class BaseComplexPackageListWidget(FilterWidgetMixin, PaginatorPageMixin):
             urlp = list(urlparse(url))
             qp = parse_qsl(urlp[4])
             qp = list(filter(lambda nv: not(nv[0] == topic_param), qp))
-            qp.append((topic_param, topic.slug,))
+            qp.append((topic_param, topic.pk,))
             urlp[4] = urlencode(qp, True)
             url = urlunparse(urlp)
         return url

@@ -11,11 +11,15 @@
           -ifequal category.pk cat.pk
             %li.icon.hover
               %a{:href => "javascript:;"}><
-                {% if forloop.first %}全部{% endif %}{{ cat.name }}
+                {% if cat.is_root_node %}全部{% endif %}{{ cat.name }}
           -else
             %li
-              %a{:href => "{% qurl request.get_full_path category=cat.pk topic=None lang=None page=None %}"}><
-                {% if forloop.first %}全部{% endif %}{{ cat.name }}
+              {% qurl request.get_full_path category=cat.pk topic=None lang=None page=None as second_url %}
+              -if cat.is_root_node
+                %a{:href => "{% qurl second_url category=None %}"}><
+                  全部{{ cat.name }}
+              -else
+                %a{:href => "={second_url}"}= cat.name
     .title_box.icon
       .tag
         -for select in second_selectlist
