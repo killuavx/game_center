@@ -622,19 +622,6 @@ class RankPackageListWidget(PCRankingPackageListWidget):
         return options
 
 
-class RankPackageDetailListWidget(PCRankingPackageListWidget):
+class RankPackageDetailListWidget(RankPackageListWidget):
 
     template='pages/widgets/android/package-rank.html'
-
-    def get_context(self, value, options):
-
-        cat_slug = options.get('cat_slug', None)
-        ranking_slug = options.get('ranking_slug', None)
-        ranking = self.get_ranking(cat_slug, ranking_slug)
-        options.update(
-            ranking = ranking,
-            items = ranking.packages.published(),
-        )
-
-        return options
-
