@@ -6,203 +6,189 @@
 {% block main %}
 <div class="auto mt30 width app-dis-page">
 
-        <div class="cell-bk ovh">
-        
-          <div class="pb10 location">当前位置：<a href="index.html">首页</a><em>»</em><a title="链接名称" href="game.html">{{ cat.get_root.name }}</a><em>»</em><a title="链接名称" href="game.html">{{ cat.name }}</a><em>»</em><a title="链接名称" href="">{{ pkg.title }}</a></div>
-                
-                <div class="cell-bk title">
-                  <h1 class="l n dib tc">{{ pkg.title }}</h1>
-                    <p class="r pt5 g9">
-                            <span class="ios-web-icon ad">有广告</span>
-                            <span class="ios-web-icon wifi no">不需要联网</span>
-                            <span class="ios-web-icon google">需要谷歌服务</span>
-                    </p>
+  <div class="cell-bk ovh">
+
+    <div class="pb10 location">当前位置：<a href="index.html">首页</a><em>»</em><a title="链接名称" href="game.html">{{ cat.get_root.name }}</a><em>»</em><a title="链接名称" href="game.html">{{ cat.name }}</a><em>»</em><a title="链接名称" href="">{{ pkg.title }}</a></div>
+
+    <div class="cell-bk title">
+      <h1 class="l n dib tc">{{ pkg.title }}</h1>
+      <p class="r pt5 g9">
+      <span class="ios-web-icon ad">有广告</span>
+      <span class="ios-web-icon wifi no">不需要联网</span>
+      <span class="ios-web-icon google">需要谷歌服务</span>
+      </p>
+    </div>
+
+    <div class="l rel left">
+      <div class="auto rel pic">
+        <img class="db auto pt1 mt20" src="{{ pkgv.icon.url }}" width="175px" height="175px">
+        <span class="dib abs cover png"></span>
+      </div>
+
+      {% if cat.slug == 'crack-game' %}
+      <a title="链接名称" href="{{ pkgv.get_download_url }}" class="mt20 db btn btn-green f16">一键安装虫虫破解版</a>
+      {% endif %}
+
+      <div class="pt20 pb30 db pct100 btn-s">
+        <a title="链接名称" href="{{ pkgv.get_download_url }}" class="a1 install" target="">下载到手机</a>
+        <a title="链接名称" href="{{ pkgv.get_download_url }}" class="a2" target="">下载到电脑</a>
+      </div>
+
+
+      <div class="tc pt20 p-code dn">
+        <div><img alt="图片名称" src=""></div>
+        <p class="gr">扫描二维码即可下载</p>
+      </div>
+      <ul class="g9 pt20 instr">
+        <li>评分<span><div class="ios-web-icon star s{{ pkgv.stars_average|floatformat:"0" }} mr5"></div>{{ pkgv.sars_count }}人评分</span></li>
+        <li>厂商<span>{{ pkgv.package.author.name }}</span></li>
+        <li>发布<span>{{ pkgv.released_datetime.date }}</span></li>
+        <li>版本<span>{{ pkgv.verison_name }}</span></li>
+        <li>大小<span>{{ pkgv.get_download_size|default:0|filesizeformat }}</span></li>
+        <li>类别<span>{{ cat.name }}</span></li>
+        <li>语言<span>{{ pkgv.supported_languages.all.0.name }}</span></li>
+        <li>适用<span>{{ pkgv.supported_devices.all.0.name}}</span></li>
+        <li>下载<span>{{ pkgv.package.download_count|intwordcn }}+</span></li>
+      </ul>
+
+
+
+      {% include_widget RankPackageDetailListWidget cat_slug='game' ranking_slug='hotgame' class='down-top' %}
+
+    </div><!--left-list-->
+
+
+
+    <div class="r right">
+      {% if cat.slug == 'crack-game' %}
+      <div class="re-1 pl10 pt10 pr10 ml10 mt10 gr">
+        <h3 class="n">虫虫游戏提醒</h3>
+        <div class="text_inner f14 gr">
+          破解说明：破解内购<br>
+          操作说明：进入购买金币的页面，玩家选择50元和200元两种充值金额，点击之后返回即可完成内购；切勿点击其他面值的金币充值，否则会扣费。
+        </div><!--text_inner-->
+      </div>
+      {% endif %}
+
+
+      <div class="up box_btn up_box">
+
+
+
+        <div class="up_pic">
+
+          <ul>
+            {%  for sh in pkgv.screenshots.all %}
+            <li><img title="{{ forloop.counter }}" src="{{ sh.image.url }}"></li>
+            {% endfor %}
+
+          </ul>
+
+
+
+        </div> <!--up_pic-->   
+
+        <div class="cl rel a_btn">
+
+          <a href="javascript:;" class="ios-web-icon abs prev"></a>
+
+          <a href="javascript:;" class="ios-web-icon abs next"></a>
+
+        </div><!--a_btn-->
+
+
+
+
+
+      </div><!--up-->
+
+
+      <div class="down">
+
+
+        <h3 class="n">应用介绍</h3>
+        <div class="text_inner">
+          {{ pkgv.summary }}
+        </div><!--text_inner-->
+        <h3 class="n">新版特性</h3>
+        <div class="text_inner">
+          <ul>
+
+            <li>{{ pkgv.whatsnew }}</li>
+
+          </ul>
+        </div><!--text_inner-->
+
+
+        <!--相关推荐--> 
+        <div class="ovh relevant-app"> 
+          <h3 class="n">相关推荐</h3>                               
+          <div class="cell-bk tj">
+            {% for item in related_pkgs|slice:"10" %}
+            {% with version=item.versions.latest_published %}
+            <div class="dib rel app-list-min">
+              <a title="链接名称" href="{{ item.get_absolute_url }}" class="db tc f14" target="_blank">
+                <img alt="图片名称" src="{{ version.icon.url }}" class="db auto">
+                <span class="ios-web-icon abs db auto"></span>
+                {{ item.title|slice:"5" }}
+                <i class="db n f12 g9">{{ cat.name }}</i>
+              </a>
+            </div>
+            {% endwith %}
+            {% endfor %}
+          </div>
+        </div>
+        <!--相关推荐-->
+
+
+        <div class="cell-bk review">
+          <h3 class="l n">应用评论</h3>
+          <span class="r login">请先登录，再来评分。</span>
+          <form action="" class="cl" method="get">
+            <textarea></textarea>
+            <div class="l review_btn">
+              <div id="rating_cont">
+                <div id="rating_btns">
+                  <ul>
+                    <li title="很差">1</li>
+                    <li title="一般">2</li>
+                    <li title="好">3</li>
+                    <li title="很好">4</li>
+                    <li title="非常好">5</li>
+                  </ul>
                 </div>
+                <div id="rating_on" style="width: 0px;"></div>
+                <div id="rating" class="r">点击星星来评分</div>
+              </div>
+              <input type="hidden" id="rating_output" name="rating_output" value="">
+            </div>
+            <button class="r btn btn-red f16">发表评论</button>
+          </form>
+        </div>
 
-                <div class="l rel left">
-                      <div class="auto rel pic">
-                              <img class="db auto pt1 mt20" src="{{ pkgv.icon.url }}" width="175px" height="175px">
-                              <span class="dib abs cover png"></span>
-                      </div>
-                      
-                      {% if cat.slug == 'crack-game' %}
-                      <a title="链接名称" href="{{ pkgv.get_download_url }}" class="mt20 db btn btn-green f16">一键安装虫虫破解版</a>
-                      {% endif %}
-                      
-                      <div class="pt20 pb30 db pct100 btn-s">
-                        <a title="链接名称" href="{{ pkgv.get_download_url }}" class="a1 install" target="">下载到手机</a>
-                          <a title="链接名称" href="{{ pkgv.get_download_url }}" class="a2" target="">下载到电脑</a>
-                      </div>
-                      
-                      
-                      <div class="tc pt20 p-code dn">
-                        <div><img alt="图片名称" src=""></div>
-                            <p class="gr">扫描二维码即可下载</p>
-                      </div>
-                      <ul class="g9 pt20 instr">
-                        <li>评分<span><div class="ios-web-icon star s{{ pkgv.stars_average|floatformat:"0" }} mr5"></div>{{ pkgv.sars_count }}人评分</span></li>
-                        <li>厂商<span>{{ pkgv.package.author.name }}</span></li>
-                        <li>发布<span>{{ pkgv.released_datetime.date }}</span></li>
-                        <li>版本<span>{{ pkgv.verison_name }}</span></li>
-                          <li>大小<span>{{ pkgv.get_download_size|default:0|filesizeformat }}</span></li>
-                          <li>类别<span>{{ cat.name }}</span></li>
-                          <li>语言<span>{{ pkgv.supported_languages.all.0.name }}</span></li>
-                          <li>适用<span>{{ pkgv.supported_devices.all.0.name}}</span></li>
-                          <li>下载<span>{{ pkgv.package.download_count|intwordcn }}+</span></li>
-                      </ul>
-                      
-                      
-                      
-                      <div class="cell-bk  pt10 pb30 left-top-list">
-                      
-                          
-                            <div class="f18 cell-bk rel t-title">
-                                <ul class="l abs cell-bk f16">
-                                    <li class="ios-web-icon tc dib"><a title="链接名称" href="#">周榜</a></li>
-                                </ul>
-                                
-                                <div class="rel tab-more">
-                                <a title="链接名称" class="r f12 mt5 mr10 more" href="#1">更多&gt;</a>
-                                </div>
-                            </div> <!--t-title-->
-                            
-                            {% include "pages/android/package/rank.html" %} 
-                       </div><!--left-top-list-->
-                
-                </div><!--left-list-->
-                
-                
 
-                <div class="r right">
-                      {% if cat.slug == 'crack-game' %}
-                        <div class="re-1 pl10 pt10 pr10 ml10 mt10 gr">
-                                      <h3 class="n">虫虫游戏提醒</h3>
-                                      <div class="text_inner f14 gr">
-                                          破解说明：破解内购<br>
-                                          操作说明：进入购买金币的页面，玩家选择50元和200元两种充值金额，点击之后返回即可完成内购；切勿点击其他面值的金币充值，否则会扣费。
-                                      </div><!--text_inner-->
-                                </div>
-                      {% endif %}
-                                
-                
-                        <div class="up box_btn up_box">
+        {% include "pages/android/package/comment.html" %} 
 
-                        
+      </div><!--down-->
 
-                            <div class="up_pic">
 
-                                <ul>
-                                    {%  for sh in pkgv.screenshots.all %}
-                                    <li><img title="{{ forloop.counter }}" src="{{ sh.image.url }}"></li>
-                                    {% endfor %}
+      <div class="cl f14 page">
+        <a title="链接名称" href="#">上一页</a>
+        <a title="链接名称" href="#">1</a>
+        <a title="链接名称" href="#" class="hover">2</a>
+        <a title="链接名称" href="#">3</a>
+        <a title="链接名称" href="#">4</a>
+        <a title="链接名称" href="#">···</a>
+        <a title="链接名称" href="#">99</a>
+        <a title="链接名称" href="#">下一页</a>
+      </div>
 
-                                </ul>
 
-                                
-
-                            </div> <!--up_pic-->   
-
-                            <div class="cl rel a_btn">
-
-                                <a href="javascript:;" class="ios-web-icon abs prev"></a>
-
-                                <a href="javascript:;" class="ios-web-icon abs next"></a>
-
-                            </div><!--a_btn-->
+    </div><!--right-->
 
 
 
-                        
-
-                        </div><!--up-->
-
-                        
-                        <div class="down">
-                                                                
-                                
-                                <h3 class="n">应用介绍</h3>
-                                <div class="text_inner">
-                                      {{ pkgv.summary }}
-                                </div><!--text_inner-->
-                                <h3 class="n">新版特性</h3>
-                                <div class="text_inner">
-                                    <ul>
-                        
-                        <li>{{ pkgv.whatsnew }}</li>
-                        
-                        </ul>
-                                </div><!--text_inner-->
-                                
-                                 
-                                 <!--相关推荐--> 
-                                 <div class="ovh relevant-app"> 
-                                       <h3 class="n">相关推荐</h3>                               
-                                       <div class="cell-bk tj">
-                                         {% for item in related_pkgs|slice:"10" %}
-                                         {% with version=item.versions.latest_published %}
-                                              <div class="dib rel app-list-min">
-                                                <a title="链接名称" href="{{ item.get_absolute_url }}" class="db tc f14" target="_blank">
-                                                  <img alt="图片名称" src="{{ version.icon.url }}" class="db auto">
-                                                      <span class="ios-web-icon abs db auto"></span>
-                                                      {{ item.title|slice:"5" }}
-                                                      <i class="db n f12 g9">{{ cat.name }}</i>
-                                                  </a>
-                                              </div>
-                                              {% endwith %}
-                                              {% endfor %}
-                                       </div>
-                                 </div>
-                                 <!--相关推荐-->
-                                 
-                                
-                                <div class="cell-bk review">
-                                    <h3 class="l n">应用评论</h3>
-                                    <span class="r login">请先登录，再来评分。</span>
-                                    <form action="" class="cl" method="get">
-                                        <textarea></textarea>
-                                        <div class="l review_btn">
-                                                <div id="rating_cont">
-                                                           <div id="rating_btns">
-                                                        <ul>
-                                                            <li title="很差">1</li>
-                                                            <li title="一般">2</li>
-                                                            <li title="好">3</li>
-                                                            <li title="很好">4</li>
-                                                            <li title="非常好">5</li>
-                                                        </ul>
-                                                    </div>
-                                                      <div id="rating_on" style="width: 0px;"></div>
-                                                    <div id="rating" class="r">点击星星来评分</div>
-                                                   </div>
-                                                <input type="hidden" id="rating_output" name="rating_output" value="">
-                                        </div>
-                                        <button class="r btn btn-red f16">发表评论</button>
-                                    </form>
-                                </div>
-                                
-                        
-                            {% include "pages/android/package/comment.html" %} 
-                        
-                        </div><!--down-->
-
-
-                        <div class="cl f14 page">
-                            <a title="链接名称" href="#">上一页</a>
-                            <a title="链接名称" href="#">1</a>
-                            <a title="链接名称" href="#" class="hover">2</a>
-                            <a title="链接名称" href="#">3</a>
-                            <a title="链接名称" href="#">4</a>
-                            <a title="链接名称" href="#">···</a>
-                            <a title="链接名称" href="#">99</a>
-                            <a title="链接名称" href="#">下一页</a>
-                       </div>
-                       
-                       
-                </div><!--right-->
-                
-                
-                
-        </div><!--cell-bk-->
+  </div><!--cell-bk-->
 </div>
 {{ name }}
 {{ page_num }}
