@@ -1,16 +1,17 @@
 {% extends "pages/android/base.html" %}
 {% load templateutils_tags %}
 {% load widgets %}
+{% load util_tags %}
 
 {% block main %}
 <div class="auto mt30 width app-dis-page">
 
         <div class="cell-bk ovh">
         
-                <div class="pb10 location">当前位置：<a href="index.html">首页</a><em>»</em><a title="链接名称" href="game.html">游戏</a><em>»</em><a title="链接名称" href="game.html">动作游戏</a><em>»</em><a title="链接名称" href="">天天飞车</a></div>
+          <div class="pb10 location">当前位置：<a href="index.html">首页</a><em>»</em><a title="链接名称" href="game.html">{{ cat.get_root.name }}</a><em>»</em><a title="链接名称" href="game.html">{{ cat.name }}</a><em>»</em><a title="链接名称" href="">{{ pkg.title }}</a></div>
                 
                 <div class="cell-bk title">
-                    <h1 class="l n dib tc">天天飞车</h1>
+                  <h1 class="l n dib tc">{{ pkg.title }}</h1>
                     <p class="r pt5 g9">
                             <span class="ios-web-icon ad">有广告</span>
                             <span class="ios-web-icon wifi no">不需要联网</span>
@@ -20,32 +21,34 @@
 
                 <div class="l rel left">
                       <div class="auto rel pic">
-                              <img class="db auto pt1 mt20" src="http://static.ccplay.com.cn/static/common/img/1.jpg" width="175px" height="175px">
+                              <img class="db auto pt1 mt20" src="{{ pkgv.icon.url }}" width="175px" height="175px">
                               <span class="dib abs cover png"></span>
                       </div>
                       
-                      <a title="链接名称" href="#" class="mt20 db btn btn-green f16">一键安装虫虫破解版</a>
+                      {% if cat.slug == 'crack-game' %}
+                      <a title="链接名称" href="{{ pkgv.get_download_url }}" class="mt20 db btn btn-green f16">一键安装虫虫破解版</a>
+                      {% endif %}
                       
                       <div class="pt20 pb30 db pct100 btn-s">
-                          <a title="链接名称" href="#" class="a1 install" target="">下载到手机</a>
-                          <a title="链接名称" href="#" class="a2" target="">下载到电脑</a>
+                        <a title="链接名称" href="{{ pkgv.get_download_url }}" class="a1 install" target="">下载到手机</a>
+                          <a title="链接名称" href="{{ pkgv.get_download_url }}" class="a2" target="">下载到电脑</a>
                       </div>
                       
                       
-                      <div class="tc pt20 p-code">
-                            <div><img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/code.png"></div>
+                      <div class="tc pt20 p-code dn">
+                        <div><img alt="图片名称" src=""></div>
                             <p class="gr">扫描二维码即可下载</p>
                       </div>
                       <ul class="g9 pt20 instr">
-                          <li>评分<span><div class="ios-web-icon star s4 mr5"></div>12345人评分</span></li>
-                          <li>厂商<span>腾讯</span></li>
-                          <li>发布<span>2014-04-03</span></li>
-                          <li>版本<span>1.0.3</span></li>
-                          <li>大小<span>141.09M</span></li>
-                          <li>类别<span>冒险游戏</span></li>
-                          <li>语言<span>简体中文</span></li>
-                          <li>适用<span>2.1及以上</span></li>
-                          <li>下载<span>1.8亿+</span></li>
+                        <li>评分<span><div class="ios-web-icon star s{{ pkgv.stars_average|floatformat:"0" }} mr5"></div>{{ pkgv.sars_count }}人评分</span></li>
+                        <li>厂商<span>{{ pkgv.package.author.name }}</span></li>
+                        <li>发布<span>{{ pkgv.released_datetime.date }}</span></li>
+                        <li>版本<span>{{ pkgv.verison_name }}</span></li>
+                          <li>大小<span>{{ pkgv.get_download_size|default:0|filesizeformat }}</span></li>
+                          <li>类别<span>{{ cat.name }}</span></li>
+                          <li>语言<span>{{ pkgv.supported_languages.all.0.name }}</span></li>
+                          <li>适用<span>{{ pkgv.supported_devices.all.0.name}}</span></li>
+                          <li>下载<span>{{ pkgv.package.download_count|intwordcn }}+</span></li>
                       </ul>
                       
                       
@@ -62,8 +65,8 @@
                                 <a title="链接名称" class="r f12 mt5 mr10 more" href="#1">更多&gt;</a>
                                 </div>
                             </div> <!--t-title-->
-                            {% include "pages/android/package/rank.html" %}     
-                        
+                            
+                            {% include "pages/android/package/rank.html" %} 
                        </div><!--left-top-list-->
                 
                 </div><!--left-list-->
@@ -71,6 +74,7 @@
                 
 
                 <div class="r right">
+                      {% if cat.slug == 'crack-game' %}
                         <div class="re-1 pl10 pt10 pr10 ml10 mt10 gr">
                                       <h3 class="n">虫虫游戏提醒</h3>
                                       <div class="text_inner f14 gr">
@@ -78,139 +82,78 @@
                                           操作说明：进入购买金币的页面，玩家选择50元和200元两种充值金额，点击之后返回即可完成内购；切勿点击其他面值的金币充值，否则会扣费。
                                       </div><!--text_inner-->
                                 </div>
+                      {% endif %}
                                 
                 
                         <div class="up box_btn up_box">
-                        
-                            <div class="up_pic">
-                                <ul style="width: 1770px; position: relative; overflow: hidden; padding: 0px; margin: 0px; left: -295px;"><li class="clone" style="float: left; width: 280px;"><img title="5" src="../img/h5.jpg"></li>
-                                    <li style="float: left; width: 280px;"><img title="1" src="../img/h.jpg"></li>
-                                    <li style="float: left; width: 280px;"><img title="2" src="../img/h2.jpg"></li>
-                                    <li style="float: left; width: 280px;"><img title="3" src="../img/h3.jpg"></li>
-                                    <li style="float: left; width: 280px;"><img title="4" src="../img/h4.jpg"></li>
-                                    <li style="float: left; width: 280px;"><img title="5" src="../img/h5.jpg"></li>
-                                </ul>
-                                
-                            </div> <!--up_pic-->   
-                            <div class="cl rel a_btn" style="display: none;">
-                                <a href="javascript:;" class="ios-web-icon abs prev prevStop" style="display: none;"></a>
-                                <a href="javascript:;" class="ios-web-icon abs next" style=""></a>
-                            </div><!--a_btn-->
 
                         
+
+                            <div class="up_pic">
+
+                                <ul>
+                                    {%  for sh in pkgv.screenshots.all %}
+                                    <li><img title="{{ forloop.counter }}" src="{{ sh.image.url }}"></li>
+                                    {% endfor %}
+
+                                </ul>
+
+                                
+
+                            </div> <!--up_pic-->   
+
+                            <div class="cl rel a_btn">
+
+                                <a href="javascript:;" class="ios-web-icon abs prev"></a>
+
+                                <a href="javascript:;" class="ios-web-icon abs next"></a>
+
+                            </div><!--a_btn-->
+
+
+
+                        
+
                         </div><!--up-->
+
                         
                         <div class="down">
                                                                 
                                 
                                 <h3 class="n">应用介绍</h3>
                                 <div class="text_inner">
-                                    腾讯手机管家是一款完全免费的手机安全与管理软件，以手机安全管理先锋为使命，提供体检加速、健康优化、安全防护、软件管理等智能化的手机管理功能，更有管家安全登录QQ、秘拍、小火箭释放内存等特色体验，让您的手机安全无忧！腾讯手机管家不仅是安全专家，更是您的贴心管家
+                                      {{ pkgv.summary }}
                                 </div><!--text_inner-->
                                 <h3 class="n">新版特性</h3>
                                 <div class="text_inner">
                                     <ul>
                         
-                        <li>1.清理微信存储空间，微信运行更轻快<br>2.一键搬走内存照片，彻底释放手机空间<br>3.支持闲时流量套餐，更智能更精准<br>4.强力优化运行性能，让手机更快更爽</li>
+                        <li>{{ pkgv.whatsnew }}</li>
                         
                         </ul>
                                 </div><!--text_inner-->
                                 
                                  
-                                 
-                                 
                                  <!--相关推荐--> 
                                  <div class="ovh relevant-app"> 
                                        <h3 class="n">相关推荐</h3>                               
                                        <div class="cell-bk tj">
+                                         {% for item in related_pkgs|slice:"10" %}
+                                         {% with version=item.versions.latest_published %}
                                               <div class="dib rel app-list-min">
-                                                  <a title="链接名称" href="game-dis.html" class="db tc f14" target="_blank">
-                                                      <img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
+                                                <a title="链接名称" href="{{ item.get_absolute_url }}" class="db tc f14" target="_blank">
+                                                  <img alt="图片名称" src="{{ version.icon.url }}" class="db auto">
                                                       <span class="ios-web-icon abs db auto"></span>
-                                                      最多5个字
-                                                      <i class="db n f12 g9">智力游戏</i>
+                                                      {{ item.title|slice:"5" }}
+                                                      <i class="db n f12 g9">{{ cat.name }}</i>
                                                   </a>
                                               </div>
-                                              <div class="dib rel app-list-min">
-                                                  <a title="链接名称" href="game-dis.html" class="db tc f14" target="_blank">
-                                                      <img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
-                                                      <span class="ios-web-icon abs db auto"></span>
-                                                      最多5个字
-                                                      <i class="db n f12 g9">智力游戏</i>
-                                                  </a>
-                                              </div>
-                                              <div class="dib rel app-list-min">
-                                                  <a title="链接名称" href="game-dis.html" class="db tc f14" target="_blank">
-                                                      <img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
-                                                      <span class="ios-web-icon abs db auto"></span>
-                                                      最多5个字
-                                                      <i class="db n f12 g9">智力游戏</i>
-                                                  </a>
-                                              </div>
-                                              <div class="dib rel app-list-min">
-                                                  <a title="链接名称" href="game-dis.html" class="db tc f14" target="_blank">
-                                                      <img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
-                                                      <span class="ios-web-icon abs db auto"></span>
-                                                      最多5个字
-                                                      <i class="db n f12 g9">智力游戏</i>
-                                                  </a>
-                                              </div>
-                                              <div class="dib rel app-list-min">
-                                                  <a title="链接名称" href="game-dis.html" class="db tc f14" target="_blank">
-                                                      <img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
-                                                      <span class="ios-web-icon abs db auto"></span>
-                                                      最多5个字
-                                                      <i class="db n f12 g9">智力游戏</i>
-                                                  </a>
-                                              </div>
-                                              <div class="dib rel app-list-min">
-                                                  <a title="链接名称" href="game-dis.html" class="db tc f14" target="_blank">
-                                                      <img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
-                                                      <span class="ios-web-icon abs db auto"></span>
-                                                      最多5个字
-                                                      <i class="db n f12 g9">智力游戏</i>
-                                                  </a>
-                                              </div>
-                                              <div class="dib rel app-list-min">
-                                                  <a title="链接名称" href="game-dis.html" class="db tc f14" target="_blank">
-                                                      <img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
-                                                      <span class="ios-web-icon abs db auto"></span>
-                                                      最多5个字
-                                                      <i class="db n f12 g9">智力游戏</i>
-                                                  </a>
-                                              </div>
-                                              <div class="dib rel app-list-min">
-                                                  <a title="链接名称" href="game-dis.html" class="db tc f14" target="_blank">
-                                                      <img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
-                                                      <span class="ios-web-icon abs db auto"></span>
-                                                      最多5个字
-                                                      <i class="db n f12 g9">智力游戏</i>
-                                                  </a>
-                                              </div>
-                                              <div class="dib rel app-list-min">
-                                                  <a title="链接名称" href="game-dis.html" class="db tc f14" target="_blank">
-                                                      <img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
-                                                      <span class="ios-web-icon abs db auto"></span>
-                                                      最多5个字
-                                                      <i class="db n f12 g9">智力游戏</i>
-                                                  </a>
-                                              </div>
-                                              <div class="dib rel app-list-min">
-                                                  <a title="链接名称" href="game-dis.html" class="db tc f14" target="_blank">
-                                                      <img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/1.jpg" class="db auto">
-                                                      <span class="ios-web-icon abs db auto"></span>
-                                                      最多5个字
-                                                      <i class="db n f12 g9">智力游戏</i>
-                                                  </a>
-                                              </div>
-                                              
-                                       
+                                              {% endwith %}
+                                              {% endfor %}
                                        </div>
                                  </div>
                                  <!--相关推荐-->
                                  
-                                  
-                                      
                                 
                                 <div class="cell-bk review">
                                     <h3 class="l n">应用评论</h3>
@@ -237,49 +180,12 @@
                                     </form>
                                 </div>
                                 
-                                <div class="review_list">
-                                     <dl class="cb">
-                                            <dt class="ios-web-icon l user" title="name"></dt>
-                                            <dd class="d1"><span class="ios-web-icon l star s4"></span><span class="r">2014-04-07 19:16</span></dd>
-                                            <dd class="d2">以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、</dd>
-                                            <dd class="d3"><a title="链接名称" href="#" class="r1"><span class="ios-web-icon"></span>0</a><a title="链接名称" href="#" class="r2"><span class="ios-web-icon"></span>0</a></dd>
-                                     </dl>
-                                     <div class="cl"></div>
-                                </div>
-                                <div class="review_list i_reply">
-                                     <dl class="cb">
-                                            <dt class="ios-web-icon l user" title="name"><img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/6.jpg"></dt>
-                                            <dd class="d1"><span class="ios-web-icon l star s4"></span><span class="r">2014-04-07 19:16</span></dd>
-                                            <dd class="d2">以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、</dd>
-                                            <dd class="d3"><a title="链接名称" href="#" class="r1"><span class="ios-web-icon"></span>1</a><a title="链接名称" href="#" class="r2"><span class="ios-web-icon"></span>2</a></dd>
-                                     </dl>
-                                     <div class="cl"></div>
-                                </div>
-                                <div class="review_list i_reply">
-                                     <dl class="cb">
-                                            <dt class="ios-web-icon l user" title="name"></dt>
-                                            <dd class="d1"><span class="ios-web-icon l star s4"></span><span class="r">2014-04-07 19:16</span></dd>
-                                            <dd class="d2">以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、</dd>
-                                            <dd class="d3"><a title="链接名称" href="#" class="r1"><span class="ios-web-icon"></span>1</a><a title="链接名称" href="#" class="r2"><span class="ios-web-icon"></span>2</a></dd>
-                                     </dl>
-                                     <div class="cl"></div>
-                                </div>
-                                <div class="review_list">
-                                     <dl class="cb">
-                                            <dt class="ios-web-icon l user" title="name"><img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/pic.jpg"></dt>
-                                            <dd class="d1"><span class="ios-web-icon l star s4"></span><span class="r">2014-04-07 19:16</span></dd>
-                                            <dd class="d2">以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、</dd>
-                                            <dd class="d3"><a title="链接名称" href="#" class="r1"><span class="ios-web-icon"></span>0</a><a title="链接名称" href="#" class="r2"><span class="ios-web-icon"></span>0</a></dd>
-                                     </dl>
-                                     <div class="cl"></div>
-                                </div>
-
                         
+                            {% include "pages/android/package/comment.html" %} 
                         
                         </div><!--down-->
 
 
-                
                         <div class="cl f14 page">
                             <a title="链接名称" href="#">上一页</a>
                             <a title="链接名称" href="#">1</a>
@@ -300,4 +206,7 @@
 </div>
 {{ name }}
 {{ page_num }}
+{{ pkg.package_name }}
+{{ pkgv.code }}
+{{ related_pkgs.count }}
 {% endblock %}

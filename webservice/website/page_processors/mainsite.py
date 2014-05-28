@@ -3,8 +3,8 @@ from django.core.urlresolvers import resolve, Resolver404
 from django.http import Http404
 from mezzanine.pages.page_processors import processor_for
 from taxonomy.models import Category, Topic
+from warehouse.models import Package
 from mezzanine.conf import settings
-
 
 categories_page_slug = 'categories'
 @processor_for(categories_page_slug)
@@ -134,8 +134,23 @@ def android_package(request, page):
     if request.method == "GET":
         name = request.GET.get('name', None)
         page_num = request.GET.get('page', None)
+        try:
+            pkg = Package.objects.get(package_name=name)
+            pkgv = pkg.versions.latest_published()
+        except:
+            pkg, pkgv = None, None
+
+        try:
+            cat = pkg.categories.all()[0]
+            related_pkgs =  cat.packages.published()
+        except:
+            cat, related_pkgs = None, None
+
         data['page_num'] = page_num
         data['name'] = name
-
+        data['pkg'] = pkg
+        data['pkgv'] = pkgv
+        data['cat'] = cat
+        data['related_pkgs'] = related_pkgs
 
     return data
