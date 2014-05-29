@@ -48,26 +48,27 @@
 		<div class="cell-bk ovh">
         
         			<div class="box">
-                    	<form class="cell-bk reg-box rel reg-form">                        	
+                    	<form class="cell-bk reg-box rel reg-form" method="post" action="{% url 'mainsite_register' %}">                        	
+                          {% csrf_token %}
                         	<div class="abs f14 tc cell-bk login-tip"></div>
                         	<div class="p20 g6 f16 fw">
                             	<div class="tc p15 mb15 ask-login">已拥有帐号，请直接<a title="链接名称" href="login.html" class="gr ml5">登录</a></div>
                                 
                         		<dl class="pb10"> 
-                                	<dt class="l r-name"><label class="dib w100 tr pt5 mt2">用户名</label></dt><dd class="rel" ><input class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="4-16位字符" id="p-id" datatype="*4-16" ajaxurl=""></dd>
+                                	<dt class="l r-name"><label class="dib w100 tr pt5 mt2">用户名</label></dt><dd class="rel" ><input name="username" class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="4-16位字符" id="p-id" datatype="*4-16" ajaxurl=""></dd>
                                 </dl> 
                                 <dl class="pb10"> 
-                                	<dt class="l r-pw"><label class="dib w100 tr pt5 mt2">登录密码</label></dt><dd class="rel" ><input class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="password" plugin="passwordStrength" placeholder="6-16登录密码" id="p-password" name="password" datatype="*6-16">
+                                	<dt class="l r-pw"><label class="dib w100 tr pt5 mt2">登录密码</label></dt><dd class="rel" ><input name="password" class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="password" plugin="passwordStrength" placeholder="6-16登录密码" id="p-password" datatype="*6-16">
                                     	<div id="pw-strength" class="abs g9">
                                         	<span class="s-1">●</span><span class="s-2">●</span><span class="s-3">●</span>
                                         </div>
                                     </dd>
                                 </dl> 
                                 <dl class="pb10"> 
-                                	<dt class="l r-pw-2"><label class="dib w100 tr pt5 mt2">确认密码</label></dt><dd class="rel" ><input class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="password" placeholder="再次确认登录密码" id="p-password2" recheck="password" datatype="*"></dd>
+                                	<dt class="l r-pw-2"><label class="dib w100 tr pt5 mt2">确认密码</label></dt><dd class="rel" ><input name="password-confirm" class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="password" placeholder="再次确认登录密码" id="p-password2" recheck="password" datatype="*"></dd>
                                 </dl> 
                                 <dl class="pb10"> 
-                                	<dt class="l r-email"><label class="dib w100 tr pt5 mt2">邮箱地址</label></dt><dd class="rel" ><input class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="常用的电子邮箱" id="p-email" datatype="e"></dd>
+                                	<dt class="l r-email"><label class="dib w100 tr pt5 mt2">邮箱地址</label></dt><dd class="rel" ><input name='email' class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="常用的电子邮箱" id="p-email" datatype="e"></dd>
                                 </dl> 
                                 <dl class="pb15"> 
                                 	<dt class="l r-yzm"><label class="dib w100 tr pt5 mt2">验证码</label></dt><dd class="rel" ><input class="pct40 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="4位验证码" maxlength="4" datatype="n1-4" id="p-yzm"><img alt="图片名称" src="http://passport.uu66.com/code.html?1398343237979" width="90px" height="37px" class="abs yzm-img"><a title="链接名称" href="#"  class="dib ml5 gr pt10 r f12">看不清？</a></dd>

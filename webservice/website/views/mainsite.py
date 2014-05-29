@@ -4,9 +4,11 @@ from django.core.paginator import EmptyPage, Paginator
 from django.contrib.auth import authenticate, login
 
 from django.http import Http404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from website.response import WidgetHttpResponse, HttpResponse
 from warehouse.models import PackageVersion, Package
+from account.models import User
 
 
 def packageversion_detail(request, package_name, version_name=False,
@@ -122,10 +124,16 @@ def register_view(request):
     else:
         username = request.POST.get('username', None)
         password = request.POST.get('password', None)
-        user = authenticate(username=username, password=password)
-        if user:
-            return HttpResponse('ok')
+        password_confirm = request.POST.get('password-confirm', None)
+        email = request.POST.get('email', None)
+
+        if not (username and password and password_confirm and email) :
+            return TemplateResponse(request=request, template=template, context=context)
+
+        if password != password_confirm:
+            return TemplateResponse(request=request, template=template, context=context)
         else:
-            return HttpResponse('fail')
-
-
+            user = User(username=username, email=email)
+            user.set_password(password)
+            user.save()
+            return HttpResponseRedirect('/')
