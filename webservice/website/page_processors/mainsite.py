@@ -110,7 +110,9 @@ def android_topic(request, page):
     data = dict()
     if request.method == "GET":
         page_num = request.GET.get('page', None)
+        name = request.GET.get('name', None)
         data['page_num'] = page_num
+        data['topic'] = name
 
     return data
 

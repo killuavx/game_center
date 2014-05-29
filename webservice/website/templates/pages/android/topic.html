@@ -5,6 +5,10 @@
 {% block main %}
 
 <!--合集 开始 collection-->
-{% include_widget CollectionPackagesListWidget page_num=page_num %}
+{% if topic %}
+{% include_widget CollectionPackagesListWidget page_num=page_num topic=topic %}
+{% else %}
+{% include_widget CollectionsPackagesListWidget page_num=page_num %}
+{% endif %}
 <!--合集 结束 collection-->
 {% endblock %}

@@ -494,7 +494,7 @@ class CrackTopicPackagesListWidget(BaseListWidget, Widget):
         return options
 
 
-class CollectionPackagesListWidget(BaseListWidget, Widget):
+class CollectionsPackagesListWidget(BaseListWidget, Widget):
 
     template = 'pages/widgets/android/collection-box.html'
 
@@ -535,6 +535,34 @@ class CollectionPackagesListWidget(BaseListWidget, Widget):
             )
         #print (options)
         return options
+
+
+class CollectionPackagesListWidget(BaseListWidget, Widget):
+
+    template = 'pages/widgets/android/collection-detail.html'
+
+    def get_list(self):
+        packages = TopicalItem.objects\
+            .get_items_by_topic(topic=self.topic, item_model=Package)
+
+        return packages
+
+    def get_context(self, value=None, options=dict(), context=None):
+        topic_slug = options.get('topic', None)
+        try:
+            self.topic = Topic.objects.get(slug=topic_slug)
+        except:
+            self.topic = None
+
+        packages = self.get_list()
+
+        options.update(
+            topic = self.topic,
+            items = packages,
+        )
+        #print (options)
+        return options
+
 
 class MasterpiecePackagesListWidget(BaseTopicPackageListWidget, Widget):
     template = 'pages/widgets/android/master-list.html'
