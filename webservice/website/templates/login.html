@@ -3329,9 +3329,8 @@ $(function(){
         type: "POST",
         url: $('form.login-form').attr('action'),
         data: {username: username, password: password, csrfmiddlewaretoken: token},
-        success: function(msg){
-          //alert(msg);
-          if (msg == 'ok') {
+        success: function(data){
+          if (data.result) {
             $.zxxbox('<div class="p20 f20 white tc">登陆成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});                         
             $('#current_user').text(username);
           } else {

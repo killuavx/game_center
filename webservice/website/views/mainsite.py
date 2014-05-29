@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 from mezzanine.conf import settings
 from django.core.paginator import EmptyPage, Paginator
 from django.contrib.auth import authenticate, login
@@ -102,23 +103,21 @@ def topic_package_list(request, slug, template='pages/topics/detail.html',
 def login_view(request):
     template = 'login.html'
     context = {}
-    #print (request.method)
     if request.method == 'GET':
         return TemplateResponse(request=request, template=template, context=context)
     else:
         username = request.POST.get('username', None)
         password = request.POST.get('password', None)
         user = authenticate(username=username, password=password)
+        resp = {"result": 0}
         if user:
-            return HttpResponse('ok')
-        else:
-            return HttpResponse('fail')
+            resp["result"] = 1
+        return HttpResponse(json.dumps(resp), content_type="application/json")
 
 
 def register_view(request):
     template = 'reg.html'
     context = {}
-    #print (request.method)
     if request.method == 'GET':
         return TemplateResponse(request=request, template=template, context=context)
     else:
