@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login
 
 from django.http import Http404
 from django.template.response import TemplateResponse
-from website.response import WidgetHttpResponse
+from website.response import WidgetHttpResponse, HttpResponse
 from warehouse.models import PackageVersion, Package
 
 
@@ -100,5 +100,20 @@ def topic_package_list(request, slug, template='pages/topics/detail.html',
 def login_view(request):
     template = 'login.html'
     context = {}
-    return TemplateResponse(request=request, template=template, context=context)
+    print (request.method)
+    if request.method == 'GET':
+        return TemplateResponse(request=request, template=template, context=context)
+    else:
+        #print (request.POST)
+        username = request.POST.get('username', None)
+        password = request.POST.get('password', None)
+        print (username)
+        print (password)
+        print (request.POST.get('csrfmiddlewaretoken', None))
+        user = authenticate(username=username, password=password)
+        if user:
+            return HttpResponse('ok')
+        else:
+            return HttpResponse('fail')
+
 
