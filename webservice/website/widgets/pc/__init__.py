@@ -4,3 +4,4 @@ from .vendors import *
 from .masterpiece import *
 from .collections import *
 from .category import *
+from .search import *
