@@ -10,7 +10,7 @@
       <ul class="l abs cell-bk f16">
         <li class="dib pl10 pr10 tab {% if not current_cat and not current_topic %}ios-web-icon{% endif %}"><a href="{{ page.get_absolute_url }}">全部{{ translated_slug }}</a></li>
         <li class="dib pl10 pr10 tab {% if current_topic.slug == 'home-recommend-game' %}ios-web-icon{% endif %}"><a href="{{ page.get_absolute_url }}?topic=home-recommend-game">精品推荐</a></li>
-        <li class="dib pl10 pr10 tab {% if current_topic.slug == 'homebar-basic-installed' %}ios-web-icon{% endif %}"><a href="{{ page.get_absolute_url }}?topic=homebar-basic-installed">装机必备</a></li>
+        <li class="dib pl10 pr10 tab {% if current_topic.slug == 'basic-installed' %}ios-web-icon{% endif %}"><a href="{{ page.get_absolute_url }}?topic=basic-installed">装机必备</a></li>
         <li class="dib pl10 pr10 tab {% if current_topic.slug == 'latest' %}ios-web-icon{% endif %}"><a href="{{ page.get_absolute_url }}?pub=latest">最新发布</a></li>
       </ul>
       {% endif %}
