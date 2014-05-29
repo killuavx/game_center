@@ -100,16 +100,28 @@ def topic_package_list(request, slug, template='pages/topics/detail.html',
 def login_view(request):
     template = 'login.html'
     context = {}
-    print (request.method)
+    #print (request.method)
     if request.method == 'GET':
         return TemplateResponse(request=request, template=template, context=context)
     else:
-        #print (request.POST)
         username = request.POST.get('username', None)
         password = request.POST.get('password', None)
-        print (username)
-        print (password)
-        print (request.POST.get('csrfmiddlewaretoken', None))
+        user = authenticate(username=username, password=password)
+        if user:
+            return HttpResponse('ok')
+        else:
+            return HttpResponse('fail')
+
+
+def register_view(request):
+    template = 'reg.html'
+    context = {}
+    #print (request.method)
+    if request.method == 'GET':
+        return TemplateResponse(request=request, template=template, context=context)
+    else:
+        username = request.POST.get('username', None)
+        password = request.POST.get('password', None)
         user = authenticate(username=username, password=password)
         if user:
             return HttpResponse('ok')

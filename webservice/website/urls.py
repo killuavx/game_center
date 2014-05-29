@@ -27,5 +27,6 @@ urlpatterns += patterns('website.views.mainsite',
                        url(r'^topics/$', 'topics_view', name='topics_page'),
                        url(r'^topics/(?P<slug>%s)' % slug_pattern, 'topic_package_list', name='topic_package_list'),
                        url(r'^login/' , 'login_view', name='mainsite_login'),
+                       url(r'^register/' , 'register_view', name='mainsite_register'),
                        )
 
