@@ -142,7 +142,14 @@ class CategoryAbsoluteUrlMixin(object):
 class Category(CategoryAbsoluteUrlMixin,
                MPTTModel, Taxonomy):
 
-    _default_manager = AllCategoryManager.for_queryset_class(CategoryQuerySet)()
+    # FIXME 重建全文索引，需要使用 package.categories 关联获取分类列表，
+    # 但是ios，android同时重建索引的情况下，不得不使用无site关联的manager，
+    # 导致当索引到ios应用时，却获取不到ios的关联分类数据
+    # 用以下的方式，虽然可以获取应用的分类，但在通过category.packages找应用时，
+    # 却把ios的应用也一并查出，在分类软件列表上，产生android/ios混合错乱的列表
+    # 所以要找到一个办法，可以让建立全文搜索与查询都能并存处理
+    # 现在只在重建全文索引时，使用以下_default_manager，而在平台正常运作下注释掉
+    #_default_manager = AllCategoryManager.for_queryset_class(CategoryQuerySet)()
 
     objects = CategoryManager.for_queryset_class(CategoryQuerySet)()
 
