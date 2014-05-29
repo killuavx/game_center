@@ -3332,9 +3332,11 @@ $(function(){
         success: function(msg){
           //alert(msg);
           if (msg == 'ok') {
-              $.zxxbox('<div class="p20 f20 white tc">登陆成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});                         
-              $('#current_user').text(username);
-              alert(username);
+            $.zxxbox('<div class="p20 f20 white tc">登陆成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});                         
+            $('#current_user').text(username);
+          } else {
+            //$('#p-yzm').val('');
+            $('.login-tip').addClass('Validform_checktip').addClass('Validform_wrong').text('用户名或密码错误！');
           }
         }
       });
