@@ -309,6 +309,9 @@ class CategoriesPackagesListWidget(BaseListWidget, Widget):
         per_page, page = self.get_paginator_vars(options)
         self.page = page
         paginator = Paginator(self.current_packages, per_page=self.per_page)
+        if page > paginator.num_pages:
+            page = paginator.num_pages
+            self.page = page
         current_page = paginator.page(page)
         return current_page
 
@@ -437,6 +440,9 @@ class AllCrackPackagesListWidget(FirstReleaseCrackPackagesListWidget):
         per_page, page = self.get_paginator_vars(options)
         self.page = page
         paginator = Paginator(self.current_packages, per_page=self.per_page)
+        if page > paginator.num_pages:
+            page = paginator.num_pages
+            self.page = page
         current_page = paginator.page(page)
         return current_page
 
@@ -473,6 +479,9 @@ class CrackTopicPackagesListWidget(BaseListWidget, Widget):
         per_page, page = self.get_paginator_vars(options)
         self.page = page
         paginator = Paginator(self.current_packages, per_page=self.per_page)
+        if page > paginator.num_pages:
+            page = paginator.num_pages
+            self.page = page
         current_page = paginator.page(page)
         return current_page
 
@@ -515,6 +524,9 @@ class CollectionsPackagesListWidget(BaseListWidget, Widget):
         per_page, page = self.get_paginator_vars(options)
         self.page = page
         paginator = Paginator(self.current_packages, per_page=self.per_page)
+        if page > paginator.num_pages:
+            page = paginator.num_pages
+            self.page = page
         current_page = paginator.page(page)
         return current_page
 
@@ -580,6 +592,9 @@ class VendorPackageListWidget(PaginatorPageMixin, BaseTopicAuthorPackageListWidg
         per_page, page = self.get_paginator_vars(options)
         self.page = page
         paginator = Paginator(self.current_packages, per_page=self.per_page)
+        if page > paginator.num_pages:
+            page = paginator.num_pages
+            self.page = page
         current_page = paginator.page(page)
         return current_page
 
@@ -671,6 +686,9 @@ class PackageVersionCommentListWidget(BaseListWidget, Widget):
         per_page, page = self.get_paginator_vars(options)
         self.page = page
         paginator = Paginator(self.comments, per_page=self.per_page)
+        if page > paginator.num_pages:
+            page = paginator.num_pages
+            self.page = page
         current_page = paginator.page(page)
         return current_page
 
