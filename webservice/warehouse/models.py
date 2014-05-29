@@ -19,7 +19,7 @@ import tagging
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 
-from toolkit.managers import CurrentSitePassThroughManager
+from toolkit.managers import CurrentSitePassThroughManager, PassThroughManager
 from toolkit.fields import StarsField, PkgFileField, MultiResourceField
 from toolkit.models import SiteRelated, ModelAbsoluteUrlMixin
 from toolkit.helpers import import_from, sync_status_from
@@ -190,6 +190,8 @@ class AuthorAbsoluteUrlMixin(object):
 
 class Author(AuthorAbsoluteUrlMixin, PlatformBase, SiteRelated, models.Model):
 
+    _default_manager = PassThroughManager.for_queryset_class(AuthorQuerySet)()
+
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(AuthorQuerySet)()
 
@@ -296,6 +298,8 @@ class PackageQuerySet(QuerySet):
 
 class Package(PlatformBase, ModelAbsoluteUrlMixin,
               SiteRelated, models.Model):
+
+    _default_manager = PassThroughManager.for_queryset_class(PackageQuerySet)()
 
     objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
 
@@ -519,6 +523,8 @@ class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
 
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(PackageVersionQuerySet)()
+
+    _default_manager = PassThroughManager.for_queryset_class(PackageVersionQuerySet)()
 
     class Meta:
         verbose_name = _("Package Version")
@@ -909,6 +915,12 @@ def author_pre_save(sender, instance, **kwargs):
 
 
 class SupportedLanguage(models.Model):
+
+    LANG_MASK_ZH = 0b100
+
+    LANG_MASK_EN = 0b010
+
+    LANG_MASK_OTHER = 0b001
 
     code = models.CharField(unique=True, max_length=10)
 

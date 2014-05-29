@@ -118,6 +118,10 @@ class CategoryManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
     pass
 
 
+class AllCategoryManager(TreeManager, PassThroughManager):
+    pass
+
+
 class CategoryAbsoluteUrlMixin(object):
 
     _top_slugs = ('game', 'application')
@@ -137,6 +141,8 @@ class CategoryAbsoluteUrlMixin(object):
 
 class Category(CategoryAbsoluteUrlMixin,
                MPTTModel, Taxonomy):
+
+    _default_manager = AllCategoryManager.for_queryset_class(CategoryQuerySet)()
 
     objects = CategoryManager.for_queryset_class(CategoryQuerySet)()
 

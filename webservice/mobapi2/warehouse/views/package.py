@@ -175,6 +175,7 @@ class PackageSearchViewSet(PackageViewSet):
                        #SphinxSearchFilter,
                        SolrSearchFilter,
     )
+    search_param = 'q'
     search_fields = ('title', 'tags_text', 'package_name', 'categories')
     search_ordering = ('-released_datetime', )
     #ordering = ('-updated_datetime', )
@@ -184,6 +185,7 @@ class PackageSearchViewSet(PackageViewSet):
         querydict = copy.deepcopy(dict(request.GET))
         q = querydict.get('q')
         q = q.pop() if isinstance(q, list) else q
+        print(q)
         if not q or not (q and q.strip()):
             data = {'detail': 'Not Allow without search parameter'
                               ' /api/search/?q={q}'}
