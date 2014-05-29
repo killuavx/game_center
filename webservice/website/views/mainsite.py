@@ -121,12 +121,14 @@ def register_view(request):
     if request.method == 'GET':
         return TemplateResponse(request=request, template=template, context=context)
     else:
+        #print (request.POST)
         username = request.POST.get('username', None)
         password = request.POST.get('password', None)
         password_confirm = request.POST.get('password-confirm', None)
         email = request.POST.get('email', None)
+        agreement = request.POST.get('agreement', None)
 
-        if not (username and password and password_confirm and email) :
+        if not (username and password and password_confirm and email and agreement) :
             return TemplateResponse(request=request, template=template, context=context)
 
         if password != password_confirm:
