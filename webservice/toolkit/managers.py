@@ -10,20 +10,7 @@ from django.utils.encoding import force_text
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from model_utils.managers import PassThroughManager, PassThroughManagerMixin
-from toolkit.helpers import current_site_id
-
-
-CURRENT_SITE_ENABLE = True
-
-
-def current_site_enable(enable=True):
-    global CURRENT_SITE_ENABLE
-    CURRENT_SITE_ENABLE = enable
-
-
-def is_current_site_enable():
-    global CURRENT_SITE_ENABLE
-    return CURRENT_SITE_ENABLE
+from toolkit.helpers import get_global_site
 
 
 class PublishedManager(Manager):
@@ -84,13 +71,13 @@ class CurrentSiteManager(DjangoCSM):
         self.__is_validated = False
 
     def get_query_set(self):
-        if not is_current_site_enable():
-            #return QuerySet(self.model, using=self._db)
+        site = get_global_site()
+        if not site:
             return super(DjangoCSM, self).get_query_set()
 
         if not self.__is_validated:
             self._validate_field_name()
-        lookup = {self.__field_name + "__id__exact": current_site_id()}
+        lookup = {self.__field_name + "__id__exact": site.pk}
         return super(DjangoCSM, self).get_query_set().filter(**lookup)
 
 

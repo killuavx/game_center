@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from haystack import indexes
 from warehouse.models import Package
-from toolkit.managers import current_site_enable
+from toolkit.helpers import get_global_site_id, set_global_site_id, SITE_DISABLE, SITE_NOT_SET
 
 CharField = indexes.CharField
 
 
 class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
-
 
     text = indexes.CharField(document=True,
                              use_template=False)
@@ -46,9 +45,9 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare(self, obj):
         prepare_data = super(PackageSearchIndex, self).prepare(obj)
-        current_site_enable(False)
+        set_global_site_id(SITE_DISABLE)
         categories = obj.categories.all()
-        current_site_enable(True)
+        set_global_site_id(SITE_NOT_SET)
         prepare_data['category_slugs'] = [cat.slug for cat in categories]
         prepare_data['category_ids'] = [cat.pk for cat in categories]
         prepare_data['categories'] = [cat.name for cat in categories]
