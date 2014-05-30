@@ -1,5 +1,5 @@
 -extends "pc_base.haml"
--load widgets url_tags
+-load widgets templatehelper_tags
 {% block main %}
 .cb.box.list_box.game
 
@@ -16,7 +16,7 @@
       .c_b
     / left_list
 
-    {% include "includes/pc_pagination.html" with current_page=items %}
+    {% pagination items %}
     {% endwidget %}
 
   / game_box

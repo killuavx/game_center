@@ -45,3 +45,10 @@ def breadcrumbs_from(package, category,
         product=product,
         breadcrumbs=breadcrumb_insts,
     )
+
+
+@register.inclusion_tag('includes/pagination_common.haml')
+def pagination(current_page, *args, **kwargs):
+    return dict(
+        current_page=current_page
+    )
