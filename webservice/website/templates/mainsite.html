@@ -3449,6 +3449,7 @@ $(function(){
       data: {username: username, password: password, csrfmiddlewaretoken: token},
       success: function(data){
         if (data.result === 1) {
+          $.cookie('username', username);
           $.zxxbox('<div class="p20 f20 white tc">登陆成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});                         
           $('#login-reg').addClass('dn');
           $('#change-logout').removeClass('dn').children('a').attr('title', username).text(username);
@@ -3474,6 +3475,19 @@ $(function(){
     });
     return false;
   });
+
+  $('.log-out').bind('click', function() {
+    $.removeCookie('username');
+    $('#change-logout').addClass('dn');
+    $('#login-reg').removeClass('dn');
+    setTimeout(
+      function(){
+        location.reload();
+      }, 2000
+    );
+    
+  });
+
 });
 
 
