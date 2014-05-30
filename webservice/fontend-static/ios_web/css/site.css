@@ -2,6 +2,8 @@
 .logo a img{opacity: 0; filter: alpha(opacity=0)}
 .login .logo a{background-image: url(http://static.ccplay.com.cn/static/common/img/user-icon.png);
 background-repeat: no-repeat;}
+.main-text p{text-indent:2em}
+.main-text strong {padding-top:20px; display:block}
 
 
 /*v1*/

@@ -2,9 +2,8 @@
  * buttons
 */
 .btn{display:inline-block;padding:.5em 1em;border:0 none;background-image:none;box-shadow:0 1px rgba(0,0,0,.15), inset 0 1px rgba(255,255,255,.15);color:#fff;text-align:center;text-decoration:none;text-shadow:1px 1px rgba(0,0,0,.1);font-size:100%;font-family:inherit;font-weight:inherit;white-space:nowrap;-webkit-user-select:none;-moz-user-select:none;user-select:none;overflow:visible;cursor:pointer; text-decoration:none}
-.btn:hover, .btn:focus{text-decoration:none;background-image:linear-gradient(to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)); color:#fff}
-.btn:focus{outline:thin dotted;outline:5px auto -webkit-focus-ring-color;outline-offset:-2px; color:#fff}
-.btn:active{outline:none;-webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);-moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);box-shadow: inset 0 2px 4px rgba(0,0,0,.15); color:#fff; jing:e xpression(this.onFocus=this.blur());blr:expression(this.onFocus=this.blur());}
+.btn:hover, .btn:focus{outline:none;-webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);-moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);box-shadow: inset 0 2px 4px rgba(0,0,0,.15); color:#fff; jing:e xpression(this.onFocus=this.blur());blr:expression(this.onFocus=this.blur()); text-decoration:none}
+.btn:active{outline:none;-webkit-box-shadow: inset 0 4px 6px rgba(0,0,0,.25);-moz-box-shadow: inset 0 4px 6px rgba(0,0,0,.25);box-shadow: inset 0 4px 6px rgba(0,0,0,.25); color:#fff; jing:e xpression(this.onFocus=this.blur());blr:expression(this.onFocus=this.blur());}
 
 .btn-navy{background-color:#001f3f}
 .btn-blue{background-color:#429aef}
