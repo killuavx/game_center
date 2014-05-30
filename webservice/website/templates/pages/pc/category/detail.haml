@@ -8,12 +8,11 @@
     .menu
       %ul
         -for cat in category_selectlist|slice:":12"
-          -ifequal category.pk cat.pk
-            %li.icon.hover
-              %a{:href => "javascript:;"}><
+          %li
+            -ifequal category.pk cat.pk
+              %a.icon.hover{:href => "javascript:;"}><
                 {% if cat.is_root_node %}全部{% endif %}{{ cat.name }}
-          -else
-            %li
+            -else
               {% qurl request.get_full_path category=cat.pk topic=None lang=None page=None as second_url %}
               -if cat.is_root_node
                 %a{:href => "{% qurl second_url category=None %}"}><
