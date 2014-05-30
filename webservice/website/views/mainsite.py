@@ -105,7 +105,7 @@ def mainsite_view(request):
     return TemplateResponse(request=request, template=template, context=context)
 
 def login_view(request):
-    template = 'mainsite.html'
+    template = 'login.html'
     context = {}
     if request.method == 'GET':
         return TemplateResponse(request=request, template=template, context=context)
