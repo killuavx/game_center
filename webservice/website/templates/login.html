@@ -3335,7 +3335,22 @@ $(function(){
             $('#current_user').text(username);
           } else {
             //$('#p-yzm').val('');
-            $('.login-tip').addClass('Validform_checktip').addClass('Validform_wrong').text('用户名或密码错误！');
+            var $ltip = $('.login-tip');
+            var $cstr = $ltip.attr('class');
+
+            if ($cstr.indexOf('Validform_right') == -1) {
+              $ltip.removeClass('Validform_right');
+            }
+
+            if ($cstr.indexOf('Validform_checktip') == -1) {
+              $ltip.addClass('Validform_checktip');
+            }
+
+            if ($cstr.indexOf('Validform_wrong') == -1) {
+              $ltip.addClass('Validform_wrong');
+            }
+
+            $ltip.text('用户名或密码错误！');
           }
         }
       });
