@@ -1,12 +1,12 @@
 -load url_tags util_tags pc_tags
 {% absolute_url_as package product="pc" as detail_url %}
--with version=package.versions.latest_published
+-with version=package.versions.latest_published title=package.title
   %li><
-    %a.big_pic{:href => "={detail_url}"}><
-      %img{:src => "{% resource_url version 'icon' %}" }
+    %a.big_pic{:href => "={detail_url}", :title => "={title}"}><
+      %img{:src => "{% resource_url version 'icon' %}", :alt => "={title}"}
       %span.icon.cover
     %h2<
-      %a{:href => "={detail_url}"}= package.title
+      %a{:href => "={detail_url}", :title => "={title}"}= title
     %p {{ version.get_download_size|filesizeformat }} | {{ version.download_count|default:0|intwordcn }}+下载
     -if version.is_ios
       -with iversion=version.as_ios

@@ -10,11 +10,11 @@
     %ul
       -for package in topic.packages
         {% absolute_url_as package product="pc" as detail_url %}
-        -with version=package.versions.latest_published
+        -with version=package.versions.latest_published title=package.title
           %li
-            %a{:href => "={detail_url}"}><
-              %img{:alt => "={package.title}", :src => "{% resource_url version 'icon' %}"}
-              %span.name= package.title
+            %a{:href => "={detail_url}", :title => "={title}"}><
+              %img{:alt => "={title}", :src => "{% resource_url version 'icon' %}"}
+              %span.name= title
               .icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
               %span.icon.cover
             {% version_data_as version entrytype='pc' as json %}
