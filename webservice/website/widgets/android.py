@@ -698,7 +698,7 @@ class PackageVersionCommentListWidget(BaseListWidget, Widget):
     def get_context(self, value=None, options=dict(), context=None):
         self.pkgv = options.get('pkgv', None)
         self.comments = self.get_list()
-        print (self.comments)
+        #print (self.comments)
 
         if self.comments:
             current_page = self.paginize_items(options)

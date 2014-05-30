@@ -68,6 +68,12 @@
                               <li><a href="http://static.ccplay.com.cn/static/android_web/html/index.html" class="ios-web-icon a2">安卓分站</a></li>
                               <li><a href="http://static.ccplay.com.cn/static/cc_web/html/down.html" class="ios-web-icon a3">虫虫助手</a></li>
                               <li id="login-reg" class=""><a href="#" class="ios-web-icon a4 open-login" target="">登录/注册</a></li>
+                              <li id="change-logout" class="dn"><a href="#" class="ios-web-icon a4 text-db" title="★ＦＸＱＫ★" target="">龚鑫军</a>
+                                <dl class="abs dn bdc bg-white zx2 f14" style="display: none;">
+                                  <dd><a href="#" class="db h24 lh24 pl10 pr10 pt5 pb5 bbc change-password" target="">修改密码</a></dd>
+                                  <dd><a href="#" class="db h24 lh24 pl10 pr10 pt5 pb5 log-out" target="">退出</a></dd>
+                                </dl>
+                              </li>
                           </ul>
                     </div><!--user-switch-->
               </div><!--cell-bk-->    
@@ -3328,11 +3334,9 @@ $(function(){
         success: function(data){
           if (data.result) {
             $.zxxbox('<div class="p20 f20 white tc">登陆成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});                         
-            //$('#current_user').text(username);
-            $('#login-reg').html('<a href="#" class="ios-web-icon a4 text-db" title="' + username +'">'+ username +'</a><dl class="abs dn bdc bg-white zx2 f14" style="display: none;"><dd><a href="#" class="db h24 lh24 pl10 pr10 pt5 pb5 bbc change-password">修改密码</a></dd><dd><a href="#" class="db h24 lh24 pl10 pr10 pt5 pb5 log-out">退出</a></dd></dl>');
-
+            $('#login-reg').addClass('dn');
+            $('#change-logout').removeClass('dn').children('a').attr('title', username).text(username);
           } else {
-            //$('#p-yzm').val('');
             var $ltip = $('.login-tip');
             var $cstr = $ltip.attr('class');
 
