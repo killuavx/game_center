@@ -417,6 +417,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 
 
 /*详细页*/
+.location em{font-family:宋体; color:#999}
 .title{height:35px; border-bottom:2px solid #ccc}
 .title h1{padding:15px}
 .app-dis-page .left{width:240px; border-top:2px solid #e53333; margin-top:-2px; z-index:2; padding-bottom:99999px; margin-bottom:-99999px}

@@ -1,23 +1,29 @@
 /*下载页面*/
 .icon,.btn-box a,.down-btn a,.down-btn a:hover{background:url(http://static.ccplay.com.cn/static/cc_web/img/icon.png) no-repeat; display:inline-block}
 .bg-red{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-t1-bg.jpg) repeat-x; height:404px}
-.banner{top:0; right:5%}
-#cc-s .banner{right:0}
-#cc-l .banner{right:13%}
+.banner{top:0; right:0%}
 #cc-s .bg-red .rel img{margin-left:-200px}
-.banner .text{text-indent:-9999999px; width:483px; height:200px; margin-top:30px}
+.banner .text{text-indent:-9999999px; height:230px; width:auto !important}
+.text-1{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-1.png) no-repeat right top}
+.text-2{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-2.png) no-repeat right top}
+.text-3{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-3.png) no-repeat right top}
+#cc-l .banner{right:70px}
+#cc-l .banner .text{background-position:left top}
 
-.btn-box{padding-top:24px}
+.btn-box{padding:24px 100px 0 0;}
+#cc-m .btn-box{padding:24px 20px 0 0;}
+#cc-s .btn-box{padding:24px 30px 0 0;}
 .btn-box .a1{background-position:0 -205px}
-.btn-box .a1:hover{background-position:0 -324px}
+.btn-box .a1:hover,.btn-box .a1.on{background-position:0 -324px}
 .btn-box .a1:hover span{color:#e53333 !important}
-.btn-box a{width:93px; height:140px; margin:0 30px}
+.btn-box a{width:93px; height:140px; margin:0 30px;transition: 0.5s; -moz-transition: 0.5s; -o-transition: 0.5s; -webkit-transition: 0.5s;}
 .btn-box a span{bottom:0; width:93px; height:39px; padding-top:5px}
 .btn-box .a2{background-position:-93px -205px}
-.btn-box .a2:hover{background-position:-93px -324px}
+.btn-box .a2:hover,.btn-box .a2.on{background-position:-93px -324px}
 .btn-box .a3{background-position:-186px -205px}
-.btn-box .a3:hover{background-position:-186px -324px}
-
+.btn-box .a3:hover,.btn-box .a3.on{background-position:-186px -324px}
+#cc-l .rel .text{width:580px}
+#cc-m .rel .text{width:380px}
 .r{right:0}
 
 .down-btn{width:27%; padding:30px; text-align:left}
@@ -35,236 +41,3 @@
 .app-list-min{margin:0 8px}
 #cc-s .app-list-min{margin:0 11px}
 #cc-m .app-list-min{margin:0 7px}
-
-
-.pic img{-webkit-backface-visibility: hidden;
-	-moz-backface-visibility: hidden;
-	-ms-backface-visibility: hidden;
-	backface-visibility: hidden;
-	
-	-webkit-animation-duration: 1s;
-	-webkit-animation-delay: .2s;
-	-webkit-animation-timing-function: ease;
-	-webkit-animation-fill-mode: both;
-	-moz-animation-duration: 1s;
-	-moz-animation-delay: .2s;
-	-moz-animation-timing-function: ease;
-	-moz-animation-fill-mode: both;
-	-ms-animation-duration: 1s;
-	-ms-animation-delay: .2s;
-	-ms-animation-timing-function: ease;
-	-ms-animation-fill-mode: both;
-	animation-duration: 1s;
-	animation-delay: .2s;
-	animation-timing-function: ease;
-	animation-fill-mode: both;}
-
-@-webkit-keyframes fadeInRightBig {
-	0% {
-		opacity: 0;
-		-webkit-transform: translateX(2000px);
-	}
-	
-	100% {
-		opacity: 1;
-		-webkit-transform: translateX(0);
-	}
-}
-
-@-moz-keyframes fadeInRightBig {
-	0% {
-		opacity: 0;
-		-moz-transform: translateX(2000px);
-	}
-	
-	100% {
-		opacity: 1;
-		-moz-transform: translateX(0);
-	}
-}
-
-@-ms-keyframes fadeInRightBig {
-	0% {
-		opacity: 0;
-		-ms-transform: translateX(2000px);
-	}
-	
-	100% {
-		opacity: 1;
-		-ms-transform: translateX(0);
-	}
-}
-
-@-o-keyframes fadeInRightBig {
-	0% {
-		opacity: 0;
-		-o-transform: translateX(2000px);
-	}
-	
-	100% {
-		opacity: 1;
-		-o-transform: translateX(0);
-	}
-}
-
-@keyframes fadeInRightBig {
-	0% {
-		opacity: 0;
-		transform: translateX(2000px);
-	}
-	
-	100% {
-		opacity: 1;
-		transform: translateX(0);
-	}
-}
-
-.d-1 .animate{
-	-webkit-animation-name: fadeInRightBig;
-	-moz-animation-name: fadeInRightBig;
-	-ms-animation-name: fadeInRightBig;
-	-o-animation-name: fadeInRightBig;
-	animation-name: fadeInRightBig;
-}
-
-
-.fadeInDownBig {
-	-webkit-animation-name: fadeInDownBig;
-	-moz-animation-name: fadeInDownBig;
-	-ms-animation-name: fadeInDownBig;
-	-o-animation-name: fadeInDownBig;
-	animation-name: fadeInDownBig;
-}
-@-webkit-keyframes fadeInLeftBig {
-	0% {
-		opacity: 0;
-		-webkit-transform: translateX(-2000px);
-	}
-	
-	100% {
-		opacity: 1;
-		-webkit-transform: translateX(0);
-	}
-}
-@-moz-keyframes fadeInLeftBig {
-	0% {
-		opacity: 0;
-		-moz-transform: translateX(-2000px);
-	}
-	
-	100% {
-		opacity: 1;
-		-moz-transform: translateX(0);
-	}
-}
-@-ms-keyframes fadeInLeftBig {
-	0% {
-		opacity: 0;
-		-ms-transform: translateX(-2000px);
-	}
-	
-	100% {
-		opacity: 1;
-		-ms-transform: translateX(0);
-	}
-}
-@-o-keyframes fadeInLeftBig {
-	0% {
-		opacity: 0;
-		-o-transform: translateX(-2000px);
-	}
-	
-	100% {
-		opacity: 1;
-		-o-transform: translateX(0);
-	}
-}
-@keyframes fadeInLeftBig {
-	0% {
-		opacity: 0;
-		transform: translateX(-2000px);
-	}
-	
-	100% {
-		opacity: 1;
-		transform: translateX(0);
-	}
-}
-
-.d-2 .animate {
-	-webkit-animation-name: fadeInLeftBig;
-	-moz-animation-name: fadeInLeftBig;
-	-ms-animation-name: fadeInLeftBig;
-	-o-animation-name: fadeInLeftBig;
-	animation-name: fadeInLeftBig;
-}
-
-
-@-webkit-keyframes fadeInUp {
-	0% {
-		opacity: 0;
-		-webkit-transform: translateY(20px);
-	}
-	
-	100% {
-		opacity: 1;
-		-webkit-transform: translateY(0);
-	}
-}
-
-@-moz-keyframes fadeInUp {
-	0% {
-		opacity: 0;
-		-moz-transform: translateY(20px);
-	}
-	
-	100% {
-		opacity: 1;
-		-moz-transform: translateY(0);
-	}
-}
-
-@-ms-keyframes fadeInUp {
-	0% {
-		opacity: 0;
-		-ms-transform: translateY(20px);
-	}
-	
-	100% {
-		opacity: 1;
-		-ms-transform: translateY(0);
-	}
-}
-
-@-o-keyframes fadeInUp {
-	0% {
-		opacity: 0;
-		-o-transform: translateY(20px);
-	}
-	
-	100% {
-		opacity: 1;
-		-o-transform: translateY(0);
-	}
-}
-
-@keyframes fadeInUp {
-	0% {
-		opacity: 0;
-		transform: translateY(20px);
-	}
-	
-	100% {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-.d-3 .animate {
-	-webkit-animation-name: fadeInUp;
-	-moz-animation-name: fadeInUp;
-	-ms-animation-name: fadeInUp;
-	-o-animation-name: fadeInUp;
-	animation-name: fadeInUp;
-}
-
