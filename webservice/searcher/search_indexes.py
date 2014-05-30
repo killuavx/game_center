@@ -46,7 +46,9 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare(self, obj):
         prepare_data = super(PackageSearchIndex, self).prepare(obj)
+        current_site_enable(False)
         categories = obj.categories.all()
+        current_site_enable(True)
         prepare_data['category_slugs'] = [cat.slug for cat in categories]
         prepare_data['category_ids'] = [cat.pk for cat in categories]
         prepare_data['categories'] = [cat.name for cat in categories]
