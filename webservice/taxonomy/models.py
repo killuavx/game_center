@@ -124,18 +124,21 @@ class AllCategoryManager(TreeManager, PassThroughManager):
 
 class CategoryAbsoluteUrlMixin(object):
 
-    _top_slugs = ('game', 'application')
+    ROOT_SLUGS = ('game', 'application')
 
     def get_absolute_url_as(self, product, pagetype='default'):
         if product == 'pc':
-            if self.slug in self._top_slugs:
-                # mezzanine.pages.views.page
+            # mezzanine.pages.views.page
+            if self.slug in self.ROOT_SLUGS:
                 view_name = 'page'
                 page_slug = "%s/%s" % (product, self.slug)
-                return reverse(view_name, kwargs=dict(slug=page_slug))
+                return reverse(view_name, kwargs=dict(slug=page_slug)) \
+                       + '?category=%s' % self.pk
             else:
-                view_name = 'website.views.%s.%s_page' % (product, self.get_root().slug)
-                return reverse(view_name, kwargs=dict(slug=self.slug))
+                page_slug = "%s/%s" % (product, self.get_root().slug)
+                view_name = 'page'
+                return reverse(view_name, kwargs=dict(slug=page_slug))\
+                       + '?category=%s' % self.pk
         return None
 
 

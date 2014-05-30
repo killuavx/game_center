@@ -408,10 +408,29 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
 
     @property
     def main_category(self):
-        try:
-            return self.categories.all()[0]
-        except (exceptions.ObjectDoesNotExist, IndexError):
-            return None
+        if hasattr(self, '_main_categories'):
+            return self._main_category
+        main_cat, cats = self._package_categories()
+        self._main_categories = cats
+        self._main_category = main_cat
+        return self._main_category
+
+    @property
+    def main_categories(self):
+        if hasattr(self, '_main_categories'):
+            return self._main_categories
+        main_cat, cats = self._package_categories()
+        self._main_categories = cats
+        self._main_category = main_cat
+        return self._main_categories
+
+    def _package_categories(self):
+        from taxonomy.models import Category
+        cats = [cat for cat in self.categories.all()
+                if cat.is_leaf_node() and \
+                   cat.get_root().slug in Category.ROOT_SLUGS]
+        main_category = cats[0]
+        return main_category, cats
 
     def clean(self):
         if self.status == self.STATUS.published:
@@ -444,11 +463,6 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
         else:
             return '/packages/%s/' % self.pk
 
-    def get_absolute_iospc_url(self, link_type=0):
-        if link_type == 0:
-            return '/iospc/package/?name=%s' % self.package_name
-        else:
-            return '/iospc/package/?id=%s' % self.pk
 
 
 tagging.register(Package)

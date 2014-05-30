@@ -1,10 +1,5 @@
 -extends "pc_base.haml"
--load url_tags
+-load url_tags templatehelper_tags
 
 -block main
-  .location><
-    当前位置：
-    %a{:href => "{% url 'page' slug='pc/index' %}"} 首页
-    - for bc in breadcrumbs
-      %em »
-      %a{:href => "#"}= bc.bcname
+  {% breadcrumbs_from package category=package.main_category product='pc' home_url='/pc/home/' %}
