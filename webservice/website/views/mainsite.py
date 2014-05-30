@@ -99,9 +99,13 @@ def topic_package_list(request, slug, template='pages/topics/detail.html',
 
     return TemplateResponse(request=request, template=template, context=context)
 
+def mainsite_view(request):
+    template = 'mainsite.html'
+    context = {}
+    return TemplateResponse(request=request, template=template, context=context)
 
 def login_view(request):
-    template = 'login.html'
+    template = 'mainsite.html'
     context = {}
     if request.method == 'GET':
         return TemplateResponse(request=request, template=template, context=context)
