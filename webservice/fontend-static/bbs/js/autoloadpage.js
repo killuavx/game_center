@@ -46,7 +46,7 @@
 			return;
 		}
 		if(loadstatus != 2 && curpage + 1 > maxpage) {
-			autopbn.innerHTML = '下一页 &raquo;';
+			autopbn.innerHTML = '下一页 >';
 			if(curpage + 1 > maxpage) {
 				window.onscroll = null;
 			}
@@ -95,7 +95,7 @@
 			if(curpage + 1 > totalpage) {
 				autopbn.style.display = 'none';
 			} else {
-				autopbn.innerHTML = '下一页 &raquo;';
+				autopbn.innerHTML = '下一页 >';
 			}
 			loadstatus = 0;
 		});

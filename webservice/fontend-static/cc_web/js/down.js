@@ -1,4 +1,4 @@
-var animate=function(){
+/*var animate=function(){
 	var topsize=$(window).scrollTop();
 	if(topsize>=300){
 		$(".d-1 img").addClass("animate")
@@ -11,4 +11,5 @@ var animate=function(){
 		$(".d-3 img").addClass("animate")
 		}
 	}
-$(window).bind("scroll resize",animate);
+$(window).bind("scroll resize",animate);*/
+jQuery(".banner").slide({ titCell:".btn-box a",mainCell:".text-box", autoPlay:true});
