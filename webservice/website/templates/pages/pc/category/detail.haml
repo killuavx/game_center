@@ -7,7 +7,7 @@
     {% widget PCCategorySelectorWidget root_category=root_category %}
     .menu
       %ul
-        -for cat in category_selectlist|slice:":12"
+        -for cat in category_selectlist
           %li
             -ifequal category.pk cat.pk
               %a.icon.hover{:href => "javascript:;"}><
