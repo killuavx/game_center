@@ -3320,45 +3320,43 @@
 <script>
 
 $(function(){
-    $('.login-btn').bind('click', function(){
-      //alert($('#p-id').val());
-      //alert($('#p-password').val());
-      var username = $('#p-id').val();
-      var password = $('#p-password').val();
-      var token = $('input[name="csrfmiddlewaretoken"]').val();
+  $('.login-btn').bind('click', function(){
+    var username = $('#p-id').val();
+    var password = $('#p-password').val();
+    var token = $('input[name="csrfmiddlewaretoken"]').val();
 
-      $.ajax({
-        type: "POST",
-        url: $('form.login-form').attr('action'),
-        data: {username: username, password: password, csrfmiddlewaretoken: token},
-        success: function(data){
-          if (data.result) {
-            $.zxxbox('<div class="p20 f20 white tc">登陆成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});                         
-            $('#login-reg').addClass('dn');
-            $('#change-logout').removeClass('dn').children('a').attr('title', username).text(username);
-          } else {
-            var $ltip = $('.login-tip');
-            var $cstr = $ltip.attr('class');
+    $.ajax({
+      type: "POST",
+      url: $('form.login-form').attr('action'),
+      data: {username: username, password: password, csrfmiddlewaretoken: token},
+      success: function(data){
+        if (data.result) {
+          $.zxxbox('<div class="p20 f20 white tc">登陆成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});                         
+          $('#login-reg').addClass('dn');
+          $('#change-logout').removeClass('dn').children('a').attr('title', username).text(username);
+        } else {
+          var $ltip = $('.login-tip');
+          var $cstr = $ltip.attr('class');
 
-            if ($cstr.indexOf('Validform_right') == -1) {
-              $ltip.removeClass('Validform_right');
-            }
-
-            if ($cstr.indexOf('Validform_checktip') == -1) {
-              $ltip.addClass('Validform_checktip');
-            }
-
-            if ($cstr.indexOf('Validform_wrong') == -1) {
-              $ltip.addClass('Validform_wrong');
-            }
-
-            $ltip.text('用户名或密码错误！');
+          if ($cstr.indexOf('Validform_right') !== -1) {
+            $ltip.removeClass('Validform_right');
           }
+
+          if ($cstr.indexOf('Validform_checktip') === -1) {
+            $ltip.addClass('Validform_checktip');
+          }
+
+          if ($cstr.indexOf('Validform_wrong') === -1) {
+            $ltip.addClass('Validform_wrong');
+          }
+
+          $ltip.text('用户名或密码错误！');
         }
-      });
-      return false;
+      }
     });
+    return false;
   });
+});
 
 
 </script>
