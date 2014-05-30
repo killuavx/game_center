@@ -48,11 +48,12 @@
 		<div class="cell-bk ovh" style="background:url(http://static.ccplay.com.cn/static/common/img/login-bg.png) no-repeat left center; min-height:500px">
         
         			<div class="box">
-                    	<form class="cell-bk rel login-box ovh login-form">
+                    	<form class="cell-bk rel login-box ovh login-form" method="post" action="{% url 'mainsite_login' %}">
+                          {% csrf_token %}
                         	<div class="abs f14 tc cell-bk login-tip"></div>
                         	<ul class="p15 fw">
-                            	<li class="pl10 bg-white bde"><input class="bd-none pt10 pb10 f16 pct100" id="p-id" type="text" placeholder="用户名\手机号码\电子邮箱" datatype="*"></li>
-                                <li class="pl10 bg-white bde mt10 mb10"><input class="bd-none pt10 pb10 f16 pct100" id="p-password" type="password" placeholder="登录密码"  datatype="*6-16"></li>
+                            	<li class="pl10 bg-white bde"><input name="username" class="bd-none pt10 pb10 f16 pct100" id="p-id" type="text" placeholder="用户名\手机号码\电子邮箱" datatype="*"></li>
+                                <li class="pl10 bg-white bde mt10 mb10"><input name="password" class="bd-none pt10 pb10 f16 pct100" id="p-password" type="password" placeholder="登录密码"  datatype="*6-16"></li>
                                 <li class="pl10 h32 pb10 ovh rel bg-white bde"><input class="bd-none pt10 pb10 f16 pct40" id="p-yzm" maxlength="4" type="text" placeholder="验证码" datatype="n4-4"><img alt="图片名称" src="http://passport.uu66.com/code.html?1398343237979" width="90px" height="37px" class="abs yzm-img"><a title="链接名称" href="#"  class="dib ml5 pt10 gr r">看不清？</a></li>
                                 <li class="mt10 rel"><button class="db pct100 btn btn-red f16 poi login-btn">立即登录</button></li>
                                 <li class="p10 mb5"><label class="l"><input type="checkbox"> 论坛账号</label><a title="链接名称" href="#" class="gr r">忘记密码？</a></li>

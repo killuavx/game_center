@@ -113,10 +113,15 @@ def login_view(request):
         username = request.POST.get('username', None)
         password = request.POST.get('password', None)
         user = authenticate(username=username, password=password)
-        resp = {"result": 0}
-        if user:
-            resp["result"] = 1
-        return HttpResponse(json.dumps(resp), content_type="application/json")
+        if request.is_ajax():
+            resp = {"result": 0}
+            if user:
+                resp["result"] = 1
+            return HttpResponse(json.dumps(resp), content_type="application/json")
+        else:
+            if user:
+                return HttpResponseRedirect('/')
+            return TemplateResponse(request=request, template=template, context=context)
 
 
 def register_view(request):
