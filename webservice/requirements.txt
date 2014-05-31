@@ -50,6 +50,7 @@ Mezzanine==3.0.8
 https://github.com/killuavx/django-template-utils/archive/support/py3.zip#egg=django-template-utils
 
 qrcode
+drest
 
 #django-floppyforms
 #django-daterange-filter
