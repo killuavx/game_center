@@ -464,7 +464,6 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
             return '/packages/%s/' % self.pk
 
 
-
 tagging.register(Package)
 
 
@@ -744,6 +743,33 @@ class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
     def sync_status(self):
         return sync_status_from(self)
 
+    def _get_languages(self):
+        lang_desc_maps = dict(
+            ZH='中文',
+            EN='英文',
+            _='其他'
+        )
+        lang_codes = list(self.supported_languages.values_list('code', flat=True))
+        desc_langs = []
+        if len(lang_codes):
+            if 'ZH' in lang_codes:
+                del lang_codes[lang_codes.index('ZH')]
+                desc_langs.append(lang_desc_maps['ZH'])
+            if 'EN' in lang_codes:
+                del lang_codes[lang_codes.index('EN')]
+                desc_langs.append(lang_desc_maps['EN'])
+            if len(lang_codes):
+                desc_langs.append(lang_desc_maps['_'])
+        else:
+            desc_langs.append(lang_desc_maps['_'])
+        return desc_langs
+
+    @property
+    def language_names(self):
+        if not hasattr(self, '_language_names'):
+            self._language_names = self._get_languages()
+        return self._language_names
+
 
 tagging.register(PackageVersion)
 
@@ -760,7 +786,18 @@ def screenshot_upload_path(instance, filename):
     return join(prefix, subdir, filename)
 
 
+class PackageVersionScreenshotManager(models.Manager):
+
+    def ipad(self):
+        return self.filter(kind='ipad')
+
+    def default(self):
+        return self.filter(kind='default')
+
+
 class PackageVersionScreenshot(models.Model):
+
+    objects = PackageVersionScreenshotManager()
 
     version = models.ForeignKey(PackageVersion, related_name='screenshots')
 

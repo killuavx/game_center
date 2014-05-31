@@ -26,5 +26,5 @@
   .cb.banner_btn
     %a.unslider-arrow.icon.prev{:href => "javascript:void(0);"}
     %a.unslider-arrow.icon.next{:href => "javascript:void(0);"}
-  .cb.date 更新日期：{{ topic.updated_datetime|time:"DATE_FORMAT" }} | 共 {{ topic.packages_count|default:0 }} 个应用
+  .cb.date 更新日期：{{ topic.updated_datetime|date }} | 共 {{ topic.packages_count|default:0 }} 个应用
 / r
