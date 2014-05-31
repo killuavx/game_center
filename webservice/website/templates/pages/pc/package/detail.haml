@@ -46,6 +46,10 @@
               %li<
                 语言
                 %span><= version.language_names|join:", "
+              -if version.is_ios
+                %li<
+                  设备
+                  %span><= version.as_ios.device_types|join:", "
               %li<
                 下载
                 %span>< {{ version.download_count|intwordcn }}+

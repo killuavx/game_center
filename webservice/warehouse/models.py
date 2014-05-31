@@ -1118,3 +1118,21 @@ class IOSPackageVersion(IOSPlatform, PackageVersion):
     def is_free(self):
         return self.price.is_zero()
 
+    def _get_support_device_types(self):
+        devtypes = ['iPad', 'iPhone', 'iPod']
+        result = set()
+        for dev in self.supported_devices.all():
+            for t in devtypes:
+                if dev.code.startswith(t):
+                    result.add(t)
+                    break
+        return list(result)
+
+    @property
+    def device_types(self):
+        if not hasattr(self, '_support_device_types'):
+            self._support_device_types = self._get_support_device_types()
+        return self._support_device_types
+
+
+
