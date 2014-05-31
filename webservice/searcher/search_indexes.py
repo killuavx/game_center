@@ -40,7 +40,9 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
         return Package
 
     def index_queryset(self, using=None):
+        set_global_site_id(SITE_DISABLE)
         qs = self.get_model()._default_manager.published()
+        set_global_site_id(SITE_NOT_SET)
         return qs
 
     def prepare(self, obj):

@@ -190,10 +190,10 @@ class AuthorAbsoluteUrlMixin(object):
 
 class Author(AuthorAbsoluteUrlMixin, PlatformBase, SiteRelated, models.Model):
 
-    _default_manager = PassThroughManager.for_queryset_class(AuthorQuerySet)()
-
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(AuthorQuerySet)()
+
+    all_objects = PassThroughManager.for_queryset_class(AuthorQuerySet)()
 
 
     icon = ThumbnailerImageField(upload_to=factory_author_upload_to('icon'),
@@ -299,9 +299,10 @@ class PackageQuerySet(QuerySet):
 class Package(PlatformBase, ModelAbsoluteUrlMixin,
               SiteRelated, models.Model):
 
-    _default_manager = PassThroughManager.for_queryset_class(PackageQuerySet)()
-
     objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
+
+    all_objects = PassThroughManager.for_queryset_class(PackageQuerySet)()
+
 
     class Meta:
         permissions = (
@@ -537,7 +538,7 @@ class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(PackageVersionQuerySet)()
 
-    _default_manager = PassThroughManager.for_queryset_class(PackageVersionQuerySet)()
+    all_objects = PassThroughManager.for_queryset_class(PackageVersionQuerySet)()
 
     class Meta:
         verbose_name = _("Package Version")
