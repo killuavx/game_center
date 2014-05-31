@@ -580,6 +580,22 @@ class MasterpiecePackagesListWidget(BaseTopicPackageListWidget, Widget):
     template = 'pages/widgets/android/master-list.html'
 
 
+class VendorslistWidget(BaseTopicAuthorPackageListWidget, Widget):
+
+    template = 'pages/widgets/android/vendors-list.html'
+
+    def get_list(self):
+        return self.get_topic_authors()
+
+    def get_context(self, value=None, options=dict(), context=None):
+        vendors = self.get_list()
+        options.update(
+            vendors = vendors
+        )
+        #print (options)
+        return options
+
+
 class VendorPackageListWidget(PaginatorPageMixin, BaseTopicAuthorPackageListWidget, Widget):
     template = 'pages/widgets/android/vendor-app-list.html'
     current_vendor = None
