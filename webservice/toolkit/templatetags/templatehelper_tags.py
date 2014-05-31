@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.template import RequestContext
 from django.template.base import Library
 
 register = Library()
@@ -47,8 +48,9 @@ def breadcrumbs_from(package, category,
     )
 
 
-@register.inclusion_tag('includes/pagination_common.haml')
-def pagination(current_page, *args, **kwargs):
+@register.inclusion_tag('includes/pagination_common.haml', takes_context=True)
+def pagination(context, current_page, *args, **kwargs):
     return dict(
+        request=context.get('request'),
         current_page=current_page
     )
