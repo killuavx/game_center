@@ -270,7 +270,7 @@ class PackageQuerySet(QuerySet):
 
     def by_published_order(self, newest=None):
         qs = self.published()
-        return qs.by_released(newest=newest)
+        return qs.by_released_order(newest=newest)
 
     def by_released_order(self, newest=None):
         field = 'released_datetime'
@@ -430,7 +430,10 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
         cats = [cat for cat in self.categories.all()
                 if cat.is_leaf_node() and \
                    cat.get_root().slug in Category.ROOT_SLUGS]
-        main_category = cats[0]
+        try:
+            main_category = cats[0]
+        except IndexError:
+            main_category = None
         return main_category, cats
 
     def clean(self):
