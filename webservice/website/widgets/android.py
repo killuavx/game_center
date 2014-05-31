@@ -10,7 +10,6 @@ from taxonomy.models import Category, Topic, TopicalItem
 from .common.promotion import BaseMultiAdvWidget
 from .common.base import BaseListWidget
 from .common.topic import BaseTopicPackageListWidget
-from .common.package import BaseRankingPackageListWidget
 from .common.webspide import BaseForumThreadPanelWdiget
 from .masterpiece import MasterpiecePackageListWidget
 from .common.category import BaseTopicAuthorPackageListWidget
@@ -229,7 +228,7 @@ class HomeTabsPackageListWidget(BaseTopicPackageListWidget, Widget):
         return {'result': result, 'cat': cat_dic.get(cat)}
 
 
-class HomeRankingPackageListWidget(BaseRankingPackageListWidget, Widget):
+class HomeRankingPackageListWidget(Widget):
 
     template = 'pages/widgets/android/right-ranking-box.html'
     cat = None

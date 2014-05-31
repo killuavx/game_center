@@ -1,0 +1,32 @@
+{% load templateutils_tags %}
+
+    	<div class="r pt20 abs novice-bbs">
+              <div class="f18 cell rel t-title">
+                  <h3 class="l n mr30">新手</h3>
+                  <a class="r f12 mt5 more">更多></a>
+              </div> <!--t-title-->
+              
+              
+              
+              
+              <div class="hot-bbs-list novice-bbs-list">
+              		<a href="#" class="rel top">
+                    		<img src="http://static.ccplay.com.cn/static/android_web/img/a-a-d-8.jpg">
+                            <span class="abs tc white png">安卓游戏常见问题解答</span>
+                    </a>
+              		<ul class="pt10">
+                    {%  mkrange 1 11 as fnum %}
+                    {% for i in fnum %}
+                    	<li class="cell-bk">
+                        	<h4 class="l"><a href="#"><img src="http://static.ccplay.com.cn/static/common/img/3.jpg">标题名称标题名称标题名称</a></h4><span class="r g9 f10" title="回复|查看">10<em>|</em>1449</span>
+                            <span class="abs ios-web-icon"></span>
+                        </li>
+                      {% endfor %}
+                    </ul>
+              
+              </div><!--novice-bbs-list-->
+              
+              
+              
+        		
+        </div><!--novice-bbs-->

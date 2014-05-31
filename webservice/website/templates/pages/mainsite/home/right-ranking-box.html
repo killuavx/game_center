@@ -1,0 +1,36 @@
+{% load templateutils_tags %}
+
+                <div class="abs right">
+                        <div class="f18 cell rel t-title">
+                            <ul class="l abs cell-bk f16">
+                                <li class="ios-web-icon dib tab tc"><a href="#">总榜</a></li>
+                            </ul>
+                            <div class="rel tab-more">
+                            	<a class="r f12 mt5 more" href="#1">更多&gt;</a>
+                            </div>
+                        </div> <!--t-title-->
+                        
+                        
+                        
+                        <div class="app-list-right">
+                        
+                        	<ol>
+                          {%  mkrange 1 11 as fnum %}
+                           {% for i in fnum %}
+                            	<li class="rel">
+                              <b class="l gr">{{ i }}</b>
+                                    <a href="#" class="l"><img src="http://static.ccplay.com.cn/static/common/img/1.jpg"><span class="ios-web-icon abs"></span></a>
+                                    <h3 class="n"><a href="#">游戏名称游戏名称完</a></h3>
+                                    <p class="g9">999M<em>|</em>9999万+下载</p>
+                                    <div class="btn-s">
+                                          <a href="#" class="a1 install">安装</a>
+                                          <a href="#" class="a2">下载</a>
+                                    </div>
+                                </li>
+                        {% endfor %}
+                            </ol>
+                            
+                                                   
+                        </div><!--app-list-right-->
+                        
+                </div><!--right-->
