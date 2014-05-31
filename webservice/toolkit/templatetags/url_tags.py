@@ -92,15 +92,15 @@ class QURLNode(Node):
             return url
 
 
-def absolute_url(context, inst, abs=False, **kwargs):
+def absolute_url(context, inst, abs=True, **kwargs):
     product = kwargs.pop('product', None)
     get_url_as = getattr(inst, 'get_absolute_url_as')
     url = get_url_as(product, **kwargs)
 
+    request = context.get('request')
     site = helpers.get_global_site()
     if site is None and abs:
-        if 'request' in context:
-            request = context['request']
+        if request:
             return request.build_absolute_uri(url)
     return helpers.build_site_absolute_uri(site, url)
 
@@ -110,8 +110,9 @@ register.simple_tag(absolute_url, takes_context=True)
 
 def download_url(context, pv, **kwargs):
     url = pv.get_download_url(**kwargs)
-    if 'request' in context:
-        return context['request'].build_absolute_uri(url)
+    request = context.get('request')
+    if request:
+        return request.build_absolute_uri(url)
     return url
 
 register.assignment_tag(download_url, takes_context=True, name='download_url_as')
