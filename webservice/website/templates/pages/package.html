@@ -43,7 +43,7 @@
         <li>评分<span><div class="ios-web-icon star s{{ pkgv.stars_average|floatformat:"0" }} mr5"></div>{{ pkgv.sars_count }}人评分</span></li>
         <li>厂商<span>{{ pkgv.package.author.name }}</span></li>
         <li>发布<span>{{ pkgv.released_datetime.date }}</span></li>
-        <li>版本<span>{{ pkgv.verison_name }}</span></li>
+        <li>版本<span>{{ pkgv.version_name }}</span></li>
         <li>大小<span>{{ pkgv.get_download_size|default:0|filesizeformat }}</span></li>
         <li>类别<span>{{ cat.name }}</span></li>
         <li>语言<span>{{ pkgv.supported_languages.all.0.name }}</span></li>
