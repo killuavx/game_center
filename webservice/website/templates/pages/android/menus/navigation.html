@@ -6,23 +6,24 @@
 
                       <ul class="cell pct100">
 
-                          <li class="hover"><a href="/android/home">首页</a></li>
+                        <li {% if page.slug == 'android/home' %}class="hover"{% endif %}><a href="/android/home">首页</a></li>
+                        
 
-                          <li><a href="/android/game">游戏</a></li>
+                          <li {% if page.slug == 'android/game' %}class="hover"{% endif %}><a href="/android/game">游戏</a></li>
 
-                          <li><a href="/android/application" id="box_remind">软件</a></li>
+                          <li {% if page.slug == 'android/application' %}class="hover"{% endif %}><a href="/android/application" id="box_remind">软件</a></li>
 
-                          <li><a href="/android/crack" class="a-3-1">破解</a></li>
+                          <li {% if page.slug == 'android/crack' %}class="hover"{% endif %}><a href="/android/crack" class="a-3-1">破解</a></li>
 
-                          <li><a href="/android/topic">合集</a></li>
+                          <li {% if page.slug == 'android/topic' %}class="hover"{% endif %}><a href="/android/topic">合集</a></li>
 
-                          <li><a href="/android/masterpiece">巨作</a></li>
+                          <li {% if page.slug == 'android/masterpiece' %}class="hover"{% endif %}><a href="/android/masterpiece">巨作</a></li>
 
-                          <li><a href="/android/vendor">厂商</a></li>
+                          <li {% if page.slug == 'android/vendor' %}class="hover"{% endif %}><a href="/android/vendor">厂商</a></li>
 
                           <li class="rel">
 
-                                <a href="/android/rank" class="nav-top-a">排行<em class="ios-web-icon"></em></a>
+                                <a  {% if page.slug == 'android/rank' %}class="hover"{% endif %}href="/android/rank" class="nav-top-a">排行<em class="ios-web-icon"></em></a>
 
                                 <div class="abs drop-down">
 
