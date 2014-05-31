@@ -147,3 +147,6 @@ def register_view(request):
             user.set_password(password)
             user.save()
             return HttpResponseRedirect('/')
+
+def reset_password_view(request):
+    return HttpResponse('hello')

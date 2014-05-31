@@ -29,5 +29,6 @@ urlpatterns += patterns('website.views.mainsite',
                        url(r'^mainsite/' , 'mainsite_view', name='mainsite_home'),
                        url(r'^login/' , 'login_view', name='mainsite_login'),
                        url(r'^register/' , 'register_view', name='mainsite_register'),
+                       url(r'^reset/' , 'reset_password_view', name='reset_password'),
                        )
 

@@ -3283,22 +3283,22 @@
 
 <!--修改密码-->
 <div class="bg-white change-password-box dn">
-<form class="w750 user-password-form">
+  <form class="w750 user-password-form" method="post" action="{% url 'reset_password' %}">
 <ul>                                                
         <li class="p10">
                 <label class="dib w100 tr">旧密码：</label>
-                <input type="password" id="reset-password" class="p10 bde w200" placeholder="6-16位旧密码">
+                <input name="old_password" type="password" id="reset-password" class="p10 bde w200" placeholder="6-16位旧密码">
         </li>
         <li class="p10 rel">
                 <label class="dib w100 tr">新密码：</label>
-                <input type="password" name="new_password" plugin="passwordStrength" class="p10 bde w200 password" placeholder="6-16位新密码" id="p-new_password">
+                <input name="new_password" type="password" plugin="passwordStrength" class="p10 bde w200 password" placeholder="6-16位新密码" id="p-new_password">
                 <div class="abs g9" id="pw-strength"><span class="s-1">●</span><span class="s-2">●</span><span class="s-3">●</span></div>
                 <div class="passwordStrength" style="display:none;"><b>密码强度：</b> <span>弱</span><span>中</span><span class="last">强</span></div>
 
         </li>
         <li class="p10">
                 <label class="dib w100 tr">确认新密码：</label>
-                <input type="password" class="p10 bde w200" id="p-new_password2" placeholder="再次确认新密码">
+                <input name="new_password_confirm" type="password" class="p10 bde w200" id="p-new_password2" placeholder="再次确认新密码">
         </li>
 </ul>
 
@@ -3441,7 +3441,7 @@ $(function(){
   $('.login-btn').bind('click', function(){
     var username = $('#p-id').val();
     var password = $('#p-password').val();
-    var token = $('input[name="csrfmiddlewaretoken"]').val();
+    var token = $('form.login-form input[name="csrfmiddlewaretoken"]').val();
 
     $.ajax({
       type: "POST",
