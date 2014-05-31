@@ -6,17 +6,17 @@
 .list.right_list
   %ul
     -for package in items
-      -with version=package.versions.latest_published
+      -with version=package.versions.latest_published title=package.title
         %li{:class => "{% if forloop.first %}hover{% endif %}"}><
           {% absolute_url_as package product="pc" as detail_url %}
           -with version=package.versions.latest_published
-            %a.big_pic{:href => "={detail_url}"}
-              %img{:src => "{% resource_url version 'icon' %}"}
+            %a.big_pic{:href => "={detail_url}", :alt => "={title}"}
+              %img{:src => "{% resource_url version 'icon' %}", :alt => "={title}"}
                 %span.icon.cover
             %h2
-              %a{:href => "={detail_url}"}>
+              %a{:href => "={detail_url}", :title => "={title}"}>
                 %em{:class => "{% if forloop.counter <= 3 %}top{% endif %}"}= forloop.counter
-                = package.title
+                = title
             {% version_data_as version entrytype='pc' as json %}
             .btn{"data-json" => "={json}" }><
               %span.bg

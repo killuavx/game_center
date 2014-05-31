@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from haystack import indexes
 from warehouse.models import Package
+from toolkit.helpers import get_global_site_id, set_global_site_id, SITE_DISABLE, SITE_NOT_SET
 
 CharField = indexes.CharField
 
 
 class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
-
 
     text = indexes.CharField(document=True,
                              use_template=False)
@@ -24,8 +24,9 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
     package_name = indexes.CharField(model_attr='package_name',
                                      weight=20)
 
-    categories = indexes.MultiValueField(model_attr='categories__all',
-                                         weight=10)
+    categories = indexes.MultiValueField(weight=10)
+    category_ids = indexes.MultiValueField(weight=10)
+    category_slugs = indexes.MultiValueField(weight=10)
 
     released_datetime = indexes.DateTimeField(model_attr='released_datetime')
 
@@ -33,14 +34,24 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
 
     # ERROR:root:Error updating warehouse using package
     # TypeError: expected bytes, bytearray or buffer compatible object
-    #site = indexes.IntegerField(model_attr='site_id')
+    site = indexes.IntegerField(model_attr='site_id')
 
     def get_model(self):
         return Package
 
     def index_queryset(self, using=None):
-        return self.get_model().objects.published()
+        set_global_site_id(SITE_DISABLE)
+        qs = self.get_model()._default_manager.published()
+        set_global_site_id(SITE_NOT_SET)
+        return qs
 
-    def prepare_categories(self, obj):
-        return [category.name for category in obj.categories.published()]
+    def prepare(self, obj):
+        prepare_data = super(PackageSearchIndex, self).prepare(obj)
+        set_global_site_id(SITE_DISABLE)
+        categories = obj.categories.all()
+        set_global_site_id(SITE_NOT_SET)
+        prepare_data['category_slugs'] = [cat.slug for cat in categories]
+        prepare_data['category_ids'] = [cat.pk for cat in categories]
+        prepare_data['categories'] = [cat.name for cat in categories]
+        return prepare_data
 

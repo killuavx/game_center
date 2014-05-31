@@ -22,8 +22,7 @@ class TopicRelatedItemsMixin(object):
     def filter_items(self, obj, queryset):
         model = get_item_model_by_topic(obj)
         if model is Package:
-            return queryset.published()\
-                .by_published_order(True)
+            return queryset.published().by_released_order(True)
         else:
             return queryset
 

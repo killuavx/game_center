@@ -55,6 +55,8 @@ class BaseListWidget(PaginatorPageMixin):
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
         from mezzanine.utils.views import paginate
         self.request = context.get('request')
+        self.context = context
+        self.options = options
         per_page, page = self.get_paginator_vars(options)
         items = paginate(self.get_list(),
                          page_num=page,
@@ -65,8 +67,6 @@ class BaseListWidget(PaginatorPageMixin):
             title=options.get('title', self.title),
             more_url=self.get_more_url(),
             items=items,
-            page=page,
-            per_page=per_page,
             paginator=items.paginator,
         )
         self.set_list_page(items, options, context)

@@ -1,0 +1,30 @@
+-load url_tags util_tags pc_tags
+.fl.l
+  %a{:href => "{% absolute_url topic product='pc' %}"}><
+    %img{:alt => "={topic.name}", :src => "{% resource_url topic.resources 'cover' 'pc' %}"}
+    %h3= topic.name
+/ l
+
+.fl.r
+  .inner
+    %ul
+      -for package in topic.packages
+        {% absolute_url_as package product="pc" as detail_url %}
+        -with version=package.versions.latest_published title=package.title
+          %li
+            %a{:href => "={detail_url}", :title => "={title}"}><
+              %img{:alt => "={title}", :src => "{% resource_url version 'icon' %}"}
+              %span.name= title
+              .icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
+              %span.icon.cover
+            {% version_data_as version entrytype='pc' as json %}
+            .btn{:style => "display:none;", "data-json" => "={json}" }><
+              %span.bg
+              %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+              %a.a2{:href => "javascript:;", :class => "app-download-btn-js"} 下载
+  / inner
+  .cb.banner_btn
+    %a.unslider-arrow.icon.prev{:href => "javascript:void(0);"}
+    %a.unslider-arrow.icon.next{:href => "javascript:void(0);"}
+  .cb.date 更新日期：{{ topic.updated_datetime|date }} | 共 {{ topic.packages_count|default:0 }} 个应用
+/ r

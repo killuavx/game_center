@@ -1,10 +1,172 @@
 -extends "pc_base.haml"
--load url_tags
-
+-load util_tags url_tags templatehelper_tags pc_tags widgets
 -block main
-  .location><
-    当前位置：
-    %a{:href => "{% url 'page' slug='pc/index' %}"} 首页
-    - for bc in breadcrumbs
-      %em »
-      %a{:href => "#"}= bc.bcname
+  {% breadcrumbs_from package category=package.main_category product='pc' home_url='/pc/home/' %}
+
+  -with title=version.subtitle|default:package.title
+    .cb.box.dis
+      .title
+        %h1.fl= version.subtitle|default:package.title
+      /
+        %p.fr
+          %span.icon.ad 有广告
+          %span.icon.wifi.no 不需要联网
+          %span.icon.google 需要谷歌服务
+      .dis_box
+        .cb.fl.l
+          .up<
+            .pic
+              %img{:alt => "={title}", :src => "{% resource_url version 'icon' %}"}><
+                %span.icon.cover
+            {% version_data_as version entrytype='pc' as json %}
+            .btn{"data-json" => "={json}"}
+              %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+              %a.a2{:href => "javascript:;", :class => "app-download-btn-js"} 下载
+            %ul.instr
+              %li<
+                评分
+                %span><
+                  .icon.star{:class => "s={version.stars_average|floatformat:'0'}"}><
+                  {{ version.stars_count|default:0 }}人评分
+              %li<
+                厂商
+                %span><= package.author.name
+              %li<
+                发布
+                %span><= version.released_datetime|date
+              %li<
+                版本
+                %span><= version.version_name
+              %li<
+                大小
+                %span><= version.get_download_size|filesizeformat
+              %li<
+                类别
+                %span><= package.main_categories|join:", "
+              %li<
+                语言
+                %span><= version.language_names|join:", "
+              -if version.is_ios
+                %li<
+                  设备
+                  %span><= version.as_ios.device_types|join:", "
+              %li<
+                下载
+                %span>< {{ version.download_count|intwordcn }}+
+          / up
+          .list_box.down
+            .fl.list_box_right.home_game_right
+              {% include_widget PCRankingPackageListWidget cat_slug=package.main_category.get_root.slug max_items=10 %}
+            / home_game_right
+          / down
+        / l
+        .fr.r
+          .up.up_box
+            .up_pic
+              %ul<
+                -for screenshot in version.screenshots.ipad
+                  -with image=screenshot.image
+                    %li<
+                      %img{:src => "={image.middle.url|default:image.url}"}/
+            / up_pic
+            .cb.banner_btn
+              %a.unslider-arrow.icon.prev{:href => "javascript:void(0)"}
+              %a.unslider-arrow.icon.next{:href => "javascript:void(0)"}
+          / up
+          .down
+            %h3 应用介绍
+            .text_inner= package.description
+            / text_inner
+            -if version.whatsnew|length > 1
+              %h3 新版特性
+              .text_inner= version.whatsnew|linenumbers|linebreaksbr
+              / text_inner
+          -#
+            .review
+              %h3.fl 应用评论
+              %span.fr.login 请先登录，再来评分。
+              %form.cb{:action => "", :method => "get"}
+                %textarea
+                .fl.review_btn
+                  #rating_cont
+                    #rating_btns
+                      %ul
+                        %li{:title => "很差"} 1
+                        %li{:title => "一般"} 2
+                        %li{:title => "好"} 3
+                        %li{:title => "很好"} 4
+                        %li{:title => "非常好"} 5
+                    #rating_on
+                    #rating.fr 点击星星来评分
+                  %input#rating_output{:name => "rating_output", :type => "hidden", :value => ""}/
+                %button.fr 发表评论
+            .review_list
+              %dl.cb
+                %dt.icon.fl.user{:title => "name"}
+                %dd.d1
+                  %span.icon.fl.star.s4
+                  %span.fr 2014-04-07 19:16
+                %dd.d2 以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、
+                %dd.d3
+                  %a.r1{:href => "#"}
+                    %span.icon>
+                    0
+                  %a.r2{:href => "#"}
+                    %span.icon>
+                    0
+              .c_b
+            .review_list.i_reply
+              %dl.cb
+                %dt.icon.fl.user{:title => "name"}
+                %dd.d1
+                  %span.icon.fl.star.s4
+                  %span.fr 2014-04-07 19:16
+                %dd.d2 以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、
+                %dd.d3
+                  %a.r1{:href => "#"}
+                    %span.icon>
+                    1
+                  %a.r2{:href => "#"}
+                    %span.icon>
+                    2
+              .c_b
+            .review_list.i_reply
+              %dl.cb
+                %dt.icon.fl.user{:title => "name"}
+                %dd.d1
+                  %span.icon.fl.star.s4
+                  %span.fr 2014-04-07 19:16
+                %dd.d2 以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、
+                %dd.d3
+                  %a.r1{:href => "#"}
+                    %span.icon>
+                    1
+                  %a.r2{:href => "#"}
+                    %span.icon>
+                    2
+              .c_b
+            .review_list
+              %dl.cb
+                %dt.icon.fl.user{:title => "name"}
+                %dd.d1
+                  %span.icon.fl.star.s4
+                  %span.fr 2014-04-07 19:16
+                %dd.d2 以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、
+                %dd.d3
+                  %a.r1{:href => "#"}
+                    %span.icon>
+                    0
+                  %a.r2{:href => "#"}
+                    %span.icon>
+                    0
+              .c_b
+
+            {% pagination comments %}
+          / down
+          .c_b
+        / r
+
+        .c_b
+      / dis_box
+      .c_b
+    / dis

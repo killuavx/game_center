@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.template import Library, Node, TemplateSyntaxError
 from urllib.parse import urlparse, parse_qsl, urlunparse, urlencode
 from django.utils.encoding import smart_str
+from toolkit import helpers
 
 
 register = Library()
@@ -91,15 +92,17 @@ class QURLNode(Node):
             return url
 
 
-def absolute_url(context, inst, **kwargs):
+def absolute_url(context, inst, abs=True, **kwargs):
     product = kwargs.pop('product', None)
-    #if not hasattr(inst, 'get_absolute_url_as'):
-    #    return None
     get_url_as = getattr(inst, 'get_absolute_url_as')
     url = get_url_as(product, **kwargs)
-    if 'request' in context:
-        return context['request'].build_absolute_uri(url)
-    return url
+
+    request = context.get('request')
+    site = helpers.get_global_site()
+    if site is None and abs:
+        if request:
+            return request.build_absolute_uri(url)
+    return helpers.build_site_absolute_uri(site, url)
 
 register.assignment_tag(absolute_url, takes_context=True, name='absolute_url_as')
 register.simple_tag(absolute_url, takes_context=True)
@@ -107,8 +110,9 @@ register.simple_tag(absolute_url, takes_context=True)
 
 def download_url(context, pv, **kwargs):
     url = pv.get_download_url(**kwargs)
-    if 'request' in context:
-        return context['request'].build_absolute_uri(url)
+    request = context.get('request')
+    if request:
+        return request.build_absolute_uri(url)
     return url
 
 register.assignment_tag(download_url, takes_context=True, name='download_url_as')
@@ -129,7 +133,6 @@ def resource_url(inst_or_resources, kind='cover', alias='default'):
         except ObjectDoesNotExist:
             pass
     return ''
-
 
 register.assignment_tag(resource_url, name='resource_url_as')
 register.simple_tag(resource_url)

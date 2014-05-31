@@ -1,10 +1,10 @@
 -load url_tags util_tags pc_tags
 {% absolute_url_as package product="pc" as detail_url %}
--with version=package.versions.latest_published
+-with version=package.versions.latest_published title=package.title
   .maste_lsit<
-    %a{:href => "={detail_url}"}<
-      %img{:alt => "", :src => "{% resource_url version.resources 'cover' 'pc' %}"}
-      %h3.fl= package.title
+    %a{:href => "={detail_url}", :title => "={title}"}<
+      %img{:alt => "={title}", :src => "{% resource_url version.resources 'cover' 'pc' %}"}
+      %h3.fl= title|slice:":10"
       .fr.icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
     %p.cb.des= packge.summary
     %p.fl {{ version.get_download_size|filesizeformat }} | {{ version.download_count|default:0|intwordcn }}+下载

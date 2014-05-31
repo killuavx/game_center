@@ -1,5 +1,5 @@
 {% extends "pc_base.haml" %}
-{% load widgets util_tags url_tags %}
+{% load widgets templatehelper_tags url_tags %}
 {% block main %}
 <div class="cb box vendor">
 
@@ -28,7 +28,7 @@
     {% endfor %}
             </ul>
         </div>
-    {% include "includes/pc_pagination.haml" with current_page=items %}
+    {% pagination items %}
 {% endwidget %}
 
     </div><!--r-->

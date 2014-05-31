@@ -1,0 +1,21 @@
+-extends "pc_base.haml"
+-load widgets url_tags templatehelper_tags
+-block main
+  .cb.box.list_box.game.collection_dis
+    .collection_title
+      %img{:alt => "={topic.name}", :src => "{% resource_url topic.resources 'cover' 'pc' %}"}
+        %h1= topic.name
+        %p= topic.summary
+        %span.date 更新日期：{{ topic.updated_datetime|date }} | 共 {{ topic.packages_count|default:0 }} 个应用
+        .c_b
+
+    {% widget  PCCollectionPackageListWidget slug=topic.slug per_page=20 page=request.GET.page %}
+    .list_box_left.game_box
+      .list.left_list
+        %ul
+          -for package in items
+            {% include "pages/pc/widgets/include-package-box.haml" with package=package %}
+      / list
+    / game_box
+    {% pagination items %}
+    {% endwidget %}

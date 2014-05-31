@@ -2,10 +2,13 @@
 import hashlib
 import json
 import re
+import copy
+from urllib.parse import urljoin
 from django.core.urlresolvers import reverse
 from django.utils import importlib
 import unicodedata
 from django.utils.encoding import smart_text
+from django.contrib.sites.models import Site, SITE_CACHE
 
 
 def file_md5(f, iter_read_size=1024 ** 2 * 8):
@@ -119,6 +122,55 @@ def get_client_event_data(request):
     return kwargs
 
 
+# -1 not using
+# 0 not set using hostname
+# 1 android
+# 2 ios
+
+SITE_DISABLE = -1
+
+SITE_NOT_SET = 0
+
+SITE_ANDROID = 1
+
+SITE_IOS = 2
+
+SITE_MAIN = 3
+
+_GC_SITE_ID = SITE_NOT_SET
+
+
+def set_global_site_id(site_id):
+    global _GC_SITE_ID
+    _GC_SITE_ID = site_id
+
+
+def get_global_site_id():
+    global _GC_SITE_ID
+    return _GC_SITE_ID
+
+
+def get_global_site():
+    site_id = get_global_site_id()
+    if site_id == SITE_DISABLE:
+        return None
+
+    if site_id == SITE_NOT_SET:
+        site_id = current_site_id()
+
+    if site_id not in SITE_CACHE:
+        SITE_CACHE[site_id] = Site.objects.get(pk=site_id)
+    return SITE_CACHE[site_id]
+
+
+def build_site_absolute_uri(site, location):
+    if site:
+        current_uri = 'http://%s' % site.domain
+        return urljoin(current_uri, location)
+    else:
+        return location
+
+
 def current_site_id():
     """
         0. combine
@@ -134,7 +186,6 @@ def current_site_id():
 
 def current_site():
     from mezzanine.utils.sites import current_site_id as _cur_site_id
-    from django.contrib.sites.models import Site
     site_id = _cur_site_id()
     return Site.objects.get(pk=site_id)
 

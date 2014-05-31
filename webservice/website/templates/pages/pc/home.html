@@ -1,12 +1,11 @@
 {% extends "pc_base.haml" %}
-{% load util_tags %}
-{% load widgets %}
+{% load widgets templatehelper_tags %}
 {% block main %}
 <div class="cb box focus">
 {% include_widget PCBannerWidget slug='banner-pc' %}
 </div><!--focus-->
 
-{% settings_value 'GC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS' as topic_slugs %}
+{% settings_value 'GC_PC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS' as topic_slugs %}
 <div class="cb box list_box home_game">
 
     <div class="fl list_box_left home_game_left box-tab">
@@ -33,7 +32,7 @@
 
 <div class="cb box list_box home_soft">
 
-    <div class="fl list_box_left home_soft_left">
+    <div class="fl list_box_left home_soft_left box-tab">
 
     {% include_widget PCHomeComplexPackageListWidget title='软件' cat_slug='application' topic_slugs=topic_slugs %}
 

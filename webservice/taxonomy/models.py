@@ -118,25 +118,41 @@ class CategoryManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
     pass
 
 
+class AllCategoryManager(TreeManager, PassThroughManager):
+    pass
+
+
 class CategoryAbsoluteUrlMixin(object):
 
-    _top_slugs = ('game', 'application')
+    ROOT_SLUGS = ('game', 'application')
 
     def get_absolute_url_as(self, product, pagetype='default'):
         if product == 'pc':
-            if self.slug in self._top_slugs:
-                # mezzanine.pages.views.page
+            # mezzanine.pages.views.page
+            if self.slug in self.ROOT_SLUGS:
                 view_name = 'page'
                 page_slug = "%s/%s" % (product, self.slug)
-                return reverse(view_name, kwargs=dict(slug=page_slug))
+                return reverse(view_name, kwargs=dict(slug=page_slug)) \
+                       + '?category=%s' % self.pk
             else:
-                view_name = 'website.views.%s.%s_page' % (product, self.get_root().slug)
-                return reverse(view_name, kwargs=dict(slug=self.slug))
+                page_slug = "%s/%s" % (product, self.get_root().slug)
+                view_name = 'page'
+                return reverse(view_name, kwargs=dict(slug=page_slug))\
+                       + '?category=%s' % self.pk
         return None
 
 
 class Category(CategoryAbsoluteUrlMixin,
                MPTTModel, Taxonomy):
+
+    # FIXME 重建全文索引，需要使用 package.categories 关联获取分类列表，
+    # 但是ios，android同时重建索引的情况下，不得不使用无site关联的manager，
+    # 导致当索引到ios应用时，却获取不到ios的关联分类数据
+    # 用以下的方式，虽然可以获取应用的分类，但在通过category.packages找应用时，
+    # 却把ios的应用也一并查出，在分类软件列表上，产生android/ios混合错乱的列表
+    # 所以要找到一个办法，可以让建立全文搜索与查询都能并存处理
+    # 现在只在重建全文索引时，使用以下_default_manager，而在平台正常运作下注释掉
+    #_default_manager = AllCategoryManager.for_queryset_class(CategoryQuerySet)()
 
     objects = CategoryManager.for_queryset_class(CategoryQuerySet)()
 
@@ -228,16 +244,20 @@ class TopicManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
 
 class TopicAbsoluteUrlMixin(object):
 
+    PAGE_TYPE_DETAIL = 'detail'
+
+    PAGE_TYPE_SPECIAL = 'special'
+
     _spec_topics = {'home-recommend-game': 'masterpieces',
                     'spec-choice-topic': 'collections'}
 
-    def get_absolute_url_as(self, product, pagetype='detail'):
+    def get_absolute_url_as(self, product, pagetype=PAGE_TYPE_DETAIL):
         if product == 'pc':
-            if pagetype == 'detail':
+            if pagetype == self.PAGE_TYPE_DETAIL:
                 view_name = 'website.views.%s.topic_detail' % product
                 return reverse(view_name, kwargs=dict(slug=self.slug))
 
-            if pagetype == 'special' and self.slug in self._spec_topics:
+            if pagetype == self.PAGE_TYPE_SPECIAL and self.slug in self._spec_topics:
                 # mezzanine.pages.views.page
                 view_name = 'page'
                 page_slug = "%s/%s" % (product, self._spec_topics[self.slug])

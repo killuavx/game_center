@@ -54,7 +54,7 @@ class CategoryRelatedPackagesMixin(object):
     def get_packages(self, obj):
         if obj.children.count():
             return list()
-        packages = obj.packages.published().by_published_order(True)[0:self.limit_packages]
+        packages = obj.packages.published().by_released_order(True)[0:self.limit_packages]
         return self.serializer_class_package(packages,
                                              context=self.context,
                                              many=True).data

@@ -19,7 +19,7 @@ import tagging
 from tagging_autocomplete.models import TagAutocompleteField as TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 
-from toolkit.managers import CurrentSitePassThroughManager
+from toolkit.managers import CurrentSitePassThroughManager, PassThroughManager
 from toolkit.fields import StarsField, PkgFileField, MultiResourceField
 from toolkit.models import SiteRelated, ModelAbsoluteUrlMixin
 from toolkit.helpers import import_from, sync_status_from
@@ -68,7 +68,7 @@ def author_workspace_path(author):
             _id = author.artist_id
         else:
             iauthor = author.iosauthor
-            _id = iauthor.atrist_id
+            _id = iauthor.artist_id
         subdir = 'iauthor'
     except ObjectDoesNotExist:
         dt_path = now().strftime("%Y%m%d%H%M/%S-%f")
@@ -193,6 +193,8 @@ class Author(AuthorAbsoluteUrlMixin, PlatformBase, SiteRelated, models.Model):
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(AuthorQuerySet)()
 
+    all_objects = PassThroughManager.for_queryset_class(AuthorQuerySet)()
+
 
     icon = ThumbnailerImageField(upload_to=factory_author_upload_to('icon'),
                                  blank=True,
@@ -268,13 +270,16 @@ class PackageQuerySet(QuerySet):
 
     def by_published_order(self, newest=None):
         qs = self.published()
+        return qs.by_released(newest=newest)
+
+    def by_released_order(self, newest=None):
         field = 'released_datetime'
         if newest is None:
-            return qs
+            return self
         elif newest is True:
-            return qs.order_by('-' + field)
+            return self.order_by('-' + field)
         else:
-            return qs.order_by('+' + field)
+            return self.order_by('+' + field)
 
     def by_rankings_order(self):
         return self.order_by('-download_count')
@@ -295,6 +300,9 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
               SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
+
+    all_objects = PassThroughManager.for_queryset_class(PackageQuerySet)()
+
 
     class Meta:
         permissions = (
@@ -401,10 +409,29 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
 
     @property
     def main_category(self):
-        try:
-            return self.categories.all()[0]
-        except (exceptions.ObjectDoesNotExist, IndexError):
-            return None
+        if hasattr(self, '_main_categories'):
+            return self._main_category
+        main_cat, cats = self._package_categories()
+        self._main_categories = cats
+        self._main_category = main_cat
+        return self._main_category
+
+    @property
+    def main_categories(self):
+        if hasattr(self, '_main_categories'):
+            return self._main_categories
+        main_cat, cats = self._package_categories()
+        self._main_categories = cats
+        self._main_category = main_cat
+        return self._main_categories
+
+    def _package_categories(self):
+        from taxonomy.models import Category
+        cats = [cat for cat in self.categories.all()
+                if cat.is_leaf_node() and \
+                   cat.get_root().slug in Category.ROOT_SLUGS]
+        main_category = cats[0]
+        return main_category, cats
 
     def clean(self):
         if self.status == self.STATUS.published:
@@ -436,12 +463,6 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
             return '/packages/%s/' % self.package_name
         else:
             return '/packages/%s/' % self.pk
-
-    def get_absolute_iospc_url(self, link_type=0):
-        if link_type == 0:
-            return '/iospc/package/?name=%s' % self.package_name
-        else:
-            return '/iospc/package/?id=%s' % self.pk
 
 
 tagging.register(Package)
@@ -516,6 +537,8 @@ class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
 
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(PackageVersionQuerySet)()
+
+    all_objects = PassThroughManager.for_queryset_class(PackageVersionQuerySet)()
 
     class Meta:
         verbose_name = _("Package Version")
@@ -721,6 +744,33 @@ class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
     def sync_status(self):
         return sync_status_from(self)
 
+    def _get_languages(self):
+        lang_desc_maps = dict(
+            ZH='中文',
+            EN='英文',
+            _='其他'
+        )
+        lang_codes = list(self.supported_languages.values_list('code', flat=True))
+        desc_langs = []
+        if len(lang_codes):
+            if 'ZH' in lang_codes:
+                del lang_codes[lang_codes.index('ZH')]
+                desc_langs.append(lang_desc_maps['ZH'])
+            if 'EN' in lang_codes:
+                del lang_codes[lang_codes.index('EN')]
+                desc_langs.append(lang_desc_maps['EN'])
+            if len(lang_codes):
+                desc_langs.append(lang_desc_maps['_'])
+        else:
+            desc_langs.append(lang_desc_maps['_'])
+        return desc_langs
+
+    @property
+    def language_names(self):
+        if not hasattr(self, '_language_names'):
+            self._language_names = self._get_languages()
+        return self._language_names
+
 
 tagging.register(PackageVersion)
 
@@ -737,7 +787,18 @@ def screenshot_upload_path(instance, filename):
     return join(prefix, subdir, filename)
 
 
+class PackageVersionScreenshotManager(models.Manager):
+
+    def ipad(self):
+        return self.filter(kind='ipad')
+
+    def default(self):
+        return self.filter(kind='default')
+
+
 class PackageVersionScreenshot(models.Model):
+
+    objects = PackageVersionScreenshotManager()
 
     version = models.ForeignKey(PackageVersion, related_name='screenshots')
 
@@ -907,6 +968,12 @@ def author_pre_save(sender, instance, **kwargs):
 
 class SupportedLanguage(models.Model):
 
+    LANG_MASK_ZH = 0b100
+
+    LANG_MASK_EN = 0b010
+
+    LANG_MASK_OTHER = 0b001
+
     code = models.CharField(unique=True, max_length=10)
 
     name = models.CharField(unique=True, max_length=50)
@@ -1050,4 +1117,22 @@ class IOSPackageVersion(IOSPlatform, PackageVersion):
 
     def is_free(self):
         return self.price.is_zero()
+
+    def _get_support_device_types(self):
+        devtypes = ['iPad', 'iPhone', 'iPod']
+        result = set()
+        for dev in self.supported_devices.all():
+            for t in devtypes:
+                if dev.code.startswith(t):
+                    result.add(t)
+                    break
+        return list(result)
+
+    @property
+    def device_types(self):
+        if not hasattr(self, '_support_device_types'):
+            self._support_device_types = self._get_support_device_types()
+        return self._support_device_types
+
+
 

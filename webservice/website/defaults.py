@@ -44,7 +44,7 @@ register_setting(
     name="GC_TOPICS_CHOICE_SLUG",
     description=_("Topic.slug，专辑页面，当进入/topics/，指定一个专辑(topic)展示专辑列表" ),
     editable=True,
-    default='home-recommend-game',
+    default='spec-choice-topic',
     )
 
 register_setting(
@@ -56,4 +56,16 @@ register_setting(
         'basic-installed',
         'NONE'
     )),
-    )
+)
+
+register_setting(
+    name="GC_PC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS",
+    description="PC对分类下的应用列表筛选的专区列表",
+    editable=True,
+    default=",".join((
+        'home-recommend-game',
+        #'recommend-pc',
+        'basic-installed',
+        'NONE'
+    )),
+)

@@ -1,1 +1,15 @@
 {% extends "pc_base.haml" %}
+{% load widgets templatehelper_tags %}
+{% block main %}
+<div class="cb box collection">
+    {% settings_value 'GC_TOPICS_CHOICE_SLUG' as choice_slug %}
+    {% widget PCCollectionTopicListWidget slug=choice_slug page=request.GET.page per_page=6 %}
+{% for topic in items %}
+    <div class="collection_box">
+    {% include "pages/pc/widgets/include-topic-list.haml" with topic=topic %}
+    </div><!--collection_box-->
+{% endfor %}
+    {% pagination items %}
+    {% endwidget %}
+</div><!--collection-->
+{% endblock %}

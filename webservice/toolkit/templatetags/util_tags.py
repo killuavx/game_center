@@ -141,19 +141,3 @@ def intwordcn(value):
     return value
 
 
-@register.assignment_tag
-def queryset_filter(qs, **kwargs):
-    return qs.filter(**kwargs)
-
-
-@register.filter_function
-def queryset_order_by(queryset, args):
-    args = [x.strip() for x in args.split(',')]
-    return queryset.order_by(*args)
-
-
-@register.assignment_tag
-def settings_value(name):
-    from mezzanine.conf import settings
-    return getattr(settings, name, None)
-
