@@ -157,3 +157,15 @@ def android_package(request, page):
         data['related_pkgs'] = related_pkgs
 
     return data
+
+
+android_rank_page_slug = 'android/rank'
+@processor_for(android_rank_page_slug)
+def android_rank(request, page):
+    data = dict()
+    if request.method == "GET":
+        type = request.GET.get('type', None)
+        data['type'] = type
+
+    return data
+

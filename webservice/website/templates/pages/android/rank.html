@@ -7,10 +7,15 @@
 
 <div class="auto mt30 width top-page">
 <div class="pb30 cell-bk btn-s-box">
-
+{% if type == 'application' %}
+{% include_widget RankPackageListWidget cat_slug='application' ranking_slug='hotsoft' class='down-top' %}
+{% include_widget RankPackageListWidget cat_slug='application' ranking_slug='newsoft' class='rcd-top' %}
+{% include_widget RankPackageListWidget cat_slug='application' ranking_slug='boysoft' class='cc-top' %}
+{% else %}
 {% include_widget RankPackageListWidget cat_slug='game' ranking_slug='hotgame' class='down-top' %}
 {% include_widget RankPackageListWidget cat_slug='game' ranking_slug='newstargame' class='rcd-top' %}
 {% include_widget RankPackageListWidget cat_slug='game' ranking_slug='boygame' class='cc-top' %}
+{% endif %}
 </div>
 </div>
 {% endblock %}
