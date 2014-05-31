@@ -408,13 +408,13 @@ class FirstReleaseCrackPackagesListWidget(BaseListWidget, Widget):
         all_crack_packages = self.get_all_crack_packages(slug)
         all_crack_packages_published = all_crack_packages.published()
         crack_packages_today = self.get_crack_packages_by_delta_days(\
-            all_crack_packages_published, self.get_date(2))
+            all_crack_packages_published, self.get_date(10))
         crack_packages_yesterday = self.get_crack_packages_by_delta_days(\
-            all_crack_packages_published, self.get_date(4))
+            all_crack_packages_published, self.get_date(11))
         crack_packages_yesterday_before = self.get_crack_packages_by_delta_days\
-            (all_crack_packages_published, self.get_date(5))
+            (all_crack_packages_published, self.get_date(12))
 
-        someday = self.get_date(36)
+        someday = self.get_date(9)
         crack_packages_someday = self.get_crack_packages_by_delta_days(\
             all_crack_packages_published, someday)
         crack_packages_tomorrow = self.get_crack_packages_by_delta_days(\
