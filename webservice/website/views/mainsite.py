@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
+import json
 from mezzanine.conf import settings
 from django.core.paginator import EmptyPage, Paginator
+from django.contrib.auth import authenticate, login
 
 from django.http import Http404
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
-from website.response import WidgetHttpResponse
+from website.response import WidgetHttpResponse, HttpResponse
 from warehouse.models import PackageVersion, Package
+from account.models import User
 
 
 def packageversion_detail(request, package_name, version_name=False,
@@ -95,3 +99,54 @@ def topic_package_list(request, slug, template='pages/topics/detail.html',
 
     return TemplateResponse(request=request, template=template, context=context)
 
+def mainsite_view(request):
+    template = 'mainsite.html'
+    context = {}
+    return TemplateResponse(request=request, template=template, context=context)
+
+def login_view(request):
+    template = 'login.html'
+    context = {}
+    if request.method == 'GET':
+        return TemplateResponse(request=request, template=template, context=context)
+    else:
+        username = request.POST.get('username', None)
+        password = request.POST.get('password', None)
+        user = authenticate(username=username, password=password)
+        if request.is_ajax():
+            resp = {"result": 0}
+            if user:
+                resp["result"] = 1
+            return HttpResponse(json.dumps(resp), content_type="application/json")
+        else:
+            if user:
+                return HttpResponseRedirect('/')
+            return TemplateResponse(request=request, template=template, context=context)
+
+
+def register_view(request):
+    template = 'reg.html'
+    context = {}
+    if request.method == 'GET':
+        return TemplateResponse(request=request, template=template, context=context)
+    else:
+        #print (request.POST)
+        username = request.POST.get('username', None)
+        password = request.POST.get('password', None)
+        password_confirm = request.POST.get('password-confirm', None)
+        email = request.POST.get('email', None)
+        agreement = request.POST.get('agreement', None)
+
+        if not (username and password and password_confirm and email and agreement) :
+            return TemplateResponse(request=request, template=template, context=context)
+
+        if password != password_confirm:
+            return TemplateResponse(request=request, template=template, context=context)
+        else:
+            user = User(username=username, email=email)
+            user.set_password(password)
+            user.save()
+            return HttpResponseRedirect('/')
+
+def reset_password_view(request):
+    return HttpResponse('hello')

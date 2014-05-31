@@ -94,4 +94,3 @@ class BasePackageSearchListWidget(base.FilterWidgetMixin, base.BaseListWidget):
                          context=context,
                          pagination=pagination)
 
-

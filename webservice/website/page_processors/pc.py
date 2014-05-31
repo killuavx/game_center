@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from django.http import Http404
+from mezzanine.pages.page_processors import processor_for
+from taxonomy.models import Category, Topic
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from mezzanine.pages.page_processors import processor_for
@@ -45,7 +48,6 @@ def category_fill(request, page):
 processor_for('pc/game')(category_fill)
 processor_for('pc/application')(category_fill)
 
-
 @processor_for('pc/vendors')
 def vendors_fill(request, page):
     author_pk = request.GET.get('author')
@@ -59,4 +61,3 @@ def vendors_fill(request, page):
     return dict(
         author=author
     )
-

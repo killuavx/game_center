@@ -1,0 +1,13 @@
+{% load templateutils_tags %}
+{% load static %}
+
+<div class="auto width cc-a-d-box">
+      <div class="rel pt20 cell-bk ovh">
+      <div class="l-box cc-a-d-2">
+        <a title="链接名称" href="{{ items.0.content.get_absolute_url }}"><img alt="图片名称" src="{{ item.cover.url }}"></a>
+      </div>
+      <div class="r-box cc-a-d-3">
+        <a title="链接名称" href="{{ items.1.content.get_absolute_url }}"><img alt="图片名称" src="{{ item.cover.url }}"></a>
+      </div>
+      </div>
+</div>

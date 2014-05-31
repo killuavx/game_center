@@ -464,6 +464,11 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
         else:
             return '/packages/%s/' % self.pk
 
+    def get_package_url(self, link_type=0):
+        if link_type == 0:
+            return '/package/?name=%s' % self.package_name
+        else:
+            return '/package/?id=%s' % self.pk
 
 tagging.register(Package)
 

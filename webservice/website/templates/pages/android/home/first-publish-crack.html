@@ -1,0 +1,32 @@
+{% load templateutils_tags %}
+
+          <div class="l pt20 hot-news">
+          
+         		<div class="f18 cell rel t-title">
+                	<h3 class="l n mr30"><span class="abs ios-web-icon"></span>首发破解</h3>
+                    <a class="r f12 mt5 more">更多></a>
+                </div>
+   
+                <div class="crack-rcd">
+                	
+                	<div class="time-box-t">
+                    	<div class="time-box-b">
+
+                        {%  mkrange 1 6 as fnum %}
+                         {% for i in fnum %}
+                        <dl class="dib rel app-list-xl">
+                            <dt class="abs"><a href="game-dis.html" class="pic"><img src="http://static.ccplay.com.cn/static/common/img/5.jpg"><span class="ios-web-icon abs"></span></a></dt>
+                            <dd class="g9">
+                                <h3 class="n rel g3 f16 pb5 text-db"><a href="game-dis.html">雪地冒险Last Inua An Arctic Adventure</a></h3>
+                                <div class="g9 lh20">怪物猎人P2G》是Capcom推出的第三人称动作游戏，说是目前iOS上最牛逼的动作游戏也不为过。玩家要在游戏中不断的完成任务，获得金钱和装备，并让自己的猎人等级上升，</div>
+                                <div class="l mt5 ios-web-icon star s1"></div>
+                                <p class="pt2 r"> 999M<em>|</em>9999万+下载<em>|</em>智力游戏</p>
+                            </dd>
+                        </dl>
+                        {% endfor %}
+                        
+                        </div><!--time-box-b-->
+                      </div><!--time-box-t-->
+                </div><!--crack-rcd-->
+
+          </div>
