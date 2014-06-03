@@ -105,7 +105,7 @@ def mainsite_view(request):
     return TemplateResponse(request=request, template=template, context=context)
 
 def ajax_login_view(request):
-    resp = {"login": 0}
+    resp = {"login": -1}
 
     if request.method == 'POST' and request.is_ajax():
         username = request.POST.get('username', None)
@@ -113,17 +113,17 @@ def ajax_login_view(request):
         user = authenticate(username=username, password=password)
         if user and user.is_active:
             login(request, user)
-            resp["login"] = 1
+            resp["login"] = 0
 
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
 
 def ajax_logout_view(request):
-    resp = {"logout": 0}
+    resp = {"logout": -1}
 
     if request.method == 'POST' and request.is_ajax():
         logout(request)
-        resp["logout"] = 1
+        resp["logout"] = 0
 
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
@@ -153,5 +153,27 @@ def register_view(request):
             user.save()
             return HttpResponseRedirect('/')
 
+
 def reset_password_view(request):
-    return HttpResponse('hello')
+    resp = {"reset": -1}
+    if request.method == 'POST' and request.is_ajax():
+        old_pass = request.POST.get('old_password', None)
+        new_pass = request.POST.get('new_password', None)
+        new_pass_conf =  request.POST.get('new_password_confirm', None)
+        user = request.user
+        if not user or not user.is_authenticated():
+            resp = {"reset": -2}
+        else:
+            check_old_pass = user.check_password(old_pass)
+            if not check_old_pass:
+                resp = {"reset": -3}
+            elif new_pass != new_pass_conf:
+                resp = {"reset": -4}
+            elif new_pass == old_pass:
+                resp = {"reset": -5}
+            else:
+                user.set_password(new_pass)
+                user.save()
+                resp = {"reset": 0}
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")
