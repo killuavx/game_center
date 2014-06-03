@@ -3,6 +3,7 @@ import json
 from mezzanine.conf import settings
 from django.core.paginator import EmptyPage, Paginator
 from django.contrib.auth import authenticate, login
+from django.contrib.messages import info
 
 from django.http import Http404
 from django.http import HttpResponse, HttpResponseRedirect
@@ -104,24 +105,22 @@ def mainsite_view(request):
     context = {}
     return TemplateResponse(request=request, template=template, context=context)
 
-def login_view(request):
-    template = 'login.html'
-    context = {}
-    if request.method == 'GET':
-        return TemplateResponse(request=request, template=template, context=context)
-    else:
+def ajax_login_view(request):
+    resp = {"login": 0}
+
+    if request.method == 'POST' and request.is_ajax():
         username = request.POST.get('username', None)
         password = request.POST.get('password', None)
         user = authenticate(username=username, password=password)
-        if request.is_ajax():
-            resp = {"result": 0}
-            if user:
-                resp["result"] = 1
-            return HttpResponse(json.dumps(resp), content_type="application/json")
-        else:
-            if user:
-                return HttpResponseRedirect('/')
-            return TemplateResponse(request=request, template=template, context=context)
+        if user and user.is_active:
+            login(request, user)
+            resp["login"] = 1
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
+def ajax_logout_view(request):
+    pass
+
 
 
 def register_view(request):

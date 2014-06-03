@@ -238,7 +238,7 @@ $(function(){
       data: {username: username, password: password, csrfmiddlewaretoken: token},
 
       success: function(data){
-        if (data.result === 1) {
+        if (data.login === 1) {
         $.cookie('username', username, {path: '/'});
           $.zxxbox('<div class="p20 f20 white tc">登陆成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});                         
           $('#login-reg').addClass('dn');
@@ -277,11 +277,11 @@ $(function(){
     );
   });
 
-  current_user = $.cookie('username');
-  if (current_user) {
-    $('#login-reg').addClass('dn');
-    $('#change-logout').removeClass('dn').children('a').attr('title', current_user).text(current_user);
-  }
+//  current_user = $.cookie('username');
+//  if (current_user) {
+//    $('#login-reg').addClass('dn');
+//    $('#change-logout').removeClass('dn').children('a').attr('title', current_user).text(current_user);
+//  }
 });
 
 </script>
