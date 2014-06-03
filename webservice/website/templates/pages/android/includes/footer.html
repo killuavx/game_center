@@ -239,7 +239,7 @@ $(function(){
 
       success: function(data){
         if (data.result === 1) {
-          $.cookie('username', username);
+        $.cookie('username', username, {path: '/'});
           $.zxxbox('<div class="p20 f20 white tc">登陆成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});                         
           $('#login-reg').addClass('dn');
           $('#change-logout').removeClass('dn').children('a').attr('title', username).text(username);
@@ -267,7 +267,7 @@ $(function(){
   });
 
   $('.log-out').bind('click', function() {
-    $.removeCookie('username');
+    $.removeCookie('username', {path: '/'});
     $('#change-logout').addClass('dn');
     $('#login-reg').removeClass('dn');
     setTimeout(
@@ -277,6 +277,11 @@ $(function(){
     );
   });
 
+  current_user = $.cookie('username');
+  if (current_user) {
+    $('#login-reg').addClass('dn');
+    $('#change-logout').removeClass('dn').children('a').attr('title', current_user).text(current_user);
+  }
 });
 
 </script>
