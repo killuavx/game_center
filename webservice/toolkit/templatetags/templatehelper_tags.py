@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.template import RequestContext
 from django.template.base import Library
 
 register = Library()
@@ -17,9 +16,9 @@ def queryset_order_by(queryset, args):
 
 
 @register.assignment_tag
-def settings_value(name):
+def settings_value(name, default=None):
     from mezzanine.conf import settings
-    return getattr(settings, name, None)
+    return getattr(settings, name, default)
 
 
 @register.inclusion_tag('includes/breadcrumbs_package.haml')
@@ -48,9 +47,16 @@ def breadcrumbs_from(package, category,
     )
 
 
-@register.inclusion_tag('includes/pagination_common.haml', takes_context=True)
-def pagination(context, current_page, *args, **kwargs):
-    return dict(
-        request=context.get('request'),
-        current_page=current_page
-    )
+
+
+@register.assignment_tag
+def is_site_android():
+    from toolkit import helpers
+    site = helpers.get_global_site()
+    return helpers.SITE_ANDROID == site.pk
+
+@register.assignment_tag
+def is_site_ios():
+    from toolkit import helpers
+    site = helpers.get_global_site()
+    return helpers.SITE_IOS == site.pk

@@ -1,7 +1,7 @@
 -extends "pc_base.haml"
 -load util_tags url_tags templatehelper_tags pc_tags widgets
 -block main
-  {% breadcrumbs_from package category=package.main_category product='pc' home_url='/pc/home/' %}
+  {% breadcrumbs_from package category=package.main_category product=product home_url='/pc/home/' %}
 
   -with title=version.subtitle|default:package.title
     .cb.box.dis
@@ -18,7 +18,7 @@
             .pic
               %img{:alt => "={title}", :src => "{% resource_url version 'icon' %}"}><
                 %span.icon.cover
-            {% version_data_as version entrytype='pc' as json %}
+            {% version_data_as version entrytype=product as json %}
             .btn{"data-json" => "={json}"}
               %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
               %a.a2{:href => "javascript:;", :class => "app-download-btn-js"} 下载

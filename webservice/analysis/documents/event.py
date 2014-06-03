@@ -34,6 +34,7 @@ class Event(DynamicDocument):
         ('game', _('Game')),
         ('sdk', _('SDK')),
         ('web', _('Web')),
+        ('pc', _('PC')),
         ('wap', _('Wap')),
         ('game_loading', _('Game Loading')),
     )

@@ -1,0 +1,24 @@
+-load templatehelper_tags url_tags util_tags web_tags
+{% absolute_url_as package product=product as detail_url %} {% is_site_android as is_android %}{% is_site_ios as is_ios %}
+-with version=package.versions.latest_published title=version.subtitle|default:package.title
+  %a{:href => "={detail_url}", :title => "={title}"}<
+    %img{:alt => "={title}", :src => "{% resource_url version.resources 'cover' product %}"}
+    %h3.l= title|slice:"10"
+    .r.ios-web-icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
+  %p.cl.des.g9= package.summary
+  %p.l.g9 {{ version.get_download_size|filesizeformat }} | {{ version.download_count|default:0|intwordcn }}+下载
+  -if is_ios
+    -with iversion=version.as_ios
+      -if not iversion.is_free
+        %p.r.price.gr<
+          %span= iversion.formatted_price
+      -else
+        %p.r<
+          %span 免费
+  -if is_android
+    %p.r= package.main_category.name
+  -#
+    .btn{:style => "display:none;",  "data-json" => "={json}"}><
+      %span.bg
+      %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+      %a.a2{:href => "javascript:;", :class => "app-download-btn-js"} 下载

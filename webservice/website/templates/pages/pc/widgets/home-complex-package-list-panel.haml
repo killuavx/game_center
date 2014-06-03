@@ -16,5 +16,5 @@
   -for grp in result
     %ul<
       -for pkg in grp.packages
-        {% include "pages/pc/widgets/include-package-box.haml" with package=pkg only %}
+        {% include "pages/pc/widgets/include-package-box.haml" with package=pkg product=product %}
 / list

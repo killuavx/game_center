@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
+
 
 class BaseMultiAdvWidget(object):
 
@@ -17,15 +19,20 @@ class BaseMultiAdvWidget(object):
             return list()
 
     def get_context(self, value=None, options=dict(), context=None):
-        slug = options.get('slug', self.slug)
+        self.product = options.get('product')
+        self.request = context.get('request')
+        self.options = options
+        self.slug = options.get('slug', self.slug)
         max_items = options.get('max_items', None)
-        items = self.get_list(slug=slug, max_items=max_items)
-        options.update(
-            slug=slug,
+        items = self.get_list(slug=self.slug, max_items=max_items)
+        data = deepcopy(options)
+        data.update(
+            slug=self.slug,
             items=items,
+            product=self.product,
             max_items=max_items
         )
-        return options
+        return data
 
 
 class BaseSingleAdvWidget(object):
@@ -36,7 +43,6 @@ class BaseSingleAdvWidget(object):
         from promotion.models import Place, Advertisement
         try:
             place = Place.objects.get(slug=slug)
-            #print (slug)
             return place.advertisements.published()[0]
         except (Place.DoesNotExist, Advertisement.DoesNotExist):
             return None
@@ -45,10 +51,14 @@ class BaseSingleAdvWidget(object):
 
     def get_context(self, value=None, options=dict(), context=None):
         self.slug = options.get('slug', self.slug)
+        self.request = context.get('request')
+        self.product = options.get('product')
         item = self.get_object(slug=self.slug)
-        options.update(
+        self.options = options
+        data = deepcopy(options)
+        data.update(
             slug=self.slug,
-            item=options.get('item', item),
+            product=self.product,
+            item=item,
         )
-        #print (options)
-        return options
+        return data

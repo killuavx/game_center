@@ -86,11 +86,10 @@ OPTIONAL_APPS = (
 DEBUG_TOOLBAR_CONFIG = {"INTERCEPT_REDIRECTS": False}
 
 PAGE_MENU_TEMPLATES = (
-    (1, "Top navigation bar", "pages/menus/header.haml"),
+    (1, "Web Top Navigation", "pages/menus/web/navigation.haml"),
     (2, "Left-hand tree", "pages/menus/tree.html"),
-    (3, "Footer", "pages/menus/footer_links.haml"),
-    (4, "Android navigation menu", "pages/menus/android/navigation.html"),
-    (5, "iOS PC Navigation Menus", "pages/pc/menu/header.haml"),
+    (3, "Web Footer", "pages/menus/footer.haml"),
+    (5, "PC Navigation Menus", "pages/pc/menu/header.haml"),
 )
 
 replace_idx = INTERNAL_APPS.index('suit')
@@ -107,6 +106,7 @@ INTERNAL_APPS[replace_idx+1:replace_idx+1] = [
 INTERNAL_APPS.append('mezzanine.accounts')
 INTERNAL_APPS.append('template_utils')
 INTERNAL_APPS.pop(replace_idx)
+EXTENDAL_APPS.append('website.web')
 EXTENDAL_APPS.append('website')
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
@@ -184,7 +184,23 @@ FILEBROWSER_SELECT_FORMATS = {
     'Package': ['iOSApp', 'AndroidApp']
 }
 
-GC_RESOURCE_ALIASES = ('default', 'gc20', 'pc', 'mainsite')
+GC_RESOURCE_ALIASES = ('default', 'gc20', 'pc', 'web')
+
+
+_ENTRY_TYPE_CHOICE = None
+
+
+def get_entry_types():
+    global _ENTRY_TYPE_CHOICE
+    if not _ENTRY_TYPE_CHOICE:
+        from analysis.documents.event import Event
+        from model_utils import Choices
+        _ENTRY_TYPE_CHOICE = Choices(*[t[0] for t in Event.ENTRY_TYPES])
+    return _ENTRY_TYPE_CHOICE
+
+def ENTRY_TYPES():
+    return get_entry_types()
+
 
 FILEBROWSER_DIRECTORY = ''
 

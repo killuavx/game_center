@@ -1,8 +1,8 @@
 {% extends "pc_base.haml" %}
-{% load widgets templatehelper_tags %}
+{% load widgets templatehelper_tags pc_tags %}
 {% block main %}
 <div class="cb box collection">
-    {% settings_value 'GC_TOPICS_CHOICE_SLUG' as choice_slug %}
+    {% settings_value 'GC_TOPICS_COLLECTIONS_SLUG' as choice_slug %}
     {% widget PCCollectionTopicListWidget slug=choice_slug page=request.GET.page per_page=6 %}
 {% for topic in items %}
     <div class="collection_box">

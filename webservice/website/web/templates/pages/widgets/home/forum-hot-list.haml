@@ -1,0 +1,21 @@
+.f18.cell.rel.t-title
+  %h3.l.n.mr30= title
+  %a.r.f12.mt5.more{:href => "={more_url}", :target => "_blank" } 更多&gt;
+/ t-title
+
+.hot-bbs-list
+  %ul
+    -for post in items
+      %li.cell-bk{:class => "{% if forloop.first %}first{% endif %}"}
+        %h4.l
+          %a{:href => "={post.url}", :target => "_blank"}
+            %img{:src => "={post.icon.url}"}
+            = post.title
+        %span.r.g9.f10{:title => "发布日期"}
+          = post.pub_date
+        %span.abs.ios-web-icon
+        -# if forloop.first
+          %p.cl.g9
+            59个文字描述文字描述文字描描述文字描文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字
+            %a.gr{:href => "#", :target => "_blank"} [全文]
+/ hot-bbs-list

@@ -1,0 +1,13 @@
+-load url_tags
+-if current_page.has_previous or current_page.has_next
+  .cl.f14.page><
+    -if current_page.has_previous
+      %a{:href => "{% qurl request.get_full_path page=current_page.previous_page_number%}"} 上一页
+    -for p in current_page.visible_page_range
+      -if p == current_page.number
+        %a{:href => "javascript:;", :class => "hover"}><= p
+      -else
+        %a{:href => "{% qurl request.get_full_path page=p %}"}><= p
+    -if current_page.has_next
+      %a{:href => "{% qurl request.get_full_path page=current_page.next_page_number %}"} 下一页
+

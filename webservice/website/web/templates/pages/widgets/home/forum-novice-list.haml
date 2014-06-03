@@ -1,0 +1,21 @@
+.f18.cell.rel.t-title
+  %h3.l.n.mr30= title
+  %a.r.f12.mt5.more{:href => "={more_url}", :target => "_blank" } 更多&gt;
+/ t-title
+
+.hot-bbs-list.novice-bbs-list
+  -#
+    %a.rel.top{:href => "#", :target => "_blank"}
+      %img{:src => "http://static.ccplay.com.cn/static/android_web/img/a-a-d-8.jpg"}
+        %span.abs.tc.white.png 安卓游戏常见问题解答
+
+  %ul.pt10
+    -for post in items
+      %li.cell-bk
+        %h4.l
+          %a{:href => "={url}", :target => "_blank"}
+            %img{:src => "={post.icon.url}"}= post.title
+        %span.r.g9.f10{:title => "发布日期"}
+          = post.pub_date
+        %span.abs.ios-web-icon
+/ novice-bbs-list

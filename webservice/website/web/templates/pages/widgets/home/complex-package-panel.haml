@@ -1,0 +1,30 @@
+-load url_tags templatehelper_tags
+.f18.cell.rel.t-title
+  %h3.l.n.mr30= title
+  %ul.l.abs.cell-bk.pl30.tc.f16
+    -for grp in result
+      %li.dib.pl10.pr10.tab
+        %a{:href => "javascript:;"}= grp.name
+  .rel.tab-more
+    -for grp in result
+      %a.r.f12.mt5.more{:href => "={grp.more_url}", :target => "_blank"} 更多&gt;
+/ t-title
+
+.info-box-tab
+  -for grp in result
+    .tj.pt5.app-list-left
+      - for package in grp.packages
+        -with version=package.versions.latest_published title=version.subtitle|default:package.title
+          {% absolute_url_as package product=product as detail_url %}
+          .dib.rel.app-list-min
+            %a.db.tc.f14{:href => "={detail_url}", :target => "_blank" }
+              %img.db.auto{:src => "{% resource_url version 'icon' %}"}
+                %span.ios-web-icon.abs.db.auto
+                = title|slice:"5"
+                %i.db.n.f12.g9= package.main_category.name
+            .btn-s
+              %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+              %a.a2{:href => "javascript:;", :class => "app-download-btn-js"} 下载
+    / app-list-left
+
+/ info-box-tab

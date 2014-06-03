@@ -1,0 +1,17 @@
+-load url_tags
+.width.ovh.roll_box
+  %ul.box_ul
+    - for package in items
+      - with version=package.versions.latest_published title=version.subtitle|default:package.title
+        {% absolute_url_as package product=product as detail_url %}
+        %li.dib.rel
+          %a{:href => "={detail_url}", :target => "_blank" , :title => "={title}"}
+            %img{:alt => "={title}", :src => "{% resource_url version 'cover' %}"}
+              %span.bg
+              %span.abs.tc.ovh.pl5.pr5.white.text.png= title
+/ roll_box
+.cb.rel.a_btn.roll_btn
+  %a.ios-web-icon.abs.prev{:href => "javascript:;"}
+  %a.ios-web-icon.abs.next{:href => "javascript:;"}
+/ roll_btn
+

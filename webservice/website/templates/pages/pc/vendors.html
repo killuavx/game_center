@@ -1,16 +1,15 @@
 {% extends "pc_base.haml" %}
-{% load widgets templatehelper_tags url_tags %}
+{% load widgets templatehelper_tags url_tags pc_tags %}
 {% block main %}
 <div class="cb box vendor">
 
     <div class="fl l">
         <div class="list_menu">
-            {% settings_value 'GC_TOPICS_VENDOR_SLUG' as vendor_slug %}
             <ul class="left-nav">
-{% widget PCVendorNavListWidget author=author slug=vendor_slug max_items=10 %} {% for cur_author in items %}
+{% widget PCVendorNavListWidget author=author max_items=10 %} {% for cur_author in items %}
                 <li>
-                    <a href="{% absolute_url cur_author product='pc' %}" {% if cur_author.is_current %}class="hover"{% endif %}>
-                    <img src="{% resource_url cur_author.resources 'cover' 'pc' %}" />
+                    <a href="{% absolute_url cur_author product=product %}" {% if cur_author.is_current %}class="hover"{% endif %}>
+                    <img src="{% resource_url cur_author.resources 'cover' product %}" />
                     </a>
                 </li>
 {% endfor %} {% endwidget %}
@@ -20,11 +19,11 @@
 
     <div class="fr r">
 
-{% widget PCVendorPackageListWidget author=author per_page=1 page=request.GET.page %}
+{% widget PCVendorPackageListWidget author=author per_page=18 page=request.GET.page %}
         <div class="list left_list">
             <ul>
     {% for package in items %}
-                {% include "pages/pc/widgets/include-package-box.haml" with package=package %}
+                {% include "pages/pc/widgets/include-package-box.haml" with package=package product=product %}
     {% endfor %}
             </ul>
         </div>

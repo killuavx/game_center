@@ -1,0 +1,15 @@
+-load url_tags
+.width.ovh.roll_box
+  %ul.box_ul
+    - for topic in items
+      {% absolute_url_as topic product=product as detail_url %}
+      %li.dib.rel
+        %a{:href => "={detail_url}", :target => "_blank" , :title => "={topic.name}"}
+          %img{:alt => "={topic.name}", :src => "{% resource_url topic 'cover' %}"}
+            %span.bg
+            %span.abs.tc.ovh.pl5.pr5.white.text.png= topic.name
+/ roll_box
+.cb.rel.a_btn.roll_btn
+  %a.ios-web-icon.abs.prev{:href => "javascript:;"}
+  %a.ios-web-icon.abs.next{:href => "javascript:;"}
+/ roll_btn

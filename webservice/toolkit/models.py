@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import io
 from os.path import join
-from django.core.urlresolvers import reverse
 from django.utils.timesince import timesince
 from django.utils.timezone import now
 from django.contrib.contenttypes.generic import GenericForeignKey
@@ -265,9 +264,3 @@ class Resource(SiteRelated, models.Model):
         return "%s,%s:[%s]" % (self.kind, self.alias, self.file.name)
 
 
-class ModelAbsoluteUrlMixin(object):
-
-    def get_absolute_url_as(self, product):
-        name = self.__class__._meta.module_name
-        view_name = 'website.views.%s.%s_detail' % (product, name)
-        return reverse(view_name, kwargs=dict(pk=self.pk))

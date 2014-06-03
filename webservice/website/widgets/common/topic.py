@@ -1,26 +1,6 @@
 # -*- coding: utf-8 -*-
-from django.core.exceptions import ObjectDoesNotExist
 from django.utils.timezone import now
 from . import base
-from .package import BasePackageListWidget
-
-
-class ItemListByTopicFilterBackend(base.BaseWidgetFilterBackend):
-
-    topic_param = 'topic'
-
-    def filter_queryset(self, request, queryset, widget):
-        from taxonomy.models import TopicalItem
-        if hasattr(widget, self.topic_param) \
-            and getattr(widget, self.topic_param):
-            topic = getattr(widget, self.topic_param)
-            queryset = TopicalItem.objects \
-                .filter_items_by_topic(topic=topic,
-                                       item_model=queryset.model,
-                                       queryset=queryset)
-        else:
-            return queryset.none()
-        return queryset
 
 
 class BaseTopicListWidget(base.BaseListWidget):
@@ -28,12 +8,12 @@ class BaseTopicListWidget(base.BaseListWidget):
     slug = None
 
     def get_list(self):
-        from taxonomy.models import Topic, TopicalItem
+        from taxonomy.models import Topic
         try:
             topic = Topic.objects.filter(slug=self.slug).published().get()
             return topic.children.published()
         except Topic.DoesNotExist:
-            return list()
+            return Topic.objects.none()
 
 
 class BaseTopicInformationWidget(object):
@@ -63,23 +43,24 @@ class BaseTopicInformationWidget(object):
         return options
 
 
-class BaseTopicPackageListWidget(BasePackageListWidget):
 
-    filter_backends = (ItemListByTopicFilterBackend, )
+class BaseCollectionTopicListWidget(BaseTopicListWidget):
 
-    slug = None
+    topic_max_items = 8
 
-    topic = None
+    def get_context(self, value=None, options=dict(), context=None, pagination=True):
+        self.slug = options.get('slug')
+        data = super(BaseCollectionTopicListWidget, self) \
+            .get_context(value=value,
+                         options=options,
+                         context=context,
+                         pagination=pagination)
 
-    def get_topic(self):
-        from taxonomy.models import Topic
-        return Topic.objects.filter(slug=self.slug).published().get()
+        from taxonomy.models import TopicalItem
+        from warehouse.models import Package
+        for topic in data['items']:
+            packages = TopicalItem.objects.get_items_by_topic(topic, Package).published()
+            topic.packages = packages[0:self.topic_max_items]
+            topic.packages_count = packages.count()
 
-    def get_context(self, value=None, options=dict(), context=None):
-        self.slug = options.get('slug') if options.get('slug') else self.slug
-        try:
-            self.topic = self.get_topic()
-        except ObjectDoesNotExist:
-            pass
-        return super(BaseTopicPackageListWidget, self)\
-            .get_context(value=value, options=options, context=context)
+        return data

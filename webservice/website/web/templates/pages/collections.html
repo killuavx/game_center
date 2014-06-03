@@ -1,0 +1,21 @@
+{% extends "pages/page_web.html" %}
+{% load templatehelper_tags web_tags %}
+{% load widgets %}
+
+{% block main %}
+    <!--START 合集 开始 collection-->
+    <div class="auto mt30 width collection">
+        {% settings_value 'GC_TOPICS_COLLECTIONS_SLUG' as choice_slug %}
+        {% widget WebCollectionTopicListWidget slug=choice_slug page=request.GET.page per_page=4 %}
+        <div class="cell-bk">
+    {% for topic in items %}
+            <div class="collection_box">
+            {% include "pages/widgets/collections/topic-list.haml" with topic=topic %}
+            </div><!--collection_box-->
+    {% endfor %}
+        {% pagination items %}
+        </div>
+        {% endwidget %}
+    </div>
+    <!--END 合集 结束 collection-->
+{% endblock %}

@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from dateutil import parser
 from feedparser import parse
+from website.widgets.common.base import BaseListWidget
 
-class BaseForumThreadPanelWdiget(object):
+
+class BaseForumThreadPanelWdiget(BaseListWidget):
 
     rss_link = 'http://bbs.ccplay.com.cn/api.php?mod=rss&bid=45'
 
@@ -24,13 +25,9 @@ class BaseForumThreadPanelWdiget(object):
             ))
         return items
 
-    def get_context(self, value=None, options=dict(), context=None):
-        items = self.get_list()
-        max_items = options.get('max_items', 5)
-        options.update(
-            title=options.get('title'),
-            more_url=self.get_more_url(),
-            items=options.get('items', list(items[0:max_items])),
-            max_items=max_items,
-            )
-        return options
+    def get_context(self, value=None, options=dict(), context=None, *kwargs):
+        return super(BaseForumThreadPanelWdiget, self).get_context(value=value,
+                                                            options=options,
+                                                            context=context
+                                                            )
+

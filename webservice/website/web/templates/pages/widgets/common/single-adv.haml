@@ -1,0 +1,4 @@
+-load url_tags
+- if item
+  %a{:href => "{% absolute_url item.content product=product %}", :title => "={item.title}", :target => "_blank"}
+    %img{:src => "{% resource_url item 'cover' %}"}/

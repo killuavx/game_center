@@ -1,7 +1,7 @@
 -load url_tags util_tags pc_tags
 .fl.l
-  %a{:href => "{% absolute_url topic product='pc' %}"}><
-    %img{:alt => "={topic.name}", :src => "{% resource_url topic.resources 'cover' 'pc' %}"}
+  %a{:href => "{% absolute_url topic product=product %}"}><
+    %img{:alt => "={topic.name}", :src => "{% resource_url topic.resources 'cover' product %}"}
     %h3= topic.name
 / l
 
@@ -9,7 +9,7 @@
   .inner
     %ul
       -for package in topic.packages
-        {% absolute_url_as package product="pc" as detail_url %}
+        {% absolute_url_as package product=product as detail_url %}
         -with version=package.versions.latest_published title=package.title
           %li
             %a{:href => "={detail_url}", :title => "={title}"}><
@@ -17,7 +17,7 @@
               %span.name= title
               .icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
               %span.icon.cover
-            {% version_data_as version entrytype='pc' as json %}
+            {% version_data_as version entrytype=product as json %}
             .btn{:style => "display:none;", "data-json" => "={json}" }><
               %span.bg
               %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装

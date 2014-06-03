@@ -1,6 +1,5 @@
 # -*- encoding=utf-8 -*-
 import datetime
-import os
 from os.path import join, splitext
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 
@@ -21,7 +20,8 @@ from easy_thumbnails.fields import ThumbnailerImageField
 
 from toolkit.managers import CurrentSitePassThroughManager, PassThroughManager
 from toolkit.fields import StarsField, PkgFileField, MultiResourceField
-from toolkit.models import SiteRelated, ModelAbsoluteUrlMixin
+from toolkit.models import SiteRelated
+from toolkit import model_url_mixin as urlmixin
 from toolkit.helpers import import_from, sync_status_from
 from toolkit.storage import package_storage
 
@@ -169,26 +169,8 @@ class PlatformBase(object):
             return self
 
 
-class AuthorAbsoluteUrlMixin(object):
-
-    PAGE_TYPE_DETAIL = 'detail'
-
-    PAGE_TYPE_LIST = 'list'
-
-    def get_absolute_url_as(self, product, pagetype=PAGE_TYPE_LIST):
-        if product == 'pc':
-            if pagetype == self.PAGE_TYPE_DETAIL:
-                view_name = 'website.views.%s.author_detail' % product
-                return reverse(view_name, kwargs=dict(pk=self.pk))
-            else:
-                view_name = 'mezzanine.pages.views.page'
-                page_slug = '%s/vendors' % product
-                return reverse(view_name, kwargs=dict(slug=page_slug)) \
-                           + "?author=%s" % self.pk
-        return None
-
-
-class Author(AuthorAbsoluteUrlMixin, PlatformBase, SiteRelated, models.Model):
+class Author(urlmixin.AuthorAbsoluteUrlMixin,
+             PlatformBase, SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(AuthorQuerySet)()
@@ -296,7 +278,7 @@ class PackageQuerySet(QuerySet):
             .exclude(status=self.model.STATUS.published)
 
 
-class Package(PlatformBase, ModelAbsoluteUrlMixin,
+class Package(PlatformBase, urlmixin.ModelAbsoluteUrlMixin,
               SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
@@ -540,7 +522,7 @@ def version_upload_path(instance, filename):
     return join(prefix, filename)
 
 
-class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
+class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
                      SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager\
@@ -1141,6 +1123,20 @@ class IOSPackageVersion(IOSPlatform, PackageVersion):
         if not hasattr(self, '_support_device_types'):
             self._support_device_types = self._get_support_device_types()
         return self._support_device_types
+
+    @property
+    def support_ipad(self):
+        return 'iPad' in self.device_types
+
+    @property
+    def support_iphone(self):
+        return 'iPhone' in self.device_types
+
+    @property
+    def support_alldevices(self):
+        return self.support_ipad and self.support_iphone
+
+
 
 
 
