@@ -227,19 +227,18 @@
 }));
 
 $(function(){
+  var token = $('form.login-form input[name="csrfmiddlewaretoken"]').val();
+
   $('.login-btn').bind('click', function(){
     var username = $('#p-id').val();
     var password = $('#p-password').val();
-    var token = $('form.login-form input[name="csrfmiddlewaretoken"]').val();
 
     $.ajax({
       type: "POST",
       url: $('form.login-form').attr('action'),
       data: {username: username, password: password, csrfmiddlewaretoken: token},
-
       success: function(data){
         if (data.login === 1) {
-        $.cookie('username', username, {path: '/'});
           $.zxxbox('<div class="p20 f20 white tc">登陆成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});                         
           $('#login-reg').addClass('dn');
           $('#change-logout').removeClass('dn').children('a').attr('title', username).text(username);
@@ -263,25 +262,29 @@ $(function(){
         }
       }
     });
+
     return false;
   });
 
   $('.log-out').bind('click', function() {
-    $.removeCookie('username', {path: '/'});
-    $('#change-logout').addClass('dn');
-    $('#login-reg').removeClass('dn');
-    setTimeout(
-      function(){
-      location.reload();
-      }, 2000
-    );
+    $.ajax({
+      type: "POST",
+      url: $('.log-out').attr('href'),
+      data: {csrfmiddlewaretoken: token},
+      success: function(data){
+        if (data.logout === 1) {
+          $('#change-logout').addClass('dn');
+          $('#login-reg').removeClass('dn');
+          setTimeout(function(){
+              location.reload();
+            }, 2000
+          );
+        }
+      }
+    });
+    return false;
   });
 
-//  current_user = $.cookie('username');
-//  if (current_user) {
-//    $('#login-reg').addClass('dn');
-//    $('#change-logout').removeClass('dn').children('a').attr('title', current_user).text(current_user);
-//  }
 });
 
 </script>

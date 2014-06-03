@@ -69,7 +69,7 @@
                               <li id="change-logout" {% if not request.user.is_authenticated %}class="dn"{% endif %}><a href="#" class="ios-web-icon a4 text-db" title="{{ request.user.username }}" target="">{{ request.user.username }}</a>
                                 <dl class="abs dn bdc bg-white zx2 f14" style="display: none;">
                                   <dd><a href="#" class="db h24 lh24 pl10 pr10 pt5 pb5 bbc change-password" target="">修改密码</a></dd>
-                                  <dd><a href="#" class="db h24 lh24 pl10 pr10 pt5 pb5 log-out" target="">退出</a></dd>
+                                  <dd><a href="{% url 'mainsite_logout' %}" class="db h24 lh24 pl10 pr10 pt5 pb5 log-out" target="">退出</a></dd>
                                 </dl>
                               </li>
                               <li id="login-reg" {% if request.user.is_authenticated %}class="dn"{% endif %}><a href="#" class="ios-web-icon a4 open-login" target="">登录/注册</a></li>

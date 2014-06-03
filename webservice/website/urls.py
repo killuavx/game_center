@@ -28,6 +28,7 @@ urlpatterns += patterns('website.views.mainsite',
                        url(r'^topics/(?P<slug>%s)' % slug_pattern, 'topic_package_list', name='topic_package_list'),
                        url(r'^mainsite/' , 'mainsite_view', name='mainsite_home'),
                        url(r'^login/' , 'ajax_login_view', name='mainsite_login'),
+                       url(r'^logout/' , 'ajax_logout_view', name='mainsite_logout'),
                        url(r'^register/' , 'register_view', name='mainsite_register'),
                        url(r'^reset/' , 'reset_password_view', name='reset_password'),
                        )

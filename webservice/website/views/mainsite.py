@@ -2,8 +2,7 @@
 import json
 from mezzanine.conf import settings
 from django.core.paginator import EmptyPage, Paginator
-from django.contrib.auth import authenticate, login
-from django.contrib.messages import info
+from django.contrib.auth import authenticate, login, logout
 
 from django.http import Http404
 from django.http import HttpResponse, HttpResponseRedirect
@@ -118,8 +117,15 @@ def ajax_login_view(request):
 
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
+
 def ajax_logout_view(request):
-    pass
+    resp = {"logout": 0}
+
+    if request.method == 'POST' and request.is_ajax():
+        logout(request)
+        resp["logout"] = 1
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")
 
 
 
