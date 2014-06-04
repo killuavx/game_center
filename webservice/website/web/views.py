@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+from django.template.response import TemplateResponse
+from taxonomy.models import Category
 from website.views import base
 from os.path import join
 
@@ -48,3 +51,30 @@ def topic_detail(request, slug,
                  *args, **kwargs):
     return base.topic_detail(request, slug, template_name=template_name,
                              template_not_found_class=NotFound, *args, **kwargs)
+
+
+def search(request, template_name=join(template_prefix, 'category/search.haml'),
+           *args, **kwargs):
+    cat_slug = request.GET.get('cat', 'game')
+    if cat_slug not in Category.ROOT_SLUGS:
+        cat_slug = 'game'
+    root_category = Category.objects.get(slug=cat_slug)
+
+    cat_pk = request.GET.get('category')
+    category = None
+    if cat_pk:
+        try:
+            category = Category.objects.get(pk=cat_pk)
+        except ObjectDoesNotExist:
+            pass
+    else:
+        category = root_category
+
+    return TemplateResponse(
+        request=request,
+        template=template_name,
+        context=dict(
+            root_category=root_category,
+            category=category,
+        )
+    )

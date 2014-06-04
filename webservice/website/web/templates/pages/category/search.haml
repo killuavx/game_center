@@ -1,0 +1,50 @@
+-extends "pages/page_web.html"
+-load widgets url_tags templatehelper_tags web_tags
+
+-block main
+  / START 应用列表 app-list-page
+  .auto.mt30.width.app-list-page
+
+    {% widget WebSearchPackageListWidget q=request.GET.q cat=root_category.slug per_page=27 page=request.GET.page %}
+    .cell
+      .f18.cell.rel.t-title
+        %h3.l.n.mr30
+          搜索相关结果约{{ paginator.count|default:0 }}个与<span class="ml5 mr5 red">“{{ request.GET.q }}”</span>相关的{{ root_category.name }}
+      / t-title
+    / cell
+
+    .rel.cell-bk
+
+      {% widget WebSearchCategorySelectorWidget root_category=root_category %}
+      .l.left-list
+        %ul.f14.left-nav
+          -for cat in category_selectlist
+            %li
+              -ifequal category.pk cat.pk
+                %a.hover{:href => "javascript:;"}
+                  -if cat.is_root_node
+                    全部
+                  -else
+                    = cat.name
+                  %span.r= cat.affiliated_packages_count
+              -else
+                -if cat.is_root_node
+                  %a{:href => "{% absolute_url cat product=product %}"}
+                    全部
+                    %span.r= cat.affiliated_packages_count
+                -else
+                  %a{:href => "{% absolute_url cat product=product %}"}
+                    = cat.name
+                    %span.r= cat.affiliated_packages_count
+          %li
+            %a{:href => "" }
+              = cat.name
+              %span.r= cat.affiliated_packages_count
+      {% endwidget %}
+
+      .l.btn-s-box.tj.p20.right-list
+        -for search_item in items
+          {% package_box search_item.object %}
+        {% pagination items %}
+      / right-list
+    {% endwidget %}

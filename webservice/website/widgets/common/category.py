@@ -87,7 +87,13 @@ class BaseTopicAuthorPackageListWidget(object):
 class BaseCategorySelectorWidget(object):
 
     def get_category_selectlist(self, category):
-        catlist = list(category.get_leafnodes())
+        catlist = list()
+        for cat in category.get_leafnodes():
+            cat.affiliated_packages_count = cat.get_affiliated_packages()\
+                                                .published().count()
+            catlist.append(cat)
+        category.affiliated_packages_count = category.get_affiliated_packages()\
+                                                .published().count()
         catlist.insert(0, category)
         return catlist
 

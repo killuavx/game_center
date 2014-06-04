@@ -5,3 +5,4 @@ from .collections import *
 from .masterpiece import *
 from .vendors import *
 from .ranking import *
+from .search import *
