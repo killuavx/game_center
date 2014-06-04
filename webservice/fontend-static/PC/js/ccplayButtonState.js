@@ -1,302 +1,497 @@
+cc_pc_ios = {}; 
+cc_body = $("body");
+(function(a){
 
-var ccplayButtonState = function(installSelector,downloadBtnSelector) {
+	a.init = function(b, c)
+	{
 	
-	this.downloadBtnTxt = ["立即下载","暂停下载","继续下载","已下载"];
-	this.installBtnTxt = ["立即安装","立即升级","已经安装"];
-	this.UNDOWNLOAD = "10000";
-	this.DOWNLOADING = "2";
-	this.PAUSE = "50";
-	this.COMPLETED = "100";
-	this.INSTALLED_NORMAL = "INSTALLED_NORMAL";
-	this.CAN_UPDATE = "CAN_UPDATE";
-	this.NO_INSTALLED = "NO_INSTALLED";
-	
-	this.downloadAppInfos = {};
-	this.nativeAppInfos = {};
-	this.deviceList = {};
-	this.deviceUid = [];
-	this.installBtns = $(installSelector);
-	this.downloadBtns = $(downloadBtnSelector);
-	this.init();
-};
+		a.setupBtn = $(b);
+		a.downBtn = $(c);
+		a.initDownBtn();
+		a.downBtnUpdate();
+		a.getDeviceJsonInfo();
+	};	
+})(cc_pc_ios);
 
-ccplayButtonState.prototype = {
-	
-	init:function(){
-		this.installBtns.attr("state",this.UNDOWNLOAD);
-		this.downloadBtns.attr("state",this.UNDOWNLOAD);
-		this.downloadBtns.text(this.downloadBtnTxt[0]);
-		this.installBtns.text(this.installBtnTxt[0]);
-		this.bindDownloadBtnEv();
-		this.bindInstallBtnEv();
-		this.getDownloadInfo();
-		this.getDeviceListInfo();
-	},
-	
-	/**
-	 * 绑定下载按钮的事件
-	 * @return void
-	 * @author zhangbp
-	 */
-	
-	bindDownloadBtnEv:function(){
-		_this = this;
-		this.downloadBtns.bind('click',function(){
-			var _thisBtn = $(this);
-			var download_state = _thisBtn.attr("state");
-			var dataJson = eval("(" + _thisBtn.parent().attr("data-json") + ")");
-			switch (download_state) {
-			 	case _this.DOWNLOADING:
-				 	window.external.PauseDownload(dataJson.download_url);
-				 	_thisBtn.attr("state",_this.PAUSE);
-			 	break;
-			 	case _this.PAUSE:
-			 		window.external.ResumeDownload(dataJson.download_url);
-			 		_thisBtn.attr("state",_this.DOWNLOADING);
-			 	break;
-			 	case _this.UNDOWNLOAD:
-			 		window.external.BeginShareDownload2(dataJson.download_url,dataJson.title, dataJson.package_name, dataJson.appid);
-			 		_thisBtn.attr("state",_this.DOWNLOADING);
-			 	break;
-			}
-			_this.updateDownloadBtnItemState(_thisBtn);
-		});
-		
-	},
-	
-	/**
-	 * 更新下载按钮的状态,单一的btn
-	 * @param downloadBtn 下载按钮
-	 * @return void
-	 * @author zhangbp
-	 */
-	
-	updateDownloadBtnItemState:function(downloadBtn){
-		
-		var download_state = downloadBtn.attr("state");
-		if(download_state != undefined){
-			switch (download_state.toString()) {
-			 	case this.DOWNLOADING:
-			 		downloadBtn.text(this.downloadBtnTxt[1]);
-			 	break;
-			 	case this.PAUSE:
-			 		downloadBtn.text(this.downloadBtnTxt[2]);
-			 	break;
-			 	case this.COMPLETED:
-			 		downloadBtn.text(this.downloadBtnTxt[3]);
-			 	break;
-			 	default:
-			 		downloadBtn.text(this.downloadBtnTxt[0]);
-			 	break;
-		  }
-		}
-	},
-	
-	/**
-	 * 更新下载按钮的状态，从下载信息downloadAppInfos里更新
-	 * @param downloadBtn 下载按钮
-	 * @return void
-	 * @author zhangbp
-	 */
-	
-	updateDownloadBtnState:function(){
-		
-		for(var i = 0;i < this.downloadBtns.size();i++){
-			var downloadBtn = this.downloadBtns.eq(i);
-			var dataJson = eval("(" + downloadBtn.parent().attr("data-json") + ")");
-			var download_state = this.downloadAppInfos[dataJson.download_url];
-			if(download_state != undefined){
-				var download_state_str = download_state.toString();
-				if(download_state_str != this.DOWNLOADING && download_state_str != this.PAUSE && download_state_str != this.COMPLETED){
-					download_state = this.UNDOWNLOAD;
-				}
-				downloadBtn.attr("state",download_state);
-			}else{
-				downloadBtn.attr("state",this.UNDOWNLOAD);
-			}
-			this.updateDownloadBtnItemState(downloadBtn);
-		}
-	},
-	
-	/**
-	 * 绑定安装按钮的事件
-	 * @return void
-	 * @author zhangbp
-	 */
-	
-	bindInstallBtnEv:function(){
-		_this = this;
-		this.installBtns.bind('click',function(){
-			var _thisBtn = $(this);
-			var install_state = _thisBtn.attr("state");
-				
-			var dataJson = eval("(" + _thisBtn.parent().attr("data-json") + ")");
-			if(install_state == _this.NO_INSTALLED || install_state == _this.CAN_UPDATE){
-				if(_this.deviceUid.length > 1){
-					_this.createDeviceList();
-					var popDiv = $("#install-popup-js");
-					popDiv.css({"left":""+_thisBtn.offset().left+"px","top":""+_thisBtn.offset().top+"px"}).show();
-					$("#install-popup-js > a").bind('click',function(){
-						var uuid = $(this).attr("deviceKey");
-						window.external.InstallShareApp2(dataJson.download_url, dataJson.title,uuid, dataJson.package_name , dataJson.appid, 0);
-						popDiv.hide();
-					});
-				}else{
-					window.external.InstallShareApp2(dataJson.download_url, dataJson.title,_this.deviceUid[0], dataJson.package_name , dataJson.appid, 0);
-				}
-			}
+(function(a){	
+	a.getDeviceJsonInfo = function()
+	{
+		a.deviceList = {};
+		a.uuid = [];
+		setTimeout(function()
+			{
+				a.deviceList = eval("(" + external.GetDeviceListInfo().replace(/[\n|\r]/gm, "") + ")");
+				a.uuid = [];
+	            for (var dev in a.deviceList) 
+	            {
+	            	a.uuid.push(dev);
+	            }
+				a.updateSetupBtn();
+			}, 100);
+	};
+
+	a.updateSetupBtn = function ()
+	{		
+		var deviceNum = a.uuid.length;
+		$(".install-popup").remove();
+		if(deviceNum == 0)
+		{
+			a.setupBtn.attr("disabled",true);
+			a.setupBtn.text("无设备");
+			a.setupBtn.attr("title", "未检测到设备");
+			a.setupBtn.toggleClass("no",true);
+			a.setupBtn.attr("state", 0);
+		}else if(deviceNum == 1)
+		{
 			
-		});
-		
-	},
-	
-	/**
-	 * 更新安装按钮的状态,单一的btn
-	 * @param installBtn 安装按钮
-	 * @return void
-	 * @author zhangbp
-	 */
-	
-	updateInstallBtnItemState:function(installBtn){
-		
-		var install_state = installBtn.attr("state");
-		if(install_state != undefined){
-			switch (install_state.toString()) {
-			 	
-			 	case this.NO_INSTALLED:
-			 		installBtn.text(this.installBtnTxt[0]);
-			 	break;
-			 	case this.INSTALLED_NORMAL:
-			 		installBtn.text(this.installBtnTxt[2]);
-			 	break;
-			 	case this.CAN_UPDATE:
-			 		installBtn.text(this.installBtnTxt[1]);
-			 	break;
-		  }
-		}
-	},
-	
-	
-	/**
-	 * 更新安装按钮的状态
-	 * @param downloadBtn 安装按钮
-	 * @return void
-	 * @author zhangbp
-	 */
-	
-	updateInstallBtnState:function(){
-		
-		if($.isEmptyObject(this.deviceList)){
-			this.installBtns.attr("disabled",true);
-			this.installBtns.text(this.installBtnTxt[0]);
-			this.installBtns.toggleClass("no",true);
-		}else{
+			a.updateOneDeviceSetupBtn();
 			
-			for(var i = 0;i < this.installBtns.size();i++){
-				var installBtn = this.installBtns.eq(i);
-				var dataJson = eval("(" + installBtn.parent().attr("data-json") + ")");
-				
-				var nativeitemApp = this.nativeAppInfos[dataJson.download_url];
-				if(nativeitemApp != undefined){
-					if(nativeitemApp[1] < dataJson.version_name){
-						installBtn.attr("state",this.CAN_UPDATE);
-					}else{
-						installBtn.attr("state",this.INSTALLED_NORMAL);
-					}
-				}else{
-					installBtn.attr("state",this.NO_INSTALLED);
-				}
-				
-				if(installBtn.attr("state") == this.INSTALLED_NORMAL || this.downloadAppInfos[dataJson.download_url] != undefined){
-					installBtn.toggleClass("no",true);
-					installBtn.attr("disabled",true);
-				}else{
-					installBtn.toggleClass("no",false);
-					installBtn.attr("disabled",false);
-				}
-				
-				this.updateInstallBtnItemState(installBtn);
-			}
+		}else if(deviceNum > 1)
+		{
+		
+			a.updateMoreOneDeviceSetupBtn(deviceNum);
 		}
 		
-	},
+	};
+
 	
-	/**
-	 * 下载信息
-	 * @return void
-	 * @author zhangbp
-	 */
-	getDownloadInfo:function(){
-		var info = window.external.GetDownloadInfo(-1);
-		if(info != null){
-			var result = eval("(" + info + ")").result
-			this.downloadAppInfos = {};
-			for(app in result){
-				this.downloadAppInfos[result[app][0]] = result[app][1];
-			}
-		}
-		
-		this.updateDownloadBtnState();
-	},
+	a.updateOneDeviceSetupBtn = function()
+	{
 	
-	/**
-	 * 设备信息
-	 * @return void
-	 * @author zhangbp
-	 */
-	getDeviceListInfo:function(){
-		var _this = this;
-		setInterval(function() {
-				var data = window.external.GetDeviceListInfo();
-				_this.deviceList = eval("(" + data + ")");
-				_this.deviceUid = [];
-				var ii = -1;
-				for(var list in _this.deviceList){
-					var deviceItem = _this.deviceList[list];
-					for(var i = 0;i < deviceItem.app.length;i++){
-						_this.nativeAppInfos[deviceItem.app[i][0]] = deviceItem.app[i];
-					}
-					_this.deviceUid[++ii] = list;
+			 for (var i = 0; i < a.setupBtn.length; i++) 
+			 {				
+				 var setup_Btn = a.setupBtn.eq(i);					 
+				 var appInfo = eval("(" + setup_Btn.parent().attr("data-json") + ")");			 
+                 var sCompareResult = compareSoft(a.uuid[0], appInfo.package_name, appInfo.version_name);              
+				 
+				if(sCompareResult != 5)
+                {
+					setup_Btn.attr("state", 0);
+					setup_Btn.attr("title", "安装应用到：" + a.deviceList[a.uuid[0]].name); 
+					a.setupBtn.attr("disabled",false);
+					a.setupBtn.toggleClass("no",false);
 				}
-				_this.updateInstallBtnState();
-			},
-		500);
-	},
+				
+				if(sCompareResult == 1 || sCompareResult == 4)
+				{
+					setup_Btn.text("立即安装");
+					
+				}else if(sCompareResult = 2)
+				{
+					setup_Btn.text("已经安装");
+					
+				}else if(sCompareResult == 3)
+				{
+					setup_Btn.text("立即升级");
+					
+				}
+				
+               setup_Btn.bind('click',function(ii, cr) 
+                	{
+						return function()
+						{		
+							if($(this).attr("state") == 1)
+							{
+								return;
+							}
+							
+							var nOption = 0;
+							 if (cr == 1 || cr == 2 || cr == 4) 
+							 { 
+								 $(this).attr("title", "后台正在为设备[" + a.deviceList[a.uuid[0]].name + "]安装该应用程序");
+								 nOption = 0
+							 } else 
+							 {
+								 if (cr == 3) 
+								 {
+									 $(this).attr("title", "后台正在为设备[" + a.deviceList[a.uuid[0]].name + "]升级该应用程序");
+									 nOption = 1
+								 }
+							 }
+							 try {
+								 external.InstallShareApp2(ii.download_url, ii.title + ".ipa", a.uuid[0], ii.package_name , ii.appid, nOption);
+							 } catch(error) {}
+							 $(this).attr("state", 1);
+							 $(this).attr("disabled", true);
+							 $(this).text("安装中");
+					         $(this).toggleClass("no", true);
+						
+						}
+                     }(appInfo, sCompareResult));
+             }
+	};
 	
-	/**
-	 * 创建设备列表
-	 * @return void
-	 * @author zhangbp
-	 */
-	
-	createDeviceList:function(){
-		var html = "<span>选择安装设备</span>";
-		for(var list in this.deviceList){
-			var deviceItem = this.deviceList[list];
-			html += "<a href=\"javascript:;\" deviceKey = \""+list+"\" ><i>√</i>"+deviceItem.name+"</a>";
-		}
+	a.updateMoreOneDeviceSetupBtn = function(devNum)
+	{
+			for (var i = 0; i < a.setupBtn.length; i++)
+			{
+				var setup_Btn = a.setupBtn.eq(i);
+			    var appInfo = eval("(" + setup_Btn.parent().attr("data-json") + ")");
 			
-		if($("#install-popup-js").size() == 0){
-			$("body").append("<div class=\"install-popup\" id=\"install-popup-js\"></div>");
-		}
-		$("#install-popup-js").html(html);
-		$("#install-popup-js").hover(function(){
-			$(this).show();
-		},function(){
-			$(this).hide();
-		});
+                var cr1 = cr2 = cr3 = 0;
+                var $objDcSelect = $('<div class="install-popup" style= "display:none"><span>请选择以下设备</span></div>');
+				
+                for (var j = 0; j < a.uuid.length; j++) 
+				{
+                    var  sCompareResult =  compareSoft(a.uuid[j], appInfo.package_name, appInfo.version_name);
+                    
+                    if( sCompareResult != 5)
+                    {
+                    	setup_Btn.attr("state", 0);
+						setup_Btn.attr("title", "选择安装应用的设备"); 
+						a.setupBtn.attr("disabled",false);
+						a.setupBtn.toggleClass("no",false);;
+                    }
+                    
+                    var objDc = document.createElement("a");
+					//objDc.href = 'javascript:void(0)';
+                    objDc.innerHTML = a.deviceList[a.uuid[j]].name;  
+                    objDc.title = "安装应用到：" + a.deviceList[a.uuid[j]].name;
+				
+                    if (sCompareResult == 1 || sCompareResult == 4) 
+					{
+                        cr1 += 1;
+						
+                        objDc.onclick = (function(ii, jj, tempBtn)
+						{
+                            return function() 
+							{
+                                try { 
+                                    external.InstallShareApp2(ii.download_url, ii.title + ".ipa", a.uuid[jj], ii.package_name , ii.appid, 0);
+                                } catch(error) {}
+                                tempBtn.attr("title", "后台正在为设备[" + a.deviceList[a.uuid[jj]].name + "]安装该应用程序");
+								tempBtn.attr("state", 1);
+								tempBtn.attr("disabled", true);
+								tempBtn.text("安装中");
+								tempBtn.toggleClass("no", true);
+                            }
+                        })(appInfo, j, setup_Btn);
+						
+                    } else 
+					{
+                        if (sCompareResult == 2) 
+						{
+                            cr2 += 1;
+                           objDc.title = "重新安装应用到：" + a.deviceList[a.uuid[j]].name;
+                            objDc.onclick = (function(ii, jj, tempBtn) 
+							{
+                                return function() 
+								{   
+                                    try {
+                                        
+                                        external.InstallShareApp2(ii.download_url, ii.title + ".ipa", a.uuid[jj], ii.package_name , ii.appid, 0);
+                                    } catch(error) {}
+                                    tempBtn.attr("title", "后台正在为设备[" + a.deviceList[a.uuid[jj]].name + "]重新安装该应用程序");
+									tempBtn.attr("state", 1);
+									tempBtn.attr("disabled", true);
+									tempBtn.text("安装中");
+									tempBtn.toggleClass("no", true);
+                                }
+                            })(appInfo, j, setup_Btn);
+							
+                        } else 
+						{
+                            if (sCompareResult == 3) 
+							{
+                                cr3 += 1;
+								objDc.title = "升级安装应用到：" + a.deviceList[a.uuid[j]].name;
+                                objDc.onclick = (function(ii, jj, tempBtn) 
+								{
+                                    return function() {
+                                        try {
+                                           
+                                            external.InstallShareApp2(ii.download_url, ii.title + ".ipa", a.uuid[jj], ii.package_name , ii.appid, 1);
+                                        } catch(error) {}
+                                       
+                                        tempBtn.attr("title", "后台正在为设备[" + a.deviceList[a.uuid[jj]].name + "]升级该应用程序");
+										tempBtn.attr("state", 1);
+										tempBtn.attr("disabled", true);
+										tempBtn.text("安装中");
+										tempBtn.toggleClass("no", true);    
+                                    }
+                                })(appInfo, j, setup_Btn);
+                            }
+                        }
+                    }
+					
+                    $objDcSelect[0].appendChild(objDc);	
+					
+                }
+				
+				$objDcSelect.unbind("hover").hover(function() {},
+                    function() 
+					{
+                        $(this).fadeOut(150)
+                    });
+                setup_Btn.$objDcSelect = $objDcSelect
+				
+				
+				cc_body.append($objDcSelect[0]);
+				
+				setup_Btn.text("立即安装");
+				
+                if (cr1 == a.uuid.length) 
+				{ 
+					setup_Btn.text("立即安装");
+                }else if (cr2 == a.uuid.length) 
+				{
+                    
+					setup_Btn.text("重新安装");
+                }else if (cr3 == a.uuid.length) 
+				{
+               
+					setup_Btn.text("立即更新");
+                }
+                setup_Btn.unbind("click").bind("click", function(ii) 
+				{
+                    return function() 
+					{
+						if(ii.attr("state") == 1)
+						{
+								return;
+						}
+						var x = ii.offset().left;
+						var y = ii.offset().top - 10;
+						ii.$objDcSelect.css({"left":"" + x + "px", "top":"" + y + "px"});
+                        ii.$objDcSelect.fadeIn(200)
+                    }
+                }(setup_Btn));
+			}
+	};
+	
+	function compareVer(sDeviceSoftVer, sPcSoftVer) 
+	{
+	    if (!sDeviceSoftVer || !sPcSoftVer) 
+		{
+	        return 0
+	    }
+	    var i, j, n;
+	    sDeviceSoftVer = (sDeviceSoftVer + "").split(".");
+	    sPcSoftVer = (sPcSoftVer + "").split(".");
+	    j = sDeviceSoftVer.length >= sPcSoftVer.length ? sDeviceSoftVer.length: sPcSoftVer.length;
+	    for (i = 0; i < j; i++) 
+		{
+	        if (!sDeviceSoftVer[i]) 
+			{
+	            sDeviceSoftVer[i] = 0
+	        }
+	        if (!sPcSoftVer[i]) 
+			{
+	            sPcSoftVer[i] = 0
+	        }
+	        if (parseInt(sDeviceSoftVer[i]) == parseInt(sPcSoftVer[i])) 
+			{
+	            n = 1
+	        } else 
+			{
+	            if (parseInt(sDeviceSoftVer[i]) > parseInt(sPcSoftVer[i])) 
+				{
+	                n = 1;
+	                i = j
+	            } else {
+	                n = 2;
+	                i = j
+	            }
+	        }
+	    }
+	    return n
+	};
+	
+	function compareSoft(uuid, bundleId, pcSoftVer) {
+	    if (!uuid || !a.deviceList[uuid] || !bundleId || !pcSoftVer)
+		{
+	        return 0
+	    }
+	    var deviceApp, i, j, n = 1;
+	    deviceApp = a.deviceList[uuid].app;
+	    for (i = 0; i < deviceApp.length; i++) 
+		{
+	        if (deviceApp[i][0] == bundleId) 
+			{
+	            n = 2;				
+	            if (deviceApp[i][2] == 4) 
+				{
+	                n = 4
+	                
+	            }else if(deviceApp[i][2] == 2 || deviceApp[i][2] == 3)
+	            {
+	            	n = 5;
+	            	
+	            }else if (compareVer(deviceApp[i][1], pcSoftVer) == 2) 
+				{
+	                n = 3 
+	            }
+	            break;
+	        }
+	    }
+	    return n
 	}
-};
-
-function downloadStateChanged(c, d, a) {
 	
-	if(mccplayButtonState != undefined){
-		mccplayButtonState.getDownloadInfo();
-	}
-}
+})(cc_pc_ios);
 
-$(document).ready(function(){
-	mccplayButtonState = new ccplayButtonState(".app-install-btn-js",".app-download-btn-js");
 
+(function(a){	
+	a.initDownBtn = function()
+	{
+		a.downState = {error: ["重新下载", "下载失败，点击重试", -1], begin: ["立即下载", "下载到本地", 0],  downloading: ["正在下载", "正在下载中，点击暂停", 2],  pause: ["暂停下载", "点击继续下载", 50], ok: ["已经下载", "点击可重新下载", 100]};
+		a.downBtn.bind("click", function()
+				{
+					var downloadState = $(this).attr("state");
+					var appInfo = eval("(" + $(this).parent().attr("data-json") + ")");
+					switch(parseInt(downloadState))
+					{
+					case a.downState.pause[2]:
+					
+						$(this).attr("state", a.downState.downloading[2]);
+						$(this).attr("title", a.downState.downloading[1]);
+						$(this).text(a.downState.downloading[0]);
+
+					 	external.ResumeDownload(appInfo.download_url);
+						break
+					case a.downState.downloading[2]:
+			
+						$(this).attr("state", a.downState.pause[2]);
+						$(this).attr("title", a.downState.pause[1]);
+						$(this).text(a.downState.pause[0]);
+						external.PauseDownload(appInfo.download_url);
+						break;
+					case a.downState.ok[2]:
+				
+						$(this).attr("state", a.downState.downloading[2]);
+						$(this).attr("title", a.downState.downloading[1]);
+						$(this).text(a.downState.downloading[0]);
+						external.BeginShareDownload2(appInfo.download_url,appInfo.title + ".ipa", appInfo.package_name, appInfo.appid);
+						break;
+					default:
+						$(this).attr("state", a.downState.downloading[2]);
+						$(this).attr("title", "点击下载");
+						$(this).text(a.downState.downloading[0]);
+						external.BeginShareDownload2(appInfo.download_url,appInfo.title + ".ipa", appInfo.package_name, appInfo.appid);
+						break
+					}
+			
+				});		
+	};
+	a.downBtnCallback = function(ab, b, c)
+	{
+		for(var i = 0; i < a.downBtn.size(); i++){
+			var downloadBtn = a.downBtn.eq(i);
+			var appInfo = eval("(" + downloadBtn.parent().attr("data-json") + ")");
+			
+			if(appInfo.download_url == ab)
+			{
+				downloadBtn.attr("state",b);
+				switch(b)
+				{
+				case a.downState.pause[2]:
+					downloadBtn.text(a.downState.pause[0]);
+					downloadBtn.attr("title", a.downState.pause[1]);
+					//a.disableSetupBtn(downloadBtn, 0);
+					break;
+				case a.downState.downloading[2]:
+					downloadBtn.text(a.downState.downloading[0]);
+					downloadBtn.attr("title", a.downState.downloading[1]);
+					//a.disableSetupBtn(downloadBtn, 0);
+					break;
+				case a.downState.ok[2]:
+					downloadBtn.text(a.downState.ok[0]);
+					downloadBtn.attr("title", a.downState.ok[1]);
+					//a.disableSetupBtn(downloadBtn, 1);
+					break;
+				default:
+					downloadBtn.text(a.downState.begin[0]);
+					downloadBtn.attr("title", "点击下载");
+					break 
+				
+				}
+				break;	
+			}
+		}
+	};
+	
+	a.downBtnUpdate = function()
+	{
+		var downInfo = eval("(" + external.GetDownloadInfo(-1) + ")").result;
+		
+		for(var i = 0; i <  a.downBtn.size(); i++)
+		{
+			
+			var downloadBtn = a.downBtn.eq(i);
+			
+			downloadBtn.attr("state", a.downState.begin[2]);
+        	downloadBtn.text(a.downState.begin[0]);
+        	downloadBtn.attr("title", a.downState.begin[1]);
+        	
+			var appInfo = eval("(" + downloadBtn.parent().attr("data-json") + ")");
+			
+			for (var j = 0; j < downInfo.length; j++) 
+			{
+				if(downInfo[j][0] == appInfo.download_url)
+				{
+					 switch (downInfo[j][1]) {
+	                    case a.downState.downloading[2]: 
+	                    	downloadBtn.attr("state", a.downState.downloading[2]);
+	                    	downloadBtn.text(a.downState.downloading[0]);
+	                    	downloadBtn.attr("title", a.downState.downloading[1]);
+							//a.disableSetupBtn(downloadBtn, 0);
+	                        break;
+	                    case a.downState.pause[2]:
+	                    	downloadBtn.attr("state", a.downState.pause[2]);
+	                    	downloadBtn.text(a.downState.pause[0]);
+	                    	downloadBtn.attr("title", a.downState.pause[1]);
+							//a.disableSetupBtn(downloadBtn, 0);
+	                        break;
+	                    case a.downState.ok[2]:
+	                    	downloadBtn.attr("state", a.downState.ok[2]);
+	                    	downloadBtn.attr("title", a.downState.ok[1]);
+	                    	downloadBtn.text(a.downState.ok[0]);
+							//a.disableSetupBtn(downloadBtn, 1);
+	                        break;
+	                    default:
+	                    	//downloadBtn.attr("state", a.downState.begin[2]);
+	                    	//downloadBtn.text(a.downState.begin[0]);
+	                        break
+	                    }
+					 break;
+				}
+			}
+		}
+	};
+	
+	a.disableSetupBtn = function(btn, lable)
+	{
+		var setupBtn = btn.prev();
+		if(lable == 1)
+		{
+			if(setupBtn.attr("state") == 1)
+			{
+				setupBtn.text("安装中");
+				setupBtn.attr("title", "安装中..");				
+			}else
+			{
+				setupBtn.attr("disabled",false);		
+				setupBtn.toggleClass("no",false);
+				return;
+			}
+			
+		}else
+		{
+			setupBtn.text("下载中");
+			setupBtn.attr("title", "正在下载..");
+		}
+		
+		setupBtn.attr("disabled",true);		
+		setupBtn.toggleClass("no",true);
+	};	
+})(cc_pc_ios);
+
+
+$(document).ready(function() {
+    document.ondragstart = function() {
+        return false
+    };
+    cc_pc_ios.init(".app-install-btn-js",".app-download-btn-js");
 });
 
+var getDeviceJson = cc_pc_ios.getDeviceJsonInfo;
+var downloadStateChanged = cc_pc_ios.downBtnCallback;
