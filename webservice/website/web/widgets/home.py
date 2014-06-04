@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.contrib.sites.models import Site
 from django_widgets import Widget
 from website.widgets.common.promotion import BaseSingleAdvWidget, BaseMultiAdvWidget
 from website.widgets.common import package as pkgwidget
@@ -7,7 +8,8 @@ from website.widgets.common.webspide import BaseForumThreadPanelWdiget
 from website.widgets.common.author import BaseTopicAuthorPanelWidget
 from . import base
 
-__all__ = ['WebHomeTopBannersWidget',
+__all__ = ['WebHeaderSiteListWidget',
+           'WebHomeTopBannersWidget',
            'WebHomeTopicalPackageListWidget',
            'WebHomeMasterpiecePackageListWidget',
            'WebHomeLatestPackageListWidget',
@@ -19,6 +21,23 @@ __all__ = ['WebHomeTopBannersWidget',
            'WebHomeVendorListWidget',
            'WebHomeCollectionListWidget',
            ]
+
+
+class WebHeaderSiteListWidget(Widget):
+
+    def get_list(self):
+        from toolkit import helpers
+        site = Site.objects.get(pk=helpers.SITE_IOS)
+        yield dict(url="http://%s/" % site.domain, name=site.name)
+        site = Site.objects.get(pk=helpers.SITE_ANDROID)
+        yield dict(url="http://%s/" % site.domain, name=site.name)
+        yield dict(url="/static/cc_web/html/down.html", name='虫虫助手')
+
+    def get_context(self, value, options):
+        items = list(self.get_list())
+        return dict(
+            items=items
+        )
 
 
 class WebHomeTopBannersWidget(BaseMultiAdvWidget,

@@ -1,5 +1,4 @@
 - load pages_tags
 .abs.drop-down
   - for p in page_branch
-    - if not p.has_children
-      %a{:href => "={p.get_absolute_url}"}= p.title
+    %a{:href => "={p.get_absolute_url}"}><= p.title

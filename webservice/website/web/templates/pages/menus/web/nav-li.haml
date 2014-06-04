@@ -4,8 +4,8 @@
     %a{
       :class => "{% if page.is_current or page.is_current_child %}hover{% endif %}{% if page.has_children_in_menu %} nav-top-a{% endif %}",
       :href => "{{ page.get_absolute_url }}"
-      }<= page.title
+      }><= page.title
         - if page.has_children_in_menu
-          %em.ios-web-icon
+          %em.ios-web-icon><
       - if page.has_children_in_menu
         {% page_menu page "pages/menus/web/nav-sub-li.haml" %}

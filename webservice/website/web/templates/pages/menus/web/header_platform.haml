@@ -1,5 +1,4 @@
--load pages_tags
--load staticfiles
+-load staticfiles pages_tags widgets
 .auto.head
   .auto.width.top
     .pt10.pb10
@@ -11,18 +10,15 @@
                 %span.trans.home
         / logo
         .inline-three.search
-          {% include "pages/includes/search_form.html" %}
+          {% include "pages/includes/search_form.haml" %}
         / search
         .inline-three.r.user-switch
           %ul.r
-            %li
-              %a.ios-web-icon.a0{:href => "#"} 门户站
-            %li
-              %a.ios-web-icon.a1{:href => "#"} 苹果站
-            %li
-              %a.ios-web-icon.a2{:href => "#"} 安卓站
-            %li
-              %a.ios-web-icon.a3.open-reg{:href => "#"} 虫虫助手
+            {% widget WebHeaderSiteListWidget %}
+            -for site in items
+              %li<
+                %a.ios-web-icon{:class => "a={forloop.counter}", :href => "={site.url}"}= site.name
+            {% endwidget %}
             %li#login-reg
               %a.ios-web-icon.a4.open-login{:href => "#", :target => ""} 登录/注册
             %li#change-logout.dn
