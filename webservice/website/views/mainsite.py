@@ -204,6 +204,7 @@ def register_view(request):
         user = User(username=username, email=email)
         user.set_password(password)
         user.save()
+        login(request, authenticate(username=username, password=password))
         return HttpResponseRedirect('/')
 
 
