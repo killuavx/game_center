@@ -162,10 +162,9 @@
 <script>
 
   $(function(){
-    var form_validate = true;
     var token = $('form.reg-form input[name="csrfmiddlewaretoken"]').val();
-    var tip = '';
     var old_username, old_email;
+    var username_validate_tip, email_validate_tip;
 
     var show_tip = function(msg) {
       $('.login-tip').removeClass('Validform_right').removeClass('Validform_wrong').addClass('Validform_wrong').text(msg);
@@ -180,9 +179,10 @@
         data: { username: username, csrfmiddlewaretoken: token},
         success: function(data){
           if (data.exists === 1){
-            tip = '用户名 ' + username + ' 已经存在!';
-            show_tip(tip);
-            form_validate = false;
+            username_validate_tip = '用户名 ' + username + ' 已经存在!';
+            show_tip(username_validate_tip);
+          } else {
+            username_validate_tip = '';
           }
         }
       });
@@ -197,9 +197,10 @@
         data: {email: email, csrfmiddlewaretoken: token},
         success: function(data){
           if (data.exists === 1){
-            tip = '邮箱 ' + email + ' 已经存在!';
-            show_tip(tip);
-            form_validate = false;
+            email_validate_tip = '邮箱 ' + email + ' 已经存在!';
+            show_tip(email_validate_tip);
+          } else {
+            email_validate_tip = '';
           }
         }
       });
@@ -224,6 +225,7 @@
       var password = $('#p-password').val();
       var password_confrim = $('#p-password2').val();
       var email = $('#p-email').val();
+      var agreement = $('form.reg-form input[type="checkbox"]').prop('checked');
 
       if (!username) {
         show_tip('用户名不能为空 !');
@@ -250,8 +252,18 @@
         return false;
       }
 
-      if (!form_validate) {
-        show_tip(tip);
+      if (!agreement) {
+        show_tip('请阅读并同意《虫虫游戏使用协议》！');
+        return false;
+      }
+
+      if (username_validate_tip) {
+        show_tip(username_validate_tip);
+        return false;
+      }
+
+      if (email_validate_tip) {
+        show_tip(email_validate_tip);
         return false;
       }
       
