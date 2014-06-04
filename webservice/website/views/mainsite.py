@@ -130,6 +130,9 @@ def ajax_logout_view(request):
 
 
 def register_view(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+
     template = 'reg.html'
     context = {}
     if request.method == 'GET':
