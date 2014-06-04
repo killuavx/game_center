@@ -1,11 +1,10 @@
 -load url_tags templatehelper_tags
-{% settings_value ENTRY_TYPES as ETS %}
 .ban_pic
   %ul.auto.tc
     {% for item in items %}
     {% resource_url_as item 'cover' as cover_url %}
     %li{:style => "background:url(={cover_url}) repeat-x center"}
-      %a.auto.width{:href => "{% absolute_url item.content ETS.pc %}",
+      %a.auto.width{:href => "{% absolute_url item.content product=product %}",
        :target => "_blank",
        :style => "background:url(={cover_url}) no-repeat center top",
        :title => "={item.title}"}

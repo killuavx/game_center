@@ -100,6 +100,9 @@ class CategorizedPackageFilterbackend(base.BaseWidgetFilterBackend):
                 return queryset.none()
 
         category = widget.category
+        if category.is_leaf_node():
+            return queryset.filter(categories=category)
+
         cat_ids = list(category \
             .get_descendants(include_self=True) \
             .values_list('pk', flat=True))

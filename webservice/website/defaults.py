@@ -43,7 +43,16 @@ register_setting(
     editable=True,
     default='banner-web',
     choices=place_choices,
-    )
+)
+
+register_setting(
+    name="GC_WEB_CRACK_BANNER_SLUG",
+    description=_("主站破解页面,头部Banner的广告位置slug" ),
+    editable=True,
+    default='banner-web-crack',
+    choices=place_choices,
+)
+
 
 register_setting(
     name="GC_WEB_HOME_TP_TOPIC_SLUG",
