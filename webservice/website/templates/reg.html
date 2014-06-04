@@ -159,5 +159,42 @@
 <script src="http://static.ccplay.com.cn/static/common/js/site-v1.js"></script>
 <script src="http://static.ccplay.com.cn/static/ios_web/js/site.js"></script>
 
+<script>
+
+  var token = $('form.reg-form input[name="csrfmiddlewaretoken"]').val();
+
+  var show_tip = function(msg) {
+    $('.login-tip').removeClass('Validform_right').removeClass('Validform_wrong').addClass('Validform_wrong').text(msg);
+  
+  };
+
+  $('#p-id').bind('blur', function(){
+    var username = $(this).val();
+    $.ajax({
+      type: "POST",
+      url: {% url 'check_register_username' %},
+      data: { username: username, csrfmiddlewaretoken: token},
+      success: function(data){
+        if (data.exists === 1){
+          show_tip('用户名 ' + username + ' 已经存在!');
+        }
+      }
+    });
+  });
+
+  $('#p-email').bind('blur', function(){
+    var email = $(this).val();
+    $.ajax({
+      type: "POST",
+      url: {% url 'check_register_email' %},
+      data: {email: email, csrfmiddlewaretoken: token},
+      success: function(data){
+        if (data.exists === 1){
+          show_tip('邮箱 ' + email + ' 已经存在!');
+        }
+      }
+    });
+  });
+</script>
 </body>
 </html>

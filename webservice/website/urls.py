@@ -30,6 +30,8 @@ urlpatterns += patterns('website.views.mainsite',
                        url(r'^login/' , 'ajax_login_view', name='mainsite_login'),
                        url(r'^logout/' , 'ajax_logout_view', name='mainsite_logout'),
                        url(r'^register/' , 'register_view', name='mainsite_register'),
+                       url(r'^check_username/' , 'check_register_username_view', name='check_register_username'),
+                       url(r'^check_email/' , 'check_register_email_view', name='check_register_email'),
                        url(r'^reset/' , 'reset_password_view', name='reset_password'),
                        )
 

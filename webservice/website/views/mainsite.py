@@ -128,6 +128,51 @@ def ajax_logout_view(request):
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
 
+def check_username_exists(username=None):
+    if not username:
+        return None
+
+    try:
+        User.objects.get(username=username)
+    except User.DoesNotExist:
+        return False
+
+    return True
+
+
+def check_email_exists(email=None):
+    if not email:
+        return None
+
+    try:
+        User.objects.get(email=email)
+    except User.DoesNotExist:
+        return False
+
+    return True
+
+
+def check_register_username_view(request):
+    resp = {'exists': 0}
+
+    if request.method == 'POST' and request.is_ajax():
+        username = request.POST.get('username', None)
+        if username and check_username_exists(username):
+            resp = {'exists': 1}
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
+
+def check_register_email_view(request):
+    resp = {'exists': 0}
+
+    if request.method == 'POST' and request.is_ajax():
+        email = request.POST.get('email', None)
+        if email and check_email_exists(email):
+            resp = {'exists': 1}
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
 
 def register_view(request):
     if request.user.is_authenticated():
@@ -138,7 +183,6 @@ def register_view(request):
     if request.method == 'GET':
         return TemplateResponse(request=request, template=template, context=context)
     else:
-        #print (request.POST)
         username = request.POST.get('username', None)
         password = request.POST.get('password', None)
         password_confirm = request.POST.get('password-confirm', None)
@@ -150,11 +194,17 @@ def register_view(request):
 
         if password != password_confirm:
             return TemplateResponse(request=request, template=template, context=context)
-        else:
-            user = User(username=username, email=email)
-            user.set_password(password)
-            user.save()
-            return HttpResponseRedirect('/')
+
+        if check_username_exists(username):
+            return TemplateResponse(request=request, template=template, context=context)
+
+        if check_email_exists(email):
+            return TemplateResponse(request=request, template=template, context=context)
+
+        user = User(username=username, email=email)
+        user.set_password(password)
+        user.save()
+        return HttpResponseRedirect('/')
 
 
 def reset_password_view(request):
