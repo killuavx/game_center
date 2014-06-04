@@ -22,7 +22,7 @@
     %script{:src => "http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"}
     %script{:src => "{% static 'common/js/jquery.SuperSlide.2.1.1.source.js' %}"}
     %script{:src => "{% static 'PC/js/site.js' %}"}
-    %script{:src => "http://static1.ccplay.com.cn/static/PC/js/ccplayButtonState.js"}
+    %script{:src => "{% static 'PC/js/ccplayButtonState.js' %}"}
     /[if IE 6]
       <script src="{% static 'common/js/DD_PNG.js' %}"></script>
       <script>window.onload = function() { DD_belatedPNG.fix(".icon,.icon:hover"); }</script>
