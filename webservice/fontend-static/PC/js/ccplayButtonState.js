@@ -156,6 +156,7 @@ cc_body = $("body");
 						{
                             return function() 
 							{
+								$(this).parent().css("display", "none");
                                 try { 
                                     external.InstallShareApp2(ii.download_url, ii.title + ".ipa", a.uuid[jj], ii.package_name , ii.appid, 0);
                                 } catch(error) {}
@@ -172,11 +173,12 @@ cc_body = $("body");
                         if (sCompareResult == 2) 
 						{
                             cr2 += 1;
-                           objDc.title = "重新安装应用到：" + a.deviceList[a.uuid[j]].name;
+                            objDc.title = "重新安装应用到：" + a.deviceList[a.uuid[j]].name;
                             objDc.onclick = (function(ii, jj, tempBtn) 
 							{
                                 return function() 
 								{   
+									$(this).parent().css("display", "none");
                                     try {
                                         
                                         external.InstallShareApp2(ii.download_url, ii.title + ".ipa", a.uuid[jj], ii.package_name , ii.appid, 0);
@@ -198,6 +200,7 @@ cc_body = $("body");
                                 objDc.onclick = (function(ii, jj, tempBtn) 
 								{
                                     return function() {
+										$(this).parent().css("display", "none");
                                         try {
                                            
                                             external.InstallShareApp2(ii.download_url, ii.title + ".ipa", a.uuid[jj], ii.package_name , ii.appid, 1);
@@ -377,7 +380,7 @@ cc_body = $("body");
 		for(var i = 0; i < a.downBtn.size(); i++){
 			var downloadBtn = a.downBtn.eq(i);
 			var appInfo = eval("(" + downloadBtn.parent().attr("data-json") + ")");
-			
+
 			if(appInfo.download_url == ab)
 			{
 				downloadBtn.attr("state",b);
@@ -398,13 +401,18 @@ cc_body = $("body");
 					downloadBtn.attr("title", a.downState.ok[1]);
 					//a.disableSetupBtn(downloadBtn, 1);
 					break;
+				case 51:
+					if(1 == downloadBtn.prev().attr("state"))
+					{
+						a.updateSetupBtn();
+					}	
 				default:
 					downloadBtn.text(a.downState.begin[0]);
 					downloadBtn.attr("title", "点击下载");
 					break 
 				
 				}
-				break;	
+				//break;	//?????
 			}
 		}
 	};
