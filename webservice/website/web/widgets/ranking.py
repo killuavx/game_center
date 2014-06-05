@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from django_widgets import Widget
+from website.web.widgets.base import ProductPropertyWidgetMixin
 from website.widgets.common.package import BaseRankingPackageListWidget
 
 __all__ = ['WebRankingDetailPackageListWidget']
 
 
-class WebRankingDetailPackageListWidget(BaseRankingPackageListWidget, Widget):
+class WebRankingDetailPackageListWidget(BaseRankingPackageListWidget,
+                                        ProductPropertyWidgetMixin,
+                                        Widget):
 
     per_page = 10
 

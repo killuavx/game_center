@@ -100,8 +100,9 @@
           %h3.n 应用介绍
           .text_inner= package.description|linebreaksbr
           / text_inner
-          %h3.n 新版特性
-          .text_inner= version.whatsnew|linebreaksbr
+          -if version.whatsnew
+            %h3.n 新版特性
+            .text_inner= version.whatsnew|linebreaksbr
           / text_inner
           / 相关推荐
           .ovh.relevant-app
