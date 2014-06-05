@@ -179,7 +179,7 @@
         data: { username: username, csrfmiddlewaretoken: token},
         success: function(data){
           if (data.exists === 1){
-            username_validate_tip = '用户名 ' + username + ' 已经存在!';
+            username_validate_tip = '用户名已经存在!';
             show_tip(username_validate_tip);
           } else {
             username_validate_tip = '';
@@ -197,7 +197,7 @@
         data: {email: email, csrfmiddlewaretoken: token},
         success: function(data){
           if (data.exists === 1){
-            email_validate_tip = '邮箱 ' + email + ' 已经存在!';
+            email_validate_tip = '邮箱已经存在!';
             show_tip(email_validate_tip);
           } else {
             email_validate_tip = '';

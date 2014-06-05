@@ -116,6 +116,20 @@ $(function(){
     var username = $('#p-id').val();
     var password = $('#p-password').val();
 
+    var show_tip = function (msg) {
+      $('.login-tip').removeClass('Validform_right').addClass('Validform_checktip').addClass('Validform_wrong').text(msg);
+    };
+
+    if (!username) {
+      show_tip('用户名不能为空！');
+      return false;
+    }
+
+    if (!password) {
+      show_tip('密码不能为空！');
+      return false;
+    }
+
     $.ajax({
       type: "POST",
       url: $('form.login-form').attr('action'),
@@ -126,22 +140,7 @@ $(function(){
           $('#login-reg').addClass('dn');
           $('#change-logout').removeClass('dn').children('a').attr('title', username).text(username);
         } else {
-          var $ltip = $('.login-tip');
-          var $cstr = $ltip.attr('class');
-
-          if ($cstr.indexOf('Validform_right') !== -1) {
-            $ltip.removeClass('Validform_right');
-          }
-
-          if ($cstr.indexOf('Validform_checktip') === -1) {
-            $ltip.addClass('Validform_checktip');
-          }
-
-          if ($cstr.indexOf('Validform_wrong') === -1) {
-            $ltip.addClass('Validform_wrong');
-          }
-
-          $ltip.text('用户名或密码错误！');
+          show_tip('用户名或密码错误！');
         }
       }
     });
