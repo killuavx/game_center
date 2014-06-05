@@ -1,4 +1,4 @@
-//app install
+﻿//app install
 $(".focus").slide({ titCell:".num ul" , mainCell:".banner_ul" , autoPlay:true, delayTime:700 , autoPage:true });
 
 jQuery(".roll").slide({ mainCell:"ul",vis:4,scroll:1,prevCell:".prev",easing:"easeInQuint",nextCell:".next",effect:"leftLoop", autoPage:true});
@@ -16,16 +16,21 @@ jQuery(".box-tab").slide({ titCell:".title_box li", mainCell:".list", targetCell
 
 $(function(){
 	
-	$(".refresh").click(function(){
-		window.location.href=window.location.href;
+	$(".refresh").click(function()
+	{
+		window.history.go(0);
 	});
 	
-	$(".pgup").click(function(){		
-		window.history.go(-1);
+	$(".pgup").click(function()
+	{	
+		window.history.go(-1);	
+		return false;
 	});
 	
-	$(".pgdn").click(function(){
+	$(".pgdn").click(function()
+	{
 		window.history.go(1);
+		return false;
 	});
 	
 	

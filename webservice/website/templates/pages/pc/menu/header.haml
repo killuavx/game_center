@@ -13,7 +13,10 @@
           -if page.is_current
             %a.hover{:href => "#"}= page.title
           -else
-            %a{:href => "={page.get_absolute_url}"}= page.title
+            -if page.link
+              %a{:href => "={page.get_absolute_url}", :target => "_blank"}= page.title
+            -else
+              %a{:href => "={page.get_absolute_url}"}= page.title
     {% endspaceless %}
   / head_nav
 / head
