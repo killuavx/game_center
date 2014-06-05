@@ -109,12 +109,19 @@ def ajax_login_view(request):
     resp = {"login": -1}
 
     if request.method == 'POST' and request.is_ajax():
-        username = request.POST.get('username', None)
-        password = request.POST.get('password', None)
-        user = authenticate(username=username, password=password)
-        if user and user.is_active:
-            login(request, user)
-            resp["login"] = 0
+        verify_code = request.POST.get('verify_code', None)
+        if verify_code:
+            verify_code = verify_code.upper()
+
+        if verify_code != request.session['verify_code']:
+            resp["login"] = -2
+        else:
+            username = request.POST.get('username', None)
+            password = request.POST.get('password', None)
+            user = authenticate(username=username, password=password)
+            if user and user.is_active:
+                login(request, user)
+                resp["login"] = 0
 
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
