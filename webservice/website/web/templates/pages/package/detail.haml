@@ -1,5 +1,8 @@
 -extends "pages/page_web.html"
 -load widgets url_tags util_tags templatehelper_tags web_tags
+{% block meta_title %}{{ version.subtitle|default:package.title }}{% endblock%}
+{% block meta_keywords %}{% unique_tags_text version.tags package.tags %}{% endblock %}
+{% block meta_description %}{{ package.summary }} | {{ version.whatsnew }}{% endblock %}
 
 -block main
   -with title=version.subtitle|default:package.title
@@ -104,24 +107,28 @@
             %h3.n 新版特性
             .text_inner= version.whatsnew|linebreaksbr
           / text_inner
-          / 相关推荐
-          .ovh.relevant-app
-            %h3.n 相关推荐
-            .cell-bk.tj
 
-              {% widget WebPackageRelatedListWidget package=package verion=version %}
-              -for related in items
-                -with p=related.object pv=p.versions.latest_published title=pv.subtitle|default:package.title
-                  {% absolute_url_as p product=product as detail %}
-                  .dib.rel.app-list-min<
-                    %a.db.tc.f14{:href => "={detail_url}", :target => "_blank"}
-                      %img.db.auto{:src => "{% resource_url version 'icon' %}"}
-                        %span.ios-web-icon.abs.db.auto
-                        {{ title|slice:"5"}}
-                        %i.db.n.f12.g9= p.main_category.name
-              {% endwidget %}
-
-          / 相关推荐
+          {% widget WebPackageRelatedListWidget package=package version=version per_page=10 %}
+          -if items
+            / 相关推荐
+            .ovh.relevant-app
+              %h3.n 相关推荐
+              .cell-bk.tj
+                -for related in items
+                  -with p=related.object
+                    -with pv=p.versions.latest_published title=pv.subtitle|default:p.title
+                      {% absolute_url_as p product=product as dt_url %}
+                      .dib.rel.app-list-min<
+                        %a.db.tc.f14{:href => "={dt_url}", :target => "_blank"}
+                          %img.db.auto{:src => "{% resource_url pv 'icon' %}"}
+                            %span.ios-web-icon.abs.db.auto
+                            {{ title|slice:"5"}}
+                            %i.db.n.f12.g9= p.main_category.name
+                        .btn-s
+                          -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+                          %a.a2{:href => "{% download_url pv product=product %}", :class => "app-download-btn-js"} 下载
+            / 相关推荐
+          {% endwidget %}
 
         -#
           .cell-bk.review
