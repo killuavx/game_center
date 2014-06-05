@@ -7,3 +7,4 @@ from .vendors import *
 from .ranking import *
 from .search import *
 from .crack import *
+from .package import *

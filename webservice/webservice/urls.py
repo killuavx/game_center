@@ -16,19 +16,21 @@ urlpatterns = patterns("",
                        url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
                        url(r'^api/', include('mobapi.urls')),
                        url(r'^api/v2/', include('mobapi2.urls')),
-                       rest_framework_swagger_url,
+                       #rest_framework_swagger_url,
                        url(r'^admin/cdn/', include('website.cdn.urls')),
                        url(r'^admin/toolkit/', include('toolkit.urls')),
                        url(r'^tagging_autocomplete/', include('tagging_autocomplete.urls')),
+                       url(r'^', include('website.web.urls')),
+                       url(r'^', include('website.urls')),
                        url(r'^pc/', include('website.urls_pc')),
                        )
 if "mezzanine.boot" in settings.INSTALLED_APPS:
     from mezzanine.core.views import direct_to_template
     urlpatterns += patterns('',
-                            url("^$", direct_to_template, {"template": "pages/comingsoon.html"}, name="comingsoon"),
-                            url("^$", "mezzanine.blog.views.blog_post_list", name="home"),
+                            url("^$", direct_to_template, {"template": "pages/comingsoon.html"}, name="home"),
+                            #url("^$", direct_to_template, {"template": "pages/index.haml"}, name="home"),
+                            #url("^$", "mezzanine.blog.views.blog_post_list", name="home"),
                             #url("^$", "mezzanine.blog.views.blog_post_list", name="commingsoon"),
-                            url("^", include('website.urls')),
                             ("^", include("mezzanine.urls")),
                             )
 

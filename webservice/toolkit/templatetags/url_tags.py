@@ -109,7 +109,11 @@ register.simple_tag(absolute_url, takes_context=True)
 
 
 def download_url(context, pv, **kwargs):
-    url = pv.get_download_url(**kwargs)
+    entrytype = None
+    if 'product' in kwargs:
+        entrytype = kwargs.pop('product')
+
+    url = pv.get_download_url(entrytype=entrytype, **kwargs)
     request = context.get('request')
     if request:
         return request.build_absolute_uri(url)

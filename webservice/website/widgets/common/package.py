@@ -45,7 +45,8 @@ class BasePackageSearchListWidget(base.FilterWidgetMixin, base.BaseListWidget):
         from searcher.searchers import SearchException
         searcher = self.get_searcher(self.request)
         try:
-            return self.filter_queryset(searcher.search())
+            qs = self.filter_queryset(searcher.search())
+            return qs
         except SearchException as e:
             return searcher.get_search_qeuryset().none()
 

@@ -1,2 +1,216 @@
 -extends "pages/page_web.html"
 -load widgets url_tags util_tags templatehelper_tags web_tags
+
+-block main
+  -with title=version.subtitle|default:package.title
+  .auto.mt30.width.app-dis-page
+    .cell-bk.ovh
+
+      .pb10.location>
+        {% breadcrumbs_from package category=package.main_category product=product home_url='/' %}
+
+      .cell-bk.title
+        %h1.l.n.dib.tc= title
+      -#
+        %p.r.pt5.g9
+          %span.ios-web-icon.ad 有广告
+          %span.ios-web-icon.wifi.no 不需要联网
+          %span.ios-web-icon.google 需要谷歌服务
+
+      .l.rel.left
+        .auto.rel.pic
+          %img.db.auto.pt1.mt20{:height => "175px", :src => "{% resource_url version 'icon' %}", :width => "175px"}
+            %span.dib.abs.cover.png
+        %a.mt20.db.btn.btn-green.f16{:href => "#"} 下载应用
+        -#
+          .pt20.pb30.db.pct100.btn-s
+            %a.a1.install{:href => "#", :target => ""} 下载到手机
+            %a.a2{:href => "#", :target => ""} 下载到电脑
+        .tc.pt20.p-code
+          %div
+            %img{:src => "http://static.ccplay.com.cn/static/common/img/code.png"}/
+          %p.gr 扫描二维码即可下载
+        %ul.g9.pt20.instr
+          %li<
+            评分
+            %span><
+              .ios-web-icon.star.mr5{:class => "s={version.stars_average|default:0|floatformat:'0'}" }>
+              {{ version.stars_count }}人评分
+          %li<
+            厂商
+            %span><= package.author.name
+          %li<
+            发布
+            %span><= version.released_datetime|date
+          %li<
+            版本
+            %span><= version.version_name
+          %li<
+            大小
+            %span><= version.get_download_size|filesizeformat
+          %li<
+            类别
+            %span><= package.main_categories|join:", "
+          %li<
+            语言
+            %span><= version.language_names|join:", "
+          %li<
+            下载
+            %span>< {{ version.download_count|intwordcn }}+
+
+        .cell-bk.pt10.pb30.left-top-list
+          {% include_widget WebRankingPackageListWidget cat_slug=package.main_category.get_root.slug per_page=10 %}
+        / left-top-list
+
+      / left-list
+      .r.right
+        -#
+          .re-1.pl10.pt10.pr10.ml10.mt10.gr
+            %h3.n 虫虫游戏提醒
+            .text_inner.f14.gr
+              破解说明：破解内购
+              %br
+                操作说明：进入购买金币的页面，玩家选择50元和200元两种充值金额，点击之后返回即可完成内购；切勿点击其他面值的金币充值，否则会扣费。
+            / text_inner
+
+        .up.box_btn.up_box
+          .up_pic
+            %ul
+              -if is_ios
+                -for screenshot in version.screenshots.ipad
+                  -with image=screenshot.image
+                    %li><
+                      %img{:src => "={image.small.url}"}/
+              -if is_android
+                -for screenshot in version.screenshots.all
+                  -with image=screenshot.image
+                    %li><
+                      %img{:src => "={image.small.url}"}/
+          / up_pic
+          .cl.rel.a_btn{:style => "display: none;"}
+            %a.ios-web-icon.abs.prev.prevStop{:href => "javascript:;", :style => "display: none;"}
+            %a.ios-web-icon.abs.next{:href => "javascript:;", :style => ""}
+          / a_btn
+
+
+        / up
+        .down
+          %h3.n 应用介绍
+          .text_inner= package.description|linebreaksbr
+          / text_inner
+          %h3.n 新版特性
+          .text_inner= version.whatsnew|linebreaksbr
+          / text_inner
+          / 相关推荐
+          .ovh.relevant-app
+            %h3.n 相关推荐
+            .cell-bk.tj
+
+              {% widget WebPackageRelatedListWidget package=package verion=version %}
+              -for related in items
+                -with p=related.object pv=p.versions.latest_published title=pv.subtitle|default:package.title
+                  {% absolute_url_as p product=product as detail %}
+                  .dib.rel.app-list-min<
+                    %a.db.tc.f14{:href => "={detail_url}", :target => "_blank"}
+                      %img.db.auto{:src => "{% resource_url version 'icon' %}"}
+                        %span.ios-web-icon.abs.db.auto
+                        {{ title|slice:"5"}}
+                        %i.db.n.f12.g9= p.main_category.name
+              {% endwidget %}
+
+          / 相关推荐
+
+        -#
+          .cell-bk.review
+            %h3.l.n 应用评论
+            %span.r.login 请先登录，再来评分。
+            %form.cl{:action => "", :method => "get"}
+              %textarea
+              .l.review_btn
+                #rating_cont
+                  #rating_btns
+                    %ul
+                      %li{:title => "很差"} 1
+                      %li{:title => "一般"} 2
+                      %li{:title => "好"} 3
+                      %li{:title => "很好"} 4
+                      %li{:title => "非常好"} 5
+                  #rating_on{:style => "width: 0px;"}
+                  #rating.r 点击星星来评分
+                %input#rating_output{:name => "rating_output", :type => "hidden", :value => ""}
+              %button.r.btn.btn-red.f16 发表评论
+          .review_list
+            %dl.cb
+              %dt.ios-web-icon.l.user{:title => "name"}
+              %dd.d1
+                %span.ios-web-icon.l.star.s4
+                %span.r 2014-04-07 19:16
+              %dd.d2 以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、
+              %dd.d3
+                %a.r1{:href => "#"}
+                  %span.ios-web-icon>
+                  0
+                %a.r2{:href => "#"}
+                  %span.ios-web-icon>
+                  0
+            .cl
+          .review_list.i_reply
+            %dl.cb
+              %dt.ios-web-icon.l.user{:title => "name"}
+                %img{:src => "http://static.ccplay.com.cn/static/common/img/6.jpg"}/
+              %dd.d1
+                %span.ios-web-icon.l.star.s4
+                %span.r 2014-04-07 19:16
+              %dd.d2 以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、
+              %dd.d3
+                %a.r1{:href => "#"}
+                  %span.ios-web-icon>
+                  1
+                %a.r2{:href => "#"}
+                  %span.ios-web-icon>
+                  2
+            .cl
+          .review_list.i_reply
+            %dl.cb
+              %dt.ios-web-icon.l.user{:title => "name"}
+              %dd.d1
+                %span.ios-web-icon.l.star.s4
+                %span.r 2014-04-07 19:16
+              %dd.d2 以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、
+              %dd.d3
+                %a.r1{:href => "#"}
+                  %span.ios-web-icon>
+                  1
+                %a.r2{:href => "#"}
+                  %span.ios-web-icon>
+                  2
+            .cl
+          .review_list
+            %dl.cb
+              %dt.ios-web-icon.l.user{:title => "name"}
+                %img{:src => "http://static.ccplay.com.cn/static/common/img/pic.jpg"}/
+              %dd.d1
+                %span.ios-web-icon.l.star.s4
+                %span.r 2014-04-07 19:16
+              %dd.d2 以前一直在用管家的私密空间，感觉不错，现在又升级了，正在体验中、、、
+              %dd.d3
+                %a.r1{:href => "#"}
+                  %span.ios-web-icon>
+                  0
+                %a.r2{:href => "#"}
+                  %span.ios-web-icon>
+                  0
+            .cl
+        / down
+      -#
+        .cl.f14.page
+          %a{:href => "#"} 上一页
+          %a{:href => "#"} 1
+          %a.hover{:href => "#"} 2
+          %a{:href => "#"} 3
+          %a{:href => "#"} 4
+          %a{:href => "#"} ···
+          %a{:href => "#"} 99
+          %a{:href => "#"} 下一页
+      / right
+    / cell-bk

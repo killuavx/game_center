@@ -1,7 +1,8 @@
 -extends "base_web.haml"
--load widgets templatehelper_tags
+-load widgets templatehelper_tags cache
 
 -block main
+  {% cache 600 product_web request.get_host request.path_info request.GET %}
   / START Banner
   .rel.ovh.banner
     {% settings_value "GC_WEB_HOME_BANNER_SLUG" as BANNER_SLUG %}
@@ -147,3 +148,5 @@
   .auto.width.ovh.i-link
     .pt20.pb30
       {% include "pages/menus/web/friend_links.html" %}
+
+  {% endcache %}

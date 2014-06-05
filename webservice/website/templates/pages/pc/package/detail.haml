@@ -1,7 +1,9 @@
 -extends "pc_base.haml"
 -load util_tags url_tags templatehelper_tags pc_tags widgets
+{% is_site_ios as is_ios %}{% is_site_android as is_android %}
 -block main
-  {% breadcrumbs_from package category=package.main_category product=product home_url='/pc/home/' %}
+  .location>
+    {% breadcrumbs_from package category=package.main_category product=product home_url='/pc/home/' %}
 
   -with title=version.subtitle|default:package.title
     .cb.box.dis
@@ -64,10 +66,16 @@
           .up.up_box
             .up_pic
               %ul<
-                -for screenshot in version.screenshots.ipad
-                  -with image=screenshot.image
-                    %li<
-                      %img{:src => "={image.middle.url|default:image.url}"}/
+                -if is_ios
+                  -for screenshot in version.screenshots.ipad
+                    -with image=screenshot.image
+                      %li<
+                        %img{:src => "={image.middle.url|default:image.url}"}/
+                -if is_android
+                  -for screenshot in version.screenshots.all
+                    -with image=screenshot.image
+                      %li<
+                        %img{:src => "={image.middle.url|default:image.url}"}/
             / up_pic
             .cb.banner_btn
               %a.unslider-arrow.icon.prev{:href => "javascript:void(0)"}
@@ -75,11 +83,11 @@
           / up
           .down
             %h3 应用介绍
-            .text_inner= package.description
+            .text_inner= package.description|linebreaksbr
             / text_inner
             -if version.whatsnew|length > 1
               %h3 新版特性
-              .text_inner= version.whatsnew|linenumbers|linebreaksbr
+              .text_inner= version.whatsnew|linebreaksbr
               / text_inner
           -#
             .review

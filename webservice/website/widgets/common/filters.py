@@ -49,9 +49,10 @@ class PackageByCategorySearcherFilter(base.BaseWidgetFilterBackend):
 
     cat_slugs = ('game', 'application')
 
+    cat_param = 'cat'
+
     def get_search_queryset(self, search_queryset, terms):
         from searcher.searchers import BaseSearcher, PackageSearcher
-
         class ByCategoryFitler(BaseSearcher):
             collection_name = PackageSearcher.collection_name
             search_fields = ('@category_slugs', )
@@ -63,6 +64,8 @@ class PackageByCategorySearcherFilter(base.BaseWidgetFilterBackend):
 
     def get_category(self, slug):
         from taxonomy.models import Category
+        if isinstance(slug, Category):
+            return slug
         return Category.objects.get(slug=slug)
 
     def get_category_descendant_slugs(self, category):
@@ -70,13 +73,14 @@ class PackageByCategorySearcherFilter(base.BaseWidgetFilterBackend):
             .values_list('slug', flat=True))
 
     def filter_queryset(self, request, queryset, widget):
-        cat = widget.options.get('cat')
+        cat = widget.options.get(self.cat_param)
         category = None
         if cat and cat in self.cat_slugs:
             category = self.get_category(cat)
 
         if category:
             slugs = self.get_category_descendant_slugs(category)
+            print(slugs)
             sqs = self.get_search_queryset(queryset, slugs).search()
             return sqs
         else:

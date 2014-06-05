@@ -23,8 +23,8 @@
                 = title|slice:"5"
                 %i.db.n.f12.g9= package.main_category.name
             .btn-s
-              %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
-              %a.a2{:href => "javascript:;", :class => "app-download-btn-js"} 下载
+              -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+              %a.a2{:href => "{% download_url version product=product %}", :class => "app-download-btn-js"} 下载
     / app-list-left
 
 / info-box-tab
