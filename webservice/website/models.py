@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-import random
-from io import StringIO
+import random, os, time
 from PIL import Image,ImageDraw,ImageFont
 from django.conf import settings
 from website.cdn.model_register import *
@@ -52,7 +51,10 @@ if settings.DEBUG:
 
 
 
-def captcha(request):
+def captcha(img_width=90, img_height=37, font_size=22):
+
+
+
     """
     background  #随机背景颜色
     line_color #随机干扰线颜色
@@ -67,12 +69,11 @@ def captcha(request):
     #background = (random.randrange(230,255),random.randrange(230,255),random.randrange(230,255))
     background = (255, 255, 255)
     line_color = (random.randrange(0,255),random.randrange(0,255),random.randrange(0,255))
-    img_width = 90
-    img_height = 37
+    #img_width = 90
+    #img_height = 37
     font_color = ['black','darkblue','darkred']
-    font_size = 22
+    #font_size = 22
     font = ImageFont.truetype('/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-B.ttf',font_size)
-    request.session['verify'] = ''
 
     #新建画布
     im = Image.new('RGB',(img_width,img_height), background)
@@ -94,6 +95,21 @@ def captcha(request):
         draw.text((x,y), i, font=font, fill=random.choice(font_color))
         x += 15
 
-    request.session['verify'] = ''.join(code)
+    verify = ''.join(code)
 
-    return im
+    return im, verify
+
+
+def generate_captcha(request):
+    img, verify = captcha()
+    timestamp = str(time.time()).replace('.', '')
+    static_path =  ''.join(['captcha/', timestamp, '.gif'])
+    absolute_path = os.path.join(settings.PROJECT_PATH, 'static', static_path)
+    request.session['verify'] = None
+    try:
+        img.save(absolute_path)
+        request.session['verify'] = verify
+    except IOError:
+        static_path = None
+
+    return static_path

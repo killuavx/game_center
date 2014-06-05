@@ -10,7 +10,7 @@ from django.template.response import TemplateResponse
 from website.response import WidgetHttpResponse, HttpResponse
 from warehouse.models import PackageVersion, Package
 from account.models import User
-from website.models import captcha
+from website.models import generate_captcha
 
 
 def packageversion_detail(request, package_name, version_name=False,
@@ -235,7 +235,10 @@ def reset_password_view(request):
 
 
 def captcha_view(request):
-    img = captcha(request)
-    response = HttpResponse(mimetype="image/gif")
-    img.save(response, "gif")
-    return response
+    img = {'url': ''}
+
+    if request.method == 'POST' and request.is_ajax():
+        static_path = generate_captcha(request)
+        img['url'] = static_path
+
+    return HttpResponse(json.dumps(img), content_type="application/json")
