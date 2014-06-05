@@ -71,7 +71,7 @@
                                 	<dt class="l r-email"><label class="dib w100 tr pt5 mt2">邮箱地址</label></dt><dd class="rel" ><input name='email' class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="常用的电子邮箱" id="p-email" datatype="e"></dd>
                                 </dl> 
                                 <dl class="pb15"> 
-                                	<dt class="l r-yzm"><label class="dib w100 tr pt5 mt2">验证码</label></dt><dd class="rel" ><input class="pct40 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="4位验证码" maxlength="4" datatype="n1-4" id="p-yzm"><img alt="图片名称" src="http://passport.uu66.com/code.html?1398343237979" width="90px" height="37px" class="abs yzm-img"><a title="链接名称" href="#"  class="dib ml5 gr pt10 r f12">看不清？</a></dd>
+                                	<dt class="l r-yzm"><label class="dib w100 tr pt5 mt2">验证码</label></dt><dd class="rel verify" ><input class="pct40 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="4位验证码" maxlength="4" datatype="4-4" id="p-yzm"><img alt="图片名称" src="#" width="90px" height="37px" class="abs yzm-img"><a title="链接名称" href="#"  class="dib ml5 gr pt10 r f12">看不清？</a></dd>
                                 </dl>
                                 
                                 
@@ -162,6 +162,17 @@
 <script>
 
   $(function(){
+
+    var time = (new Date()).getTime();
+    $('.verify img').attr('src', '{% url "captcha" %}?t=' + time);
+
+    $('.verify a').click(function() {
+      var time = (new Date()).getTime();
+      $(this).siblings('img').attr('src', '{% url "captcha" %}?t=' + time);
+      return false;
+
+    });
+
     var token = $('form.reg-form input[name="csrfmiddlewaretoken"]').val();
     var old_username, old_email;
     var username_validate_tip, email_validate_tip;
@@ -226,6 +237,7 @@
       var password_confrim = $('#p-password2').val();
       var email = $('#p-email').val();
       var agreement = $('form.reg-form input[type="checkbox"]').prop('checked');
+      var verify_code = $('#p-yzm').val();
 
       if (!username) {
         show_tip('用户名不能为空 !');
@@ -249,6 +261,11 @@
 
       if (!email) {
         show_tip('邮箱不能为空 !');
+        return false;
+      }
+
+      if (!verify_code) {
+        show_tip('验证码不能为空！');
         return false;
       }
 

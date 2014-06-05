@@ -196,6 +196,11 @@ def register_view(request):
         password_confirm = request.POST.get('password-confirm', None)
         email = request.POST.get('email', None)
         agreement = request.POST.get('agreement', None)
+        verify_code = request.POST.get('verify_code', None)
+        if verify_code:
+            verify_code = verify_code.upper()
+        if verify_code != request.session['verify_code']:
+            return TemplateResponse(request=request, template=template, context=context)
 
         if not (username and password and password_confirm and email and agreement) :
             return TemplateResponse(request=request, template=template, context=context)
