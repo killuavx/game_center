@@ -9,7 +9,7 @@ from website.views import base
 from os.path import join
 
 
-template404 = 'pages/pc/errors/404.html'
+template404 = 'pages/web/errors/404.html'
 
 template_prefix = 'pages'
 
@@ -97,7 +97,7 @@ def _get_qrcode(*args):
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=4,
+        box_size=3,
         border=1,
         )
     for arg in args:

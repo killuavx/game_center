@@ -67,15 +67,15 @@
             .up_pic
               %ul<
                 -if is_ios
-                  -for screenshot in version.screenshots.ipad
+                  -for screenshot in version.screenshots.default
                     -with image=screenshot.image
                       %li<
-                        %img{:src => "={image.middle.url|default:image.url}"}/
+                        %img{:src => "={image.large.url}"}/
                 -if is_android
-                  -for screenshot in version.screenshots.all
+                  -for screenshot in version.screenshots.default
                     -with image=screenshot.image
                       %li<
-                        %img{:src => "={image.middle.url|default:image.url}"}/
+                        %img{:src => "={image.large.url}"}/
             / up_pic
             .cb.banner_btn
               %a.unslider-arrow.icon.prev{:href => "javascript:void(0)"}

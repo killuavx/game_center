@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from toolkit.helpers import current_request
 
 _ENTRY_TYPES = None
 
@@ -39,6 +40,21 @@ class ModelAbsoluteUrlMixin(AbsoluteUrlMixin):
         else:
             return None
         return reverse(view_name, kwargs=dict(pk=self.pk))
+
+
+class PackageAbsoluteUrlMixin(ModelAbsoluteUrlMixin):
+
+    def get_absolute_url_as(self, product, v=2, **kwargs):
+        ETS = self._get_entry_types()
+        if product == ETS.client:
+            from mobapi2.helpers import PackageDetailApiUrlEncode
+            from mobapi2.rest_router import rest_router
+            pec= PackageDetailApiUrlEncode(pk=self.pk,
+                                           request=current_request(),
+                                           router=rest_router)
+            return pec.get_url()
+        else:
+            return super(PackageAbsoluteUrlMixin, self).get_absolute_url_as(product=product, **kwargs)
 
 
 class AuthorAbsoluteUrlMixin(AbsoluteUrlMixin):

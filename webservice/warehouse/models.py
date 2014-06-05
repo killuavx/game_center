@@ -278,7 +278,7 @@ class PackageQuerySet(QuerySet):
             .exclude(status=self.model.STATUS.published)
 
 
-class Package(PlatformBase, urlmixin.ModelAbsoluteUrlMixin,
+class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
               SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
@@ -786,6 +786,9 @@ class PackageVersionScreenshotManager(models.Manager):
         return self.filter(kind='default')
 
 
+from toolkit.storage import screenshot_thumbnail_storage
+
+
 class PackageVersionScreenshot(models.Model):
 
     objects = PackageVersionScreenshotManager()
@@ -795,7 +798,8 @@ class PackageVersionScreenshot(models.Model):
     image = ThumbnailerImageField(
         upload_to=screenshot_upload_path,
         max_length=500,
-        blank=False
+        blank=False,
+        thumbnail_storage=screenshot_thumbnail_storage,
     )
 
     KIND = Choices(

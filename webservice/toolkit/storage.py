@@ -15,41 +15,16 @@ class PackageStorage(LazyObject):
         self._wrapped = get_storage_class('toolkit.storage.QiniuPackageFileStorage')()
 
 
-class QiniuPackageFileStorage(FileSystemStorage):
+
+
+class QiniuPackageFileStorageMixin(object):
 
     HOST_MARK = 'http://m-%s.ccplay.com.cn/'
 
     BUCKET = Choices(
         ('ios', 'ios', 'IOS'),
         ('android', 'android', 'Android'),
-    )
-
-    def get_host_url(self, name):
-        if name.startswith('ipackage'):
-            return self.HOST_MARK % self.BUCKET.ios
-        # android static
-        return self.base_url
-
-    def url(self, name):
-        if self.base_url is None:
-            raise ValueError("This file is not accessible via a URL.")
-        return urljoin(self.get_host_url(name), filepath_to_uri(name))
-
-
-package_storage = PackageStorage()
-
-
-FileSystemStorageMixin = import_from("%s.storage.FileSystemStorageMixin" % settings.PACKAGE_NAME_FILEBROWSER)
-
-
-class QiniuResourceFileStorage(FileSystemStorageMixin, FileSystemStorage):
-
-    HOST_MARK = 'http://%s.qiniudn.com/'
-
-    BUCKET = Choices(
-        ('sf-ios', 'ios', 'IOS'),
-        ('sf-android', 'android', 'Android'),
-    )
+        )
 
     def get_host_url(self, name):
         if name.startswith('ipackage'):
@@ -63,9 +38,44 @@ class QiniuResourceFileStorage(FileSystemStorageMixin, FileSystemStorage):
         return urljoin(self.get_host_url(name), filepath_to_uri(name))
 
 
+
+class QiniuPackageFileStorage(QiniuPackageFileStorageMixin, FileSystemStorage):
+    pass
+
+
+package_storage = PackageStorage()
+
+
+
+FileSystemStorageMixin = import_from("%s.storage.FileSystemStorageMixin" % settings.PACKAGE_NAME_FILEBROWSER)
+
+
+from easy_thumbnails.storage import ThumbnailFileSystemStorage
+
+
+class QiniuPackageVersionScreenshotThumbnailImageStorage(QiniuPackageFileStorageMixin,
+                                                         ThumbnailFileSystemStorage):
+    pass
+
+
+class PackageVersionScreenshotThumbnailFileStorage(LazyObject):
+
+    def _setup(self):
+        self._wrapped = get_storage_class('toolkit.storage.QiniuPackageVersionScreenshotThumbnailImageStorage')()
+
+screenshot_thumbnail_storage = PackageVersionScreenshotThumbnailFileStorage()
+
+
+class QiniuResourceFileStorage(QiniuPackageFileStorageMixin,
+                               FileSystemStorageMixin,
+                               FileSystemStorage):
+    pass
+
+
 class ResourceStorage(LazyObject):
 
     def _setup(self):
         self._wrapped = get_storage_class('toolkit.storage.QiniuResourceFileStorage')()
+
 
 resource_storage = ResourceStorage()
