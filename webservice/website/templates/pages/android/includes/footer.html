@@ -51,7 +51,7 @@
         <ul class="p15 fw">
             <li class="pl10 bg-white bde"><input name="username" class="bd-none pt10 pb10 f16 pct100" id="p-id" type="text" placeholder="用户名\手机号码\电子邮箱" datatype="*"></li>
             <li class="pl10 bg-white bde mt10 mb10"><input name="password" class="bd-none pt10 pb10 f16 pct100" id="p-password" type="password" placeholder="登录密码"  datatype="*6-16"></li>
-            <li id="verify" class="pl10 h32 pb10 ovh rel bg-white bde"><input class="bd-none pt10 pb10 f16 pct40" id="p-yzm" maxlength="4" type="text" placeholder="验证码" datatype="n4-4"><img alt="图片名称" src="{% static "captcha/xx.gif" %}" width="90px" height="37px" class="abs yzm-img"><a title="链接名称" href="#"  class="dib ml5 pt10 gr r">看不清？</a></li>
+            <li id="verify" class="pl10 h32 pb10 ovh rel bg-white bde"><input class="bd-none pt10 pb10 f16 pct40" id="p-yzm" maxlength="4" type="text" placeholder="验证码" datatype="n4-4"><img alt="图片名称" src="{% static "captcha/xx.gif" %}" width="90px" height="37px" class="abs yzm-img"><a title="链接名称" href="{% url 'captcha' %}"  class="dib ml5 pt10 gr r">看不清？</a></li>
             <li class="mt10 rel"><button class="db pct100 btn btn-red f16 poi login-btn">立即登录</button></li>
             <li class="p10 mb5"><label class="l"><input type="checkbox"> 论坛账号</label><a title="链接名称" href="#" class="gr r">忘记密码？</a></li>
             <li class="pt20 mb10"><a title="链接名称" href="{% url 'mainsite_register' %}" class="db btn btn-silver f16 poi bg-creg-btn">免费注册账号</a></li>
@@ -226,6 +226,26 @@ $(function(){
       }
     });
     return false;
+  });
+
+
+  $('#verify a').click(function() {
+     
+    $.ajax({
+      type: "POST",
+      url: $(this).attr('href'),
+      data: {csrfmiddlewaretoken: token},
+      success: function(img){
+        alert(img.url)
+        //$(this).siblings('img').attr('src', img.url);
+        console.log($(this));
+        console.log($(this).attr('href'));
+        console.log($(this).siblings('img').attr('src'));
+        $('#verify a').siblings('img').attr('src', img.url);
+      }
+    });
+    return false;
+
   });
 
 });

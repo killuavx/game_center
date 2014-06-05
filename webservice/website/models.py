@@ -100,16 +100,25 @@ def captcha(img_width=90, img_height=37, font_size=22):
     return im, verify
 
 
+#def generate_captcha(request):
+#    img, verify = captcha()
+#    timestamp = str(time.time()).replace('.', '')
+#    static_path =  ''.join(['static/captcha/', timestamp, '.gif'])
+#    print (static_path)
+#    absolute_path = os.path.join(settings.PROJECT_PATH, static_path)
+#    print (absolute_path)
+#    request.session['verify'] = None
+#    try:
+#        img.save(absolute_path)
+#        request.session['verify'] = verify
+#    except IOError:
+#        return None
+#
+#    return ''.join(['/', static_path])
+
+
 def generate_captcha(request):
     img, verify = captcha()
-    timestamp = str(time.time()).replace('.', '')
-    static_path =  ''.join(['captcha/', timestamp, '.gif'])
-    absolute_path = os.path.join(settings.PROJECT_PATH, 'static', static_path)
-    request.session['verify'] = None
-    try:
-        img.save(absolute_path)
-        request.session['verify'] = verify
-    except IOError:
-        static_path = None
+    request.session['verify'] = verify
+    return
 
-    return static_path
