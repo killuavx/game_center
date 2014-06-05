@@ -27,6 +27,9 @@
     {% block extra_css %}{% endblock %}
     {% endcompress %}
 
+    {% compress js %}{% block extra_js_header %}
+    {% endblock %}{% endcompress %}
+
     %noscript
       %h1{:style => "font-size:100%;color:#e53333;display:block;text-align:center"} 由于您的浏览器禁用了javascript脚本，网页无法正常浏览!
   %body
@@ -45,9 +48,7 @@
     / 底部结束 footer
 
     {% compress js %}
-    / <script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
-    %script{:src => "{% static 'mezzanine/js/'|add:settings.JQUERY_FILENAME %}"}
-    / %script{:src => "{% static 'common/js/jquery.min.js' %}"}
+    %script{:src => "{% static 'common/js/jquery.min.js' %}"}
     %script{:src => "{% static 'common/js/jquery.cookie.js' %}"}
     %script{:src => "{% static 'common/js/jquery.SuperSlide.2.1.1.source.js' %}"}
     %script{:src => "{% static 'common/js/jquery.pin.js' %}"}
@@ -59,8 +60,5 @@
         %script{:src => "{% static 'android_web/js/site.js' %}"}
       -if is_ios
         %script{:src => "{% static 'ios_web/js/site.js' %}"}
-    {% block extra_js %}{% endblock %}
-    :javascript
-
-    {% include "includes/footer_scripts.html" %}
+    {% block extra_js_footer %}{% endblock %}
     {% endcompress %}
