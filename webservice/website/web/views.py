@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404, HttpResponse
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from taxonomy.models import Category
 from website.views import base
@@ -78,3 +80,58 @@ def search(request, template_name=join(template_prefix, 'category/search.haml'),
             category=category,
         )
     )
+
+
+import qrcode
+import hashlib
+import qrcode.constants
+from django.utils.encoding import force_bytes
+
+
+def _hash_data(*args):
+    m = hashlib.md5()
+    [m.update(force_bytes(arg)) for arg in args]
+    return m.hexdigest()
+
+def _get_qrcode(*args):
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=4,
+        border=1,
+        )
+    for arg in args:
+        qr.add_data(arg)
+    qr.make(fit=True)
+    return qr.make_image()
+
+def _qrcode_cdn_publish_one(relative_file):
+    from website.cdn.processors.base import StaticProcessor
+    from website.documents.cdn import SyncQueue
+    if not SyncQueue.objects.filter(resource_path=relative_file).count():
+        processor = StaticProcessor(content_type=StaticProcessor.CONTENT_TYPE_MEDIA,
+                                    relative_path='qr')
+        processor.publish_one(relative_file)
+
+    if settings.DEBUG:
+        return '/%s/%s' % (StaticProcessor.CONTENT_TYPE_MEDIA, relative_file)
+
+    return join(settings.MEDIA_URL, relative_file)
+
+def qrcode_gen(request, *args, **kwargs):
+    url = request.GET.get('url')
+    if url is None or not url.strip():
+        return HttpResponse(content='404', status=404)
+
+    hash_qr = _hash_data(url)
+    img = _get_qrcode(url)
+
+    relative_file = join('qr', '%s.png' % hash_qr)
+    qr_fp = join(settings.MEDIA_ROOT, relative_file)
+    with open(qr_fp, 'wb') as f:
+        img.save(f)
+
+    image_url = _qrcode_cdn_publish_one(relative_file=relative_file)
+    return redirect(to=image_url)
+
+

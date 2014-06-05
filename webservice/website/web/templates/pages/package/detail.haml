@@ -17,18 +17,20 @@
           %span.ios-web-icon.wifi.no 不需要联网
           %span.ios-web-icon.google 需要谷歌服务
 
+      {% download_url_as version product=product as dw_url %}
       .l.rel.left
         .auto.rel.pic
           %img.db.auto.pt1.mt20{:height => "175px", :src => "{% resource_url version 'icon' %}", :width => "175px"}
             %span.dib.abs.cover.png
-        %a.mt20.db.btn.btn-green.f16{:href => "#"} 下载应用
+        %a.mt20.db.btn.btn-green.f16{:href => "={dw_url}"} 下载应用
         -#
           .pt20.pb30.db.pct100.btn-s
             %a.a1.install{:href => "#", :target => ""} 下载到手机
             %a.a2{:href => "#", :target => ""} 下载到电脑
         .tc.pt20.p-code
-          %div
-            %img{:src => "http://static.ccplay.com.cn/static/common/img/code.png"}/
+          %div<
+            {% qurl '/qrcode/' url=dw_url as qr_url %}
+            %img{:src => "={qr_url}", :title => "={title}"}/
           %p.gr 扫描二维码即可下载
         %ul.g9.pt20.instr
           %li<
