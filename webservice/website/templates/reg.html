@@ -71,7 +71,7 @@
                                 	<dt class="l r-email"><label class="dib w100 tr pt5 mt2">邮箱地址</label></dt><dd class="rel" ><input name='email' class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="常用的电子邮箱" id="p-email" datatype="*"></dd>
                                 </dl> 
                                 <dl class="pb15"> 
-                                	<dt class="l r-yzm"><label class="dib w100 tr pt5 mt2">验证码</label></dt><dd class="rel verify" ><input class="pct40 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="4位验证码" maxlength="4" datatype="*4-4" id="p-yzm"><img alt="图片名称" src="#" width="90px" height="37px" class="abs yzm-img"><a title="链接名称" href="#"  class="dib ml5 gr pt10 r f12">看不清？</a></dd>
+                                	<dt class="l r-yzm"><label class="dib w100 tr pt5 mt2">验证码</label></dt><dd class="rel verify" ><input name="verify_code" class="pct40 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="4位验证码" maxlength="4" datatype="*4-4" id="p-yzm"><img alt="图片名称" src="#" width="90px" height="37px" class="abs yzm-img"><a title="链接名称" href="#"  class="dib ml5 gr pt10 r f12">看不清？</a></dd>
                                 </dl>
                                 
                                 
@@ -175,7 +175,7 @@
 
     var token = $('form.reg-form input[name="csrfmiddlewaretoken"]').val();
     var old_username, old_email;
-    var username_validate_tip, email_validate_tip;
+    var username_validate_tip, email_validate_tip, verify_code_tip;
 
     var show_tip = function(msg) {
       $('.login-tip').removeClass('Validform_right').removeClass('Validform_wrong').addClass('Validform_wrong').text(msg);
@@ -244,6 +244,26 @@
       }
     });
 
+    $('#p-yzm').bind('keyup', function() {
+      //alert($(this).val());
+      var verify_code = $(this).val();
+      if (verify_code.length === 4) {
+        $.ajax({
+          type: "POST",
+          url: {% url 'check_verify_code' %},
+          data: {verify_code: verify_code, csrfmiddlewaretoken: token},
+          success: function(msg){
+            if (msg.correct === 1){
+              verify_code_tip = '';
+            } else {
+              verify_code_tip = '验证码不正确';
+            }
+            show_tip(verify_code_tip);
+          }
+        });
+      }
+    }); 
+
     $('.reg-btn').bind('click', function() {
       var username = $('#p-id').val();
       var password = $('#p-password').val();
@@ -296,7 +316,12 @@
         show_tip(email_validate_tip);
         return false;
       }
-      
+
+      if (verify_code_tip) {
+        show_tip(verify_code_tip);
+        return false;
+      }
+
     });
     
   });

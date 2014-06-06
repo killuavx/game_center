@@ -182,6 +182,19 @@ def check_register_email_view(request):
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
 
+def check_verify_code_view(request):
+    resp = {'correct': 0}
+
+    if request.method == 'POST' and request.is_ajax():
+        verify_code = request.POST.get('verify_code', None)
+        if verify_code:
+            verify_code = verify_code.upper()
+        if verify_code == request.session['verify_code']:
+            resp = {'correct': 1}
+
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
+
 def register_view(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect('/')
