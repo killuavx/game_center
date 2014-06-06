@@ -86,9 +86,9 @@ OPTIONAL_APPS = (
 DEBUG_TOOLBAR_CONFIG = {"INTERCEPT_REDIRECTS": False}
 
 PAGE_MENU_TEMPLATES = (
-    (1, "Web Top Navigation", "pages/menus/web/navigation.haml"),
-    (2, "Left-hand tree", "pages/menus/tree.html"),
-    (3, "Web Footer", "pages/menus/footer.haml"),
+    (1, "Web Header", "pages/menus/web/navigation.haml"),
+    (2, "Web Top Navigation list", "pages/menus/web/nav-li.haml"),
+    (3, "Web Top Navigation sub list", "pages/menus/web/nav-sub-li.haml"),
     (5, "PC Navigation Menus", "pages/pc/menu/header.haml"),
 )
 
