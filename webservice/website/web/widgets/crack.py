@@ -39,6 +39,8 @@ class InDateFilterBackend(BaseWidgetFilterBackend):
     def filter_queryset(self, request, queryset, widget):
         d = getattr(widget, self.date_param)
         field = getattr(widget, self.filter_date_param)
+        if not d or not field:
+            queryset
         return queryset.filter(**{
             "%s__year" % field : d.year,
             "%s__month" % field: d.month,
@@ -140,4 +142,86 @@ class WebCrackTimeLinePanelWidget(base.ProductPropertyWidgetMixin,
         )
 
 
+class WebLatestTopBannersWidget(BaseMultiAdvWidget,
+                                base.ProductPropertyWidgetMixin,
+                                Widget):
 
+    template='pages/widgets/home/banner.haml'
+
+    def get_context(self, value=None, options=dict(), context=None):
+        self.slug = 'banner-web-latest'
+        return super(WebLatestTopBannersWidget, self).get_context(value=value,
+                                                                  options=options,
+                                                                  context=context)
+
+
+class WebLatestTimeLinePanelWidget(base.ProductPropertyWidgetMixin,
+                                   FilterWidgetMixin,
+                                   Widget):
+    filter_backends = ()
+
+    second_filter_backends = (InDateFilterBackend,
+                              PackageReleasedOrderFilterBackend,)
+
+    by_released = True
+
+    in_date = None
+
+    filter_date_field = 'released_datetime'
+
+    latest_day_count = 4
+
+    def get_title(self):
+        return '最新发布'
+
+    def get_queryset(self):
+        from warehouse.models import Package
+        return Package.objects.all()
+
+    def get_list(self):
+        return self.get_queryset().published()
+
+    def get_latest_days_by(self, queryset, now=None):
+        days = queryset \
+                   .dates(self.filter_date_field,
+                          'day', 'DESC')[0:self.latest_day_count]
+        _days = []
+        for d in days:
+            dt = d.astimezone()
+            _days.append(dict(
+                time_name=datesince(now.astimezone(), dt),
+                dt=dt,
+                url=None,
+                ))
+
+        from taxonomy.models import Category
+        _days[-1]['time_name'] = '以前'
+        _days[-1]['url'] = Category.absolute_url_as(slug=Category.ROOT_SLUG_GAME,
+                                                    product=self.product)
+        return _days
+
+    def get_context(self, value, options, context=None):
+        self.options = options
+        self.product = options.get('product')
+        if context:
+            self.request = context.get('request')
+        self.slug = _default_slug()
+        self.current_datetime = now()
+
+        result = list()
+        queryset = self.get_list()
+        self.filter_backends = ()
+        queryset = self.filter_queryset(queryset)
+
+        self.filter_backends = self.second_filter_backends
+        for grp in self.get_latest_days_by(queryset, now=self.current_datetime):
+            self.in_date = grp['dt']
+            result.append(dict(time_name=grp['time_name'],
+                               url=grp['url'],
+                               packages=self.filter_queryset(queryset)))
+
+        self.filter_backends = ()
+        return dict(
+            title=self.get_title(),
+            result=result,
+        )

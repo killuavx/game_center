@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from toolkit.helpers import current_request
 
@@ -92,7 +93,14 @@ class AuthorAbsoluteUrlMixin(AbsoluteUrlMixin):
 
 class CategoryAbsoluteUrlMixin(AbsoluteUrlMixin):
 
-    ROOT_SLUGS = ('game', 'application')
+    ROOT_SLUG_GAME = 'game'
+
+    ROOT_SLUG_APPLICATION = 'application'
+
+    ROOT_SLUGS = (
+        ROOT_SLUG_GAME,
+        ROOT_SLUG_APPLICATION
+    )
 
     def get_absolute_url_as(self, product, **kwargs):
         ETS = self._get_entry_types()
@@ -114,6 +122,14 @@ class CategoryAbsoluteUrlMixin(AbsoluteUrlMixin):
                 return reverse(self._page_view_name, kwargs=dict(slug=page_slug)) \
                        + '?category=%s' % self.pk
         return None
+
+    @classmethod
+    def absolute_url_as(cls, slug, product, **kwargs):
+        try:
+            cat = cls.objects.get(slug=slug)
+        except ObjectDoesNotExist:
+            return None
+        return cat.get_absolute_url_as(product=product, **kwargs)
 
 
 class TopicAbsoluteUrlMixin(AbsoluteUrlMixin):

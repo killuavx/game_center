@@ -4,17 +4,17 @@
 {% block main %}
     <!--广告开始 banner-->
     <div class="rel ovh banner crack-banner">
-    {% include_widget WebCrackTopBannersWidget %}
+    {% include_widget WebLatestTopBannersWidget %}
     </div>
     <!--广告结束 banner-->
 
     <!--应用列表 开始 app-list-page-->
     <div class="auto width rel app-list-page crack-page">
 
-        {% widget WebCrackTimeLinePanelWidget %}
+        {% widget WebLatestTimeLinePanelWidget %}
         <div class="cell most-expensive">
             <div class="f18 cell rel t-title">
-                <h3 class="l n mr30"><span class="abs ios-web-icon"></span>{{ category.name }}</h3>
+                <h3 class="l n mr30"><span class="abs ios-web-icon"></span>{{ title }}</h3>
             </div> <!--t-title-->
         </div>
 

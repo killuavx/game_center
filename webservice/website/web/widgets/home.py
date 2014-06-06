@@ -59,7 +59,8 @@ class WebHomeMasterpiecePackageListWidget(pkgwidget.BaseTopicalPackageListWidget
 class WebHomeLatestPackageListWidget(pkgwidget.BasePackageListWidget,
                                      base.ProductPropertyWidgetMixin,
                                      Widget):
-    pass
+    def get_more_url(self):
+        return '/latest/'
 
 
 class WebHomeTopicalPackageListWidget(pkgwidget.BaseTopicalPackageListWidget,
