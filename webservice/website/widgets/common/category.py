@@ -86,11 +86,15 @@ class BaseTopicAuthorPackageListWidget(object):
 
 class BaseCategorySelectorWidget(object):
 
+    packages_zero_ignore = True
+
     def get_category_selectlist(self, category):
         catlist = list()
         for cat in category.get_leafnodes():
             cat.affiliated_packages_count = cat.get_affiliated_packages()\
                                                 .published().count()
+            if cat.affiliated_packages_count == 0 and self.packages_zero_ignore:
+                continue
             catlist.append(cat)
         category.affiliated_packages_count = category.get_affiliated_packages()\
                                                 .published().count()

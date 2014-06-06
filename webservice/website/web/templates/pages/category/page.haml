@@ -33,21 +33,21 @@
                     全部
                   -else
                     = cat.name
-                  %span.r= cat.affiliated_packages_count
+                  %span.r
               -else
                 {% qurl request.get_full_path category=cat.pk topic=None lang=None page=None as second_url %}
                 -if cat.is_root_node
                   %a{:href => "{% qurl second_url category=None %}"}
                     全部
-                    %span.r= cat.affiliated_packages_count
+                    %span.r
                 -else
                   %a{:href => "={second_url}"}
                     = cat.name
-                    %span.r= cat.affiliated_packages_count
+                    %span.r
           %li
             %a{:href => "" }
               = cat.name
-              %span.r= cat.affiliated_packages_count
+              %span.r
 
       {% widget WebCategoryComplexPackageList category=category topic=topic lang=lang per_page=27 page=request.GET.page %}
       .l.btn-s-box.tj.p20.right-list

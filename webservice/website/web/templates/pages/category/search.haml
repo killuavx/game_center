@@ -26,20 +26,20 @@
                     全部
                   -else
                     = cat.name
-                  %span.r= cat.affiliated_packages_count
+                  %span.r
               -else
                 -if cat.is_root_node
                   %a{:href => "{% absolute_url cat product=product %}"}
                     全部
-                    %span.r= cat.affiliated_packages_count
+                    %span.r
                 -else
                   %a{:href => "{% absolute_url cat product=product %}"}
                     = cat.name
-                    %span.r= cat.affiliated_packages_count
+                    %span.r
           %li
             %a{:href => "" }
               = cat.name
-              %span.r= cat.affiliated_packages_count
+              %span.r
       {% endwidget %}
 
       .l.btn-s-box.tj.p20.right-list
