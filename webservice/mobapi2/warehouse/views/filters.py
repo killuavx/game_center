@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import filters
 from django.http import Http404
+from taxonomy.models import Category
 from searcher.search_filters import PackageSearchRestFilter as SolrSearchFilter
 
 
@@ -114,3 +116,24 @@ def factory_topicalitem_filterbackend(for_model):
 from warehouse.models import Package, Author
 TopicalPackageFilter = factory_topicalitem_filterbackend(Package)
 TopicalAuthorFilter = factory_topicalitem_filterbackend(Author)
+
+
+class AffiliatedCategoryPackageFilter(filters.BaseFilterBackend):
+
+    request_cat_param = 'category'
+
+    def filter_queryset(self, request, queryset, view):
+        cat_pk = request.GET.get(self.request_cat_param)
+        if not cat_pk:
+            return queryset
+        try:
+            category = Category.objects.get(pk=cat_pk)
+        except ObjectDoesNotExist:
+            return queryset
+
+        if not category.is_leaf_node():
+            cat_ids = list(category.get_descendants(include_self=True) \
+                .values_list('pk', flat=True))
+            return queryset.filter(categories__pk__in=cat_ids).distinct()
+        else:
+            return queryset.filter(categories=category.pk)

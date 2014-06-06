@@ -156,7 +156,7 @@ class PackageListApiUrlEncode(BaseWarehouseApiUrlEncode):
 
     viewname = 'package-list'
 
-    category_param = 'categories'
+    category_param = 'category'
     category = None
 
     def __init__(self, **kwargs):
@@ -202,7 +202,6 @@ def get_category_packages_url(category, ordering=None, router=None, request=None
                                         request=request,
                                         router=router)
     url = apiencode.get_url()
-    print(url)
     return url
 
 

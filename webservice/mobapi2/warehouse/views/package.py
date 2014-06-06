@@ -14,6 +14,7 @@ from mobapi2.warehouse.views.filters import (
     SolrSearchFilter,
     RelatedPackageSearchFilter,
     TopicalPackageFilter,
+    AffiliatedCategoryPackageFilter,
     )
 from django.http import Http404
 from rest_framework_extensions.cache.decorators import cache_response
@@ -112,6 +113,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
                        filters.SearchFilter,
                        RelatedPackageSearchFilter,
                        TopicalPackageFilter,
+                       AffiliatedCategoryPackageFilter,
     )
     filter_fields = ('package_name', 'title', 'categories')
     ordering = ('-released_datetime', )
