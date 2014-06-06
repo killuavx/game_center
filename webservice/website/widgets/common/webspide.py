@@ -5,13 +5,14 @@ from website.widgets.common.base import BaseListWidget
 
 class BaseForumThreadPanelWdiget(BaseListWidget):
 
-    rss_link = 'http://bbs.ccplay.com.cn/api.php?mod=rss&bid=45'
-
-    more_url = 'http://bbs.ccplay.com.cn/'
+    rss_link = None
 
     def get_rss_content(self):
         if not hasattr(self, '_rss'):
-            self._rss = parse(self.rss_link)
+            try:
+                self._rss = parse(self.rss_link)
+            except:
+                self._rss = None
         return self._rss
 
     def get_more_url(self):
@@ -27,7 +28,10 @@ class BaseForumThreadPanelWdiget(BaseListWidget):
             return None
 
     def get_list(self):
-        posts = self.get_rss_content()['entries']
+        try:
+            posts = self.get_rss_content()['entries']
+        except:
+            return list()
         items = []
         for post in posts:
             items.append(dict(
@@ -44,6 +48,7 @@ class BaseForumThreadPanelWdiget(BaseListWidget):
         return items
 
     def get_context(self, value=None, options=dict(), context=None, *kwargs):
+        self.rss_link = options.get('rss_link')
         return super(BaseForumThreadPanelWdiget, self).get_context(value=value,
                                                             options=options,
                                                             context=context

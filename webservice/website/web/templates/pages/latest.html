@@ -1,12 +1,13 @@
 {% extends "pages/page_web.html" %}
-{% load widgets url_tags %}
+{% load widgets url_tags templatehelper_tags %}
 
 {% block main %}
-    <!--广告开始 banner-->
+    {% settings_value "GC_WEB_LATEST_A1_PLACE_SLUG" as A1_PLACE_SLUG %}
+    <!--广告开始 banner {{ A1_PLACE_SLUG }}-->
     <div class="rel ovh banner crack-banner">
-    {% include_widget WebLatestTopBannersWidget %}
+    {% include_widget WebLatestTopBannersWidget slug=A1_PLACE_SLUG %}
     </div>
-    <!--广告结束 banner-->
+    <!--广告结束 banner {{ A1_PLACE_SLUG }}-->
 
     <!--应用列表 开始 app-list-page-->
     <div class="auto width rel app-list-page crack-page">

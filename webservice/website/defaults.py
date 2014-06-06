@@ -38,7 +38,7 @@ place_choices = LazyIter(_place_setup)
 rankingtype_choices = LazyIter(_rankingtype_setup)
 
 register_setting(
-    name="GC_WEB_HOME_BANNER_SLUG",
+    name="GC_WEB_HOME_A1_PLACE_SLUG",
     description=_("主站首页,头部Banner的广告位置slug" ),
     editable=True,
     default='banner-web',
@@ -46,24 +46,24 @@ register_setting(
 )
 
 register_setting(
-    name="GC_WEB_CRACK_BANNER_SLUG",
+    name="GC_WEB_CRACK_A1_PLACE_SLUG",
     description=_("主站破解页面,头部Banner的广告位置slug" ),
     editable=True,
     default='banner-web-crack',
     choices=place_choices,
 )
 
-
 register_setting(
-    name="GC_WEB_HOME_TP_TOPIC_SLUG",
-    description=_("主站首页,头部软件列表轮播所属的专区slug" ),
+    name="GC_WEB_LATEST_A1_PLACE_SLUG",
+    description=_("主站最新发布页面,头部Banner的广告位置slug" ),
     editable=True,
-    default='masterpiece',
-    choices=topic_choices
-)
+    default='banner-web-latest',
+    choices=place_choices,
+    )
+
 
 register_setting(
-    name="GC_WEB_HOME_R1C2P_TOPIC_SLUG",
+    name="GC_WEB_HOME_T1_TOPIC_SLUG",
     description=_("主站首页,行1列2软件列表专区slug" ),
     editable=True,
     default='charge-recommend',
@@ -71,7 +71,7 @@ register_setting(
 )
 
 register_setting(
-    name="GC_WEB_HOME_R1C3P_TOPIC_SLUG",
+    name="GC_WEB_HOME_T2_TOPIC_SLUG",
     description=_("主站首页,行1列3软件列表专区slug" ),
     editable=True,
     default='network-game',
@@ -79,7 +79,7 @@ register_setting(
 )
 
 register_setting(
-    name="GC_WEB_HOME_R2C1A_PLACE_SLUG",
+    name="GC_WEB_HOME_A2_PLACE_SLUG",
     description=_("主站首页,行2列1广告位slug" ),
     editable=True,
     default='',
@@ -87,7 +87,7 @@ register_setting(
 )
 
 register_setting(
-    name="GC_WEB_HOME_R2C2A_PLACE_SLUG",
+    name="GC_WEB_HOME_A3_PLACE_SLUG",
     description=_("主站首页,行2列2广告位slug" ),
     editable=True,
     default='',
@@ -95,7 +95,7 @@ register_setting(
 )
 
 register_setting(
-    name="GC_WEB_HOME_R4C1A_PLACE_SLUG",
+    name="GC_WEB_HOME_A4_PLACE_SLUG",
     description=_("主站首页,行4列1广告位slug" ),
     editable=True,
     default='',
@@ -103,7 +103,7 @@ register_setting(
 )
 
 register_setting(
-    name="GC_WEB_HOME_R4C2A_PLACE_SLUG",
+    name="GC_WEB_HOME_A5_PLACE_SLUG",
     description=_("主站首页,行4列2广告位slug" ),
     editable=True,
     default='',
@@ -111,7 +111,7 @@ register_setting(
 )
 
 register_setting(
-    name="GC_WEB_HOME_R4_TOPIC_SLUG",
+    name="GC_WEB_HOME_T3_TOPIC_SLUG",
     description=_("主站首页,行4合集位slug" ),
     editable=True,
     default='spec-choice-topic',
@@ -119,7 +119,7 @@ register_setting(
     )
 
 register_setting(
-    name="GC_WEB_HOME_R6C1A_PLACE_SLUG",
+    name="GC_WEB_HOME_T4_PLACE_SLUG",
     description=_("主站首页,行6列1广告位slug" ),
     editable=True,
     default='',
@@ -127,7 +127,7 @@ register_setting(
 )
 
 register_setting(
-    name="GC_WEB_HOME_R6C2A_PLACE_SLUG",
+    name="GC_WEB_HOME_A6_PLACE_SLUG",
     description=_("主站首页,行6列2广告位slug" ),
     editable=True,
     default='',
@@ -135,11 +135,26 @@ register_setting(
 )
 
 register_setting(
-    name="GC_WEB_HOME_R6_TOPIC_SLUG",
+    name="GC_WEB_HOME_A7_TOPIC_SLUG",
     description=_("主站首页,行6合集位slug" ),
     editable=True,
     default='spec-choice-topic',
     choices=topic_choices
+)
+
+
+register_setting(
+    name="GC_WEB_HOME_F1_RSS_LINK",
+    description=_("主站首页,论坛热帖rss地址" ),
+    editable=True,
+    default='http://bbs.ccplay.com.cn/api.php?mod=rss&bid=45',
+)
+
+register_setting(
+    name="GC_WEB_HOME_F2_RSS_LINK",
+    description=_("主站首页,论坛新手rss地址" ),
+    editable=True,
+    default='http://bbs.ccplay.com.cn/api.php?mod=rss&bid=101',
 )
 
 

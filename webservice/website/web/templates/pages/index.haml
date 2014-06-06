@@ -5,7 +5,7 @@
   {% cache 600 product_web request.get_host request.path_info request.GET %}
   / START Banner
   .rel.ovh.banner
-    {% settings_value "GC_WEB_HOME_BANNER_SLUG" as BANNER_SLUG %}
+    {% settings_value "GC_WEB_HOME_A1_PLACE_SLUG" as BANNER_SLUG %}
     {% include_widget WebHomeTopBannersWidget slug=BANNER_SLUG %}
   / END Banner
 
@@ -23,7 +23,7 @@
     .cell-bk
       / START 首发破解
       .l.pt20.hot-news
-        {% settings_value "GC_WEB_HOME_R1C2P_TOPIC_SLUG" as R1C2P_TOPIC_SLUG %}
+        {% settings_value "GC_WEB_HOME_T1_TOPIC_SLUG" as R1C2P_TOPIC_SLUG %}
         {% include_widget WebHomeTopicalPackageListWidget slug=R1C2P_TOPIC_SLUG per_page=6 template='pages/widgets/home/r1c2-package-panel.haml'%}
       / END 首发破解
 
@@ -34,7 +34,7 @@
       / latest-released
 
       .r.abs.pt20.most-expensive
-        {% settings_value "GC_WEB_HOME_R1C3P_TOPIC_SLUG" as R1C3P_TOPIC_SLUG %}
+        {% settings_value "GC_WEB_HOME_T2_TOPIC_SLUG" as R1C3P_TOPIC_SLUG %}
         {% include_widget WebHomeTopicalPackageListWidget slug=R1C3P_TOPIC_SLUG per_page=8 template='pages/widgets/home/r1c3-package-panel.haml'%}
       / most-expensive
 
@@ -45,10 +45,10 @@
   .auto.width.cc-a-d-box
     .rel.pt20.cell-bk.ovh
       .l-box.cc-a-d-2
-        {% settings_value "GC_WEB_HOME_R2C1A_PLACE_SLUG" as R2C1A_PLACE_SLUG %}
+        {% settings_value "GC_WEB_HOME_A2_PLACE_SLUG" as R2C1A_PLACE_SLUG %}
         {% include_widget WebSingleAdvertisementWidget slug=R2C1A_PLACE_SLUG %}
       .r-box.cc-a-d-3
-        {% settings_value "GC_WEB_HOME_R2C2A_PLACE_SLUG" as R2C2A_PLACE_SLUG %}
+        {% settings_value "GC_WEB_HOME_A3_PLACE_SLUG" as R2C2A_PLACE_SLUG %}
         {% include_widget WebSingleAdvertisementWidget slug=R2C2A_PLACE_SLUG %}
   / END 广告 行2
 
@@ -73,10 +73,10 @@
   .auto.width.cc-a-d-box
     .rel.pt20.cell-bk.ovh
       .l-box.cc-a-d-2
-        {% settings_value "GC_WEB_HOME_R4C1A_PLACE_SLUG" as R4C1A_PLACE_SLUG %}
+        {% settings_value "GC_WEB_HOME_A4_PLACE_SLUG" as R4C1A_PLACE_SLUG %}
         {% include_widget WebSingleAdvertisementWidget slug=R4C1A_PLACE_SLUG %}
       .r-box.cc-a-d-3
-        {% settings_value "GC_WEB_HOME_R4C2A_PLACE_SLUG" as R4C2A_PLACE_SLUG %}
+        {% settings_value "GC_WEB_HOME_A5_PLACE_SLUG" as R4C2A_PLACE_SLUG %}
         {% include_widget WebSingleAdvertisementWidget slug=R4C2A_PLACE_SLUG %}
   / END 广告 行4
   {% endif %}
@@ -84,7 +84,7 @@
   / START collections 行4
   .auto.rel.width.box_btn.roll.ovh.project
     .tj.pct100
-      {% settings_value "GC_WEB_HOME_R4_TOPIC_SLUG" as R4_TOPIC_SLUG %}
+      {% settings_value "GC_WEB_HOME_T3_TOPIC_SLUG" as R4_TOPIC_SLUG %}
       {% include_widget WebHomeCollectionListWidget slug=R4_TOPIC_SLUG per_page=4 %}
     / pct100
   / END collections 行4
@@ -108,10 +108,10 @@
   .auto.width.cc-a-d-box
     .rel.pt20.cell-bk.ovh
       .l-box.cc-a-d-2
-        {% settings_value "GC_WEB_HOME_R6C1A_PLACE_SLUG" as R6C1A_PLACE_SLUG %}
+        {% settings_value "GC_WEB_HOME_A6_PLACE_SLUG" as R6C1A_PLACE_SLUG %}
         {% include_widget WebSingleAdvertisementWidget slug=R6C1A_PLACE_SLUG %}
       .r-box.cc-a-d-3
-        {% settings_value "GC_WEB_HOME_R6C2A_PLACE_SLUG" as R6C2A_PLACE_SLUG %}
+        {% settings_value "GC_WEB_HOME_A7_PLACE_SLUG" as R6C2A_PLACE_SLUG %}
         {% include_widget WebSingleAdvertisementWidget slug=R6C2A_PLACE_SLUG %}
   / END 广告 行6
   {% endif %}
@@ -119,7 +119,7 @@
   / START collections 行6
   .auto.rel.width.box_btn.roll.ovh.project
     .tj.pct100
-      {% settings_value "GC_WEB_HOME_R6_TOPIC_SLUG" as R6_TOPIC_SLUG %}
+      {% settings_value "GC_WEB_HOME_T4_TOPIC_SLUG" as R6_TOPIC_SLUG %}
       {% include_widget WebHomeCollectionListWidget slug=R6_TOPIC_SLUG per_page=4 %}
     / pct100
   / END collections 行6
@@ -131,7 +131,8 @@
     .rel.cell-bk
 
       .l.pt20.hot-bbs
-        {% include_widget WebHomeForumHotThreadPanelWidget per_page=12 %}
+        {% settings_value "GC_WEB_HOME_F1_RSS_LINK" as F1_RSS_LINK %}
+        {% include_widget WebHomeForumHotThreadPanelWidget rss_link=F1_RSS_LINK per_page=12 %}
       / hot bbs
 
       .l.pt20.abs.vendor
@@ -139,7 +140,8 @@
       / vendor
 
       .r.pt20.abs.novice-bbs
-        {% include_widget WebHomeForumNoviceThreadPanelWidget per_page=12 %}
+        {% settings_value "GC_WEB_HOME_F2_RSS_LINK" as F2_RSS_LINK %}
+        {% include_widget WebHomeForumNoviceThreadPanelWidget rss_link=F2_RSS_LINK per_page=12 %}
       / novice-bbs
 
     / cell-bk
