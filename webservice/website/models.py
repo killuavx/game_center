@@ -51,7 +51,7 @@ if settings.DEBUG:
 
 
 
-def captcha(img_width=90, img_height=37, font_size=22):
+def captcha(img_width=90, img_height=37, font_size=25):
 
     """
     background  #随机背景颜色
@@ -63,36 +63,39 @@ def captcha(img_width=90, img_height=37, font_size=22):
     font = I#验证码字体
     """
 
-    string = '012345679ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    num = '2345678'
+    string = 'ABCDEFHKLMNPQRSTUVWXYZ'
     #background = (random.randrange(230,255),random.randrange(230,255),random.randrange(230,255))
     background = (255, 255, 255)
-    line_color = (random.randrange(0,255),random.randrange(0,255),random.randrange(0,255))
+    #line_color = (random.randrange(0,255),random.randrange(0,255),random.randrange(0,255))
     #img_width = 90
     #img_height = 37
     font_color = ['black','darkblue','darkred']
     #font_size = 22
-    font = ImageFont.truetype('/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-B.ttf',font_size)
+    #font = ImageFont.truetype('/usr/share/fonts/truetype/ubuntu-font-family/Ubuntu-B.ttf',font_size)
+    fonts = [ImageFont.truetype('/home/huasheng/fonts/Jackey_HandWrite.ttf',font_size),
+             ImageFont.truetype('/home/huasheng/fonts/HoneyLight.ttf',font_size)]
 
     #新建画布
     im = Image.new('RGB',(img_width,img_height), background)
     draw = ImageDraw.Draw(im)
-    code = random.sample(string, 4)
     #新建画笔
     draw = ImageDraw.Draw(im)
 
     #画干扰线
-    for i in range(random.randrange(6,8)):
-        xy = (random.randrange(0,img_width),random.randrange(0,img_height),
-              random.randrange(0,img_width),random.randrange(0,img_height))
-        draw.line(xy,fill=line_color,width=1)
+    #for i in range(random.randrange(6,8)):
+    #    xy = (random.randrange(0,img_width),random.randrange(0,img_height),
+    #          random.randrange(0,img_width),random.randrange(0,img_height))
+    #    draw.line(xy,fill=line_color,width=1)
 
     #写入验证码文字
+    code = random.sample(''.join([string, num, string.lower()]), 4)
     x = 2
     for i in code:
         y = random.randrange(0,10)
-        draw.text((x,y), i, font=font, fill=random.choice(font_color))
+        draw.text((x,y), i, font=fonts[random.randrange(0,2)], fill=random.choice(font_color))
         x += 15
 
-    verify = ''.join(code)
+    verify = ''.join(code).upper()
 
     return im, verify

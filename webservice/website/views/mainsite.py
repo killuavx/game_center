@@ -189,6 +189,8 @@ def check_verify_code_view(request):
         verify_code = request.POST.get('verify_code', None)
         if verify_code:
             verify_code = verify_code.upper()
+        print (verify_code)
+        print (request.session['verify_code'])
         if verify_code == request.session['verify_code']:
             resp = {'correct': 1}
 
@@ -262,6 +264,7 @@ def reset_password_view(request):
 def captcha_view(request):
     img, verify = captcha()
     request.session['verify_code'] = verify
+    #print (request.session['verify_code'])
     response = HttpResponse(mimetype="image/gif")
     img.save(response, "gif")
     return response
