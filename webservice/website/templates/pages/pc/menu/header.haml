@@ -14,7 +14,7 @@
             %a.hover{:href => "#"}= page.title
           -else
             -# 临时解决
-            -if page.slug == 'http://bbs.ccplay.com.cn/'
+            -if page.title == '许愿' or page.title == '论坛'
               %a{:href => "={page.get_absolute_url}", :target => "_blank"}= page.title
             -else
               %a{:href => "={page.get_absolute_url}"}= page.title
