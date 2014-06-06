@@ -105,25 +105,68 @@ def mainsite_view(request):
     context = {}
     return TemplateResponse(request=request, template=template, context=context)
 
+
 def ajax_login_view(request):
     resp = {"login": -1}
 
     if request.method == 'POST' and request.is_ajax():
-        verify_code = request.POST.get('verify_code', None)
-        if verify_code:
-            verify_code = verify_code.upper()
+        count = request.session.get('try_login_count', None)
+        if not count:
+            count = 0
+        request.session['try_login_count'] = count + 1
+        #print (request.session['try_login_count'])
 
-        if verify_code != request.session['verify_code']:
-            resp["login"] = -2
+        if request.session['try_login_count'] > 3:
+            verify_code = request.POST.get('verify_code', None)
+            if verify_code:
+                verify_code = verify_code.upper()
+            if verify_code != request.session.get('verify_code', None):
+                resp["login"] = -2
+                resp["count"] = request.session['try_login_count']
+                return HttpResponse(json.dumps(resp), content_type="application/json")
+
+        username = request.POST.get('username', None)
+        password = request.POST.get('password', None)
+        user = authenticate(username=username, password=password)
+
+        if not user:
+            resp["login"] = -3
+        elif user.is_active:
+            login(request, user)
+            resp["login"] = 0
         else:
-            username = request.POST.get('username', None)
-            password = request.POST.get('password', None)
-            user = authenticate(username=username, password=password)
-            if user and user.is_active:
-                login(request, user)
-                resp["login"] = 0
+            resp["login"] = -4
+
+        resp["count"] = request.session['try_login_count']
 
     return HttpResponse(json.dumps(resp), content_type="application/json")
+
+#def ajax_login_view(request):
+#    resp = {"login": -1}
+#
+#    if request.method == 'POST' and request.is_ajax():
+#        verify_code = request.POST.get('verify_code', None)
+#        if verify_code:
+#            verify_code = verify_code.upper()
+#
+#        if verify_code != request.session['verify_code']:
+#            resp["login"] = -2
+#        else:
+#            username = request.POST.get('username', None)
+#            password = request.POST.get('password', None)
+#            user = authenticate(username=username, password=password)
+#            if user and user.is_active:
+#                login(request, user)
+#                resp["login"] = 0
+#            else:
+#                count = request.session.get('try_login_count', None)
+#                if not count:
+#                    request.session['try_login_count'] = 1
+#                else:
+#                    request.session['try_login_count'] = count + 1
+#
+#
+#    return HttpResponse(json.dumps(resp), content_type="application/json")
 
 
 def ajax_logout_view(request):

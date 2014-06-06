@@ -51,7 +51,7 @@
         <ul class="p15 fw">
             <li class="pl10 bg-white bde"><input name="username" class="bd-none pt10 pb10 f16 pct100" id="p-id" type="text" placeholder="用户名\手机号码\电子邮箱" datatype="*"></li>
             <li class="pl10 bg-white bde mt10 mb10"><input name="password" class="bd-none pt10 pb10 f16 pct100" id="p-password" type="password" placeholder="登录密码"  datatype="*6-16"></li>
-            <li class="pl10 h32 pb10 ovh rel bg-white bde verify"><input class="bd-none pt10 pb10 f16 pct40" id="p-yzm" maxlength="4" type="text" placeholder="验证码" datatype="*4-4"><img alt="图片名称" src="#" width="90px" height="37px" class="abs yzm-img poi"><a title="链接名称" href="#"  class="dib ml5 pt10 gr r">看不清？</a></li>
+            <li class="pl10 h32 pb10 ovh rel bg-white bde verify" style="display:none;"><input class="bd-none pt10 pb10 f16 pct40" id="p-yzm" maxlength="4" type="text" placeholder="验证码" datatype="*4-4"><img alt="图片名称" src="#" width="90px" height="37px" class="abs yzm-img poi"><a title="链接名称" href="#"  class="dib ml5 pt10 gr r">看不清？</a></li>
             <li class="mt10 rel"><button class="db pct100 btn btn-red f16 poi login-btn">立即登录</button></li>
             <li class="p10 mb5"><label class="l"><input type="checkbox"> 论坛账号</label><a title="链接名称" href="#" class="gr r">忘记密码？</a></li>
             <li class="pt20 mb10"><a title="链接名称" href="{% url 'mainsite_register' %}" class="db btn btn-silver f16 poi bg-creg-btn">免费注册账号</a></li>
@@ -111,17 +111,24 @@
 
 $(function(){
 
-  var time = (new Date()).getTime();
-  $('.verify img').attr('src', '{% url "captcha" %}?t=' + time);
+  var get_captcha = function() {
+    var time = (new Date()).getTime();
+    $('img.yzm-img').attr('src', '{% url "captcha" %}?t=' + time);
+  };
+
+  get_captcha();
 
   $('.verify a').click(function() {
-    var time = (new Date()).getTime();
-    $(this).siblings('img').attr('src', '{% url "captcha" %}?t=' + time);
+    get_captcha();
     return false;
+  });
 
+  $('.yzm-img').click(function() {
+    get_captcha();
   });
 
   var token = $('form.login-form input[name="csrfmiddlewaretoken"]').val();
+  var verify_enabled = false;
 
   var show_tip = function (msg) {
     if (!msg) {
@@ -135,7 +142,7 @@ $(function(){
   $('#p-yzm').bind('keyup', function() {
     //alert($(this).val());
     var verify_code = $(this).val();
-    if (verify_code.length === 4) {
+    if (verify_enabled && verify_code.length === 4) {
       $.ajax({
         type: "POST",
         url: {% url 'check_verify_code' %},
@@ -167,7 +174,7 @@ $(function(){
       return false;
     }
 
-    if (!verify_code) {
+    if (verify_enabled && !verify_code) {
       show_tip('验证码不能为空！');
       return false;
     }
@@ -177,16 +184,23 @@ $(function(){
       url: $('form.login-form').attr('action'),
       data: {username: username, password: password, csrfmiddlewaretoken: token, verify_code: verify_code},
       success: function(data){
+        if (data.count > 2 && $('.verify').attr('style')) {
+          $('.verify').removeAttr('style');
+          verify_enabled = true;
+        }
         if (data.login === 0) {
           $.zxxbox('<div class="p20 f20 white tc">登陆成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});                         
           $('#login-reg').addClass('dn');
           $('#change-logout').removeClass('dn').children('a').attr('title', username).text(username);
         } else if (data.login === -2) {
           show_tip('验证码错误！');
-        } else {
+        } else if (data.login === -3){
           show_tip('用户名或密码错误！');
+        } else if (data.login === -4) {
+          show_tip('该用户没有激活！');
+        } else {
+          //
         }
-
       }
     });
 
