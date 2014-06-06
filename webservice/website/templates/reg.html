@@ -178,7 +178,11 @@
     var username_validate_tip, email_validate_tip, verify_code_tip;
 
     var show_tip = function(msg) {
-      $('.login-tip').removeClass('Validform_right').removeClass('Validform_wrong').addClass('Validform_wrong').text(msg);
+      if (!msg) {
+        $('.login-tip').removeClass('Validform_right').addClass('Validform_right').removeClass('Validform_wrong').text(msg);
+      } else {
+        $('.login-tip').removeClass('Validform_right').removeClass('Validform_wrong').addClass('Validform_wrong').text(msg);
+      }
     };
 
     var ajax_check_username = function(username) {
