@@ -163,25 +163,31 @@
 
   $(function(){
 
-    var time = (new Date()).getTime();
-    $('.verify img').attr('src', '{% url "captcha" %}?t=' + time);
+    var get_captcha = function() {
+      var time = (new Date()).getTime();
+      $('img.yzm-img').attr('src', '{% url "captcha" %}?t=' + time);
+    };
+
+    get_captcha();
 
     $('.verify a').click(function() {
-      var time = (new Date()).getTime();
-      $(this).siblings('img').attr('src', '{% url "captcha" %}?t=' + time);
+      get_captcha();
       return false;
+    });
 
+    $('.yzm-img').click(function() {
+      get_captcha();
     });
 
     var token = $('form.reg-form input[name="csrfmiddlewaretoken"]').val();
-    var old_username, old_email;
+    var old_username, old_email, old_verify_code;
     var username_validate_tip, email_validate_tip, verify_code_tip;
 
     var show_tip = function(msg) {
       if (!msg) {
-        $('.login-tip').removeClass('Validform_right').addClass('Validform_right').removeClass('Validform_wrong').text(msg);
+        $('.login-tip').removeClass('Validform_right').addClass('Validform_right').removeClass('Validform_checktip').removeClass('Validform_wrong').text(msg);
       } else {
-        $('.login-tip').removeClass('Validform_right').removeClass('Validform_wrong').addClass('Validform_wrong').text(msg);
+        $('.login-tip').removeClass('Validform_right').removeClass('Validform_wrong').addClass('Validform_wrong').removeClass('Validform_checktip').addClass('Validform_checktip').text(msg);
       }
     };
 
@@ -251,7 +257,9 @@
     $('#p-yzm').bind('keyup', function() {
       //alert($(this).val());
       var verify_code = $(this).val();
-      if (verify_code.length === 4) {
+      if (verify_code.length === 4 && verify_code !== old_verify_code) {
+        old_verify_code = verify_code;
+
         $.ajax({
           type: "POST",
           url: {% url 'check_verify_code' %},

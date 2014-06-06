@@ -189,8 +189,8 @@ def check_verify_code_view(request):
         verify_code = request.POST.get('verify_code', None)
         if verify_code:
             verify_code = verify_code.upper()
-        print (verify_code)
-        print (request.session['verify_code'])
+        #print (verify_code)
+        #print (request.session['verify_code'])
         if verify_code == request.session['verify_code']:
             resp = {'correct': 1}
 
