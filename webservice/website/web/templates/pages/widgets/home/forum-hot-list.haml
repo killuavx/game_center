@@ -9,13 +9,15 @@
       %li.cell-bk{:class => "{% if forloop.first %}first{% endif %}"}
         %h4.l
           %a{:href => "={post.url}", :target => "_blank"}
-            %img{:src => "={post.icon.url}"}
+            %img{:src => "={post.avatar_url}"}
             = post.title
-        %span.r.g9.f10{:title => "发布日期"}
-          = post.pub_date
+        %span.r.g9.f10{:title => "回复|查看"}
+          = post.replies_count
+          %em>< |
+          = post.views_count
         %span.abs.ios-web-icon
-        -# if forloop.first
+        - if forloop.first and post.summary
           %p.cl.g9
-            59个文字描述文字描述文字描描述文字描文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字
-            %a.gr{:href => "#", :target => "_blank"} [全文]
+            = post.summary
+            %a.gr{:href => "={post.url}", :target => "_blank"} [全文]
 / hot-bbs-list

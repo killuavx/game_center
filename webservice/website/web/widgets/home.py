@@ -107,9 +107,9 @@ class WebHomeForumHotThreadPanelWidget(BaseForumThreadPanelWdiget,
                                        base.ProductPropertyWidgetMixin,
                                        Widget):
 
-    title = '热帖'
-
     per_page = 12
+
+    rss_link = 'http://bbs.ccplay.com.cn/api.php?mod=rss&bid=45'
 
     template = 'pages/widgets/home/forum-hot-list.haml'
 
@@ -118,7 +118,7 @@ class WebHomeForumNoviceThreadPanelWidget(BaseForumThreadPanelWdiget,
                                           base.ProductPropertyWidgetMixin,
                                           Widget):
 
-    title = '新手'
+    rss_link = 'http://bbs.ccplay.com.cn/api.php?mod=rss&bid=101'
 
     per_page = 12
 

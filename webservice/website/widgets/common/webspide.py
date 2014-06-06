@@ -9,16 +9,34 @@ class BaseForumThreadPanelWdiget(BaseListWidget):
 
     more_url = 'http://bbs.ccplay.com.cn/'
 
+    def get_rss_content(self):
+        if not hasattr(self, '_rss'):
+            self._rss = parse(self.rss_link)
+        return self._rss
+
     def get_more_url(self):
-        return self.more_url
+        try:
+            return self.get_rss_content()['feed']['link']
+        except:
+            return None
+
+    def get_title(self):
+        try:
+            return self.get_rss_content()['feed']['title']
+        except:
+            return None
 
     def get_list(self):
-        posts = parse(self.rss_link)['entries']
+        posts = self.get_rss_content()['entries']
         items = []
         for post in posts:
             items.append(dict(
                 title=post.title,
                 url=post.link,
+                summary=post.summary,
+                avatar_url=post.avatar,
+                replies_count=post.replies,
+                views_count=post.views,
                 category=post.category,
                 category_url=post.categorylink,
                 pub_date=post.published
