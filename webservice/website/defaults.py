@@ -12,7 +12,7 @@ class LazyIter(SimpleLazyObject):
     def __iter__(self):
         if self._wrapped is empty:
             return iter(self._setup())
-        rtn = iter(self._setup())
+        rtn = iter(self._wrapped)
         self._wrapped = empty
         return rtn
 
