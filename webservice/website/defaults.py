@@ -10,7 +10,11 @@ from mezzanine.conf import register_setting
 class LazyIter(SimpleLazyObject):
 
     def __iter__(self):
-        return iter(self._setup())
+        if self._wrapped is empty:
+            return iter(self._setup())
+        rtn = iter(self._setup())
+        self._wrapped = empty
+        return rtn
 
 def _topic_setup():
     from taxonomy.models import Topic
