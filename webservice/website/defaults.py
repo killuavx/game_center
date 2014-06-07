@@ -136,11 +136,11 @@ register_setting(
 )
 
 register_setting(
-    name="GC_WEB_HOME_A7_TOPIC_SLUG",
+    name="GC_WEB_HOME_A7_PLACE_SLUG",
     description=_("主站首页,行6合集位slug" ),
     editable=True,
-    default='spec-choice-topic',
-    choices=topic_choices
+    default='',
+    choices=place_choices,
 )
 
 
