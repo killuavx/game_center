@@ -159,8 +159,7 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 	};	
 	li_btn($(".app-list-min,.app-list-xl,.maste_lsit"),".btn-s");
 	li_btn($(".sort"),".sort-menu");
-	li_btn($(".box_btn,.collection_box"),".a_btn");	
-	li_btn($(".logo .rel"),".home");	
+	li_btn($(".box_btn,.collection_box"),".a_btn");
 	
 //首个APP展开	
 	function li_hover(eobj,cssClass){

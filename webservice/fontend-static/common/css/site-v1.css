@@ -154,7 +154,7 @@ animation: toTopFromBottom .3s forwards;}
 	.num li.on { background:none; opacity: 1; width: 20px; height: 6px; position:relative; top:1px}
 
 
-.banner-page .arrow { display:block; position:absolute; top:35px; z-index:9; width:67px; height:130px; opacity:0; filter:alpha(opacity=25); cursor:pointer; outline:none; background-image:url(http://images.apple.com/global/elements/fix-b.png);
+.banner-page .arrow { display:block; position:absolute; top:35px; z-index:9; width:67px; height:130px; opacity:0; filter:alpha(opacity=25); cursor:pointer; outline:none;
 	-webkit-transition:.25s opacity linear;
 	   -moz-transition:.25s opacity linear;
 	        transition:.25s opacity linear;
@@ -203,7 +203,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .most-expensive,.novice-bbs{width:300px; right:0}
 
 /*时光轴*/
-.multi{z-index:3}
+.multi{z-index:3; min-height:831px;}
 .time-box-t{background:url(http://static.ccplay.com.cn/static/common/img/time-line-2.png) 37px bottom no-repeat; padding-bottom:40px}
 .time-box-b{background:url(http://static.ccplay.com.cn/static/common/img/time-line-1.png) 37px 0 repeat-y}
 .t-title{height:35px; border-bottom:2px solid #ccc; background-color:#fff}
@@ -267,6 +267,9 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .app-list-min .ios-web-icon.auto{width:70px; height:70px; background-position:-1px -585px; left:15px; top:15px}
 .app-list-min .btn-s{position:absolute; bottom:0px; width:68px; padding-left:16px; height:46px;}
 .app-list-min .btn-s a{height:23px; width:68px; line-height:23px; padding:0}
+.app-more a{display:block; text-align:center; line-height:100px; border:2px dotted #ccc; padding:0; margin:15px 0; color:#e53333}
+
+
 /*右排行榜*/
 .app-list-right,.vendor-list,.novice-bbs-list,.left-list,.app-dis-page .left,.pin-box,.news-page .r-box,.user-page .left{background:#f8f8f8}
 .app-list-right li,.hot-bbs-list li{height:24px; padding:5px 10px; line-height:24px; border-bottom:1px solid #e8e8e8}
