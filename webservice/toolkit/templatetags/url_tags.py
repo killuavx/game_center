@@ -136,14 +136,14 @@ def resource_url(inst_or_resources, kind='cover', alias='default'):
         try:
             resources = getattr(inst_or_resources, 'resources')
             res = getattr(resources, kind)[alias]
-            return res.url
+            return res.file.url
         except:
             pass
 
     if hasattr(inst_or_resources, 'model') and inst_or_resources.model:
         try:
             res = getattr(inst_or_resources, kind)[alias]
-            return res.url
+            return res.file.url
         except ObjectDoesNotExist:
             pass
 
