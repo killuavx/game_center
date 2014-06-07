@@ -147,7 +147,7 @@ def resource_url(inst_or_resources, kind='cover', alias='default'):
         except ObjectDoesNotExist:
             pass
 
-    if kind in ('cover', 'icon'):
+    if kind in ('cover', 'icon') and isinstance(inst_or_resources, models.Model):
         try:
             return getattr(inst_or_resources, kind).url
         except (ValueError, AttributeError):
