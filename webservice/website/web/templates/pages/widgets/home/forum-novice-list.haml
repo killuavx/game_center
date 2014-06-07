@@ -13,7 +13,7 @@
     -for post in items
       %li.cell-bk
         %h4.l
-          %a{:href => "={url}", :target => "_blank"}
+          %a{:href => "={post.url}", :target => "_blank"}
             %img{:src => "={post.avatar_url}"}
             = post.title
         %span.r.g9.f10{:title => "回复|查看"}
