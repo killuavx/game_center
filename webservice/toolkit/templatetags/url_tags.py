@@ -138,14 +138,20 @@ def resource_url(inst_or_resources, kind='cover', alias='default'):
             res = getattr(resources, kind)[alias]
             return res.url
         except:
-            return
+            pass
 
     if hasattr(inst_or_resources, 'model') and inst_or_resources.model:
         try:
             res = getattr(inst_or_resources, kind)[alias]
             return res.url
         except ObjectDoesNotExist:
-            return ''
+            pass
+
+    if kind in ('cover', 'icon'):
+        try:
+            return getattr(inst_or_resources, kind).url
+        except (ValueError, AttributeError):
+            pass
 
     return ''
 
