@@ -44,10 +44,6 @@
                   %a{:href => "={second_url}"}
                     = cat.name
                     %span.r
-          %li
-            %a{:href => "" }
-              = cat.name
-              %span.r
 
       {% widget WebCategoryComplexPackageList category=category topic=topic lang=lang per_page=27 page=request.GET.page %}
       .l.btn-s-box.tj.p20.right-list
