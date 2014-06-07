@@ -63,9 +63,13 @@ class AuthorAbsoluteUrlMixin(AbsoluteUrlMixin):
     @classmethod
     def page_absolute_url_as(cls, product, **kwargs):
         ETS = cls._get_entry_types()
-        if product in (ETS.web, ETS.pc):
+        if product == ETS.pc:
             page_slug = '%s/vendors' % product
             return reverse(cls._page_view_name, kwargs=dict(slug=page_slug))
+        elif product == ETS.web:
+            page_slug = 'vendors'
+            return reverse(cls._page_view_name, kwargs=dict(slug=page_slug))
+
         return None
 
     def get_absolute_url_as(self, product,
