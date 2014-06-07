@@ -102,11 +102,12 @@ class WebCrackTimeLinePanelWidget(base.ProductPropertyWidgetMixin,
     def get_latest_days_by(self, queryset, now=None):
         days = queryset\
                    .dates('released_datetime', 'day', 'DESC')[0:self.latest_day_count]
+        cur_dt = now.astimezone()
         _days = []
         for d in days:
             dt = d.astimezone()
             _days.append(dict(
-                time_name=datesince(now.astimezone(), dt),
+                time_name=datesince(cur_dt, dt),
                 dt=dt,
                 url=None,
                 ))
@@ -139,6 +140,7 @@ class WebCrackTimeLinePanelWidget(base.ProductPropertyWidgetMixin,
         return dict(
             category=self.category,
             result=result,
+            product=self.product
         )
 
 
@@ -186,10 +188,11 @@ class WebLatestTimeLinePanelWidget(base.ProductPropertyWidgetMixin,
                    .dates(self.filter_date_field,
                           'day', 'DESC')[0:self.latest_day_count]
         _days = []
+        cur_dt = now.astimezone()
         for d in days:
             dt = d.astimezone()
             _days.append(dict(
-                time_name=datesince(now.astimezone(), dt),
+                time_name=datesince(cur_dt, dt),
                 dt=dt,
                 url=None,
                 ))
@@ -224,4 +227,5 @@ class WebLatestTimeLinePanelWidget(base.ProductPropertyWidgetMixin,
         return dict(
             title=self.get_title(),
             result=result,
+            product=self.product,
         )
