@@ -30,9 +30,10 @@
                 v{{ version.version_name }}
                 %em> |
                 {{ version.released_datetime|date:"m-d" }}
-              .btn-s
-                -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
-                %a.a2{:href => "{% download_url version product=product %}", :class => "app-download-btn-js"} 下载
+              -#
+                .btn-s
+                  %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+                  %a.a2{:href => "{% download_url version product=product %}", :class => "app-download-btn-js"} 下载
     / time-box-b
   / time-box-t
 / latest-list

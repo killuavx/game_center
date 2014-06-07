@@ -2,6 +2,7 @@
 {% is_site_android as is_android %}{% is_site_ios as is_ios %}
 -with version=package.versions.latest_published title=version.subtitle|default:package.title
   {% absolute_url_as package product=product as detail_url %}
+  {% download_url_as package product=product as dw_url %}
   %dl.dib.rel.app-list-xl
     %dt.abs
       %a.pic{:href => "={detail_url}", :title => "={title}"}
@@ -27,7 +28,6 @@
           -else
             %p 免费
       .ios-web-icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
-    -#
       .btn-s
-        %a.a1.install{:href => "#"} 安装
-        %a.a2{:href => "#"} 下载
+        -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+        %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载
