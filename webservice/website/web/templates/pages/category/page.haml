@@ -5,11 +5,11 @@
 -block main
   / START 应用列表 app-list-page
   .auto.mt30.width.app-list-page
-
+    {% is_site_android as is_android %}{% is_site_ios as is_ios %}
     {% widget WebCategorySelectorWidget root_category=root_category %}
     .cell
       .f18.cell.rel.t-title
-        %h3.l.n.mr30= title
+        %h3.l.n.mr30 {% if is_android %}安卓{% endif %}{% if is_ios %}苹果{% endif %}{{ root_category.name }}
         %ul.l.abs.cell-bk.f16
           -for select in second_selectlist
             -if select.params.topic != topic.pk or select.params.lang != lang

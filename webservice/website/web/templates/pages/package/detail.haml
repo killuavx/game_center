@@ -5,7 +5,7 @@
 {% block meta_description %}{{ package.summary }} | {{ version.whatsnew }}{% endblock %}
 
 -block main
-  -with title=version.subtitle|default:package.title
+  {% with title=version.subtitle|default:package.title %}
   .auto.mt30.width.app-dis-page
     .cell-bk.ovh
 
@@ -32,7 +32,9 @@
             %a.a2{:href => "#", :target => ""} 下载到电脑
         .tc.pt20.p-code
           %div<
-            {% qurl '/qrcode/' url=dw_url as qr_url %}
+            {% absolute_url_as package product='client' as api_url %}
+            {% qurl dw_url api=api_url as dwapi_url %}
+            {% qurl '/qrcode/' url=dwapi_url as qr_url %}
             %img{:src => "={qr_url}", :title => "={title}"}/
           %p.gr 扫描二维码即可下载
         %ul.g9.pt20.instr
@@ -224,3 +226,4 @@
           %a{:href => "#"} 下一页
       / right
     / cell-bk
+  {% endwith %}

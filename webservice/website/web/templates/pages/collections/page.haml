@@ -11,7 +11,7 @@
           %span.date 更新日期：{{ topic.updated_datetime|date }} | 共 {{ topic.packages_count|default:0 }} 个应用
           .cl
 
-      {% widget  PCCollectionPackageListWidget slug=topic.slug per_page=6 page=request.GET.page %}
+      {% widget  PCCollectionPackageListWidget slug=topic.slug per_page=24 page=request.GET.page %}
       .btn-s-box.p20.right-list
         -for package in items
           {% package_box package product=product %}

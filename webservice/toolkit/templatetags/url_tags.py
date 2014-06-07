@@ -122,6 +122,8 @@ def download_url(context, pv, **kwargs):
 register.assignment_tag(download_url, takes_context=True, name='download_url_as')
 register.simple_tag(download_url, takes_context=True)
 
+from django.db import models
+
 
 def resource_url(inst_or_resources, kind='cover', alias='default'):
     if alias == 'default' and kind in ('cover', 'icon'):
@@ -130,12 +132,21 @@ def resource_url(inst_or_resources, kind='cover', alias='default'):
         except (ValueError, AttributeError):
             pass
 
+    if isinstance(inst_or_resources, models.Model):
+        try:
+            resources = getattr(inst_or_resources, 'resources')
+            res = getattr(resources, kind)[alias]
+            return res.url
+        except:
+            return
+
     if hasattr(inst_or_resources, 'model') and inst_or_resources.model:
         try:
             res = getattr(inst_or_resources, kind)[alias]
-            return res.file.url
+            return res.url
         except ObjectDoesNotExist:
-            pass
+            return ''
+
     return ''
 
 register.assignment_tag(resource_url, name='resource_url_as')

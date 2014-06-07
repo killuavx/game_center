@@ -9,7 +9,7 @@ from website.views import base
 from os.path import join
 
 
-template404 = 'pages/web/errors/404.html'
+template404 = 'errors/web/404.html'
 
 template_prefix = 'pages'
 
