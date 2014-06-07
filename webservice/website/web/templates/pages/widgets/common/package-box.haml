@@ -2,7 +2,7 @@
 {% is_site_android as is_android %}{% is_site_ios as is_ios %}
 -with version=package.versions.latest_published title=version.subtitle|default:package.title
   {% absolute_url_as package product=product as detail_url %}
-  {% download_url_as package product=product as dw_url %}
+  {% download_url_as version product=product as dw_url %}
   %dl.dib.rel.app-list-xl
     %dt.abs
       %a.pic{:href => "={detail_url}", :title => "={title}"}
