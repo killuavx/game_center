@@ -4,10 +4,12 @@
 / t-title
 
 .hot-bbs-list.novice-bbs-list
-  -#
-    %a.rel.top{:href => "#", :target => "_blank"}
-      %img{:src => "http://static.ccplay.com.cn/static/android_web/img/a-a-d-8.jpg"}
-        %span.abs.tc.white.png 安卓游戏常见问题解答
+  {% settings_value "GC_WEB_HOME_A8_PLACE_SLUG" as A8_PLACE_SLUG %}
+  {% widget WebSingleAdvertisementWidget slug=A8_PLACE_SLUG %}
+  %a.rel.top{:href => "#", :target => "_blank"}
+    %img{:src => "{% resource_url item 'cover' %}"}
+      %span.abs.tc.white.png 安卓游戏常见问题解答
+  {% endwidget %}
 
   %ul.pt10
     -for post in items
