@@ -9,7 +9,7 @@
   {% widget WebSingleAdvertisementWidget slug=A8_PLACE_SLUG %}
   %a.rel.top{:href => "#", :target => "_blank"}
     %img{:src => "{% resource_url item 'cover' %}"}
-      %span.abs.tc.white.png 安卓游戏常见问题解答
+      %span.abs.tc.white.png= item.title
   {% endwidget %}
 
   %ul.pt10
