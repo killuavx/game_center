@@ -73,6 +73,7 @@ def category_page(request, slug,
 
 def topic_detail(request, slug,
                  template_name,
+                 product,
                  template_not_found_class=TemplateResponseNotFound,
                  *args, **kwargs):
     try:
@@ -85,7 +86,8 @@ def topic_detail(request, slug,
     return TemplateResponse(
         request=request, template=template_name,
         context=dict(
-            topic=topic
+            topic=topic,
+            product=product,
         )
     )
 

@@ -43,5 +43,7 @@ def category_page(request, slug,
 def topic_detail(request, slug,
                  template_name='pages/pc/collections/detail.haml',
                  *args, **kwargs):
+    ETS = settings.ENTRY_TYPES()
     return base.topic_detail(request, slug, template_name=template_name,
+                             product=ETS.pc,
                              template_not_found_class=NotFound, *args, **kwargs)
