@@ -35,7 +35,7 @@ def sync_resource_to_version(request, pk, **kwargs):
     app = get_object_or_404(IOSAppData, pk=pk)
     try:
         task = SyncIOSPackageVersionResourceFromCrawlResourceTask()
-        flag = task.sync_resourcefiles_to_version(app)
+        flag = task.sync_resourcefiles_to_version(app, status=False)
         if flag is None:
             raise Exception('没有对应的版本数据')
         del task

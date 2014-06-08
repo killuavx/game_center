@@ -521,11 +521,14 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
         from crawler.documents import CrawlResource
         self.crawl_resource_doc_class = CrawlResource
 
-    def get_crawl_resource_by(self, content_type, object_pk):
-        return self.crawl_resource_doc_class.objects.filter(status='complete') \
+    def get_crawl_resource_by(self, content_type, object_pk, status='complete'):
+        qs = self.crawl_resource_doc_class.objects\
             .filter(content_type=str(content_type)) \
             .filter(object_pk=str(object_pk)) \
             .filter(is_recorded__ne=True)
+        if status:
+            return qs.filter(status=status)
+        return qs
 
     def get_crawl_resource_objects(self, content_type):
         return self.crawl_resource_doc_class.objects.filter(status='complete') \
@@ -581,7 +584,6 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
             item.save()
 
     def _update_icon(self, version, item):
-        fname = os.path.join(settings.MEDIA_ROOT, item.relative_path)
         version.icon = item.relative_path
         version.save()
 
@@ -604,7 +606,7 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
             print(e)
         return resource
 
-    def sync_resourcefiles_to_version(self, app):
+    def sync_resourcefiles_to_version(self, app, status='complete'):
         """
             同步已下载的资源文件到PackageVersion上
         """
@@ -614,7 +616,7 @@ class SyncIOSPackageVersionResourceFromCrawlResourceTask(BaseTask):
         version = IOSAppData.convert_normal_version(app.packageversion)
 
         ct = ContentType.objects.get_for_model(IOSAppData)
-        crawl_resources = self.get_crawl_resource_by(ct.pk, app.pk)
+        crawl_resources = self.get_crawl_resource_by(ct.pk, app.pk, status)
         for crawl_res in crawl_resources:
             self.add_to_packageversion(crawl_res, version)
 
