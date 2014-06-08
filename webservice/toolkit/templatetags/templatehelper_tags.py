@@ -26,16 +26,19 @@ def breadcrumbs_from(package, category,
                      product,
                      all_ancestors=False, *args, **kwargs):
     breadcrumb_insts = []
-    if all_ancestors:
-        for cat in category.get_ancestors(include_self=True):
-            cat.bcname = cat.name
-            breadcrumb_insts.append(cat)
-    else:
-        root = category.get_root()
-        root.bcname = root.name
-        breadcrumb_insts.append(root)
-        category.bcname = category.name
-        breadcrumb_insts.append(category)
+    try:
+        if all_ancestors:
+            for cat in category.get_ancestors(include_self=True):
+                cat.bcname = cat.name
+                breadcrumb_insts.append(cat)
+        else:
+            root = category.get_root()
+            root.bcname = root.name
+            breadcrumb_insts.append(root)
+            category.bcname = category.name
+            breadcrumb_insts.append(category)
+    except:
+        pass
     package.bcname = package.title
     breadcrumb_insts.append(package)
 
