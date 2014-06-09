@@ -67,8 +67,8 @@ opacity: 0;}
 
 
 
-.text-db,.hot-game-list-1 li,.app-list-min a,.app-list-m dd a,.app-list-l dd a,.app-list-xl h3{white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
-.app-list-m dd a,.app-list-l dd a{display:inline-block; width:98px}
+.text-db,.hot-game-list-1 li,.app-list-min a,.app-list-m dd a,.app-list-l dd a,.app-list-xl h3{height:20px; overflow:hidden}
+.app-list-m dd a,.app-list-l dd a{display:inline-block; width:95px}
 .app-list-l dd a{width:110px}
 
 /*头部*/
@@ -107,7 +107,7 @@ opacity: 0;}
 /*切换*/
 .user-switch li{float:left; margin-left:11px; position:relative}
 .user-switch li a.ios-web-icon{display:inline-block; width:55px; text-align:center; padding-top:35px;-webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale; white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
+-moz-osx-font-smoothing: grayscale; white-space:nowrap; overflow:hidden}
 .user-switch .a0{background-position:-84px -850px}
 .user-switch .a1{background-position:12px -169px}
 .user-switch .a2{background-position:-73px -169px}
@@ -191,7 +191,7 @@ border-radius:8px 0 0 8px}
 .roll_box li img{width:237px; height:125px}
 .roll_box .text,.novice-bbs-list .top span,.r-box .top span,.bbs-rcd span,.mm a span{left:0; bottom:0; width:227px; height:30px; line-height:30px; background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,.7)); -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',endColorstr='#B2000000',gradientType=0)";
 filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',endColorstr='#B2000000',gradientType=0);
-white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
+white-space:nowrap; overflow:hidden; color:#fff}
 .roll_btn a{top:-85px}
 
 .novice-bbs-list .top:hover span,.r-box .top:hover span,.bbs-rcd:hover span,.mm a:hover span{background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,1))}
@@ -207,7 +207,9 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .time-box-t{background:url(http://static.ccplay.com.cn/static/common/img/time-line-2.png) 37px bottom no-repeat; padding-bottom:40px}
 .time-box-b{background:url(http://static.ccplay.com.cn/static/common/img/time-line-1.png) 37px 0 repeat-y}
 .t-title{height:35px; border-bottom:2px solid #ccc; background-color:#fff}
-.t-title ul{*width:75%}
+.t-title ul{*width:75%; text-align:left; padding-left:100px}
+.right .t-title ul,.left-top-list .t-title ul{padding-left:0}
+.left-top-list .tab-more a{margin-right:10px}
 .t-title li a{color:#777}
 .t-title li{background-position: center 31px; height:37px; *display:inline}
 .t-title li a{text-decoration:none}
@@ -237,6 +239,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .app-list-m .btn-s{position:absolute; top:37px; width:70%}
 .latest-release .time-box-t{background-position:23px bottom; padding-bottom:15px}
 .latest-release .time-box-b{background-position:23px bottom}
+.latest-list .app-list-m{padding-top:10px}
 
 /*最贵排行*/
 .most-expensive .t-title h3 .ios-web-icon{background-position:-166px -67px; left:35px}
@@ -288,7 +291,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .app-list-right li.hover .btn-s a{height:25px; line-height:25px}
 
 /*热帖*/
-.hot-bbs-list li{position:relative; padding:5px 0; *padding:4px 0 3px 0; height:auto}
+.hot-bbs-list li{position:relative; padding:6px 0; *padding:5px 0 4px 0; height:auto}
 .hot-bbs-list li h4{padding-left:5px; font-size:14px; font-weight:100; height:26px; overflow:hidden}
 .hot-bbs-list li.first{}
 .hot-bbs-list li.first p{display:none}
@@ -305,7 +308,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 /*新手*/
 .novice-bbs-list li h4{font-size:12px; width:210px}
 .novice-bbs-list li .ios-web-icon{background-position:-127px -313px}
-.novice-bbs-list .top{display:block; height:125px; width:300px; overflow:hidden}
+.novice-bbs-list .top{display:block; height:110px; width:300px; overflow:hidden}
 .novice-bbs-list .top img{height:125px; width:300px}
 .novice-bbs-list .top span{width:300px}
 
@@ -403,7 +406,8 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .sort-menu a:hover{background-color:#e53333; color:#fff}
 
 .app-list-xl{width:32%; height:94px; padding:0 0 20px 10px; *float:left}
-.app-list-xl h3{padding:5px 0; width:100%}
+.app-list-xl .p2{padding:0}
+.app-list-xl h3{padding:5px 0; width:90%}
 .app-list-xl img{width:92px; height:92px; margin-left:1px}
 .app-list-xl dt .ios-web-icon{width:94px; height:94px; background-position:0 -736px; left:0; top:-1px}
 .app-list-xl dd{padding-left:100px}
@@ -723,8 +727,9 @@ clear: both; line-height: 1.8em;}
 
 #cc-l .top-page .top-1 .number{margin-left:-45px}
 #cc-l .top-page .top-2 .number,#cc-l .top-page .top-3 .number{margin-left:-34px}
-
-
+.top-1 p,.top-2 p,.top-3 p{display:none}
+.top-1 p.p2,.top-2 p.p2,.top-3 p.p2{display:block}
+#cc-l .top-1 h3,#cc-l .top-2 h3,#cc-l .top-3 h3{width:70%; margin:0 auto 5px auto}
 
 
 /*			cc-m			*/
