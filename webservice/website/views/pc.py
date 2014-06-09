@@ -1,85 +1,49 @@
 # -*- coding: utf-8 -*-
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseNotFound
-from django.template.response import TemplateResponse
-from taxonomy.models import Category, Topic, TopicalItem
-from warehouse.models import Package, PackageVersion
+from . import base
+from django.conf import settings
 
 template404 = 'pages/pc/errors/404.html'
 
 
-class TemplateResponseNotFound(TemplateResponse,
-                               HttpResponseNotFound):
-    pass
+class NotFound(base.TemplateResponseNotFound):
+
+    template = template404
 
 
 def package_detail(request, pk,
-                   template_name='pages/pc/package/detail.haml',
-                   *args, **kwargs):
-    try:
-        package = Package.objects.published().get(pk=pk)
-        version = package.versions.latest_published()
-    except ObjectDoesNotExist:
-        return TemplateResponseNotFound(request, template=template404)
+                   template_name='pages/pc/package/detail.haml', *args, **kwargs):
 
-    return TemplateResponse(
-        request=request, template=template_name,
-        context=dict(
-            package=package, version=version,
-        )
-    )
+    ETS = settings.ENTRY_TYPES()
+    return base.package_detail(request=request, pk=pk,
+                               template_name=template_name,
+                               template_not_found_class=NotFound,
+                               product=ETS.pc,
+                               *args, **kwargs)
 
 
 def packageversion_detail(request, pk,
                           template_name='pages/pc/package/detail.haml',
                           *args, **kwargs):
-    try:
-        version = PackageVersion.objects.published().get(pk=pk)
-        package = version.package
-    except ObjectDoesNotExist:
-        return TemplateResponseNotFound(request, template=template404)
-
-    main_category, all_categories = _package_categories(package)
-
-    return TemplateResponse(
-        request=request, template=template_name,
-        context=dict(
-            package=package, version=version,
-            main_category=main_category, all_categories=all_categories,
-            breadcrumbs=_breadcrumbs_instances_from(package, main_category)
-        )
-    )
+    ETS = settings.ENTRY_TYPES()
+    return base.packageversion_detail(request=request, pk=pk,
+                                      template_name=template_name,
+                                      template_not_found_class=NotFound,
+                                      product=ETS.pc,
+                                      *args, **kwargs)
 
 
 def category_page(request, slug,
                   template_name='pages/pc/category/detail.haml',
                   *args, **kwargs):
-    try:
-        category = Category.objects.published().get(slug=slug)
-    except ObjectDoesNotExist:
-        return TemplateResponseNotFound(request, template=template404)
-
-    return TemplateResponse(
-        request=request, template=template_name,
-        context=dict(
-            category=category
-        )
-    )
+    return base.category_page(request=request, slug=slug, template_name=template_name,
+                              template_not_found_class=NotFound,
+                              *args, **kwargs)
 
 
 def topic_detail(request, slug,
                  template_name='pages/pc/collections/detail.haml',
                  *args, **kwargs):
-    try:
-        topic = Topic.objects.published().get(slug=slug)
-        topic.packages_count = TopicalItem.objects\
-            .get_items_by_topic(topic, Package).published().count()
-    except ObjectDoesNotExist:
-        return TemplateResponseNotFound(request, template=template404)
-
-    return TemplateResponse(
-        request=request, template=template_name,
-        context=dict(
-            topic=topic
-        )
-    )
+    ETS = settings.ENTRY_TYPES()
+    return base.topic_detail(request, slug, template_name=template_name,
+                             product=ETS.pc,
+                             template_not_found_class=NotFound, *args, **kwargs)

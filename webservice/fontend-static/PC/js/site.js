@@ -1,4 +1,4 @@
-//app install
+﻿//app install
 $(".focus").slide({ titCell:".num ul" , mainCell:".banner_ul" , autoPlay:true, delayTime:700 , autoPage:true });
 
 jQuery(".roll").slide({ mainCell:"ul",vis:4,scroll:1,prevCell:".prev",easing:"easeInQuint",nextCell:".next",effect:"leftLoop", autoPage:true});
@@ -25,7 +25,8 @@ $(function(){
 		return false;
 	});
 	
-	$(".pgdn").click(function(){
+	$(".pgdn").click(function()
+	{
 		window.history.go(1);
 		return false;
 	});

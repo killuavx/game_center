@@ -156,7 +156,7 @@ class PackageListApiUrlEncode(BaseWarehouseApiUrlEncode):
 
     viewname = 'package-list'
 
-    category_param = 'categories'
+    category_param = 'category'
     category = None
 
     def __init__(self, **kwargs):
@@ -170,6 +170,30 @@ class PackageListApiUrlEncode(BaseWarehouseApiUrlEncode):
         return qp
 
 
+class PackageDetailApiUrlEncode(BaseWarehouseApiUrlEncode):
+
+    viewname = 'package-detail'
+
+    pk = None
+
+    def __init__(self, pk, **kwargs):
+        self.pk = pk
+        super(PackageDetailApiUrlEncode, self).__init__(**kwargs)
+
+    def reverse_path(self):
+        if self.router:
+            reverse_viewname = self.router.get_base_name(self.viewname)
+        else:
+            reverse_viewname = self.viewname
+        return reverse(reverse_viewname, kwargs=dict(pk=self.pk))
+
+    def get_url(self):
+        path = self.reverse_path()
+        if self.request:
+            return self.request.build_absolute_uri(path)
+        return path
+
+
 def get_category_packages_url(category, ordering=None, router=None, request=None):
     if ordering is None:
         ordering = '-released_datetime'
@@ -178,7 +202,6 @@ def get_category_packages_url(category, ordering=None, router=None, request=None
                                         request=request,
                                         router=router)
     url = apiencode.get_url()
-    print(url)
     return url
 
 

@@ -490,7 +490,7 @@ diy_select.prototype={
 			 {
 				This.l[i].style.display='none';
 			 }
-		})
+		});
 		for(var i=0;i<this.lengths;i++)
 		{
 			this.l[i].index=this.b[i].index=this.t[i].index=i;
@@ -532,7 +532,8 @@ diy_select.prototype={
 				o[i].onclick=function()
 				{
 					var index=this.parentNode.index;//获得列表
-					This.t[index].innerHTML=This.ipt[index].value=this.innerHTML.replace(/^\s+/,'').replace(/\s+&/,'');
+					This.t[index].innerHTML=this.innerHTML.replace(/^\s+/,'').replace(/\s+&/,'');
+                    This.ipt[index].value=this.getAttribute('data');
 					This.l[index].style.display='none';
 				}
 			}

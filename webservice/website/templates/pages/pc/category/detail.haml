@@ -1,5 +1,5 @@
 -extends "pc_base.haml"
--load widgets url_tags templatehelper_tags
+-load widgets url_tags templatehelper_tags pc_tags
 {% block main %}
 .cb.box.list_box.game
 
@@ -33,7 +33,7 @@
     .left_list.list
       %ul><
         -for package in items
-          {% include "pages/pc/widgets/include-package-box.haml" with pacakge=package %}
+          {% include "pages/pc/widgets/include-package-box.haml" with pacakge=package product=product %}
       .c_b
     / left_list
 

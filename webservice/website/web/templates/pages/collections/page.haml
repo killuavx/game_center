@@ -1,0 +1,23 @@
+-extends "pages/page_web.html"
+-load widgets url_tags templatehelper_tags web_tags
+-block main
+  .auto.mt30.width.collection-dis
+    .cell-bk.mb30.bdc
+
+      .pr10.collection_title
+        %img.l.mr20{:alt => "={topic.name}", :src => "{% resource_url topic.resources 'cover' product %}"}
+          %h1.pt10= topic.name
+          %p= topic.summary
+          %span.date 更新日期：{{ topic.updated_datetime|date }} | 共 {{ topic.packages_count|default:0 }} 个应用
+          .cl
+
+      {% widget  PCCollectionPackageListWidget slug=topic.slug per_page=24 page=request.GET.page %}
+      .btn-s-box.p20.right-list
+        -for package in items
+          {% package_box package product=product %}
+
+        {% pagination items %}
+      / right-list
+      {% endwidget %}
+
+    / cell-bk

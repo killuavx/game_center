@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from taxonomy.models import Category, Topic, TopicalItem
 from warehouse.models import Author
@@ -81,3 +82,60 @@ class BaseTopicAuthorPackageListWidget(object):
             max_developers=max_developers
         ))
         return options
+
+
+class BaseCategorySelectorWidget(object):
+
+    packages_zero_ignore = True
+
+    def get_category_selectlist(self, category):
+        catlist = list()
+        for cat in category.get_leafnodes():
+            cat.affiliated_packages_count = cat.get_affiliated_packages()\
+                                                .published().count()
+            if cat.affiliated_packages_count == 0 and self.packages_zero_ignore:
+                continue
+            catlist.append(cat)
+        category.affiliated_packages_count = category.get_affiliated_packages()\
+                                                .published().count()
+        catlist.insert(0, category)
+        return catlist
+
+    def get_second_selectlist(self):
+        from taxonomy.models import Topic
+        from mezzanine.conf import settings
+        slug_text = getattr(settings, 'GC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS')
+        slugs = list(filter(lambda x: x, slug_text.split(',')))
+
+        #slugs = slugs + ['ZH', 'EN']
+        result = []
+        for s in slugs:
+            params = dict(topic=None, lang=None)
+            if s == 'NONE':
+                result.append(dict(params=params, name='最新发布'))
+            elif s in ('ZH', 'EN'):
+                params['lang'] = s
+                if s == 'ZH':
+                    result.append(dict(params=params, name='中文'))
+                if s == 'EN':
+                    result.append(dict(params=params, name='英文'))
+            else:
+                try:
+                    topic = Topic.objects.get(slug=s)
+                except ObjectDoesNotExist:
+                    continue
+                params['topic'] = topic.pk
+                result.append(dict(params=params, name=topic.name))
+        return result
+
+    def get_context(self, value, options):
+        self.product = options.get('product')
+        root_category = options.get('root_category')
+        category_selectlist = self.get_category_selectlist(root_category)
+        second_selectlist = self.get_second_selectlist()
+        return dict(
+            product=self.product,
+            category_selectlist=category_selectlist,
+            second_selectlist=second_selectlist,
+            )
+

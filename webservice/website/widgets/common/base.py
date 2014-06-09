@@ -46,6 +46,9 @@ class BaseListWidget(PaginatorPageMixin):
 
     request = None
 
+    def get_title(self):
+        return self.title
+
     def get_more_url(self):
         return self.more_url
 
@@ -54,9 +57,13 @@ class BaseListWidget(PaginatorPageMixin):
 
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
         from mezzanine.utils.views import paginate
+        self.title = options.get('title', self.title)
         self.request = context.get('request')
+        self.product = options.get('product')
         self.context = context
         self.options = options
+        if options.get('template_name'):
+            self.template = options.get('template_name')
         per_page, page = self.get_paginator_vars(options)
         items = paginate(self.get_list(),
                          page_num=page,
@@ -64,13 +71,21 @@ class BaseListWidget(PaginatorPageMixin):
                          max_paging_links=self.max_paging_links)
         data = deepcopy(options)
         data.update(
-            title=options.get('title', self.title),
+            title=self.get_title(),
             more_url=self.get_more_url(),
             items=items,
+            product=self.product,
+            request=self.request,
             paginator=items.paginator,
         )
         self.set_list_page(items, options, context)
         return data
+
+    def render(self, context, value=None, attrs=None):
+        if attrs.get('template', None):
+            self.template_instance = None
+            self.template = attrs.get('template')
+        return super(BaseListWidget, self).render(context, value=value, attrs=attrs)
 
 
 class BaseWidgetFilterBackend(object):

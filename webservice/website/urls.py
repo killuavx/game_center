@@ -17,7 +17,7 @@ urlpatterns += patterns('website.views.common',
                         url("^social/redirect\.html$", lambda r: TemplateResponse(request=r, template='bd_frontia_jump.html')),
                         )
 
-
+"""
 urlpatterns += patterns('website.views.mainsite',
                        url(r'^packages/(?P<package_name>%s)(/(?P<version_name>%s)?)?' % (slug_pattern, slug_pattern),
                            'packageversion_detail', name='packageversion_detail'),
@@ -26,6 +26,9 @@ urlpatterns += patterns('website.views.mainsite',
                        url(r'^masterpiece/$', 'masterpiece_view', name='masterpiece_page'),
                        url(r'^topics/$', 'topics_view', name='topics_page'),
                        url(r'^topics/(?P<slug>%s)' % slug_pattern, 'topic_package_list', name='topic_package_list'),
+                       url(r'^mainsite/' , 'mainsite_view', name='mainsite_home'),
+                       url(r'^login/' , 'login_view', name='mainsite_login'),
+                       url(r'^register/' , 'register_view', name='mainsite_register'),
+                       url(r'^reset/' , 'reset_password_view', name='reset_password'),
                        )
-
-
+"""

@@ -1,0 +1,32 @@
+-load url_tags util_tags templatehelper_tags
+{% is_site_android as is_android %}{% is_site_ios as is_ios %}
+.f18.cell.rel.t-title
+  %h3.l.n.mr30= title
+/ t-title
+
+.cell-bk
+  -for package in items
+
+    -with version=package.versions.latest_published title=version.subtitle|default:package.title
+      {% absolute_url_as package product=product as detail_url %}
+      {% download_url_as version product=product as dw_url %}
+      %dl.dib.rel.app-list-xl{:class => "{% if forloop.counter <= 3 %}top-={forloop.counter}{% endif %}"}
+        %dt.abs
+          %a.pic{:href => "={detail_url}", :title => "={title}"}
+            %img{:alt => "={title}", :src => "{% resource_url version 'icon' %}"}
+            %span.ios-web-icon.abs
+        %dd.g9.pt5
+          %h3.n.rel.g3.f16
+            %a{:href => "={detail_url}", :title => "={title}"}= title
+          %p<
+            {{ version.get_download_size|filesizeformat }}
+            %em> |
+            {{ version.download_count|intwordcn }}+下载
+          %p.p2= package.main_category.name
+          .ios-web-icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
+          %span.ios-web-icon.abs.f16.tc.number{:class => "n={forloop.counter}"}= forloop.counter
+          .btn-s
+            -#
+              %a.a1.install{:href => "#", :title => "链接名称"} 安装
+            %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载
+

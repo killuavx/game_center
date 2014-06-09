@@ -34,3 +34,11 @@ def version_data(context, version, **kwargs):
 
 register.assignment_tag(version_data, takes_context=True, name='version_data_as')
 register.simple_tag(version_data, takes_context=True)
+
+
+@register.inclusion_tag('includes/pagination_pc.haml', takes_context=True)
+def pagination(context, current_page, *args, **kwargs):
+    return dict(
+        request=context.get('request'),
+        current_page=current_page
+    )

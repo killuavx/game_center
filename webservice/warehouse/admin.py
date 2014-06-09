@@ -44,7 +44,7 @@ class AdminIconField(AdminFieldBase):
     @staticmethod
     def method(obj):
         try:
-            return mark_safe('<img src="%s" />' % obj.url)
+            return mark_safe('<img src="%s" width="42" />' % obj.url)
         except ValueError:
             return ''
 
@@ -445,7 +445,7 @@ class PackageAdmin(MainAdmin):
         try:
             version = obj.versions.latest('version_code')
             return mark_safe(
-                '<img src="%s" alt="%s"/>' % (version.icon.url, obj.title))
+                '<img src="%s" width="42" alt="%s"/>' % (version.icon.url, obj.title))
         except ValueError:
             return ''
 

@@ -176,7 +176,7 @@ except admin.sites.NotRegistered:
 else:
     admin.site.register(Tag, TagAdmin)
 
-try:
-    admin.site.unregister(TaggedItem)
-except admin.sites.NotRegistered:
-    pass
+#try:
+#    admin.site.unregister(TaggedItem)
+#except admin.sites.NotRegistered:
+#    pass

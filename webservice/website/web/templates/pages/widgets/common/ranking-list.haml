@@ -1,0 +1,31 @@
+-load util_tags url_tags
+.f18.cell-bk.rel.t-title
+  %ul.l.abs.cell-bk.f16
+    %li.ios-web-icon.dib.tab.tc
+      %a{:href => "#"}= title
+  .rel.tab-more
+    %a.r.f12.mt5.more{:href => "={more_url}"} 更多&gt;
+/ t-title
+
+.app-list-right
+  %ol
+    -for pkg in items
+      -with ver=pkg.versions.latest_published ptitle=ver.subtitle|default:pkg.title
+        {% absolute_url_as pkg product=product as detail_url %}
+        %li.rel
+          %b.l{:class => "{% if forloop.counter <= 3 %}gr{% endif %}"}= forloop.counter
+          %a.l{:href => "={detail_url}"}
+            %img{:src => "{% resource_url ver 'icon' %}"}
+              %span.ios-web-icon.abs
+          %h3.n
+            %a{:href => "={detail_url}"}><
+              = ptitle
+          %p.g9
+            {{ ver.get_download_size|filesizeformat }}
+            %em> |
+            {{ ver.download_count|default:0|intwordcn }}+下载
+          .btn-s
+            -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+            %a.a2{:href => "{% download_url ver product=product %}", :class => "app-download-btn-js"} 下载
+
+/ app-list-right

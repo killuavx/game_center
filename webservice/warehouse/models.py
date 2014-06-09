@@ -1,6 +1,5 @@
 # -*- encoding=utf-8 -*-
 import datetime
-import os
 from os.path import join, splitext
 from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
 
@@ -21,7 +20,8 @@ from easy_thumbnails.fields import ThumbnailerImageField
 
 from toolkit.managers import CurrentSitePassThroughManager, PassThroughManager
 from toolkit.fields import StarsField, PkgFileField, MultiResourceField
-from toolkit.models import SiteRelated, ModelAbsoluteUrlMixin
+from toolkit.models import SiteRelated
+from toolkit import model_url_mixin as urlmixin
 from toolkit.helpers import import_from, sync_status_from
 from toolkit.storage import package_storage
 
@@ -169,26 +169,8 @@ class PlatformBase(object):
             return self
 
 
-class AuthorAbsoluteUrlMixin(object):
-
-    PAGE_TYPE_DETAIL = 'detail'
-
-    PAGE_TYPE_LIST = 'list'
-
-    def get_absolute_url_as(self, product, pagetype=PAGE_TYPE_LIST):
-        if product == 'pc':
-            if pagetype == self.PAGE_TYPE_DETAIL:
-                view_name = 'website.views.%s.author_detail' % product
-                return reverse(view_name, kwargs=dict(pk=self.pk))
-            else:
-                view_name = 'mezzanine.pages.views.page'
-                page_slug = '%s/vendors' % product
-                return reverse(view_name, kwargs=dict(slug=page_slug)) \
-                           + "?author=%s" % self.pk
-        return None
-
-
-class Author(AuthorAbsoluteUrlMixin, PlatformBase, SiteRelated, models.Model):
+class Author(urlmixin.AuthorAbsoluteUrlMixin,
+             PlatformBase, SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(AuthorQuerySet)()
@@ -270,7 +252,7 @@ class PackageQuerySet(QuerySet):
 
     def by_published_order(self, newest=None):
         qs = self.published()
-        return qs.by_released(newest=newest)
+        return qs.by_released_order(newest=newest)
 
     def by_released_order(self, newest=None):
         field = 'released_datetime'
@@ -296,7 +278,7 @@ class PackageQuerySet(QuerySet):
             .exclude(status=self.model.STATUS.published)
 
 
-class Package(PlatformBase, ModelAbsoluteUrlMixin,
+class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
               SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
@@ -430,7 +412,10 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
         cats = [cat for cat in self.categories.all()
                 if cat.is_leaf_node() and \
                    cat.get_root().slug in Category.ROOT_SLUGS]
-        main_category = cats[0]
+        try:
+            main_category = cats[0]
+        except IndexError:
+            main_category = None
         return main_category, cats
 
     def clean(self):
@@ -464,6 +449,11 @@ class Package(PlatformBase, ModelAbsoluteUrlMixin,
         else:
             return '/packages/%s/' % self.pk
 
+    def get_package_url(self, link_type=0):
+        if link_type == 0:
+            return '/package/?name=%s' % self.package_name
+        else:
+            return '/package/?id=%s' % self.pk
 
 tagging.register(Package)
 
@@ -532,7 +522,7 @@ def version_upload_path(instance, filename):
     return join(prefix, filename)
 
 
-class PackageVersion(ModelAbsoluteUrlMixin, PlatformBase,
+class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
                      SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager\
@@ -796,6 +786,9 @@ class PackageVersionScreenshotManager(models.Manager):
         return self.filter(kind='default')
 
 
+from toolkit.storage import screenshot_thumbnail_storage
+
+
 class PackageVersionScreenshot(models.Model):
 
     objects = PackageVersionScreenshotManager()
@@ -805,7 +798,8 @@ class PackageVersionScreenshot(models.Model):
     image = ThumbnailerImageField(
         upload_to=screenshot_upload_path,
         max_length=500,
-        blank=False
+        blank=False,
+        thumbnail_storage=screenshot_thumbnail_storage,
     )
 
     KIND = Choices(
@@ -1133,6 +1127,20 @@ class IOSPackageVersion(IOSPlatform, PackageVersion):
         if not hasattr(self, '_support_device_types'):
             self._support_device_types = self._get_support_device_types()
         return self._support_device_types
+
+    @property
+    def support_ipad(self):
+        return 'iPad' in self.device_types
+
+    @property
+    def support_iphone(self):
+        return 'iPhone' in self.device_types
+
+    @property
+    def support_alldevices(self):
+        return self.support_ipad and self.support_iphone
+
+
 
 
 

@@ -109,7 +109,11 @@ register.simple_tag(absolute_url, takes_context=True)
 
 
 def download_url(context, pv, **kwargs):
-    url = pv.get_download_url(**kwargs)
+    entrytype = None
+    if 'product' in kwargs:
+        entrytype = kwargs.pop('product')
+
+    url = pv.get_download_url(entrytype=entrytype, **kwargs)
     request = context.get('request')
     if request:
         return request.build_absolute_uri(url)
@@ -117,6 +121,8 @@ def download_url(context, pv, **kwargs):
 
 register.assignment_tag(download_url, takes_context=True, name='download_url_as')
 register.simple_tag(download_url, takes_context=True)
+
+from django.db import models
 
 
 def resource_url(inst_or_resources, kind='cover', alias='default'):
@@ -126,12 +132,27 @@ def resource_url(inst_or_resources, kind='cover', alias='default'):
         except (ValueError, AttributeError):
             pass
 
+    if isinstance(inst_or_resources, models.Model):
+        try:
+            resources = getattr(inst_or_resources, 'resources')
+            res = getattr(resources, kind)[alias]
+            return res.file.url
+        except:
+            pass
+
     if hasattr(inst_or_resources, 'model') and inst_or_resources.model:
         try:
             res = getattr(inst_or_resources, kind)[alias]
             return res.file.url
         except ObjectDoesNotExist:
             pass
+
+    if kind in ('cover', 'icon') and isinstance(inst_or_resources, models.Model):
+        try:
+            return getattr(inst_or_resources, kind).url
+        except (ValueError, AttributeError):
+            pass
+
     return ''
 
 register.assignment_tag(resource_url, name='resource_url_as')

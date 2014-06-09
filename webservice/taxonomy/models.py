@@ -17,6 +17,7 @@ from django.core.urlresolvers import reverse
 
 from django.core.urlresolvers import get_callable
 from django.conf import settings
+from toolkit import model_url_mixin as urlmixin
 from toolkit.managers import CurrentSitePassThroughManager, CurrentSiteManager
 from toolkit.helpers import sync_status_from, current_site_id
 from toolkit.models import SiteRelated
@@ -122,27 +123,7 @@ class AllCategoryManager(TreeManager, PassThroughManager):
     pass
 
 
-class CategoryAbsoluteUrlMixin(object):
-
-    ROOT_SLUGS = ('game', 'application')
-
-    def get_absolute_url_as(self, product, pagetype='default'):
-        if product == 'pc':
-            # mezzanine.pages.views.page
-            if self.slug in self.ROOT_SLUGS:
-                view_name = 'page'
-                page_slug = "%s/%s" % (product, self.slug)
-                return reverse(view_name, kwargs=dict(slug=page_slug)) \
-                       + '?category=%s' % self.pk
-            else:
-                page_slug = "%s/%s" % (product, self.get_root().slug)
-                view_name = 'page'
-                return reverse(view_name, kwargs=dict(slug=page_slug))\
-                       + '?category=%s' % self.pk
-        return None
-
-
-class Category(CategoryAbsoluteUrlMixin,
+class Category(urlmixin.CategoryAbsoluteUrlMixin,
                MPTTModel, Taxonomy):
 
     # FIXME 重建全文索引，需要使用 package.categories 关联获取分类列表，
@@ -203,6 +184,15 @@ class Category(CategoryAbsoluteUrlMixin,
         super(Category, self).save(*args, **kwargs)
         Category.objects.rebuild()
 
+    def get_affiliated_packages(self):
+        if not self.is_leaf_node():
+            cat_ids = list(self.get_descendants(include_self=True)\
+                .values_list('pk', flat=True))
+            return self.packages.model.objects \
+                .filter(categories__pk__in=cat_ids).distinct()
+        else:
+            return self.packages.all()
+
 
 class TopicQuerySet(QuerySet):
 
@@ -242,30 +232,7 @@ class TopicManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
     pass
 
 
-class TopicAbsoluteUrlMixin(object):
-
-    PAGE_TYPE_DETAIL = 'detail'
-
-    PAGE_TYPE_SPECIAL = 'special'
-
-    _spec_topics = {'home-recommend-game': 'masterpieces',
-                    'spec-choice-topic': 'collections'}
-
-    def get_absolute_url_as(self, product, pagetype=PAGE_TYPE_DETAIL):
-        if product == 'pc':
-            if pagetype == self.PAGE_TYPE_DETAIL:
-                view_name = 'website.views.%s.topic_detail' % product
-                return reverse(view_name, kwargs=dict(slug=self.slug))
-
-            if pagetype == self.PAGE_TYPE_SPECIAL and self.slug in self._spec_topics:
-                # mezzanine.pages.views.page
-                view_name = 'page'
-                page_slug = "%s/%s" % (product, self._spec_topics[self.slug])
-                return reverse(view_name, kwargs=dict(slug=page_slug))
-        return None
-
-
-class Topic(MPTTModel, Taxonomy, TopicAbsoluteUrlMixin):
+class Topic(MPTTModel, Taxonomy, urlmixin.TopicAbsoluteUrlMixin):
 
     objects = TopicManager.for_queryset_class(TopicQuerySet)()
 
@@ -347,19 +314,23 @@ class Topic(MPTTModel, Taxonomy, TopicAbsoluteUrlMixin):
 
 
 class TopicalItemQuerySet(QuerySet):
-    def get_items_by_topic(self, topic, item_model):
+    def get_items_by_topic(self, topic, item_model, order=True):
         content_type = ContentType.objects.get_for_model(item_model)
-        return item_model.objects \
+        qs = item_model.objects \
             .filter(topics__topic__pk=topic.pk,
-                    topics__content_type__pk=content_type.pk) \
-            .order_by('topics__ordering')
+                    topics__content_type__pk=content_type.pk)
+        if order:
+            return qs.order_by('topics__ordering')
+        return qs
 
-    def filter_items_by_topic(self, topic, item_model, queryset):
+    def filter_items_by_topic(self, topic, item_model, queryset, order=True):
         content_type = ContentType.objects.get_for_model(item_model)
-        return queryset \
+        qs = queryset \
             .filter(topics__topic__pk=topic.pk,
-                    topics__content_type__pk=content_type.pk) \
-            .order_by('topics__ordering')
+                    topics__content_type__pk=content_type.pk)
+        if order:
+            return qs.order_by('topics__ordering')
+        return qs
 
 
 class TopicalItem(SiteRelated, models.Model):

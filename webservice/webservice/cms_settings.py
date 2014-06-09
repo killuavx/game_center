@@ -69,6 +69,8 @@ COMMENTS_DEFAULT_APPROVED = True
 COMMENTS_NOTIFICATION_EMAILS = ''
 COMMENT_FILTER = None
 
+COMMENTS_ACCOUNT_REQUIRED = True
+
 
 #########################
 # OPTIONAL APPLICATIONS #
@@ -86,10 +88,10 @@ OPTIONAL_APPS = (
 DEBUG_TOOLBAR_CONFIG = {"INTERCEPT_REDIRECTS": False}
 
 PAGE_MENU_TEMPLATES = (
-    (1, "Top navigation bar", "pages/menus/header.haml"),
-    (2, "Left-hand tree", "pages/menus/tree.html"),
-    (3, "Footer", "pages/menus/footer_links.haml"),
-    (5, "iOS PC Navigation Menus", "pages/pc/menu/header.haml"),
+    (1, "Web Header", "pages/menus/web/navigation.haml"),
+    (2, "Web Top Navigation list", "pages/menus/web/nav-li.haml"),
+    (3, "Web Top Navigation sub list", "pages/menus/web/nav-sub-li.haml"),
+    (5, "PC Navigation Menus", "pages/pc/menu/header.haml"),
 )
 
 replace_idx = INTERNAL_APPS.index('suit')
@@ -106,6 +108,7 @@ INTERNAL_APPS[replace_idx+1:replace_idx+1] = [
 INTERNAL_APPS.append('mezzanine.accounts')
 INTERNAL_APPS.append('template_utils')
 INTERNAL_APPS.pop(replace_idx)
+EXTENDAL_APPS.append('website.web')
 EXTENDAL_APPS.append('website')
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
@@ -156,6 +159,7 @@ LESS_EXECUTABLE = '/home/www-data/.nvm/v0.11.9/bin/lessc'
 COFFEESCRIPT_EXECUTABLE = \
     '/home/www-data/.nvm/v0.11.9/bin/coffee'
 
+QINIU_CMD = '/data0/share/qiniu/qboxrsctl'
 
 ACCOUNTS_PROFILE_VIEWS_ENABLED = True
 
@@ -183,7 +187,28 @@ FILEBROWSER_SELECT_FORMATS = {
     'Package': ['iOSApp', 'AndroidApp']
 }
 
-GC_RESOURCE_ALIASES = ('default', 'gc20', 'pc')
+GC_RESOURCE_ALIASES = ('default', 'gc20', 'pc', 'web',
+                       # ios icon
+                       '60', '100',
+                       # ios screenshot
+                       '0', '1', '2', '3', '4', '5',
+)
+
+
+_ENTRY_TYPE_CHOICE = None
+
+
+def get_entry_types():
+    global _ENTRY_TYPE_CHOICE
+    if not _ENTRY_TYPE_CHOICE:
+        from analysis.documents.event import Event
+        from model_utils import Choices
+        _ENTRY_TYPE_CHOICE = Choices(*[t[0] for t in Event.ENTRY_TYPES])
+    return _ENTRY_TYPE_CHOICE
+
+def ENTRY_TYPES():
+    return get_entry_types()
+
 
 FILEBROWSER_DIRECTORY = ''
 

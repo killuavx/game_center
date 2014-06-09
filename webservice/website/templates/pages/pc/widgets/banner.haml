@@ -4,8 +4,8 @@
     %ul.banner_ul
       - for item in items
         %li><
-          %a{:href => '{% absolute_url item.content product="pc" %}'}><
-            %img{:src => "={item.cover.url}"}><
+          %a{:href => '{% absolute_url item.content product=product %}'}><
+            %img{:src => "{% resource_url item 'cover' %}"}><
               %span.bg
               %span.text= item.title
   .cb.banner_btn

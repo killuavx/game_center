@@ -1,9 +1,9 @@
 -extends "pc_base.haml"
--load widgets url_tags templatehelper_tags
+-load widgets url_tags templatehelper_tags pc_tags
 -block main
   .cb.box.list_box.game.collection_dis
     .collection_title
-      %img{:alt => "={topic.name}", :src => "{% resource_url topic.resources 'cover' 'pc' %}"}
+      %img{:alt => "={topic.name}", :src => "{% resource_url topic.resources 'cover' product %}"}
         %h1= topic.name
         %p= topic.summary
         %span.date 更新日期：{{ topic.updated_datetime|date }} | 共 {{ topic.packages_count|default:0 }} 个应用

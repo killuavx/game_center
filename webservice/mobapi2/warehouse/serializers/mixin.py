@@ -40,7 +40,7 @@ class PackageRelatedCategoryMixin(object):
             return None
 
     def get_categories_names(self, obj):
-        names = (cat.name for cat in obj.categories.all())
+        names = (cat.name for cat in obj.main_categories)
         return names
 
 

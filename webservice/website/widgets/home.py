@@ -117,9 +117,9 @@ class HomeTopicAuthorPanelWidget(BaseTopicAuthorPanelWidget, Widget):
     template = 'pages/widgets/home/topic-author-panel.haml'
 
 
-class HomeRankingPanelWidget(BaseRankingPackageListWidget, Widget):
-
-    template = 'pages/widgets/home/package-ranking-panel.haml'
+#class HomeRankingPanelWidget(BaseRankingPackageListWidget, Widget):
+#
+#    template = 'pages/widgets/home/package-ranking-panel.haml'
 
 
 class HomeCategoryPackageTabsPanelWidget(BaseCategoryPackageListWidget, Widget):

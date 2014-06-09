@@ -19,3 +19,18 @@ def cdn_feedback(request, slug, *args, **kwargs):
     response = feedback.process(content=context)
     return HttpResponse(response.render(),
                         mimetype='text/xml; charset=utf-8')
+
+
+from mezzanine.pages.views import page
+from os.path import join
+
+
+def website_page(request, slug, product=None, template=u"pages/page_web.html",
+                 extra_context=None):
+    if not product:
+        slug = join(product, slug)
+        template = "pages/%s/page_web.html" % product
+    return page(request=request,
+                slug=slug,
+                template=template,
+                extra_context=extra_context)

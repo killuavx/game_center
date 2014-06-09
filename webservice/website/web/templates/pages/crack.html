@@ -1,0 +1,65 @@
+{% extends "pages/page_web.html" %}
+{% load widgets url_tags templatehelper_tags %}
+
+{% block main %}
+    {% settings_value "GC_WEB_CRACK_A1_PLACE_SLUG" as A1_PLACE_SLUG %}
+    <!--广告开始 banner {{ A1_PLACE_SLUG }}-->
+    <div class="rel ovh banner crack-banner">
+    {% include_widget WebCrackTopBannersWidget slug=A1_PLACE_SLUG %}
+    </div>
+    <!--广告结束 banner {{ A1_PLACE_SLUG }}-->
+
+    <!--应用列表 开始 app-list-page-->
+    <div class="auto width rel app-list-page crack-page">
+
+        {% widget WebCrackTimeLinePanelWidget %}
+        <div class="cell most-expensive">
+            <div class="f18 cell rel t-title">
+                <h3 class="l n mr30"><span class="abs ios-web-icon"></span>{{ category.name }}</h3>
+            </div> <!--t-title-->
+        </div>
+
+        <div class="rel cell-bk">
+            <div class="l btn-s-box tj pl5 pr20 pb20 right-list time-list">
+                <div class="time-box-t">
+                    <div class="time-box-b">
+
+                    {% for grp in result %}
+                        <div class="cell-bk">
+                            <dl class="f14 bde dib p15 n-{{ forloop.counter }}">
+                                <dt class="rel pb15">虫虫<em class="g6">{{ grp.time_name }}</em>破解{{ grp.packages.count }}个游戏
+                                    <div class="abs tag-time"><a class="ios-web-icon f12" href="javascript:;">{{ grp.time_name }}</a></div>
+                                    <span class="user-icon abs triangle"></span>
+                                </dt>
+                                <dd>
+                                    {% for package in grp.packages %}{% with version=package.versions.latest_published title=version.subtitle|default:package.title %}
+                                    {% absolute_url_as package product=product as detail_url %}
+                                    <div class="dib rel app-list-min">
+                                        <a href="{{ detail_url }}" class="db tc f14" target="_blank">
+                                            <img src="{% resource_url version 'icon' %}" class="db auto">
+                                            <span class="ios-web-icon abs db auto"></span>
+                                            {{ title|slice:"5" }}
+                                            <i class="db n f12 g9">{{ package.main_category.name }}</i>
+                                        </a>
+                                    </div>
+                                    {% if forloop.last and grp.url %}
+                                    <div class="dib rel app-list-min app-more">
+                                        <a href="{{ grp.url }}">更多 &gt;&gt;</a>
+                                    </div>
+                                    {% endif %}
+                                    {% endwith %}{% endfor %}
+                                </dd>
+                            </dl>
+                        </div>
+                    {% endfor %}
+
+                    </div><!--time-box-b-->
+                </div>
+            </div>
+        </div>
+        {% endwidget %}
+
+    </div>
+    <!--应用列表 结束 app-list-page-->
+
+{% endblock %}

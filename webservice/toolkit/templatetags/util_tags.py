@@ -141,3 +141,18 @@ def intwordcn(value):
     return value
 
 
+@register.simple_tag
+def unique_list(*args):
+    result = set()
+    for array in args:
+        result.update(array)
+    return list(result)
+
+
+@register.simple_tag
+def unique_tags_text(*args, **kwargs):
+    result = set()
+    for tags in args:
+        result.update([t.name for t in tags])
+    return ", ".join(list(result))
+

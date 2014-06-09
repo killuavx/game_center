@@ -1,0 +1,27 @@
+{% load templateutils_tags %}
+{% load static %}
+
+<div class="rel ovh banner">
+  <div class="ban_pic">
+    <ul class="auto tc">
+      {% for item in items %}
+      <li style="background:url({{ item.cover.url }}) repeat-x center"><a title="链接名称" href="{{ item.content.get_absolute_url }}" style="background:url({{ item.cover.url }}) no-repeat center top" class="auto width"></a></li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="cell-bk tc rel num">
+    <ul></ul>
+  </div>
+
+  <div class="banner-page">
+    <a class="arrow prev" href="#"><b>上一页</b></a>
+    <a class="arrow next" href="#"><b>下一页</b></a>
+  </div>
+  <div class="auto rel bg">
+    <div class="bg-t"></div>
+    <div class="abs bg-l"></div>
+    <div class="abs bg-r"></div>
+    <div class="abs bg-c"></div>
+  </div>
+</div>
+

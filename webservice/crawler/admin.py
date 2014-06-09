@@ -72,7 +72,8 @@ class IOSAppDataAdmin(MainAdmin):
     )
     list_display = ('pk',
                     'title',
-                    'package_link', 'version_link',
+                    #'package_link',
+                    # 'version_link',
                     'is_analysised',
                     'is_image_downloaded',
                     'image_downloaded', 'status_description', 'buyinfo')

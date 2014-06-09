@@ -3,8 +3,8 @@
   %ul
     -for item in items
       %li<
-        %a{:href => "{% absolute_url item product='pc' %}"}<
-          %img{:src => "{% resource_url item 'cover' 'pc' %}"}/
+        %a{:href => "{% absolute_url item product=product %}"}<
+          %img{:src => "{% resource_url item 'cover' product %}"}/
 .cb.banner_btn
   %a.unslider-arrow.icon.prev{:href => "javascript:void(0)"}
   %a.unslider-arrow.icon.next{:href => "javascript:void(0)"}

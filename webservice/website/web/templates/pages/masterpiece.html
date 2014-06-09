@@ -1,0 +1,19 @@
+{% extends "pages/page_web.html" %}
+{% load widgets templatehelper_tags web_tags %}
+{% block main %}
+<!-- START 巨作 开始 masterpiece-->
+<div class="auto mt30 width masterpiece">
+    <div class="cell-bk mb30">
+        {% settings_value 'GC_TOPICS_MASTERPIECE_SLUG' as masterpiece_slug %}
+        {% widget WebMasterpiecePackageListWidget slug=masterpiece_slug page=request.GET.page per_page=12 %}
+            {% for package in items %}
+            <div class="maste_lsit">
+            {% include "pages/widgets/masterpiece/package-list.haml" with package=package %}
+            </div>
+            {% endfor %}
+        {% pagination items %}
+        {% endwidget %}
+    </div><!--cell-bk-->
+</div>
+<!-- END 巨作 结束 masterpiece-->
+{% endblock %}

@@ -1,36 +1,56 @@
 # -*- coding: utf-8 -*-
-from dateutil import parser
 from feedparser import parse
+from website.widgets.common.base import BaseListWidget
 
-class BaseForumThreadPanelWdiget(object):
 
-    rss_link = 'http://bbs.ccplay.com.cn/api.php?mod=rss&bid=45'
+class BaseForumThreadPanelWdiget(BaseListWidget):
 
-    more_url = 'http://bbs.ccplay.com.cn/'
+    rss_link = None
+
+    def get_rss_content(self):
+        if not hasattr(self, '_rss'):
+            try:
+                self._rss = parse(self.rss_link)
+            except:
+                self._rss = None
+        return self._rss
 
     def get_more_url(self):
-        return self.more_url
+        try:
+            return self.get_rss_content()['feed']['link']
+        except:
+            return None
+
+    def get_title(self):
+        try:
+            return self.get_rss_content()['feed']['title']
+        except:
+            return None
 
     def get_list(self):
-        posts = parse(self.rss_link)['entries']
+        try:
+            posts = self.get_rss_content()['entries']
+        except:
+            return list()
         items = []
         for post in posts:
             items.append(dict(
                 title=post.title,
                 url=post.link,
+                summary=post.summary,
+                avatar_url=post.avatar,
+                replies_count=post.replies,
+                views_count=post.views,
                 category=post.category,
                 category_url=post.categorylink,
                 pub_date=post.published
             ))
         return items
 
-    def get_context(self, value=None, options=dict(), context=None):
-        items = self.get_list()
-        max_items = options.get('max_items', 5)
-        options.update(
-            title=options.get('title'),
-            more_url=self.get_more_url(),
-            items=options.get('items', list(items[0:max_items])),
-            max_items=max_items,
-            )
-        return options
+    def get_context(self, value=None, options=dict(), context=None, *kwargs):
+        self.rss_link = options.get('rss_link')
+        return super(BaseForumThreadPanelWdiget, self).get_context(value=value,
+                                                            options=options,
+                                                            context=context
+                                                            )
+

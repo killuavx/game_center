@@ -1,0 +1,154 @@
+-extends "base_web.haml"
+-load widgets templatehelper_tags cache
+
+-block main
+  {% cache 600 product_web request.get_host request.path_info request.GET %}
+  / START Banner
+  .rel.ovh.banner
+    {% settings_value "GC_WEB_HOME_A1_PLACE_SLUG" as BANNER_SLUG %}
+    {% include_widget WebHomeTopBannersWidget slug=BANNER_SLUG %}
+  / END Banner
+
+  / START Masterpiece
+  .auto.rel.width.box_btn.roll.masterpiece
+    .tj.pct100
+      {% settings_value "GC_TOPICS_MASTERPIECE_SLUG" as MASTERPIECE_SLUG %}
+      {% include_widget WebHomeMasterpiecePackageListWidget slug=MASTERPIECE_SLUG %}
+    / pct100
+  / END Masterpiece
+
+
+  / START 最新发布 热点资讯 最贵应用 multi
+  .auto.rel.width.multi
+    .cell-bk
+      / START 首发破解
+      .l.pt20.hot-news
+        {% settings_value "GC_WEB_HOME_T1_TOPIC_SLUG" as R1C2P_TOPIC_SLUG %}
+        {% include_widget WebHomeTopicalPackageListWidget slug=R1C2P_TOPIC_SLUG per_page=6 template='pages/widgets/home/r1c2-package-panel.haml'%}
+      / END 首发破解
+
+      .l.abs.pt20.latest-release.btn-s-box
+        / START 最新发布
+        {% include_widget WebHomeLatestPackageListWidget title="最新发布" per_page=10 template='pages/widgets/home/r1c1-package-panel.haml' %}
+        / END 最新发布
+      / latest-released
+
+      .r.abs.pt20.most-expensive
+        {% settings_value "GC_WEB_HOME_T2_TOPIC_SLUG" as R1C3P_TOPIC_SLUG %}
+        {% include_widget WebHomeTopicalPackageListWidget slug=R1C3P_TOPIC_SLUG per_page=8 template='pages/widgets/home/r1c3-package-panel.haml'%}
+      / most-expensive
+
+    / cell-bk
+  / END 最新发布 热点资讯 最贵应用 multi
+
+  / START 广告 行2
+  .auto.width.cc-a-d-box
+    .rel.pt20.cell-bk.ovh
+      .l-box.cc-a-d-2
+        {% settings_value "GC_WEB_HOME_A2_PLACE_SLUG" as R2C1A_PLACE_SLUG %}
+        {% include_widget WebSingleAdvertisementWidget slug=R2C1A_PLACE_SLUG %}
+      .r-box.cc-a-d-3
+        {% settings_value "GC_WEB_HOME_A3_PLACE_SLUG" as R2C2A_PLACE_SLUG %}
+        {% include_widget WebSingleAdvertisementWidget slug=R2C2A_PLACE_SLUG %}
+  / END 广告 行2
+
+  {% settings_value "GC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS" as COMPLEX_TOPIC_SLUGS %}
+  / START game 行3
+  .auto.mt20.width.game
+    .rel.cell-bk.app-box
+
+      .left.tab-box-o
+        {% include_widget WebHomeComplexPackagePanelWidget cat_slug='game' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
+      / left
+
+      .abs.right
+        {% include_widget WebRankingPackageListWidget cat_slug='game' per_page=10 %}
+      / right
+  / END game 行3
+
+  {% is_site_android as is_android %}{% is_site_ios as is_ios %}
+
+  {% if is_android %}
+  / START 广告 行4
+  .auto.width.cc-a-d-box
+    .rel.pt20.cell-bk.ovh
+      .l-box.cc-a-d-2
+        {% settings_value "GC_WEB_HOME_A4_PLACE_SLUG" as R4C1A_PLACE_SLUG %}
+        {% include_widget WebSingleAdvertisementWidget slug=R4C1A_PLACE_SLUG %}
+      .r-box.cc-a-d-3
+        {% settings_value "GC_WEB_HOME_A5_PLACE_SLUG" as R4C2A_PLACE_SLUG %}
+        {% include_widget WebSingleAdvertisementWidget slug=R4C2A_PLACE_SLUG %}
+  / END 广告 行4
+  {% endif %}
+  {% if is_ios %}
+  / START collections 行4
+  .auto.rel.width.box_btn.roll.ovh.project
+    .tj.pct100
+      {% settings_value "GC_WEB_HOME_T3_TOPIC_SLUG" as R4_TOPIC_SLUG %}
+      {% include_widget WebHomeCollectionListWidget slug=R4_TOPIC_SLUG per_page=10 %}
+    / pct100
+  / END collections 行4
+  {% endif %}
+
+  / START appliction 行5
+  .auto.mt20.width.soft
+    .rel.cell-bk.app-box
+
+      .left.tab-box-o
+        {% include_widget WebHomeComplexPackagePanelWidget cat_slug='application' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
+      / left
+
+      .abs.right
+        {% include_widget WebRankingPackageListWidget cat_slug='application' per_page=10 %}
+      / right
+  / END application 行5
+
+  {% if is_android %}
+  / START 广告 行6
+  .auto.width.cc-a-d-box
+    .rel.pt20.cell-bk.ovh
+      .l-box.cc-a-d-2
+        {% settings_value "GC_WEB_HOME_A6_PLACE_SLUG" as R6C1A_PLACE_SLUG %}
+        {% include_widget WebSingleAdvertisementWidget slug=R6C1A_PLACE_SLUG %}
+      .r-box.cc-a-d-3
+        {% settings_value "GC_WEB_HOME_A7_PLACE_SLUG" as R6C2A_PLACE_SLUG %}
+        {% include_widget WebSingleAdvertisementWidget slug=R6C2A_PLACE_SLUG %}
+  / END 广告 行6
+  {% endif %}
+  {% if is_ios %}
+  / START collections 行6
+  .auto.rel.width.box_btn.roll.ovh.project
+    .tj.pct100
+      {% settings_value "GC_WEB_HOME_T4_TOPIC_SLUG" as R6_TOPIC_SLUG %}
+      {% include_widget WebHomeCollectionListWidget slug=R6_TOPIC_SLUG per_page=10 %}
+    / pct100
+  / END collections 行6
+  {% endif %}
+
+
+  / START 厂商 热帖 新手 bbs
+  .auto.width.bbs
+    .rel.cell-bk
+
+      .l.pt20.hot-bbs
+        {% settings_value "GC_WEB_HOME_F1_RSS_LINK" as F1_RSS_LINK %}
+        {% include_widget WebHomeForumHotThreadPanelWidget rss_link=F1_RSS_LINK per_page=13 %}
+      / hot bbs
+
+      .l.pt20.abs.vendor
+        {% include_widget WebHomeVendorListWidget per_page=8 %}
+      / vendor
+
+      .r.pt20.abs.novice-bbs
+        {% settings_value "GC_WEB_HOME_F2_RSS_LINK" as F2_RSS_LINK %}
+        {% include_widget WebHomeForumNoviceThreadPanelWidget rss_link=F2_RSS_LINK per_page=12 %}
+      / novice-bbs
+
+    / cell-bk
+  / END 厂商 热帖 新手 bbs
+
+  .auto.width.ovh.i-link
+    .pt20.pb30
+      {% include "pages/menus/web/friend_links.html" %}
+
+  {% endcache %}

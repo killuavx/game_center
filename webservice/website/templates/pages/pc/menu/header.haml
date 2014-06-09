@@ -13,7 +13,11 @@
           -if page.is_current
             %a.hover{:href => "#"}= page.title
           -else
-            %a{:href => "={page.get_absolute_url}"}= page.title
+            -# 临时解决
+            -if page.title == '许愿' or page.title == '论坛'
+              %a{:href => "={page.get_absolute_url}", :target => "_blank"}= page.title
+            -else
+              %a{:href => "={page.get_absolute_url}"}= page.title
     {% endspaceless %}
   / head_nav
 / head

@@ -1,0 +1,62 @@
+-extends 'pages/page_web.html'
+-load widgets url_tags templatehelper_tags web_tags
+-load web_tags
+
+-block main
+  / START 应用列表 app-list-page
+  .auto.mt30.width.app-list-page
+    {% is_site_android as is_android %}{% is_site_ios as is_ios %}
+    {% widget WebCategorySelectorWidget root_category=root_category %}
+    .cell
+      .f18.cell.rel.t-title
+        %h3.l.n.mr30 {% if is_android %}安卓{% endif %}{% if is_ios %}苹果{% endif %}{{ root_category.name }}
+        %ul.l.abs.cell-bk.f16
+          -for select in second_selectlist
+            -if select.params.topic != topic.pk or select.params.lang != lang
+              %li.dib.pl10.pr10.tab
+                %a{:href => "{% qurl request.get_full_path topic=select.params.topic lang=select.params.lang page=None %}"}= select.name
+            -else
+              %li.dib.pl10.pr10.tab.ios-web-icon
+                %a{:href => "javascript:;"}= select.name
+      / t-title
+    / cell
+
+    .rel.cell-bk
+
+      .l.left-list
+        %ul.f14.left-nav
+          -for cat in category_selectlist
+            %li
+              -ifequal category.pk cat.pk
+                %a.hover{:href => "javascript:;"}
+                  -if cat.is_root_node
+                    全部
+                  -else
+                    = cat.name
+                  %span.r
+              -else
+                {% qurl request.get_full_path category=cat.pk topic=None lang=None page=None as second_url %}
+                -if cat.is_root_node
+                  %a{:href => "{% qurl second_url category=None %}"}
+                    全部
+                    %span.r
+                -else
+                  %a{:href => "={second_url}"}
+                    = cat.name
+                    %span.r
+
+      {% widget WebCategoryComplexPackageList category=category topic=topic lang=lang per_page=27 page=request.GET.page %}
+      .l.btn-s-box.tj.p20.right-list
+        -for package in items
+          {% package_box package %}
+        {% pagination items %}
+      / right-list
+      {% endwidget %}
+
+
+    / cell-bk
+    {% endwidget %}
+
+
+
+  / END 应用列表 app-list-page

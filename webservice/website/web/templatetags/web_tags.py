@@ -1,0 +1,18 @@
+# -*- coding: utf-8 -*-
+from django.template.base import Library
+
+register = Library()
+@register.inclusion_tag('includes/pagination_web.haml', takes_context=True)
+def pagination(context, current_page, *args, **kwargs):
+    return dict(
+        request=context.get('request'),
+        current_page=current_page
+    )
+
+@register.inclusion_tag('pages/widgets/common/package-box.haml', takes_context=True)
+def package_box(context, package, *args, **kwargs):
+    return dict(
+        request=context.get('request'),
+        package=package,
+        product='web',
+    )

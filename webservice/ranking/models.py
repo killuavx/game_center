@@ -1,5 +1,9 @@
 from django.db import models
 from model_utils.managers import PassThroughManager
+from mezzanine.core.managers import DisplayableManager
+from mezzanine.core.models import Displayable, Orderable, TimeStamped
+
+from toolkit import model_url_mixin as urlmixin
 from toolkit.helpers import current_site_id
 from toolkit.managers import (CurrentSitePassThroughManager,
                               PublishedManager,
@@ -7,8 +11,7 @@ from toolkit.managers import (CurrentSitePassThroughManager,
 from toolkit.models import (
     SiteRelated,
     PublishDisplayable)
-from mezzanine.core.managers import DisplayableManager
-from mezzanine.core.models import Displayable, Orderable, TimeStamped
+
 #from django.utils.translation import ugettext_lazy as _
 
 
@@ -54,6 +57,7 @@ class PackageRanking(SiteRelated,
                      PublishDisplayable,
                      TimeStamped,
                      Orderable,
+                     urlmixin.PackageRankingAbsoluteUrlMixin,
                      models.Model):
 
     objects = PackageRankingManager()

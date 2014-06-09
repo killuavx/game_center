@@ -1,0 +1,39 @@
+-load staticfiles pages_tags widgets
+.auto.head
+  .auto.width.top
+    .pt10.pb10
+      .cell-bk
+        .inline-three.ovh.logo
+          %h2
+            %a.rel{:href => "/"}
+              %img{:src => "{% static 'common/img/logo.png' %}", :title => "虫虫游戏 | 免费玩精品"}
+                %span.trans.home
+        / logo
+        .inline-three.search
+          {% include "pages/includes/search_form.haml" %}
+        / search
+        .inline-three.r.user-switch
+          %ul.r
+            {% widget WebHeaderSiteListWidget %}
+            -for site in items
+              %li<
+                %a.ios-web-icon{:class => "a={forloop.counter}", :href => "={site.url}"}= site.name
+            {% endwidget %}
+            %li#login-reg
+              %a.ios-web-icon.a4.open-login{:href => "#", :target => ""} 登录/注册
+            %li#change-logout.dn
+              %a.ios-web-icon.a4.text-db{:href => "#", :target => "", :title => ""} 龚鑫军
+              %dl.abs.dn.bdc.bg-white.zx2.f14{:style => "display: none;"}
+                %dd
+                  %a.db.h24.lh24.pl10.pr10.pt5.pb5.bbc.change-password{:href => "#", :target => ""} 修改密码
+                %dd
+                  %a.db.h24.lh24.pl10.pr10.pt5.pb5.log-out{:href => "#", :target => ""} 退出
+        / user-switch
+      / cell-bk
+  / top
+
+  .cell-bk.nav#nav
+    .auto.rel.width
+      {% page_menu "pages/menus/web/navigation.haml" %}
+    / width
+  / nav
