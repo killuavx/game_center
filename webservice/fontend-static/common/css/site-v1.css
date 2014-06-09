@@ -203,7 +203,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .most-expensive,.novice-bbs{width:300px; right:0}
 
 /*时光轴*/
-.multi{z-index:3; min-height:831px;}
+.multi{z-index:3}
 .time-box-t{background:url(http://static.ccplay.com.cn/static/common/img/time-line-2.png) 37px bottom no-repeat; padding-bottom:40px}
 .time-box-b{background:url(http://static.ccplay.com.cn/static/common/img/time-line-1.png) 37px 0 repeat-y}
 .t-title{height:35px; border-bottom:2px solid #ccc; background-color:#fff}
@@ -276,7 +276,7 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 .app-list-right img{width:24px; height:24px; margin:0 5px}
 .app-list-right h3{font-size:12px; height:20px; overflow:hidden}
 .app-list-right b{display:inline-block; width:20px; text-align:center}
-.app-list-right a span.ios-web-icon{width:26px; height:26px; background-position:-127px -313px; left:34px}
+.app-list-right a span.ios-web-icon{width:26px; height:26px; background-position:-127px -313px; left:34px; top:4px}
 .app-list-right p{display:none; height:23px; overflow:hidden}
 
 .app-list-right li.hover{height:82px}
@@ -290,8 +290,8 @@ white-space:nowrap; overflow:hidden; text-overflow: ellipsis; color:#fff}
 /*热帖*/
 .hot-bbs-list li{position:relative; padding:5px 0; *padding:4px 0 3px 0; height:auto}
 .hot-bbs-list li h4{padding-left:5px; font-size:14px; font-weight:100; height:26px; overflow:hidden}
-.hot-bbs-list li.first{padding:13px 0; *padding:7px 0}
-.hot-bbs-list li.first h4{font-size:20px}
+.hot-bbs-list li.first{}
+.hot-bbs-list li.first p{display:none}
 .hot-bbs-list li .f10{padding-right:5px}
 .hot-bbs-list li p{padding-left:40px; line-height:23px; *line-height:20px; display:none}
 .hot-bbs-list li.first p{display:inline-block}

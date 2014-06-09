@@ -171,7 +171,6 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 	li_hover($(".app-list-right li"),"hover");	
 	
 	$(".app-list-right").find("li:first").addClass("hover");
-	$(".hot-bbs .hot-bbs-list").find("li:first").addClass("first");
 	
 //基本资料-表单验证
 	var info=$(".user-info-form").Validform({
