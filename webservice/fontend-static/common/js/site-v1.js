@@ -159,8 +159,7 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 	};	
 	li_btn($(".app-list-min,.app-list-xl,.maste_lsit"),".btn-s");
 	li_btn($(".sort"),".sort-menu");
-	li_btn($(".box_btn,.collection_box"),".a_btn");	
-	li_btn($(".logo .rel"),".home");	
+	li_btn($(".box_btn,.collection_box"),".a_btn");
 	
 //首个APP展开	
 	function li_hover(eobj,cssClass){
@@ -172,7 +171,6 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 	li_hover($(".app-list-right li"),"hover");	
 	
 	$(".app-list-right").find("li:first").addClass("hover");
-	$(".hot-bbs .hot-bbs-list").find("li:first").addClass("first");
 	
 //基本资料-表单验证
 	var info=$(".user-info-form").Validform({

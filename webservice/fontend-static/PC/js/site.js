@@ -15,17 +15,19 @@ jQuery(".box-tab").slide({ titCell:".title_box li", mainCell:".list", targetCell
 
 
 $(function(){
-	
+
 	$(".refresh").click(function(){
-		window.location.href=window.location.href;
+		window.history.go(0);
 	});
 	
-	$(".pgup").click(function(){		
-		window.history.go(-1);
+	$(".pgup").click(function(){	
+		window.history.go(-1);	
+		return false;
 	});
 	
 	$(".pgdn").click(function(){
 		window.history.go(1);
+		return false;
 	});
 	
 	
