@@ -6,6 +6,11 @@ background-repeat: no-repeat;}
 .main-text strong {padding-top:20px; display:block}
 
 
+/*去掉安装按钮*/
+.btn-s .a1{display:none}
+.btn-s .a2{width:100%}
+.app-list-min .btn-s{height:25px}
+
 /*v1*/
 .multi{margin-top:-60px}
 .hot-news .t-title{border-bottom-color:#e53333}

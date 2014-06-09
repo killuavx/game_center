@@ -2,8 +2,9 @@
 .logo a img{opacity: 0; filter: alpha(opacity=0)}
 .login .logo a{background-image: url(http://static.ccplay.com.cn/static/common/img/user-icon.png);
 background-repeat: no-repeat;}
-
-
+.btn-s .a1{display:none}
+.btn-s .a2{width:100%}
+.app-list-min .btn-s {height: 25px}
 .crack-page{margin-top:-180px; *overflow:hidden; z-index:2}
 
 .most-expensive .t-title h3 .ios-web-icon{background-position:-187px -67px}
@@ -51,6 +52,8 @@ background-repeat: no-repeat;}
 .app-list-l .pic .ios-web-icon{background-position:0px -663px}
 .most-expensive .t-title{border-bottom-color:#ccc}
 .most-list{background:#f8f8f8}
+
+.hot-news .crack-rcd .time-box-t {padding-bottom:15px}
 
 .crack-rcd{padding:0 15px}
 .crack-rcd .app-list-xl{width:100%; padding:0; margin-top:20px}

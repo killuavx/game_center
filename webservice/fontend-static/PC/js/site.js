@@ -15,14 +15,12 @@ jQuery(".box-tab").slide({ titCell:".title_box li", mainCell:".list", targetCell
 
 
 $(function(){
-	
-	$(".refresh").click(function()
-	{
+
+	$(".refresh").click(function(){
 		window.history.go(0);
 	});
 	
-	$(".pgup").click(function()
-	{	
+	$(".pgup").click(function(){	
 		window.history.go(-1);	
 		return false;
 	});
