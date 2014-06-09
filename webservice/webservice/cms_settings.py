@@ -69,6 +69,8 @@ COMMENTS_DEFAULT_APPROVED = True
 COMMENTS_NOTIFICATION_EMAILS = ''
 COMMENT_FILTER = None
 
+COMMENTS_ACCOUNT_REQUIRED = True
+
 
 #########################
 # OPTIONAL APPLICATIONS #
@@ -157,6 +159,7 @@ LESS_EXECUTABLE = '/home/www-data/.nvm/v0.11.9/bin/lessc'
 COFFEESCRIPT_EXECUTABLE = \
     '/home/www-data/.nvm/v0.11.9/bin/coffee'
 
+QINIU_CMD = '/data0/share/qiniu/qboxrsctl'
 
 ACCOUNTS_PROFILE_VIEWS_ENABLED = True
 
@@ -184,7 +187,12 @@ FILEBROWSER_SELECT_FORMATS = {
     'Package': ['iOSApp', 'AndroidApp']
 }
 
-GC_RESOURCE_ALIASES = ('default', 'gc20', 'pc', 'web')
+GC_RESOURCE_ALIASES = ('default', 'gc20', 'pc', 'web',
+                       # ios icon
+                       '60', '100',
+                       # ios screenshot
+                       '0', '1', '2', '3', '4', '5',
+)
 
 
 _ENTRY_TYPE_CHOICE = None
