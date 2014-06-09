@@ -124,7 +124,7 @@ register_setting(
     description=_("主站首页,行6列1广告位slug" ),
     editable=True,
     default='',
-    choices=place_choices,
+    choices=topic_choices,
 )
 
 register_setting(

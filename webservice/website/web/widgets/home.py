@@ -56,6 +56,15 @@ class WebHomeMasterpiecePackageListWidget(pkgwidget.BaseTopicalPackageListWidget
     template='pages/widgets/home/roll-masterpiece.haml'
 
 
+class WebHomeTopicalPackageListWidget(pkgwidget.BaseTopicalPackageListWidget,
+                                      base.ProductPropertyWidgetMixin,
+                                      Widget):
+
+    per_page = 8
+
+    template = 'pages/widgets/home/roll-collections.haml'
+
+
 class WebHomeLatestPackageListWidget(pkgwidget.BasePackageListWidget,
                                      base.ProductPropertyWidgetMixin,
                                      Widget):
