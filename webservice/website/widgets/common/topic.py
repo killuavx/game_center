@@ -43,10 +43,19 @@ class BaseTopicInformationWidget(object):
         return options
 
 
+class BaseCollectionTopicListWidget(base.FilterWidgetMixin, BaseTopicListWidget):
 
-class BaseCollectionTopicListWidget(BaseTopicListWidget):
+    filter_backends = (
+        base.OrderingFitler,
+    )
+
+    ordering = ('-released_datetime', )
 
     topic_max_items = 8
+
+    def get_list(self):
+        qs = super(BaseCollectionTopicListWidget, self).get_list()
+        return self.filter_queryset(qs)
 
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
         self.slug = options.get('slug')
