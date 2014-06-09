@@ -6,6 +6,7 @@ from website.widgets.common import package as pkgwidget
 from website.widgets.common import topic as tpwidget
 from website.widgets.common.webspide import BaseForumThreadPanelWdiget
 from website.widgets.common.author import BaseTopicAuthorPanelWidget
+from website.widgets.common import filters
 from . import base
 
 __all__ = ['WebHeaderSiteListWidget',
@@ -60,6 +61,14 @@ class WebHomeMasterpiecePackageListWidget(pkgwidget.BaseTopicalPackageListWidget
 class WebHomeLatestPackageListWidget(pkgwidget.BasePackageListWidget,
                                      base.ProductPropertyWidgetMixin,
                                      Widget):
+
+    filter_backends = (
+        filters.PackageReleasedOrderFilterBackend,
+    )
+
+    by_released = True
+
+
     def get_more_url(self):
         return '/latest/'
 

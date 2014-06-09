@@ -31,6 +31,7 @@ slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
                                 'toolkit.helpers.slugify_unicode')
 slugify = get_callable(slugify_function_path)
 from mezzanine.core.fields import FileField
+from mezzanine.generic.fields import CommentsField
 
 
 class AuthorQuerySet(QuerySet):
@@ -284,7 +285,6 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
     objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
 
     all_objects = PassThroughManager.for_queryset_class(PackageQuerySet)()
-
 
     class Meta:
         permissions = (
@@ -652,9 +652,25 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
 
     resources = MultiResourceField()
 
+    #comments = CommentsField()
+
     def clean(self):
         super(PackageVersion, self).clean()
         self.updated_datetime = now()
+
+        if self.status == self.STATUS.published:
+
+            if not self.released_datetime:
+                self.released_datetime = now()
+
+            if self.package:
+                try:
+                    v = self.package.versions.latest_published()
+                    if v and (v == self or self.version_code > v.version_code):
+                        self.package.released_datetime = self.released_datetime
+                except ObjectDoesNotExist:
+                    pass
+                self.package.released_datetime = self.released_datetime
 
     def get_absolute_url(self, link_type=0):
         if link_type == 0:
