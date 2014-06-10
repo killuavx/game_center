@@ -143,6 +143,14 @@ register_setting(
     choices=place_choices,
 )
 
+register_setting(
+    name="GC_WEB_HOME_A8_PLACE_SLUG",
+    description=_("主站首页,行7bbs新手帖广告位置slug" ),
+    editable=True,
+    default='',
+    choices=place_choices,
+)
+
 
 register_setting(
     name="GC_WEB_HOME_F1_RSS_LINK",
