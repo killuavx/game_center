@@ -118,8 +118,10 @@ class TopicalItemAdmin(admin.ModelAdmin):
 
 class TopicInline(TabularInline):
     model = Topic
-    fields = ('name', 'slug', 'ordering', 'status', 'released_datetime')
-    #readonly_fields = ('name', 'slug',)
+    fields = ('name', 'slug', 'ordering', 'status', 'released_datetime', 'updated_datetime')
+    readonly_fields = ('updated_datetime', )
+    ordering = ('-released_datetime', )
+
     sortable = 'ordering'
     #extra = 0
 

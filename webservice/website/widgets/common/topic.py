@@ -11,9 +11,17 @@ class BaseTopicListWidget(base.BaseListWidget):
         from taxonomy.models import Topic
         try:
             topic = Topic.objects.filter(slug=self.slug).published().get()
-            return topic.children.published()
+            qs = topic.children.published()
+            return qs
         except Topic.DoesNotExist:
             return Topic.objects.none()
+
+    def get_context(self, value=None, options=dict(), context=None, pagination=True):
+        self.slug = options.get('slug') if options.get('slug') else self.slug
+        return super(BaseTopicListWidget, self).get_context(value=value,
+                                                     options=options,
+                                                     context=context,
+                                                     pagination=pagination)
 
 
 class BaseTopicInformationWidget(object):
@@ -43,10 +51,19 @@ class BaseTopicInformationWidget(object):
         return options
 
 
+class BaseCollectionTopicListWidget(base.FilterWidgetMixin, BaseTopicListWidget):
 
-class BaseCollectionTopicListWidget(BaseTopicListWidget):
+    filter_backends = (
+        base.OrderingFitler,
+    )
+
+    ordering = ('-released_datetime', )
 
     topic_max_items = 8
+
+    def get_list(self):
+        qs = super(BaseCollectionTopicListWidget, self).get_list()
+        return self.filter_queryset(qs)
 
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
         self.slug = options.get('slug')

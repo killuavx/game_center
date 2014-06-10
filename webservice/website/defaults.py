@@ -124,7 +124,7 @@ register_setting(
     description=_("主站首页,行6列1广告位slug" ),
     editable=True,
     default='',
-    choices=place_choices,
+    choices=topic_choices,
 )
 
 register_setting(
@@ -138,6 +138,14 @@ register_setting(
 register_setting(
     name="GC_WEB_HOME_A7_PLACE_SLUG",
     description=_("主站首页,行6合集位slug" ),
+    editable=True,
+    default='',
+    choices=place_choices,
+)
+
+register_setting(
+    name="GC_WEB_HOME_A8_PLACE_SLUG",
+    description=_("主站首页,行7bbs新手帖广告位置slug" ),
     editable=True,
     default='',
     choices=place_choices,

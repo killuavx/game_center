@@ -6,6 +6,7 @@ from website.widgets.common import package as pkgwidget
 from website.widgets.common import topic as tpwidget
 from website.widgets.common.webspide import BaseForumThreadPanelWdiget
 from website.widgets.common.author import BaseTopicAuthorPanelWidget
+from website.widgets.common import filters
 from . import base
 
 __all__ = ['WebHeaderSiteListWidget',
@@ -56,9 +57,18 @@ class WebHomeMasterpiecePackageListWidget(pkgwidget.BaseTopicalPackageListWidget
     template='pages/widgets/home/roll-masterpiece.haml'
 
 
+
 class WebHomeLatestPackageListWidget(pkgwidget.BasePackageListWidget,
                                      base.ProductPropertyWidgetMixin,
                                      Widget):
+
+    filter_backends = (
+        filters.PackageReleasedOrderFilterBackend,
+    )
+
+    by_released = True
+
+
     def get_more_url(self):
         return '/latest/'
 
@@ -66,7 +76,9 @@ class WebHomeLatestPackageListWidget(pkgwidget.BasePackageListWidget,
 class WebHomeTopicalPackageListWidget(pkgwidget.BaseTopicalPackageListWidget,
                                       base.ProductPropertyWidgetMixin,
                                       Widget):
-    pass
+    per_page = 8
+
+    template = 'pages/widgets/home/roll-collections.haml'
 
 
 class WebSingleAdvertisementWidget(BaseSingleAdvWidget,

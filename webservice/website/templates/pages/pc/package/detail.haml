@@ -1,7 +1,7 @@
 -extends "pc_base.haml"
 -load util_tags url_tags templatehelper_tags pc_tags widgets
-{% is_site_ios as is_ios %}{% is_site_android as is_android %}
 -block main
+  {% is_site_ios as is_ios %}{% is_site_android as is_android %}
   .location>
     {% breadcrumbs_from package category=package.main_category product=product home_url='/pc/home/' %}
 

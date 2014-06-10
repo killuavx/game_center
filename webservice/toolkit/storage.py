@@ -24,7 +24,10 @@ class QBoxCtl(object):
 
     def __init__(self):
         self.ctl = sh.Command(self.CMD)
-        self.ctl.login(self.QUSERNAME, self.QPASSWORD)
+        try:
+            self.ctl.login(self.QUSERNAME, self.QPASSWORD)
+        except:
+            pass
 
     def __getattr__(self, key):
         if key == 'delete':
@@ -108,12 +111,7 @@ class QiniuPackageFileStorageMixin(object):
             raise ValueError("This file is not accessible via a URL.")
         return urljoin(self.get_host_url(name), filepath_to_uri(name))
 
-    def delete(self, name):
-        if self.is_qiniu_file(name):
-            return self.ctl.delete(self.BUCKET_NAME.ios, name)
-        else:
-            return super(QiniuPackageFileStorageMixin, self).delete(name)
-
+    """
     def exists(self, name):
         if self.is_qiniu_file(name):
             try:
@@ -123,17 +121,20 @@ class QiniuPackageFileStorageMixin(object):
                 return False
         return super(QiniuPackageFileStorageMixin, self).exists(name)
 
-    def listdir(self, path):
-        if self.is_qiniu_file(path):
-            raise NotImplementedError('qiniu not supported')
-        else:
-            return super(QiniuPackageFileStorageMixin, self).listdir(path)
-
     def size(self, name):
         if self.is_qiniu_file(name):
             return self._file_stat(self.BUCKET_NAME.ios, name)['fsize']
         else:
             return super(QiniuPackageFileStorageMixin, self).size(name)
+
+    """
+
+    """
+    def delete(self, name):
+        if self.is_qiniu_file(name):
+            return self.ctl.delete(self.BUCKET_NAME.ios, name)
+        else:
+            return super(QiniuPackageFileStorageMixin, self).delete(name)
 
     def accessed_time(self, name):
         if self.is_qiniu_file(name):
@@ -161,6 +162,7 @@ class QiniuPackageFileStorageMixin(object):
             except FileNotFoundError:
                 self.ctl.put('-c', self.BUCKET_NAME.ios, name, name)
         return super(QiniuPackageFileStorageMixin, self)._save(name, content)
+    """
 
 
 class QiniuPackageFileStorage(QiniuPackageFileStorageMixin, FileSystemStorage):

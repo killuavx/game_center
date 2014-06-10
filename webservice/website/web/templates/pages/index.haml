@@ -85,7 +85,7 @@
   .auto.rel.width.box_btn.roll.ovh.project
     .tj.pct100
       {% settings_value "GC_WEB_HOME_T3_TOPIC_SLUG" as R4_TOPIC_SLUG %}
-      {% include_widget WebHomeCollectionListWidget slug=R4_TOPIC_SLUG per_page=10 %}
+      {% include_widget  WebHomeCollectionListWidget slug=R4_TOPIC_SLUG per_page=5 page=1 %}
     / pct100
   / END collections 行4
   {% endif %}
@@ -120,7 +120,7 @@
   .auto.rel.width.box_btn.roll.ovh.project
     .tj.pct100
       {% settings_value "GC_WEB_HOME_T4_TOPIC_SLUG" as R6_TOPIC_SLUG %}
-      {% include_widget WebHomeCollectionListWidget slug=R6_TOPIC_SLUG per_page=10 %}
+      {% include_widget WebHomeCollectionListWidget slug=R6_TOPIC_SLUG per_page=5 page=2 %}
     / pct100
   / END collections 行6
   {% endif %}
