@@ -1,9 +1,9 @@
-﻿//app install
+//app install
 $(".focus").slide({ titCell:".num ul" , mainCell:".banner_ul" , autoPlay:true, delayTime:700 , autoPage:true });
 
 jQuery(".roll").slide({ mainCell:"ul",vis:4,scroll:1,prevCell:".prev",easing:"easeInQuint",nextCell:".next",effect:"leftLoop", autoPage:true});
 
-jQuery(".collection_box").slide({ mainCell:"ul",vis:5,scroll:1,prevCell:".prev",nextCell:".next",easing:"easeInQuint",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
+jQuery(".collection_box").slide({ mainCell:"ul",vis:5,scroll:2,prevCell:".prev",nextCell:".next",easing:"easeInQuint",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
 jQuery(".up_box").slide({ mainCell:"ul",vis:2,scroll:1,prevCell:".prev",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
@@ -25,8 +25,7 @@ $(function(){
 		return false;
 	});
 	
-	$(".pgdn").click(function()
-	{
+	$(".pgdn").click(function(){
 		window.history.go(1);
 		return false;
 	});
