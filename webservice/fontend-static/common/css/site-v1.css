@@ -67,7 +67,7 @@ opacity: 0;}
 
 
 
-.text-db,.hot-game-list-1 li,.app-list-min a,.app-list-m dd a,.app-list-l dd a,.app-list-xl h3{height:20px; overflow:hidden}
+.text-db,.hot-game-list-1 li,.app-list-min a,.app-list-m dd a,.app-list-l dd a,.app-list-xl h3{height:18px; margin-bottom:2px; overflow:hidden}
 .app-list-m dd a,.app-list-l dd a{display:inline-block; width:90px}
 #cc-s .app-list-m dd a,#cc-s .app-list-l dd a{width:auto}
 .app-list-l dd a{width:110px}
@@ -454,10 +454,10 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-dis-page .google{background-position:-166px -300px}
 .app-dis-page .google.no{background-position:-166px -267px}
 
-.app-dis-page .right .up,.app-dis-page .right .up .up_box{height:477px; overflow:hidden; position:relative; padding:10px}
+.app-dis-page .right .up,.app-dis-page .right .up .up_box{height:437px; overflow:hidden; position:relative; padding:10px}
 .app-dis-page .right .up ul{padding:10px}
 .app-dis-page .right .up li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
-.app-dis-page .right .up img{width:280px; height:467px}
+.app-dis-page .right .up img{width:240px}
 
 .app-dis-page .right .up .ios-web-icon{top:-267px; display:inline-block; z-index:99999}
 .app-dis-page .right .up .prev{left:-10px}
@@ -507,9 +507,12 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .collection_box .l img{width:270px; height:135px}
 .collection_box .l h3{font-size:16px; margin-top:7px}
 .collection_box .inner{height:115px; overflow:hidden; position:relative; padding-left:6px}
-.collection_box .inner dl{width:25%}
 .collection_box .date{padding:9px 10px 0 0; text-align:right; color:#666}
 .collection_box .a_btn a{top:-95px}
+.collection_box .inner dl{width:28%}
+.collection_box .app-list-xl{margin:0 0 0 30px}
+#cc-s .collection_box .inner dl{width:9%}
+#cc-s .collection_box .app-list-xl{margin:0 0 0 10px}
 
 .collection_dis{padding-top:10px; background:none}
 .collection_title{border-bottom:1px solid #eee; background:url(http://static.ccplay.com.cn/static/common/img/collection_bg.png) #333 center center; color:#FFF}
@@ -765,7 +768,6 @@ clear: both; line-height: 1.8em;}
 #cc-m .app-list-page .right-list{width:800px}
 #cc-m .app-list-page .app-list-xl{width:31%}
 #cc-m .app-dis-page .left,#cc-m .user-page .left{width:220px}
-#cc-m .title h1{width:220px}
 #cc-m .app-dis-page .right,#cc-m .user-page .right{width:779px}
 #cc-m .left-top-list .t-title li{padding:0 18px}
 #cc-m .collection_box .r{width:719px}
@@ -830,11 +832,9 @@ clear: both; line-height: 1.8em;}
 #cc-s .app-list-page .right-list{width:610px}
 #cc-s .app-list-page .app-list-xl{width:47%}
 #cc-s .app-dis-page .left,#cc-s .user-page .left{width:220px}
-#cc-m .title h1{width:220px}
 #cc-s .app-dis-page .right,#cc-s .user-page .right{width:529px}
 #cc-s .left-top-list .t-title li{padding:0 18px}
 #cc-s .collection_box .r{width:469px}
-#cc-s .collection_box .inner dl{width:20%}
 #cc-s .maste_lsit{margin:0 10px 20px 40px}
 
 #cc-s .vendor-page .left-list,#cc-s .vendor-page .pin-box{width:180px}
