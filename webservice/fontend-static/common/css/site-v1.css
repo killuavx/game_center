@@ -408,7 +408,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .sort-menu a{display:block; height:25px; line-height:25px; padding-left:10px; background-color:#bbbbbb; color:#fff}
 .sort-menu a:hover{background-color:#e53333; color:#fff}
 
-.app-list-xl{width:32%; height:94px; padding:0 0 20px 10px; *float:left}
+.app-list-xl{width:32%; height:94px; padding:0 0 20px 10px; *float:left; vertical-align:top}
 .app-list-xl .p2{padding:0}
 .app-list-xl h3{padding:5px 0; width:90%}
 .app-list-xl img{width:92px; height:92px; margin-left:1px}
