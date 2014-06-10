@@ -12,27 +12,26 @@ function resize(){
 		wobj.attr("id","cc-l");	
 
 		/*巨作*/
-		jQuery(".roll").slide({ mainCell:"ul",vis:5,scroll:1,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
+		jQuery(".roll").slide({ mainCell:"ul",vis:5,scroll:2,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
 		/*详细缩略图*/
-		jQuery(".up_box").slide({ mainCell:"ul",vis:2,scroll:1,prevCell:".prev",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
-
+		jQuery(".up_box").slide({ mainCell:"ul",vis:4,scroll:4,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
 
 	}else if(width > 990){
 		wobj.attr("id","cc-m");	
 
 		/*巨作*/
-		jQuery(".roll").slide({ mainCell:"ul",vis:4,scroll:1,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
+		jQuery(".roll").slide({ mainCell:"ul",vis:4,scroll:2,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
 		/*详细缩略图*/
-		jQuery(".up_box").slide({ mainCell:"ul",vis:1,scroll:1,prevCell:".prev",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
+		jQuery(".up_box").slide({ mainCell:"ul",vis:3,scroll:3,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
 
 
 	}else{
 		wobj.attr("id","cc-s");	
 
 		/*巨作*/
-		jQuery(".roll").slide({ mainCell:"ul",vis:3,scroll:1,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
+		jQuery(".roll").slide({ mainCell:"ul",vis:3,scroll:2,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
 		/*详细缩略图*/
-		jQuery(".up_box").slide({ mainCell:"ul",vis:0,scroll:1,prevCell:".prev",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
+		jQuery(".up_box").slide({ mainCell:"ul",vis:2,scroll:2,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
 
 
 	}
@@ -287,7 +286,7 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 $(".banner").slide({ titCell:".num ul" , mainCell:".ban_pic ul" , autoPlay:true, autoPage:true });
 
 /*合集页*/
-jQuery(".collection_box").slide({ mainCell:".inner-box",vis:0,scroll:1,prevCell:".prev",nextCell:".next",easing:"easeInQuint",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
+jQuery(".collection_box").slide({ mainCell:".inner-box",vis:3,scroll:1,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
 
 /*游戏*/
 jQuery(".tab-box").slide({ titCell:".info-tag a",mainCell:".info-box-tab"});

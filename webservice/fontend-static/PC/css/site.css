@@ -44,7 +44,7 @@ p{word-wrap:break-word}
 	.refresh:hover{background-position:-60px -28px}
 	.refresh.no{background-position:-60px -58px}
 
-.head_nav{padding-left:38px}
+.head_nav{padding-left:30px}
 	.head_nav a{color:#333; display:block; float:left; width:80px; text-align:center; line-height:35px; font-size:16px}
 	.head_nav a:hover{background:#ccc}
 	.head_nav a.hover{background:#fff}
