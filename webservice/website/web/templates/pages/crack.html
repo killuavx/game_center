@@ -1,7 +1,11 @@
 {% extends "pages/page_web.html" %}
-{% load widgets url_tags templatehelper_tags %}
+{% load cache widgets url_tags templatehelper_tags %}
 
 {% block main %}
+    {% with c_page=request.GET.page|default:1 %}
+    {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
+    {% cache TEMPLATE_CACHE_TIMEOUT product_web request.get_host request.path_info %}
+
     {% settings_value "GC_WEB_CRACK_A1_PLACE_SLUG" as A1_PLACE_SLUG %}
     <!--广告开始 banner {{ A1_PLACE_SLUG }}-->
     <div class="rel ovh banner crack-banner">
@@ -61,5 +65,7 @@
 
     </div>
     <!--应用列表 结束 app-list-page-->
+    {% endcache %}
+    {% endwith %}
 
 {% endblock %}
