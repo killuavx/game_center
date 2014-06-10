@@ -80,7 +80,6 @@ class PackageByCategorySearcherFilter(base.BaseWidgetFilterBackend):
 
         if category:
             slugs = self.get_category_descendant_slugs(category)
-            print(slugs)
             sqs = self.get_search_queryset(queryset, slugs).search()
             return sqs
         else:
