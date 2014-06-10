@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from copy import copy
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -183,3 +185,30 @@ class PackageRankingAbsoluteUrlMixin(AbsoluteUrlMixin):
             return reverse(self._page_view_name, kwargs=dict(slug=page_slug)) \
                    + '#ranking_%s' % self.pk
         return None
+
+
+class AdvertisementAbsoluteUrlMixin(AbsoluteUrlMixin):
+
+    def _fill_queryparams(self, url, **kwargs):
+        if kwargs:
+            part = list(urlparse(url))
+            query_idx = 4
+            _args = list(filter(lambda x: x[0] is None, kwargs.items()))
+            query_params = list(parse_qsl(part[query_idx])) + _args
+            part[query_idx] = urlencode(query_params)
+            url = urlunparse(part)
+        return url
+
+    def get_absolute_url_as(self, product, **kwargs):
+        if self.link:
+            data = copy(kwargs)
+            data['product'] = product
+            return self._fill_queryparams(self.link, **data)
+        elif self.content and isinstance(self.content, AbsoluteUrlMixin):
+            return self.content.get_absolute_url_as(product=product, **kwargs)
+        else:
+            return None
+
+
+
+

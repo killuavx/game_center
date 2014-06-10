@@ -27,7 +27,8 @@ class AdvertisementAdmin(VersionAdmin):
         }),
         (_('Content'), {
             'fields': (
-                'content_type', 'object_id',
+                ('content_type', 'object_id',),
+                ('link', 'target', ),
             )
         }),
         (_('Status'), {
