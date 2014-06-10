@@ -1,7 +1,10 @@
 -extends "pages/page_web.html"
--load widgets url_tags templatehelper_tags web_tags
+-load widgets url_tags templatehelper_tags web_tags cache
 
 -block main
+  {% with c_cat=request.GET.cat|default:root_category.slug c_q=request.GET.q c_page=request.GET.page|default:1 %}
+  {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
+  {% cache TEMPLATE_CACHE_TIMEOUT product_web request.get_host request.path_info c_cat c_q c_page %}
   / START 应用列表 app-list-page
   .auto.mt30.width.app-list-page
 
@@ -48,3 +51,5 @@
         {% pagination items %}
       / right-list
     {% endwidget %}
+  {% endcache %}
+  {% endwith %}
