@@ -16,6 +16,9 @@ a:focus,input,select,textarea{outline:0;resize: none}
 
 
 /*		公共		*/
+.pic img,.app-list-min img,.app-list-right img,.top img,.roll_box img,.maste_lsit img,.collection_box .l img{background:url(http://static.ccplay.com.cn/static/common/img/no-cc-45.png) no-repeat center}
+.cc-a-d-2,.cc-a-d-3,.up_pic img{background:url(http://static.ccplay.com.cn/static/common/img/loading_red.gif) no-repeat center}
+
 .width {width: 1260px}
 .re-1{border:1px solid #ffdd99; background:#fff9ed;}
 .re-2{border:1px solid #c9d9ee; background:#ecf8ff;}
@@ -92,6 +95,7 @@ opacity: 0;}
 .search .hover{border-color:#e53333}
 .search button{right:0; top:0px; top:1px\9; height:35px;  width:40px; background-position:-80px -370px; text-indent:-99999px}
 .search button:hover,.search .hover button{background-position:-120px -370px; background-color:#b72929}
+.search .Validform_checktip{position: absolute;right: -85px;top: 8px;}
 
 .search-drop{padding:9px 0 0 60px; opacity:0; z-index:10}
 .search-drop-box{z-index:10; width:358px; border-top:none !important; -webkit-box-shadow: 0px 6px 24px -4px gray;-moz-box-shadow: 0px 6px 24px -4px gray;box-shadow: 0px 6px 24px -4px gray;}
@@ -883,6 +887,7 @@ clear: both; line-height: 1.8em;}
 #fixed-head #cc-m .search .key{width:55%}
 #fixed-head #cc-s .search{position:relative}
 .left-list #pin-box{margin-top:57px}
+#fixed-head .search .Validform_checktip{right:60px}
 
 
 /*表单验证*/
