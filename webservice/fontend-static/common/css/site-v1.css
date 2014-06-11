@@ -95,6 +95,7 @@ opacity: 0;}
 .search .hover{border-color:#e53333}
 .search button{right:0; top:0px; top:1px\9; height:35px;  width:40px; background-position:-80px -370px; text-indent:-99999px}
 .search button:hover,.search .hover button{background-position:-120px -370px; background-color:#b72929}
+.search .Validform_checktip{position: absolute;right: -85px;top: 8px;}
 
 .search-drop{padding:9px 0 0 60px; opacity:0; z-index:10}
 .search-drop-box{z-index:10; width:358px; border-top:none !important; -webkit-box-shadow: 0px 6px 24px -4px gray;-moz-box-shadow: 0px 6px 24px -4px gray;box-shadow: 0px 6px 24px -4px gray;}
@@ -886,6 +887,7 @@ clear: both; line-height: 1.8em;}
 #fixed-head #cc-m .search .key{width:55%}
 #fixed-head #cc-s .search{position:relative}
 .left-list #pin-box{margin-top:57px}
+#fixed-head .search .Validform_checktip{right:60px}
 
 
 /*表单验证*/
