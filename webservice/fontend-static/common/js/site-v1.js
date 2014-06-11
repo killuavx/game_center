@@ -124,14 +124,16 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 
 
 //最小高度
-  var screen_height = $(window).height();
-  var head_height = $('.head').outerHeight(true);  
-  var foot_height = $('.footer').outerHeight(true);
-  var $body = $(".minheight-page");
-  var bodyMarginTop = $body.css("marginTop").replace('px', '');
-  var bodyMarginBottom = $body.css("marginBottom").replace('px', '');  
-  var body_height = screen_height - head_height - foot_height - bodyMarginTop - bodyMarginBottom;  
-  $body.css('min-height', body_height + 'px');
+/*
+var screen_height = $(window).height();
+var head_height = $('.head').outerHeight(true);
+var foot_height = $('.footer').outerHeight(true);
+var $body = $(".minheight-page");
+var bodyMarginTop = $body.css("marginTop").replace('px', '');
+var bodyMarginBottom = $body.css("marginBottom").replace('px', '');
+var body_height = screen_height - head_height - foot_height - bodyMarginTop - bodyMarginBottom;
+$body.css('min-height', body_height + 'px');
+*/
 
 	
 //搜索
