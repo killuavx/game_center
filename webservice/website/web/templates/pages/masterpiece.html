@@ -5,7 +5,7 @@
     {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
     {% cache TEMPLATE_CACHE_TIMEOUT product_web request.get_host request.path_info c_page %}
 <!-- START 巨作 开始 masterpiece-->
-<div class="auto mt30 width masterpiece">
+<div class="auto mt30 width masterpiece minheight-page">
     <div class="cell-bk mb30">
         {% settings_value 'GC_TOPICS_MASTERPIECE_SLUG' as masterpiece_slug %}
         {% widget WebMasterpiecePackageListWidget slug=masterpiece_slug page=request.GET.page per_page=12 %}
