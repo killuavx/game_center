@@ -165,6 +165,15 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 	   $(this).find("img").fadeOut(300);
 	 });
 
+//搜索框
+	var sea=$(".search").Validform({
+		tiptype:3,
+		tipSweep:true
+	});	
+	sea.addRule([{
+		ele:".key",datatype:"*"}
+	]);
+
 
 //安装 下载按钮
 	function li_btn(eobj,cssClass){
