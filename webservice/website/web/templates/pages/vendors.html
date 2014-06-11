@@ -1,6 +1,9 @@
 {% extends "pages/page_web.html" %}
-{% load widgets url_tags templatehelper_tags web_tags %}
+{% load cache widgets url_tags templatehelper_tags web_tags %}
 {% block main %}
+    {% with c_author=request.GET.author c_page=request.GET.page|default:1 %}
+    {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
+    {% cache TEMPLATE_CACHE_TIMEOUT product_web request.get_host request.path_info c_author c_page %}
     <!--START 厂商 开始 vendor-page-->
     <div class="auto mt30 width app-list-page vendor-page">
         <div class="cell">
@@ -34,4 +37,6 @@
             </div>
     </div>
     <!--END 厂商 结束 vendor-page-->
+    {% endcache %}
+    {% endwith %}
 {% endblock %}

@@ -223,3 +223,10 @@ register_setting(
     choices=rankingtype_choices,
     default="main",
     )
+
+register_setting(
+    name="GC_TEMPLATE_CACHE_TIMEOUT",
+    description=_("模板缓存过期时间" ),
+    editable=True,
+    default=3600,
+)

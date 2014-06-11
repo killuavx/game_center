@@ -18,7 +18,6 @@
           %span 免费
   -if is_android
     %p.r= package.main_category.name
-  .btn
-    %span.bg
+  .btn-s.abs{:style => "display:none"}
     -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
     %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载

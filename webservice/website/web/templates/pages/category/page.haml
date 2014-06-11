@@ -1,8 +1,11 @@
 -extends 'pages/page_web.html'
--load widgets url_tags templatehelper_tags web_tags
+-load cache widgets url_tags templatehelper_tags web_tags
 -load web_tags
 
 -block main
+  {% with c_cat=request.GET.category c_topic=request.GET.topic c_page=request.GET.page|default:1 %}
+  {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
+  {% cache TEMPLATE_CACHE_TIMEOUT product_web request.get_host request.path_info c_cat c_topic c_page %}
   / START 应用列表 app-list-page
   .auto.mt30.width.app-list-page
     {% is_site_android as is_android %}{% is_site_ios as is_ios %}
@@ -57,6 +60,6 @@
     / cell-bk
     {% endwidget %}
 
-
-
   / END 应用列表 app-list-page
+  {% endcache %}
+  {% endwith %}

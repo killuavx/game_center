@@ -91,15 +91,26 @@ class QURLNode(Node):
         else:
             return url
 
+from urllib.parse import urlsplit
+
+
+def url_has_host(url):
+    r = urlsplit(url)
+    if r.scheme and r.netloc:
+        return True
+    return False
+
 
 def absolute_url(context, inst, abs=True, **kwargs):
+    if not inst:
+        return ''
     product = kwargs.pop('product', None)
     get_url_as = getattr(inst, 'get_absolute_url_as')
     url = get_url_as(product, **kwargs)
 
     request = context.get('request')
     site = helpers.get_global_site()
-    if site is None and abs:
+    if site is None and abs and not url_has_host(url):
         if request:
             return request.build_absolute_uri(url)
     return helpers.build_site_absolute_uri(site, url)

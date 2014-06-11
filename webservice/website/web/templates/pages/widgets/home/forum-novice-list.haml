@@ -7,7 +7,7 @@
 .hot-bbs-list.novice-bbs-list
   {% settings_value "GC_WEB_HOME_A8_PLACE_SLUG" as A8_PLACE_SLUG %}
   {% widget WebSingleAdvertisementWidget slug=A8_PLACE_SLUG %}
-  %a.rel.top{:href => "#", :target => "_blank"}
+  %a.rel.top{:href => "{% absolute_url item product=product %}", :target => "={item.target}"}
     %img{:src => "{% resource_url item 'cover' %}"}
       %span.abs.tc.white.png= item.title
   {% endwidget %}

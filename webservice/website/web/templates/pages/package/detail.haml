@@ -1,10 +1,13 @@
 -extends "pages/page_web.html"
--load widgets url_tags util_tags templatehelper_tags web_tags
+-load cache widgets url_tags util_tags templatehelper_tags web_tags
 {% block meta_title %}{{ version.subtitle|default:package.title }}{% endblock%}
 {% block meta_keywords %}{% unique_tags_text version.tags package.tags %}{% endblock %}
 {% block meta_description %}{{ package.summary }} | {{ version.whatsnew }}{% endblock %}
 
 -block main
+  {% with c_pkg=package.pk %}
+  {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
+  {% cache TEMPLATE_CACHE_TIMEOUT product_web request.get_host request.path_info c_pkg %}
   {% with title=version.subtitle|default:package.title %}
   .auto.mt30.width.app-dis-page
     .cell-bk.ovh
@@ -226,4 +229,6 @@
           %a{:href => "#"} 下一页
       / right
     / cell-bk
+  {% endwith %}
+  {% endcache %}
   {% endwith %}

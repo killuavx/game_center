@@ -8,10 +8,12 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.timezone import now, get_default_timezone
+from django.views.decorators.cache import cache_control
 from taxonomy.models import Category
 from website.views import base
 from os.path import join
 
+max_age = 3600
 
 template404 = 'errors/web/404.html'
 
@@ -23,6 +25,7 @@ class NotFound(base.TemplateResponseNotFound):
     template = template404
 
 
+@cache_control(public=True, max_age=max_age)
 def package_detail(request, pk,
                    template_name=join(template_prefix, 'package/detail.haml'), *args, **kwargs):
     ETS = settings.ENTRY_TYPES()
@@ -33,6 +36,7 @@ def package_detail(request, pk,
                                *args, **kwargs)
 
 
+@cache_control(public=True, max_age=max_age)
 def packageversion_detail(request, pk,
                           template_name=join(template_prefix, 'package/detail.haml'),
                           *args, **kwargs):
@@ -44,6 +48,7 @@ def packageversion_detail(request, pk,
                                       *args, **kwargs)
 
 
+@cache_control(public=True, max_age=max_age)
 def category_page(request, slug,
                   template_name=join(template_prefix, 'category/page.haml'),
                   *args, **kwargs):
@@ -52,6 +57,7 @@ def category_page(request, slug,
                               *args, **kwargs)
 
 
+@cache_control(public=True, max_age=max_age)
 def topic_detail(request, slug,
                  template_name=join(template_prefix, 'collections/page.haml'),
                  *args, **kwargs):
@@ -61,6 +67,7 @@ def topic_detail(request, slug,
                              template_not_found_class=NotFound, *args, **kwargs)
 
 
+@cache_control(public=True, max_age=max_age)
 def search(request, template_name=join(template_prefix, 'category/search.haml'),
            *args, **kwargs):
     cat_slug = request.GET.get('cat', 'game')
@@ -148,6 +155,7 @@ def _qrcode_get_or_save_file_to_relative_path(img, hash_qr):
     return relative_file, True
 
 
+@cache_control(public=True, max_age=86400)
 def qrcode_gen(request, *args, **kwargs):
     url = request.GET.get('url')
     if url is None or not url.strip():

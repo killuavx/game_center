@@ -670,7 +670,6 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
                         self.package.released_datetime = self.released_datetime
                 except ObjectDoesNotExist:
                     pass
-                self.package.released_datetime = self.released_datetime
 
     def get_absolute_url(self, link_type=0):
         if link_type == 0:

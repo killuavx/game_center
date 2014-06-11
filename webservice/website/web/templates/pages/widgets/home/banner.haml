@@ -4,8 +4,8 @@
     {% for item in items %}
     {% resource_url_as item 'cover' as cover_url %}
     %li{:style => "background:url(={cover_url}) repeat-x center"}
-      %a.auto.width{:href => "{% absolute_url item.content product=product %}",
-       :target => "_blank",
+      %a.auto.width{:href => "{% absolute_url item product=product %}",
+       :target => "={item.target}",
        :title => "={item.title}"}
     {% endfor %}
 .cell-bk.tc.rel.num

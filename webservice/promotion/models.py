@@ -12,7 +12,9 @@ from model_utils.fields import StatusField
 from toolkit.fields import MultiResourceField
 from toolkit.managers import CurrentSitePassThroughManager
 from toolkit.helpers import sync_status_from
+from toolkit import model_url_mixin as urlmixin
 from toolkit.models import SiteRelated
+from django.core import exceptions
 from copy import deepcopy
 
 from mezzanine.core.fields import FileField
@@ -62,18 +64,24 @@ class AdvertisementQuerySet(QuerySet):
 def advertisement_upload_to(instance, filename):
     fbasename = basename(filename)
     extension = fbasename.split('.')[-1]
-    path = "%(prefix)s/%(date)s/%(ct)s-%(oid)d/%(fbname)s.%(extension)s" % {
+    if instance.content:
+        path = '%s-%s' %(instance.content_type.model, instance.object_id)
+    else:
+        path = now().astimezone().strftime('%H%M')
+    d = now().strftime("%Y%m%d")
+
+    path = "%(prefix)s/%(date)s/%(path)s/%(fbname)s.%(extension)s" % {
         'prefix': 'advertisement',
-        'date': now().strftime("%Y%m%d"),
-        'ct': instance.content_type.model,
-        'oid': instance.object_id,
+        'date': d,
+        'path': path,
         'fbname': 'cover',
         'extension': extension
     }
     return path
 
 
-class Advertisement(SiteRelated, models.Model):
+class Advertisement(urlmixin.AdvertisementAbsoluteUrlMixin,
+                    SiteRelated, models.Model):
 
     objects = CurrentSitePassThroughManager\
         .for_queryset_class(AdvertisementQuerySet)()
@@ -92,9 +100,24 @@ class Advertisement(SiteRelated, models.Model):
                              max_length=36,
     )
 
-    object_id = models.PositiveIntegerField()
+    object_id = models.PositiveIntegerField(default=0, blank=True)
     content_type = models.ForeignKey(ContentType,
-                                     related_name='adv_content_type')
+                                     related_name='adv_content_type',
+                                     default=None,
+                                     blank=True,
+                                     null=True,
+                                     )
+    link = models.URLField(max_length=1024, default='', blank=True)
+
+    TARGET = Choices(
+        ('_self', 'default', '本窗口'),
+        ('_blank', 'blank', '新开窗口'),
+    )
+
+    target = models.CharField(max_length=10,
+                              choices=TARGET,
+                              default=TARGET.default)
+
     content = generic.GenericForeignKey("content_type", "object_id")
 
     places = models.ManyToManyField(Place,
@@ -136,6 +159,19 @@ class Advertisement(SiteRelated, models.Model):
 
     is_published.boolean = True
     is_published.short_description = _('released?')
+
+    def clean(self):
+        from toolkit.helpers import get_global_site
+        site = get_global_site()
+        if self.link.startswith('/') and site:
+            self.link = "http://%s%s" % (site.domain, self.link)
+
+        if not self.content and not self.link:
+            raise exceptions.ValidationError('content/link 必须二选一')
+
+        if self.content and self.link:
+            raise exceptions\
+                .ValidationError('content/link 必须二选一: %s, %s' %(self.content, self.link))
 
     def __str__(self):
         return self.title
