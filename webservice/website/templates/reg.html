@@ -68,10 +68,10 @@
                                 	<dt class="l r-pw-2"><label class="dib w100 tr pt5 mt2">确认密码</label></dt><dd class="rel" ><input name="password-confirm" class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="password" placeholder="再次确认登录密码" id="p-password2" recheck="password" datatype="*"></dd>
                                 </dl> 
                                 <dl class="pb10"> 
-                                	<dt class="l r-email"><label class="dib w100 tr pt5 mt2">邮箱地址</label></dt><dd class="rel" ><input name='email' class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="常用的电子邮箱" id="p-email" datatype="e"></dd>
+                                	<dt class="l r-email"><label class="dib w100 tr pt5 mt2">邮箱地址</label></dt><dd class="rel" ><input name='email' class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="常用的电子邮箱" id="p-email" datatype="*"></dd>
                                 </dl> 
                                 <dl class="pb15"> 
-                                	<dt class="l r-yzm"><label class="dib w100 tr pt5 mt2">验证码</label></dt><dd class="rel" ><input class="pct40 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="4位验证码" maxlength="4" datatype="n1-4" id="p-yzm"><img alt="图片名称" src="http://passport.uu66.com/code.html?1398343237979" width="90px" height="37px" class="abs yzm-img"><a title="链接名称" href="#"  class="dib ml5 gr pt10 r f12">看不清？</a></dd>
+                                	<dt class="l r-yzm"><label class="dib w100 tr pt5 mt2">验证码</label></dt><dd class="rel verify" ><input name="verify_code" class="pct40 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="4位验证码" maxlength="4" datatype="*4-4" id="p-yzm"><img alt="图片名称" src="#" width="90px" height="37px" class="abs yzm-img poi"><a title="链接名称" href="#"  class="dib ml5 gr pt10 r f12">看不清？</a></dd>
                                 </dl>
                                 
                                 
@@ -159,5 +159,184 @@
 <script src="http://static.ccplay.com.cn/static/common/js/site-v1.js"></script>
 <script src="http://static.ccplay.com.cn/static/ios_web/js/site.js"></script>
 
+<script>
+
+  $(function(){
+
+    var get_captcha = function() {
+      var time = (new Date()).getTime();
+      $('img.yzm-img').attr('src', '{% url "captcha" %}?t=' + time);
+    };
+
+    get_captcha();
+
+    $('.verify a').click(function() {
+      get_captcha();
+      return false;
+    });
+
+    $('.yzm-img').click(function() {
+      get_captcha();
+    });
+
+    var token = $('form.reg-form input[name="csrfmiddlewaretoken"]').val();
+    var old_username, old_email, old_verify_code;
+    var username_validate_tip, email_validate_tip, verify_code_tip;
+
+    var show_tip = function(msg) {
+      if (!msg) {
+        $('.login-tip').removeClass('Validform_right').addClass('Validform_right').removeClass('Validform_checktip').removeClass('Validform_wrong').text(msg);
+      } else {
+        $('.login-tip').removeClass('Validform_right').removeClass('Validform_wrong').addClass('Validform_wrong').removeClass('Validform_checktip').addClass('Validform_checktip').text(msg);
+      }
+    };
+
+    var ajax_check_username = function(username) {
+      old_username = username;
+
+      $.ajax({
+        type: "POST",
+        url: {% url 'check_register_username' %},
+        data: { username: username, csrfmiddlewaretoken: token},
+        success: function(data){
+          if (data.exists === 1){
+            username_validate_tip = '用户名已经存在!';
+            show_tip(username_validate_tip);
+          } else {
+            username_validate_tip = '';
+          }
+        }
+      });
+    };
+
+    var ajax_check_email = function (email) {
+      old_email = email;
+
+      $.ajax({
+        type: "POST",
+        url: {% url 'check_register_email' %},
+        data: {email: email, csrfmiddlewaretoken: token},
+        success: function(data){
+          if (data.exists === 1){
+            email_validate_tip = '邮箱已经存在!';
+            show_tip(email_validate_tip);
+          } else {
+            email_validate_tip = '';
+          }
+        }
+      });
+    };
+
+    var check_email_format = function (email) {
+      var re = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      if (re.test(email)) {
+        email_validate_tip = '';
+      } else {
+        email_validate_tip = '邮箱格式错误！';
+      }
+    };
+
+
+    $('#p-id').bind('blur', function() {
+      var username = $(this).val();
+      if (username && username !== old_username) {
+        ajax_check_username(username);
+      }
+    });
+
+    $('#p-email').bind('blur', function() {
+      var email = $(this).val();
+      check_email_format(email);
+      if (email && email !== old_email) {
+        if (!email_validate_tip) {
+          ajax_check_email(email);
+        }
+      }
+    });
+
+    $('#p-yzm').bind('keyup', function() {
+      //alert($(this).val());
+      var verify_code = $(this).val();
+      if (verify_code.length === 4 && verify_code !== old_verify_code) {
+        old_verify_code = verify_code;
+
+        $.ajax({
+          type: "POST",
+          url: {% url 'check_verify_code' %},
+          data: {verify_code: verify_code, csrfmiddlewaretoken: token},
+          success: function(msg){
+            if (msg.correct === 1){
+              verify_code_tip = '';
+            } else {
+              verify_code_tip = '验证码不正确';
+            }
+            show_tip(verify_code_tip);
+          }
+        });
+      }
+    }); 
+
+    $('.reg-btn').bind('click', function() {
+      var username = $('#p-id').val();
+      var password = $('#p-password').val();
+      var password_confrim = $('#p-password2').val();
+      var email = $('#p-email').val();
+      var agreement = $('form.reg-form input[type="checkbox"]').prop('checked');
+      var verify_code = $('#p-yzm').val();
+
+      if (!username) {
+        show_tip('用户名不能为空 !');
+        return false;
+      }  
+      
+      if (!password) {
+        show_tip('密码不能为空 !');
+        return false;
+      }
+     
+      if (!password_confrim) {
+        show_tip('确认密码不能为空 !');
+        return false;
+      }
+
+      if (password !== password_confrim) {
+        show_tip('两次输入密码不一致 !');
+        return false;
+      }
+
+      if (!email) {
+        show_tip('邮箱不能为空 !');
+        return false;
+      }
+
+      if (!verify_code) {
+        show_tip('验证码不能为空！');
+        return false;
+      }
+
+      if (!agreement) {
+        show_tip('请阅读并同意《虫虫游戏使用协议》！');
+        return false;
+      }
+
+      if (username_validate_tip) {
+        show_tip(username_validate_tip);
+        return false;
+      }
+
+      if (email_validate_tip) {
+        show_tip(email_validate_tip);
+        return false;
+      }
+
+      if (verify_code_tip) {
+        show_tip(verify_code_tip);
+        return false;
+      }
+
+    });
+    
+  });
+</script>
 </body>
 </html>
