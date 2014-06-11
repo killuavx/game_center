@@ -39,6 +39,8 @@ function resize(){
 
 
 //document.writeln("<a href=\"javascript:;\" title=\"我要许愿\" id=\"go-wish\">我要许愿</a>");
+
+//返回顶部
 document.writeln("<style>#toTop{width:44px;height:44px;position:fixed;right:20px;bottom:-10px;z-index:9999;display:none;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}#toTop:hover{background-position:left bottom}</style>");
 document.writeln("<a href=\"javascript:;\" title=\"返回顶部\" id=\"toTop\">返回顶部</a>");
 $(document).ready(function(){
@@ -71,6 +73,7 @@ $(document).ready(function(){
 		$("body,html").animate({scrollTop:0},200);
 	});
 });
+
 
 //评分
 $(document).ready(function(){
@@ -114,10 +117,21 @@ $(document).ready(function(){
 });	
 
 $(function(){
-	
+
+//新窗口打开链接	
 $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.novice-bbs-list a,.i-link-list a,#home a,.hot-game a,.focusBox_pic a,.h-app a,.cc-a-d-box a,.h-bbs a,.top-list a,.footer a").attr("target","_blank");
 $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 
+
+//最小高度
+  var screen_height = $(window).height();
+  var head_height = $('.head').outerHeight(true);  
+  var foot_height = $('.footer').outerHeight(true);
+  var $body = $('.masterpiece,.collection,.app-list-page,.collection-dis');
+  var bodyMarginTop = $body.css("marginTop").replace('px', '');
+  var bodyMarginBottom = $body.css("marginBottom").replace('px', '');  
+  var body_height = screen_height - head_height - foot_height - bodyMarginTop - bodyMarginBottom;  
+  $body.css('min-height', body_height + 'px');
 
 	
 //搜索
