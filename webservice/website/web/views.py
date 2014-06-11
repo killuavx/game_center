@@ -167,18 +167,6 @@ def qrcode_gen(request, *args, **kwargs):
     return redirect(to=image_url)
 
 
-from mezzanine.accounts import views as account_views
-
-def signup(request):
-    pass
-
-def signup_verify(request, uidb36=None, token=None):
-    pass
-
-
-def logout(request):
-    pass
-
 from toolkit.helpers import captcha as build_captcha
 from django.contrib.messages import info, error
 from website.web.forms import LoginCaptchaForm
@@ -187,6 +175,7 @@ from django.core.urlresolvers import NoReverseMatch, get_script_prefix, reverse
 from django.contrib.auth import (login as auth_login, logout as auth_logout)
 from mezzanine.utils.views import render
 from mezzanine.utils.urls import login_redirect, next_url
+from mezzanine.accounts import views as account_views
 import json
 
 
