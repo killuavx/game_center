@@ -126,6 +126,14 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 	},function(){
 		$(this).find(".box").removeClass("hover");
 	});	
+//搜索框
+	var sea=$(".search").Validform({
+		//tiptype:3,
+		tipSweep:true
+	});	
+	sea.addRule([{
+		ele:".key",datatype:"*"}
+	]);
 //搜索提示
 	/*$(".key").keyup(function(){		
 		var inputvalue = $(".key").val();
@@ -165,14 +173,7 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 	   $(this).find("img").fadeOut(300);
 	 });
 
-//搜索框
-	var sea=$(".search").Validform({
-		tiptype:3,
-		tipSweep:true
-	});	
-	sea.addRule([{
-		ele:".key",datatype:"*"}
-	]);
+
 
 
 //安装 下载按钮
