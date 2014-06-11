@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-from datetime import timedelta
-from django.utils.timezone import is_aware, make_aware, UTC
 import os
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.utils.timezone import now, get_default_timezone
+from django.utils.http import is_safe_url
+from django.views.decorators.cache import never_cache
 from django.views.decorators.cache import cache_control
 from taxonomy.models import Category
 from website.views import base
@@ -168,3 +167,79 @@ def qrcode_gen(request, *args, **kwargs):
     return redirect(to=image_url)
 
 
+from mezzanine.accounts import views as account_views
+
+def signup(request):
+    pass
+
+def signup_verify(request, uidb36=None, token=None):
+    pass
+
+
+def logout(request):
+    pass
+
+from toolkit.helpers import captcha as build_captcha
+from django.contrib.messages import info, error
+from website.web.forms import LoginCaptchaForm
+from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import NoReverseMatch, get_script_prefix, reverse
+from django.contrib.auth import (login as auth_login, logout as auth_logout)
+from mezzanine.utils.views import render
+from mezzanine.utils.urls import login_redirect, next_url
+import json
+
+
+def previous_url(request):
+    previous = request.META.get('HTTP_REFERER', '')
+    host = request.get_host()
+    return previous if previous and is_safe_url(previous, host=host) else None
+
+
+def login(request, template='accounts/web/account_login_form.html'):
+    form = LoginCaptchaForm(request=request,
+                            check_captcha=True,
+                            data=request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            data = dict(code=0, msg='登陆成功')
+        else:
+            data = dict(code=1, msg='登陆失败', errors=form.errors)
+
+        if request.is_ajax() or request.DATA.get('is_ajax'):
+            return HttpResponse(json.dumps(data), content_type='application/json')
+        elif data['code'] == 0:
+            info(request, data['msg'])
+            return login_redirect(request)
+    else:
+        if request.is_ajax() or request.DATA.get('is_ajax'):
+            data = dict()
+            return HttpResponse(json.dumps(data), content_type='application/json')
+        else:
+            context = {"form": form, "title": "登陆"}
+            return render(request, template, context)
+
+
+def logout(request):
+    auth_logout(request)
+    msg = '登出成功'
+    if request.is_ajax() or request.GET.get('is_ajax'):
+        data = dict(code=0, msg=msg)
+        return HttpResponse(json.dumps(data), content_type='application/json')
+    info(request, msg)
+    return redirect(next_url(request) or previous_url(request) or get_script_prefix())
+
+
+@never_cache
+def captcha(request):
+    captcha_key = 'captcha_verify'
+    img, request.session[captcha_key] = build_captcha()
+    response = HttpResponse(mimetype="image/gif")
+    img.save(response, "gif")
+    return response
+
+
+def signup(request, template='accounts/web/account_signup.html'):
+    pass

@@ -181,7 +181,7 @@ class GameCenterModelBackend(UserSyncAPI,
             password: game center密码
             app如设置了，表示使用别的登陆方式，略过当前登陆方式
         """
-        if app is not None:
+        if app:
             return None
         User = get_user_model()
         try:
@@ -200,7 +200,10 @@ class GameCenterModelBackend(UserSyncAPI,
         return None
 
     def sync_user(self, user, **kwargs):
-        return self.sync_user_to_ucenter(user, **kwargs)
+        try:
+            return self.sync_user_to_ucenter(user, **kwargs)
+        except:
+            return user
 
 
 class UCenterModelBackend(UserSyncAPI,
@@ -216,11 +219,16 @@ class UCenterModelBackend(UserSyncAPI,
             password: game center密码
             app如设置了，表示使用UCenter登陆方式，否则路过本次验证
         """
-        if app is None:
+        if not app:
             return None
 
-        result = self.get_uc_api()\
-            .uc_user_login(username=username, password=password)
+        from account.uc_client.client import UcenterApiNotFound
+        try:
+            result = self.get_uc_api()\
+                .uc_user_login(username=username, password=password)
+        except UcenterApiNotFound:
+            return None
+
         code = int(result[0])
         if code < 0:
             return None
@@ -228,7 +236,10 @@ class UCenterModelBackend(UserSyncAPI,
         return user
 
     def sync_user(self, uc_userdata):
-        return self.sync_user_from_ucenter(uc_userdata)
+        try:
+            return self.sync_user_from_ucenter(uc_userdata)
+        except:
+            return None
 
 
 class GameCenterProfileBackend(GetUserMixin):

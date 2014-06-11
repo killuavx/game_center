@@ -17,17 +17,22 @@
             {% widget WebHeaderSiteListWidget %}
             -for site in items
               %li<
-                %a.ios-web-icon{:class => "a={forloop.counter}", :href => "={site.url}"}= site.name
+                %a.ios-web-icon{:class => "={site.css_class}", :href => "={site.url}"}= site.name
             {% endwidget %}
             %li#login-reg
-              %a.ios-web-icon.a4.open-login{:href => "#", :target => ""} 登录/注册
-            %li#change-logout.dn
-              %a.ios-web-icon.a4.text-db{:href => "#", :target => "", :title => ""} 龚鑫军
+              %a.ios-web-icon.a4.open-login{:href => "javascript:;", :class => "{% if request.user.is_authenticated %}open-login{% endif %}",  :target => ""}
+                -if request.user.is_authenticated
+                  = request.user.username
+                -else
+                  登录/注册
+              {% if request.user.is_authenticated %}
               %dl.abs.dn.bdc.bg-white.zx2.f14{:style => "display: none;"}
                 %dd
-                  %a.db.h24.lh24.pl10.pr10.pt5.pb5.bbc.change-password{:href => "#", :target => ""} 修改密码
+                  %a.db.h24.lh24.pl10.pr10.pt5.pb5.bbc.change-password{:href => "javascript:;", :target => ""} 修改密码
                 %dd
-                  %a.db.h24.lh24.pl10.pr10.pt5.pb5.log-out{:href => "#", :target => ""} 退出
+                  %a.db.h24.lh24.pl10.pr10.pt5.pb5.log-out{:href => "{% url 'logout' %}"} 退出
+              {% include "accounts/web/account_login_form.html" %}
+              {% endif %}
         / user-switch
       / cell-bk
   / top

@@ -28,11 +28,11 @@ class WebHeaderSiteListWidget(Widget):
 
     def get_list(self):
         from toolkit import helpers
-        site = Site.objects.get(pk=helpers.SITE_IOS)
-        yield dict(url="http://%s/" % site.domain, name=site.name)
-        site = Site.objects.get(pk=helpers.SITE_ANDROID)
-        yield dict(url="http://%s/" % site.domain, name=site.name)
-        yield dict(url="/static/cc_web/html/down.html", name='虫虫助手')
+        #site = Site.objects.get(pk=helpers.SITE_IOS)
+        #yield dict(url="http://%s/" % site.domain, name=site.name, css_class='a1')
+        #site = Site.objects.get(pk=helpers.SITE_ANDROID)
+        #yield dict(url="http://%s/" % site.domain, name=site.name, css_class='a2')
+        yield dict(url="/static/cc_web/html/a-down.html", name='虫虫助手', css_class='a3')
 
     def get_context(self, value, options):
         items = list(self.get_list())

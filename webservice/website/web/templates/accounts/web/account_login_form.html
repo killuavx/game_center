@@ -1,0 +1,40 @@
+{% load url_tags %}
+{% url 'login' as login_url %}
+{% qurl login_url is_ajax=1 as login_url %}
+<!--登录-->
+<form class="cell-bk dn bg-white login-box ovh login-form" action="{{ login_url }}">
+    {% csrf_token %}
+    <div class="cell-bk rel w750">
+        <div class="abs f14 tc cell-bk login-tip"></div>
+        <ul class="p15 fw">
+            <li class="pl10 bg-white bde">
+                <input class="bd-none pt10 pb10 f16 pct100" id="p-id" name="username" type="text" placeholder="用户名\手机号码\电子邮箱" datatype="*">
+            </li>
+            <li class="pl10 bg-white bde mt10 mb10">
+                <input class="bd-none pt10 pb10 f16 pct100" id="p-password" name="password" type="password" placeholder="登录密码"  datatype="*6-16">
+            </li>
+            <li class="pl10 h32 pb10 ovh rel bg-white bde">
+                <input class="bd-none pt10 pb10 f16 pct40" id="p-yzm" name="captcha_verify" maxlength="4" type="text" placeholder="验证码" datatype="*4-4">
+                <img alt="图片名称" src="{% url 'captcha' %}" width="90px" height="37px" class="abs yzm-img">
+                <a title="链接名称" href="javascript:;" onclick="refresh_captcha($('.yzm-img'));" class="dib ml5 pt10 gr r">看不清？</a>
+            </li>
+            <li class="mt10 rel"><button type="button" class="db pct100 btn btn-red f16 poi login-btn">立即登录</button></li>
+            <li class="p10 mb5">
+                <label class="l"><input name="app" value="bbs" type="checkbox"> 论坛账号</label>
+                <a title="链接名称" href="#" class="gr r">忘记密码？</a></li>
+            <li class="pt20 mb10"><a title="链接名称" href="{% url 'signup' %}" class="db btn btn-silver f16 poi bg-creg-btn">免费注册账号</a></li>
+        </ul>
+        {% comment %}
+        <div class="pb20 tc dn">
+            <div class="rel bte login-line"><span class="dib p5 rel g9">您也可以用以下方式登录</span></div>
+            <a title="链接名称" href="#" class="qq-login"><img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/qq-btn.png"></a>
+            <a title="链接名称" href="#" class="ml10 weibo-login"><img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/weibo-btn.png"></a>
+        </div>
+        {% endcomment %}
+    </div>
+</form>
+<script type="text/javascript">
+    function refresh_captcha(dom, url){$(dom).attr('src', "{% url 'captcha' %}");}
+</script>
+
+

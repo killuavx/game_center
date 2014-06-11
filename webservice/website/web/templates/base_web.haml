@@ -47,6 +47,9 @@
         {% include "pages/menus/web/footer.haml" %}
     / 底部结束 footer
 
+    {% block after_footer %}
+    {% endblock %}
+
     {% compress js %}
     %script{:src => "{% static 'common/js/jquery.min.js' %}"}
     %script{:src => "{% static 'common/js/jquery.cookie.js' %}"}

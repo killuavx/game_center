@@ -471,3 +471,5 @@ DATABASE_ROUTERS = [
 
 
 DEFAULT_FILE_STORAGE = 'toolkit.storage.QiniuResourceFileStorage'
+
+FONT_DIRECTORY = join(STATIC_ROOT, 'common/font')

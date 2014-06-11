@@ -152,10 +152,10 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
     });
 	
 	
-	
+    /*
 	$(".log-out").click(function(){
     	$.zxxbox('<div class="p20 f20 white tc">安全退出成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});							
-    });
+    }); */
 	
 	
 //微信
@@ -262,15 +262,27 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 //登录表单-表单验证
 	var reg=$(".login-form").Validform({
 		showAllError:true,	
-		tiptype:function(msg,o,cssctl){
-			var objtip=$(".login-tip");
-			cssctl(objtip,o.type);
-			objtip.text(msg);
-		},
-		//ajaxPost:true
+		ajaxPost:true,
+        btnSubmit: '.login-btn',
+        callback: function(data){
+            if(data.code == 0){
+                alert(data.msg);
+                $.zxxbox.hide();
+                $('.login-form').remove();
+                window.location.reload();
+            }
+            else
+            {
+                var msgs = [];
+                for(k in data.errors)
+                {
+                    msgs.push(data.errors[k].join(','));
+                }
+                alert(msgs.join(','));
+                refresh_captcha('.yzm-img');
+            }
+        }
 	});
-
-	
 
 //我要许愿-表单验证
 	var wish=$(".go-wish-form").Validform({
