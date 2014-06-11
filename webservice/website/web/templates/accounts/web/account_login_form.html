@@ -2,7 +2,7 @@
 {% url 'login' as login_url %}
 {% qurl login_url is_ajax=1 as login_url %}
 <!--登录-->
-<form class="cell-bk dn bg-white login-box ovh login-form" action="{{ login_url }}">
+<form class="cell-bk dn bg-white login-box ovh login-form" action="{{ login_url }}" method="POST">
     {% csrf_token %}
     <div class="cell-bk rel w750">
         <div class="abs f14 tc cell-bk login-tip"></div>

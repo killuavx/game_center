@@ -167,16 +167,19 @@ def qrcode_gen(request, *args, **kwargs):
     return redirect(to=image_url)
 
 
-from toolkit.helpers import captcha as build_captcha
 from django.contrib.messages import info, error
-from website.web.forms import LoginCaptchaForm
+from website.web.forms import LoginForm, CaptchaVerifyForm, SignupForm
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import NoReverseMatch, get_script_prefix, reverse
 from django.contrib.auth import (login as auth_login, logout as auth_logout)
 from mezzanine.utils.views import render
 from mezzanine.utils.urls import login_redirect, next_url
-from mezzanine.accounts import views as account_views
+from account import authenticate
 import json
+
+
+def is_ajax_request(request):
+    return request.is_ajax() or request.GET.get('is_ajax') or request.POST.get('is_ajax')
 
 
 def previous_url(request):
@@ -186,35 +189,31 @@ def previous_url(request):
 
 
 def login(request, template='accounts/web/account_login_form.html'):
-    form = LoginCaptchaForm(request=request,
-                            check_captcha=True,
-                            data=request.POST or None)
+    form = LoginForm(request=request,
+                     check_captcha=True,
+                     data=request.POST or None)
+    data = dict(code=-1, msg='')
     if request.method == 'POST':
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            data = dict(code=0, msg='登陆成功')
+            data = dict(code=0, msg='登陆成功', next=next_url(request))
         else:
             data = dict(code=1, msg='登陆失败', errors=form.errors)
 
-        if request.is_ajax() or request.DATA.get('is_ajax'):
-            return HttpResponse(json.dumps(data), content_type='application/json')
-        elif data['code'] == 0:
-            info(request, data['msg'])
-            return login_redirect(request)
-    else:
-        if request.is_ajax() or request.DATA.get('is_ajax'):
-            data = dict()
-            return HttpResponse(json.dumps(data), content_type='application/json')
-        else:
-            context = {"form": form, "title": "登陆"}
-            return render(request, template, context)
+    if is_ajax_request(request):
+        return HttpResponse(json.dumps(data), content_type='application/json')
+    elif data['code'] == 0:
+        return login_redirect(request)
+
+    context = {"form": form, "title": "登陆"}
+    return render(request, template, context)
 
 
 def logout(request):
     auth_logout(request)
     msg = '登出成功'
-    if request.is_ajax() or request.GET.get('is_ajax'):
+    if is_ajax_request(request):
         data = dict(code=0, msg=msg)
         return HttpResponse(json.dumps(data), content_type='application/json')
     info(request, msg)
@@ -223,12 +222,34 @@ def logout(request):
 
 @never_cache
 def captcha(request):
-    captcha_key = 'captcha_verify'
-    img, request.session[captcha_key] = build_captcha()
+    form = CaptchaVerifyForm(request)
+    img = form.build_captcha()
     response = HttpResponse(mimetype="image/gif")
     img.save(response, "gif")
     return response
 
 
 def signup(request, template='accounts/web/account_signup.html'):
-    pass
+    form = SignupForm(request=request,
+                      check_captcha=True,
+                      data=request.POST or None)
+    data = dict(code=-1, msg='')
+    if request.method == 'POST':
+        if form.is_valid():
+            user = form.save()
+            user = authenticate(username=user.username, check_password=False)
+            auth_login(request, user)
+            data = dict(code=0,
+                        msg='注册成功',
+                        next=next_url(request))
+        else:
+            data = dict(code=1, msg='注册错误', errors=form.errors)
+
+    if is_ajax_request(request):
+        return HttpResponse(json.dumps(data), content_type='application/json')
+    elif data['code'] == 0:
+        info(request, data['msg'])
+        return login_redirect(request)
+
+    context = {'form': form, 'title': '注册'}
+    return render(request, template, context)

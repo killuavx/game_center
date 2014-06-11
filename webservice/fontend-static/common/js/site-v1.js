@@ -273,7 +273,22 @@ $body.css('min-height', body_height + 'px');
 			cssctl(objtip,o.type);
 			objtip.text(msg);
 		},
-		//ajaxPost:true
+		ajaxPost:true,
+        callback: function(data){
+            if(data.code == 0){
+                window.location.href = data.next
+            }
+            else
+            {
+                var msgs = [];
+                for(k in data.errors)
+                {
+                    msgs.push(data.errors[k].join(','));
+                }
+                alert(msgs.join(','));
+                refresh_captcha('.yzm-img');
+            }
+        }
 	});
 
 //登录表单-表单验证
@@ -282,6 +297,8 @@ $body.css('min-height', body_height + 'px');
 		ajaxPost:true,
         btnSubmit: '.login-btn',
         callback: function(data){
+            window.test = data;
+            console.log(data);
             if(data.code == 0){
                 $.zxxbox.hide();
                 $('.login-form').remove();

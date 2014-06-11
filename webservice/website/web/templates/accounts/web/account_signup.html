@@ -1,0 +1,77 @@
+{% extends "accounts/base_account.html" %}
+{% load staticfiles url_tags %}
+{% block title %}{{ title }}{% endblock %}
+{% block meta_title %}{{ title }}{% endblock %}
+{% url 'signup' as signup_url %}
+{% qurl signup_url is_ajax=1 as signup_url %}
+{% block main %}
+    <div class="auto width reg-page">
+        <div class="cell-bk ovh">
+
+            <div class="box">
+                <form class="cell-bk reg-box rel reg-form" action="{{ signup_url }}" method="POST">
+                    {% csrf_token %}
+                    <div class="abs f14 tc cell-bk login-tip"></div>
+                    <div class="p20 g6 f16 fw">
+                        <!--
+                        <div class="tc p15 mb15 ask-login">
+                            已拥有帐号，请直接
+                            <a href="javascript:;" class="gr ml5 open-login">登录</a>
+                        </div>
+                        -->
+                        <dl class="pb10">
+                            <dt class="l r-name"><label class="dib w100 tr pt5 mt2">用户名</label></dt>
+                            <dd class="rel"><input class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" name="username" type="text" placeholder="4-16位字符" id="p-id" datatype="*4-16" ajaxurl=""></dd>
+                        </dl>
+                        <dl class="pb10">
+                            <dt class="l r-pw"><label class="dib w100 tr pt5 mt2">登录密码</label></dt>
+                            <dd class="rel">
+                                <input class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" name="password1" type="password" plugin="passwordStrength" placeholder="6-16登录密码" id="p-password" name="password" datatype="*6-16">
+                                <div id="pw-strength" class="abs g9"><span class="s-1">●</span><span class="s-2">●</span><span class="s-3">●</span></div>
+                            </dd>
+                        </dl>
+                        <dl class="pb10">
+                            <dt class="l r-pw-2"><label class="dib w100 tr pt5 mt2">确认密码</label></dt>
+                            <dd class="rel"><input class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" name="password2" type="password" placeholder="再次确认登录密码" id="p-password2" recheck="password1" datatype="*"></dd>
+                        </dl>
+                        <dl class="pb10">
+                            <dt class="l r-email"><label class="dib w100 tr pt5 mt2">邮箱地址</label></dt>
+                            <dd class="rel"><ul class="emailist bdc bg-white lh28 poi" style="position: absolute; margin-top: 40px; min-width: 576px; visibility: hidden; z-index: 2;"></ul>
+                            <input class="pct100 bg-white pl10 bg-white bde pt10 pb10 f16" name="email" type="text" placeholder="常用的电子邮箱" name="email" id="p-email" datatype="e">
+                            </dd>
+                        </dl>
+                        <dl class="pb15">
+                            <dt class="l r-yzm"><label class="dib w100 tr pt5 mt2">验证码</label></dt>
+                            <dd class="rel"><input class="pct40 bg-white pl10 bg-white bde pt10 pb10 f16" name="captcha_verify" type="text" placeholder="4位验证码" maxlength="4" datatype="s4-4" id="p-yzm">
+                                <img alt="图片名称" src="{% url 'captcha' %}" width="90px" height="37px" class="abs yzm-img">
+                                <a href="javascript:;" onclick="refresh_captcha($('.yzm-img'));" class="dib ml5 gr pt10 r f12">看不清？</a>
+                            </dd>
+                        </dl>
+
+
+                        <dl class="pb20">
+                            <dt class="l dib w100"></dt><dd class="f12"><label class="l"><input name="agree" value="1" type="checkbox"> 我已阅读并同意</label><a title="链接名称" href="agreement.html" target="_blank" class="red">《虫虫游戏使用协议》</a></dd>
+                        </dl>
+
+                        <dl class="pb20">
+                            <dt class="l dib w100"></dt><dd class="f12"><button class="db pct80 btn btn-red f16 poi reg-btn">立即注册</button></dd>
+                        </dl>
+
+                    </div>
+                    {% comment %}
+                    <div class="pb20 tc g6 f16 dn">
+                        <div class="rel bte login-line"><span class="dib p5 rel f12">您也可以用以下方式登录</span></div>
+                        <a title="链接名称" href="#" class="qq-login"><img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/qq-btn.png"></a>
+                        <a title="链接名称" href="#" class="ml10 weibo-login"><img alt="图片名称" src="http://static.ccplay.com.cn/static/common/img/weibo-btn.png"></a>
+                    </div>
+                    {% endcomment %}
+                </form>
+
+            </div>
+
+        </div><!--cell-bk-->
+    </div>
+    <script type="text/javascript">
+        function refresh_captcha(dom, url){$(dom).attr('src', "{% url 'captcha' %}");}
+    </script>
+{% endblock %}

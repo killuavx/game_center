@@ -5,10 +5,11 @@ from toolkit.helpers import import_from
 
 
 def filter_keys(data):
-    try:
-        data.pop('app')
-    except KeyError:
-        pass
+    for k in ('app', 'check_password'):
+        try:
+            data.pop(k)
+        except KeyError:
+            pass
 
 
 def authenticate(**credentials):

@@ -406,9 +406,11 @@ ANONYMOUS_USER_ID = -1
 AUTH_USER_MODEL = 'account.User'
 AUTH_PROFILE_MODULE = 'account.Profile'
 
-LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
-#LOGIN_URL = '/accounts/signin/'
-#LOGOUT_URL = '/accounts/signout/'
+#LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+#LOGIN_REDIRECT_URL = ''
+SIGNUP_URL = '/accounts/signup/'
+LOGIN_URL = '/accounts/login/'
+LOGOUT_URL = '/accounts/logout/'
 
 AAPT_CMD = join(PROJECT_PATH, 'warehouse/utils/android-tools-linux-x64/aapt')
 
