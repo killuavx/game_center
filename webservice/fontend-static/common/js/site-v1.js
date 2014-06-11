@@ -127,7 +127,7 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
   var screen_height = $(window).height();
   var head_height = $('.head').outerHeight(true);  
   var foot_height = $('.footer').outerHeight(true);
-  var $body = $('.masterpiece,.collection,.app-list-page,.collection-dis');
+  var $body = $(".minheight-page");
   var bodyMarginTop = $body.css("marginTop").replace('px', '');
   var bodyMarginBottom = $body.css("marginBottom").replace('px', '');  
   var body_height = screen_height - head_height - foot_height - bodyMarginTop - bodyMarginBottom;  
