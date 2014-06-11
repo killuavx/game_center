@@ -31,6 +31,7 @@
                   %a.db.h24.lh24.pl10.pr10.pt5.pb5.bbc.change-password{:href => "javascript:;", :target => ""} 修改密码
                 %dd
                   %a.db.h24.lh24.pl10.pr10.pt5.pb5.log-out{:href => "{% url 'logout' %}"} 退出
+              {% else %}
               {% include "accounts/web/account_login_form.html" %}
               {% endif %}
         / user-switch

@@ -266,7 +266,6 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
         btnSubmit: '.login-btn',
         callback: function(data){
             if(data.code == 0){
-                alert(data.msg);
                 $.zxxbox.hide();
                 $('.login-form').remove();
                 window.location.reload();
