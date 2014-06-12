@@ -18,7 +18,7 @@
                   %span.ios-web-icon.abs
             %dd.g9
               %h3.n.rel.g3.f16.pb5.text-db
-                %a{:href => "={detail_url}", :target => "_blank" }= title
+                %a{:href => "={detail_url}", :target => "_blank", :title => "={title}" }= title
               .g9.lh20= package.summary
               - if version.is_ios
                 - with iversion=version.as_ios
