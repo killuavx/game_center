@@ -122,8 +122,8 @@ opacity: 0;}
 -moz-animation: toTopFromBottom .3s forwards;
 animation: toTopFromBottom .3s forwards;}
 
-.user-switch li dl{right:0; width:120px}
-.user-switch li dl a:hover{background-color:#f5f5f5; text-decoration:none}
+.user-switch li dl{right:0; min-width:120px;white-space:nowrap}
+.user-switch li dl i.ios-web-icon{width:15px; height:9px; right:20px; top:-9px; background-position:-85px -481px}
 
 /*导航*/
 .nav{height:57px; background:#e53333; z-index:10}
