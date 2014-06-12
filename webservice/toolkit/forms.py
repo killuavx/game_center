@@ -10,18 +10,28 @@ COMMENT_MAX_LENGTH = 300
 
 class CommentWithStarForm(ThreadedCommentForm):
 
+    name = forms.CharField(label=_("Name"),
+                           required=False,
+                           max_length=50)
+    email = forms.EmailField(label=_("Email"),
+                             required=False)
+    url = forms.URLField(label=_("Website"), required=False)
+
     star = forms.IntegerField(label="评星",
                               widget=forms.HiddenInput(attrs={'id': 'rating_output', 'value': 3}))
     comment = forms.CharField(label=_('Comment'), widget=forms.Textarea,
                               max_length=COMMENT_MAX_LENGTH)
+
+    def __init__(self, request, *args, **kwargs):
+        super(CommentWithStarForm, self).__init__(request, *args, **kwargs)
+        self.request = request
 
     def get_comment_model(self):
         return Comment
 
     def clean_star(self):
         from mezzanine.conf import settings
-        choices = list(zip(*(settings.RATINGS_RANGE,) * 2))
-        if self.cleaned_data['star'] not in choices:
+        if self.cleaned_data['star'] not in settings.RATINGS_RANGE:
             raise forms.ValidationError('评星错误', code=1)
 
         bits = (self.data["content_type"], self.data["object_pk"])
@@ -40,8 +50,8 @@ class CommentWithStarForm(ThreadedCommentForm):
 
     def save_star(self, request, comment=None):
         user = request.user
-        value = self.cleaned_data["value"]
-        name = self.target_object.get_starfield_name()
+        value = self.cleaned_data["star"]
+        name = self.target_object.get_starsfield_name()
         manager = getattr(self.target_object, name)
         if user.is_authenticated():
             try:
@@ -49,6 +59,8 @@ class CommentWithStarForm(ThreadedCommentForm):
             except Star.DoesNotExist:
                 instance = Star(user=user,
                                 value=value,
+                                content_object=self.target_object,
+                                ip_address=comment.ip_address,
                                 by_comment=comment)
                 manager.add(instance)
             else:
@@ -56,7 +68,9 @@ class CommentWithStarForm(ThreadedCommentForm):
                 pass
         else:
             instance = Star(value=value,
+                            content_object=self.target_object,
                             by_comment=comment,
+                            ip_address=comment.ip_address,
                             user_id=None)
             manager.add(instance)
         return instance

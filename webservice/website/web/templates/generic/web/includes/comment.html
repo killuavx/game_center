@@ -1,5 +1,6 @@
 {% load mezzanine_tags comment_tags comment_star_tags web_tags %}
 {% for comment in comments %}
+    {% if not comment.is_removed %}
 <div class="review_list" id="comment-{{ comment.id }}">
     {% comment %}
     {% if not comment.is_removed and comment.is_public or request.user.is_staff %}
@@ -21,11 +22,12 @@
     <div class="cl"></div>
     {% if not comment.is_removed and comment.is_public or request.user.is_staff %}{% endif %}
 </div>
+    {% endif %}
 {% endfor %}
 {% if no_comments %}
 {% else %}
-{% comment %}
 {% if with_paginator %}{% pagination_ajax comments_page paginator_url=comment_list_url load_selector='#comment-list' %}{% endif %}
-{% endcomment %}
+{% comment %}
 {% if with_paginator %}{% pagination comments_page %}{% endif %}
+{% endcomment %}
 {% endif %}

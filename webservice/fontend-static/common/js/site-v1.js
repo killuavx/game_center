@@ -331,26 +331,38 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 	]);
 
 //评论
-	var review=$(".comment-form").Validform({
-		showAllError:true,
-		callback: function(data){
-			if( data.code == 0 )
-			{
-				var url = $('#comment-list .page a[href]').get(-1).href;
-				window.location = url;
-			}
-			else
-			{
-				var msgs = [];
-				for(k in data.errors)
-				{
-					msgs.push(data.errors[k].join(','));
-				}
-				alert(data.msg + " " + msgs.join(','));
-			}
-			return false;
-		}
-	});	
+    var comment_tips = $('#comments .comment-tip');
+    var review=$(".comment-form").Validform({
+        showAllError:true,
+        tiptype:function(msg,o,cssctl){
+            var objtip=$("");
+            cssctl(comment_tips,o.type);
+            objtip.text(msg);
+        },
+        ajaxPost:true,
+        callback: function(data){
+            if( data.code == 0 )
+            {
+                tips.html('');
+                page_load($('#comment-list .page'), 1);
+                $('.comment-form textarea[name=comment]').val('');
+                $('.comment-form input[name=rating_output]').val('');
+                $('#rating_on').attr('style', '');
+                alert(data.msg);
+            }
+            else
+            {
+                var msgs = [];
+                for(k in data.errors)
+                {
+                    msgs.push(data.errors[k].join(','));
+                }
+                var _msg = data.msg + " " + msgs.join(", ")
+                comment_tips.html(_msg);
+            }
+            return false;
+        }
+    });
 	review.addRule([{
 		ele:".comment-box",datatype:"*1-300"}
 	]);		
