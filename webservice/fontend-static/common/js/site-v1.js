@@ -4,6 +4,19 @@ $(document).ready(function(e) {
 	  $(window).resize(function() {
 		resize();
 	  });
+	  
+	  //最小高度
+	  var screen_height = $(window).height();
+	  var head_height = $('.head').outerHeight(true);  
+	  var foot_height = $('.footer').outerHeight(true);
+	  var $body = $('.minheight-page');
+	  if ($body.size()) {
+		var bodyMarginTop = $body.css("marginTop").replace('px', '');
+		var bodyMarginBottom = $body.css("marginBottom").replace('px', '');  
+		var body_height = screen_height - head_height - foot_height - bodyMarginTop - bodyMarginBottom;  
+		$body.css('min-height', body_height + 'px');
+	  }
+
 });
 function resize(){
 	var width = $(window).width();
@@ -123,19 +136,6 @@ $(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.n
 $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 
 
-//最小高度
-/*
-var screen_height = $(window).height();
-var head_height = $('.head').outerHeight(true);
-var foot_height = $('.footer').outerHeight(true);
-var $body = $(".minheight-page");
-var bodyMarginTop = $body.css("marginTop").replace('px', '');
-var bodyMarginBottom = $body.css("marginBottom").replace('px', '');
-var body_height = screen_height - head_height - foot_height - bodyMarginTop - bodyMarginBottom;
-$body.css('min-height', body_height + 'px');
-*/
-
-	
 //搜索
 	$(".search").hover(function(){
 		$(this).find(".box").addClass("hover");
