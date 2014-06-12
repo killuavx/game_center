@@ -1,6 +1,6 @@
 -extends "pages/page_web.html"
 -load widgets url_tags templatehelper_tags web_tags cache
-
+{% block meta_title %}{{ request.GET.q }}{% endblock %}
 -block main
   {% with c_cat=request.GET.cat|default:root_category.slug c_q=request.GET.q c_page=request.GET.page|default:1 %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
