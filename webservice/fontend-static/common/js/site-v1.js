@@ -343,7 +343,7 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
         callback: function(data){
             if( data.code == 0 )
             {
-                tips.html('');
+                comment_tips.html('');
                 page_load($('#comment-list .page'), 1);
                 $('.comment-form textarea[name=comment]').val('');
                 $('.comment-form input[name=rating_output]').val('');

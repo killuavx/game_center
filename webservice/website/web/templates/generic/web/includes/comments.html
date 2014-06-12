@@ -5,6 +5,7 @@
     {% if not request.user.is_authenticated %}
     <span class="r login"><a href="javascript:;" class="open-login">请先登录，再来评分。</a></span>
     {% endif %}
+    {% qurl comment_url is_ajax=1 as comment_url %}
     <form action="{{ comment_url }}" class="cl comment-form" method="POST">
         {% comment_fields_for comment_star_form %}
         <textarea class="comment-box" name="comment"></textarea>
