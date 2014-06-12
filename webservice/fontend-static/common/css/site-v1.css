@@ -83,7 +83,7 @@ opacity: 0;}
 /*搜索*/
 .search{padding-top:7px}
 .search .box{border:1px solid #b8b8b8; height:33px}
-.search .key{border:none; padding:7px 0 0 5px; background:none; left:0; width:73%}
+.search .key{border:none; padding-left:5px; height:33px; line-height:33px; background:none; left:0; width:73%}
 .diy_select{width:60px;position:relative;float:left; font-size:14px}
 .diy_select_btn,.diy_select_txt{float:left;height:35px; line-height:35px}
 .diy_select_txt{width:60px;}
@@ -397,7 +397,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-list-page{padding-bottom:75px}
 .app-list-page .pin-box{width:240px}
 .app-list-page .left-list{top:0; width:240px; z-index:2}
-.app-list-page .right-list{min-height:400px; width:980px}
+.app-list-page .right-list{min-height:400px; width:980px; text-align:left !important}
 .app-list-page .left-nav li{border-bottom:1px solid #e8e8e8}
 .app-list-page .left-nav li a{display:block; height:40px; line-height:40px; padding:0 20px}
 .app-list-page .left-nav li a span{color:#999; font-family: Candara;}
@@ -499,7 +499,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 
 #rating_cont { background:url(http://static.ccplay.com.cn/static/common/img/stars_1.png) no-repeat;  width: 240px; height:35px; overflow:hidden}
 	#rating_on { background: url(http://static.ccplay.com.cn/static/common/img/stars_2.png) no-repeat; width: 0px; height: 25px; position: relative; z-index: 50; top: -25px}
-	#rating_btns { position: relative; z-index: 100; width: 134; height: 25px;}
+	#rating_btns { position: relative; z-index: 9; width: 134; height: 25px;}
 	#rating_btns li { float: left; width: 25px; height:25px; display: block; text-indent:-9999px; cursor: pointer}
 #rating{position:relative; left:0px; top:0; margin:-45px 0 0 0; text-align:left; width:100px;}
 
@@ -636,6 +636,7 @@ clear: both; line-height: 1.8em;}
 .login .logo h2 a{height:57px; width:225px; background-position:0 -19px}
 
 .login-page,.reg-page{padding:50px 0}
+.reg-form{padding-top:30px}
 .login-page .box,.reg-page .box{border-top:2px solid #e53333; margin:2% 10% 5% 60%; background-color:#f8f8f8}
 .yzm-img{top:0; right:70px}
 .login-line span{top:-15px}
