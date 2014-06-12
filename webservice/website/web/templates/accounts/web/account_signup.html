@@ -43,14 +43,14 @@
                         <dl class="pb15">
                             <dt class="l r-yzm"><label class="dib w100 tr pt5 mt2">验证码</label></dt>
                             <dd class="rel"><input class="pct40 bg-white pl10 bg-white bde pt10 pb10 f16" name="captcha_verify" type="text" placeholder="4位验证码" maxlength="4" datatype="s4-4" id="p-yzm">
-                                <img alt="图片名称" src="{% url 'captcha' %}" width="90px" height="37px" class="abs yzm-img">
+                                <img src="{% url 'captcha' %}" width="90px" height="37px" class="abs yzm-img">
                                 <a href="javascript:;" onclick="refresh_captcha($('.yzm-img'));" class="dib ml5 gr pt10 r f12">看不清？</a>
                             </dd>
                         </dl>
 
 
                         <dl class="pb20">
-                            <dt class="l dib w100"></dt><dd class="f12"><label class="l"><input name="agree" value="1" type="checkbox"> 我已阅读并同意</label><a title="链接名称" href="agreement.html" target="_blank" class="red">《虫虫游戏使用协议》</a></dd>
+                            <dt class="l dib w100"></dt><dd class="f12"><label class="l"><input name="agree" value="1" type="checkbox"> 我已阅读并同意</label><a title="链接名称" href="{% static 'ios_web/html/agreement.html' %}" target="_blank" class="red">《虫虫游戏使用协议》</a></dd>
                         </dl>
 
                         <dl class="pb20">
