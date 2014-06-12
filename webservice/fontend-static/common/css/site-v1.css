@@ -520,7 +520,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 
 .collection_dis{padding-top:10px; background:none}
 .collection_title{border-bottom:1px solid #eee; background:url(http://static.ccplay.com.cn/static/common/img/collection_bg.png) #333 center center; color:#FFF}
-.collection_title img{width:400px}
+.collection_title img{width:400px; height:180px;}
 .collection_title h1{font-size:24px}
 .collection_title p{height:50px; overflow:hidden; padding-top:5px}
 .more-dl a{background:url(http://static.ccplay.com.cn/static/common/img/app-more.png) no-repeat right 0; width:223px; height:94px; display:block; text-indent:-9999px}
