@@ -111,8 +111,8 @@ opacity: 0;}
 
 /*切换*/
 .user-switch li{float:left; margin-left:11px; position:relative}
-.user-switch li a.ios-web-icon{display:inline-block; width:55px; text-align:center; padding-top:35px;-webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale; white-space:nowrap; overflow:hidden}
+.user-switch li a.ios-web-icon{display:inline-block; width:55px; height:20px; text-align:center; padding-top:35px;-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale; overflow:hidden}
 .user-switch .a0{background-position:-84px -850px}
 .user-switch .a1{background-position:12px -169px}
 .user-switch .a2{background-position:-73px -169px}
@@ -217,7 +217,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .right .t-title ul,.left-top-list .t-title ul{padding-left:0}
 .left-top-list .tab-more a{margin-right:10px}
 .t-title li a{color:#777}
-.t-title li{background-position: center 31px; height:37px; *display:inline}
+.t-title li{background-position: center 31px; height:37px; *display:inline; padding:0 20px}
 .t-title li a{text-decoration:none}
 .t-title .hover a,.t-title li.ios-web-icon a,.t-title li a:hover{color:#e53333}
 .tab-more{z-index:10}
@@ -707,7 +707,6 @@ clear: both; line-height: 1.8em;}
 /*			cc-l			*/
 #cc-l .user-switch{width:400px !important}
 #cc-l .roll_box li{margin:0 12px 0 3px}
-#cc-l .t-title li{padding:0 20px}
 #cc-l .right .t-title li{padding:0}
 #cc-l .mm{width:165px}
 #cc-l .mp2{left:169px}
