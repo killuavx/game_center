@@ -274,6 +274,8 @@ def initial_post_data_redirect_url(request, prefix):
             redirect_url = "%s?next=%s" % (mz_settings.LOGIN_URL, reverse(prefix))
         elif posted_session_key in request.session:
             post_data = request.session.pop(posted_session_key)
+    if "referer" in post_data:
+        redirect_url = post_data.get('referer')
     return post_data, redirect_url
 
 
@@ -310,7 +312,7 @@ def initial_model_object(get_data, post_data=None):
         obj_id = get_data.get('object_pk')
         if obj_id:
             try:
-                ct.get_object_for_this_type(id=ct.pk)
+                obj = ct.get_object_for_this_type(id=obj_id)
             except ObjectDoesNotExist:
                 obj = model()
         return model, obj
@@ -346,23 +348,26 @@ def comment(request):
             data['errors'] = form.errors
 
     if is_ajax_request(request):
-        return HttpResponse(json.dumps(data), 'application/json')
+        _json_data = json.dumps(data)
+        return HttpResponse(_json_data, 'application/json')
     else:
+        error(request, data['msg'])
         return redirect(initial['redirect_url'])
 
 
-def comment_list(request, template='generic/includes/comment.html'):
+def comment_list(request, template='generic/web/includes/comment.html'):
     initial = initial_validation(request, 'comment')
     model, target_object = initial_model_object(request.GET)
     if target_object and target_object.pk:
         form = CommentWithStarForm(request, target_object,
                                    data=initial['post_data'])
         context = {"obj": target_object, "posted_comment_form": form}
+        response_context = comment_star_thread(
+            context=context,
+            parent=target_object,
+            page=request.GET.get('page', 1)
+        )
         return TemplateResponse(request, template=template,
-                                context=comment_star_thread(
-                                    context=context,
-                                    parent=target_object,
-                                    page=request.GET.get('page', 1)
-                                ))
+                                context=response_context)
     else:
         raise Http404

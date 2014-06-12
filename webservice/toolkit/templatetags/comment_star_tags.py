@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from toolkit.forms import CommentWithStarForm
 
 
-DEFAULT_PER_PAGE = 5
+DEFAULT_PER_PAGE = 10
 
 register = Library()
 

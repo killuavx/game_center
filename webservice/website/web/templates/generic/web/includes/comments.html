@@ -5,9 +5,10 @@
     {% if not request.user.is_authenticated %}
     <span class="r login"><a href="javascript:;" class="open-login">请先登录，再来评分。</a></span>
     {% endif %}
-    <form action="{% qurl comment_url is_ajax=1 %}" class="cl" method="POST">
+    {% qurl comment_url is_ajax=1 as comment_url %}
+    <form action="{{ comment_url }}" class="cl comment-form" method="POST">
         {% comment_fields_for comment_star_form %}
-        <textarea name="comment" datatype="*1-300"></textarea>
+        <textarea class="comment-box" name="comment"></textarea>
         <div class="l review_btn">
             <div id="rating_cont">
                 <div id="rating_btns">
@@ -23,10 +24,11 @@
                 <div id="rating" class="r">点击星星来评分</div>
             </div>
         </div>
-        <button type="button" class="r btn btn-red f16">发表评论</button>
+        <button class="r btn btn-red f16">发表评论</button>
+        <span class="dib mr30 red r pt15 comment-tip"></span>
     </form>
 </div>
 <div id="comment-list" class="">
-{% comment_star_thread object_for_comments page=request.GET.page %}
+{% comment_star_thread object_for_comments load_selector='#comment-list' page=request.GET.page %}
 </div>
 

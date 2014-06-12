@@ -87,7 +87,7 @@ from django.contrib.comments.moderation import CommentModerator, moderator
 
 class PackageVersionModerator(CommentModerator):
 
-    email_notification = True
+    email_notification = False
 
 moderator.register(PackageVersion, PackageVersionModerator)
 
