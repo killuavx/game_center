@@ -38,10 +38,7 @@ if "mezzanine.boot" in settings.INSTALLED_APPS:
     handler500 = "mezzanine.core.views.server_error"
 
 from django.http import HttpResponse
-urlpatterns += patterns("",
-                        ("^robots.txt$", lambda r: HttpResponse("User-agent: *\nDisallow: /",
-                                                                mimetype="text/plain")),
-                        )
+# urlpatterns += patterns("", ("^robots.txt$", lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")), )
 if settings.DEBUG:
     urlpatterns = patterns('',
                            url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
