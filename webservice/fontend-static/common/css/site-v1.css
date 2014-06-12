@@ -122,8 +122,8 @@ opacity: 0;}
 -moz-animation: toTopFromBottom .3s forwards;
 animation: toTopFromBottom .3s forwards;}
 
-.user-switch li dl{right:0; width:120px}
-.user-switch li dl a:hover{background-color:#f5f5f5; text-decoration:none}
+.user-switch li dl{right:0; min-width:120px;white-space:nowrap}
+.user-switch li dl i.ios-web-icon{width:15px; height:9px; right:20px; top:-9px; background-position:-85px -481px}
 
 /*导航*/
 .nav{height:57px; background:#e53333; z-index:10}
@@ -199,7 +199,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',end
 white-space:nowrap; overflow:hidden; color:#fff}
 .roll_btn a{top:-85px}
 
-.novice-bbs-list .top:hover span,.r-box .top:hover span,.bbs-rcd:hover span,.mm a:hover span{background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,1))}
+.novice-bbs-list .top:hover span,.r-box .top:hover span,.bbs-rcd:hover span,.mm a:hover span,.masterpiece a:hover span{background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,1))}
 
 
 
@@ -520,7 +520,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 
 .collection_dis{padding-top:10px; background:none}
 .collection_title{border-bottom:1px solid #eee; background:url(http://static.ccplay.com.cn/static/common/img/collection_bg.png) #333 center center; color:#FFF}
-.collection_title img{width:400px}
+.collection_title img{width:400px; height:180px;}
 .collection_title h1{font-size:24px}
 .collection_title p{height:50px; overflow:hidden; padding-top:5px}
 .more-dl a{background:url(http://static.ccplay.com.cn/static/common/img/app-more.png) no-repeat right 0; width:223px; height:94px; display:block; text-indent:-9999px}
