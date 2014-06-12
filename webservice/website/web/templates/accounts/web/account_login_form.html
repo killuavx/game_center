@@ -34,7 +34,7 @@
     </div>
 </form>
 <script type="text/javascript">
-    function refresh_captcha(dom, url){$(dom).attr('src', "{% url 'captcha' %}");}
+function refresh_captcha(dom, url){$(dom).attr('src',"{% url 'captcha' %}?" + (new Date()).getTime());}
 </script>
 
 
