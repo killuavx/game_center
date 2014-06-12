@@ -701,6 +701,7 @@ clear: both; line-height: 1.8em;}
 
 #go-wish{width:44px;height:44px;position:fixed;right:20px;bottom:64px;z-index:9999;display:block;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-wish.png) no-repeat}#go-wish:hover{background-position:left bottom}
 
+.page-404{background:url(http://static.ccplay.com.cn/static/common/img/404.png) no-repeat center}
 
 
 
