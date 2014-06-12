@@ -329,7 +329,31 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 	wish.addRule([{
 		ele:".pct50",datatype:"*"}
 	]);
-	
+
+//评论
+	var review=$(".comment-form").Validform({
+		showAllError:true,
+		callback: function(data){
+			if( data.code == 0 )
+			{
+				var url = $('#comment-list .page a[href]').get(-1).href;
+				window.location = url;
+			}
+			else
+			{
+				var msgs = [];
+				for(k in data.errors)
+				{
+					msgs.push(data.errors[k].join(','));
+				}
+				alert(data.msg + " " + msgs.join(','));
+			}
+			return false;
+		}
+	});	
+	review.addRule([{
+		ele:".comment-box",datatype:"*1-300"}
+	]);		
 
 
 });
