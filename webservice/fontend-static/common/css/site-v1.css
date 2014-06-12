@@ -16,7 +16,7 @@ a:focus,input,select,textarea{outline:0;resize: none}
 
 
 /*		公共		*/
-.top img,.roll_box img,.maste_lsit img,.collection_box .l img{background:url(http://static.ccplay.com.cn/static/common/img/no-cc-45.png) no-repeat center}
+.top img,.roll_box img,.maste_lsit img,.collection_box .l img,.app-list-min img,.app-list-xl img,.app-list-m img,.app-list-l img{background:url(http://static.ccplay.com.cn/static/common/img/no-cc-45.png) no-repeat center}
 .cc-a-d-2,.cc-a-d-3,.up_pic img{background:url(http://static.ccplay.com.cn/static/common/img/loading_red.gif) no-repeat center}
 
 .width {width: 1260px}
@@ -276,8 +276,11 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-list-min .ios-web-icon.auto{width:70px; height:70px; background-position:-1px -585px; left:15px; top:15px}
 .app-list-min .btn-s{position:absolute; bottom:0px; width:68px; padding-left:16px; height:46px;}
 .app-list-min .btn-s a{height:23px; width:68px; line-height:23px; padding:0}
-.app-more a{background:url(http://static.ccplay.com.cn/static/common/img/app-more.png) no-repeat 22px 0; width:100px; height:102px; display:block; text-indent:-9999px; padding:0; margin:15px 0}
-.app-more a:hover{background-position:22px -140px}
+.app-more{}
+.app-more a{background:url(http://static.ccplay.com.cn/static/common/img/app-more.png) no-repeat 15px 12px; height: 100px; width:100px; display:inline-block; text-indent:-9999px}
+.app-more a:hover{background-position:15px -128px}
+.crack-page .app-list-min{float:left}
+
 
 
 /*右排行榜*/
