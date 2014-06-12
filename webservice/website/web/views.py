@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
 from django.template.response import TemplateResponse
 from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
@@ -187,7 +188,7 @@ def previous_url(request):
     host = request.get_host()
     return previous if previous and is_safe_url(previous, host=host) else None
 
-
+@csrf_exempt
 def login(request, template='accounts/web/account_login.html'):
     form = LoginForm(request=request,
                      check_captcha=True,
@@ -229,6 +230,7 @@ def captcha(request):
     return response
 
 
+@csrf_exempt
 def signup(request, template='accounts/web/account_signup.html'):
     form = SignupForm(request=request,
                       check_captcha=True,
