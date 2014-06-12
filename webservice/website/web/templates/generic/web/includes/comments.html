@@ -1,0 +1,32 @@
+{% load url_tags mezzanine_tags comment_tags comment_star_tags %}
+
+<div id="comments" class="cell-bk review">
+    <h3 class="l n">应用评论</h3>
+    {% if not request.user.is_authenticated %}
+    <span class="r login"><a href="javascript:;" class="open-login">请先登录，再来评分。</a></span>
+    {% endif %}
+    <form action="{% qurl comment_url is_ajax=1 %}" class="cl" method="POST">
+        {% comment_fields_for comment_star_form %}
+        <textarea name="comment" datatype="*1-300"></textarea>
+        <div class="l review_btn">
+            <div id="rating_cont">
+                <div id="rating_btns">
+                    <ul>
+                        <li title="很差">1</li>
+                        <li title="一般">2</li>
+                        <li title="好">3</li>
+                        <li title="很好">4</li>
+                        <li title="非常好">5</li>
+                    </ul>
+                </div>
+                <div id="rating_on" style="width: 0px;"></div>
+                <div id="rating" class="r">点击星星来评分</div>
+            </div>
+        </div>
+        <button type="button" class="r btn btn-red f16">发表评论</button>
+    </form>
+</div>
+<div id="comment-list" class="">
+{% comment_star_thread object_for_comments page=request.GET.page %}
+</div>
+

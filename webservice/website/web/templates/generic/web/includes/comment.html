@@ -1,0 +1,31 @@
+{% load mezzanine_tags comment_tags comment_star_tags web_tags %}
+{% for comment in comments %}
+<div class="review_list" id="comment-{{ comment.id }}">
+    {% comment %}
+    {% if not comment.is_removed and comment.is_public or request.user.is_staff %}
+    <span class="status" data-status="{{ comment.is_removed|yesno:'r,' }},{{ comment.is_public|yesno:'p,' }}">
+        <a href="javascript:;" class="remove">删除</a> | <a href="javascript:;" class="public">发布</a>
+    </span>
+    {% endif %}
+    {% editable comment.is_public comment.is_removed %}
+    {% endcomment %}
+    <dl class="cb">
+        <dt class="ios-web-icon l user" title="{{ comment.user.username }}">
+            <img src="{% gravatar_url comment.email %}" />
+        </dt>
+        <dd class="d1">
+            <span class="ios-web-icon l star s{{ comment|comment_content_star_value }}"></span>
+            <span class="r">{{ comment.submit_date|date:'Y-m-d H:i' }}</span></dd>
+        <dd class="d2">{{ comment.comment|comment_filter }}</dd>
+    </dl>
+    <div class="cl"></div>
+    {% if not comment.is_removed and comment.is_public or request.user.is_staff %}{% endif %}
+</div>
+{% endfor %}
+{% if no_comments %}
+{% else %}
+{% comment %}
+{% if with_paginator %}{% pagination_ajax comments_page paginator_url=comment_list_url load_selector='#comment-list' %}{% endif %}
+{% endcomment %}
+{% if with_paginator %}{% pagination comments_page %}{% endif %}
+{% endif %}

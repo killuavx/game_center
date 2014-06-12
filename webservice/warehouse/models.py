@@ -31,7 +31,7 @@ slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
                                 'toolkit.helpers.slugify_unicode')
 slugify = get_callable(slugify_function_path)
 from mezzanine.core.fields import FileField
-from mezzanine.generic.fields import CommentsField
+from comment.fields import CommentsField
 
 
 class AuthorQuerySet(QuerySet):
@@ -652,7 +652,7 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
 
     resources = MultiResourceField()
 
-    #comments = CommentsField()
+    comments = CommentsField()
 
     def clean(self):
         super(PackageVersion, self).clean()

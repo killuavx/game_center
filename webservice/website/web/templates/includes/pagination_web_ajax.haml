@@ -1,0 +1,41 @@
+-load url_tags
+:javascript
+  window.onload = function(){
+    (function($){
+      var load_box = $("{{ load_selector }}");
+      window.load_box = load_box;
+      function page_load(dom){
+        url = $(dom).attr('ajax_url');
+        console.log(url);
+        $.get({
+          url:url,
+          dataType:'html',
+          success:function(data){
+            load_box.html(data);
+          }
+        });
+        return false;
+      }
+      window.page_load = page_load;
+    })(jQuery);
+  };
+-if current_page.has_previous or current_page.has_next
+  .cl.f14.page{data-url:"={paginator_url}"}><
+    -if current_page.has_previous
+      %a{:href => "javascript:;",
+         :ajax_url => "{% qurl paginator_url page=current_page.previous_page_number %}",
+         :onclick => "page_load(this);"
+        } 上一页
+    -for p in current_page.visible_page_range
+      -if p == current_page.number
+        %a{:href => "javascript:;", :class => "hover"}><= p
+      -else
+        %a{:href => "javascript:;",
+           :ajax_url => "{% qurl paginator_url page=p %}",
+           :onclick => "page_load(this);"}><= p
+    -if current_page.has_next
+      %a{:href => "javascript:;",
+         :ajax_url => "{% qurl paginator_url page=current_page.next_page_number %}",
+         :onclick => "page_load(this);"
+       } 下一页
+

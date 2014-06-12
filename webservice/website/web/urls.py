@@ -16,6 +16,8 @@ urlpatterns = patterns('website.web.views',
                        url(r'^collections/(?P<slug>%s)/?' % slug_pattern, 'topic_detail'),
                        url(r'^qrcode/?', 'qrcode_gen'),
                        url(r'^captcha/?', 'captcha', name='captcha'),
-                       url(r'^accounts/', include(account_urlpatterns))
+                       url(r'^accounts/', include(account_urlpatterns)),
+                       url(r'^comment/?', 'comment', name='comment'),
+                       url(r'^comments/?', 'comment_list', name='comment_list'),
                        )
 

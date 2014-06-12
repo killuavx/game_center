@@ -188,7 +188,7 @@ def previous_url(request):
     return previous if previous and is_safe_url(previous, host=host) else None
 
 
-def login(request, template='accounts/web/account_login_form.html'):
+def login(request, template='accounts/web/account_login.html'):
     form = LoginForm(request=request,
                      check_captcha=True,
                      data=request.POST or None)
@@ -253,3 +253,116 @@ def signup(request, template='accounts/web/account_signup.html'):
 
     context = {'form': form, 'title': '注册'}
     return render(request, template, context)
+
+from mezzanine.conf import settings as mz_settings
+from toolkit.forms import CommentWithStarForm
+from toolkit.templatetags.comment_star_tags import comment_star_thread
+from django.db.models import get_model
+from django.contrib.contenttypes.models import ContentType
+
+
+def initial_post_data_redirect_url(request, prefix):
+    mz_settings.use_editable()
+    post_data = request.POST
+    login_required_setting_name = prefix.upper() + "S_ACCOUNT_REQUIRED"
+    posted_session_key = "unauthenticated_" + prefix
+    redirect_url = ''
+    if getattr(mz_settings, login_required_setting_name, False):
+        if not request.user.is_authenticated():
+            request.session[posted_session_key] = request.POST
+            error(request, '请登陆后再操作')
+            redirect_url = "%s?next=%s" % (mz_settings.LOGIN_URL, reverse(prefix))
+        elif posted_session_key in request.session:
+            post_data = request.session.pop(posted_session_key)
+    return post_data, redirect_url
+
+
+def initial_model_object(get_data, post_data=None):
+    if post_data is None:
+        post_data = dict()
+    model = obj = None
+
+    if 'content_type' not in post_data and 'content_type' not in get_data:
+        raise Http404
+
+    if 'content_type' in post_data:
+        try:
+            model = get_model(*post_data.get("content_type", "").split(".", 1))
+            if model:
+                obj = model.objects.get(id=post_data.get("object_pk", None))
+                return model, obj
+            return model, model()
+        except (TypeError, ObjectDoesNotExist):
+            pass
+        if model:
+            return model, model()
+        else:
+            raise Http404
+
+    else:
+        ct_id = get_data.get('content_type')
+        try:
+            ct = ContentType.objects.get_for_id(ct_id)
+        except ObjectDoesNotExist:
+            raise Http404
+
+        model = ct.model_class()
+        obj_id = get_data.get('object_pk')
+        if obj_id:
+            try:
+                ct.get_object_for_this_type(id=ct.pk)
+            except ObjectDoesNotExist:
+                obj = model()
+        return model, obj
+
+
+def initial_validation(request, prefix):
+    post_data, redirect_url = initial_post_data_redirect_url(request, prefix)
+    model, obj = initial_model_object(request.GET, post_data)
+    return dict(
+        model=model,
+        object=obj,
+        post_data=post_data,
+        redirect_url=redirect_url,
+    )
+
+
+def comment(request):
+    initial = initial_validation(request, 'comment')
+    target_object = initial['object']
+    form = CommentWithStarForm(request, target_object,
+                               data=initial['post_data'])
+    data = dict(code=-1, msg='')
+    if request.method == 'POST':
+        if not request.user.is_authenticated():
+            data['code'] = 2
+            data['msg'] = '请先登陆后再评论'
+            data['errors'] = []
+        if form.is_valid():
+            comment = form.save(request)
+            data['code'], data['msg'] = 0, '评论成功'
+        else:
+            data['code'], data['msg'] = 1, '评论失败'
+            data['errors'] = form.errors
+
+    if is_ajax_request(request):
+        return HttpResponse(json.dumps(data), 'application/json')
+    else:
+        return redirect(initial['redirect_url'])
+
+
+def comment_list(request, template='generic/includes/comment.html'):
+    initial = initial_validation(request, 'comment')
+    model, target_object = initial_model_object(request.GET)
+    if target_object and target_object.pk:
+        form = CommentWithStarForm(request, target_object,
+                                   data=initial['post_data'])
+        context = {"obj": target_object, "posted_comment_form": form}
+        return TemplateResponse(request, template=template,
+                                context=comment_star_thread(
+                                    context=context,
+                                    parent=target_object,
+                                    page=request.GET.get('page', 1)
+                                ))
+    else:
+        raise Http404
