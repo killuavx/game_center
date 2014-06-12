@@ -165,7 +165,7 @@ $(".btn-s a,.i-link a,.user-switch a").attr("target","");
 	});*/
 	
 	//登录后
-	jQuery(".user-switch").slide({ type:"menu", titCell:"li", targetCell:"dl", effect:"slideDown", delayTime:300, triggerTime:0,returnDefault:true  });
+	jQuery(".user-switch").slide({ type:"menu", titCell:"li", targetCell:"dl", delayTime:300, triggerTime:0,returnDefault:true  });
 	//.change-password
 	//.log-out	
 	
