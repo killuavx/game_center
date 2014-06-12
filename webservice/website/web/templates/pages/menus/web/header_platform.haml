@@ -28,7 +28,7 @@
               {% if request.user.is_authenticated %}
               %dl.abs.dn.bdc.bg-white.zx2.f14
                 %i.abs.ios-web-icon
-                %dd.h24.lh24.pl10.pr10.pt5.pb5.red
+                %dd.h24.lh24.pl10.pr10.pt5.pb5.red<
                   你好，
                   %a.red{:href => "#"}= request.user.username
                   %a.ml10.log-out{:href => "{% url 'logout' %}"} [退出]
