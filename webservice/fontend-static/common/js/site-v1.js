@@ -88,46 +88,7 @@ $(document).ready(function(){
 });
 
 
-//评分
-$(document).ready(function(){
-	// hover
-	$('#rating_btns li').hover(function(){	
-			$rating = $(this).text();
-			$('#rating_on').css('width', rateWidth($rating));
-	});		
-	// mouseout
-	$('#rating_btns li').mouseout(function(){
-	
-		$rating = $('#rating').text();
-		if($rating == ""){		
-			$('#rating_on').css('width', "0px");
-		}
-		else{
-			$('#rating_on').css('width', rateWidth($rating));	
-		}
-	});	
-	//click
-	$('#rating_btns li').click(function(){
-		$rating = $(this).text();		
-//		$r_text = $(this).attr("title");		
-//		$('#rating').text($r_text);		
-		$('#rating').text($rating+'分');
-		$('#rating_output').val($rating);
-		$pos = starSprite($rating);
-	});	
-	function rateWidth($rating){		
-		$rating = parseFloat($rating);
-		switch ($rating){
-			case 1: $width = "25px"; break;
-			case 2: $width = "54px"; break;
-			case 3: $width = "81px"; break;
-			case 4: $width = "107px"; break;
-			case 5: $width = "134px"; break;
-			default:  $width =  "0";
-		}
-		return $width;
-	}
-});	
+
 
 $(function(){
 
@@ -806,3 +767,40 @@ var TTDiy_select=new diy_select({  //参数可选
 $("#p-email").mailAutoComplete();
 
 
+//评分
+$(document).ready(function(){
+	// hover
+	$('#rating_btns li').hover(function(){	
+			$rating = $(this).text();
+			$('#rating_on').css('width', rateWidth($rating));
+	});		
+	// mouseout
+	$('#rating_btns li').mouseout(function(){
+	
+		$rating = $('#rating').text();
+		if($rating == ""){		
+			$('#rating_on').css('width', "0px");
+		}
+		else{
+			$('#rating_on').css('width', rateWidth($rating));	
+		}
+	});	
+	//click
+	$('#rating_btns li').click(function(){
+		$rating = $(this).text();			
+		$('#rating').text($rating+'分');
+		$('#rating_output').val($rating);
+	});	
+	function rateWidth($rating){		
+		$rating = parseFloat($rating);
+		switch ($rating){
+			case 1: $width = "25px"; break;
+			case 2: $width = "54px"; break;
+			case 3: $width = "81px"; break;
+			case 4: $width = "107px"; break;
+			case 5: $width = "134px"; break;
+			default:  $width =  "0";
+		}
+		return $width;
+	}
+});	
