@@ -19,9 +19,8 @@ def authenticate(**credentials):
     """
     for backend in get_backends():
         try:
-            _credentials = credentials
+            _credentials = deepcopy(credentials)
             if isinstance(backend, import_from('mezzanine.core.auth_backends.MezzanineBackend')):
-                _credentials = deepcopy(credentials)
                 filter_keys(_credentials)
             user = backend.authenticate(**_credentials)
         except TypeError:
