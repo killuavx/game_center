@@ -24,10 +24,8 @@
 </div>
     {% endif %}
 {% endfor %}
+
+{% if with_paginator %}{% pagination_ajax comments_page paginator_url=comment_list_url load_selector='#comment-list' %}{% endif %}
 {% if no_comments %}
 {% else %}
-{% if with_paginator %}{% pagination_ajax comments_page paginator_url=comment_list_url load_selector='#comment-list' %}{% endif %}
-{% comment %}
-{% if with_paginator %}{% pagination comments_page %}{% endif %}
-{% endcomment %}
 {% endif %}
