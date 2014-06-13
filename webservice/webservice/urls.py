@@ -27,7 +27,7 @@ urlpatterns = patterns("",
 if "mezzanine.boot" in settings.INSTALLED_APPS:
     from mezzanine.core.views import direct_to_template
     urlpatterns += patterns('',
-                            url("^$", direct_to_template, {"template": "pages/comingsoon.html"}, name="home"),
+                            url("^$", direct_to_template, {"template": "pages/index.html"}, name="home"),
                             #url("^$", direct_to_template, {"template": "pages/index.haml"}, name="home"),
                             #url("^$", "mezzanine.blog.views.blog_post_list", name="home"),
                             #url("^$", "mezzanine.blog.views.blog_post_list", name="commingsoon"),
