@@ -4,7 +4,14 @@ from django.contrib.auth import get_backends, user_login_failed, _clean_credenti
 from toolkit.helpers import import_from
 
 
-def filter_keys(data):
+def mezzanine_auth_backend():
+    return import_from('mezzanine.core.auth_backends.MezzanineBackend')
+
+
+def filter_keys(backend, data):
+    if not isinstance(backend, mezzanine_auth_backend()):
+        return
+
     for k in ('app', 'check_password'):
         try:
             data.pop(k)
@@ -12,16 +19,31 @@ def filter_keys(data):
             pass
 
 
+def ignore_authenticate(backend, credentials):
+    if isinstance(backend, mezzanine_auth_backend()):
+        if 'app' in credentials:
+            return True
+
+        if 'check_password' in credentials:
+            return True
+
+    return False
+
+
+
 def authenticate(**credentials):
     """
         overwrite authenticate to fix mezzanine.core.auth_backends.MezzanineBackend kwargs error
     If the given credentials are valid, return a User object.
     """
-    for backend in get_backends():
+    backends = get_backends()
+    for backend in backends:
         try:
             _credentials = deepcopy(credentials)
-            if isinstance(backend, import_from('mezzanine.core.auth_backends.MezzanineBackend')):
-                filter_keys(_credentials)
+            if isinstance(backend, mezzanine_auth_backend()):
+                if ignore_authenticate(backend, _credentials):
+                    continue
+            filter_keys(backend, _credentials)
             user = backend.authenticate(**_credentials)
         except TypeError:
             # This backend doesn't accept these credentials as arguments. Try the next one.
