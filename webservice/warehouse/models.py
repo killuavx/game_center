@@ -424,14 +424,11 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
             try:
                 latest_version = self.versions.latest_published()
             except exceptions.ObjectDoesNotExist:
-                pass
+                raise exceptions.ValidationError('不能发布该应用，没有可发布的版本')
 
-            if not latest_version:
-                raise exceptions.ValidationError(
-                    _('No published version can enough to publish package,'
-                      'or you can change package status to Unpublished.'
-                    )
-                )
+            if self.main_category is None:
+                raise exceptions.ValidationError('不能发布该应用，分类不能留空(必须从属游戏/软件)')
+
         super(Package, self).clean()
         self.updated_datetime = now()
 
