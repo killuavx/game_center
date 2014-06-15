@@ -86,7 +86,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
 
     @etag(children_key_func)
     @cache_response(key_func=children_key_func)
-    @default_list_cache_key_func()
+    @default_cache_control()
     @link()
     def children(self, request, slug, *args, **kwargs):
         """子专区列表"""
@@ -105,7 +105,7 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
 
     @etag(items_key_func)
     @cache_response(key_func=items_key_func)
-    @default_list_cache_key_func()
+    @default_cache_control()
     @link()
     def items(self, request, slug, *args, **kwargs):
         topic = generics.get_object_or_404(self.get_queryset(), slug=slug)
