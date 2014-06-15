@@ -5,9 +5,12 @@ from rest_framework.decorators import link
 from mobapi2.warehouse.views.package import PackageViewSet
 from mobapi2.ranking.serializers import PackageRankingSummarySerializer
 from ranking.models import PackageRanking
+from rest_framework_extensions.utils import default_list_cache_key_func
 from rest_framework_extensions.cache.mixins import CacheResponseMixin
 from rest_framework_extensions.cache.decorators import cache_response
+from rest_framework_extensions.etag.decorators import etag
 from mobapi2 import cache_keyconstructors as ckc
+from mobapi2.decorators import default_cache_control
 
 
 class RankingFilter(filters.BaseFilterBackend):
@@ -77,7 +80,11 @@ class PackageRankingViewSet(CacheResponseMixin,
             self.queryset = self.model.objects.published()
         return self.queryset
 
-    @cache_response(key_func=ckc.LookupListKeyConstructor())
+    packages_key_func = ckc.LookupListKeyConstructor()
+
+    @etag(packages_key_func)
+    @cache_response(key_func=packages_key_func)
+    @default_cache_control()
     @link()
     def packages(self, request, pk, *args, **kwargs):
         ranking = self.get_object()
@@ -90,6 +97,12 @@ class PackageRankingViewSet(CacheResponseMixin,
         queryset = queryset.published()
         list_view = ViewSet.as_view({'get': 'list'}, queryset=queryset)
         return list_view
+
+    @etag(default_list_cache_key_func)
+    @cache_response(key_func=default_list_cache_key_func)
+    @default_cache_control()
+    def list(self, request, *args, **kwargs):
+        return super(PackageRankingViewSet, self).list(request, *args, **kwargs)
 
 
 class RankingPackageFilter(filters.BaseFilterBackend):
