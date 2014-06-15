@@ -151,7 +151,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
         return response
 
-    @etag(default_list_cache_key_func)
+    #@etag(default_list_cache_key_func)
     @cache_response(key_func=default_list_cache_key_func)
     @default_cache_control()
     def list(self, request, *args, **kwargs):
