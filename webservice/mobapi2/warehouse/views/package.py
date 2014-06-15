@@ -26,6 +26,8 @@ from rest_framework_extensions.key_constructor import (
     constructors
 )
 from mobapi2 import cache_keyconstructors as ckc
+from mobapi2.decorators import cache_control, default_cache_control
+from rest_framework_extensions.etag.decorators import etag
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -123,7 +125,9 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
             self.queryset = self.model.objects.all()
         return self.queryset.published()
 
+    @etag(default_object_cache_key_func)
     @cache_response(key_func=default_object_cache_key_func)
+    @default_cache_control()
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class = self.serializer_class
         self.serializer_class = self.serializer_class_detail
@@ -132,7 +136,11 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         self.serializer_class = list_serializer_class
         return response
 
-    @cache_response(key_func=ckc.LookupOrderingListKeyConstructor())
+    related_key_func = ckc.LookupOrderingListKeyConstructor()
+
+    @etag(related_key_func)
+    @cache_response(key_func=related_key_func)
+    @default_cache_control()
     @link()
     def relatedpackages(self, request, *args, **kwargs):
 
@@ -143,7 +151,9 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
         return response
 
+    @etag(default_list_cache_key_func)
     @cache_response(key_func=default_list_cache_key_func)
+    @default_cache_control()
     def list(self, request, *args, **kwargs):
         return super(PackageViewSet, self).list(request, *args, **kwargs)
 
@@ -182,7 +192,9 @@ class PackageSearchViewSet(PackageViewSet):
     search_ordering = ('-released_datetime', )
     #ordering = ('-updated_datetime', )
 
+    @etag(package_search_cache_list_key_func)
     @cache_response(key_func=package_search_cache_list_key_func)
+    @default_cache_control()
     def list(self, request, *args, **kwargs):
         querydict = copy.deepcopy(dict(request.GET))
         q = querydict.get('q')
@@ -297,7 +309,10 @@ class PackageUpdateView(generics.CreateAPIView):
             sorted_pkg_idx[v.get('package_name')] = v
         return sorted_pkg_idx
 
-    @cache_response(key_func=UpdatePostKeyConstructor())
+    update_key_func = UpdatePostKeyConstructor()
+
+    @etag(update_key_func, rebuild_after_method_evaluation=True)
+    @cache_response(key_func=update_key_func)
     def post(self, request, *args, **kwargs):
         try:
             versions = request.DATA.pop('versions')
@@ -441,7 +456,10 @@ class PackagePushView(generics.ListAPIView):
             resorted[index] = obj
         return resorted
 
-    @cache_response(key_func=PushListKeyConstructor())
+    push_key_func = PushListKeyConstructor()
+
+    @etag(push_key_func, rebuild_after_method_evaluation=True)
+    @cache_response(key_func=push_key_func)
     def list(self, request, *args, **kwargs):
         self.object_list = self.filter_queryset(self.get_queryset())
         self.object_list = self.resort_with_request(request=request, object_list=self.object_list)
