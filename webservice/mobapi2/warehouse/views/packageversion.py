@@ -13,6 +13,8 @@ from rest_framework_extensions.cache.decorators import cache_response
 from rest_framework_extensions.utils import (
     default_list_cache_key_func,
     default_object_cache_key_func)
+from rest_framework_extensions.etag.decorators import etag
+from mobapi2.decorators import default_cache_control
 
 
 class PackageVersionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -29,7 +31,9 @@ class PackageVersionViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         return self.model.objects.published()
 
+    @etag(default_object_cache_key_func)
     @cache_response(key_func=default_object_cache_key_func)
+    @default_cache_control()
     def retrieve(self, request, *args, **kwargs):
         list_serializer_class, self.serializer_class = \
             self.serializer_class, PackageVersionDetailSerializer
@@ -38,7 +42,9 @@ class PackageVersionViewSet(viewsets.ReadOnlyModelViewSet):
         self.serializer_class = list_serializer_class
         return response
 
+    @etag(default_list_cache_key_func)
     @cache_response(key_func=default_list_cache_key_func)
+    @default_cache_control()
     def list(self, request, *args, **kwargs):
         querydict = copy.deepcopy(dict(request.GET))
         q = querydict.get('package')
