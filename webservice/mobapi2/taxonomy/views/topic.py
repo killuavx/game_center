@@ -10,7 +10,10 @@ from rest_framework_extensions.cache.decorators import cache_response
 from rest_framework_extensions.utils import (
     default_list_cache_key_func,
     default_object_cache_key_func)
+from rest_framework_extensions.etag.decorators import etag
 from mobapi2 import cache_keyconstructors as ckc
+from mobapi2.decorators import default_cache_control
+
 
 
 class TopicViewSet(viewsets.ReadOnlyModelViewSet):
@@ -70,14 +73,20 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
             self.queryset = Topic.objects.all()
         return self.queryset.published()
 
+    @etag(default_list_cache_key_func)
     @cache_response(key_func=default_list_cache_key_func)
+    @default_cache_control()
     def list(self, request, *args, **kwargs):
         origin_queryset, self.queryset = self.queryset, self.get_queryset().as_root()
         res = super(TopicViewSet, self).list(request, *args, **kwargs)
         self.queryset = origin_queryset
         return res
 
-    @cache_response(key_func=ckc.LookupListKeyConstructor())
+    children_key_func = ckc.LookupListKeyConstructor()
+
+    @etag(children_key_func)
+    @cache_response(key_func=children_key_func)
+    @default_list_cache_key_func()
     @link()
     def children(self, request, slug, *args, **kwargs):
         """子专区列表"""
@@ -92,7 +101,11 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         self.ordering = ('released_datetime', )
         return res
 
-    @cache_response(key_func=ckc.LookupOrderingListKeyConstructor())
+    items_key_func = ckc.LookupOrderingListKeyConstructor()
+
+    @etag(items_key_func)
+    @cache_response(key_func=items_key_func)
+    @default_list_cache_key_func()
     @link()
     def items(self, request, slug, *args, **kwargs):
         topic = generics.get_object_or_404(self.get_queryset(), slug=slug)
@@ -122,7 +135,9 @@ class TopicViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = TopicalItem.objects.get_items_by_topic(topic, model)
         return queryset
 
+    @etag(default_object_cache_key_func)
     @cache_response(key_func=default_object_cache_key_func)
+    @default_cache_control()
     def retrieve(self, request, *args, **kwargs):
         origin_serializer_class, self.serializer_class = \
             self.serializer_class, TopicDetailWithPackageSerializer
