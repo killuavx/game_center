@@ -6,6 +6,7 @@
 
 -block main
   {% with c_pkg=package.pk %}
+  {% is_site_android as is_android %}{% is_site_ios as is_ios %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
   {% with title=version.subtitle|default:package.title %}
   .auto.mt30.width.app-dis-page
@@ -79,7 +80,7 @@
                 -for screenshot in version.screenshots.ipad
                   -with image=screenshot.image
                     %li><
-                      %img{:src => "={image.small.url}"}/
+                      %img{:src => "={image.url}"}/
               -if is_android
                 -for screenshot in version.screenshots.all
                   -with image=screenshot.image
