@@ -636,23 +636,18 @@ var TTDiy_select=new diy_select({  //参数可选
 
 //评分
 $(document).ready(function(){
-	// hover
 	$('#rating_btns li').hover(function(){	
 			$rating = $(this).text();
 			$('#rating_on').css('width', rateWidth($rating));
-	});		
-	// mouseout
-	$('#rating_btns li').mouseout(function(){
-	
-		$rating = $('#rating').text();
+	},function(){
+		 $rating = $('#rating').text();
 		if($rating == ""){		
-			$('#rating_on').css('width', "0px");
-		}
-		else{
-			$('#rating_on').css('width', rateWidth($rating));	
-		}
-	});	
-	//click
+			 $('#rating_on').css('width', "0px");
+		 }
+		 else{
+			 $('#rating_on').css('width', rateWidth($rating));	
+		 }
+	});
 	$('#rating_btns li').click(function(){
 		$rating = $(this).text();			
 		$('#rating').text($rating+'分');

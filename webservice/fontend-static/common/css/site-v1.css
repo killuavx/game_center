@@ -501,9 +501,9 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-dis-page .page,.n-review .page{border-top:1px solid #ddd}
 
 #rating_cont { background:url(http://static.ccplay.com.cn/static/common/img/stars_1.png) no-repeat;  width: 240px; height:35px; overflow:hidden}
-	#rating_on { background: url(http://static.ccplay.com.cn/static/common/img/stars_2.png) no-repeat; width: 0px; height: 25px; position: relative; z-index: 50; top: -25px}
+	#rating_on { background: url(http://static.ccplay.com.cn/static/common/img/stars_2.png) no-repeat; width: 0px; height: 25px; position: relative; z-index: 8; top: -25px}
 	#rating_btns { position: relative; z-index: 9; width: 134; height: 25px;}
-	#rating_btns li { float: left; width: 25px; height:25px; display: block; text-indent:-9999px; cursor: pointer}
+	#rating_btns li { float: left; width: 27px; height:25px; display: block; text-indent:-9999px; cursor: pointer}
 #rating{position:relative; left:0px; top:0; margin:-45px 0 0 0; text-align:left; width:100px;}
 
 
