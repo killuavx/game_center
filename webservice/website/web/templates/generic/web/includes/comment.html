@@ -16,6 +16,7 @@
         </dt>
         <dd class="d1">
             <span class="ios-web-icon l star s{{ comment|comment_content_star_value }}"></span>
+            <span class="ml10 rl-user">{{ comment.user.username }}</span>
             <span class="r">{{ comment.submit_date|date:'Y-m-d H:i' }}</span></dd>
         <dd class="d2">{{ comment.comment|comment_filter }}</dd>
     </dl>
