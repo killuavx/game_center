@@ -192,7 +192,8 @@ border-radius:8px 0 0 8px}
 /*巨作*/
 .masterpiece{margin-top:-180px; *overflow:hidden; z-index:2}
 .roll_box{height:125px; *overflow:hidden}
-.roll_box li{margin:0 6px; *float:left}
+.roll_box ul{width:1500px}
+.roll_box li{margin:0 18px 0 0; float:left}
 .roll_box li img{width:237px; height:125px}
 .roll_box .text,.novice-bbs-list .top span,.r-box .top span,.bbs-rcd span,.mm a span{left:0; bottom:0; width:227px; height:30px; line-height:30px; background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,.7)); -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',endColorstr='#B2000000',gradientType=0)";
 filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',endColorstr='#B2000000',gradientType=0);
@@ -232,7 +233,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .n-4 a.ios-web-icon{background-position:-50px -546px}
 .news-list .tag-time{margin:-20px 0 0 -60px}
 
-.t-title h3 .ios-web-icon{width:15px; height:15px; left:30px; top:29px; z-index:9}
+.t-title h3 .ios-web-icon{width:15px; height:15px; left:30px; top:29px; z-index:9; display:none}
 .hot-news .t-title h3 .ios-web-icon{background-position:-166px -33px}
 
 /*最新发布*/
@@ -261,8 +262,8 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-list-l .f14{font-size:15px}
 .app-list-l .btn-s{position:absolute; top:45px; width:70%}
 
-
 /*首页 应用*/
+.soft,.game{overflow:hidden}
 .app-box{overflow:hidden; height:444px; border-bottom:1px solid #e8e8e8}
 .app-box .left{margin-right:300px}
 .app-box .left .t-title,.app-list-left{padding-right:20px}
@@ -480,7 +481,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .review_list {border-top:1px solid #ddd; clear:both; padding:7px 0; color:#666}
 .review_list dl{position:relative; padding:5px 0}
 .review_list dt{position:absolute}
-.review_list .star{left:0; top:0}
+.review_list .star{position:relative; margin-top:2px;}
 .review_list dd{padding-left:58px}
 .review_list .d1,.review_list .d2{padding-bottom:5px}
 .review_list .d2{clear:both; padding-top:5px; font-size:14px}
@@ -533,6 +534,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 
 /*巨作*/
 .masterpiece{margin-bottom:60px}
+
 .maste_lsit{width:270px; height:200px; padding:10px; border:5px solid #ffffff; position:relative; float:left; margin:0 5px 20px 10px}
 .masterpiece .hover{border-color:#ffe5e5}
 .maste_lsit img{width:270px; height:135px; padding-bottom:8px}
@@ -711,7 +713,6 @@ clear: both; line-height: 1.8em;}
 
 /*			cc-l			*/
 #cc-l .user-switch{width:400px !important}
-#cc-l .roll_box li{margin:0 12px 0 3px}
 #cc-l .right .t-title li{padding:0}
 #cc-l .mm{width:165px}
 #cc-l .mp2{left:169px}
