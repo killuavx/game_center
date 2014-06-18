@@ -249,7 +249,7 @@ class BaseRankingPackageListWidget(base.PaginatorPageMixin):
 
     def get_list(self):
         from warehouse.models import Package
-        return Package.objects.filter(rankings__pk=self.ranking.pk)
+        return Package.objects.filter(rankings__pk=self.ranking.pk).published()
 
     def get_ranking(self, cat_slug, ranking_slug, cycle_type=0):
         from ranking.models import PackageRanking
