@@ -102,10 +102,16 @@ class WebRankingPackageListWidget(pkgwidget.BaseRankingPackageListWidget,
     template = 'pages/widgets/common/ranking-list.haml'
 
     def get_title(self):
-        return self.ranking.ranking_type.title
+        try:
+            return self.ranking.ranking_type.title
+        except:
+            return None
 
     def get_more_url(self):
-        return self.ranking.get_absolute_url_as(product=self.product)
+        try:
+            return self.ranking.get_absolute_url_as(product=self.product)
+        except:
+            return None
 
 
 class WebHomeCollectionListWidget(tpwidget.BaseTopicListWidget,

@@ -249,13 +249,18 @@ class BaseRankingPackageListWidget(base.PaginatorPageMixin):
 
     def get_list(self):
         from warehouse.models import Package
-        return Package.objects.filter(rankings__pk=self.ranking.pk).published()
+        if self.ranking is not None:
+            return Package.objects.filter(rankings__pk=self.ranking.pk).published()
+        return Package.objects.none()
 
     def get_ranking(self, cat_slug, ranking_slug, cycle_type=0):
         from ranking.models import PackageRanking
-        return PackageRanking.objects.get(ranking_type__slug=ranking_slug,
-                                          category__slug=cat_slug,
-                                          cycle_type=cycle_type)
+        try:
+            return PackageRanking.objects.get(ranking_type__slug=ranking_slug,
+                                              category__slug=cat_slug,
+                                              cycle_type=cycle_type)
+        except ObjectDoesNotExist:
+            return None
 
     def get_context(self, value, options, context=None):
         context = context if context else dict()
