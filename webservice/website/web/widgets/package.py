@@ -25,8 +25,14 @@ class WebPackageRelatedListWidget(pkgwidget.BasePackageSearchListWidget,
 
     search_fields = ('tags_text', 'categories', 'title')
 
+    class WebPackageByCategorySearcherFilter(PackageByCategorySearcherFilter):
+
+        hit_category = True
+
+        cat_param = 'cat'
+
     filter_backends = [
-        PackageByCategorySearcherFilter,
+        WebPackageByCategorySearcherFilter,
         ExcludePackageSearcherFilterBackend
     ]
 
@@ -46,7 +52,11 @@ class WebPackageRelatedListWidget(pkgwidget.BasePackageSearchListWidget,
             self.package = self.version.package
 
         self.options = options
-        self.options['cat'] = self.package.main_category.get_root()
+
+        if self.package.main_category:
+            self.options['cat'] = self.package.main_category.get_root()
+        else:
+            self.options['cat'] = None
         return super(WebPackageRelatedListWidget, self).get_context(value=value,
                                                                     options=options,
                                                                     context=context,

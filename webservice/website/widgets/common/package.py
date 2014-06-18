@@ -35,7 +35,7 @@ class BasePackageSearchListWidget(base.FilterWidgetMixin, base.BaseListWidget):
         querystr = options.get(self.search_param, '')
         return querystr.replace(',', ' ').split()
 
-    def get_searcher(self, requset):
+    def get_searcher(self, requset=None):
         from searcher.searchers import PackageSearcher
         return PackageSearcher(fields=self.search_fields,
                                terms=self.search_terms,
