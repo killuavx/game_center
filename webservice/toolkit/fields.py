@@ -146,7 +146,30 @@ class FileWithMetaField(DFileField):
 
 
 class PkgFileField(FileWithMetaField):
-    pass
+
+    def pre_save(self, model_instance, add):
+        fileattr = getattr(model_instance, self.attname)
+        tracker = getattr(model_instance, 'tracker', None)
+        changed = tracker and tracker.has_changed(self.attname)
+        if fileattr:
+            if changed and hasattr(fileattr.storage, 'remote_size') \
+                and hasattr(fileattr.storage, 'is_qiniu_file') \
+                and fileattr.storage.is_qiniu_file(fileattr.name):
+                try:
+                    _file_size = fileattr.storage.remote_size(fileattr.name)
+                    setattr(model_instance,
+                            self._field_name(self.attname, 'size'),
+                            _file_size)
+                    setattr(model_instance,
+                            self._field_name(self.attname, 'md5'), '')
+                    return fileattr
+                except FileNotFoundError:
+                    raise
+            return super(FileWithMetaField, self).pre_save(model_instance, add)
+        else:
+            setattr(model_instance, self._field_name(self.attname, 'size'), 0)
+            setattr(model_instance, self._field_name(self.attname, 'md5'), None)
+            return fileattr
 
 
 class MultiResourceField(BaseGenericRelation):

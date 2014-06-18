@@ -24,10 +24,12 @@ class QBoxCtl(object):
 
     def __init__(self):
         self.ctl = sh.Command(self.CMD)
+        """
         try:
             self.ctl.login(self.QUSERNAME, self.QPASSWORD)
         except:
             pass
+        """
 
     def __getattr__(self, key):
         if key == 'delete':
@@ -84,6 +86,8 @@ class QiniuPackageFileStorageMixin(object):
                                                            base_url=base_url)
 
     def _file_stat(self, bucket_name, name):
+        return self.ctl.stat(bucket_name, name)
+
         key = "%s:%s" % (bucket_name, name)
         if key not in self._cache_file_stat:
             try:
@@ -111,58 +115,34 @@ class QiniuPackageFileStorageMixin(object):
             raise ValueError("This file is not accessible via a URL.")
         return urljoin(self.get_host_url(name), filepath_to_uri(name))
 
-    """
-    def exists(self, name):
-        if self.is_qiniu_file(name):
-            try:
-                self._file_stat(self.BUCKET_NAME.ios, name)
-                return True
-            except FileNotFoundError:
-                return False
-        return super(QiniuPackageFileStorageMixin, self).exists(name)
+    def remote_exists(self, name):
+        try:
+            self._file_stat(self.BUCKET_NAME.ios, name)
+            return True
+        except FileNotFoundError:
+            return False
 
-    def size(self, name):
-        if self.is_qiniu_file(name):
-            return self._file_stat(self.BUCKET_NAME.ios, name)['fsize']
-        else:
-            return super(QiniuPackageFileStorageMixin, self).size(name)
+    def remote_size(self, name):
+        return self._file_stat(self.BUCKET_NAME.ios, name)['fsize']
 
-    """
+    def remote_delete(self, name):
+        return self.ctl.delete(self.BUCKET_NAME.ios, name)
 
-    """
-    def delete(self, name):
-        if self.is_qiniu_file(name):
-            return self.ctl.delete(self.BUCKET_NAME.ios, name)
-        else:
-            return super(QiniuPackageFileStorageMixin, self).delete(name)
+    def remote_accessed_time(self, name):
+        return self.remote_created_time(name)
 
-    def accessed_time(self, name):
-        if self.is_qiniu_file(name):
-            return self.created_time(name)
-        else:
-            return super(QiniuPackageFileStorageMixin, self).accessed_time(name)
+    def remote_created_time(self, name):
+        ts = self._file_stat(self.BUCKET_NAME.ios, name)['putTime']/10000000
+        return make_aware(datetime.fromtimestamp(ts), get_default_timezone())
 
-    def created_time(self, name):
-        if self.is_qiniu_file(name):
-            ts = self._file_stat(self.BUCKET_NAME.ios, name)['putTime']/10000000
-            return make_aware(datetime.fromtimestamp(ts), get_default_timezone())
-        else:
-            return super(QiniuPackageFileStorageMixin, self).created_time(name)
+    def remote_modified_time(self, name):
+        return self.remote_created_time(name)
 
-    def modified_time(self, name):
-        if self.is_qiniu_file(name):
-            return self.created_time(name)
-        else:
-            return super(QiniuPackageFileStorageMixin, self).modified_time(name)
-
-    def _save(self, name, content):
-        if self.is_qiniu_file(name):
-            try:
-                self._file_stat(self.BUCKET_NAME.ios, name)
-            except FileNotFoundError:
-                self.ctl.put('-c', self.BUCKET_NAME.ios, name, name)
-        return super(QiniuPackageFileStorageMixin, self)._save(name, content)
-    """
+    def remote_save(self, name):
+        try:
+            self._file_stat(self.BUCKET_NAME.ios, name)
+        except FileNotFoundError:
+            self.ctl.put('-c', self.BUCKET_NAME.ios, name, name)
 
 
 class QiniuPackageFileStorage(QiniuPackageFileStorageMixin, FileSystemStorage):
