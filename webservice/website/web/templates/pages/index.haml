@@ -3,7 +3,7 @@
 
 -block main
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
-  {% cache TEMPLATE_CACHE_TIMEOUT product_web request.get_host request.path_info %}
+  {% cache TEMPLATE_CACHE_TIMEOUT product_web_home request.get_host request.path_info %}
   / START Banner
   .rel.ovh.banner
     {% settings_value "GC_WEB_HOME_A1_PLACE_SLUG" as BANNER_SLUG %}
