@@ -126,11 +126,6 @@ $(document).ready(function(){
 
 $(function(){
 
-//新窗口打开链接	
-$(".app-list-m a,.app-list-xl a,.app-list-l a,.app-list-min a,.hot-bbs-list a,.novice-bbs-list a,.i-link-list a,#home a,.hot-game a,.focusBox_pic a,.h-app a,.cc-a-d-box a,.h-bbs a,.top-list a,.masterpiece a").attr("target","_blank");
-$(".btn-s a,.user-switch a,.i-5,.f-logo,.collection_box .l a").attr("target","");
-
-
 //搜索
 	$(".search").hover(function(){
 		$(this).find(".box").addClass("hover");
