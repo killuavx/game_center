@@ -4,7 +4,7 @@
 background-repeat: no-repeat;}
 .main-text p{text-indent:2em}
 .main-text strong {padding-top:20px; display:block}
-
+.project{padding-top:15px}
 
 /*去掉安装按钮*/
 .btn-s .a1{display:none}
@@ -16,7 +16,7 @@ background-repeat: no-repeat;}
 .hot-news .t-title{border-bottom-color:#e53333}
 
 .hot-news .t-title h3 .ios-web-icon{background-position:-166px -67px; left:55px}
-.hot-news .time-box-t{background:url(http://static.ccplay.com.cn/static/common/img/time-line-2.png) 47px bottom no-repeat; padding-bottom:40px}
+.hot-news .time-box-t{background:url(http://static.ccplay.com.cn/static/common/img/time-line-2.png) 47px bottom no-repeat; padding-bottom:20px}
 .hot-news .time-box-b{background:url(http://static.ccplay.com.cn/static/common/img/time-line-1.png) 47px 0 repeat-y}
 
 

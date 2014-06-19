@@ -5,12 +5,36 @@ jQuery(".roll").slide({ mainCell:"ul",vis:4,scroll:1,prevCell:".prev",easing:"ea
 
 jQuery(".collection_box").slide({ mainCell:"ul",vis:5,scroll:2,prevCell:".prev",nextCell:".next",easing:"easeInQuint",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
-jQuery(".up_box").slide({ mainCell:"ul",vis:2,scroll:1,prevCell:".prev",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
+//jQuery(".up_box").slide({ mainCell:"ul",vis:2,scroll:1,prevCell:".prev",nextCell:".next",effect:"leftLoop",pnLoop:false, autoPage:true,easing:"easeOutCubic"});
 
 jQuery(".box-tab").slide({ titCell:".title_box li", mainCell:".list", targetCell:".tab-more a", effect:"fold",titOnClassName:"hover",});	
 
+bindAppDetailCoverEv(2);
+var imgloadCount = 0;
+function bindAppDetailCoverEv(vis_count){
+	var e = $(".up_box img");
+	var imageCount = e.size();	
+	if(imgloadCount == 0){	
+		e.each(function(){
+			if(this.complete){
+				imgloadCount++
+			}
+		});		
+		if(imgloadCount == imageCount){
+			jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+		}else{
+			e.load(function(){
+				imgloadCount++;
+				if(imgloadCount == imageCount){
+					jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+				}
+			});
+		}
+	}else{
+		jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});		
+	}	
+}
 
-/*jQuery(".vendor").slide({ titCell:".list_menu li", mainCell:".left_list", effect:"fold", titOnClassName:"hover",});*/	
 
 
 
