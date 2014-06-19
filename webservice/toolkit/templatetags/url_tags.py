@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.template import Library, Node, TemplateSyntaxError
 from urllib.parse import urlparse, parse_qsl, urlunparse, urlencode
 from django.utils.encoding import smart_str
+from easy_thumbnails.exceptions import InvalidImageFormatError
 from toolkit import helpers
 
 
@@ -141,7 +142,10 @@ def resource_url(inst_or_resources, kind='cover', alias='default', size_alias=No
         try:
             fileattr = getattr(inst_or_resources, kind)
             if size_alias:
-                return fileattr[size_alias].url
+                try:
+                    return fileattr[size_alias].url
+                except InvalidImageFormatError:
+                    return fileattr.url
             return fileattr.url
         except (ValueError, AttributeError):
             pass

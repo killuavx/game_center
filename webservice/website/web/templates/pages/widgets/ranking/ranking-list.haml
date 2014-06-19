@@ -13,7 +13,7 @@
       %dl.dib.rel.app-list-xl{:class => "{% if forloop.counter <= 3 %}top-={forloop.counter}{% endif %}"}
         %dt.abs
           %a.pic{:href => "={detail_url}", :title => "={title}"}
-            %img{:alt => "={title}", :src => "{% resource_url version 'icon' %}"}
+            %img{:alt => "={title}", :src => "{% resource_url version 'icon' size_alias='large' %}"}
             %span.ios-web-icon.abs
         %dd.g9.pt5
           %h3.n.rel.g3.f16
