@@ -200,7 +200,7 @@ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',end
 white-space:nowrap; overflow:hidden; color:#fff}
 .roll_btn a{top:-85px}
 
-.novice-bbs-list .top:hover span,.r-box .top:hover span,.bbs-rcd:hover span,.mm a:hover span,.masterpiece a:hover span{background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,1))}
+.novice-bbs-list .top:hover span,.r-box .top:hover span,.bbs-rcd:hover span,.mm a:hover span,.masterpiece a:hover span,.project a:hover span{background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,1))}
 
 
 
@@ -462,16 +462,17 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-dis-page .google{background-position:-166px -300px}
 .app-dis-page .google.no{background-position:-166px -267px}
 
-.app-dis-page .right .up,.app-dis-page .right .up .up_box{height:437px; overflow:hidden; position:relative; padding:10px}
+.app-dis-page .right .up,.app-dis-page .right .up .up_box{ margin-bottom:10px; overflow:hidden; position:relative; padding:10px}
 .app-dis-page .right .up ul{padding:10px}
 .app-dis-page .right .up li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
-.app-dis-page .right .up img{width:240px}
+.app-dis-page .right .up img{}
 
-.app-dis-page .right .up .ios-web-icon{top:-267px; display:inline-block; z-index:99999}
+.app-dis-page .right .up .ios-web-icon{top:-160px; display:inline-block; z-index:99999}
 .app-dis-page .right .up .prev{left:-10px}
 .app-dis-page .right .up .next{right:-10px}
-.app-dis-page .right .down{padding:0 20px 0 20px}
+.app-dis-page .right .down{padding:0 20px 0 20px; clear:both}
 .app-dis-page .right h3{font-size:18px; margin-bottom:5px}
+.app-dis-page .right .text_inner{font-size:14px}
 
 .review{margin-bottom:15px}
 .review .login{padding-top:5px}

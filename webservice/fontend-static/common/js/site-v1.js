@@ -18,6 +18,41 @@ $(document).ready(function(e) {
 	  }
 
 });
+
+/*
+ * app详情图片事件绑定
+*/
+
+var imgloadCount = 0;
+function bindAppDetailCoverEv(vis_count){
+
+	var e = $(".up_pic img");
+	var imageCount = e.size();
+	
+	if(imgloadCount == 0){
+	
+		e.each(function(){
+			if(this.complete){
+				imgloadCount++
+			}
+		});
+		
+		if(imgloadCount == imageCount){
+			jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+		}else{
+			e.load(function(){
+				imgloadCount++;
+				if(imgloadCount == imageCount){
+					jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+				}
+			});
+		}
+	}else{
+		jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+		
+	}	
+}
+
 function resize(){
 	var width = $(window).width();
 	var wobj = $("body");
@@ -27,16 +62,16 @@ function resize(){
 		/*巨作*/
 		jQuery(".roll").slide({ mainCell:"ul",vis:5,scroll:2,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
 		/*详细缩略图*/
-		jQuery(".up_box").slide({ mainCell:"ul",vis:4,scroll:4,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
-
+		//jQuery(".up_box").slide({ mainCell:"ul",vis:4,scroll:4,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+		bindAppDetailCoverEv(4);
 	}else if(width > 990){
 		wobj.attr("id","cc-m");	
 
 		/*巨作*/
 		jQuery(".roll").slide({ mainCell:"ul",vis:4,scroll:2,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
 		/*详细缩略图*/
-		jQuery(".up_box").slide({ mainCell:"ul",vis:3,scroll:3,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
-
+		//jQuery(".up_box").slide({ mainCell:"ul",vis:3,scroll:3,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+		bindAppDetailCoverEv(3);
 
 	}else{
 		wobj.attr("id","cc-s");	
@@ -44,12 +79,11 @@ function resize(){
 		/*巨作*/
 		jQuery(".roll").slide({ mainCell:"ul",vis:3,scroll:2,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
 		/*详细缩略图*/
-		jQuery(".up_box").slide({ mainCell:"ul",vis:2,scroll:2,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
-
+		//jQuery(".up_box").slide({ mainCell:"ul",vis:2,scroll:2,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+		bindAppDetailCoverEv(2);
 
 	}
 };
-
 
 //document.writeln("<a href=\"javascript:;\" title=\"我要许愿\" id=\"go-wish\">我要许愿</a>");
 

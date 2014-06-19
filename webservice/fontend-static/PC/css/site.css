@@ -86,11 +86,11 @@ p{word-wrap:break-word}
 .list_box .title_box h3,.list_box .title_box a{line-height:40px; padding:0 15px; color:#e53333}
 .list_box .title_box a:hover{color:#d12525}
 
-.list_box .title_box ul {width:300px; padding:8px 0 0 123px}
+.list_box .title_box ul {width:300px; padding:8px 0 0 160px}
 .list_box .title_box ul li{float:left; height:22px; line-height:22px; display:block; border:1px solid #333; width:70px; margin-left:-1px; text-align:center; background-color:#fff; cursor:pointer; z-index:999999}
 .list_box .title_box ul li:hover{background-color:#666; color:#fff}
 .list_box .title_box ul li.li_1{border-radius:3px 0 0 3px}
-.list_box .title_box ul li.li_3{border-radius:0 3px 3px 0;}
+.list_box .title_box ul li.li_2{border-radius:0 3px 3px 0;}
 .list_box .title_box ul li.hover{background-color:#333333; color:#fff}
 
 .home_game .list,.home_soft .list,.home_game .list ul,.home_soft .list ul {height:395px;}
@@ -104,8 +104,8 @@ p{word-wrap:break-word}
 .big_pic img{width:68px; height:68px}
 .cover{background-position:-161px -114px; display:inline-block; width:72px; height:72px}
 .big_pic .cover{left:-2px; _left:-1px; top:-2px}
-.list h2{left:85px; top:12px; font-size:14px; width:100px; height:20px; overflow:hidden}
-.list p{color:#999; left:85px; top:35px; font-family:Arial; width:110px; height:18px; white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
+.list h2{left:85px; top:12px; font-size:14px; width:100px; height:18px; overflow:hidden}
+.list p{color:#999; left:85px; top:35px; font-family:Arial; width:110px; height:18px; line-height:20px; white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
 p.price{top:53px}
 p.price span{color:#e53333; text-decoration:line-through}
 
@@ -167,7 +167,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .right_list li.hover .big_pic{_width:47px}
 .right_list li.hover .cover{_width:46px}
 
-.right_list li.hover h2{padding-left:19px; width:160px}
+.right_list li.hover h2{padding-left:19px; width:160px; height:18px;}
 .right_list li.hover em{margin-left:-18px} 
 .right_list li.hover p{left:78px; top:30px;}
 .right_list li.hover .btn{display:block; right:5px}
@@ -335,20 +335,21 @@ p.price span{color:#e53333; text-decoration:line-through}
 .instr span{color:#888; padding-left:10px; width:140px; overflow:hidden; display:inline-block; float:right}
 .instr .star{left:0; top:0px; _top:-1px; width:68px; height:12px; padding-left:0; position:relative}
 
-.dis .r .up,.dis .r .up .up_box{width:580px; overflow:hidden; position:relative; padding:10px}
+.dis .r .up,.dis .r .up .up_box{overflow:hidden; height:310px; position:relative; padding:10px}
 .dis .r .up ul{padding:10px}
 .dis .r .up li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
-.dis .r .up img{width:280px; height:467px}
+.dis .r .up img{height:300px}
 
-.dis .r .up .unslider-arrow{top:-280px; display:inline-block; z-index:99999}
+.dis .r .up .unslider-arrow{top:-160px; display:inline-block; z-index:99999}
 .dis .r .up .prev{left:-10px}
 
 .dis .r .up .next{right:-10px}
 .prevStop,.nextStop{display:none !important}
 
 
-.dis .r .down{padding:0 20px 20px 20px}
+.dis .r .down{padding:0 20px 20px 20px; clear:both}
 .dis .r h3{font-size:18px; margin-bottom:5px}
+.text_inner{font-size:14px}
 
 .review{margin-bottom:15px}
 .review .login{padding-top:5px}
