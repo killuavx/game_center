@@ -24,6 +24,7 @@
         .auto.rel.pic
           %img.db.auto.pt1.mt20{:height => "175px", :src => "{% resource_url version 'icon' size_alias='large' %}", :width => "175px"}
             %span.dib.abs.cover.png
+        {% if is_android %}
         %a.mt20.db.btn.btn-green.f16{:href => "={dw_url}"} 下载应用
         -#
           .pt20.pb30.db.pct100.btn-s
@@ -36,6 +37,7 @@
             {% qurl '/qrcode/' url=dwapi_url as qr_url %}
             %img{:src => "={qr_url}", :title => "={title}"}/
           %p.gr 扫描二维码即可下载
+        {% endif %}
         %ul.g9.pt20.instr
           %li<
             评分
@@ -60,6 +62,10 @@
           %li<
             语言
             %span><= version.language_names|join:", "
+          -if version.is_ios
+            %li<
+              设备
+              %span><= version.as_ios.device_types|join:", "
           %li<
             下载
             %span>< {{ version.download_count|intwordcn }}+
@@ -80,12 +86,12 @@
                 -for screenshot in version.screenshots.ipad
                   -with image=screenshot.image
                     %li><
-                      %img{:src => "={image.url}"}/
+                      %img{:src => "={image.url}", :alt => "={screenshot.alt}"}/
               -if is_android
                 -for screenshot in version.screenshots.all
                   -with image=screenshot.image
                     %li><
-                      %img{:src => "={image.small.url}"}/
+                      %img{:src => "={image.small.url}", :alt => "={screenshot.alt}"}/
           / up_pic
           .cl.rel.a_btn{:style => "display: none;"}
             %a.ios-web-icon.abs.prev.prevStop{:href => "javascript:;", :style => "display: none;"}
