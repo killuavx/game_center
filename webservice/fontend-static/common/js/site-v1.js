@@ -517,7 +517,7 @@ $(function(){
 
 
 //许愿
-document.writeln("<div class=\"bg-white go-wish-box dn\">");
+/*document.writeln("<div class=\"bg-white go-wish-box dn\">");
 document.writeln("<form class=\"w750 fw go-wish-form\">");
 document.writeln("<div class=\"pb20\">");
 document.writeln("<input class=\"pct50 bg-white pl10 bg-white bde pt10 pb10 f16 mb10\" type=\"text\" placeholder=\"游戏名称\" id=\"wish-game-name\"><span class=\"g9 ml10\">如：暗影之刃 Shadow Blade</span>");
@@ -529,8 +529,7 @@ document.writeln("<div class=\"db tr pt20 pb20\">");
 document.writeln("<span class=\"Validform_checktip\"></span><button class=\"submit_btn\">提交许愿</button>");
 document.writeln("</div>");
 document.writeln("</form>");
-document.writeln("</div>");
-
+document.writeln("</div>");*/
 //弹出框提示 结束
 
 
