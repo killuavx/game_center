@@ -24,12 +24,12 @@
         .auto.rel.pic
           %img.db.auto.pt1.mt20{:height => "175px", :src => "{% resource_url version 'icon' size_alias='large' %}", :width => "175px"}
             %span.dib.abs.cover.png
-        {% if is_android %}
-        %a.mt20.db.btn.btn-green.f16{:href => "={dw_url}"} 下载应用
+        %a.mt20.db.btn.btn-green.f16.app-download-btn-js{:href => "={dw_url}"} 下载应用
         -#
           .pt20.pb30.db.pct100.btn-s
-            %a.a1.install{:href => "#", :target => ""} 下载到手机
+            %a.a1.install.app-download-btn-js{:href => "={dw_url}", :target => ""} 下载应用
             %a.a2{:href => "#", :target => ""} 下载到电脑
+        {% if is_android %}
         .tc.pt20.p-code
           %div<
             {% absolute_url_as package product='client' as api_url %}

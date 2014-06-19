@@ -1,8 +1,8 @@
--load pages_tags mezzanine_tags templatehelper_tags
+-load pages_tags mezzanine_tags templatehelper_tags widgets
 -load cache future staticfiles
 {% is_site_android as is_android %}{% is_site_ios as is_ios %}
 !!!5
-%html{:lang => '={LANGUAGE_CODE}'}
+%html{:lang => '={LANGUAGE_CODE}'}<
   %head
     %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}/
     %meta{:content => "IE=edge,chrome=1", "http-equiv" => "X-UA-Compatible"}/
@@ -70,3 +70,7 @@
         var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
         document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9ac929da32f5d1029745f355674d8473' type='text/javascript'%3E%3C/script%3E"));
     {% endcompress %}
+
+    - if is_ios
+      {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
+      {% include_widget WebIOSClientDownloadBox %}

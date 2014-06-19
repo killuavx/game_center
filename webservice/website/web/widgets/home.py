@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 from django.contrib.sites.models import Site
 from django_widgets import Widget
 from website.widgets.common.promotion import BaseSingleAdvWidget, BaseMultiAdvWidget
@@ -150,3 +151,22 @@ class WebHomeVendorListWidget(BaseTopicAuthorPanelWidget,
     def get_more_url(self):
         return self.get_model().page_absolute_url_as(self.product)
 
+
+class WebIOSClientDownloadBox(base.ProductPropertyWidgetMixin, Widget):
+
+    template = 'pages/widgets/common/ios-downbox.html'
+
+    client_package_name = 'com.cchelper.pc'
+
+    def get_context(self, value, options):
+        from django.core.urlresolvers import reverse
+        self.options = deepcopy(options)
+        self.product = options.get('product')
+        download_url = reverse('clientapp-latest_download',
+                               kwargs=dict(package_name=self.client_package_name))
+        data = deepcopy(options)
+        data.update(dict(
+            download_url=download_url,
+            product=self.product,
+        ))
+        return data
