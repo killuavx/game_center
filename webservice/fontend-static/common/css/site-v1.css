@@ -472,6 +472,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-dis-page .right .up .next{right:-10px}
 .app-dis-page .right .down{padding:0 20px 0 20px; clear:both}
 .app-dis-page .right h3{font-size:18px; margin-bottom:5px}
+.app-dis-page .right .text_inner{font-size:14px}
 
 .review{margin-bottom:15px}
 .review .login{padding-top:5px}

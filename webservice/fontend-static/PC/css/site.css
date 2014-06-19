@@ -335,7 +335,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .instr span{color:#888; padding-left:10px; width:140px; overflow:hidden; display:inline-block; float:right}
 .instr .star{left:0; top:0px; _top:-1px; width:68px; height:12px; padding-left:0; position:relative}
 
-.dis .r .up,.dis .r .up .up_box{overflow:hidden; position:relative; padding:10px}
+.dis .r .up,.dis .r .up .up_box{overflow:hidden; height:310px; position:relative; padding:10px}
 .dis .r .up ul{padding:10px}
 .dis .r .up li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
 .dis .r .up img{height:300px}
@@ -349,6 +349,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 
 .dis .r .down{padding:0 20px 20px 20px; clear:both}
 .dis .r h3{font-size:18px; margin-bottom:5px}
+.text_inner{font-size:14px}
 
 .review{margin-bottom:15px}
 .review .login{padding-top:5px}

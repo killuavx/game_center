@@ -9,32 +9,37 @@ jQuery(".collection_box").slide({ mainCell:"ul",vis:5,scroll:2,prevCell:".prev",
 
 jQuery(".box-tab").slide({ titCell:".title_box li", mainCell:".list", targetCell:".tab-more a", effect:"fold",titOnClassName:"hover",});	
 
-bindAppDetailCoverEv(2);
-var imgloadCount = 0;
-function bindAppDetailCoverEv(vis_count){
-	var e = $(".up_box img");
-	var imageCount = e.size();	
-	if(imgloadCount == 0){	
-		e.each(function(){
-			if(this.complete){
-				imgloadCount++
-			}
-		});		
-		if(imgloadCount == imageCount){
-			jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
-		}else{
-			e.load(function(){
-				imgloadCount++;
-				if(imgloadCount == imageCount){
-					jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
-				}
-			});
-		}
-	}else{
-		jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});		
-	}	
-}
+bindAppDetailCoverEv()
+function bindAppDetailCoverEv(){
+	var e = $(".up_pic img");
+	var imageCount = e.size();
+	var boxWidth = $(".up_pic ").width();
+	var totalImageWidth = 0;
+	var vis_count = 0;
+	var imgloadCount = 0;
 
+	e.each(function(){
+		if(this.complete){
+			imgloadCount++;
+			totalImageWidth += $(this).width();
+		}
+	});
+
+	if(imgloadCount == imageCount){
+		vis_count = boxWidth/(totalImageWidth / imageCount);
+		jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+	}else{
+		e.load(function(){
+			imgloadCount++;
+			totalImageWidth += $(this).width();
+			if(imgloadCount == imageCount){
+				vis_count = boxWidth/(totalImageWidth / imageCount);
+				jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+			}
+		});
+	}
+	
+}
 
 
 
