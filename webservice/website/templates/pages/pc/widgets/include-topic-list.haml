@@ -13,7 +13,7 @@
         -with version=package.versions.latest_published title=package.title
           %li
             %a{:href => "={detail_url}", :title => "={title}"}><
-              %img{:alt => "={title}", :src => "{% resource_url version 'icon' %}"}
+              %img{:alt => "={title}", :src => "{% resource_url version 'icon' size_alias='middle' %}"}
               %span.name= title
               .icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
               %span.icon.cover

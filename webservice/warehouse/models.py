@@ -516,6 +516,9 @@ def version_upload_path(instance, filename):
     return join(prefix, filename)
 
 
+from toolkit.fields import QiniuThumbnailerImageField
+
+
 class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
                      SiteRelated, models.Model):
 
@@ -531,14 +534,14 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
             ('site', 'package', 'version_code'),
         )
 
-    icon = ThumbnailerImageField(
+    icon = QiniuThumbnailerImageField(
         default='',
         upload_to=version_upload_path,
         blank=True,
         max_length=500,
     )
 
-    cover = ThumbnailerImageField(
+    cover = QiniuThumbnailerImageField(
         default='',
         upload_to=version_upload_path,
         blank=True,

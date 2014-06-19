@@ -136,10 +136,13 @@ register.simple_tag(download_url, takes_context=True)
 from django.db import models
 
 
-def resource_url(inst_or_resources, kind='cover', alias='default'):
-    if alias == 'default' and kind in ('cover', 'icon'):
+def resource_url(inst_or_resources, kind='cover', alias='default', size_alias=None):
+    if (alias == 'default' or size_alias) and kind in ('cover', 'icon'):
         try:
-            return getattr(inst_or_resources, kind).url
+            fileattr = getattr(inst_or_resources, kind)
+            if size_alias:
+                return fileattr[size_alias].url
+            return fileattr.url
         except (ValueError, AttributeError):
             pass
 

@@ -87,7 +87,6 @@ class QiniuPackageFileStorageMixin(object):
 
     def _file_stat(self, bucket_name, name):
         return self.ctl.stat(bucket_name, name)
-
         key = "%s:%s" % (bucket_name, name)
         if key not in self._cache_file_stat:
             try:

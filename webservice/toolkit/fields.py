@@ -199,3 +199,51 @@ if "south" in settings.INSTALLED_APPS:
                                 patterns=["toolkit\.fields\."])
     except ImportError:
         pass
+
+
+from easy_thumbnails.fields import ThumbnailerImageField
+from easy_thumbnails import files
+from toolkit.storage import package_storage, QiniuPackageFileStorage
+from easy_thumbnails.alias import aliases
+from django.db.models.fields.files import ImageFieldFile
+from easy_thumbnails.files import FakeField, FakeInstance
+
+
+class QiniuImageStorage(QiniuPackageFileStorage):
+
+    def __init__(self, options, *args, **kwargs):
+        self.options = options
+        super(QiniuImageStorage, self).__init__(*args, **kwargs)
+
+    def url(self, name):
+        url = super(QiniuImageStorage, self).url(name)
+        w, h = self.options['size']
+        imgformat = self.options.get('format', 'jpg')
+        return url + "?imageMogr2/thumbnail/%sx%s/format/%s" % (w, h, imgformat)
+
+
+class QiniuThumbnailerImageFieldFile(files.ThumbnailerFieldFile):
+
+    def imageMogr2FieldFile(self, options):
+        fake_field = FakeField(storage=QiniuImageStorage(options=options))
+        instance = FakeInstance()
+        return ImageFieldFile(instance, name=self.name, field=fake_field)
+
+    def __getitem__(self, alias):
+        if self.storage.is_qiniu_file(self.name):
+            options = aliases.get(alias, target=self.alias_target)
+            return self.imageMogr2FieldFile(options)
+        return super(QiniuThumbnailerImageFieldFile, self).__getitem__(alias)
+
+
+class QiniuThumbnailerImageField(ThumbnailerImageField):
+
+    attr_class = QiniuThumbnailerImageFieldFile
+
+    def __init__(self, *args, **kwargs):
+        storage = kwargs.pop('storage', None) or package_storage
+        thumbnail_storage = kwargs.pop('thumbnail_storage', None) or package_storage
+        super(QiniuThumbnailerImageField, self)\
+            .__init__(storage=storage,
+                      thumbnail_storage=thumbnail_storage,
+                      *args, **kwargs)

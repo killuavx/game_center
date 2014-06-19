@@ -238,6 +238,13 @@ FILE_UPLOAD_TEMP_DIR = None
 
 # EasyThumbnail Settings
 THUMBNAIL_ALIASES_ICON = {
+    'xlarge': {
+        'size': (150, 150),
+        'quality': 85,
+        'crop': False,
+        'upscale': True,
+        'format': 'jpg',
+    },
     'large': {
         'size': (92, 92),
         'quality': 85,

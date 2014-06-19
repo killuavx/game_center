@@ -18,7 +18,7 @@
         .cb.fl.l
           .up<
             .pic
-              %img{:alt => "={title}", :src => "{% resource_url version 'icon' %}"}><
+              %img{:alt => "={title}", :src => "{% resource_url version 'icon' size_alias='xlarge' %}"}><
                 %span.icon.cover
             {% version_data_as version entrytype=product as json %}
             .btn{"data-json" => "={json}"}
@@ -70,7 +70,7 @@
                   -for screenshot in version.screenshots.default
                     -with image=screenshot.image
                       %li<
-                        %img{:src => "={image.large.url}"}/
+                        %img{:src => "={image.url}"}/
                 -if is_android
                   -for screenshot in version.screenshots.default
                     -with image=screenshot.image

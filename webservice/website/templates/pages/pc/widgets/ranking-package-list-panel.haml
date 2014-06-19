@@ -11,7 +11,7 @@
           {% absolute_url_as package product=product as detail_url %}
           -with version=package.versions.latest_published
             %a.big_pic{:href => "={detail_url}", :alt => "={title}"}
-              %img{:src => "{% resource_url version 'icon' %}", :alt => "={title}"}
+              %img{:src => "{% resource_url version 'icon' size_alias='middle' %}", :alt => "={title}"}
                 %span.icon.cover
             %h2
               %a{:href => "={detail_url}", :title => "={title}"}>

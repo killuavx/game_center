@@ -3,7 +3,7 @@
 -with version=package.versions.latest_published title=package.title
   %li><
     %a.big_pic{:href => "={detail_url}", :title => "={title}"}><
-      %img{:src => "{% resource_url version 'icon' %}", :alt => "={title}"}
+      %img{:src => "{% resource_url version 'icon' size_alias='middle' %}", :alt => "={title}"}
       %span.icon.cover
     %h2<
       %a{:href => "={detail_url}", :title => "={title}"}= title
