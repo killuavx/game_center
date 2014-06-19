@@ -4,7 +4,7 @@
 {% block main %}
     {% with c_cat=category.slug %}
     {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
-    {% cache TEMPLATE_CACHE_TIMEOUT product_web request.get_host request.path_info c_cat %}
+    {% cache TEMPLATE_CACHE_TIMEOUT product_web_ranking request.get_host request.path_info c_cat %}
 <!-- START 排行 开始 top-page-->
 <div class="auto mt30 width top-page">
     <div class="pb30 cell-bk btn-s-box">
