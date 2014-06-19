@@ -19,7 +19,7 @@
             %dd.g9
               %h3.n.rel.g3.f16.pb5.text-db
                 %a{:href => "={detail_url}", :target => "_blank", :title => "={title}" }= title
-              .g9.lh20= package.summary
+              .g9.lh20= version.summary|default:package.summary
               - if version.is_ios
                 - with iversion=version.as_ios
                   %p.l

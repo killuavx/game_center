@@ -19,7 +19,7 @@
             %span.abs.ios-web-icon.star{:class => "s={version.stars_average|floatformat:'0'}"}
           -if version.is_android
             %p
-              = package.summary|slice:"16"
+              = version.summary|default:package.summary|slice:"16"
           %p
             {{ package.main_category.name }}
             %em> |
