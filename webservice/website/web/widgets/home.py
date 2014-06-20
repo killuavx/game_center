@@ -181,7 +181,7 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
 
     def _static(self, url):
         from django.conf import settings
-        return "%s/%s" % (settings.STATIC_URL, url.lstrip('/'))
+        return "%s/%s" % (settings.STATIC_URL.rstrip('/'), url.lstrip('/'))
 
     def _full_url(self, site, url):
         domain = site.domain
@@ -214,7 +214,7 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
             slug='cchelpers/android',
             title='Android版',
             cls='i-5',
-            full_url=self._static('cc_web/html/a-download.html'),
+            full_url=self._static('cc_web/html/a-down.html'),
         )
 
     def get_client_download_url(self):
