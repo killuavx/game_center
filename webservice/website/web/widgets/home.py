@@ -181,12 +181,11 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
 
     def _static(self, url):
         from django.conf import settings
-        return join(settings.STATIC_URL, url)
+        return "%s/%s" % (settings.STATIC_URL, url.lstrip('/'))
 
     def _full_url(self, site, url):
         domain = site.domain
-        #domain = 'android.ccplay.com.cn'
-        return "http://" + join(domain, url)
+        return "http://%s/%s" % (domain, url.lstrip('/'))
 
     def get_menus_aboutus(self):
         yield dict(
