@@ -340,7 +340,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .dis .r .up li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
 .dis .r .up img{height:300px}
 
-.dis .r .up .unslider-arrow{top:-160px; display:inline-block; z-index:99999}
+.dis .r .up .unslider-arrow{top:-170px; display:inline-block; z-index:99999}
 .dis .r .up .prev{left:-10px}
 
 .dis .r .up .next{right:-10px}

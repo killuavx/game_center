@@ -465,9 +465,9 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-dis-page .right .up,.app-dis-page .right .up .up_box{ margin-bottom:10px; overflow:hidden; position:relative; padding:10px}
 .app-dis-page .right .up ul{padding:10px}
 .app-dis-page .right .up li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
-.app-dis-page .right .up img{}
+.app-dis-page .right .up img{height:370px}
 
-.app-dis-page .right .up .ios-web-icon{top:-160px; display:inline-block; z-index:99999}
+.app-dis-page .right .up .ios-web-icon{top:-210px; display:inline-block; z-index:99999}
 .app-dis-page .right .up .prev{left:-10px}
 .app-dis-page .right .up .next{right:-10px}
 .app-dis-page .right .down{padding:0 20px 0 20px; clear:both}
