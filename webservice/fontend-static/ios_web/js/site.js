@@ -12,7 +12,7 @@ function startupCchelper(url){
 		j.id = 'tbapijumb';
 		document.body.appendChild(j);
 	}
-	j.src = url.replace('https','cchelper').replace('http','cchelper');
+	j.src = url;
 }
 
 function showCcHelperLayer(){
