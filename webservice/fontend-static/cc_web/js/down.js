@@ -12,4 +12,4 @@
 		}
 	}
 $(window).bind("scroll resize",animate);*/
-jQuery(".banner").slide({ titCell:".btn-box a",mainCell:".text-box",targetCell:".text-p p", autoPlay:true});
+jQuery(".banner").slide({ titCell:".btn-box a.db",mainCell:".text-box",targetCell:".text-p p", autoPlay:true});
