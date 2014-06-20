@@ -12,6 +12,10 @@
     -for pkg in items
       -with ver=pkg.versions.latest_published ptitle=ver.subtitle|default:pkg.title
         {% absolute_url_as pkg product=product as detail_url %}
+        - if is_ios
+          {% download_url_as ver is_dynamic=0 product=product as dw_url %}
+        - else
+          {% download_url_as ver product=product as dw_url %}
         %li.rel
           %b.l{:class => "{% if forloop.counter <= 3 %}gr{% endif %}"}= forloop.counter
           %a.l{:href => "={detail_url}", :title => "={ptitle}"}
@@ -26,6 +30,6 @@
             {{ ver.download_count|default:0|intwordcn }}+下载
           .btn-s
             -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
-            %a.a2{:href => "{% download_url ver product=product %}", :class => "app-download-btn-js"} 下载
+            %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载
 
 / app-list-right

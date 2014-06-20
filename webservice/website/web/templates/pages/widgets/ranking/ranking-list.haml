@@ -9,7 +9,10 @@
 
     -with version=package.versions.latest_published title=version.subtitle|default:package.title
       {% absolute_url_as package product=product as detail_url %}
-      {% download_url_as version product=product as dw_url %}
+      - if is_ios
+        {% download_url_as version is_dynamic=0 product=product as dw_url %}
+      - else
+        {% download_url_as version product=product as dw_url %}
       %dl.dib.rel.app-list-xl{:class => "{% if forloop.counter <= 3 %}top-={forloop.counter}{% endif %}"}
         %dt.abs
           %a.pic{:href => "={detail_url}", :title => "={title}"}

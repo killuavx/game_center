@@ -18,8 +18,10 @@
 
       .cell-bk.title
         %h1.l.n.dib.tc= title
-
-      {% download_url_as version product=product as dw_url %}
+      - if is_ios
+        {% download_url_as version is_dynamic=0 product=product as dw_url %}
+      - else
+        {% download_url_as version product=product as dw_url %}
       .l.rel.left
         .auto.rel.pic
           %img.db.auto.pt1.mt20{:height => "175px", :src => "{% resource_url version 'icon' size_alias='large' %}", :width => "175px"}

@@ -124,8 +124,10 @@ def download_url(context, pv, **kwargs):
     entrytype = None
     if 'product' in kwargs:
         entrytype = kwargs.pop('product')
-
-    url = pv.get_download_url(entrytype=entrytype, **kwargs)
+    try:
+        url = pv.get_download_url(entrytype=entrytype, **kwargs)
+    except ValueError:
+        return '#'
     request = context.get('request')
     if request:
         return request.build_absolute_uri(url)

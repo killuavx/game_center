@@ -16,6 +16,10 @@
       - for package in grp.packages
         -with version=package.versions.latest_published title=version.subtitle|default:package.title
           {% absolute_url_as package product=product as detail_url %}
+          - if is_ios
+            {% download_url_as version is_dynamic=0 product=product as dw_url %}
+          - else
+            {% download_url_as version product=product as dw_url %}
           .dib.rel.app-list-min
             %a.db.tc.f14{:href => "={detail_url}", :target => "_blank", :title => "={title}" }
               %img.db.auto{:src => "{% resource_url version 'icon' size_alias='middle' %}"}
@@ -24,7 +28,7 @@
                 %i.db.n.f12.g9= package.main_category.name
             .btn-s
               -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
-              %a.a2{:href => "{% download_url version product=product %}", :class => "app-download-btn-js"} 下载
+              %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载
     / app-list-left
 
 / info-box-tab
