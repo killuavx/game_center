@@ -44,7 +44,7 @@
     / 底部开始 footer
     .cell-bk.ios-web-icon.footer
       .auto.width.white
-        {% cache 86400 product_web_footer request.get_host %}
+        {% cache 86400 product_web_footer %}
         {% include_widget WebFooterWidget %}
         {% endcache %}
     / 底部结束 footer
