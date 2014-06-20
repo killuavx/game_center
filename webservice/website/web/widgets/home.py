@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
 from django.contrib.sites.models import Site
+from os.path import join
 from django_widgets import Widget
 from website.widgets.common.promotion import BaseSingleAdvWidget, BaseMultiAdvWidget
 from website.widgets.common import package as pkgwidget
@@ -22,6 +23,8 @@ __all__ = ['WebHeaderSiteListWidget',
            'WebHomeForumNoviceThreadPanelWidget',
            'WebHomeVendorListWidget',
            'WebHomeCollectionListWidget',
+           'WebIOSClientDownloadBox',
+           'WebFooterWidget',
            ]
 
 
@@ -170,3 +173,80 @@ class WebIOSClientDownloadBox(base.ProductPropertyWidgetMixin, Widget):
             product=self.product,
         ))
         return data
+
+
+class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
+
+    template = 'pages/widgets/common/footer.haml'
+
+    def _static(self, url):
+        from django.conf import settings
+        return join(settings.STATIC_URL, url)
+
+    def _full_url(self, site, url):
+        return "http://" + join(site.domain, url)
+
+    def get_menus_aboutus(self):
+        yield dict(
+            slug='intro',
+            title='公司简介',
+            full_url=self._static('ios_web/html/about.html'),
+        )
+        yield dict(
+            slug='vision',
+            title='发展愿景',
+            full_url=self._static('ios_web/html/vision.html'),
+        )
+        yield dict(
+            slug='contact',
+            title='联系方式',
+            full_url=self._static('ios_web/html/contact.html'),
+        )
+        yield dict(
+            slug='job',
+            title='诚聘英才',
+            full_url=self._static('ios_web/html/job.html'),
+        )
+
+    def get_menus_helpers(self):
+        yield dict(
+            slug='cchelpers/android',
+            title='Android版',
+            cls='i-5',
+            full_url=self._static('cc_web/html/a-download.html'),
+        )
+
+    def get_client_download_url(self):
+        from django.core.urlresolvers import reverse
+        client_dw_url = reverse('clientapp-latest_download',
+                                kwargs=dict(package_name=''))
+        from toolkit import helpers
+        return self._full_url(helpers.get_global_site(), client_dw_url)
+
+    def get_mainsite_url(self, url):
+        return "http://" + join(self.mainsite.domain, url)
+
+    def get_mainsite(self):
+        from toolkit import helpers
+        helpers.set_global_site_id(helpers.SITE_MAIN)
+        site = helpers.get_global_site()
+        helpers.set_global_site_id(helpers.SITE_NOT_SET)
+        return site
+
+    def get_context(self, value, options):
+        from mezzanine.conf import settings
+        from toolkit.helpers import current_request
+        self.hostname = getattr(settings, 'GC_HOST_NAME', 'www.ccplay.com.cn')
+        self.request = current_request()
+        self.mainsite = self.get_mainsite()
+        data = deepcopy(options)
+        data.update(dict(
+            menus_aboutus=list(self.get_menus_aboutus()),
+            menus_helpers=list(self.get_menus_helpers()),
+            hostname=self.hostname,
+            client_download_url=self.get_client_download_url(),
+        ))
+        return data
+
+
+

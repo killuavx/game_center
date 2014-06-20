@@ -106,12 +106,13 @@ def _hash_data(*args):
     [m.update(force_bytes(arg)) for arg in args]
     return m.hexdigest()
 
-def _get_qrcode(*args):
+
+def _get_qrcode(*args, **kwargs):
     qr = qrcode.QRCode(
         version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=3,
-        border=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_M,
+        box_size=kwargs.get('box_size', 3),
+        border=kwargs.get('border', 1),
         )
     for arg in args:
         qr.add_data(arg)
@@ -142,7 +143,7 @@ def _qrcode_cdn_publish_one_and_get_image_url(relative_file, created=True):
     return join(settings.MEDIA_URL, relative_file)
 
 
-def _qrcode_get_or_save_file_to_relative_path(img, hash_qr):
+def _qrcode_get_or_save_file_to_relative_path(gen_img_func, hash_qr):
     relative_file = join('qr', '%s.png' % hash_qr)
     qr_fp = join(settings.MEDIA_ROOT, relative_file)
 
@@ -150,6 +151,7 @@ def _qrcode_get_or_save_file_to_relative_path(img, hash_qr):
         return relative_file, False
 
     with open(qr_fp, 'wb') as f:
+        img = gen_img_func()
         img.save(f)
 
     return relative_file, True
@@ -162,8 +164,13 @@ def qrcode_gen(request, *args, **kwargs):
         return HttpResponse(content='404', status=404)
 
     hash_qr = _hash_data(url)
-    img = _get_qrcode(url)
-    relative_file, created = _qrcode_get_or_save_file_to_relative_path(img, hash_qr)
+    style = request.GET.get('s')
+    if not style:
+        gen_img = lambda: _get_qrcode(url)
+    else:
+        gen_img = lambda: _get_qrcode(url, box_size=4, border=2)
+
+    relative_file, created = _qrcode_get_or_save_file_to_relative_path(gen_img, hash_qr)
     image_url = _qrcode_cdn_publish_one_and_get_image_url(relative_file=relative_file)
     return redirect(to=image_url)
 

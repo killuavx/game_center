@@ -5,6 +5,7 @@ from toolkit.helpers import get_client_event_data
 from clientapp.models import ClientPackageVersion
 from warehouse.models import PackageVersion
 from analysis.documents.event import Event
+from mezzanine.conf import settings
 
 
 def _download_packageversion_response(packageversion, filetype):
@@ -120,8 +121,14 @@ def download_packageversion(request, pk, filetype=None, *args, **kwargs):
     return response
 
 
-def clientapp_latest_download(request, package_name,
+def clientapp_latest_download(request, package_name=None,
                               *args, **kwargs):
+    if not package_name:
+        package_name = getattr(settings,
+                               'GC_FOOTER_CLIENT_DOWNLOAD_PACKAGE_NAME', None)
+    if not package_name:
+        raise Http404
+
     try:
         app = ClientPackageVersion.objects\
             .filter(package_name=package_name)\

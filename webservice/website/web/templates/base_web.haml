@@ -44,7 +44,9 @@
     / 底部开始 footer
     .cell-bk.ios-web-icon.footer
       .auto.width.white
-        {% include "pages/menus/web/footer.haml" %}
+        {% cache 86400 product_web_footer request.get_host %}
+        {% include_widget WebFooterWidget %}
+        {% endcache %}
     / 底部结束 footer
 
     {% block after_footer %}
@@ -72,5 +74,6 @@
     {% endcompress %}
 
     - if is_ios
-      {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
+      {% cache 86400 product_web_iosdownbox %}
       {% include_widget WebIOSClientDownloadBox %}
+      {% endcache %}

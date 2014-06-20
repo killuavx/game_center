@@ -6,6 +6,19 @@ from django.utils.functional import SimpleLazyObject, empty
 
 from mezzanine.conf import register_setting
 
+register_setting(
+    name="GC_HOST_NAME",
+    description=_("主站域名" ),
+    editable=True,
+    default='www.ccplay.com.cn',
+    )
+
+register_setting(
+    name="GC_FOOTER_CLIENT_DOWNLOAD_PACKAGE_NAME",
+    description=_("分站页面Footer最新版本下载qrcode对应客户端包名" ),
+    editable=True,
+    default='www.ccplay.com.cn',
+)
 
 class LazyIter(SimpleLazyObject):
 

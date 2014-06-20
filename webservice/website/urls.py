@@ -9,9 +9,9 @@ urlpatterns = patterns('website.views.download',
                         url(r'^download/package/(?P<package_name>%s)'
                             '(/(?P<version_name>%s)?)?(/(?P<filetype>\w+)?)?' % (slug_pattern, slug_pattern),
                             'download_package', name='download_package'),
-                        url(r'download/client/(?P<package_name>%s)/?' % slug_pattern,
+                        url(r'download/client/(?P<package_name>[\w_.-]*)',
                             'clientapp_latest_download',
-                            name='clientapp-latest_download' )
+                            name='clientapp-latest_download')
                         )
 
 
