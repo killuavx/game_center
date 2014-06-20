@@ -184,7 +184,9 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
         return join(settings.STATIC_URL, url)
 
     def _full_url(self, site, url):
-        return "http://" + join(site.domain, url)
+        domain = site.domain
+        #domain = 'android.ccplay.com.cn'
+        return "http://" + join(domain, url)
 
     def get_menus_aboutus(self):
         yield dict(
@@ -223,22 +225,11 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
         from toolkit import helpers
         return self._full_url(helpers.get_global_site(), client_dw_url)
 
-    def get_mainsite_url(self, url):
-        return "http://" + join(self.mainsite.domain, url)
-
-    def get_mainsite(self):
-        from toolkit import helpers
-        helpers.set_global_site_id(helpers.SITE_MAIN)
-        site = helpers.get_global_site()
-        helpers.set_global_site_id(helpers.SITE_NOT_SET)
-        return site
-
     def get_context(self, value, options):
         from mezzanine.conf import settings
         from toolkit.helpers import current_request
         self.hostname = getattr(settings, 'GC_HOST_NAME', 'www.ccplay.com.cn')
         self.request = current_request()
-        self.mainsite = self.get_mainsite()
         data = deepcopy(options)
         data.update(dict(
             menus_aboutus=list(self.get_menus_aboutus()),
