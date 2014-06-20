@@ -226,7 +226,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .collection_box .inner ul{width:540px}
 .collection_box .inner li{width:95px; height:130px; float:left; margin:15px 0 0 5px; text-align:center; position:relative}
 .collection_box .inner img{width:68px; height:68px}
-.collection_box .inner .name{font-size:14px; height:25px; line-height:33px; margin-bottom:2px; overflow:hidden; display:inline-block}
+.collection_box .inner .name{font-size:14px; height:25px; line-height:33px; margin-bottom:2px; overflow:hidden; display:block}
 
 .collection_box .btn{position:absolute; bottom:0; left:9px; *left:0px; margin-left:0px; background:#fff; width:85px; height:60px; padding:0 0 0 5px; display:none}
 .collection_box .btn a{display:block; width:68px}
