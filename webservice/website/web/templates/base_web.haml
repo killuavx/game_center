@@ -13,6 +13,7 @@
     -block extra_meta
       %meta{:name => "robots", :content => "INDEX,FOLLOW"}</
     %link{:href => "{% static 'common/img/favicon.ico' %}", :rel => "shortcut icon", :type => "image/x-icon"}/
+    %link{:href => "{% static 'common/img/favicon.png", :rel => "shortcut icon", :type => "image/png' }"}/
 
     {% compress css %}
     %link{:href => "{% static 'css/mezzanine.css' %}", :rel => "stylesheet"}
@@ -26,10 +27,7 @@
     %link{:href => "{% static 'common/css/quick-layout.css' %}", :media => "all", :rel => "stylesheet", :type => "text/css"}/
     {% block extra_css %}{% endblock %}
     {% endcompress %}
-
-    {% compress js %}{% block extra_js_header %}
-    {% endblock %}{% endcompress %}
-
+    {% compress js %}{% block extra_js_header %}{% endblock %}{% endcompress %}
     %noscript
       %h1{:style => "font-size:100%;color:#e53333;display:block;text-align:center"} 由于您的浏览器禁用了javascript脚本，网页无法正常浏览!
   %body
@@ -44,13 +42,12 @@
     / 底部开始 footer
     .cell-bk.ios-web-icon.footer
       .auto.width.white
-        {% cache 86400 product_web_footer %}
+        {% cache 86400 product_web_footer request.get_host %}
         {% include_widget WebFooterWidget %}
         {% endcache %}
     / 底部结束 footer
 
-    {% block after_footer %}
-    {% endblock %}
+    {% block after_footer %}{% endblock %}
 
     {% compress js %}
     %script{:src => "{% static 'common/js/jquery.min.js' %}"}
@@ -66,12 +63,19 @@
       -if is_ios
         %script{:src => "{% static 'ios_web/js/site.js' %}"}
     {% block extra_js_footer %}{% endblock %}
-    %script{:type => "text/javascript", :charset => "UTF-8", :src => "http://tajs.qq.com/stats?sId=34798727"}
-    %span.dn
-      :javascript
-        var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-        document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9ac929da32f5d1029745f355674d8473' type='text/javascript'%3E%3C/script%3E"));
     {% endcompress %}
+    - if is_android
+      %script{:type => "text/javascript", :charset => "UTF-8", :src => "http://tajs.qq.com/stats?sId=34798727"}
+      %span.dn
+        :javascript
+          var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+          document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F828b147bbb4948edf937255560d20611' type='text/javascript'%3E%3C/script%3E"));
+    - if is_ios
+      %script{:type => "text/javascript", :charset => "UTF-8", :src => "http://tajs.qq.com/stats?sId=35027569"}
+      %span.dn
+        :javascript
+          var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+          document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9ac929da32f5d1029745f355674d8473' type='text/javascript'%3E%3C/script%3E"));
 
     - if is_ios
       {% cache 86400 product_web_iosdownbox %}
