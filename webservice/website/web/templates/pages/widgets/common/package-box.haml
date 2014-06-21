@@ -14,17 +14,13 @@
     %dd.g9.pt5
       %h3.n.rel.g3.f16
         %a{:href => "={detail_url}", :title => "={title}"}= title
+      %p<
+        {{ version.get_download_size|filesizeformat }}
+        %em> |
+        {{ version.download_count|intwordcn }}+下载
       -if is_android
-        %p
-          {{ version.get_download_size|filesizeformat }}
-          %em> |
-          {{ version.download_count|intwordcn }}+下载
         %p= package.main_category.name
       -if is_ios
-        %p
-          = package.main_category.name
-          %em> |
-          {{ version.download_count|default:0|intwordcn }}+下载
         -with iversion=version.as_ios
           -if not iversion.is_free
             %p.price.gr= iversion.formatted_price
