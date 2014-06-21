@@ -21,7 +21,7 @@ background-repeat: no-repeat;}
 
 
 .app-list-l .pic .ios-web-icon{background-position:0px -663px}
-.most-expensive .t-title{border-bottom-color:#ccc}
+.most-expensive .t-title{border-bottom-color:#ccc; background: inherit;}
 .most-list{background:#f8f8f8}
 
 .crack-page { margin-top: -180px; z-index: 2;}
