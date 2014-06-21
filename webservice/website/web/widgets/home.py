@@ -211,11 +211,20 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
 
     def get_menus_helpers(self):
         yield dict(
-            slug='cchelpers/android',
+            slug='product/android',
             title='Android版',
             cls='i-5',
             full_url=self._static('cc_web/html/a-down.html'),
+            #full_url='http://www.ccplay.com.cn/product/',
         )
+        """
+        yield dict(
+            slug='product/iospc',
+            title='iOS PC版',
+            cls='i-6',
+            full_url='http://www.ccplay.com.cn/product/',
+            )
+        """
 
     def get_client_download_url(self):
         from django.core.urlresolvers import reverse
@@ -237,6 +246,3 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
             client_download_url=self.get_client_download_url(),
         ))
         return data
-
-
-

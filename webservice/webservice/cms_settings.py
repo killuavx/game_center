@@ -91,6 +91,8 @@ PAGE_MENU_TEMPLATES = (
     (1, "Web Header", "pages/menus/web/navigation.haml"),
     (2, "Web Top Navigation list", "pages/menus/web/nav-li.haml"),
     (3, "Web Top Navigation sub list", "pages/menus/web/nav-sub-li.haml"),
+    (4, "Web Footer About Us", "pages/menus/web/footer_about.haml"),
+    (6, "Product Top Navigation list", "pages/menus/web/prd-nav-li.haml"),
     (5, "PC Navigation Menus", "pages/pc/menu/header.haml"),
 )
 

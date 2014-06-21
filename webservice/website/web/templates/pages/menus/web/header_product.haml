@@ -1,0 +1,15 @@
+-load staticfiles pages_tags
+.auto.head.login
+  / 导航开始 nav
+  .cell-bk.nav
+    .auto.rel.width
+      .l.ovh.logo
+        %h2
+          %a.user-icon.rel{:href => "={logo_url}"}
+            %img{:src => "{% static 'common/img/logo.png' %}"}/
+      / logo
+      .l.f18
+        {% page_menu "pages/menus/web/prd-nav-li.haml" %}
+      / l
+    / width
+  / 导航结束 nav

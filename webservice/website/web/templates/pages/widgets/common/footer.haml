@@ -1,4 +1,5 @@
--load staticfiles url_tags
+-load staticfiles url_tags templatehelper_tags
+{% is_site_android as is_android %}{% is_site_ios as is_ios %}
 .float-five.f-1
   %dl
     %dt.f14 关于我们
@@ -23,12 +24,14 @@
     - for p in menus_helpers
       %dd<
         %a.ios-web-icon{:target => "_blank", :class => "={p.cls}", :href => "={p.full_url}"}= p.title
+{% if is_android %}
 .float-five.tr.f-5
   %dl
     %dd.g9 扫描二维码即可下载
     %dd
       {% qurl '/qrcode/' s=1 url=client_download_url as client_qr_url %}
       %img{:src => "={client_qr_url}", :width => "108"}/
+{% endif %}
 .cl.tc.pt20<
   Copyright ©
   :javascript

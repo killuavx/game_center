@@ -1,0 +1,10 @@
+- load pages_tags
+%ul
+  {% for page in page_branch %}{% if page.in_menu %}
+  %li{:class => "{% if page.is_current or page.is_current_child %}hover{% endif %}"}
+    {% if page.is_current or page.is_current_child %}
+    %a{:href => "javascript:;"}= page.title
+    {% else %}
+    %a{:href => "{{ page.get_absolute_url }}"}= page.title
+    {% endif %}
+  {% endif %}{% endfor %}
