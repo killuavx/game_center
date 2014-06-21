@@ -2,7 +2,7 @@
 .list_box
   %ul
     -for pkg in items
-      -with version=pkg.versions.latest_published title=version.subtitle|default:package.title
+      -with version=pkg.versions.latest_published title=version.subtitle|default:pkg.title
       %li<
         %a{:href => "{% absolute_url pkg product=product %}", :title => "={title}"}<
           %img{:src => "{% resource_url version.resources 'cover' product %}", :title => "={title}" }/
