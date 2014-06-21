@@ -24,17 +24,15 @@
     - for p in menus_helpers
       %dd<
         %a.ios-web-icon{:target => "_blank", :class => "={p.cls}", :href => "={p.full_url}"}= p.title
-{% if is_android %}
-.float-five.tr.f-5
-  %dl
-    %dd.g9 扫描Android版二维码
-    %dd
-      {% qurl '/qrcode/' s=1 url=client_download_url as client_qr_url %}
-      %img{:src => "={client_qr_url}", :width => "108"}/
-{% endif %}
+-if is_android
+  .float-five.tr.f-5
+    %dl
+      %dd.g9 扫描Android版二维码
+      %dd
+        {% qurl '/qrcode/' s=1 url=client_download_url as client_qr_url %}
+        %img{:src => "={client_qr_url}", :width => "108"}/
 .cl.tc.pt20<
   Copyright ©
   :javascript
     var yearStr;now = new Date();yearStr = now.getFullYear();document.write(yearStr);
   {{ hostname }}. All Rights Reserved
-
