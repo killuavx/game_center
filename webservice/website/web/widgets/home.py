@@ -162,6 +162,8 @@ class WebIOSClientDownloadBox(base.ProductPropertyWidgetMixin, Widget):
     client_package_name = 'com.cchelper.pc'
 
     def get_context(self, value, options):
+        from mezzanine.conf import settings
+        self.client_package_name = getattr(settings, 'GC_FOOTER_CLIENT_DOWNLOAD_PACKAGE_NAME', '')
         from django.core.urlresolvers import reverse
         self.options = deepcopy(options)
         self.product = options.get('product')
