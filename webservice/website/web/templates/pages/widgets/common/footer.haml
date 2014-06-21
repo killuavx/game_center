@@ -27,7 +27,7 @@
 {% if is_android %}
 .float-five.tr.f-5
   %dl
-    %dd.g9 扫描二维码即可下载
+    %dd.g9 扫描Android版二维码
     %dd
       {% qurl '/qrcode/' s=1 url=client_download_url as client_qr_url %}
       %img{:src => "={client_qr_url}", :width => "108"}/
