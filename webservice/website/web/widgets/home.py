@@ -28,15 +28,23 @@ __all__ = ['WebHeaderSiteListWidget',
            ]
 
 
+def get_mainsite():
+    from toolkit.helpers import get_global_site, SITE_NOT_SET, SITE_ANDROID, set_global_site_id
+    set_global_site_id(SITE_ANDROID)
+    site = get_global_site()
+    set_global_site_id(SITE_NOT_SET)
+    return site
+
+
 class WebHeaderSiteListWidget(Widget):
 
     def get_list(self):
         from toolkit import helpers
-        #site = Site.objects.get(pk=helpers.SITE_IOS)
-        #yield dict(url="http://%s/" % site.domain, name=site.name, css_class='a1')
-        #site = Site.objects.get(pk=helpers.SITE_ANDROID)
-        #yield dict(url="http://%s/" % site.domain, name=site.name, css_class='a2')
-        yield dict(url="/static/cc_web/html/a-down.html", name='虫虫助手', css_class='a3')
+        ios_site = Site.objects.get(pk=helpers.SITE_IOS)
+        yield dict(url="http://%s/" % ios_site.domain, name=ios_site.name, css_class='a1')
+        android_site = Site.objects.get(pk=helpers.SITE_ANDROID)
+        yield dict(url="http://%s/" % android_site.domain, name=android_site.name, css_class='a2')
+        yield dict(url="http://%s/product" % get_mainsite().domain, name='虫虫助手', css_class='a3')
 
     def get_context(self, value, options):
         items = list(self.get_list())
@@ -189,44 +197,44 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
         domain = site.domain
         return "http://%s/%s" % (domain, url.lstrip('/'))
 
+    def _page_url(self, slug):
+        return "http://%s/%s" % (get_mainsite().domain, slug.lstrip('/'))
+
     def get_menus_aboutus(self):
         yield dict(
-            slug='intro',
+            slug='about/intro',
             title='公司简介',
-            full_url=self._static('ios_web/html/about.html'),
+            full_url=self._page_url('about/intro'),
         )
         yield dict(
-            slug='vision',
+            slug='about/vision',
             title='发展愿景',
-            full_url=self._static('ios_web/html/vision.html'),
+            full_url=self._page_url('about/vision'),
         )
         yield dict(
-            slug='contact',
+            slug='about/contact',
             title='联系方式',
-            full_url=self._static('ios_web/html/contact.html'),
+            full_url=self._page_url('about/contact'),
         )
         yield dict(
-            slug='job',
+            slug='about/joinus',
             title='诚聘英才',
-            full_url=self._static('ios_web/html/job.html'),
+            full_url=self._page_url('about/joinus'),
         )
 
     def get_menus_helpers(self):
         yield dict(
-            slug='product/android',
+            slug='product',
             title='Android版',
             cls='i-5',
-            full_url=self._static('cc_web/html/a-down.html'),
-            #full_url='http://www.ccplay.com.cn/product/',
+            full_url=self._page_url('product'),
         )
-        """
         yield dict(
-            slug='product/iospc',
-            title='iOS PC版',
+            slug='product',
+            title='苹果PC版',
             cls='i-6',
-            full_url='http://www.ccplay.com.cn/product/',
-            )
-        """
+            full_url=self._page_url('product'),
+        )
 
     def get_client_download_url(self):
         from django.core.urlresolvers import reverse
