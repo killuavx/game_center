@@ -63,3 +63,12 @@ def is_site_ios():
     from toolkit import helpers
     site = helpers.get_global_site()
     return helpers.SITE_IOS == site.pk
+
+
+@register.assignment_tag
+def mz_page_get(slug):
+    from mezzanine.pages.models import Page
+    try:
+        return Page.objects.get(slug=slug)
+    except Page.DoesNotExist:
+        return None

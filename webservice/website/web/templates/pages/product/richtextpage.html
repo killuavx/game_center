@@ -1,8 +1,7 @@
 {% extends "pages/main_richtextpage.html" %}
-{% load staticfiles mezzanine_tags %}
+{% load staticfiles mezzanine_tags templatehelper_tags pages_tags %}
 {% block platform_css %}<link href="{% static 'cc_web/css/i-down.css' %}" media="all" rel="stylesheet" type="text/css"/>{% endblock %}
 {% block head_base  %}<base target="_blank"/>{% endblock %}
 {% block extra_js_footer %}
 <script src="{% static 'cc_web/js/down.js' %}" ></script>
 {% endblock %}
-
