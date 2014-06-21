@@ -46,9 +46,10 @@
             %span><
               .ios-web-icon.star.mr5{:class => "s={version.stars_average|default:0|floatformat:'0'}" }>
               {{ version.stars_count }}人评分
-          %li<
-            厂商
-            %span><= package.author.name
+          -if is_android
+            %li<
+              厂商
+              %span><= package.author.name
           %li<
             发布
             %span><= version.released_datetime|date
@@ -85,7 +86,7 @@
           .up_pic
             %ul
               -if is_ios
-                -for screenshot in version.screenshots.ipad
+                -for screenshot in version.screenshots.default
                   -with image=screenshot.image
                     %li><
                       %img{:src => "={image.url}", :alt => "={screenshot.alt}"}/
