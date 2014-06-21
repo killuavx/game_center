@@ -3,9 +3,9 @@
   %ul
     -for pkg in items
       -with version=pkg.versions.latest_published title=version.subtitle|default:pkg.title
-      %li<
-        %a{:href => "{% absolute_url pkg product=product %}", :title => "={title}"}<
-          %img{:src => "{% resource_url version.resources 'cover' product %}", :title => "={title}" }/
+        %li<
+          %a{:href => "{% absolute_url pkg product=product %}", :title => "={title}"}<
+            %img{:src => "{% resource_url version.resources 'cover' product %}", :title => "={title}" }/
 .cb.banner_btn
   %a.unslider-arrow.icon.prev{:href => "javascript:void(0)"}
   %a.unslider-arrow.icon.next{:href => "javascript:void(0)"}
