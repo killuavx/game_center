@@ -17,7 +17,7 @@ register_setting(
     name="GC_FOOTER_CLIENT_DOWNLOAD_PACKAGE_NAME",
     description=_("分站页面Footer最新版本下载qrcode对应客户端包名" ),
     editable=True,
-    default='com.lion.market',
+    default='',
 )
 
 class LazyIter(SimpleLazyObject):
