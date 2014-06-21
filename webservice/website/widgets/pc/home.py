@@ -33,7 +33,8 @@ class PCRollVendorsWidget(BaseTopicAuthorPanelWidget, base.ProductPropertyWidget
 
 class PCRollMasterpiecesWidget(BaseTopicalPackageListWidget, base.ProductPropertyWidgetMixin, Widget):
 
-    template = 'pages/pc/widgets/roll-place.haml'
+    #template = 'pages/pc/widgets/roll-place.haml'
+    template = 'pages/pc/widgets/roll-masterpiece.haml'
 
 
 class PCHomeComplexPackageListWidget(BaseComplexPackageListWidget, base.ProductPropertyWidgetMixin, Widget):
