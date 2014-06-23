@@ -104,7 +104,7 @@ p{word-wrap:break-word}
 .big_pic img{width:68px; height:68px}
 .cover{background-position:-161px -114px; display:inline-block; width:72px; height:72px}
 .big_pic .cover{left:-2px; _left:-1px; top:-2px}
-.list h2{left:85px; top:12px; font-size:14px; width:100px; height:18px; overflow:hidden}
+.list h2{left:85px; top:12px; font-size:14px; width:100px; height:20px; overflow:hidden}
 .list p{color:#999; left:85px; top:35px; font-family:Arial; width:110px; height:18px; line-height:20px; white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
 p.price{top:53px}
 p.price span{color:#e53333; text-decoration:line-through}
