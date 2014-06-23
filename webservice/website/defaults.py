@@ -207,7 +207,7 @@ register_setting(
 register_setting(
     name="GC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS",
     description="对分类下应用列表筛选的专区列表",
-    editable=True,
+    editable=False,
     default=",".join((
         'hotdown',
         'NONE'
