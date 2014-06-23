@@ -209,8 +209,8 @@ register_setting(
     description="对分类下应用列表筛选的专区列表",
     editable=False,
     default=",".join((
+        'NONE',
         'hotdown',
-        'NONE'
     )),
 )
 
