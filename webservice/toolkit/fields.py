@@ -165,7 +165,7 @@ class PkgFileField(FileWithMetaField):
             except FileNotFoundError:
                 raise
         else:
-            return super(FileWithMetaField, self).pre_save(model_instance, add)
+            return super(PkgFileField, self).pre_save(model_instance, add)
 
 
 class MultiResourceField(BaseGenericRelation):
