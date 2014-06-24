@@ -1,17 +1,6 @@
 /*!
- * SuperSlide v2.1.1 
- * 轻松解决网站大部分特效展示问题
- * 详尽信息请看官网：http://www.SuperSlide2.com/
- *
- * Copyright 2011-2013, 大话主席
- *
- * 请尊重原创，保留头部版权
- * 在保留版权的前提下可应用于个人或商业用途
-
- * v2.1.1：修复当调用多个SuperSlide，并设置returnDefault:true 时返回defaultIndex索引错误
-
+ * SuperSlide v2.1.1
  */
-
 (function($){
 	$.fn.slide=function(options){
 		$.fn.slide.defaults={
@@ -180,11 +169,11 @@
 				{
 					case "fold": conBox.css({"position":"relative","width":slideW,"height":slideH}).children().css( {"position":"absolute","width":selfW,"left":0,"top":0,"display":"none"} ); break;
 					case "top": conBox.wrap('<div class="tempWrap" style="overflow:hidden; position:relative; height:'+vis*slideH+'px"></div>').css( { "top":-(index*scroll)*slideH, "position":"relative","padding":"0","margin":"0"}).children().css( {"height":selfH} ); break;
-					case "left": conBox.wrap('<div class="tempWrap" style="overflow:hidden; position:relative; width:'+vis*slideW+'px"></div>').css( { "width":conBoxSize*slideW,"left":-(index*scroll)*slideW,"position":"relative","overflow":"hidden","padding":"0","margin":"0"}).children().css( {"float":"left","width":selfW} ); break;
+					case "left": conBox.wrap('<div class="tempWrap" style="overflow:hidden; position:relative; width:'+vis*slideW+'px"></div>').css( { "width":conBoxSize*slideW,"left":-(index*scroll)*slideW,"position":"relative","overflow":"hidden","padding":"0","margin":"0"}).children().css( {"float":"left"} ); break; //,"width":selfW
 					case "leftLoop":
 					case "leftMarquee":
 						cloneEle();
-						conBox.wrap('<div class="tempWrap" style="overflow:hidden; position:relative;></div>').css( { "width":(conBoxSize+vis+cloneNum)*slideW,"position":"relative","overflow":"hidden","padding":"0","margin":"0","left":-(cloneNum+index*scroll)*slideW}).children().css( {"float":"left","width":selfW}  ); break;  // width:'+vis*slideW+'px"
+						conBox.wrap('<div class="tempWrap" style="overflow:hidden; position:relative;></div>').css( { "width":(conBoxSize+vis+cloneNum)*slideW,"position":"relative","overflow":"hidden","padding":"0","margin":"0","left":-(cloneNum+index*scroll)*slideW}).children().css( {"float":"left"}  ); break;  // width:'+vis*slideW+'px"
 					case "topLoop":
 					case "topMarquee":
 						cloneEle();

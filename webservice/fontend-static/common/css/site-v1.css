@@ -70,7 +70,7 @@ opacity: 0;}
 
 
 
-.text-db,.hot-game-list-1 li,.app-list-min a,.app-list-m dd a,.app-list-l dd a,.app-list-xl h3{height:21px; overflow:hidden}
+.text-db,.hot-game-list-1 li,.app-list-min a,.app-list-m dd a,.app-list-l dd a,.app-list-xl h3{height:18px; margin-bottom:2px; overflow:hidden}
 .app-list-m dd a,.app-list-l dd a{display:inline-block; width:90px}
 #cc-s .app-list-m dd a,#cc-s .app-list-l dd a{width:auto}
 .app-list-l dd a{width:110px}
