@@ -27,7 +27,8 @@ class PackageRankingSummarySerializer(HyperlinkedModelSerializer):
     serializer_class_package = PackageSummarySerializer
     packages = serializers.SerializerMethodField('get_packages')
     def get_packages(self, obj):
-        packages = obj.packages.published()[0:self.limit_packages]
+        packages = obj.packages.published()\
+                       .order_by('ranking_rankingitems___order')[0:self.limit_packages]
         return PackageSummarySerializer(packages,
                                         many=True,
                                         context=self.context).data

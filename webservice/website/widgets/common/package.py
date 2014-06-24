@@ -251,7 +251,7 @@ class BaseRankingPackageListWidget(base.PaginatorPageMixin):
         from warehouse.models import Package
         if self.ranking is not None:
             return Package.objects.filter(rankings__pk=self.ranking.pk)\
-                .published().order_by('rankings___order')
+                .published().order_by('ranking_rankingitems___order')
         return Package.objects.none()
 
     def get_ranking(self, cat_slug, ranking_slug, cycle_type=0):
@@ -357,4 +357,3 @@ class BaseCategoryComplexPackageList(BasePackageListWidget):
                                                                      context=context,
                                                                      pagination=pagination)
         return data
-

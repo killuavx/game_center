@@ -44,6 +44,10 @@ class RankingFilter(filters.BaseFilterBackend):
         return queryset.filter(cycle_type=cycle_type)
 
 
+class RankingPackageViewSet(PackageViewSet):
+    ordering = ('ranking_rankingitems___order', )
+
+
 class PackageRankingViewSet(CacheResponseMixin,
                             viewsets.ReadOnlyModelViewSet):
     """ 软件接口
@@ -92,9 +96,8 @@ class PackageRankingViewSet(CacheResponseMixin,
         return list_view(request, *args, **kwargs)
 
     def get_packages_list_view(self, request, ranking):
-        ViewSet = PackageViewSet
+        ViewSet = RankingPackageViewSet
         queryset = ranking.packages.all()
-        queryset = queryset.published()
         list_view = ViewSet.as_view({'get': 'list'}, queryset=queryset)
         return list_view
 

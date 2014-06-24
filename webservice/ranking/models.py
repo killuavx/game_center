@@ -94,7 +94,7 @@ class PackageRanking(SiteRelated,
                                     blank=True,
                                     null=True,
                                     limit_choices_to=dict(
-                                        relation_package__package__site_id=current_site_id
+                                        ranking_rankingitems__package__site_id=current_site_id
                                     )
                                     )
     @property
@@ -131,13 +131,13 @@ class PackageRankingItem(Orderable,
                          models.Model):
 
     ranking = models.ForeignKey(PackageRanking,
-                                related_name='relation_ranking',
+                                related_name='ranking_rankingitems',
                                 limit_choices_to=dict(
                                     site_id=current_site_id
                                 )
                                 )
     package = models.ForeignKey('warehouse.Package',
-                                related_name='relation_package',
+                                related_name='ranking_rankingitems',
                                 limit_choices_to=dict(
                                     site_id=current_site_id
                                 ),
