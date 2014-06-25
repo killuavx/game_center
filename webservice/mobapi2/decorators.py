@@ -19,7 +19,7 @@ class CacheControlProcessor(object):
                 request=request,
                 args=args,
                 kwargs=kwargs,
-                )
+            )
             return response
         return inner
 
@@ -31,8 +31,6 @@ class CacheControlProcessor(object):
                                       kwargs):
         response = view_method(view_instance, request, *args, **kwargs)
         response = view_instance.finalize_response(request, response, *args, **kwargs)
-        response.render()  # should be rendered, before picklining while storing to cache
-
         patch_cache_control(response, **self.kwargs)
         return response
 
@@ -48,5 +46,5 @@ class DefaultCacheControlProcessor(CacheControlProcessor):
         kwargs.setdefault('s_maxage', 3600)
         super(DefaultCacheControlProcessor, self).__init__(**kwargs)
 
-default_cache_control = CacheControlProcessor
+default_cache_control = DefaultCacheControlProcessor
 
