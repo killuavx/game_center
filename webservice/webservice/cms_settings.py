@@ -57,6 +57,7 @@ MIDDLEWARE_CLASSES = [
     # "mezzanine.core.middleware.SSLRedirectMiddleware",
     "mezzanine.pages.middleware.PageMiddleware",
     "mezzanine.core.middleware.FetchFromCacheMiddleware",
+    "django.middleware.http.ConditionalGetMiddleware",
 ]
 
 # Store these package names here as they may change in the future since
