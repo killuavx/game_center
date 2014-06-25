@@ -9,6 +9,14 @@ from django.utils import importlib
 import unicodedata
 from django.utils.encoding import smart_text
 from django.contrib.sites.models import Site, SITE_CACHE
+from django.utils.timezone import make_aware, is_aware, get_default_timezone
+
+
+def released_hourly_datetime(dt, hourly=True):
+    dt = dt if is_aware(dt) else make_aware(dt, get_default_timezone())
+    if hourly:
+        dt = dt.replace(minute=0, second=0, microsecond=0)
+    return dt
 
 
 def file_md5(f, iter_read_size=1024 ** 2 * 8):

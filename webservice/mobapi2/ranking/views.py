@@ -5,7 +5,7 @@ from rest_framework.decorators import link
 from mobapi2.warehouse.views.package import PackageViewSet
 from mobapi2.ranking.serializers import PackageRankingSummarySerializer
 from ranking.models import PackageRanking
-from rest_framework_extensions.utils import default_list_cache_key_func
+from rest_framework_extensions.utils import default_list_cache_key_func, default_object_cache_key_func
 from rest_framework_extensions.cache.mixins import CacheResponseMixin
 from rest_framework_extensions.cache.decorators import cache_response
 from rest_framework_extensions.etag.decorators import etag
@@ -106,6 +106,12 @@ class PackageRankingViewSet(CacheResponseMixin,
     @default_cache_control()
     def list(self, request, *args, **kwargs):
         return super(PackageRankingViewSet, self).list(request, *args, **kwargs)
+
+    @etag(default_object_cache_key_func)
+    @cache_response(key_func=default_object_cache_key_func)
+    @default_cache_control()
+    def retrieve(self, request, *args, **kwargs):
+        return super(PackageRankingViewSet, self).retrieve(request, *args, **kwargs)
 
 
 class RankingPackageFilter(filters.BaseFilterBackend):

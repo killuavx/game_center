@@ -22,7 +22,7 @@ from toolkit.managers import CurrentSitePassThroughManager, PassThroughManager
 from toolkit.fields import StarsField, PkgFileField, MultiResourceField
 from toolkit.models import SiteRelated
 from toolkit import model_url_mixin as urlmixin
-from toolkit.helpers import import_from, sync_status_from
+from toolkit.helpers import import_from, sync_status_from, released_hourly_datetime
 from toolkit.storage import package_storage
 
 storage = package_storage
@@ -270,12 +270,14 @@ class PackageQuerySet(QuerySet):
     def by_updated_order(self):
         return self.order_by('-updated_datetime')
 
-    def published(self):
+    def published(self, released_hourly=True):
+        dt = released_hourly_datetime(now(), released_hourly)
         return self.filter(
-            released_datetime__lte=now(), status=self.model.STATUS.published)
+            released_datetime__lte=dt, status=self.model.STATUS.published)
 
-    def unpublished(self):
-        return self.filter(released_datetime__gt=now()) \
+    def unpublished(self, released_hourly=True):
+        dt = released_hourly_datetime(now(), released_hourly)
+        return self.filter(released_datetime__gt=dt) \
             .exclude(status=self.model.STATUS.published)
 
 
@@ -470,12 +472,14 @@ class PackageVersionQuerySet(QuerySet):
     def by_rankings_order(self):
         return self.order_by('-download_count')
 
-    def published(self):
+    def published(self, released_hourly=True):
+        dt = released_hourly_datetime(now(), released_hourly)
         return self.filter(
-            released_datetime__lte=now(), status=self.model.STATUS.published)
+            released_datetime__lte=dt, status=self.model.STATUS.published)
 
-    def unpublished(self):
-        return self.filter(released_datetime__gt=now()) \
+    def unpublished(self, released_hourly=True):
+        dt = released_hourly_datetime(now(), released_hourly)
+        return self.filter(released_datetime__gt=dt) \
             .exclude(status=self.model.STATUS.published)
 
     def latest_version(self):
@@ -1151,8 +1155,4 @@ class IOSPackageVersion(IOSPlatform, PackageVersion):
     @property
     def support_alldevices(self):
         return self.support_ipad and self.support_iphone
-
-
-
-
 

@@ -11,7 +11,7 @@ from model_utils import FieldTracker, Choices
 from model_utils.fields import StatusField
 from toolkit.fields import MultiResourceField
 from toolkit.managers import CurrentSitePassThroughManager
-from toolkit.helpers import sync_status_from
+from toolkit.helpers import sync_status_from, released_hourly_datetime
 from toolkit import model_url_mixin as urlmixin
 from toolkit.models import SiteRelated
 from django.core import exceptions
@@ -50,9 +50,10 @@ class Place(SiteRelated, models.Model):
 
 class AdvertisementQuerySet(QuerySet):
 
-    def published(self):
+    def published(self, released_hourly=True):
+        dt = released_hourly_datetime(now(), released_hourly)
         return self.filter(
-            released_datetime__lte=now(), status=self.model.STATUS.published)
+            released_datetime__lte=dt, status=self.model.STATUS.published)
 
     def by_ordering(self):
         return self.order_by('relation_advertisement__ordering')
@@ -153,9 +154,10 @@ class Advertisement(urlmixin.AdvertisementAbsoluteUrlMixin,
         verbose_name = _('advertisement')
         verbose_name_plural = _('advertisements')
 
-    def is_published(self):
+    def is_published(self, released_hourly=True):
+        dt = released_hourly_datetime(now(), released_hourly)
         return self.status == self.STATUS.published \
-            and self.released_datetime <= now()
+            and self.released_datetime <= dt
 
     is_published.boolean = True
     is_published.short_description = _('released?')

@@ -10,7 +10,7 @@ from django.utils.encoding import force_text
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from model_utils.managers import PassThroughManager, PassThroughManagerMixin
-from toolkit.helpers import get_global_site
+from toolkit.helpers import get_global_site, released_hourly_datetime
 
 
 class PublishedManager(Manager):
@@ -19,18 +19,20 @@ class PublishedManager(Manager):
     publish date when the given user is not a staff member.
     """
 
-    def published(self, for_user=None):
+    def published(self, for_user=None, released_hourly=True):
         """
         For non-staff users, return items with a published status and
         whose publish and expiry dates fall before and after the
         current date when specified.
         """
+        dt = released_hourly_datetime(now(), released_hourly)
+
         from mezzanine.core.models import CONTENT_STATUS_PUBLISHED
         if for_user is not None and for_user.is_staff:
             return self.all()
         return self.filter(
-            Q(publish_date__lte=now()) | Q(publish_date__isnull=True),
-            Q(expiry_date__gte=now()) | Q(expiry_date__isnull=True),
+            Q(publish_date__lte=dt) | Q(publish_date__isnull=True),
+            Q(expiry_date__gte=dt) | Q(expiry_date__isnull=True),
             Q(status=CONTENT_STATUS_PUBLISHED))
 
     def get_by_natural_key(self, slug):

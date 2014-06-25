@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
+from toolkit.helpers import released_hourly_datetime
 from toolkit.managers import CurrentSitePassThroughManager
 from toolkit.models import SiteRelated
 
@@ -20,9 +21,10 @@ class TipsWordQuerySet(QuerySet):
     def between_weight(self, start, end):
         return self.filter(weight__range=(start, end))
 
-    def published(self):
+    def published(self, released_hourly=True):
+        dt = released_hourly_datetime(now(), released_hourly)
         return self.filter(
-            released_datetime__lte=now(), status=self.model.STATUS.published)
+            released_datetime__lte=dt, status=self.model.STATUS.published)
 
 
 class TipsWord(SiteRelated, models.Model):

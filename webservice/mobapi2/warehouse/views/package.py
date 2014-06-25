@@ -151,7 +151,7 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
 
         return response
 
-    #@etag(default_list_cache_key_func)
+    @etag(default_list_cache_key_func)
     @cache_response(key_func=default_list_cache_key_func)
     @default_cache_control()
     def list(self, request, *args, **kwargs):
@@ -199,7 +199,6 @@ class PackageSearchViewSet(PackageViewSet):
         querydict = copy.deepcopy(dict(request.GET))
         q = querydict.get('q')
         q = q.pop() if isinstance(q, list) else q
-        print(q)
         if not q or not (q and q.strip()):
             data = {'detail': 'Not Allow without search parameter'
                               ' /api/search/?q={q}'}

@@ -8,7 +8,7 @@ from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
-from toolkit.helpers import sync_status_from
+from toolkit.helpers import sync_status_from, released_hourly_datetime
 from toolkit.managers import CurrentSitePassThroughManager, PublishedManager
 from toolkit.models import SiteRelated, PublishDisplayable
 from mezzanine.core.models import TimeStamped, Orderable
@@ -16,9 +16,10 @@ from mezzanine.core.models import TimeStamped, Orderable
 
 class ClientPackageVersionQuerySet(QuerySet):
 
-    def published(self):
+    def published(self, released_hourly=True):
+        dt = released_hourly_datetime(now(), released_hourly)
         return self.filter(status=self.model.STATUS.published)\
-            .filter(released_datetime__lte=now())
+            .filter(released_datetime__lte=dt)
 
     def latest_version(self):
         return self.latest('version_code')
