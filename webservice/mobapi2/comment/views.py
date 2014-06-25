@@ -9,6 +9,7 @@ from django.utils.timezone import now
 from rest_framework import mixins, viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_extensions.etag.decorators import etag
 from mobapi2.authentications import PlayerTokenAuthentication
 from mobapi2.comment.serializers import CommentSerializer, CommentCreateSerializer, FeedbackSerializer
 from comment.models import Feedback, FeedbackType
@@ -125,6 +126,7 @@ class CommentViewSet(mixins.CreateModelMixin,
             pk=params.get('object_pk'))
         return content_object
 
+    @etag(comment_list_cache_key_func)
     @cache_response(key_func=comment_list_cache_key_func)
     def list(self, request, *args, **kwargs):
         params = self.check_paramters(copy.deepcopy(request.GET))
