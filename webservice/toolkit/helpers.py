@@ -16,7 +16,7 @@ def released_hourly_datetime(dt, hourly=True):
     dt = dt if is_aware(dt) else make_aware(dt, get_default_timezone())
     if hourly:
         dt = dt.replace(minute=0, second=0, microsecond=0)
-    return dt
+    return dt.astimezone()
 
 
 def file_md5(f, iter_read_size=1024 ** 2 * 8):
