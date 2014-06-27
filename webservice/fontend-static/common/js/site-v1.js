@@ -335,7 +335,7 @@ $(function(){
             if( data.code == 0 )
             {
                 comment_tips.html('');
-                page_load($('#comment-list .page'), 1);
+                page_load('#comment-list', $('#comment-list .page'), 1);
                 $('.comment-form textarea[name=comment]').val('');
                 $('.comment-form input[name=rating_output]').val('');
                 $('#rating_on').attr('style', '');
@@ -695,3 +695,25 @@ $(document).ready(function(){
 		return $width;
 	}
 });	
+$(document).ready(function(){
+    function page_load(load_box, dom, p){
+        var _load_box = $(load_box);
+        var url = $(dom).attr('data-url');
+        if( !url ){
+            return false
+        }
+        $.ajax({
+            type:'get',
+            url:url,
+            data:{
+                page:p
+            },
+            dataType:'html',
+            success:function(data){
+                _load_box.html(data);
+            }
+        });
+        return false;
+    }
+    window.page_load = page_load;
+});
