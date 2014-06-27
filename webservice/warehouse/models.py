@@ -485,8 +485,8 @@ class PackageVersionQuerySet(QuerySet):
     def latest_version(self):
         return self.latest('version_code')
 
-    def latest_published(self):
-        return self.published().latest('version_code')
+    def latest_published(self, released_hourly=True):
+        return self.published(released_hourly).latest('version_code')
 
 
 def package_workspace_path(package):
@@ -660,9 +660,6 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
         self.updated_datetime = now()
 
         if self.status == self.STATUS.published:
-
-            if not self.released_datetime:
-                self.released_datetime = now()
 
             if self.package:
                 try:
