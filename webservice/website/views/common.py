@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from mezzanine.core.views import server_error as mz_server_error
 
 
 @csrf_exempt
@@ -20,3 +21,6 @@ def cdn_feedback(request, slug, *args, **kwargs):
     return HttpResponse(response.render(),
                         mimetype='text/xml; charset=utf-8')
 
+
+def server_error(request, template_name='errors/custom/500.html'):
+    return mz_server_error(request, template_name=template_name)
