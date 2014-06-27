@@ -1,5 +1,5 @@
--load pages_tags mezzanine_tags templatehelper_tags widgets
--load cache future staticfiles
+-load pages_tags mezzanine_tags templatehelper_tags widgets cache future staticfiles
+{% spaceless %}
 {% is_site_android as is_android %}{% is_site_ios as is_ios %}
 !!!5
 %html{:lang => '={LANGUAGE_CODE}'}<
@@ -81,3 +81,4 @@
       {% cache 86400 product_web_iosdownbox %}
       {% include_widget WebIOSClientDownloadBox %}
       {% endcache %}
+{% endspaceless %}

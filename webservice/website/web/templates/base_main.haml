@@ -1,5 +1,5 @@
--load pages_tags mezzanine_tags templatehelper_tags widgets
--load cache future staticfiles
+-load pages_tags mezzanine_tags templatehelper_tags widgets cache future staticfiles
+{% spaceless %}
 {% is_site_android as is_android %}{% is_site_ios as is_ios %}
 !!!5
 %html{:lang => '={LANGUAGE_CODE}'}<
@@ -55,3 +55,4 @@
     /[if IE 6]
       <script src="{% static 'common/js/DD_PNG.js' %}"></script>
       <script>window.onload = function() {DD_belatedPNG.fix(".png,.ios-web-icon,.ios-web-icon:hover"}</script>
+{% endspaceless %}

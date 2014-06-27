@@ -234,8 +234,8 @@ def captcha(img_width=90, img_height=37, font_size=25):
     string = 'ABCDEFHKLMNPQRSTUVWXYZ'
     background = (255, 255, 255)
     font_color = ['black','darkblue','darkred']
-    fonts = [ImageFont.truetype(join(settings.FONT_DIRECTORY, 'Jackey_HandWrite.ttf'),font_size),
-             ImageFont.truetype(join(settings.FONT_DIRECTORY, 'HoneyLight.ttf') ,font_size)]
+    fonts = [ImageFont.truetype(join(settings.FONT_DIRECTORY, 'Pointy.ttf'),font_size),
+             ImageFont.truetype(join(settings.FONT_DIRECTORY, 'Pointy.ttf') ,font_size)]
 
     #新建画布
     im = Image.new('RGB',(img_width,img_height), background)
