@@ -104,11 +104,11 @@ $(document).ready(function(){
 		}
 		index = currentIndex;*/
 		
-		if($(window).scrollTop()<=0) {
+		/*if($(window).scrollTop()<=0) {
 			_html.attr("ID","");
 		}else{
 			_html.attr("ID","fixed-head");
-		}
+		}*/
 		
 		if($(window).scrollTop()<=500) {
 			_toTop.stop(true,false).animate({bottom:"-10px",opacity:"0"},50);
@@ -193,6 +193,7 @@ $(function(){
 	li_btn($(".app-list-min,.app-list-xl,.maste_lsit"),".btn-s");
 	li_btn($(".sort"),".sort-menu");
 	li_btn($(".box_btn,.collection_box"),".a_btn");
+	li_btn($(".game-gift-list"),".btn");	
 	
 //首个APP展开	
 	function li_hover(eobj,cssClass){
@@ -201,7 +202,7 @@ $(function(){
 		   $(this).addClass(cssClass);
 		});
 	};	
-	li_hover($(".app-list-right li"),"hover");	
+	li_hover($(".app-list-right li"),"hover");
 	
 	$(".app-list-right").find("li:first").addClass("hover");
 	
