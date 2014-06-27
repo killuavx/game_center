@@ -8,6 +8,8 @@ from mobapi2.serializers import (
     HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
 from mobapi2.warehouse.serializers.package import PackageSummarySerializer
 from mobapi2.helpers import get_category_packages_url
+from mobapi2.rest_clients import android_api
+from toolkit.helpers import SITE_ANDROID, get_global_site
 
 
 class CategoryDetailSerializer(HyperlinkedModelSerializer):
@@ -54,9 +56,7 @@ class CategoryRelatedPackagesMixin(object):
     def get_packages(self, obj):
         if obj.children.count():
             return list()
-        from mobapi2.rest_clients import android_api
-        from toolkit.helpers import get_global_site_id, SITE_ANDROID
-        if get_global_site_id() == SITE_ANDROID:
+        if get_global_site() and get_global_site().pk == SITE_ANDROID:
             api = android_api
         else:
             api = None
@@ -67,10 +67,12 @@ class CategoryRelatedPackagesMixin(object):
             category=obj.pk,
             ordering='-released_datetime',
         ))
-        if res.status != status.HTTP_200_OK or \
-                ('count' in res.data and res.data['count']):
+        if res.status != status.HTTP_200_OK:
             return list()
-        return res.data['results'][0:self.limit_packages]
+        if res.data and res.data.get('count') and res.data.get('results'):
+            results = res.data.get('results', list())
+            return results[0:self.limit_packages]
+        return list()
 
 
 class CategorySummarySerializer(CategoryRelatedChildrenMixin,
