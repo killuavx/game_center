@@ -20,7 +20,7 @@
                 %a.ios-web-icon{:class => "={site.css_class}", :href => "={site.url}"}= site.name
             {% endwidget %}
             %li#login-reg
-              %a.ios-web-icon.a4.open-login{:href => "javascript:;", :class => "{% if request.user.is_authenticated %}open-login{% endif %}",  :target => ""}
+              %a.ios-web-icon.a4.open-login{:href => "javascript:;", :class => "{% if request.user.is_authenticated %}open-login{% endif %}",  :target => ""}><
                 -if request.user.is_authenticated
                   = request.user.username
                 -else
