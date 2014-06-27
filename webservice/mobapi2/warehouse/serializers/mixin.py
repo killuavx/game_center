@@ -14,7 +14,7 @@ from django.core.cache import cache
 
 class PackageRelatedTagMin(object):
     def get_tags(self, obj):
-        return obj.tags.values_list('name', flat=True)
+        return obj.tags_text.split()
 
 
 class PackageActionsMixin(object):
