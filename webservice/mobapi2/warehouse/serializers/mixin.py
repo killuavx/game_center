@@ -14,6 +14,8 @@ from django.core.cache import cache
 
 class PackageRelatedTagMin(object):
     def get_tags(self, obj):
+        if not obj.tags_text:
+            return list()
         return obj.tags_text.split()
 
 
