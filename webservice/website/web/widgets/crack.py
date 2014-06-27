@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.utils.timezone import now
+from django.utils.timezone import now, get_default_timezone
 from django_widgets import Widget
 from dateutil.relativedelta import relativedelta
 from website.widgets.common.promotion import BaseMultiAdvWidget
@@ -100,8 +100,14 @@ class WebCrackTimeLinePanelWidget(base.ProductPropertyWidgetMixin,
         return Category.objects.get(slug=self.slug)
 
     def get_latest_days_by(self, queryset, now=None):
-        days = queryset\
-                   .dates('released_datetime', 'day', 'DESC')[0:self.latest_day_count]
+        # compat django 1.6
+        if hasattr(queryset, 'datetimes'):
+            days = queryset.datetimes('released_datetime', 'day',
+                                      order='DESC',
+                                      tzinfo=get_default_timezone())[0:self.latest_day_count]
+        else:
+            days = queryset \
+                       .dates('released_datetime', 'day', 'DESC')[0:self.latest_day_count]
         cur_dt = now.astimezone()
         _days = []
         for d in days:
