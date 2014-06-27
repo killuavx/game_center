@@ -190,9 +190,14 @@ class WebLatestTimeLinePanelWidget(base.ProductPropertyWidgetMixin,
         return self.get_queryset().published()
 
     def get_latest_days_by(self, queryset, now=None):
-        days = queryset \
-                   .dates(self.filter_date_field,
-                          'day', 'DESC')[0:self.latest_day_count]
+        # compat django 1.6
+        if hasattr(queryset, 'datetimes'):
+            days = queryset.datetimes(self.filter_date_field, 'day',
+                                      order='DESC',
+                                      tzinfo=get_default_timezone())[0:self.latest_day_count]
+        else:
+            days = queryset \
+                       .dates(self.filter_date_field, 'day', 'DESC')[0:self.latest_day_count]
         _days = []
         cur_dt = now.astimezone()
         for d in days:
