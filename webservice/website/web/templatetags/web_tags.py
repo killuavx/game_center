@@ -9,7 +9,7 @@ def pagination(context, current_page, *args, **kwargs):
         current_page=current_page
     )
 
-@register.inclusion_tag('includes/pagination_web_ajax.haml', takes_context=True)
+@register.inclusion_tag('includes/pagination_web_ajax.html', takes_context=True)
 def pagination_ajax(context, current_page, load_selector='#list', *args, **kwargs):
     return dict(
         request=context.get('request'),
