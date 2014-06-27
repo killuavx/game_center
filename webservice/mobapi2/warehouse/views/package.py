@@ -26,7 +26,7 @@ from rest_framework_extensions.key_constructor import (
     constructors
 )
 from mobapi2 import cache_keyconstructors as ckc
-from mobapi2.decorators import cache_control, default_cache_control
+from mobapi2.decorators import default_cache_control
 from rest_framework_extensions.etag.decorators import etag
 
 
@@ -137,14 +137,18 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         return response
 
     related_key_func = ckc.LookupOrderingListKeyConstructor()
+    etag_related_key_func = ckc.update_at_key_constructor(ckc.LookupOrderingListKeyConstructor,
+                                                          content_type='etag_related',
+                                                          timeout=3600,
+                                                          )()
 
-    @etag(related_key_func)
-    @cache_response(key_func=related_key_func)
+    @etag(etag_related_key_func)
     @default_cache_control()
     @link()
     def relatedpackages(self, request, *args, **kwargs):
 
         self.object = self.get_object(self.get_queryset())
+        self.object_list = None
         self.related_package_list = None
         response = self.list(request, *args, **kwargs)
         self.related_package_list = self.object_list

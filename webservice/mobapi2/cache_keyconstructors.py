@@ -5,6 +5,7 @@ from django.utils.encoding import force_text
 from rest_framework_extensions.key_constructor import (bits, constructors)
 from django.core.cache import cache
 from django.utils.timezone import now
+from toolkit.helpers import released_hourly_datetime
 
 from mobapi2.helpers import make_cache_key
 
@@ -86,10 +87,17 @@ class UpdatedAtKeyBit(bits.KeyBitBase):
 
     content_type = 'default'
 
-    def __init__(self, content_type=None, params=None):
+    hourly = True
+
+    timeout = None
+
+    def __init__(self, content_type=None, timeout=None, hourly=True, params=None):
         super(UpdatedAtKeyBit, self).__init__(params)
         if content_type:
             self.content_type = content_type
+        if timeout:
+            self.timeout = timeout
+        self.hourly = hourly
 
     def get_key(self):
         return make_cache_key('updated_at_timestamp.%s' % self.content_type)
@@ -98,8 +106,8 @@ class UpdatedAtKeyBit(bits.KeyBitBase):
         key = self.get_key()
         value = cache.get(key, None)
         if not value:
-            value = now()
-            cache.set(key, value=value)
+            value = released_hourly_datetime(now(), hourly=self.hourly)
+            cache.set(key, value=value, timeout=self.timeout)
         return force_text(value)
 
 
@@ -146,3 +154,16 @@ class CommentListKeyConstructor(constructors.DefaultKeyConstructor):
     pagination = bits.PaginationKeyBit()
 
 
+def update_at_key_constructor(key_constructor,
+                              content_type='default',
+                              timeout=None,
+                              hourly=False,
+                              ):
+
+    class _UpdatedAtKeyBitKeyConstructor(key_constructor):
+
+        updated_at = UpdatedAtKeyBit(content_type=content_type,
+                                     timeout=timeout,
+                                     hourly=hourly)
+
+    return _UpdatedAtKeyBitKeyConstructor
