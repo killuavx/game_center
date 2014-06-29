@@ -167,3 +167,14 @@ def update_at_key_constructor(key_constructor,
                                      hourly=hourly)
 
     return _UpdatedAtKeyBitKeyConstructor
+
+
+class IpKeyBit(bits.RequestMetaKeyBit):
+
+    def get_data(self, params, view_instance, view_method, request, args, kwargs):
+        if hasattr(request, 'get_client_ip'):
+            return request.get_client_ip()
+        else:
+            from webservice.middlewares import get_client_ip
+            return get_client_ip(request)
+
