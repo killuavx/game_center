@@ -1,24 +1,27 @@
 # -*- coding: utf-8 -*-
 import drest
+from toolkit import helpers
 
 
 def api_factory(platform, version=2):
-    api_url = 'http://%s.ccplay.com.cn/api/v%s/' % (platform, version)
-
     names = dict(ios='IOS',
                  android='Android')
     platform = platform.lower()
     if platform not in names:
         raise ValueError('platform must in [ios, android]')
 
+    if platform == 'android':
+        site = helpers.get_global_site(helpers.SITE_ANDROID)
+    elif platform == 'ios':
+        site = helpers.get_global_site(helpers.SITE_IOS)
+    api_url = 'http://%s/api/v%s/' % (site.domain, version)
+
     class RestApi(drest.API):
         _platform = platform
 
         class Meta:
+            trailing_slash = True
             baseurl = api_url
-            extra_headers = {
-                'Cache-Control': 'max-age=3600, must-revalidate',
-            }
 
     api = RestApi()
     api.add_resource('packages')
@@ -32,3 +35,4 @@ def api_factory(platform, version=2):
 
 ios_api = api_factory('ios')
 android_api = api_factory('android')
+

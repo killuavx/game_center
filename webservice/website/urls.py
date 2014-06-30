@@ -20,23 +20,3 @@ urlpatterns += patterns('website.views.common',
                         url("^social/redirect\.html$", lambda r: TemplateResponse(request=r, template='bd_frontia_jump.html')),
                         )
 
-"""
-urlpatterns += patterns('website.views.mainsite',
-                       url(r'^packages/(?P<package_name>%s)(/(?P<version_name>%s)?)?' % (slug_pattern, slug_pattern),
-                           'packageversion_detail', name='packageversion_detail'),
-                       url(r'^categories/$', 'category_package_list', name='category_default_page'),
-                       url(r'^categories/(?P<slug>%s)' % slug_pattern, 'category_package_list', name='category_package_list'),
-                       url(r'^masterpiece/$', 'masterpiece_view', name='masterpiece_page'),
-                       url(r'^topics/$', 'topics_view', name='topics_page'),
-                       url(r'^topics/(?P<slug>%s)' % slug_pattern, 'topic_package_list', name='topic_package_list'),
-                       url(r'^mainsite/' , 'mainsite_view', name='mainsite_home'),
-                       url(r'^login/' , 'ajax_login_view', name='mainsite_login'),
-                       url(r'^logout/' , 'ajax_logout_view', name='mainsite_logout'),
-                       url(r'^register/' , 'register_view', name='mainsite_register'),
-                       url(r'^check_username/' , 'check_register_username_view', name='check_register_username'),
-                       url(r'^check_email/' , 'check_register_email_view', name='check_register_email'),
-                       url(r'^check_verify_code/' , 'check_verify_code_view', name='check_verify_code'),
-                       url(r'^reset/' , 'reset_password_view', name='reset_password'),
-                       url(r'^captcha/' , 'captcha_view', name='captcha'),
-                       )
-"""

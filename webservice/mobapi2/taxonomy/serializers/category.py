@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from rest_framework import serializers
+from rest_framework import serializers, status
 from taxonomy.models import Category
 from mobapi2.rest_fields import factory_imageurl_field
 from mobapi2.settings import IMAGE_ICON_SIZE
@@ -8,6 +8,8 @@ from mobapi2.serializers import (
     HyperlinkedWithRouterModelSerializer as HyperlinkedModelSerializer)
 from mobapi2.warehouse.serializers.package import PackageSummarySerializer
 from mobapi2.helpers import get_category_packages_url
+from mobapi2.rest_clients import android_api
+from toolkit.helpers import SITE_ANDROID, get_global_site
 
 
 class CategoryDetailSerializer(HyperlinkedModelSerializer):
@@ -54,10 +56,23 @@ class CategoryRelatedPackagesMixin(object):
     def get_packages(self, obj):
         if obj.children.count():
             return list()
-        packages = obj.packages.published().by_released_order(True)[0:self.limit_packages]
-        return self.serializer_class_package(packages,
-                                             context=self.context,
-                                             many=True).data
+        if get_global_site() and get_global_site().pk == SITE_ANDROID:
+            api = android_api
+        else:
+            api = None
+        if not api:
+            return list()
+
+        res = api.packages.get(params=dict(
+            category=obj.pk,
+            ordering='-released_datetime',
+        ))
+        if res.status != status.HTTP_200_OK:
+            return list()
+        if res.data and res.data.get('count') and res.data.get('results'):
+            results = res.data.get('results', list())
+            return results[0:self.limit_packages]
+        return list()
 
 
 class CategorySummarySerializer(CategoryRelatedChildrenMixin,

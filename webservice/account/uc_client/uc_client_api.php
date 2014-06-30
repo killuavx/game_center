@@ -72,7 +72,7 @@ if(!is_array($func_argv))
 $result = call_user_func_array($func, $func_argv);
 if(is_array($result))
 {
-    for($result as $key => $val)
+    foreach($result as $key => $val)
     {
         $result[$key] = safeEncoding($val,'UTF-8');
     }

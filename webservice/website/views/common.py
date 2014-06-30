@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from mezzanine.core.views import server_error as mz_server_error
 
 
 @csrf_exempt
@@ -21,16 +22,5 @@ def cdn_feedback(request, slug, *args, **kwargs):
                         mimetype='text/xml; charset=utf-8')
 
 
-from mezzanine.pages.views import page
-from os.path import join
-
-
-def website_page(request, slug, product=None, template=u"pages/page_web.html",
-                 extra_context=None):
-    if not product:
-        slug = join(product, slug)
-        template = "pages/%s/page_web.html" % product
-    return page(request=request,
-                slug=slug,
-                template=template,
-                extra_context=extra_context)
+def server_error(request, template_name='errors/custom/500.html'):
+    return mz_server_error(request, template_name=template_name)

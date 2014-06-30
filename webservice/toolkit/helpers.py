@@ -158,8 +158,10 @@ def get_global_site_id():
     return _GC_SITE_ID
 
 
-def get_global_site():
-    site_id = get_global_site_id()
+def get_global_site(site_id=None):
+    if site_id is None:
+        site_id = get_global_site_id()
+
     if site_id == SITE_DISABLE:
         return None
 
