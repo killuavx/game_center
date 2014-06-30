@@ -424,7 +424,7 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
         if self.status == self.STATUS.published:
             latest_version = None
             try:
-                latest_version = self.versions.latest_published()
+                latest_version = self.versions.latest_published(False)
             except exceptions.ObjectDoesNotExist:
                 raise exceptions.ValidationError('不能发布该应用，没有可发布的版本')
 
@@ -663,7 +663,7 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
 
             if self.package:
                 try:
-                    v = self.package.versions.latest_published()
+                    v = self.package.versions.latest_published(False)
                     if v and (v == self or self.version_code > v.version_code):
                         self.package.released_datetime = self.released_datetime
                 except ObjectDoesNotExist:

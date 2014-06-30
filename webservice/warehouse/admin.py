@@ -109,11 +109,13 @@ class PackageVersionAdmin(MainAdmin):
                     'version_name',
                     'version_code',
                     'status',
+                    'released_datetime',
                     'updated_datetime',
                     'is_data_integration',
                     'download_count',
                     'sync_file_action',
     )
+    list_editable = ('released_datetime', )
     list_display_links = ('show_icon', 'version_name')
     actions = ['make_published']
     raw_id_fields = ('package', )
@@ -466,7 +468,8 @@ class PackageAdmin(MainAdmin):
         'Make selected Packages as unpublished')
 
     readonly_fields = (
-        'download_count', 'created_datetime', 'updated_datetime',)
+        #'download_count',
+        'created_datetime', 'updated_datetime',)
 
     def suit_row_attributes(self, obj, request):
         css_class = {
