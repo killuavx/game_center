@@ -399,7 +399,7 @@ class PackageAdmin(MainAdmin):
     raw_id_fields = ('author', )
     list_filter = ('categories', 'released_datetime', 'status')
     list_display_links = ('title', 'package_name',)
-    list_editable = ('status', 'tags_text',)
+    list_editable = ('status', 'tags_text', 'released_datetime',)
     date_hierarchy = 'released_datetime'
     ordering = ('-released_datetime',)
     filter_horizontal = ("categories",)
