@@ -188,7 +188,7 @@ class PackageVersionAdmin(MainAdmin):
                          "supported_features")
     list_filter = ('status',)
     date_hierarchy = 'released_datetime'
-    ordering = ('-updated_datetime', '-version_code',)
+    ordering = ('-released_datetime',)
     formfield_overrides = {
         ThumbnailerImageField: {'widget': ImageClearableFileInput},
     }
