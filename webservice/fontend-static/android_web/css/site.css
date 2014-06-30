@@ -39,6 +39,42 @@ background-repeat: no-repeat;}
 
 
 
+
+
+
+/*游戏礼包*/
+.game-gift-list{width:30%; float:left; margin:0 20px 30px 20px; border:1px solid #eee}
+#cc-m .game-gift-list{margin:0 16px 35px 15px}
+#cc-s .game-gift-list{width:45%; margin:0 20px 30px 15px}
+.game-gift-list:hover{border-color:#ccc}
+.game-gift-list .bte{border-style:dashed}
+.game-gift-list img{width:92px; height:92px}
+.game-gift-list .gift-title{height:14px; overflow:hidden}
+.game-gift-list .gift-info{height:40px; overflow:hidden}
+.time-download{border-top:1px dashed #ddd; height:30px; line-height:30px;}
+.game-gift-list .btn{width:90px; padding:0 6px}
+#cc-m .game-gift-list .btn{width:40px}
+#cc-s .game-gift-list .btn{width:70px}
+.game-gift-list .gift-number{float:right;}
+.game-gift-list:hover .time-download{background-color:#f8f8f8; border-top:1px solid #ddd;}
+
+.page-tab ul{right:0; top:25px}
+.gift-main dt .icon{width:64px; height:64px}
+.gift-main dd{margin-left:74px; padding-left:15px; border-left:4px solid #eee; background:url(http://static.ccplay.com.cn/static/android_web/img/gift-bg.png) right bottom no-repeat #f8f8f8}
+
+.gift-bag {background:url(http://static.ccplay.com.cn/static/android_web/img/gift-icon-2.png) no-repeat; padding-left:64px}
+.gift-bag .game-gift-list{margin:10px 0 0 10px; width:445px}
+#cc-m .gift-bag .game-gift-list{margin:10px 0 0 10px; width:325px}
+#cc-s .gift-bag .game-gift-list{margin:10px 0 0 10px; width:410px}
+.gift-bag .pic{display:none}
+.game-gift-page .page{border:none}
+
+
+
+
+
+
+
 /*v1*/
 
 .multi{margin-top:-60px}
@@ -61,10 +97,10 @@ background-repeat: no-repeat;}
 .crack-rcd .app-list-xl dd{padding-left:105px}
 #cc-m .crack-rcd{width:390px}
 
-#cc-s .nav .l li{width:83px}
+/*#cc-s .nav .l li{width:83px}
 #cc-s .nav .drop-down a,#fixed-head #cc-s .nav .drop-down a{padding:0 20px}
 #fixed-head #cc-l .search{margin-left:490px}
-#fixed-head #cc-l .nav .l li{width:80px}
+#fixed-head #cc-l .nav .l li{width:80px}*/
 
 #fixed-head #cc-m .search{margin-left:435px}
 #fixed-head #cc-m .nav .l li,#fixed-head #cc-l .nav .l li{width:8%}
@@ -79,8 +115,8 @@ background-repeat: no-repeat;}
 .hot-news .t-title h3 .ios-web-icon{background-position:-187px -67px; left:55px}
 .hot-news .time-box-t{background:url(http://static.ccplay.com.cn/static/common/img/time-line-2.png) 47px bottom no-repeat; padding-bottom:40px}
 .hot-news .time-box-b{background:url(http://static.ccplay.com.cn/static/common/img/time-line-1.png) 47px 0 repeat-y}
-#cc-s .nav .l li{width:75px}
-#cc-s .nav .drop-down a,#fixed-head #cc-s .nav .drop-down a{padding:0 15px}
+/*#cc-s .nav .l li{width:75px}
+#cc-s .nav .drop-down a,#fixed-head #cc-s .nav .drop-down a{padding:0 15px}*/
 #fixed-head #cc-l .search{margin-left:490px}
 #fixed-head #cc-l .nav .l li{width:80px}
 #fixed-head #cc-m .search{margin-left:435px}
