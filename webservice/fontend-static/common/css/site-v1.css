@@ -227,10 +227,12 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .news-list h2{font-weight:600; height:25px; overflow:hidden; *font-size:20px}  
 .news-list dl{margin-left:60px}
 .news-list .pic img{width:125px; height:80px}
-.tag-time a.ios-web-icon{background-position:0 -521px; width:39px; height:18px; line-height:18px; padding-left:3px; color:#fff; text-decoration:none}
+.tag-time a.ios-web-icon,.n-1 a.ios-web-icon{background-position:0 -521px; width:39px; height:18px; line-height:18px; padding-left:3px; color:#fff; text-decoration:none}
 .n-2 a.ios-web-icon{background-position:-50px -521px}
-.n-3 a.ios-web-icon{background-position:0 -546px}
-.n-4 a.ios-web-icon{background-position:-50px -546px}
+.n-3 a.ios-web-icon{background-position:0 -541px}
+.n-4 a.ios-web-icon{background-position:-50px -541px}
+.n-5 a.ios-web-icon{background-position:0 -561px}
+.n-6 a.ios-web-icon{background-position:-50px -561px}
 .news-list .tag-time{margin:-20px 0 0 -60px}
 
 .t-title h3 .ios-web-icon{width:15px; height:15px; left:30px; top:29px; z-index:9; display:none}
@@ -667,6 +669,7 @@ clear: both; line-height: 1.8em;}
 
 /*用户中心*/
 .user-page .t-title{padding-left:240px}
+.user-page .t-title ul{padding-left:0}
 .user-page .left{padding-bottom:9999px; margin-bottom:-9999px; width:240px}
 .user-page .pic img{border-radius:190px; margin:-35px auto 0 auto; z-index:9; border:4px solid #ed7070; background-color:#ed7070}
 .user-page .pic a:hover img{border-color:#fff}
@@ -675,6 +678,10 @@ clear: both; line-height: 1.8em;}
 .user-page .left li a{display:block; padding-left:80px}
 .user-page .left li a.hover{background-color: #fff;border-left: 2px solid #e53333;position:absolute;margin-left: -2px; color:#e53333; width:160px}
 .user-page .left li a:hover{background-color:#fff}
+.user-page .gift-main dl{margin:0; min-width:460px; min-height:115px}
+.user-page .gift-main dl dt .icon{display:none}
+.user-page .gift-main dl h2{font-weight:100; font-size:16px; color:#333}
+.user-page .gift-main dl dd{display:none}
 
 .u-1{background-position:55px -90px}
 .u-1:hover,.u-1.hover{background-position:55px -123px}
@@ -686,6 +693,8 @@ clear: both; line-height: 1.8em;}
 .u-4:hover,.u-4.hover{background-position:55px -322px}
 .u-5{background-position:55px -356px}
 .u-5:hover,.u-5.hover{background-position:55px -389px}
+.u-5s{background-position:-247px -427px}
+.u-5s:hover,.u-5s.hover{background-position:-247px -460px}
 
 .u-6{background-position:-247px -90px}
 .u-6:hover,.u-6.hover{background-position:-247px -123px}
@@ -710,6 +719,8 @@ clear: both; line-height: 1.8em;}
 
 .page-404{background:url(http://static.ccplay.com.cn/static/common/img/404.png) no-repeat center}
 .page-500{background:url(http://static.ccplay.com.cn/static/common/img/500.png) no-repeat center}
+
+
 
 
 /*			cc-l			*/
