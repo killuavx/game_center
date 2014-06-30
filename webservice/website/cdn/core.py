@@ -7,8 +7,10 @@ from django.conf import settings
 from django.utils.timezone import now
 from . import feedback_signals as fb_signals
 from .errors import FeedbackActionException
-from .parsers import OperationResponse, OperationRequest, FeedbackContextParser
-from website.documents.cdn import SyncQueue
+from .parsers import OperationResponse, OperationRequest, FeedbackContextParser, RefreshResponse
+from website.documents.cdn import SyncQueue, RefreshQueue
+from dateutil import parser as dateparser
+from django.utils.timezone import utc
 
 
 class Processor(object):
@@ -216,3 +218,29 @@ class Feedback(object):
                 if not _flag:
                     msgs.append("%s,%s" %(_op.item_id, _e))
         return self.response_class(code, "\n".join(msgs))
+
+    refresh_queue_class = RefreshQueue
+
+    refresh_response_class = RefreshResponse
+
+    def process_refresh(self, r_id, result=None):
+        rq = self.fetch_refresh_queue(r_id, result)
+        rq.save()
+        return self.parse_refresh_response(rq)
+
+    def fetch_refresh_queue(self, r_id, result):
+        rq = self.refresh_queue_class.objects.get(r_id=r_id)
+        rq.fb_datetime = now()
+        if result:
+            rq.status = result['status']
+            rq.success_rate = result['success_rate']
+            rq.created_datetime = dateparser.parse(result['createdTime']).astimezone(utc)
+            rq.finish_datetime = dateparser.parse(result['finishedTime']).astimezone(utc)
+            rq.total_second = result['totalTime']
+            rq.username = result['username']
+            rq.url_status = result['urlStatus']
+        return rq
+
+    def parse_refresh_response(self, rq):
+        return self.refresh_response_class.from_refresh_queue(rq)
+

@@ -98,13 +98,7 @@ class CheckOperation(UpdateOperation):
     op_name = fields.StringField(default='check')
 
 
-class SyncQueueQuerySet(QuerySet):
-
-    def get_by_item_id(self, item_id):
-        return self.filter(operations__match=dict(item_id=item_id)).get()
-
-    def get_by_latest_item_id(self, item_id):
-        return self.filter(**{'operations.0.item_id': item_id}).get()
+class ContentTypeDocumentQuerySet(QuerySet):
 
     def by_content_object(self, content_object):
         if not isinstance(content_object, Model):
@@ -116,6 +110,15 @@ class SyncQueueQuerySet(QuerySet):
     def by_raw_content_object(self, content_type, object_pk):
         return self.filter(content_type=str(content_type),
                            object_pk=str(object_pk))
+
+
+class SyncQueueQuerySet(ContentTypeDocumentQuerySet):
+
+    def get_by_item_id(self, item_id):
+        return self.filter(operations__match=dict(item_id=item_id)).get()
+
+    def get_by_latest_item_id(self, item_id):
+        return self.filter(**{'operations.0.item_id': item_id}).get()
 
 
 class SyncQueue(DynamicDocument):
@@ -176,3 +179,58 @@ class SyncQueue(DynamicDocument):
                 return op
         return None
 
+
+class RefreshQueueQuerySet(ContentTypeDocumentQuerySet):
+    pass
+
+
+class RefreshQueue(DynamicDocument):
+
+    content_type = fields.StringField(max_length=30, required=True)
+
+    object_pk = fields.StringField(max_length=15, required=True)
+
+    resource_path = fields.StringField(required=True)
+
+    publish_uri = fields.StringField(required=True)
+
+    r_id = fields.StringField(required=True, unique=True)
+
+    posted_datetime = fields.DateTimeField(default=now)
+
+    fb_datetime = fields.DateTimeField()
+
+    status = fields.StringField(default='POSTED')
+
+    created_datetime = fields.DateTimeField()
+
+    finished_datetime = fields.DateTimeField()
+
+    total_second = fields.IntField()
+
+    success_rate = fields.FloatField()
+
+    url_status = fields.ListField(fields.DictField())
+
+    meta = {
+        'db_alias': 'systemresource',
+        'collection': 'refreshqueue',
+        'indexes': [
+            ('content_type', 'object_pk', '-posted_datetime'),
+            ('content_type', 'object_pk'),
+            '-posted_datetime',
+            'resource_path',
+        ],
+        'queryset_class': RefreshQueueQuerySet,
+    }
+
+    @property
+    def content_object(self):
+        return get_content_object(content_type=self.content_type,
+                                  object_pk=self.object_pk)
+
+    @content_object.setter
+    def content_object(self, content_object):
+        ct = ContentType.objects.get_for_model(content_object.__class__)
+        self.content_type = str(ct.pk)
+        self.object_pk = str(content_object.pk)

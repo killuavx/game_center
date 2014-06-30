@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
 import hashlib
+import json
 from xml.etree import cElementTree as ET
 
 from django.utils.encoding import force_str, force_bytes
+from django.core.urlresolvers import reverse_lazy
 import requests
 from .errors import RequestProcessException, NotDefineOperationError
 
 
 CUST_ID = '6807'
 
-PASSWD = 'Abc@123'
+PASSWD = 'EYjgz9PNhF'
 
 
 def create_element(tagname, text=None, attrs=dict(), parent=None):
@@ -294,3 +296,109 @@ class FeedbackContextParser(object):
             op_status=item.find('op_status').text
         )
 
+
+class RefreshRequest(object):
+
+    request_url = 'https://r.chinacache.com/content/refresh'
+
+    username = CUST_ID
+
+    password = PASSWD
+
+    def __init__(self, task):
+        """
+        刷新任务,JSON 格式例子:
+            {
+            "urls":["http://www.xxx.com/logo.gif","http://www.xxx.com/"],
+            "dirs":["http://www.xxx.com/imgs/","http://www.xxx.com/html/"],
+            "callback":{"url":"http://xxx.com/listener",
+                        "email":["a@a.com","b@a.com"],
+                        "acptNotice":true}
+            }
+        urls 是需要刷新的 url 的地址,可以是多个,最多支持 100 条。
+        dirs 是需要刷新的目录的地址,最多支持 10 条。
+        callback 是接收刷新执行结果反馈的地址和电子邮箱,如果值为空或没有 callback 属 性,表示不接收反馈。
+        url 表示接收反馈的地址,可以为空。
+        email 表示接收反馈的电子邮箱,可以为空。
+        acptNotice 表示接收成功时是否反馈,仅在 email 有效时有效。 当 url 和 email 都为空时,不反馈。
+        """
+        self.task = task
+
+    def create_querydata(self):
+        return dict(username=self.username,
+                    password=self.password,
+                    task=json.dumps(self.task))
+
+    def request(self):
+        data = self.create_querydata()
+        response = requests.post(url=self.request_url, data=data)
+        if response.status_code != requests.codes.get('ok'):
+            raise RequestProcessException(response.status_code)
+        return response
+
+
+class RefreshTask(dict):
+
+    def __init__(self, urls=None, dirs=None, callback=None, *args):
+        super(RefreshTask, self).__init__()
+        if urls:
+            self['urls'] = urls
+        if dirs:
+            self['dirs'] = dirs
+        if callback:
+            self['callback'] = callback
+
+
+class RefreshResponse(object):
+
+    STATUS_CODE_SUCCESS = 1
+
+    STATUS_CODE_FAILED = 0
+
+    STATUS_CODE_UNKNOW = -1
+
+    STATUS_CODES = {
+        STATUS_CODE_SUCCESS: 'SUCCESS',
+        STATUS_CODE_FAILED: 'FAIL',
+        STATUS_CODE_UNKNOW: 'UNKNOW'
+    }
+
+    code = None
+
+    detail = None
+
+    result = None
+
+    instance = None
+
+    def __init__(self, code=None, detail=''):
+        self.code = code
+        self.detail = detail
+
+    @classmethod
+    def from_refresh_queue(cls, refresh_queue):
+        code = cls.result_code(refresh_queue.status)
+        response = cls(code, refresh_queue.status)
+        response.instance = refresh_queue
+        response.result = refresh_queue.url_status
+        return response
+
+    @classmethod
+    def result_code(cls, result):
+        for code, expect_result in cls.STATUS_CODES.items():
+            if expect_result == result:
+                return code
+        return None
+
+    @classmethod
+    def result_string(cls, code):
+        return cls.STATUS_CODES[code]
+
+    @property
+    def content_object(self):
+        if self.instance:
+            return self.instance.content_object
+        return None
+
+    def render(self):
+        return dict(code=self.code)

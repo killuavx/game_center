@@ -3,11 +3,13 @@ import os
 from os.path import join
 from urllib.parse import urlparse, urlunparse
 from django.contrib.contenttypes.models import ContentType
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.utils.timezone import now
 from website.cdn.utils import publish_path_to_content_type, relative_path_to_object_pk
 from website.cdn.errors import StaticContentTypeError
 from website.cdn.core import Processor
 from website.documents import cdn
+from website.cdn.parsers import RefreshRequest, RefreshTask, RefreshResponse
 
 
 class BaseProcessor(Processor):
@@ -137,6 +139,47 @@ class BaseProcessor(Processor):
             result.append(response)
 
         return self._package_many_operations_result(result)
+
+    refresh_request_class = RefreshRequest
+
+    refresh_response_class = RefreshResponse
+
+    def refresh(self, glob=''):
+        publish_path=join(self.publish_path_prefix, self.relative_path, glob),
+        rq = cdn.RefreshQueue(content_type=self.content_type,
+                              object_pk=self.object_pk,
+                              resource_path=join(self.relative_path, glob),
+                              publish_uri=publish_path,
+                          )
+        return self.process_refresh(rq, dirs=[publish_path])
+
+    def refresh_one(self, fpath=None):
+        publish_path=join(self.publish_path_prefix, fpath),
+        rq = cdn.RefreshQueue(content_type=self.content_type,
+                              object_pk=self.object_pk,
+                              resource_path=fpath,
+                              publish_uri=publish_path,
+                              )
+        return self.process_refresh(rq, urls=[publish_path])
+
+    def process_refresh(self, refresh_queue_doc, urls=None, dirs=None):
+        from toolkit.helpers import get_global_site
+        callback_url = 'http://%s/%s' % (
+            get_global_site().domain,
+            reverse('cdn_refresh_feedback',
+                    kwargs=dict(content_type=refresh_queue_doc.content_type,
+                                object_pk=refresh_queue_doc.object_pk))
+        )
+        response = self.refresh_request_class(task=RefreshTask(
+            urls=urls,
+            dirs=dirs,
+            callback=dict(url=callback_url)
+        )).request()
+        result = response.json()
+        refresh_queue_doc.r_id = result['r_id']
+        refresh_queue_doc.save()
+        response = self.refresh_response_class.from_refresh_queue(refresh_queue_doc)
+        return response
 
 
 class StaticProcessor(BaseProcessor):
