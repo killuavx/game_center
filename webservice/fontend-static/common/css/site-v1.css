@@ -431,8 +431,8 @@ white-space:nowrap; overflow:hidden; color:#fff}
 
 /*翻页*/
 .page{padding:40px 10px; background:#fff; text-align:center}
-.page a{display:inline-block; padding:7px 14px; border:1px solid #ccc}
-.page a:hover{border-color:#e53333; color:#e53333; text-decoration:none}
+.page a{display:inline-block; padding:7px 14px; border:1px solid #ccc; margin-left:-1px}
+.page a:hover{border-color:#e53333; color:#e53333; text-decoration:none; position:relative; z-index:3}
 .page a.hover{border-color:#e53333; background:#e53333; color:#fff}
 
 
