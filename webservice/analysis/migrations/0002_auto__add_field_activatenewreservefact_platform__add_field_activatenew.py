@@ -8,61 +8,139 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding field 'ActivateNewReserveFact.platform'
+        db.add_column('fact_activate_newreserve', 'platform',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['analysis.DevicePlatformDim'], null=True),
+                      keep_default=False)
 
-        # Changing field 'DeviceOSDim.os_version'
-        db.alter_column('dim_deviceos', 'os_version', self.gf('django.db.models.fields.CharField')(max_length=300))
+        # Adding field 'ActivateNewReserveFact.is_new_product_channel_package'
+        db.add_column('fact_activate_newreserve', 'is_new_product_channel_package',
+                      self.gf('analysis.models.ReserveBooleanField')(default=False, db_index=True),
+                      keep_default=False)
 
-        # Changing field 'DeviceModelDim.manufacturer'
-        db.alter_column('dim_devicemodel', 'manufacturer', self.gf('django.db.models.fields.CharField')(max_length=300))
+        # Adding field 'ActivateNewReserveFact.is_new_product_channel_package_version'
+        db.add_column('fact_activate_newreserve', 'is_new_product_channel_package_version',
+                      self.gf('analysis.models.ReserveBooleanField')(default=False, db_index=True),
+                      keep_default=False)
 
-        ## Changing field 'ActivateNewReserveFact.is_new_product_package_version'
-        #db.alter_column('fact_activate_newreserve', 'is_new_product_package_version', self.gf('analysis.models.ReserveBooleanField')())
+        # Adding index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product_channel_package']
+        db.create_index('fact_activate_newreserve', ['platform_id', 'is_new_product_channel_package'])
 
-        ## Changing field 'ActivateNewReserveFact.is_new_product_package'
-        #db.alter_column('fact_activate_newreserve', 'is_new_product_package', self.gf('analysis.models.ReserveBooleanField')())
+        # Adding index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product_channel_package_version']
+        db.create_index('fact_activate_newreserve', ['platform_id', 'is_new_product_channel_package_version'])
 
-        ## Changing field 'ActivateNewReserveFact.is_new_product_channel'
-        #db.alter_column('fact_activate_newreserve', 'is_new_product_channel', self.gf('analysis.models.ReserveBooleanField')())
+        # Adding index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product_package_version']
+        db.create_index('fact_activate_newreserve', ['platform_id', 'is_new_product_package_version'])
 
-        ## Changing field 'ActivateNewReserveFact.is_new_package'
-        #db.alter_column('fact_activate_newreserve', 'is_new_package', self.gf('analysis.models.ReserveBooleanField')())
+        # Adding index on 'ActivateNewReserveFact', fields ['platform', 'is_new_package']
+        db.create_index('fact_activate_newreserve', ['platform_id', 'is_new_package'])
 
-        ## Changing field 'ActivateNewReserveFact.is_new_product'
-        #db.alter_column('fact_activate_newreserve', 'is_new_product', self.gf('analysis.models.ReserveBooleanField')())
+        # Adding index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product_channel']
+        db.create_index('fact_activate_newreserve', ['platform_id', 'is_new_product_channel'])
 
-        ## Changing field 'ActivateNewReserveFact.is_new_package_version'
-        #db.alter_column('fact_activate_newreserve', 'is_new_package_version', self.gf('analysis.models.ReserveBooleanField')())
+        # Adding index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product_package']
+        db.create_index('fact_activate_newreserve', ['platform_id', 'is_new_product_package'])
+
+        # Adding index on 'ActivateNewReserveFact', fields ['platform', 'is_new_package_version']
+        db.create_index('fact_activate_newreserve', ['platform_id', 'is_new_package_version'])
+
+        # Adding index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product']
+        db.create_index('fact_activate_newreserve', ['platform_id', 'is_new_product'])
+
+        # Adding index on 'ActivateFact', fields ['device_platform', 'device', 'package', 'date']
+        db.create_index('fact_activate', ['device_platform_id', 'device_id', 'package_id', 'date_id'])
+
+        # Adding index on 'ActivateFact', fields ['device_platform', 'productkey', 'packagekey']
+        db.create_index('fact_activate', ['device_platform_id', 'productkey_id', 'packagekey_id'])
+
+        # Adding index on 'ActivateFact', fields ['device_platform', 'productkey', 'device', 'packagekey']
+        db.create_index('fact_activate', ['device_platform_id', 'productkey_id', 'device_id', 'packagekey_id'])
+
+        # Adding index on 'ActivateFact', fields ['device_platform', 'product', 'device', 'package']
+        db.create_index('fact_activate', ['device_platform_id', 'product_id', 'device_id', 'package_id'])
+
+        # Adding index on 'ActivateFact', fields ['device_platform', 'productkey', 'package']
+        db.create_index('fact_activate', ['device_platform_id', 'productkey_id', 'package_id'])
+
+        # Adding index on 'ActivateFact', fields ['device_platform', 'package', 'date']
+        db.create_index('fact_activate', ['device_platform_id', 'package_id', 'date_id'])
+
+        # Adding index on 'ActivateFact', fields ['device_platform', 'product', 'device']
+        db.create_index('fact_activate', ['device_platform_id', 'product_id', 'device_id'])
+
+        # Adding index on 'ActivateFact', fields ['device_platform', 'productkey', 'device']
+        db.create_index('fact_activate', ['device_platform_id', 'productkey_id', 'device_id'])
+
+        # Adding index on 'ActivateFact', fields ['device_platform', 'productkey', 'device', 'package']
+        db.create_index('fact_activate', ['device_platform_id', 'productkey_id', 'device_id', 'package_id'])
+
 
     def backwards(self, orm):
+        # Removing index on 'ActivateFact', fields ['device_platform', 'productkey', 'device', 'package']
+        #db.delete_index('fact_activate', ['device_platform_id', 'productkey_id', 'device_id', 'package_id'])
 
-        # Changing field 'DeviceOSDim.os_version'
-        db.alter_column('dim_deviceos', 'os_version', self.gf('django.db.models.fields.CharField')(max_length=50))
+        # Removing index on 'ActivateFact', fields ['device_platform', 'productkey', 'device']
+        #db.delete_index('fact_activate', ['device_platform_id', 'productkey_id', 'device_id'])
 
-        # Changing field 'DeviceModelDim.manufacturer'
-        db.alter_column('dim_devicemodel', 'manufacturer', self.gf('django.db.models.fields.CharField')(max_length=150))
+        # Removing index on 'ActivateFact', fields ['device_platform', 'product', 'device']
+        #db.delete_index('fact_activate', ['device_platform_id', 'product_id', 'device_id'])
 
-        ## Changing field 'ActivateNewReserveFact.is_new_product_package_version'
-        #db.alter_column('fact_activate_newreserve', 'is_new_product_package_version', self.gf('django.db.models.fields.BooleanField')())
+        # Removing index on 'ActivateFact', fields ['device_platform', 'package', 'date']
+        #db.delete_index('fact_activate', ['device_platform_id', 'package_id', 'date_id'])
 
-        ## Changing field 'ActivateNewReserveFact.is_new_product_package'
-        #db.alter_column('fact_activate_newreserve', 'is_new_product_package', self.gf('django.db.models.fields.BooleanField')())
+        # Removing index on 'ActivateFact', fields ['device_platform', 'productkey', 'package']
+        #db.delete_index('fact_activate', ['device_platform_id', 'productkey_id', 'package_id'])
 
-        ## Changing field 'ActivateNewReserveFact.is_new_product_channel'
-        #db.alter_column('fact_activate_newreserve', 'is_new_product_channel', self.gf('django.db.models.fields.BooleanField')())
+        # Removing index on 'ActivateFact', fields ['device_platform', 'product', 'device', 'package']
+        #db.delete_index('fact_activate', ['device_platform_id', 'product_id', 'device_id', 'package_id'])
 
-        ## Changing field 'ActivateNewReserveFact.is_new_package'
-        #db.alter_column('fact_activate_newreserve', 'is_new_package', self.gf('django.db.models.fields.BooleanField')())
+        # Removing index on 'ActivateFact', fields ['device_platform', 'productkey', 'device', 'packagekey']
+        #db.delete_index('fact_activate', ['device_platform_id', 'productkey_id', 'device_id', 'packagekey_id'])
 
-        ## Changing field 'ActivateNewReserveFact.is_new_product'
-        #db.alter_column('fact_activate_newreserve', 'is_new_product', self.gf('django.db.models.fields.BooleanField')())
+        # Removing index on 'ActivateFact', fields ['device_platform', 'productkey', 'packagekey']
+        #db.delete_index('fact_activate', ['device_platform_id', 'productkey_id', 'packagekey_id'])
 
-        ## Changing field 'ActivateNewReserveFact.is_new_package_version'
-        #db.alter_column('fact_activate_newreserve', 'is_new_package_version', self.gf('django.db.models.fields.BooleanField')())
+        # Removing index on 'ActivateFact', fields ['device_platform', 'device', 'package', 'date']
+        #db.delete_index('fact_activate', ['device_platform_id', 'device_id', 'package_id', 'date_id'])
+
+        # Removing index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product']
+        #db.delete_index('fact_activate_newreserve', ['platform_id', 'is_new_product'])
+
+        # Removing index on 'ActivateNewReserveFact', fields ['platform', 'is_new_package_version']
+        #db.delete_index('fact_activate_newreserve', ['platform_id', 'is_new_package_version'])
+
+        # Removing index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product_package']
+        #db.delete_index('fact_activate_newreserve', ['platform_id', 'is_new_product_package'])
+
+        # Removing index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product_channel']
+        #db.delete_index('fact_activate_newreserve', ['platform_id', 'is_new_product_channel'])
+
+        # Removing index on 'ActivateNewReserveFact', fields ['platform', 'is_new_package']
+        #db.delete_index('fact_activate_newreserve', ['platform_id', 'is_new_package'])
+
+        # Removing index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product_package_version']
+        #db.delete_index('fact_activate_newreserve', ['platform_id', 'is_new_product_package_version'])
+
+        # Removing index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product_channel_package_version']
+        #db.delete_index('fact_activate_newreserve', ['platform_id', 'is_new_product_channel_package_version'])
+
+        # Removing index on 'ActivateNewReserveFact', fields ['platform', 'is_new_product_channel_package']
+        #db.delete_index('fact_activate_newreserve', ['platform_id', 'is_new_product_channel_package'])
+
+        # Deleting field 'ActivateNewReserveFact.platform'
+        db.delete_column('fact_activate_newreserve', 'platform_id')
+
+        # Deleting field 'ActivateNewReserveFact.is_new_product_channel_package'
+        db.delete_column('fact_activate_newreserve', 'is_new_product_channel_package')
+
+        # Deleting field 'ActivateNewReserveFact.is_new_product_channel_package_version'
+        db.delete_column('fact_activate_newreserve', 'is_new_product_channel_package_version')
+
 
     models = {
         'analysis.activatefact': {
-            'Meta': {'ordering': "('-date',)", 'index_together': "(('device', 'date'), ('package', 'date'), ('device', 'package', 'date'), ('product', 'device'), ('product', 'device', 'package'), ('productkey', 'device'), ('productkey', 'packagekey'), ('productkey', 'device', 'packagekey'), ('productkey', 'package'), ('productkey', 'device', 'package'))", 'db_table': "'fact_activate'", 'object_name': 'ActivateFact'},
-            'baidu_push': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.BaiduPushDim']", 'related_name': "'+'", 'null': 'True'}),
+            'Meta': {'ordering': "('-date',)", 'index_together': "(('device', 'date'), ('package', 'date'), ('device', 'package', 'date'), ('product', 'device'), ('product', 'device', 'package'), ('productkey', 'device'), ('productkey', 'packagekey'), ('productkey', 'device', 'packagekey'), ('productkey', 'package'), ('productkey', 'device', 'package'), ('device_platform', 'package', 'date'), ('device_platform', 'device', 'package', 'date'), ('device_platform', 'product', 'device'), ('device_platform', 'product', 'device', 'package'), ('device_platform', 'productkey', 'device'), ('device_platform', 'productkey', 'packagekey'), ('device_platform', 'productkey', 'device', 'packagekey'), ('device_platform', 'productkey', 'package'), ('device_platform', 'productkey', 'device', 'package'))", 'db_table': "'fact_activate'", 'object_name': 'ActivateFact'},
+            'baidu_push': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.BaiduPushDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'created_datetime': ('django.db.models.fields.DateTimeField', [], {}),
             'date': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.DateDim']"}),
             'device': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.DeviceDim']"}),
@@ -76,26 +154,29 @@ class Migration(SchemaMigration):
             'event': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.EventDim']"}),
             'hour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.HourDim']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'location': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.LocationDim']", 'related_name': "'+'", 'null': 'True'}),
+            'location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.LocationDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'network': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.NetworkDim']"}),
             'package': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageDim']"}),
-            'packagekey': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PackageKeyDim']", 'null': 'True'}),
-            'page': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PageDim']", 'related_name': "'+'", 'null': 'True'}),
+            'packagekey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageKeyDim']", 'blank': 'True', 'null': 'True'}),
+            'page': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PageDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.ProductDim']"}),
-            'productkey': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.ProductKeyDim']", 'null': 'True'}),
-            'referer': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PageDim']", 'related_name': "'+'", 'null': 'True'}),
+            'productkey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.ProductKeyDim']", 'blank': 'True', 'null': 'True'}),
+            'referer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PageDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'subscriberid': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.SubscriberIdDim']"}),
             'usinglog': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.UsinglogFact']", 'related_name': "'+'", 'unique': 'True'})
         },
         'analysis.activatenewreservefact': {
-            'Meta': {'ordering': "('-date',)", '_ormbases': ['analysis.ActivateFact'], 'db_table': "'fact_activate_newreserve'", 'object_name': 'ActivateNewReserveFact'},
+            'Meta': {'ordering': "('-date',)", '_ormbases': ['analysis.ActivateFact'], 'index_together': "(('platform', 'is_new_product'), ('platform', 'is_new_product_channel'), ('platform', 'is_new_product_channel_package'), ('platform', 'is_new_product_channel_package_version'), ('platform', 'is_new_product_package'), ('platform', 'is_new_product_package_version'), ('platform', 'is_new_package'), ('platform', 'is_new_package_version'))", 'db_table': "'fact_activate_newreserve'", 'object_name': 'ActivateNewReserveFact'},
             'activatefact_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['analysis.ActivateFact']", 'primary_key': 'True', 'unique': 'True'}),
-            'is_new_package': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'is_new_package_version': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'is_new_product': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'is_new_product_channel': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'is_new_product_package': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'is_new_product_package_version': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'})
+            'is_new_package': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_package_version': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_product': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_product_channel': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_product_channel_package': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_product_channel_package_version': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_product_package': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'is_new_product_package_version': ('analysis.models.ReserveBooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'platform': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.DevicePlatformDim']", 'null': 'True'})
         },
         'analysis.baidupushdim': {
             'Meta': {'object_name': 'BaiduPushDim', 'unique_together': "(('channel_id', 'user_id', 'app_id'),)", 'db_table': "'dim_baidupush'"},
@@ -179,9 +260,9 @@ class Migration(SchemaMigration):
             'hour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.HourDim']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'package': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageDim']"}),
-            'packagekey': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PackageKeyDim']", 'null': 'True'}),
+            'packagekey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageKeyDim']", 'blank': 'True', 'null': 'True'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.ProductDim']"}),
-            'productkey': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.ProductKeyDim']", 'null': 'True'}),
+            'productkey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.ProductKeyDim']", 'blank': 'True', 'null': 'True'}),
             'redirect_to': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.MediaUrlDim']", 'related_name': "'+'"}),
             'segment': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.UsinglogSegmentDim']"}),
             'start_datetime': ('django.db.models.fields.DateTimeField', [], {}),
@@ -189,7 +270,7 @@ class Migration(SchemaMigration):
         },
         'analysis.downloadfact': {
             'Meta': {'object_name': 'DownloadFact', 'index_together': "(('download_package', 'date'), ('download_packagekey', 'date'), ('package', 'date'), ('packagekey', 'date'), ('event', 'package', 'date'), ('event', 'packagekey', 'date'), ('event', 'product', 'device', 'package', 'download_package', 'date'), ('event', 'product', 'device', 'package', 'download_package', 'created_datetime'), ('event', 'productkey', 'device', 'packagekey', 'download_packagekey', 'date'), ('event', 'productkey', 'device', 'packagekey', 'download_packagekey', 'created_datetime'), ('event', 'productkey'), ('event', 'product'))", 'db_table': "'fact_download'"},
-            'baidu_push': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.BaiduPushDim']", 'related_name': "'+'", 'null': 'True'}),
+            'baidu_push': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.BaiduPushDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'created_datetime': ('django.db.models.fields.DateTimeField', [], {}),
             'date': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.DateDim']"}),
             'device': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.DeviceDim']"}),
@@ -200,21 +281,21 @@ class Migration(SchemaMigration):
             'device_resolution': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.DeviceResolutionDim']"}),
             'device_supplier': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.DeviceSupplierDim']"}),
             'doc_id': ('django.db.models.fields.CharField', [], {'max_length': '40', 'unique': 'True'}),
-            'download_package': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PackageDim']", 'default': 'None', 'related_name': "'+'", 'null': 'True'}),
-            'download_packagekey': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PackageKeyDim']", 'default': 'None', 'related_name': "'+'", 'null': 'True'}),
+            'download_package': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageDim']", 'blank': 'True', 'default': 'None', 'related_name': "'+'", 'null': 'True'}),
+            'download_packagekey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageKeyDim']", 'blank': 'True', 'default': 'None', 'related_name': "'+'", 'null': 'True'}),
             'download_url': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.MediaUrlDim']", 'related_name': "'+'"}),
             'event': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.EventDim']"}),
             'hour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.HourDim']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'location': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.LocationDim']", 'related_name': "'+'", 'null': 'True'}),
+            'location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.LocationDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'network': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.NetworkDim']"}),
             'package': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageDim']"}),
-            'packagekey': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PackageKeyDim']", 'null': 'True'}),
-            'page': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PageDim']", 'related_name': "'+'", 'null': 'True'}),
+            'packagekey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageKeyDim']", 'blank': 'True', 'null': 'True'}),
+            'page': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PageDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.ProductDim']"}),
-            'productkey': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.ProductKeyDim']", 'null': 'True'}),
-            'redirect_to': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.MediaUrlDim']", 'default': 'None', 'related_name': "'+'", 'null': 'True'}),
-            'referer': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PageDim']", 'related_name': "'+'", 'null': 'True'}),
+            'productkey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.ProductKeyDim']", 'blank': 'True', 'null': 'True'}),
+            'redirect_to': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.MediaUrlDim']", 'blank': 'True', 'default': 'None', 'related_name': "'+'", 'null': 'True'}),
+            'referer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PageDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'subscriberid': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.SubscriberIdDim']"}),
             'usinglog': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.UsinglogFact']", 'related_name': "'+'", 'unique': 'True'})
         },
@@ -264,9 +345,9 @@ class Migration(SchemaMigration):
             'hour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.HourDim']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'package': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageDim']"}),
-            'packagekey': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PackageKeyDim']", 'null': 'True'}),
+            'packagekey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageKeyDim']", 'blank': 'True', 'null': 'True'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.ProductDim']"}),
-            'productkey': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.ProductKeyDim']", 'null': 'True'}),
+            'productkey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.ProductKeyDim']", 'blank': 'True', 'null': 'True'}),
             'segment': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.UsinglogSegmentDim']"}),
             'start_datetime': ('django.db.models.fields.DateTimeField', [], {}),
             'start_usinglog': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.UsinglogFact']", 'related_name': "'+'", 'unique': 'True'})
@@ -309,7 +390,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'ProductKeyDim', 'db_table': "'dim_productkey'"},
             'entrytype': ('django.db.models.fields.CharField', [], {'max_length': '50', 'unique': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'key': ('django.db.models.fields.CharField', [], {'max_length': '40', 'default': "'f74f2bd04b5c85e0db1b33d9c349712f'", 'unique': 'True'}),
+            'key': ('django.db.models.fields.CharField', [], {'max_length': '40', 'default': "'595a28938d51c16aeab0e87f3bda0a63'", 'unique': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'default': "'undefined'"})
         },
         'analysis.subscriberiddim': {
@@ -375,7 +456,7 @@ class Migration(SchemaMigration):
         },
         'analysis.usinglogfact': {
             'Meta': {'ordering': "('-date',)", 'index_together': "(('package', 'date'), ('package', 'date', 'event'), ('product', 'date'), ('product', 'date', 'event'), ('event', 'product', 'device', 'package', 'date'), ('event', 'product', 'device', 'package', 'created_datetime'), ('packagekey', 'date'), ('packagekey', 'date', 'event'), ('productkey', 'date'), ('productkey', 'date', 'event'), ('event', 'productkey', 'device', 'packagekey', 'date'), ('event', 'productkey', 'device', 'packagekey', 'created_datetime'))", 'db_table': "'fact_behaviour'", 'object_name': 'UsinglogFact'},
-            'baidu_push': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.BaiduPushDim']", 'related_name': "'+'", 'null': 'True'}),
+            'baidu_push': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.BaiduPushDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'created_datetime': ('django.db.models.fields.DateTimeField', [], {}),
             'date': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.DateDim']"}),
             'device': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.DeviceDim']"}),
@@ -389,14 +470,14 @@ class Migration(SchemaMigration):
             'event': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.EventDim']"}),
             'hour': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.HourDim']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'location': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.LocationDim']", 'related_name': "'+'", 'null': 'True'}),
+            'location': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.LocationDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'network': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.NetworkDim']"}),
             'package': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageDim']"}),
-            'packagekey': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PackageKeyDim']", 'null': 'True'}),
-            'page': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PageDim']", 'related_name': "'+'", 'null': 'True'}),
+            'packagekey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PackageKeyDim']", 'blank': 'True', 'null': 'True'}),
+            'page': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PageDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.ProductDim']"}),
-            'productkey': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.ProductKeyDim']", 'null': 'True'}),
-            'referer': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'to': "orm['analysis.PageDim']", 'related_name': "'+'", 'null': 'True'}),
+            'productkey': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.ProductKeyDim']", 'blank': 'True', 'null': 'True'}),
+            'referer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.PageDim']", 'blank': 'True', 'related_name': "'+'", 'null': 'True'}),
             'subscriberid': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['analysis.SubscriberIdDim']"})
         },
         'analysis.usinglogsegmentdim': {
