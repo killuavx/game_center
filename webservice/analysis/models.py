@@ -1259,6 +1259,16 @@ class ActivateFact(EventFact):
             ('productkey', 'device', 'packagekey'),
             ('productkey', 'package'),
             ('productkey', 'device', 'package'),
+
+            ('device_platform', 'package', 'date', ),
+            ('device_platform', 'device', 'package', 'date'),
+            ('device_platform', 'product', 'device'),
+            ('device_platform', 'product', 'device', 'package'),
+            ('device_platform', 'productkey', 'device'),
+            ('device_platform', 'productkey', 'packagekey'),
+            ('device_platform', 'productkey', 'device', 'packagekey'),
+            ('device_platform', 'productkey', 'package'),
+            ('device_platform', 'productkey', 'device', 'package'),
         )
         ordering = ('-date', )
 
@@ -1268,10 +1278,25 @@ class ActivateFact(EventFact):
 
 class ReserveBooleanField(models.BooleanField):
 
-    group_fields = list()
+    group_fields = None
+
+    cube_fields = None
+
+    sum_fields = None
 
     def __init__(self, *args, **kwargs):
-        self.group_fields = kwargs.pop('group_fields')
+        try:
+            self.group_fields = kwargs.pop('group_fields')
+        except:
+            self.group_fields = list()
+        try:
+            self.cube_fields = kwargs.pop('cube_fields')
+        except:
+            self.cube_fields = list()
+        try:
+            self.sum_fields = kwargs.pop('sum_fields')
+        except:
+            self.sum_fields = list()
         super(ReserveBooleanField, self).__init__(*args, **kwargs)
 
 
@@ -1293,6 +1318,10 @@ class ActivateNewReserveFactManager(ActivateFactManager):
             queries = {k: getattr(inst, k) for k in field.group_fields}
             statuses[field.name] = self.check_is_new_device(inst, **queries)
         return statuses
+
+    @property
+    def reserve_fields(self):
+        return self._fetch_reserve_fields()
 
 
 class ActivateNewReserveFactQuerySet(QuerySet):
@@ -1386,46 +1415,94 @@ class ActivateNewReserveFact(ActivateFact):
     objects = ActivateNewReserveFactManager\
         .for_queryset_class(ActivateNewReserveFactQuerySet)()
 
+    platform = models.ForeignKey(DevicePlatformDim,
+                                 null=True)
+
     # 产品 新增
-    is_new_product = ReserveBooleanField(default=False,
-                                         db_index=True,
-                group_fields=('device', 'productkey')
+    is_new_product = ReserveBooleanField(
+        verbose_name='产品 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey'),
+        cube_fields=('device_platform', 'productkey'),
+        group_fields=('device', 'device_platform', 'productkey')
     )
 
     # 产品-渠道 新增
-    is_new_product_channel = ReserveBooleanField(default=False,
-                                                 db_index=True,
-                 group_fields=('device', 'product')
+    is_new_product_channel = ReserveBooleanField(
+        verbose_name='产品-渠道 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey', 'product'),
+        cube_fields=('device_platform', 'productkey', 'product'),
+        group_fields=('device', 'device_platform', 'product')
+    )
+
+    # 产品-渠道-package 新增
+    is_new_product_channel_package = ReserveBooleanField(
+        verbose_name='产品-渠道-package 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey', 'product'),
+        cube_fields=('device_platform', 'productkey', 'product', 'packagekey'),
+        group_fields=('device', 'device_platform', 'product', 'packagekey')
+    )
+
+    # 产品-渠道-packge-version 新增
+    is_new_product_channel_package_version = ReserveBooleanField(
+        verbose_name='产品-渠道-package-version 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey', 'product'),
+        cube_fields=('device_platform', 'productkey', 'product', 'packagekey', 'package'),
+        group_fields=('device', 'device_platform', 'product', 'package')
     )
 
     # 产品-package_name 新增
-    is_new_product_package = ReserveBooleanField(default=False,
-                                                 db_index=True,
-                 group_fields=('device', 'productkey', 'packagekey')
+    is_new_product_package = ReserveBooleanField(
+        verbose_name='产品-package 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey'),
+        cube_fields=('device_platform', 'productkey', 'packagekey'),
+        group_fields=('device', 'device_platform', 'productkey', 'packagekey')
     )
 
     # 产品-package-version 新增
-    is_new_product_package_version = ReserveBooleanField(default=False,
-                                                         db_index=True,
-                 group_fields=('device', 'productkey', 'package')
+    is_new_product_package_version = ReserveBooleanField(
+        verbose_name='产品-package-version 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey', ),
+        cube_fields=('device_platform', 'productkey', 'package'),
+        group_fields=('device', 'device_platform', 'productkey', 'package')
     )
 
     # 应用 新增
-    is_new_package = ReserveBooleanField(default=False,
-                                         db_index=True,
-                 group_fields=('device', 'packagekey')
+    is_new_package = ReserveBooleanField(
+        verbose_name='package 新增',
+        default=False, db_index=True,
+        cube_fields=('device_platform', 'packagekey'),
+        group_fields=('device', 'device_platform', 'packagekey')
     )
 
     # 应用-版本 新增
-    is_new_package_version = ReserveBooleanField(default=False,
-                                                 db_index=True,
-                 group_fields=('device', 'package')
+    is_new_package_version = ReserveBooleanField(
+        verbose_name='package-version 新增',
+        default=False, db_index=True,
+        cube_fields=('device_platform', 'packagekey', 'package'),
+        group_fields=('device', 'device_platform', 'package')
     )
 
     class Meta:
         db_table = 'fact_activate_newreserve'
         verbose_name = '事实日志 开启日志<新激活>'
         verbose_name_plural = '事实日志 开启日志<新激活>列表'
+        index_together = (
+            ('platform', 'is_new_product'),
+            ('platform', 'is_new_product_channel'),
+            ('platform', 'is_new_product_channel_package'),
+            ('platform', 'is_new_product_channel_package_version'),
+            ('platform', 'is_new_product_package'),
+            ('platform', 'is_new_product_package_version'),
+
+            ('platform', 'is_new_package'),
+            ('platform', 'is_new_package_version'),
+        )
 
     def _set_new_status(self, statuses):
         for f, v in statuses.items():
@@ -1444,6 +1521,7 @@ class ActivateNewReserveFact(ActivateFact):
     def transform_from_usinglog(self):
         copy_model_instance(self.usinglog, self)
         self._fill_key()
+        self.platform = self.device_platform
         statuses = self.__class__.objects.check_all_new_status(self)
         self._set_new_status(statuses)
 
@@ -1562,6 +1640,15 @@ class DownloadFact(EventFact):
             ('event', 'productkey', 'device', 'packagekey', 'download_packagekey', 'created_datetime',),
             ('event', 'productkey'),
             ('event', 'product'),
+
+        #    ('device_platform', 'event', 'product', 'package'),
+        #    ('device_platform', 'event', 'product', 'package', 'date'),
+        #    ('device_platform', 'event', 'product', 'packagekey'),
+        #    ('device_platform', 'event', 'product', 'packagekey', 'date'),
+        #    ('device_platform', 'event', 'product', 'download_package'),
+        #    ('device_platform', 'event', 'product', 'download_package', 'date'),
+        #    ('device_platform', 'event', 'product', 'download_packagekey'),
+        #    ('device_platform', 'event', 'product', 'download_packagekey', 'date'),
         )
 
     def download_dim_from_page(self):
@@ -1688,6 +1775,8 @@ class DownloadBeginFinishFact(Fact):
 # Result
 class BaseResult(models.Model):
 
+    device_platform = models.ForeignKey(DevicePlatformDim, null=True)
+
     CYCLE_TYPES = (
         (0, 'all'),
         (1, 'daily'),
@@ -1738,71 +1827,174 @@ class BaseSumActivateResult(BaseResult):
 
 productkey_verbose_name = '产品类型'
 
+def factory_sum_activate_result_model(flag_field_name,
+                                      base_model=BaseSumActivateResult):
 
-class SumActivateDeviceProductResult(BaseSumActivateResult):
+    bind_fields_map = {
+        #'device_platform': models.ForeignKey(DevicePlatformDim, null=True, related_name='+'),
+        'product': models.ForeignKey(ProductDim, related_name='+'),
+        'productkey': models.ForeignKey(ProductKeyDim, related_name='+'),
+        'package': models.ForeignKey(PackageDim, related_name='+'),
+        'packagekey': models.ForeignKey(ProductKeyDim, related_name='+'),
+    }
+    reserve_fields = ActivateNewReserveFact.objects.reserve_fields
 
-    productkey = models.ForeignKey(ProductKeyDim,
-                                   verbose_name= productkey_verbose_name,
-                                   related_name='+')
+    flag_field = None
+    for field in reserve_fields:
+        if field.name == flag_field_name:
+            flag_field = field
 
-    class Meta:
-        verbose_name = '产品的激活启动'
-        verbose_name_plural = '产品的激活启动统计'
-        db_table = 'result_sum_activate_product'
-        unique_together = (
-            ('productkey', 'start_date', 'end_date',),
-        )
-        index_together = (
-            ('productkey', 'cycle_type', 'end_date', ),
-            ('productkey', 'cycle_type', 'start_date', ),
-            ('productkey', 'cycle_type', 'start_date', 'end_date',),
-            ('cycle_type', 'start_date', 'end_date', ),
-        )
-        ordering = ('-start_date', 'productkey')
+    if not flag_field:
+        raise KeyError('field %s not found' %flag_field_name)
 
+    if not flag_field.sum_fields:
+        raise ValueError('field %s not supported' %flag_field_name)
 
-class SumActivateDeviceProductPackageResult(BaseSumActivateResult):
+    base_name = "".join([name.capitalize() \
+                    for name in flag_field.name.lstrip('is_new_').split('_')])
+    class_name = 'SumActivateDevice%sResult' % base_name
 
-    productkey = models.ForeignKey(ProductKeyDim,
-                                   verbose_name=productkey_verbose_name,
-                                   related_name='+')
-
-    class Meta:
-        verbose_name = '产品-应用的激活启动'
-        verbose_name_plural = '产品-应用的激活启动统计'
-        db_table = 'result_sum_activate_productpackage'
-        unique_together = (
-            ('productkey', 'start_date', 'end_date',),
-        )
-        index_together = (
-            ('productkey', 'cycle_type', 'end_date', ),
-            ('productkey', 'cycle_type', 'start_date', ),
-            ('productkey', 'cycle_type', 'start_date', 'end_date',),
-            ('cycle_type', 'start_date', 'end_date', ),
-        )
-        ordering = ('-start_date', 'productkey')
-
-
-class SumActivateDeviceProductPackageVersionResult(BaseSumActivateResult):
-
-    productkey = models.ForeignKey(ProductKeyDim,
-                                   verbose_name=productkey_verbose_name,
-                                   related_name='+')
+    index_fields1 = deepcopy(list(flag_field.sum_fields))
+    index_fields2 = deepcopy(index_fields1)
+    index_fields2.append('cycle_type')
+    index_fields3 = deepcopy(index_fields2)
+    index_fields3.append('start_date')
+    index_fields4 = deepcopy(index_fields3)
+    index_fields4.append('end_date')
+    index_fields5 = ['cycle_type', 'start_date', 'end_date']
 
     class Meta:
-        verbose_name = '产品-应用-版本的激活启动'
-        verbose_name_plural =  '产品-应用-版本的激活启动统计'
-        db_table = 'result_sum_activate_productpackageversion'
+        verbose_name = flag_field.verbose_name
+        verbose_name_plural = flag_field.verbose_name
+        db_table = 'result_sum_activate_%s' % base_name.lower()
         unique_together = (
-            ('productkey', 'start_date', 'end_date',),
+            index_fields4,
         )
         index_together = (
-            ('productkey', 'cycle_type', 'end_date', ),
-            ('productkey', 'cycle_type', 'start_date', ),
-            ('productkey', 'cycle_type', 'start_date', 'end_date',),
-            ('cycle_type', 'start_date', 'end_date', ),
+            index_fields1,
+            index_fields2,
+            index_fields3,
+            index_fields4,
+            index_fields5,
         )
-        ordering = ('-start_date', 'productkey')
+
+    class_attrs = {
+        'Meta': Meta,
+        '__module__': base_model.__module__,
+    }
+    new_model = type(base_model)(class_name, (base_model,), class_attrs)
+    for bind_field_name in flag_field.sum_fields:
+        if bind_field_name in bind_fields_map:
+            bind_fields_map[bind_field_name].contribute_to_class(new_model,
+                                                                 bind_field_name)
+
+    new_model._sum_field_names = flag_field.sum_fields
+    new_model._flag_field_name = flag_field.name
+    return new_model
+
+SumActivateDeviceProductChannelResult = factory_sum_activate_result_model('is_new_product_channel')
+SumActivateDeviceProductChannelPackageResult = factory_sum_activate_result_model('is_new_product_channel_package')
+SumActivateDeviceProductChannelPackageVersionResult = factory_sum_activate_result_model('is_new_product_channel_package_version')
+SumActivateDeviceProductResult = factory_sum_activate_result_model('is_new_product')
+SumActivateDeviceProductPackageResult = factory_sum_activate_result_model('is_new_product_package')
+SumActivateDeviceProductPackageVersionResult = factory_sum_activate_result_model('is_new_product_package_version')
+
+
+class BaseCubeResult(models.Model):
+
+    date = models.ForeignKey(DateDim, related_name='+')
+
+
+    d3au_count = models.PositiveIntegerField('3日活跃数D3AU',
+                                             default=0,
+                                             max_length=11)
+
+    d3au_rate = models.DecimalField('3日活跃比D3AU-R',
+                                    default=0,
+                                    max_digits=5,
+                                    decimal_places=2)
+
+    dau_count = models.PositiveIntegerField('日活跃数DAU',
+                                            default=0,
+                                            max_length=11)
+
+    dau_rate = models.DecimalField('日活跃比DAU-R',
+                                   default=0,
+                                   max_digits=5,
+                                   decimal_places=2)
+
+    wau_count = models.PositiveIntegerField('周活跃WAU',
+                                            default=0,
+                                            max_length=11)
+
+    wau_rate = models.DecimalField('周活跃比WAU-R',
+                                   default=0,
+                                   max_digits=5,
+                                   decimal_places=2)
+
+    mau_count = models.PositiveIntegerField('月活跃MAU',
+                                            default=0,
+                                            max_length=11)
+
+    mau_rate = models.DecimalField('月活跃比MAU-R',
+                                   default=0,
+                                   max_digits=5,
+                                   decimal_places=2)
+
+    class Meta:
+        abstract = True
+
+
+def factory_cube_activate_result_model(flag_field_name, base_model=BaseCubeResult):
+    bind_fields_map = {
+        'device_platform': models.ForeignKey(DevicePlatformDim, related_name='+'),
+        'product': models.ForeignKey(ProductDim, related_name='+'),
+        'productkey': models.ForeignKey(ProductKeyDim, related_name='+'),
+        'package': models.ForeignKey(PackageDim, related_name='+'),
+        'packagekey': models.ForeignKey(ProductKeyDim, related_name='+'),
+    }
+    reserve_fields = ActivateNewReserveFact.objects.reserve_fields
+
+    flag_field = None
+    for field in reserve_fields:
+        if field.name == flag_field_name:
+            flag_field = field
+
+    if not flag_field:
+        raise KeyError('field %s not found' %flag_field_name)
+
+    if not flag_field.sum_fields:
+        raise ValueError('field %s not supported' %flag_field_name)
+
+    base_name = "".join([name.capitalize() \
+                         for name in flag_field.name.lstrip('is_new_').split('_')])
+    class_name = 'SumActivateDevice%sResult' % base_name
+
+    index_fields1 = deepcopy(list(flag_field.sum_fields))
+    index_fields2 = deepcopy(index_fields1)
+    index_fields2.append('date')
+
+    class Meta:
+        verbose_name = flag_field.verbose_name
+        verbose_name_plural = flag_field.verbose_name
+        db_table = 'sum_activate_%s_result' % base_name.lower()
+        unique_together = (
+            index_fields2,
+        )
+        index_together = (
+            index_fields1,
+        )
+
+    class_attrs = {
+        'Meta': Meta,
+        '__module__': base_model.__module__,
+    }
+    new_model = type(base_model)(class_name, (base_model,), class_attrs)
+    for bind_field_name in flag_field.sum_fields:
+        bind_fields_map[bind_field_name].contribute_to_class(new_model,
+                                                             bind_field_name)
+    return new_model
+    pass
 
 
 class SumDownloadProductResult(BaseResult):

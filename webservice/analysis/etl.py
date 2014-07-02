@@ -645,7 +645,11 @@ class TransformActivateFactFromUsinglogFactTask(TransformFactFromUsingFactTask):
                       str(fact.is_new_product_package),
                       str(fact.is_new_product_package_version),
                       str(fact.is_new_package),
-                      str(fact.is_new_package_version)]))
+                      str(fact.is_new_package_version),
+
+                      str(fact.is_new_product_channel_package),
+                      str(fact.is_new_product_channel_package_version),
+                      ]))
             except IntegrityError as e:
                 self.logger.warning(e)
                 transaction.savepoint_rollback(sid, USING)
@@ -771,174 +775,133 @@ class LoadResultTask(object):
         dt = datetime(dt.year, dt.month, 1)
         self.process_monthly(dt)
 
+def factory_load_sum_activate_result_task(sum_activate_result_model):
 
-class LoadSumActivateDeviceProductsResultTask(LoadResultTask):
+    """
+        sum_field_names:
+            1.device_paltform, productkey
+            2.device_paltform, product(entrytype, channel)
+            3.device_paltform, productkey, packagekey
+            4.device_paltform, productkey, package(package_name, version_name)
+            5.device_paltform, product(entrytype, channel), packagekey
+            6.device_paltform, product(entrytype, channel), package(package_name, version_name)
 
-    CHOICE_CYCLE_TYPE = CHOICE_CYCLE_TYPE
+        flag_field_name:
+            1. is_new_product
+            2. is_new_product_channel
+            3. is_new_product_package
+            4. is_new_product_package_version
+            5. is_new_product_channel_package
+            6. is_new_product_channel_package_version
 
-    model = SumActivateDeviceProductResult
+        sum_activate_result_model:
 
-    def get_queryset(self):
-        return ActivateNewReserveFact.objects
+    """
+    sum_field_names = sum_activate_result_model._sum_field_names
+    flag_field_name = sum_activate_result_model._flag_field_name
 
-    def _process_queryset(self, queryset, start_datedim, end_datedim,
-                          cycle_type=CHOICE_CYCLE_TYPE['custom']):
-        reserve_values = queryset.reserve_device_values('productkey',
-                                                        is_new_product=True)
-        active_values = queryset.active_device_values('productkey')
-        open_values = queryset.open_values('productkey')
+    class BaseLoadSumActivateDeviceResultTask(LoadResultTask):
 
-        total_vals = self._total_activate_values('reserve_count',
-                                                 reserve_values, dict())
-        self.logger.info(total_vals)
-        total_vals = self._total_activate_values('active_count',
-                                                 active_values, total_vals)
-        self.logger.info(total_vals)
-        total_vals = self._total_activate_values('open_count',
-                                                 open_values, total_vals)
-        self.logger.info(total_vals)
+        CHOICE_CYCLE_TYPE = CHOICE_CYCLE_TYPE
 
-        until_date_reserve_values = self._until_date_total_reserve_values(end_datedim)
-        total_vals = self._total_activate_values('total_reserve_count',
-                                                   until_date_reserve_values,
-                                                   total_vals)
-        self.logger.info(total_vals)
+        model = sum_activate_result_model
 
-        try:
-            sid = transaction.savepoint(USING)
-            self._save_activate_values(total_vals, cycle_type,
-                                       start_datedim, end_datedim)
-        except Exception as e:
-            self.logger.info(e)
-            transaction.savepoint_rollback(sid)
+        def get_queryset(self):
+            return ActivateNewReserveFact.objects
 
-    def _until_date_total_reserve_values(self, end_datedim):
-        datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
-        values = self.get_queryset()\
-            .in_days(datedims)\
-            .reserve_device_values('productkey', is_new_product=True)
-        return values
+        def _process_queryset(self, queryset, start_datedim, end_datedim,
+                              cycle_type=CHOICE_CYCLE_TYPE['custom']):
+            reserve_values = queryset.reserve_device_values(*sum_field_names,
+                                                            **{flag_field_name:True}
+                                                            )
+            active_values = queryset.active_device_values(*sum_field_names)
+            open_values = queryset.open_values(*sum_field_names)
 
-    def _total_activate_values(self, count_field, values, total_vals):
-        for val in values:
-            key = val['productkey']
-            if key not in total_vals:
-                total_vals[key] = dict()
+            total_vals = self._total_activate_values('reserve_count',
+                                                     reserve_values)
+            self.logger.info(total_vals)
+            total_vals = self._total_activate_values('active_count',
+                                                     active_values, total_vals)
+            self.logger.info(total_vals)
+            total_vals = self._total_activate_values('open_count',
+                                                     open_values, total_vals)
+            self.logger.info(total_vals)
 
-            total_vals[key][count_field] = \
-                total_vals[key].get(count_field, 0) + val['cnt']
-        return total_vals
+            until_date_reserve_values = self._until_date_total_reserve_values(end_datedim)
+            total_vals = self._total_activate_values('total_reserve_count',
+                                                     until_date_reserve_values,
+                                                     total_vals)
+            self.logger.info(total_vals)
 
-    def _save_activate_values(self, values, cycle_type, start_date, end_date):
-        self.logger.info("%s, %s" %(start_date, end_date))
+            try:
+                sid = transaction.savepoint(USING)
+                self._save_activate_values(total_vals, cycle_type,
+                                           start_datedim, end_datedim)
+            except Exception as e:
+                self.logger.info(e)
+                transaction.savepoint_rollback(sid)
 
-        for key, val in values.items():
-            defaults = val
-            result, created = self.model.objects.get_or_create(
-                productkey_id=key,
-                cycle_type=cycle_type,
-                start_date=start_date,
-                end_date=end_date,
-                defaults=defaults
-            )
-            self.logger.info("created: %s, %s, %s" %(created, result.productkey, defaults))
-            if created:
-                return
+        def _until_date_total_reserve_values(self, end_datedim):
+            datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
+            values = self.get_queryset() \
+                .in_days(datedims) \
+                .reserve_device_values(*sum_field_names,
+                                       **{flag_field_name: True} )
+            return values
 
-            # overwrite count field
-            for fieldname in self.model._meta.get_all_field_names():
-                if fieldname in defaults:
-                    setattr(result, fieldname, defaults.get(fieldname))
-                elif fieldname.endswith('_count'):
-                    setattr(result, fieldname, 0)
-            result.save()
+        def _total_activate_values(self, count_field, values, total_vals=None):
+            if total_vals is None:
+                total_vals = dict()
+            for val in values:
+                key = tuple({field_name:val[field_name] for field_name in sum_field_names}.items())
+                if key not in total_vals:
+                    total_vals[key] = dict()
 
+                total_vals[key][count_field] = \
+                    total_vals[key].get(count_field, 0) + val['cnt']
+            return total_vals
 
-class LoadSumActivateDeviceProductPackagesResultTask(
-    LoadSumActivateDeviceProductsResultTask):
+        def _save_activate_values(self, values, cycle_type, start_date, end_date):
+            self.logger.info("%s, %s, %s" %(cycle_type, start_date, end_date))
 
-    model = SumActivateDeviceProductPackageResult
+            for key, val in values.items():
+                defaults = val
+                self.logger.info(key)
+                sum_key_dict = {"%s_id"%field_name: field_val for field_name, field_val in key}
+                self.logger.info(sum_key_dict)
+                result, created = self.model.objects.get_or_create(
+                    cycle_type=cycle_type,
+                    start_date=start_date,
+                    end_date=end_date,
+                    defaults=defaults,
+                    **sum_key_dict
+                )
+                self.logger.info("created: %s, %s, %s" % (created, sum_key_dict, defaults))
+                if created:
+                    return
+                # overwrite count field
+                for fieldname in self.model._meta.get_all_field_names():
+                    if fieldname in defaults:
+                        setattr(result, fieldname, defaults.get(fieldname))
+                    elif fieldname.endswith('_count'):
+                        setattr(result, fieldname, 0)
+                result.save()
 
-    def _process_queryset(self, queryset, start_datedim, end_datedim,
-                          cycle_type=CHOICE_CYCLE_TYPE['custom']):
+    base_name = "".join([name.capitalize() \
+                         for name in flag_field_name.lstrip('is_new_').split('_')])
+    class_name = 'LoadSumActivateDevice%ssResultTask' % base_name
+    class_attrs = {
+        '__module__': 'analysis.etl'
+    }
+    return type(BaseLoadSumActivateDeviceResultTask)(class_name, (BaseLoadSumActivateDeviceResultTask, ), class_attrs)
 
-        reserve_values = queryset.reserve_device_values('productkey',
-                                                        'packagekey',
-                                                        is_new_product_package=True)
-        active_values = queryset.active_device_values('productkey', 'packagekey')
-        open_values = queryset.open_values('productkey', 'packagekey')
+LoadSumActivateDeviceProductsResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductResult)
+LoadSumActivateDeviceProductPackagesResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductPackageResult)
+LoadSumActivateDeviceProductPackageVersionsResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductPackageVersionResult)
 
-        total_values = self._total_activate_values('reserve_count',
-                                                   reserve_values, dict())
-        total_values = self._total_activate_values('active_count',
-                                                   active_values, total_values)
-        total_values = self._total_activate_values('open_count',
-                                                   open_values, total_values)
-        until_date_reserve_values = self._until_date_total_reserve_values(end_datedim)
-        total_values = self._total_activate_values('total_reserve_count',
-                                                   until_date_reserve_values,
-                                                   total_values)
-
-        try:
-            sid = transaction.savepoint(USING)
-            self._save_activate_values(total_values, cycle_type,
-                                       start_datedim, end_datedim)
-        except Exception as e:
-            self.logger.info(e)
-            transaction.savepoint_rollback(sid)
-
-    def _until_date_total_reserve_values(self, end_datedim):
-        datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
-        values = self.get_queryset() \
-            .in_days(datedims) \
-            .reserve_device_values('productkey',
-                                   'packagekey',
-                                   is_new_product_package=True)
-        return values
-
-
-class LoadSumActivateDeviceProductPackageVersionsResultTask(
-    LoadSumActivateDeviceProductPackagesResultTask):
-
-    model = SumActivateDeviceProductPackageVersionResult
-
-    def _process_queryset(self, queryset, start_datedim, end_datedim,
-                          cycle_type=CHOICE_CYCLE_TYPE['custom']):
-
-        reserve_values = queryset.reserve_device_values('productkey',
-                                                  'package',
-                                                  is_new_product_package_version=True)
-        active_values = queryset.active_device_values('productkey', 'package')
-        open_values = queryset.open_values('productkey', 'package')
-
-        total_values = self._total_activate_values('reserve_count',
-                                                   reserve_values, dict())
-        total_values = self._total_activate_values('active_count',
-                                                   active_values, total_values)
-        total_values = self._total_activate_values('open_count',
-                                                   open_values, total_values)
-        until_date_reserve_values = self._until_date_total_reserve_values(end_datedim)
-        total_values = self._total_activate_values('total_reserve_count',
-                                                   until_date_reserve_values,
-                                                   total_values)
-
-        try:
-            sid = transaction.savepoint(USING)
-            self._save_activate_values(total_values, cycle_type,
-                                       start_datedim, end_datedim)
-            transaction.savepoint_commit(sid)
-        except Exception as e:
-            self.logger.info(e)
-            transaction.savepoint_rollback(sid)
-
-    def _until_date_total_reserve_values(self, end_datedim):
-        datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
-        values = self.get_queryset() \
-            .in_days(datedims) \
-            .reserve_device_values('productkey',
-                                   'package',
-                                   is_new_product_package=True)
-        return values
+LoadSumActivateDeviceProductChannelsResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductChannelResult)
+LoadSumActivateDeviceProductChannelPackagesResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductChannelPackageResult)
+LoadSumActivateDeviceProductChannelPackageVersionsResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductChannelPackageVersionResult)
 
 
 class LoadSumDownloadProductResultTask(LoadResultTask):
