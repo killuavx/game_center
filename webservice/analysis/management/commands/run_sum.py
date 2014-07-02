@@ -12,6 +12,9 @@ from analysis.etl import (
     LoadSumActivateDeviceProductsResultTask,
     LoadSumActivateDeviceProductPackagesResultTask,
     LoadSumActivateDeviceProductPackageVersionsResultTask,
+    LoadSumActivateDeviceProductChannelsResultTask,
+    LoadSumActivateDeviceProductChannelPackagesResultTask,
+    LoadSumActivateDeviceProductChannelPackageVersionsResultTask,
     LoadSumDownloadProductResultTask)
 
 logger = getLogger('scripts')
@@ -51,7 +54,14 @@ class Command(BaseCommand):
                     type='choice',
                     default='0',
                     help="任务类型, 用于sum_activate汇总数据的粒度类型, "
-                         "可选类型 all:0, product:1, product-package:2, product-package-version:3",
+                         "可选类型 "
+                         "all:0,"
+                         "product:1, "
+                         "product-package:2, "
+                         "product-package-version:3, "
+                         "product-channel:4, "
+                         "product-channel-package:5, "
+                         "product-channel-package-version:6, "
         ),
     )
     can_import_settings = True
@@ -120,6 +130,12 @@ class Command(BaseCommand):
             tasks.append(LoadSumActivateDeviceProductPackagesResultTask())
         if task_type == 3 or task_type == 0:
             tasks.append(LoadSumActivateDeviceProductPackageVersionsResultTask())
+        if task_type == 4 or task_type == 0:
+            tasks.append(LoadSumActivateDeviceProductChannelsResultTask())
+        if task_type == 5 or task_type == 0:
+            tasks.append(LoadSumActivateDeviceProductChannelPackagesResultTask())
+        if task_type == 6 or task_type == 0:
+            tasks.append(LoadSumActivateDeviceProductChannelPackageVersionsResultTask())
 
         if cycle_type == 'all':
             for t in tasks:
