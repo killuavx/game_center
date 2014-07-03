@@ -775,8 +775,110 @@ class LoadResultTask(object):
         dt = datetime(dt.year, dt.month, 1)
         self.process_monthly(dt)
 
-def factory_load_sum_activate_result_task(sum_activate_result_model):
 
+class BaseLoadActivateDeviceResultTask(LoadResultTask):
+
+    CHOICE_CYCLE_TYPE = CHOICE_CYCLE_TYPE
+
+    model = None
+
+    sum_field_names = None
+
+    flag_field_name = None
+
+    def get_queryset(self):
+        return ActivateNewReserveFact.objects
+
+    def _process_queryset(self, queryset, start_datedim, end_datedim,
+                          cycle_type=CHOICE_CYCLE_TYPE['custom']):
+        reserve_values = queryset.reserve_device_values(*self.sum_field_names,
+                                                        **{self.flag_field_name:True}
+        )
+        active_values = queryset.active_device_values(*self.sum_field_names)
+        open_values = queryset.open_values(*self.sum_field_names)
+
+        total_vals = self._total_activate_values('reserve_count',
+                                                 reserve_values)
+        self.logger.info(total_vals)
+        total_vals = self._total_activate_values('active_count',
+                                                 active_values, total_vals)
+        self.logger.info(total_vals)
+        total_vals = self._total_activate_values('open_count',
+                                                 open_values, total_vals)
+        self.logger.info(total_vals)
+
+        until_date_reserve_values = self._until_date_total_reserve_values(end_datedim)
+        total_vals = self._total_activate_values('total_reserve_count',
+                                                 until_date_reserve_values,
+                                                 total_vals)
+        self.logger.info(total_vals)
+
+        try:
+            sid = transaction.savepoint(USING)
+            self._save_activate_values(total_vals, cycle_type,
+                                       start_datedim, end_datedim)
+        except Exception as e:
+            self.logger.info(e)
+            transaction.savepoint_rollback(sid)
+
+    def _until_date_total_reserve_values(self, end_datedim):
+        datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
+        values = self.get_queryset() \
+            .in_days(datedims) \
+            .reserve_device_values(*self.sum_field_names,
+                                   **{self.flag_field_name: True} )
+        return values
+
+    def _total_activate_values(self, count_field, values, total_vals=None):
+        if total_vals is None:
+            total_vals = dict()
+        for val in values:
+            key = tuple({field_name:val[field_name] for field_name in self.sum_field_names}.items())
+            if key not in total_vals:
+                total_vals[key] = dict()
+
+            total_vals[key][count_field] = \
+                total_vals[key].get(count_field, 0) + val['cnt']
+        return total_vals
+
+    def _save_activate_values(self, values, cycle_type, start_date, end_date):
+        self.logger.info("%s, %s, %s" %(cycle_type, start_date, end_date))
+
+        for key, val in values.items():
+            defaults = val
+            self.logger.info(key)
+            lookup_dict = {"%s_id"%field_name: field_val for field_name, field_val in key}
+            lookup_dict.update(cycle_type=cycle_type,
+                               start_date=start_date,
+                               end_date=end_date)
+            self.logger.info(lookup_dict)
+            try:
+                result, created = self.model.objects.get(**lookup_dict), False
+            except self.model.DoesNotExist:
+                create_params = deepcopy(lookup_dict)
+                create_params.update(**defaults)
+                result, created = self.model(**create_params), True
+                try:
+                    sid = transaction.savepoint(USING)
+                    result.save()
+                    transaction.savepoint_commit(sid, USING)
+                except IntegrityError:
+                    transaction.savepoint_rollback(sid, USING)
+                    continue
+
+            self.logger.info("created: %s, %s, %s" % (created, lookup_dict, defaults))
+            if created:
+                continue
+                # overwrite count field
+            for fieldname in self.model._meta.get_all_field_names():
+                if fieldname in defaults:
+                    setattr(result, fieldname, defaults.get(fieldname))
+                elif fieldname.endswith('_count'):
+                    setattr(result, fieldname, 0)
+            result.save()
+
+
+def factory_load_sum_activate_result_task(sum_activate_result_model):
     """
         sum_field_names:
             1.device_paltform, productkey
@@ -800,100 +902,17 @@ def factory_load_sum_activate_result_task(sum_activate_result_model):
     sum_field_names = sum_activate_result_model._sum_field_names
     flag_field_name = sum_activate_result_model._flag_field_name
 
-    class BaseLoadSumActivateDeviceResultTask(LoadResultTask):
-
-        CHOICE_CYCLE_TYPE = CHOICE_CYCLE_TYPE
-
-        model = sum_activate_result_model
-
-        def get_queryset(self):
-            return ActivateNewReserveFact.objects
-
-        def _process_queryset(self, queryset, start_datedim, end_datedim,
-                              cycle_type=CHOICE_CYCLE_TYPE['custom']):
-            reserve_values = queryset.reserve_device_values(*sum_field_names,
-                                                            **{flag_field_name:True}
-                                                            )
-            active_values = queryset.active_device_values(*sum_field_names)
-            open_values = queryset.open_values(*sum_field_names)
-
-            total_vals = self._total_activate_values('reserve_count',
-                                                     reserve_values)
-            self.logger.info(total_vals)
-            total_vals = self._total_activate_values('active_count',
-                                                     active_values, total_vals)
-            self.logger.info(total_vals)
-            total_vals = self._total_activate_values('open_count',
-                                                     open_values, total_vals)
-            self.logger.info(total_vals)
-
-            until_date_reserve_values = self._until_date_total_reserve_values(end_datedim)
-            total_vals = self._total_activate_values('total_reserve_count',
-                                                     until_date_reserve_values,
-                                                     total_vals)
-            self.logger.info(total_vals)
-
-            try:
-                sid = transaction.savepoint(USING)
-                self._save_activate_values(total_vals, cycle_type,
-                                           start_datedim, end_datedim)
-            except Exception as e:
-                self.logger.info(e)
-                transaction.savepoint_rollback(sid)
-
-        def _until_date_total_reserve_values(self, end_datedim):
-            datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
-            values = self.get_queryset() \
-                .in_days(datedims) \
-                .reserve_device_values(*sum_field_names,
-                                       **{flag_field_name: True} )
-            return values
-
-        def _total_activate_values(self, count_field, values, total_vals=None):
-            if total_vals is None:
-                total_vals = dict()
-            for val in values:
-                key = tuple({field_name:val[field_name] for field_name in sum_field_names}.items())
-                if key not in total_vals:
-                    total_vals[key] = dict()
-
-                total_vals[key][count_field] = \
-                    total_vals[key].get(count_field, 0) + val['cnt']
-            return total_vals
-
-        def _save_activate_values(self, values, cycle_type, start_date, end_date):
-            self.logger.info("%s, %s, %s" %(cycle_type, start_date, end_date))
-
-            for key, val in values.items():
-                defaults = val
-                self.logger.info(key)
-                sum_key_dict = {"%s_id"%field_name: field_val for field_name, field_val in key}
-                self.logger.info(sum_key_dict)
-                result, created = self.model.objects.get_or_create(
-                    cycle_type=cycle_type,
-                    start_date=start_date,
-                    end_date=end_date,
-                    defaults=defaults,
-                    **sum_key_dict
-                )
-                self.logger.info("created: %s, %s, %s" % (created, sum_key_dict, defaults))
-                if created:
-                    return
-                # overwrite count field
-                for fieldname in self.model._meta.get_all_field_names():
-                    if fieldname in defaults:
-                        setattr(result, fieldname, defaults.get(fieldname))
-                    elif fieldname.endswith('_count'):
-                        setattr(result, fieldname, 0)
-                result.save()
-
     base_name = "".join([name.capitalize() \
                          for name in flag_field_name.lstrip('is_new_').split('_')])
     class_name = 'LoadSumActivateDevice%ssResultTask' % base_name
     class_attrs = {
+        'model' : sum_activate_result_model,
+        'flag_field_name': flag_field_name,
+        'sum_field_names': sum_field_names,
         '__module__': 'analysis.etl'
     }
-    return type(BaseLoadSumActivateDeviceResultTask)(class_name, (BaseLoadSumActivateDeviceResultTask, ), class_attrs)
+    return type(BaseLoadActivateDeviceResultTask)(class_name, (BaseLoadActivateDeviceResultTask, ), class_attrs)
+
 
 LoadSumActivateDeviceProductsResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductResult)
 LoadSumActivateDeviceProductPackagesResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductPackageResult)
@@ -902,6 +921,36 @@ LoadSumActivateDeviceProductPackageVersionsResultTask = factory_load_sum_activat
 LoadSumActivateDeviceProductChannelsResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductChannelResult)
 LoadSumActivateDeviceProductChannelPackagesResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductChannelPackageResult)
 LoadSumActivateDeviceProductChannelPackageVersionsResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductChannelPackageVersionResult)
+
+
+def factory_load_cube_activate_result_task(cube_activate_result_model):
+    """
+        sum_field_names:
+            5.device_paltform, product(entrytype, channel), packagekey
+            6.device_paltform, product(entrytype, channel), package(package_name, version_name)
+
+        flag_field_name:
+            5. is_new_product_channel_package
+            6. is_new_product_channel_package_version
+
+        cube_activate_result_model:
+    """
+    sum_field_names = cube_activate_result_model._sum_field_names
+    flag_field_name = cube_activate_result_model._flag_field_name
+    base_name = "".join([name.capitalize() \
+                         for name in flag_field_name.lstrip('is_new_').split('_')])
+    class_name = 'LoadCubeActivateDevice%sResultTask' % base_name
+    class_attrs = {
+        'model': cube_activate_result_model,
+        'flag_field_name': flag_field_name,
+        'sum_field_names': sum_field_names,
+        '__module__': 'analysis.etl'
+    }
+    return type(BaseLoadActivateDeviceResultTask)(class_name, (BaseLoadActivateDeviceResultTask, ), class_attrs)
+
+
+LoadCubeActivateDeviceProductChannelPackageResultTask = factory_load_cube_activate_result_task(CubeActivateDeviceProductChannelPackageResult)
+LoadCubeActivateDeviceProductChannelPackageVersionResultTask = factory_load_cube_activate_result_task(CubeActivateDeviceProductChannelPackageVersionResult)
 
 
 class LoadSumDownloadProductResultTask(LoadResultTask):
@@ -979,13 +1028,118 @@ class LoadSumDownloadProductResultTask(LoadResultTask):
                 defaults=defaults
             )
             if creatd:
-                return
+                continue
 
             result.total_download_count = defaults.get('total_download_count', 0)
             result.total_downloaded_count = defaults.get('total_downloaded_count', 0)
             result.download_count = defaults.get('download_count', 0)
             result.downloaded_count = defaults.get('downloaded_count', 0)
             result.save()
+
+
+class BaseLoadCubeDownloadResultTask(LoadResultTask):
+
+    model = None
+
+    sum_field_names = None
+
+    def get_queryset(self):
+        return DownloadFact.objects
+
+    def _get_download_events(self):
+        if not hasattr(self, '_events'):
+            eventtypes = ['download', 'downloaded']
+            events = dict()
+            for e in EventDim.objects.filter(eventtype__in=eventtypes):
+                events[e.pk] = e
+            self._events = events
+        return self._events
+
+    def _process_queryset(self, queryset, start_datedim, end_datedim,
+                          cycle_type=CHOICE_CYCLE_TYPE['custom']):
+        download_values = queryset.download_values(*self.sum_field_names)
+        self.logger.info("%s, %s" %(start_datedim, end_datedim))
+        total_download_values = self._until_date_download_values(end_datedim)
+        self.logger.info(total_download_values)
+        cb_dw_values = self._combine_values(download_values,
+                                            result=dict(), is_total=False)
+        cb_dw_values = self._combine_values(total_download_values,
+                                            cb_dw_values, is_total=True)
+        self.logger.info(cb_dw_values)
+        self._save_values(cb_dw_values, cycle_type, start_datedim, end_datedim)
+
+    def _until_date_download_values(self, end_datedim):
+        datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
+        self.logger.info(datedims.count())
+        return self.get_queryset().in_days(datedims).download_values(*self.sum_field_names)
+
+    def _combine_values(self, values, result, is_total=False):
+        events = self._get_download_events()
+        for val in values:
+            key = tuple({field_name:val[field_name] for field_name in self.sum_field_names}.items())
+            event_pk = val['event']
+            eventtype = events[event_pk].eventtype
+            if key not in result:
+                result[key] = dict(download_count=0, total_download_count=0,
+                                   downloaded_count=0, total_downloaded_count=0)
+            prefix = ''
+            if is_total:
+                prefix = 'total_'
+            if eventtype == 'download':
+                result[key]['%sdownload_count' % prefix] = val['cnt']
+            elif eventtype == 'downloaded':
+                result[key]['%sdownloaded_count' % prefix] = val['cnt']
+
+        return result
+
+    def _save_values(self, values, cycle_type, start_date, end_date):
+        self.logger.info(values)
+        for key, val in values.items():
+            self.logger.info("%s,  %s" % (key, val))
+            defaults = val
+            lookup_dict = {"%s_id"%field_name: field_val for field_name, field_val in key}
+            lookup_dict.update(cycle_type=cycle_type,
+                               start_date=start_date,
+                               end_date=end_date)
+            print(lookup_dict)
+            try:
+                result, created = self.model.objects.get(**lookup_dict), False
+            except self.model.DoesNotExist:
+                create_params = deepcopy(lookup_dict)
+                create_params.update(**defaults)
+                result, created = self.model(**create_params), True
+                try:
+                    sid = transaction.savepoint(USING)
+                    result.save()
+                    transaction.savepoint_commit(sid, USING)
+                except IntegrityError as e:
+                    print(e)
+                    transaction.savepoint_rollback(sid, USING)
+                    continue
+
+            if created:
+                continue
+            result.total_download_count = defaults.get('total_download_count', 0)
+            result.total_downloaded_count = defaults.get('total_downloaded_count', 0)
+            result.download_count = defaults.get('download_count', 0)
+            result.downloaded_count = defaults.get('downloaded_count', 0)
+            result.save()
+
+
+def factory_load_cube_download_result_task(model_base_name, cube_download_result_model):
+    sum_field_names = cube_download_result_model._sum_field_names
+    class_name = 'LoadCubeDownload%sResultTask' % model_base_name
+    class_attrs = {
+        'model': cube_download_result_model,
+        'sum_field_names': sum_field_names,
+        '__module__': 'analysis.etl'
+    }
+    return type(BaseLoadCubeDownloadResultTask)(class_name, (BaseLoadCubeDownloadResultTask, ), class_attrs)
+
+
+LoadCubeDownloadProductResultTask = factory_load_cube_download_result_task('Product', CubeDownloadProductResult)
+LoadCubeDownloadProductPackageResultTask = factory_load_cube_download_result_task('ProductPacakge', CubeDownloadProductPackageResult)
+LoadCubeDownloadProductPackageVersionResultTask = factory_load_cube_download_result_task('ProductPacakgeVersion', CubeDownloadProductPackageVersionResult)
 
 
 class InitialDimensionsTask(object):

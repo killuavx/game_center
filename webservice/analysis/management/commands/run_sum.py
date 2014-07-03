@@ -15,6 +15,11 @@ from analysis.etl import (
     LoadSumActivateDeviceProductChannelsResultTask,
     LoadSumActivateDeviceProductChannelPackagesResultTask,
     LoadSumActivateDeviceProductChannelPackageVersionsResultTask,
+    LoadCubeActivateDeviceProductChannelPackageResultTask,
+    LoadCubeActivateDeviceProductChannelPackageVersionResultTask,
+    LoadCubeDownloadProductResultTask,
+    LoadCubeDownloadProductPackageResultTask,
+    LoadCubeDownloadProductPackageVersionResultTask,
     LoadSumDownloadProductResultTask)
 
 logger = getLogger('scripts')
@@ -23,7 +28,7 @@ cycle_types = deepcopy(LoadResultTask.CHOICE_CYCLE_TYPE)
 cycle_types['all'] = -1
 
 
-RUN_CHOICES = ['sum_activate', 'sum_download']
+RUN_CHOICES = ['sum_activate', 'sum_download', 'cube_activate', 'cube_download']
 
 
 class Command(BaseCommand):
@@ -99,6 +104,10 @@ class Command(BaseCommand):
             self.run_sum_activate(opt_date, options['cycle_type'], options['task_type'])
         elif action_name == 'sum_download':
             self.run_sum_download(opt_date, options['cycle_type'])
+        elif action_name == 'cube_activate':
+            self.run_cube_activate(opt_date, options['cycle_type'], options['task_type'])
+        elif action_name == 'cube_download':
+            self.run_cube_download(opt_date, options['cycle_type'], options['task_type'])
         else:
             self.log_info('Invalid options')
 
@@ -174,3 +183,59 @@ class Command(BaseCommand):
             task.process_weekly_by_natural(dt)
             #task.process_monthly(dt)
             task.process_monthly_by_natural(dt)
+
+    def run_cube_activate(self, dt, cycle_type='all', task_type=-1):
+        tasks = list()
+        task_type = int(task_type)
+        if task_type == 5 or task_type == 0:
+            tasks.append(LoadCubeActivateDeviceProductChannelPackageResultTask())
+        if task_type == 6 or task_type == 0:
+            tasks.append(LoadCubeActivateDeviceProductChannelPackageVersionResultTask())
+
+        if cycle_type == 'all':
+            for t in tasks:
+                t.process_daily(dt)
+                #t.process_weekly(dt)
+                t.process_weekly_by_natural(dt)
+                #t.process_monthly(dt)
+                t.process_monthly_by_natural(dt)
+        elif cycle_type == 'daily':
+            for t in tasks:
+                t.process_daily(dt)
+        elif cycle_type == 'weekly':
+            for t in tasks:
+                #t.process_weekly(dt)
+                t.process_weekly_by_natural(dt)
+        elif cycle_type == 'monthly':
+            for t in tasks:
+                #t.process_monthly(dt)
+                t.process_monthly_by_natural(dt)
+
+    def run_cube_download(self, dt, cycle_type='all', task_type=-1):
+        tasks = list()
+        task_type = int(task_type)
+        if task_type == 1 or task_type == 0:
+            tasks.append(LoadCubeDownloadProductResultTask())
+        if task_type == 2 or task_type == 0:
+            tasks.append(LoadCubeDownloadProductPackageResultTask())
+        if task_type == 3 or task_type == 0:
+            tasks.append(LoadCubeDownloadProductPackageVersionResultTask())
+
+        if cycle_type == 'all':
+            for t in tasks:
+                t.process_daily(dt)
+                #t.process_weekly(dt)
+                t.process_weekly_by_natural(dt)
+                #t.process_monthly(dt)
+                t.process_monthly_by_natural(dt)
+        elif cycle_type == 'daily':
+            for t in tasks:
+                t.process_daily(dt)
+        elif cycle_type == 'weekly':
+            for t in tasks:
+                #t.process_weekly(dt)
+                t.process_weekly_by_natural(dt)
+        elif cycle_type == 'monthly':
+            for t in tasks:
+                #t.process_monthly(dt)
+                t.process_monthly_by_natural(dt)

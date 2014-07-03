@@ -1829,13 +1829,12 @@ productkey_verbose_name = '产品类型'
 
 def factory_sum_activate_result_model(flag_field_name,
                                       base_model=BaseSumActivateResult):
-
     bind_fields_map = {
         #'device_platform': models.ForeignKey(DevicePlatformDim, null=True, related_name='+'),
-        'product': models.ForeignKey(ProductDim, related_name='+'),
         'productkey': models.ForeignKey(ProductKeyDim, related_name='+'),
+        'product': models.ForeignKey(ProductDim, related_name='+'),
+        'packagekey': models.ForeignKey(PackageKeyDim, related_name='+'),
         'package': models.ForeignKey(PackageDim, related_name='+'),
-        'packagekey': models.ForeignKey(ProductKeyDim, related_name='+'),
     }
     reserve_fields = ActivateNewReserveFact.objects.reserve_fields
 
@@ -1900,7 +1899,7 @@ SumActivateDeviceProductPackageResult = factory_sum_activate_result_model('is_ne
 SumActivateDeviceProductPackageVersionResult = factory_sum_activate_result_model('is_new_product_package_version')
 
 
-class BaseCubeResult(models.Model):
+class BaseAnalysisResult(models.Model):
 
     date = models.ForeignKey(DateDim, related_name='+')
 
@@ -1945,13 +1944,19 @@ class BaseCubeResult(models.Model):
         abstract = True
 
 
-def factory_cube_activate_result_model(flag_field_name, base_model=BaseCubeResult):
+class BaseCubePackageActivateResult(BaseSumActivateResult):
+
+    class Meta:
+        abstract = True
+
+
+def factory_cube_activate_package_result_model(flag_field_name, base_model=BaseCubePackageActivateResult):
     bind_fields_map = {
-        'device_platform': models.ForeignKey(DevicePlatformDim, related_name='+'),
-        'product': models.ForeignKey(ProductDim, related_name='+'),
-        'productkey': models.ForeignKey(ProductKeyDim, related_name='+'),
+        #'device_platform': models.ForeignKey(DevicePlatformDim, related_name='+'),
+        'packagekey': models.ForeignKey(PackageKeyDim, related_name='+'),
         'package': models.ForeignKey(PackageDim, related_name='+'),
-        'packagekey': models.ForeignKey(ProductKeyDim, related_name='+'),
+        'productkey': models.ForeignKey(ProductKeyDim, related_name='+'),
+        'product': models.ForeignKey(ProductDim, related_name='+'),
     }
     reserve_fields = ActivateNewReserveFact.objects.reserve_fields
 
@@ -1963,38 +1968,55 @@ def factory_cube_activate_result_model(flag_field_name, base_model=BaseCubeResul
     if not flag_field:
         raise KeyError('field %s not found' %flag_field_name)
 
-    if not flag_field.sum_fields:
+    field_names_to_add = flag_field.cube_fields
+    if not field_names_to_add:
         raise ValueError('field %s not supported' %flag_field_name)
 
     base_name = "".join([name.capitalize() \
                          for name in flag_field.name.lstrip('is_new_').split('_')])
-    class_name = 'SumActivateDevice%sResult' % base_name
+    class_name = 'CubeActivateDevice%sResult' % base_name
 
-    index_fields1 = deepcopy(list(flag_field.sum_fields))
+    index_fields1 = deepcopy(list(field_names_to_add))
     index_fields2 = deepcopy(index_fields1)
-    index_fields2.append('date')
+    index_fields2.append('cycle_type')
+    index_fields3 = deepcopy(index_fields2)
+    index_fields3.append('start_date')
+    index_fields4 = deepcopy(index_fields3)
+    index_fields4.append('end_date')
+    index_fields5 = ['cycle_type', 'start_date', 'end_date']
 
     class Meta:
-        verbose_name = flag_field.verbose_name
-        verbose_name_plural = flag_field.verbose_name
-        db_table = 'sum_activate_%s_result' % base_name.lower()
+        verbose_name = "Cube %s"% flag_field.verbose_name
+        verbose_name_plural = "Cube %s"% flag_field.verbose_name
+        db_table = 'result_cube_activate_%s' % base_name.lower()
         unique_together = (
-            index_fields2,
+            index_fields4,
         )
         index_together = (
             index_fields1,
+            index_fields2,
+            index_fields3,
+            index_fields4,
+            index_fields5,
         )
 
     class_attrs = {
         'Meta': Meta,
         '__module__': base_model.__module__,
     }
+
     new_model = type(base_model)(class_name, (base_model,), class_attrs)
-    for bind_field_name in flag_field.sum_fields:
-        bind_fields_map[bind_field_name].contribute_to_class(new_model,
-                                                             bind_field_name)
+    for bind_field_name in field_names_to_add:
+        if bind_field_name in bind_fields_map:
+            bind_fields_map[bind_field_name].contribute_to_class(new_model,
+                                                                 bind_field_name)
+    new_model._sum_field_names = field_names_to_add
+    new_model._flag_field_name = flag_field.name
     return new_model
-    pass
+
+
+CubeActivateDeviceProductChannelPackageResult = factory_cube_activate_package_result_model('is_new_product_channel_package')
+CubeActivateDeviceProductChannelPackageVersionResult = factory_cube_activate_package_result_model('is_new_product_channel_package_version')
 
 
 class SumDownloadProductResult(BaseResult):
@@ -2037,6 +2059,91 @@ class SumDownloadProductResult(BaseResult):
             ('cycle_type', 'start_date', 'end_date', ),
         )
         ordering = ('-start_date', 'productkey')
+
+
+class CubeDownloadResult(BaseResult):
+
+    total_download_count = models.PositiveIntegerField('累计下载次数',
+                                                       default=0,
+                                                       max_length=11,
+                                                       )
+
+    download_count = models.PositiveIntegerField('下载次数',
+                                                 default=0,
+                                                 max_length=11,
+                                                 )
+
+    total_downloaded_count = models.PositiveIntegerField('累计下载完成数',
+                                                         default=0,
+                                                         max_length=11,
+                                                         )
+
+    downloaded_count = models.PositiveIntegerField('下载完成数',
+                                                   default=0,
+                                                   max_length=11,
+                                                   )
+
+    class Meta:
+        abstract = True
+
+
+def factory_cube_download_result_model(model_name, field_names_to_add, base_model=CubeDownloadResult):
+    bind_fields_map = {
+        #'device_platform': models.ForeignKey(DevicePlatformDim, related_name='+'),
+        'packagekey': models.ForeignKey(PackageKeyDim, related_name='+'),
+        'package': models.ForeignKey(PackageDim, related_name='+'),
+        'productkey': models.ForeignKey(ProductKeyDim, related_name='+'),
+        'product': models.ForeignKey(ProductDim, related_name='+'),
+    }
+
+    if not field_names_to_add:
+        raise ValueError('fields must not empty')
+
+    new_field_names_to_add = list(deepcopy(field_names_to_add))
+    if 'device_platform' not in new_field_names_to_add:
+        new_field_names_to_add.insert(0, 'device_platform')
+
+
+    index_fields1 = deepcopy(list(new_field_names_to_add))
+    index_fields2 = deepcopy(index_fields1)
+    index_fields2.append('cycle_type')
+    index_fields3 = deepcopy(index_fields2)
+    index_fields3.append('start_date')
+    index_fields4 = deepcopy(index_fields3)
+    index_fields4.append('end_date')
+    index_fields5 = ['cycle_type', 'start_date', 'end_date']
+
+    class Meta:
+        db_table = 'result_cube_download_%s' % model_name.lower()
+        unique_together = (
+            index_fields4,
+        )
+        index_together = (
+            index_fields1,
+            index_fields2,
+            index_fields3,
+            index_fields4,
+            index_fields5,
+        )
+
+    class_attrs = {
+        'Meta': Meta,
+        '__module__': base_model.__module__,
+    }
+
+    class_name = 'CubeDownload%sResult' % model_name
+    new_model = type(base_model)(class_name, (base_model,), class_attrs)
+    for bind_field_name in field_names_to_add:
+        if bind_field_name in bind_fields_map:
+            bind_fields_map[bind_field_name].contribute_to_class(new_model,
+                                                                 bind_field_name)
+    new_model._sum_field_names = new_field_names_to_add
+    return new_model
+
+
+CubeDownloadProductResult = factory_cube_download_result_model('Product', ('productkey',))
+CubeDownloadProductPackageResult = factory_cube_download_result_model('ProductPackage', ('productkey', 'packagekey'))
+CubeDownloadProductPackageVersionResult = factory_cube_download_result_model('ProductPackageVersion', ('productkey', 'packagekey', 'package'))
 
 
 from django.conf import settings
