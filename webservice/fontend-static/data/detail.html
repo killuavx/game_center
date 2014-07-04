@@ -13,8 +13,19 @@
 <div class="navbar navbar-default navbar-static-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <a class="navbar-brand" href="index.html">数据统计</a>
+      <a class="navbar-brand" href="index.html">虫虫游戏-数据统计</a>
     </div>
+    
+    
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="index.html">产品</a></li>
+        <li><a href="down.html">下载</a></li>
+        <li><a href="crack.html">破解</a></li>
+      </ul>
+    </div>  <!--navbar-collaps-->
+    
+    
   </div>
 </div> <!-- /Static navbar -->
 
@@ -24,24 +35,25 @@
 <div class="container">
 
     <ul class="nav nav-tabs" role="tablist">
-      <li><a href="index.html">渠道数据</a></li>
-      <li><a href="down.html">下载</a></li>
-      <li><a href="dis.html">渠道数据</a></li>
-      <li class="active"><a href="detail.html">渠道明细</a></li>
+      <li><a href="dis.html">渠道统计</a></li>
+      <li class="active"><a href="detail.html">明细</a></li>
       <li class="pull-right">
-<form class="navbar-form" role="search" style="margin:0">
-  <div class="form-group">
-    <input type="date" class="form-control" placeholder="Search" >
-  </div>
-  <div class="form-group">
-    <input type="date" class="form-control" placeholder="Search" >
-  </div>
-  <button type="submit" class="btn btn-default">搜索</button>
-</form>
+              <form class="navbar-form" role="search" style="margin:0">
+                  <div class="form-group">
+                      <input type="date" class="form-control" placeholder="Search" >
+                      <input type="date" class="form-control" placeholder="Search" >
+                  </div>
+                  <div class="input-group">
+                        <div class="btn-group">
+                              <button type="submit" class="btn btn-default btn-primary">搜索</button>
+                              <button type="button" class="btn btn-default">全部</button>
+                        </div>
+                  </div>
+              </form>
       </li>
     </ul>
     
-    <table class="table table-condensed  table-hover">
+    <table class="table table-condensed table-striped table-hover">
       <thead>
         <tr>
           <th>日期</th>
