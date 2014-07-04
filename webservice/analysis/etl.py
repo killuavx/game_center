@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import MultipleObjectsReturned
+from django.utils.timezone import timedelta, get_default_timezone
 from django.db import IntegrityError
 from django.db import transaction
 from .models import *
 from .documents.event import Event
 from mongoengine import Q
-from django.utils.timezone import datetime, timedelta, get_default_timezone
 from dateutil.relativedelta import *
-import logging
 from analysis.helpers import *
+from datetime import datetime, date
+import logging
 
 USING = UsinglogFact.objects.db
 
@@ -720,7 +721,6 @@ class TransformOpenCloseDailyFactFromUsinglogFactTask(TransformFactFromUsingFact
 
 
 # - Load result
-from datetime import date
 _datedims_mapset = dict()
 
 
@@ -1148,7 +1148,6 @@ class BaseLoadCubeDownloadResultTask(LoadResultTask):
             lookup_dict.update(cycle_type=cycle_type,
                                start_date=start_date,
                                end_date=end_date)
-            print(lookup_dict)
             try:
                 result, created = self.model.objects.get(**lookup_dict), False
             except self.model.DoesNotExist:
@@ -1160,7 +1159,6 @@ class BaseLoadCubeDownloadResultTask(LoadResultTask):
                     result.save()
                     transaction.savepoint_commit(sid, USING)
                 except IntegrityError as e:
-                    print(e)
                     transaction.savepoint_rollback(sid, USING)
                     continue
 
@@ -1185,8 +1183,14 @@ def factory_load_cube_download_result_task(model_base_name, cube_download_result
 
 
 LoadCubeDownloadProductResultTask = factory_load_cube_download_result_task('Product', CubeDownloadProductResult)
+
+# 分发出去的下载量
 LoadCubeDownloadProductPackageResultTask = factory_load_cube_download_result_task('ProductPacakge', CubeDownloadProductPackageResult)
 LoadCubeDownloadProductPackageVersionResultTask = factory_load_cube_download_result_task('ProductPacakgeVersion', CubeDownloadProductPackageVersionResult)
+
+# 自身被下载数量
+LoadCubeDownloadProductPackageIncomingResultTask = factory_load_cube_download_result_task('ProductPacakgeIncoming', CubeDownloadProductPackageIncomingResult)
+LoadCubeDownloadProductPackageVersionIncomingResultTask = factory_load_cube_download_result_task('ProductPacakgeVersionIncoming', CubeDownloadProductPackageVersionIncomingResult)
 
 
 class InitialDimensionsTask(object):
@@ -1288,7 +1292,6 @@ class InitialDimensionsTask(object):
                                     app_id=UNDEFINED)
 
     def import_cell_tower_from_csv(self, f):
-        from django.utils.timezone import datetime, utc
         from analysis.documents.event import CellTower
         import csv
         reader = csv.reader(f)
@@ -1333,8 +1336,8 @@ class CleaningPackageDimensionsTask(object):
 
     def execute(self):
         from django.db.models.query import Q as DQ
-        qs = PackageDim.objects.filter(DQ(platform=UNDEFINED,
-                                          platform=PLATFORM_ANDROID)) \
+        qs = PackageDim.objects.filter(DQ(platform=UNDEFINED)|
+                                       DQ(platform=PLATFORM_ANDROID))\
             .order_by('package_name', 'version_name')
         for pd in qs:
             try:

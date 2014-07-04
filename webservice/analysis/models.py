@@ -1707,14 +1707,23 @@ class DownloadFact(EventFact):
             ('event', 'productkey'),
             ('event', 'product'),
 
-        #    ('device_platform', 'event', 'product', 'package'),
-        #    ('device_platform', 'event', 'product', 'package', 'date'),
-        #    ('device_platform', 'event', 'product', 'packagekey'),
-        #    ('device_platform', 'event', 'product', 'packagekey', 'date'),
-        #    ('device_platform', 'event', 'product', 'download_package'),
-        #    ('device_platform', 'event', 'product', 'download_package', 'date'),
-        #    ('device_platform', 'event', 'product', 'download_packagekey'),
-        #    ('device_platform', 'event', 'product', 'download_packagekey', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'packagekey'),
+        #    ('event', 'device_platform', 'productkey', 'packagekey', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'packagekey', 'package'),
+        #    ('event', 'device_platform', 'productkey', 'packagekey', 'package', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'download_package'),
+        #    ('event', 'device_platform', 'productkey', 'download_package', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'download_packagekey'),
+        #    ('event', 'device_platform', 'productkey', 'download_packagekey', 'date'),
+
+        #    ('event', 'device_platform', 'productkey', 'product', 'packagekey'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'packagekey', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'packagekey', 'package'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'packagekey', 'package', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'download_packagekey'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'download_packagekey', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'download_packagekey', 'download_package'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'download_packagekey', 'download_package', 'date'),
         )
 
     def transform_from_usinglog(self):
@@ -2161,6 +2170,8 @@ def factory_cube_download_result_model(model_name, field_names_to_add, base_mode
         'package': models.ForeignKey(PackageDim, related_name='+'),
         'productkey': models.ForeignKey(ProductKeyDim, related_name='+'),
         'product': models.ForeignKey(ProductDim, related_name='+'),
+        'download_packagekey': models.ForeignKey(PackageKeyDim, related_name='+'),
+        'download_package': models.ForeignKey(PackageDim, related_name='+'),
     }
 
     if not field_names_to_add:
@@ -2209,9 +2220,14 @@ def factory_cube_download_result_model(model_name, field_names_to_add, base_mode
 
 
 CubeDownloadProductResult = factory_cube_download_result_model('Product', ('productkey',))
+
+# package/packagekey 分发出去的下载量
 CubeDownloadProductPackageResult = factory_cube_download_result_model('ProductPackage', ('productkey', 'packagekey'))
 CubeDownloadProductPackageVersionResult = factory_cube_download_result_model('ProductPackageVersion', ('productkey', 'packagekey', 'package'))
 
+# download_package/download_packagekey自身被下载数量
+CubeDownloadProductPackageIncomingResult = factory_cube_download_result_model('ProductPackageIncoming', ('productkey', 'download_packagekey'))
+CubeDownloadProductPackageVersionIncomingResult = factory_cube_download_result_model('ProductPackageVersionIncoming', ('productkey', 'download_packagekey', 'download_package'))
 
 from django.conf import settings
 

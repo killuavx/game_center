@@ -20,7 +20,10 @@ from analysis.etl import (
     LoadCubeDownloadProductResultTask,
     LoadCubeDownloadProductPackageResultTask,
     LoadCubeDownloadProductPackageVersionResultTask,
-    LoadSumDownloadProductResultTask)
+    LoadSumDownloadProductResultTask,
+    LoadCubeDownloadProductPackageIncomingResultTask,
+    LoadCubeDownloadProductPackageVersionIncomingResultTask,
+    )
 
 logger = getLogger('scripts')
 
@@ -28,7 +31,7 @@ cycle_types = deepcopy(LoadResultTask.CHOICE_CYCLE_TYPE)
 cycle_types['all'] = -1
 
 
-RUN_CHOICES = ['sum_activate', 'sum_download', 'cube_activate', 'cube_download']
+RUN_CHOICES = ['sum_activate', 'sum_download', 'cube_activate', 'cube_download', 'cube_downloadincoming']
 
 
 class Command(BaseCommand):
@@ -108,6 +111,8 @@ class Command(BaseCommand):
             self.run_cube_activate(opt_date, options['cycle_type'], options['task_type'])
         elif action_name == 'cube_download':
             self.run_cube_download(opt_date, options['cycle_type'], options['task_type'])
+        elif action_name == 'cube_downloadincoming':
+            self.run_cube_downloadincoming(opt_date, options['cycle_type'], options['task_type'])
         else:
             self.log_info('Invalid options')
 
@@ -220,6 +225,33 @@ class Command(BaseCommand):
             tasks.append(LoadCubeDownloadProductPackageResultTask())
         if task_type == 3 or task_type == 0:
             tasks.append(LoadCubeDownloadProductPackageVersionResultTask())
+
+        if cycle_type == 'all':
+            for t in tasks:
+                t.process_daily(dt)
+                #t.process_weekly(dt)
+                t.process_weekly_by_natural(dt)
+                #t.process_monthly(dt)
+                t.process_monthly_by_natural(dt)
+        elif cycle_type == 'daily':
+            for t in tasks:
+                t.process_daily(dt)
+        elif cycle_type == 'weekly':
+            for t in tasks:
+                #t.process_weekly(dt)
+                t.process_weekly_by_natural(dt)
+        elif cycle_type == 'monthly':
+            for t in tasks:
+                #t.process_monthly(dt)
+                t.process_monthly_by_natural(dt)
+
+    def run_cube_downloadincoming(self, dt, cycle_type='all', task_type=-1):
+        tasks = list()
+        task_type = int(task_type)
+        if task_type == 2 or task_type == 0:
+            tasks.append(LoadCubeDownloadProductPackageIncomingResultTask())
+        if task_type == 3 or task_type == 0:
+            tasks.append(LoadCubeDownloadProductPackageVersionIncomingResultTask())
 
         if cycle_type == 'all':
             for t in tasks:
