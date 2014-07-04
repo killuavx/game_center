@@ -8,6 +8,7 @@ from mongoengine import Q
 from django.utils.timezone import datetime, timedelta, get_default_timezone
 from dateutil.relativedelta import *
 import logging
+from analysis.helpers import *
 
 USING = UsinglogFact.objects.db
 
@@ -116,18 +117,22 @@ class ExtractPackageDimensionTask(ExtractDimensionTask):
 
     dimension_class = PackageDim
 
+
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = [this.package_name, this.version_name].join(" ");
+            var key = [this.package_name, this.version_name, this.platform].join(" ");
             var value = {package_name: this.package_name,
-                         version_name: this.version_name };
+                         version_name: this.version_name,
+                         platform: this.platform};
             emit(key, value);
             if(['download', 'downloaded'].indexOf(this.eventtype) != -1 ){
                 key = [this.download_package_name,
-                       this.download_version_name].join(" ");
+                       this.download_version_name,
+                       this.platform].join(" ");
                 value = {package_name: this.download_package_name,
-                         version_name: this.download_version_name };
+                         version_name: this.download_version_name,
+                         platform: this.platform};
                 emit(key, value);
             }
         }
@@ -136,10 +141,51 @@ class ExtractPackageDimensionTask(ExtractDimensionTask):
 
     @classmethod
     def get_or_create_dimension(cls, val):
-        defaults = dict(package_name=val.get('package_name') or UNDEFINED,
-                        version_name=val.get('version_name') or UNDEFINED)
-        return cls.dimension_class.objects\
-            .get_or_create(defaults=defaults, **defaults)
+        lookup = dict(package_name=val.get('package_name') or UNDEFINED,
+                      version_name=val.get('version_name') or UNDEFINED,
+                      platform=val.get('platform') or PLATFORM_DEFAULT)
+        obj, created = cls.dimension_class.objects\
+            .get_or_create(**lookup)
+        if created or not obj.pid:
+            obj = packagecategorydim_fill_to(obj)
+            obj = packageversion_id_fill(obj)
+            obj.save()
+
+        # packagekey_dim
+        pk_obj, pk_created = PackageKeyDim.objects\
+            .get_or_create_from_package_dim(obj)
+
+        return obj, created
+
+
+def packagecategorydim_fill_to(pkg_or_ver_dim):
+    obj = pkg_or_ver_dim
+    cats = find_platform_categories(obj.platform, obj)
+    if cats:
+        root_cat, primary_cat, second_cat = cats
+        if root_cat:
+            obj.root_category, created = packagecategorydim_get_or_category_from(root_cat)
+        if primary_cat:
+            obj.primary_category, created = packagecategorydim_get_or_category_from(primary_cat)
+        if second_cat:
+            obj.second_category, created = packagecategorydim_get_or_category_from(second_cat)
+    return obj
+
+
+def packagecategorydim_get_or_category_from(category):
+    if not category:
+        return None, None
+    obj, created = PackageCategoryDim.objects.get_or_create(
+        cid=category.pk,
+        slug=category.slug,
+        defaults=dict(
+            name=category.name
+        )
+    )
+    if obj.name != category.name:
+        category.name = obj.name
+        category.save()
+    return obj, created
 
 
 class ExtractSubscriberIdDimensionTask(ExtractDimensionTask):
@@ -189,7 +235,7 @@ class ExtractDeviceDimensionTask(ExtractDimensionTask):
     @classmethod
     def get_or_create_dimension(cls, val):
         imei = val.get('imei') or UNDEFINED
-        defaults = dict(imei=imei, platform=val.get('platform') or UNDEFINED)
+        defaults = dict(imei=imei, platform=val.get('platform') or PLATFORM_DEFAULT)
         return cls.dimension_class.objects.get_or_create(imei=imei,
                                                          defaults=defaults)
 
@@ -210,7 +256,7 @@ class ExtractDevicePlatformDimensionTask(ExtractDimensionTask):
 
     @classmethod
     def get_or_create_dimension(cls, val):
-        defaults=dict(platform=val.get('platform') or UNDEFINED)
+        defaults=dict(platform=val.get('platform') or PLATFORM_DEFAULT)
         return cls.dimension_class.objects\
             .get_or_create(defaults=defaults, **defaults)
 
@@ -232,7 +278,7 @@ class ExtractDeviceOSDimensionTask(ExtractDimensionTask):
 
     @classmethod
     def get_or_create_dimension(cls, val):
-        defaults = dict(platform=val.get('platform') or UNDEFINED,
+        defaults = dict(platform=val.get('platform') or PLATFORM_DEFAULT,
                         os_version=val.get('os_version') or UNDEFINED)
         return cls.dimension_class.objects\
             .get_or_create(defaults=defaults, **defaults)
@@ -605,6 +651,7 @@ class TransformDownloadFactFromUsinglogFactTask(TransformFactFromUsingFactTask):
                 fact = DownloadFact.objects.create_by_usinglogfact(usinglog)
                 self.logger.info(",, ".join([
                                              str(fact.event),
+                                             str(fact.device_platform),
                                              str(fact.productkey),
                                              str(fact.packagekey),
                                              str(fact.package),
@@ -1273,3 +1320,38 @@ class InitialDimensionsTask(object):
                 updated=updated,
                 averageSignalStrength=averageSignalStrength)
             ct.save()
+
+
+class ExtractDimensionProcessor(ETLProcessor):
+
+    # Transform Fact
+    def transform_to_fact(self, queryset):
+        pass
+
+
+class CleaningPackageDimensionsTask(object):
+
+    def execute(self):
+        from django.db.models.query import Q as DQ
+        qs = PackageDim.objects.filter(DQ(platform=UNDEFINED,
+                                          platform=PLATFORM_ANDROID)) \
+            .order_by('package_name', 'version_name')
+        for pd in qs:
+            try:
+                pd.platform = PLATFORM_ANDROID
+                pd.save()
+            except IntegrityError:
+                pd.delete()
+
+        qs = PackageDim.objects.exclude(platform=UNDEFINED)\
+            .filter(DQ(pid=None)|DQ(title=''))
+        for pd in qs:
+            if pd.pid and pd.title:
+                continue
+            pd = packagecategorydim_fill_to(pd)
+            pd = packageversion_id_fill(pd)
+            pd.save()
+            pkd, created = PackageKeyDim.objects\
+                .get_or_create_from_package_dim(pd)
+
+

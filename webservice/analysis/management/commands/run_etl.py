@@ -5,11 +5,11 @@ from hashlib import md5
 from django.utils.encoding import force_bytes
 from dateutil.parser import parse as dateparse
 from optparse import make_option
-from copy import deepcopy
 from logging import getLogger
 from analysis.etl import (
     TransformActivateFactFromUsinglogFactTask,
-    UsinglogETLProcessor, TransformDownloadFactFromUsinglogFactTask)
+    UsinglogETLProcessor, TransformDownloadFactFromUsinglogFactTask,
+    )
 
 logger = getLogger('scripts')
 
@@ -145,3 +145,4 @@ class Command(BaseCommand):
     def run_download(self, start_date, end_date):
         task = TransformDownloadFactFromUsinglogFactTask()
         task.process_between_datetime(start_date, end_date)
+

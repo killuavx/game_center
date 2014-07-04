@@ -13,6 +13,7 @@ from model_utils.tracker import FieldTracker
 from .documents.event import Event
 from django.core.urlresolvers import resolve, Resolver404
 from hashlib import md5
+from .helpers import PLATFORM_ANDROID, PLATFORM_IOS
 
 UNDEFINED = 'undefined'
 
@@ -20,13 +21,15 @@ UNDEFINED = 'undefined'
 
 PLATFORM_CHOICES = (
     (UNDEFINED, 'None'),
-    ('android', 'Android'),
-    ('ios', 'iOS'),
+    (PLATFORM_ANDROID, 'Android'),
+    (PLATFORM_IOS, 'iOS'),
 )
+
+PLATFORM_DEFAULT = PLATFORM_ANDROID
 
 platform = models.CharField(max_length=20,
                             db_index=True,
-                            default=UNDEFINED,
+                            default=PLATFORM_DEFAULT,
                             choices=PLATFORM_CHOICES)
 
 def dictfetchall(cursor):
@@ -258,25 +261,10 @@ class HourDim(Dimension):
         return str(self.hour)
 
 
-class PackageKeyDim(Dimension):
-
-    title = models.CharField(max_length=255, default='')
-
-    package_name = models.CharField(max_length=255, unique=True)
-
-    class Meta:
-        db_table = 'dim_packagekey'
-        verbose_name = '应用'
-        verbose_name_plural = '应用列表'
-
-    def __str__(self):
-        if self.title:
-            return self.title
-        else:
-            return self.package_name
-
-
 class PackageCategoryDim(Dimension):
+
+    cid = models.IntegerField(verbose_name='源数据taxonomy_category.id',
+                              null=True)
 
     name = models.CharField(max_length=100,
                             default=UNDEFINED)
@@ -285,15 +273,90 @@ class PackageCategoryDim(Dimension):
                             default=UNDEFINED,
                             unique=True)
 
+    def __str__(self):
+        return "%s:%s:%s" %(self.name, self.slug, self.cid)
+
     class Meta:
         db_table = 'dim_packagecategory'
         verbose_name = '应用分类'
         verbose_name_plural = '应用分类列表'
 
 
-class PackageDim(Dimension):
+class BasePackageDim(Dimension):
 
     title = models.CharField(max_length=255, default='')
+
+    PLATFORM_CHOICES = PLATFORM_CHOICES
+
+    platform = deepcopy(platform)
+
+    root_category = models.ForeignKey(PackageCategoryDim, null=True, related_name='+')
+
+    primary_category = models.ForeignKey(PackageCategoryDim, null=True, related_name='+')
+
+    second_category = models.ForeignKey(PackageCategoryDim, null=True, related_name='+')
+
+    class Meta:
+        abstract = True
+
+
+def sync_package_dim(from_, to_):
+    to_.root_category_id = from_.root_category_id
+    to_.primary_category_id = from_.primary_category_id
+    to_.second_category_id = from_.second_category_id
+    to_.pid = from_.pid
+    to_.title = from_.title
+    return to_
+
+
+def packagekey_dim_has_diff_between(obj1, obj2):
+    return not(obj1.root_category_id == obj2.root_category_id
+               and obj1.primary_category_id == obj2.primary_category_id
+               and obj1.second_category_id == obj2.second_category_id
+               and obj1.title == obj2.title)
+
+
+class PackageKeyManager(models.Manager):
+
+    def get_or_create_from_package_dim(self, package_dim):
+        packagekey, created = PackageKeyDim.objects \
+            .get_or_create(platform=package_dim.platform,
+                           package_name=package_dim.package_name)
+        if created or (package_dim.pid and not packagekey.pid) \
+            or packagekey_dim_has_diff_between(packagekey, package_dim):
+            packagekey = sync_package_dim(package_dim, packagekey)
+            packagekey.save()
+        return packagekey, created
+
+
+class PackageKeyDim(BasePackageDim):
+
+    objects = PackageKeyManager()
+
+    pid = models.IntegerField(verbose_name='源数据库warehouse_package.id',
+                              null=True)
+
+    package_name = models.CharField(max_length=255, db_index=True)
+
+    class Meta:
+        db_table = 'dim_packagekey'
+        unique_together = (
+            ('platform', 'package_name',)
+        )
+        verbose_name = '应用'
+        verbose_name_plural = '应用列表'
+
+    def __str__(self):
+        return "%s:%s:%s" %(self.title, self.package_name, self.pid)
+
+
+class PackageDim(BasePackageDim):
+
+    pid = models.IntegerField(verbose_name='源数据库warehouse_package.id',
+                              null=True)
+
+    vid = models.IntegerField(verbose_name='源数据库warehouse_packageversion.id',
+                              null=True)
 
     package_name = models.CharField(max_length=255, db_index=True)
 
@@ -302,7 +365,10 @@ class PackageDim(Dimension):
     class Meta:
         db_table = 'dim_package'
         unique_together = (
-            ('package_name', 'version_name',),
+            ('platform', 'package_name', 'version_name',),
+        )
+        index_together = (
+            ('platform', 'package_name',),
         )
         verbose_name = '应用版本'
         verbose_name_plural = '应用版本列表'
@@ -338,7 +404,9 @@ class PackageDim(Dimension):
         """
 
     def __str__(self):
-        return "%s, %s" % (self.package_name, self.version_name)
+        return "%s:%s:%s:%s:%s" % (self.title,
+                                   self.package_name, self.pid,
+                                   self.version_name, self.vid)
 
 
 class SubscriberIdDim(Dimension):
@@ -946,14 +1014,13 @@ class EventFact(Fact):
                  channel=doc.get('channel') or UNDEFINED)
 
     def package_from_doc(self, doc):
+        platform = doc.get('platform') or PLATFORM_DEFAULT
         self.package = PackageDim.objects\
-            .get(package_name=doc.get('package_name') or UNDEFINED,
+            .get(platform=platform,
+                 package_name=doc.get('package_name') or UNDEFINED,
                  version_name=doc.get('version_name') or UNDEFINED)
-        package_name = self.package.package_name
-        packagekey, created = PackageKeyDim.objects\
-            .get_or_create(package_name=package_name,
-                           defaults=dict(package_name=package_name))
-        self.packagekey = packagekey
+        self.packagekey, created = PackageKeyDim.objects\
+            .get_or_create_from_package_dim(self.package)
 
     def device_from_doc(self, doc):
         self.device = DeviceDim.objects.get(imei=doc.get('imei') or UNDEFINED)
@@ -965,7 +1032,7 @@ class EventFact(Fact):
 
     def device_platform_from_doc(self, doc):
         self.device_platform = DevicePlatformDim.objects\
-            .get(platform=doc.get('platform') or UNDEFINED)
+            .get(platform=doc.get('platform') or PLATFORM_DEFAULT)
 
     def device_supplier_from_doc(self, doc):
         cell = doc.get('cell', dict())
@@ -1514,9 +1581,8 @@ class ActivateNewReserveFact(ActivateFact):
             self.productkey, created = ProductKeyDim.objects \
                 .get_or_create(defaults=_defaults, **_defaults)
         if not self.packagekey:
-            _defaults = dict(package_name=self.package.package_name)
-            self.packagekey, created = PackageKeyDim.objects \
-                .get_or_create(defaults=_defaults, **_defaults)
+            self.packagekey, created = PackageKeyDim.objects\
+                .get_or_create_from_package_dim(self.package)
 
     def transform_from_usinglog(self):
         copy_model_instance(self.usinglog, self)
@@ -1651,6 +1717,10 @@ class DownloadFact(EventFact):
         #    ('device_platform', 'event', 'product', 'download_packagekey', 'date'),
         )
 
+    def transform_from_usinglog(self):
+        copy_model_instance(self.usinglog, self)
+        self.download_dim_from_page()
+
     def download_dim_from_page(self):
         self.download_url, created = MediaUrlDim.objects\
             .get_or_create_by_page_url(page_url=self.page.urlvalue)
@@ -1660,30 +1730,31 @@ class DownloadFact(EventFact):
                 .get_or_create_by_page_url(page_url=self.doc.redirect_to, is_static=True)
 
         if 'download_package_name' in doc_data:
-            self.download_package = PackageDim.objects \
-                .get(package_name=doc_data.get('download_package_name') or UNDEFINED,
-                     version_name=doc_data.get('download_version_name') or UNDEFINED)
-            defaults =dict(package_name=self.download_package.package_name)
-            self.download_packagekey, created = PackageKeyDim.objects\
-                .get_or_create(defaults=defaults, **defaults)
-        """else:
-            package_name, version_name = self\
-                .get_download_packageversion_by_urlpath(self.page.path)
-            self.download_package = PackageDim.objects \
-                .get(package_name=package_name, version_name=version_name)
-            defaults =dict(package_name=self.download_package.package_name)
-            self.download_packagekey, created = PackageKeyDim.objects\
-                .get_or_create(defaults=defaults, **defaults)
-        """
+            self.fill_download_package_by_doc(doc_data)
+        else:
+            self.fill_download_package_by_url(self.download_url)
 
-    def fill_download_package_by_url(self):
-        package_name, version_name = self \
-            .get_download_packageversion_by_urlpath(self.page.path)
+    def fill_download_package_by_doc(self, doc_data):
+        package_name = doc_data.get('download_package_name') or UNDEFINED
+        version_name = doc_data.get('download_version_name') or UNDEFINED
         self.download_package = PackageDim.objects \
-            .get(package_name=package_name, version_name=version_name)
-        defaults =dict(package_name=self.download_package.package_name)
-        self.download_packagekey, created = PackageKeyDim.objects \
-            .get_or_create(defaults=defaults, **defaults)
+            .get(platform=self.device_platform.platform,
+                 package_name=package_name,
+                 version_name=version_name)
+        self.packagekey, pk_created = PackageKeyDim.objects \
+            .get_or_create_from_package_dim(self.download_package)
+
+    def fill_download_package_by_url(self, url_dim):
+        pv_names = self.get_download_packageversion_by_urlpath(url_dim.path)
+        if not pv_names:
+            return
+        package_name, version_name = pv_names
+        self.download_package = PackageDim.objects \
+            .get(platform=self.device_platform.platform,
+                 package_name=package_name,
+                 version_name=version_name)
+        self.download_packagekey, created = PackageKeyDim.objects\
+            .get_or_create_from_package_dim(self.download_package)
 
     def get_download_packageversion_by_urlpath(self, path):
         package_name = version_name = UNDEFINED
@@ -1696,18 +1767,14 @@ class DownloadFact(EventFact):
 
         from warehouse.models import PackageVersion
         pk = resolver_match.kwargs.get('pk')
-        #if resolver_match.url_name == 'download_packageversion':
-        try:
-            version = PackageVersion.objects.get(pk=pk)
-            package_name = version.package.package_name
-            version_name = version.version_name
-        except PackageVersion.DoesNotExist:
-            pass
+        if resolver_match.url_name == 'download_packageversion':
+            try:
+                version = PackageVersion.objects.get(pk=pk)
+                package_name = version.package.package_name
+                version_name = version.version_name
+            except PackageVersion.DoesNotExist:
+                pass
         return package_name, version_name
-
-    def transform_from_usinglog(self):
-        copy_model_instance(self.usinglog, self)
-        self.download_dim_from_page()
 
 
 class DownloadBeginFinishManager(models.Manager):
