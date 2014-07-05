@@ -196,6 +196,9 @@ INTERNAL_APPS = [
     'redis_cache.stats',
     'static_precompiler',
     'django_widgets',
+    'url_tools'
+    #'memoize',
+    #'import_export',
 ]
 
 EXTENDAL_APPS = [
@@ -213,6 +216,7 @@ EXTENDAL_APPS = [
     'ranking',
     'mobapi2',
     'crawler',
+    #'activity',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 

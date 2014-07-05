@@ -10,6 +10,48 @@ import unicodedata
 from django.utils.encoding import smart_text
 from django.contrib.sites.models import Site, SITE_CACHE
 from django.utils.timezone import make_aware, is_aware, get_default_timezone
+from url_tools.helper import UrlHelper as _UrlHelper
+
+
+class UrlHelper(_UrlHelper):
+
+    def update_query_data(self, **kwargs):
+        for key, val in kwargs.items():
+            if not isinstance(val, str) and hasattr(val, '__iter__'):
+                self.query_dict.setlist(key, val)
+            else:
+                self.query_dict[key] = val
+
+
+def qurl_to(url, **kwargs):
+    """
+    Usage:
+        >>> qurl_to('/news/2014/04/13', {'page':1})
+        '/news/2014/04/13?page=1'
+
+        >>> qurl_to('/news/2014/04/13?ref=other', {'ref':None})
+        '/news/2014/04/13'
+
+        >>> qurl_to('/news/2014/04/13', {'ids':[1,2,3]})
+        '/news/2014/04/13?ids=1&ids=2&ids=3'
+    """
+    if not kwargs:
+        return url
+
+    _del_args = []
+    _kwargs = dict()
+    for k, v in kwargs.items():
+        if v is None:
+            _del_args.append(k)
+        else:
+            _kwargs[k] = v
+
+    if _kwargs:
+        u = UrlHelper(url)
+        u.del_params(*_del_args)
+        u.update_query_data(**_kwargs)
+        url = u.get_full_path()
+    return url
 
 
 def released_hourly_datetime(dt, hourly=True):
