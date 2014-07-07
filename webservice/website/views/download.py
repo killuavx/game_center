@@ -57,12 +57,12 @@ def _download_make_event(request, response, **kwargs):
     if _is_breakpoint_continual_download(request):
         return None
 
-    kwargs = get_client_event_data(request)
+    event_data = get_client_event_data(request)
     entrytype = kwargs.get('entrytype', request.GET.get('entrytype', 'web'))
     imei = kwargs.get('imei', request.GET.get('imei', ''))
     user = request.user
 
-    event = Event(**kwargs)
+    event = Event(**event_data)
     event.imei = imei
     event.eventtype = 'download'
     event.entrytype = entrytype
