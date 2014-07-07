@@ -71,8 +71,8 @@ def _download_make_event(request, response, **kwargs):
     if hasattr(request, 'get_client_ip'):
         event.client_ip = request.get_client_ip()
 
-    event.download_package_name = kwargs.get('package_name')
-    event.download_version_name = kwargs.get('version_name')
+    event.download_package_name = kwargs.get('download_package_name')
+    event.download_version_name = kwargs.get('download_version_name')
 
     event.current_uri = request.build_absolute_uri()
     event.redirect_to = response.get('Location')
@@ -96,8 +96,8 @@ def download_package(request, package_name, version_name=None,
     response = _download_packageversion_response(packageversion, filetype)
     try:
         event = _download_make_event(request, response,
-                                     package_name=packageversion.package.package_name,
-                                     version_name=packageversion.version_name,
+                                     download_package_name=packageversion.package.package_name,
+                                     download_version_name=packageversion.version_name,
                                      filetype=filetype)
     except Exception as e:
         pass
@@ -113,8 +113,8 @@ def download_packageversion(request, pk, filetype=None, *args, **kwargs):
     response = _download_packageversion_response(packageversion, filetype)
     try:
         event = _download_make_event(request, response,
-                                     package_name=packageversion.package.package_name,
-                                     version_name=packageversion.version_name,
+                                     download_package_name=packageversion.package.package_name,
+                                     download_version_name=packageversion.version_name,
                                      filetype=filetype)
     except Exception as e:
         pass
@@ -139,8 +139,8 @@ def clientapp_latest_download(request, package_name=None,
     response = redirect(app.download.url)
     try:
         event = _download_make_event(request, response,
-                                     package_name=app.package_name,
-                                     version_name=app.version_name)
+                                     download_package_name=app.package_name,
+                                     download_version_name=app.version_name)
     except Exception as e:
         pass
     return response
