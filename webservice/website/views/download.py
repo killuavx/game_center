@@ -62,6 +62,10 @@ def _download_make_event(request, response, **kwargs):
     imei = event_data.get('imei', request.GET.get('imei', ''))
     user = request.user
 
+    # FIX client 2.2 bug
+    if entrytype == 'client':
+        event_data.setdefault('package_name', 'com.lion.market')
+
     event = Event(**event_data)
     event.imei = imei
     event.eventtype = 'download'
