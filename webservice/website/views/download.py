@@ -59,7 +59,7 @@ def _download_make_event(request, response, **kwargs):
 
     event_data = get_client_event_data(request)
     entrytype = kwargs.get('entrytype', request.GET.get('entrytype', 'web'))
-    imei = kwargs.get('imei', request.GET.get('imei', ''))
+    imei = event_data.get('imei', request.GET.get('imei', ''))
     user = request.user
 
     event = Event(**event_data)
