@@ -24,12 +24,12 @@ p{word-wrap:break-word}
 .c_b{content:".";display:block;height:0;clear:both;visibility:hidden;zoom:1; text-indent:-90000px; font-size:0px;}
 .cb{clear:both;}
 
-.warp{background:#fff}
+.warp{background:#fff; padding-top:40px;}
 .box{background:#fff; width:800px}
 
 .icon{background:url(../img/icon.png) no-repeat; display:inline-block}
 
-.head{height:35px; background:#d5d8db; color:#fff}
+.head{height:35px; background:#d5d8db; color:#fff; position:fixed; width:100%; z-index:10; top:0; left:0; right:0}
 	.head_set a{width:30px; height:35px; display:block; text-indent:-9999px; float:left; margin-left:10px}
 	.ban{cursor:not-allowed}
 	.pgup{background-position:0 2px}
@@ -154,7 +154,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .right_list .big_pic img{width:24px; height:24px}
 .right_list .big_pic,.right_list .big_pic .cover{width:26px; height:26px}
 .right_list .big_pic .cover{background-position:-292px -114px}
-.right_list h2{left:5px; top:9px; padding-left:53px; font-weight:100; font-size:12px; width:130px; overflow:hidden}
+.right_list h2{left:5px; top:9px; padding-left:53px; font-weight:100; font-size:12px; width:130px; height:18px; overflow:hidden}
 .right_list em{margin-left:-52px; display:inline-block; text-align:center; width:15px}
 .right_list .top{color:#e53333; font-weight:bold}
 
@@ -167,7 +167,7 @@ p.price span{color:#e53333; text-decoration:line-through}
 .right_list li.hover .big_pic{_width:47px}
 .right_list li.hover .cover{_width:46px}
 
-.right_list li.hover h2{padding-left:19px; width:160px; height:18px;}
+.right_list li.hover h2{padding-left:19px; width:160px}
 .right_list li.hover em{margin-left:-18px} 
 .right_list li.hover p{left:78px; top:30px;}
 .right_list li.hover .btn{display:block; right:5px}
