@@ -13,7 +13,7 @@ from model_utils.tracker import FieldTracker
 from .documents.event import Event
 from django.core.urlresolvers import resolve, Resolver404, reverse
 from hashlib import md5
-from .helpers import PLATFORM_ANDROID, PLATFORM_IOS, packageversion_id_fill
+from .helpers import PLATFORM_ANDROID, PLATFORM_IOS, packageversion_id_fill, find_platform_categories
 
 import logging
 logger = logging.getLogger('scripts')
