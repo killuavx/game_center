@@ -1,0 +1,59 @@
+{% extends "analysis/admin/base.haml" %}
+{% load url_tags %}
+{% block main %}
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#">产品激活</a></li>
+        <li class="pull-right">
+            <form class="navbar-form" role="search" style="margin:0" method="GET" >
+                <div class="form-group">
+                    <input type="date" name="start_date" value="{{ query.start_date }}" class="form-control">
+                    <!--<input type="date" name="end_date" class="form-control">-->
+                </div>
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <button type="submit" class="btn btn-default btn-primary">搜索</button>
+                    </div>
+                </div>
+            </form>
+        </li>
+    </ul>
+
+    <table class="table table-condensed table-striped table-hover">
+        <thead>
+        <tr>
+            <th>应用</th>
+            <th>平台</th>
+            <th>累计用户</th>
+            <th>新增 | 活跃用户</th>
+            <th>启动</th>
+            <th>分发</th>
+            <th>详情</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>合计</th>
+            <th></th>
+            <th>{{ total_result.total_reserve_count }}</th>
+            <th>{{ total_result.reserve_count }} | {{ total_result.active_count }}</th>
+            <th>{{ total_result.open_count }}</th>
+            <th>{{ total_result.download_count }}</th>
+            <th></th>
+        </tr>
+        {% for item in object_list %}
+            {% url 'analysis_product_channel_activate_list' entrytype=item.productkey.entrytype as apca_url %}
+            <tr>
+                <td>{{ item.productkey.entrytype }}</td>
+                <td>
+                    {{ item.device_platform }}
+                </td>
+                <td>{{ item.total_reserve_count }}</td>
+                <td>{{ item.reserve_count }} | {{ item.active_count }}</td>
+                <td>{{ item.open_count }}</td>
+                <td>{{ item.download_count }}</td>
+                <td><a href="{% qurl apca_url start_date=query.start_date %}" class="btn btn-default btn-xs">明细</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

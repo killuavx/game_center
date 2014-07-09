@@ -1,0 +1,53 @@
+{% extends "analysis/admin/base.haml" %}
+{% load analysis_tags url_tags %}
+{% block main %}
+    <h2>{{ package.title }}<small>激活数据</small></h2>
+    <ul class="nav nav-tabs" role="tablist">
+        <li><a href="javascript:;" onclick="history.back()" class="btn" style="margin-right:5px">&lt; 返回</a></li>
+        <li class="active"><a href="#">下载量明细</a></li>
+        <li class="pull-right">
+            <form class="navbar-form" role="search" style="margin:0" method="GET" >
+                <div class="form-group">
+                    <input type="date" name="start_date" value="{{ query.start_date }}" class="form-control">
+                    <input type="date" name="end_date" value="{{ query.end_date }}" class="form-control">
+                </div>
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <button type="submit" value="search" class="btn btn-default btn-primary">搜索</button>
+                        <a href="{% qurl request.get_full_path start_date=None end_date=None %}" class="btn btn-default">全部</a>
+                    </div>
+                </div>
+            </form>
+        </li>
+    </ul>
+
+    <table class="table table-condensed table-striped table-hover">
+        <thead>
+        <tr>
+            <th>平台</th>
+            <th>产品</th>
+            <th>渠道名称</th>
+            <th>日期</th>
+            <th>日期段内新增（%）</th>
+            <th>日期段内活跃（%）</th>
+            <th>累计用户总量（%）</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in object_list %}
+            <tr>
+                <td>{{ item.device_platform.platform }}</td>
+                <th>{{ item.productkey.entrytype }}</th>
+                <td>{{ item.product.channel }} </td>
+                <td>{{ item.start_date }}~{{ item.end_date }}</td>
+                <td>{{ item.reserve_count }}</td>
+                <td>{{ item.active_count }}</td>
+                <td>{{ item.total_reserve_count }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-center">
+        {% pagination page_obj %}
+    </div>
+{% endblock %}
