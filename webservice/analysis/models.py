@@ -35,6 +35,13 @@ platform = models.CharField(max_length=20,
                             default=PLATFORM_DEFAULT,
                             choices=PLATFORM_CHOICES)
 
+def dictdata_strip_val(data):
+    for f, v in data.items():
+        if isinstance(v, str):
+            data[f] = v.strip()
+    return data
+
+
 def dictfetchall(cursor):
     "Returns all rows from a cursor as a dict"
     desc = cursor.description
@@ -1108,7 +1115,7 @@ class EventFact(Fact):
 
     def device_os_from_doc(self, doc):
         self.device_os = DeviceOSDim.objects\
-            .get(platform=doc.get('platform') or UNDEFINED,
+            .get(platform=doc.get('platform') or PLATFORM_DEFAULT,
                  os_version=doc.get('os_version') or UNDEFINED)
 
     def device_platform_from_doc(self, doc):
@@ -1159,7 +1166,7 @@ class EventFact(Fact):
                  app_id=doc.get('baidu_push_app_id') or UNDEFINED)
 
     def transform_from_doc(self):
-        doc = self.doc._data
+        doc = dictdata_strip_val(self.doc._data)
         self.event_from_doc(doc)
         self.product_from_doc(doc)
         self.package_from_doc(doc)
@@ -1816,8 +1823,9 @@ class DownloadFact(EventFact):
             .get_or_create_by_page_url(page_url=self.page.urlvalue)
         doc_data = self.doc._data
         if 'redirect_to' in doc_data:
+            redirect_to = str(self.doc.redirect_to).strip()
             self.redirect_to, created = MediaUrlDim.objects\
-                .get_or_create_by_page_url(page_url=self.doc.redirect_to, is_static=True)
+                .get_or_create_by_page_url(page_url=redirect_to, is_static=True)
 
         if 'download_package_name' in doc_data:
             self.fill_download_package_by_doc(doc_data)
@@ -1826,7 +1834,9 @@ class DownloadFact(EventFact):
 
     def fill_download_package_by_doc(self, doc_data):
         package_name = doc_data.get('download_package_name') or UNDEFINED
+        package_name = package_name.strip('"').strip()
         version_name = doc_data.get('download_version_name') or UNDEFINED
+        version_name = version_name.strip()
         self.download_package = PackageDim.objects \
             .get(platform=self.device_platform.platform,
                  package_name=package_name,

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import MultipleObjectsReturned
 from warehouse.models import *
 from toolkit.helpers import SITE_ANDROID, SITE_IOS, SITE_NOT_SET, set_global_site_id
 
@@ -37,6 +38,8 @@ def find_platform_package_version(device_platform_dim, package_dim):
 
     try:
         v = p.versions.get(version_name=package_dim.version_name)
+    except MultipleObjectsReturned:
+        v = p.versions.filter(version_name=package_dim.version_name).latest('version_code')
     except PackageVersion.DoesNotExist:
         v = None
     unset_platform()

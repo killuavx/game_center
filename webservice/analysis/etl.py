@@ -10,6 +10,7 @@ from dateutil.relativedelta import *
 from analysis.helpers import *
 from datetime import datetime, date
 import logging
+import gc
 
 USING = UsinglogFact.objects.db
 
@@ -79,7 +80,8 @@ class ExtractEventDimensionTask(ExtractDimensionTask):
 
     def get_mapreduce_functions(self):
         map_func = """function(){
-            emit(this.eventtype, {eventtype: this.eventtype});
+            var eventtype = String(this.eventtype).trim();
+            emit(eventtype, {eventtype:eventtype});
         }
         """
         return map_func, self.reduce_func
@@ -98,9 +100,11 @@ class ExtractProductDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = [this.entrytype, this.channel].join(" ");
-            var value = {entrytype: this.entrytype,
-                         channel: this.channel};
+            var entrytype = String(this.entrytype).trim();
+            var channel = String(this.channel).trim();
+            var key = [entrytype, channel].join(" ");
+            var value = {entrytype: entrytype,
+                         channel: channel};
             emit(key, value);
         }
         """
@@ -122,18 +126,23 @@ class ExtractPackageDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = [this.package_name, this.version_name, this.platform].join(" ");
-            var value = {package_name: this.package_name,
-                         version_name: this.version_name,
-                         platform: this.platform};
+            var platform = String(this.platform).trim();
+            var package_name = String(this.package_name).trim('"').trim();
+            var version_name = String(this.version_name).trim();
+            var key = [package_name, version_name, platform].join(" ");
+            var value = {package_name: package_name,
+                         version_name: version_name,
+                         platform: platform};
             emit(key, value);
             if(['download', 'downloaded'].indexOf(this.eventtype) != -1 ){
-                key = [this.download_package_name,
-                       this.download_version_name,
-                       this.platform].join(" ");
-                value = {package_name: this.download_package_name,
-                         version_name: this.download_version_name,
-                         platform: this.platform};
+                var download_package_name = String(this.download_package_name).trim();
+                var download_version_name = String(this.download_version_name).trim();
+                var key = [download_package_name,
+                           download_version_name,
+                           platform].join(" ");
+                var value = {package_name: download_package_name,
+                             version_name: download_version_name,
+                             platform: platform};
                 emit(key, value);
             }
         }
@@ -166,10 +175,11 @@ class ExtractSubscriberIdDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """function(){
             var mnc = this.cell && this.cell.mnc;
-            var key = this.imsi;
-            var value = {imsi: this.imsi,
+            mnc = String(mnc).trim();
+            var imsi = String(this.imsi).trim();
+            var value = {imsi: imsi,
                          mnc: mnc };
-            emit(key, value);
+            emit(imsi, value);
         }
         """
         return map_func, self.reduce_func
@@ -178,7 +188,7 @@ class ExtractSubscriberIdDimensionTask(ExtractDimensionTask):
     def get_or_create_dimension(cls, val):
         mnc = val.get('mnc')
         if str(mnc).isnumeric():
-            mnc = "%02d" % mnc
+            mnc = "%02d" % int(mnc)
         else:
             mnc = UNDEFINED
         imsi = imsi=val.get('imsi') or UNDEFINED
@@ -195,9 +205,10 @@ class ExtractDeviceDimensionTask(ExtractDimensionTask):
         map_func = """
         function(){
             if(this.imei == '') this.imei = null;
-            var key = this.imei;
+            var platform = String(this.platform).trim();
+            var key = String(this.imei).trim();
             var value = {imei: key,
-                         platform: this.platform };
+                         platform: platform };
             emit(key, value);
         }
         """
@@ -218,9 +229,9 @@ class ExtractDevicePlatformDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = this.platform;
-            var value = {platform: this.platform };
-            emit(key, value);
+            var platform = String(this.platform).trim();
+            var value = {platform: platform};
+            emit(platform, value);
         }
         """
         return map_func, self.reduce_func
@@ -239,9 +250,11 @@ class ExtractDeviceOSDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = [this.platform, this.os_version].join(" ");
-            var value = {platform: this.platform,
-                         os_version: this.os_version };
+            var platform = String(this.platform).trim();
+            var os_version = String(this.os_version).trim();
+            var key = [platform, os_version].join(" ");
+            var value = {platform: platform,
+                         os_version: os_version };
             emit(key, value);
         }
         """
@@ -262,8 +275,8 @@ class ExtractDeviceResolutionDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = this.resolution;
-            var val = {resolution: this.resolution};
+            var key = String(this.resolution).trim();
+            var val = {resolution: key};
             emit(key, val);
         }
         """
@@ -283,14 +296,18 @@ class ExtractDeviceModelDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = [this.manufacturer,
-                       this.device_name,
-                       this.module_name,
-                       this.model_name].join("|");
-            var value = {manufacturer: this.manufacturer,
-                         device_name: this.device_name,
-                         module_name: this.module_name,
-                         model_name: this.model_name }
+            var manufacturer = String(this.manufacturer).trim();
+            var device_name = String(this.device_name).trim();
+            var module_name = String(this.module_name).trim();
+            var model_name = String(this.model_name).trim();
+            var key = [manufacturer,
+                       device_name,
+                       module_name,
+                       model_name].join("|");
+            var value = {manufacturer: manufacturer,
+                         device_name: device_name,
+                         module_name: module_name,
+                         model_name: model_name }
             emit(key, value);
         }
         """
@@ -314,13 +331,15 @@ class ExtractDeviceSupplierDimensionTask(ExtractDimensionTask):
         map_func = """
         function(){
             var mcc = this.cell && this.cell.mcc;
+            mcc = String(mcc).trim();
             var mnc = this.cell && this.cell.mnc;
-            var key = [String(mcc), String(mnc)].join("");
-            if(typeof(mcc) == "undefined" || typeof(mnc) == "undefined"){
+            mnc = String(mnc).trim();
+            var key = [mcc, mnc].join("");
+            if(mcc == "undefined" || mnc == "undefined"){
                 key = null;
             }
             var value = {mccmnc: key,
-                         country_code: String(mcc),
+                         country_code: mcc,
                          cell: this.cell,
                          mcc: mcc,
                          mnc: mnc
@@ -357,8 +376,8 @@ class ExtractDeviceLanguageDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = this.language;
-            var value = {language: this.language };
+            var key = String(this.language).trim();
+            var value = {language: key };
             emit(key, value);
         }
         """
@@ -378,8 +397,8 @@ class ExtractNetworkDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = this.network;
-            var value = {network: this.network};
+            var key = String(this.network).trim();
+            var value = {network: key};
             emit(key, value);
         }
         """
@@ -398,12 +417,15 @@ class ExtractPageDimensionTask(ExtractDimensionTask):
 
     def get_mapreduce_functions(self):
         map_func = """function(){
-            emit(this.page_name, {page_name: this.page_name, is_url:false});
+            var page_name = String(this.page_name).trim();
+            emit(page_name, {page_name: page_name, is_url:false});
             if(this.referer){
-                emit(this.referer, {page_name: this.referer, is_url:true});
+                var referer = String(this.referer).trim();
+                emit(referer, {page_name: referer, is_url:true});
             }
             if(this.current_uri){
-                emit(this.current_uri, {page_name: this.current_uri, is_url:true});
+                var current_uri = String(this.current_uri).trim();
+                emit(current_uri, {page_name: current_uri, is_url:true});
             }
         }
         """
@@ -436,7 +458,8 @@ class ExtractMediaUrlDimensionTask(ExtractDimensionTask):
 
     def get_mapreduce_functions(self):
         map_func = """function(){
-            emit(this.current_uri, {page_name: this.current_uri, is_url:true});
+            var current_uri = String(this.current_uri).trim();
+            emit(current_uri, {page_name: current_uri, is_url:true});
         }
         """
         return map_func, self.reduce_func
@@ -457,16 +480,15 @@ class ExtractBaiduPushDimensionTask(ExtractDimensionTask):
 
     def get_mapreduce_functions(self):
         map_func = """function(){
-            var val = {channel_id: this.baidu_push_channel_id,
-                       user_id: this.baidu_push_user_id,
-                       app_id: this.baidu_push_app_id,
-                       baidu_push_channel_id: this.baidu_push_channel_id,
-                       baidu_push_user_id: this.baidu_push_user_id,
-                       baidu_push_app_id: this.baidu_push_app_id
-                       };
-            var key = val.channel_id && val.user_id && val.app_id && [val.channel_id,
-                                                                      val.user_id,
-                                                                      val.app_id].join(" ");
+            var channel_id = String(this.baidu_push_channel_id).trim();
+            var user_id = String(this.baidu_push_user_id).trim();
+            var app_id = String(this.baidu_push_app_id).trim();
+            var val = {channel_id: channel_id,
+                       user_id: user_id,
+                       app_id: app_id};
+            var key = this.baidu_push_channel_id && this.baidu_push_user_id && this.baidu_push_app_id && [val.channel_id,
+                                                                                                          val.user_id,
+                                                                                                          val.app_id].join(" ");
             emit(key, val);
         }
         """
@@ -474,9 +496,9 @@ class ExtractBaiduPushDimensionTask(ExtractDimensionTask):
 
     @classmethod
     def get_or_create_dimension(cls, val):
-        defaults = dict(channel_id=val.get('channel_id') or val.get('baidu_push_channel_id') or UNDEFINED,
-                        user_id=val.get('user_id') or val.get('baidu_push_user_id') or UNDEFINED,
-                        app_id=val.get('app_id') or val.get('baidu_push_app_id') or UNDEFINED)
+        defaults = dict(channel_id=val.get('channel_id') or UNDEFINED,
+                        user_id=val.get('user_id') or UNDEFINED,
+                        app_id=val.get('app_id') or UNDEFINED)
         return cls.dimension_class.objects.get_or_create(defaults=defaults,
                                                          **defaults)
 
@@ -563,6 +585,7 @@ class UsinglogETLProcessor(ETLProcessor):
                 doc.save()
             msg = "%s/%s %s" %(created_count, doc_count, doc.created_datetime)
             self.logger.info(msg)
+            del doc
 
 
 # - Transform fact
@@ -631,6 +654,7 @@ class TransformDownloadFactFromUsinglogFactTask(TransformFactFromUsingFactTask):
                                              str(fact.created_datetime)])
                 )
                 transaction.savepoint_commit(sid, USING)
+                del fact
             except IntegrityError as e:
                 self.logger.warning(e)
                 transaction.savepoint_rollback(sid, USING)
@@ -641,6 +665,7 @@ class TransformDownloadFactFromUsinglogFactTask(TransformFactFromUsingFactTask):
                 self.logger.error(doc.get('download_package_name'),
                                   doc.get('download_version_name'))
                 break
+            del usinglog
             self.logger.info(cnt)
 
 
@@ -668,9 +693,11 @@ class TransformActivateFactFromUsinglogFactTask(TransformFactFromUsingFactTask):
                       str(fact.is_new_product_channel_package),
                       str(fact.is_new_product_channel_package_version),
                       ]))
+                del fact
             except IntegrityError as e:
                 self.logger.warning(e)
                 transaction.savepoint_rollback(sid, USING)
+            del usinglog
 
 
 class TransformOpenCloseDailyFactFromUsinglogFactTask(TransformFactFromUsingFactTask):

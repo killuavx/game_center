@@ -99,6 +99,12 @@ class Event(DynamicDocument):
     def __str__(self):
         return str(self.id)
 
+    def save(self, *args, **kwargs):
+        for f, v in self._data.items():
+            if isinstance(v, str):
+                setattr(self, f, v.strip())
+        return super(Event, self).save(*args, **kwargs)
+
 
 class CellTower(Document):
 
