@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bson import ObjectId
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db.models import Count, Q
 from django.utils.timezone import *
 from datetime import timedelta, datetime
@@ -11,9 +11,12 @@ from django.utils.encoding import force_bytes
 from model_utils.managers import PassThroughManager
 from model_utils.tracker import FieldTracker
 from .documents.event import Event
-from django.core.urlresolvers import resolve, Resolver404
+from django.core.urlresolvers import resolve, Resolver404, reverse
 from hashlib import md5
-from .helpers import PLATFORM_ANDROID, PLATFORM_IOS
+from .helpers import PLATFORM_ANDROID, PLATFORM_IOS, packageversion_id_fill
+
+import logging
+logger = logging.getLogger('scripts')
 
 UNDEFINED = 'undefined'
 
@@ -261,6 +264,36 @@ class HourDim(Dimension):
         return str(self.hour)
 
 
+def packagecategorydim_fill_to(pkg_or_ver_dim):
+    obj = pkg_or_ver_dim
+    cats = find_platform_categories(obj.platform, obj)
+    if cats:
+        root_cat, primary_cat, second_cat = cats
+        if root_cat:
+            obj.root_category, created = packagecategorydim_get_or_category_from(root_cat)
+        if primary_cat:
+            obj.primary_category, created = packagecategorydim_get_or_category_from(primary_cat)
+        if second_cat:
+            obj.second_category, created = packagecategorydim_get_or_category_from(second_cat)
+    return obj
+
+
+def packagecategorydim_get_or_category_from(category):
+    if not category:
+        return None, None
+    obj, created = PackageCategoryDim.objects.get_or_create(
+        cid=category.pk,
+        slug=category.slug,
+        defaults=dict(
+            name=category.name
+        )
+    )
+    if obj.name != category.name:
+        category.name = obj.name
+        category.save()
+    return obj, created
+
+
 class PackageCategoryDim(Dimension):
 
     cid = models.IntegerField(verbose_name='源数据taxonomy_category.id',
@@ -349,6 +382,22 @@ class PackageKeyDim(BasePackageDim):
     def __str__(self):
         return "%s:%s:%s" %(self.title, self.package_name, self.pid)
 
+    @property
+    def package(self):
+        if not self.pid:
+            return None
+        from warehouse.models import Package
+        try:
+            return Package.objects.get(pk=self.pid)
+        except Package.DoesNotExist:
+            return None
+
+    def package_admin_url(self):
+        link = reverse(
+            'admin:%s_%s_change' % ('warehouse', 'package'),
+            args=[self.pid])
+        return link
+
 
 class PackageDim(BasePackageDim):
 
@@ -407,6 +456,38 @@ class PackageDim(BasePackageDim):
         return "%s:%s:%s:%s:%s" % (self.title,
                                    self.package_name, self.pid,
                                    self.version_name, self.vid)
+
+    @property
+    def package(self):
+        if not self.pid:
+            return None
+        from warehouse.models import Package
+        try:
+            return Package.objects.get(pk=self.pid)
+        except Package.DoesNotExist:
+            return None
+
+    def package_admin_url(self):
+        link = reverse(
+            'admin:%s_%s_change' % ('warehouse', 'package'),
+            args=[self.pid])
+        return link
+
+    @property
+    def version(self):
+        if not self.vid:
+            return None
+        from warehouse.models import PackageVersion
+        try:
+            return PackageVersion.objects.get(pk=self.vid)
+        except PackageVersion.DoesNotExist:
+            return None
+
+    def package_admin_url(self):
+        link = reverse(
+            'admin:%s_%s_change' % ('warehouse', 'packageversion'),
+            args=[self.vid])
+        return link
 
 
 class SubscriberIdDim(Dimension):
@@ -1758,12 +1839,24 @@ class DownloadFact(EventFact):
         if not pv_names:
             return
         package_name, version_name = pv_names
-        self.download_package = PackageDim.objects \
-            .get(platform=self.device_platform.platform,
-                 package_name=package_name,
-                 version_name=version_name)
-        self.download_packagekey, created = PackageKeyDim.objects\
-            .get_or_create_from_package_dim(self.download_package)
+        try:
+            dw_pkg, created = PackageDim.objects \
+                .get_or_create(platform=self.device_platform.platform,
+                               package_name=package_name,
+                               version_name=version_name)
+            if created:
+                dw_pkg = packagecategorydim_fill_to(dw_pkg)
+                dw_pkg = packageversion_id_fill(dw_pkg)
+                dw_pkg.save()
+            self.download_package = dw_pkg
+            self.download_packagekey, created = PackageKeyDim.objects \
+                .get_or_create_from_package_dim(self.download_package)
+        except ObjectDoesNotExist:
+            logger.error(pv_names)
+            logger.error("%s %s %s"% (self.device_platform.platform,
+                                      package_name,
+                                      version_name))
+            raise
 
     def get_download_packageversion_by_urlpath(self, path):
         package_name = version_name = UNDEFINED
@@ -1782,7 +1875,10 @@ class DownloadFact(EventFact):
                 package_name = version.package.package_name
                 version_name = version.version_name
             except PackageVersion.DoesNotExist:
-                pass
+                return None
+        else:
+            return None
+
         return package_name, version_name
 
 

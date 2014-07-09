@@ -159,36 +159,6 @@ class ExtractPackageDimensionTask(ExtractDimensionTask):
         return obj, created
 
 
-def packagecategorydim_fill_to(pkg_or_ver_dim):
-    obj = pkg_or_ver_dim
-    cats = find_platform_categories(obj.platform, obj)
-    if cats:
-        root_cat, primary_cat, second_cat = cats
-        if root_cat:
-            obj.root_category, created = packagecategorydim_get_or_category_from(root_cat)
-        if primary_cat:
-            obj.primary_category, created = packagecategorydim_get_or_category_from(primary_cat)
-        if second_cat:
-            obj.second_category, created = packagecategorydim_get_or_category_from(second_cat)
-    return obj
-
-
-def packagecategorydim_get_or_category_from(category):
-    if not category:
-        return None, None
-    obj, created = PackageCategoryDim.objects.get_or_create(
-        cid=category.pk,
-        slug=category.slug,
-        defaults=dict(
-            name=category.name
-        )
-    )
-    if obj.name != category.name:
-        category.name = obj.name
-        category.save()
-    return obj, created
-
-
 class ExtractSubscriberIdDimensionTask(ExtractDimensionTask):
 
     dimension_class = SubscriberIdDim
@@ -654,10 +624,10 @@ class TransformDownloadFactFromUsinglogFactTask(TransformFactFromUsingFactTask):
                                              str(fact.event),
                                              str(fact.device_platform),
                                              str(fact.productkey),
-                                             str(fact.packagekey),
-                                             str(fact.package),
-                                             str(fact.download_package),
-                                             str(fact.download_packagekey),
+                                             str(fact.packagekey.package_name),
+                                             str(fact.package.version_name),
+                                             str(fact.download_packagekey.package_name),
+                                             str(fact.download_package.version_name),
                                              str(fact.created_datetime)])
                 )
                 transaction.savepoint_commit(sid, USING)
