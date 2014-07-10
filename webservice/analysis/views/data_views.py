@@ -128,12 +128,17 @@ class StartEndDateDimFilterBackend(BaseFilterBackend):
         ed = self.get_datedim(view, self.end_date_param)
         if not sd:
             #sd = self.get_yesterday_datedim()
-            sd = self.get_latest_datedim(queryset)
-            view.query_kwargs[self.start_date_param] = sd.datevalue.strftime('%Y-%m-%d')
+            try:
+                sd = self.get_latest_datedim(queryset)
+                view.query_kwargs[self.start_date_param] = sd.datevalue.strftime('%Y-%m-%d')
+            except IndexError:
+                sd = None
         if not ed:
             ed = sd
-        qs = queryset.filter(start_date=sd, end_date=ed)
-        return qs
+        if sd and ed:
+            return queryset.filter(start_date=sd, end_date=ed)
+        else:
+            return queryset.none()
 
 
 class PlatformDimFilterBackend(BaseFilterBackend):
@@ -210,24 +215,35 @@ class CycleTypeFilterBackend(BaseFilterBackend):
 
 class ProductActivateListView(BaseListView):
 
+    paginate_by = None
+
     template_name = 'analysis/admin/pages/product.html'
 
-    #model = SumActivateDeviceProductResult
-    model = SumActivateDeviceProductChannelPackageResult
+    model = CubeActivateDeviceProductChannelPackageResult
+
+    sum_fields = ('total_reserve_count',
+                  'reserve_count',
+                  'active_count',
+                  'open_count', )
+
+    class GroupFilterBackend(BaseFilterBackend):
+
+        def filter_queryset(self, request, queryset, view):
+            group_fields = ('device_platform', 'productkey', 'start_date', 'end_date', )
+            querydict = {f:Sum(f) for f in ProductActivateListView.sum_fields}
+            qs = queryset.values(*group_fields).order_by(*group_fields).annotate(**querydict)
+            return qs
 
     filter_backends = (
         PlatformDimFilterBackend,
         CycleTypeFilterBackend,
         StartEndDateDimFilterBackend,
+        GroupFilterBackend,
     )
 
     def get_result_total(self):
         group_fields = ('device_platform',)
-        sum_fields = ('total_reserve_count',
-                      'reserve_count',
-                      'active_count',
-                      'open_count', )
-        querydict = {f:Sum(f) for f in sum_fields}
+        querydict = {f:Sum(f) for f in self.sum_fields}
 
         queryset = self.model.objects.all()
         queryset = PlatformDimFilterBackend()\
@@ -239,10 +255,15 @@ class ProductActivateListView(BaseListView):
         try:
             return qs.get()
         except exceptions.ObjectDoesNotExist:
-            return dict(zip(sum_fields, len(sum_fields) * [0]))
+            return dict(zip(self.sum_fields, len(self.sum_fields) * [0]))
 
     def get_context_data(self, **kwargs):
         context = super(ProductActivateListView, self).get_context_data(**kwargs)
+        platform = self.query_kwargs.get('platform')
+        device_platform = DevicePlatformDim.objects.get(platform=platform)
+        for item in context['object_list']:
+            item['device_platform'] = device_platform
+            item['productkey'] = ProductKeyDim.objects.get(pk=item['productkey'])
         context['total_result'] = self.get_result_total()
         return context
 
@@ -257,18 +278,39 @@ class ProductChannelActivateListView(BaseListView):
 
     template_name = 'analysis/admin/pages/product_channel.html'
 
-    model = SumActivateDeviceProductChannelPackageResult
+    model = CubeActivateDeviceProductChannelPackageResult
+
+    sum_fields = ('total_reserve_count',
+                  'reserve_count',
+                  'active_count',
+                  'open_count', )
+
+    class GroupFilterBackend(BaseFilterBackend):
+
+        def filter_queryset(self, request, queryset, view):
+            group_fields = ('device_platform', 'productkey', 'product', )
+            querydict = {f:Sum(f) for f in ProductActivateListView.sum_fields}
+            qs = queryset.values(*group_fields).order_by(*group_fields).annotate(**querydict)
+            return qs
 
     filter_backends = (
         PlatformDimFilterBackend,
         ProductKeyDimFilterBackend,
         StartEndDateDimFilterBackend,
+        CycleTypeFilterBackend,
+        GroupFilterBackend,
     )
 
     def get_context_data(self, **kwargs):
         context = super(ProductChannelActivateListView, self).get_context_data(**kwargs)
         context['productkey'] = ProductKeyDim.objects\
             .get(entrytype=self.query_kwargs.get('entrytype'))
+        platform = self.query_kwargs.get('platform')
+        device_platform = DevicePlatformDim.objects.get(platform=platform)
+        for item in context['object_list']:
+            item['device_platform'] = device_platform
+            item['productkey'] = context['productkey']
+            item['product'] = ProductDim.objects.get(pk=item['product'])
         return context
 
     def get(self, request, entrytype=None, *args, **kwargs):
@@ -284,20 +326,52 @@ class ProductChannelCycleActivateListView(BaseListView):
 
     template_name = 'analysis/admin/pages/product_channel_detail.html'
 
-    model = SumActivateDeviceProductChannelPackageResult
+    model = CubeActivateDeviceProductChannelPackageResult
+
+    sum_fields = ('total_reserve_count',
+                  'reserve_count',
+                  'active_count',
+                  'open_count', )
+
+    class GroupFilterBackend(BaseFilterBackend):
+
+        def filter_queryset(self, request, queryset, view):
+            group_fields = ('device_platform', 'product', 'start_date', 'end_date' )
+            querydict = {f:Sum(f) for f in ProductChannelCycleActivateListView.sum_fields}
+            qs = queryset.values(*group_fields).order_by(*group_fields).annotate(**querydict)
+            return qs
 
     filter_backends = (
         PlatformDimFilterBackend,
         ProductDimFilterBackend,
         CycleTypeFilterBackend,
+        GroupFilterBackend,
     )
+
+    _cache_dates = {}
+
+    def _get_date_dim(self, pk):
+        if pk not in self._cache_dates:
+            d = DateDim.objects.get(pk=pk)
+            self._cache_dates[pk] = d
+        return self._cache_dates[pk]
 
     def get_context_data(self, **kwargs):
         context = super(ProductChannelCycleActivateListView, self).get_context_data(**kwargs)
         context['product'] = ProductDim.objects \
             .get(entrytype=self.query_kwargs.get('entrytype'),
                  channel=self.query_kwargs.get('channel'))
-        return context
+        context['productkey'] = ProductKeyDim.objects \
+            .get(entrytype=self.query_kwargs.get('entrytype'))
+        platform = self.query_kwargs.get('platform')
+        device_platform = DevicePlatformDim.objects.get(platform=platform)
+        for item in context['object_list']:
+            item['device_platform'] = device_platform
+            item['productkey'] = context['productkey']
+            item['product'] = context['product']
+            item['start_date'] = self._get_date_dim(item['start_date'])
+            item['end_date'] = self._get_date_dim(item['end_date'])
+            return context
 
     def get(self, request, entrytype=None, channel=None, *args, **kwargs):
         kwargs.setdefault('platform', request.GET.get('platform', PLATFORM_DEFAULT))
