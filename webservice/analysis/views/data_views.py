@@ -257,7 +257,7 @@ class ProductChannelActivateListView(BaseListView):
 
     template_name = 'analysis/admin/pages/product_channel.html'
 
-    model = SumActivateDeviceProductChannelResult
+    model = SumActivateDeviceProductChannelPackageResult
 
     filter_backends = (
         PlatformDimFilterBackend,
@@ -284,7 +284,7 @@ class ProductChannelCycleActivateListView(BaseListView):
 
     template_name = 'analysis/admin/pages/product_channel_detail.html'
 
-    model = SumActivateDeviceProductChannelResult
+    model = SumActivateDeviceProductChannelPackageResult
 
     filter_backends = (
         PlatformDimFilterBackend,

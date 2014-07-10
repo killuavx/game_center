@@ -204,7 +204,7 @@ class ExtractDeviceDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            if(this.imei == '') this.imei = null;
+            if(this.imei == '') this.imei = 'undefined';
             var platform = String(this.platform).trim();
             var key = String(this.imei).trim();
             var value = {imei: key,
@@ -217,7 +217,8 @@ class ExtractDeviceDimensionTask(ExtractDimensionTask):
     @classmethod
     def get_or_create_dimension(cls, val):
         imei = val.get('imei') or UNDEFINED
-        defaults = dict(imei=imei, platform=val.get('platform') or PLATFORM_DEFAULT)
+        defaults = dict(imei=imei,
+                        platform=val.get('platform') or PLATFORM_DEFAULT)
         return cls.dimension_class.objects.get_or_create(imei=imei,
                                                          defaults=defaults)
 
@@ -647,10 +648,10 @@ class TransformDownloadFactFromUsinglogFactTask(TransformFactFromUsingFactTask):
                                              str(fact.event),
                                              str(fact.device_platform),
                                              str(fact.productkey),
-                                             str(fact.packagekey.package_name),
-                                             str(fact.package.version_name),
-                                             str(fact.download_packagekey.package_name),
-                                             str(fact.download_package.version_name),
+                                             str(fact.packagekey.package_name if fact.packagekey else None),
+                                             str(fact.package.version_name if fact.package else None),
+                                             str(fact.download_packagekey.package_name if fact.download_packagekey else None),
+                                             str(fact.download_package.version_name if fact.download_package else None),
                                              str(fact.created_datetime)])
                 )
                 transaction.savepoint_commit(sid, USING)
