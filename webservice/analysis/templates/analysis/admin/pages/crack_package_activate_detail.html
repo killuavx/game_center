@@ -28,9 +28,10 @@
             <th>产品</th>
             <th>渠道名称</th>
             <th>日期</th>
-            <th>日期段内新增（%）</th>
-            <th>日期段内活跃（%）</th>
-            <th>累计用户总量（%）</th>
+            <th>日期段内新增</th>
+            <th>日期段内活跃</th>
+            <th>日期段内启动</th>
+            <th>累计用户总量</th>
         </tr>
         </thead>
         <tbody>
@@ -42,6 +43,7 @@
                 <td>{{ item.start_date }}~{{ item.end_date }}</td>
                 <td>{{ item.reserve_count }}</td>
                 <td>{{ item.active_count }}</td>
+                <td>{{ item.open_count }}</td>
                 <td>{{ item.total_reserve_count }}</td>
             </tr>
         {% endfor %}

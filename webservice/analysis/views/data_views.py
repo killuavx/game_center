@@ -485,9 +485,23 @@ class DownloadPackageKeyFilterBackend(BaseFilterBackend):
         return queryset
 
 
+class BetweenStartEndDateDimFilterBackend(StartEndDateDimFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        sd = self.get_datedim(view, self.start_date_param)
+        ed = self.get_datedim(view, self.end_date_param)
+        if not sd:
+            return queryset
+        if not ed:
+            ed = sd
+        qs = queryset.filter(start_date_id__gte=sd.pk, start_date__lt=ed)
+        return qs
+
+
 class ProductPackageDownloadListView(BaseListView):
 
-    template_name = 'analysis/admin/pages/download_package_detail.html'
+    #template_name = 'analysis/admin/pages/download_package_detail.html'
+    template_name = 'analysis/admin/pages/crack_package_download_detail.html'
 
     model = CubeDownloadProductPackageIncomingResult
 
@@ -495,10 +509,11 @@ class ProductPackageDownloadListView(BaseListView):
         PlatformDimFilterBackend,
         DownloadPackageKeyFilterBackend,
         CycleTypeFilterBackend,
+        BetweenStartEndDateDimFilterBackend,
         OrderingFitler,
     )
 
-    ordering = ('-start_date', )
+    ordering = ('-start_date', 'device_platform', 'productkey' )
 
     def get_context_data(self, **kwargs):
         context = super(ProductPackageDownloadListView, self).get_context_data(**kwargs)
@@ -507,12 +522,14 @@ class ProductPackageDownloadListView(BaseListView):
                  package_name=self.query_kwargs.get('package_name'))
         return context
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, package_name=None, *args, **kwargs):
         kwargs.setdefault('platform', request.GET.get('platform', PLATFORM_DEFAULT))
         kwargs.setdefault('cycle_type', 1)
+        kwargs.setdefault('package_name', package_name)
         kwargs.setdefault('start_date', request.GET.get('start_date'))
         kwargs.setdefault('end_date', request.GET.get('end_date'))
         return super(ProductPackageDownloadListView, self).get(request, *args, **kwargs)
+
 
 from warehouse.models import Package, PackageVersion
 from taxonomy.models import Category
@@ -617,19 +634,6 @@ class CrackPackageListView(BaseListView):
         return super(CrackPackageListView, self).get(request, *args, **kwargs)
 
 
-class BetweenStartEndDateDimFilterBackend(StartEndDateDimFilterBackend):
-
-    def filter_queryset(self, request, queryset, view):
-        sd = self.get_datedim(view, self.start_date_param)
-        ed = self.get_datedim(view, self.end_date_param)
-        if not sd:
-            return queryset
-        if not ed:
-            ed = sd
-        qs = queryset.filter(start_date_id__gte=sd.pk, start_date__lt=ed)
-        return qs
-
-
 class DownloadPackageKeyIgnorePlatformFilterBackend(BaseFilterBackend):
 
     packagekey_param = 'package_name'
@@ -643,33 +647,9 @@ class DownloadPackageKeyIgnorePlatformFilterBackend(BaseFilterBackend):
         return queryset
 
 
-class CrackPackageDownloadListView(BaseListView):
+class CrackPackageDownloadListView(ProductPackageDownloadListView):
 
     template_name = 'analysis/admin/pages/crack_package_download_detail.html'
-
-    model = CubeDownloadProductPackageIncomingResult
-
-    filter_backends = (
-        DownloadPackageKeyIgnorePlatformFilterBackend,
-        CycleTypeFilterBackend,
-        BetweenStartEndDateDimFilterBackend,
-        OrderingFitler,
-    )
-
-    ordering = ('-start_date', 'device_platform', 'productkey', )
-
-    def get_context_data(self, **kwargs):
-        context = super(CrackPackageDownloadListView, self).get_context_data(**kwargs)
-        context['package'] = PackageProxy.objects \
-            .get(package_name=self.query_kwargs.get('package_name'))
-        return context
-
-    def get(self, request, package_name=None, *args, **kwargs):
-        kwargs.setdefault('cycle_type', 1)
-        kwargs.setdefault('package_name', package_name)
-        kwargs.setdefault('start_date', request.GET.get('start_date'))
-        kwargs.setdefault('end_date', request.GET.get('end_date'))
-        return super(CrackPackageDownloadListView, self).get(request, *args, **kwargs)
 
 
 class PackageKeyDimIgnorePlatformFilterBackend(BaseFilterBackend):

@@ -28,6 +28,7 @@
         <tr>
             <th>日期</th>
             <th>平台</th>
+            <th>产品</th>
             <th>累计下载</th>
             <th>下载 | 完成</th>
         </tr>
@@ -38,9 +39,8 @@
                 <td>
                     {{ item.start_date }}~{{ item.end_date }}
                 </td>
-                <td>
-                    {{ item.device_platform.platform }}
-                </td>
+                <td>{{ item.device_platform.platform }}</td>
+                <td>{{ item.productkey.entrytype }}</td>
                 <td>{{ item.total_download_count }}</td>
                 <td>{{ item.download_count }} | {{ item.downloaded_count }}</td>
             </tr>
