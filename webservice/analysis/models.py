@@ -1841,7 +1841,7 @@ class DownloadFact(EventFact):
             .get(platform=self.device_platform.platform,
                  package_name=package_name,
                  version_name=version_name)
-        self.packagekey, pk_created = PackageKeyDim.objects \
+        self.download_packagekey, pk_created = PackageKeyDim.objects \
             .get_or_create_from_package_dim(self.download_package)
 
     def fill_download_package_by_url(self, url_dim):
