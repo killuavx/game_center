@@ -1,0 +1,29 @@
+{% load url_tags i18n %}
+
+{% if current_page.has_previous or current_page.has_next %}
+<ul class="pagination">
+
+<li class="page-info">
+    <span>{% trans "Page" %} {{ current_page.number }} {% trans "of" %} {{ current_page.paginator.num_pages }}</span>
+</li>
+<li class="prev previous{% if not current_page.has_previous %} disabled{% endif %}">
+    <a{% if current_page.has_previous %} href="{% qurl request.get_full_path page=current_page.previous_page_number %}"{% endif %}>&larr;</a>
+</li>
+{% for i in page_range %}
+{% if i == '.' %}
+    <li><a href="javascript:;">{{ i }}</a></li>
+{% else %}
+    {% if current_page.paginator.num_pages > i %}
+    {% with page=i|add:1 %}
+            <li{% if page == current_page.number %} class="active"{% endif %}>
+                <a href="{% qurl request.get_full_path page=page %}">{{ page }}</a>
+            </li>
+    {% endwith %}
+    {% endif %}
+{% endif %}
+{% endfor %}
+<li class="next{% if not current_page.has_next %} disabled{% endif %}">
+    <a{% if current_page.has_next %} href="{% qurl request.get_full_path page=current_page.next_page_number %}"{% endif %}>&rarr;</a>
+</li>
+</ul>
+{% endif %}

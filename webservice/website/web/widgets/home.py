@@ -172,11 +172,11 @@ class WebIOSClientDownloadBox(base.ProductPropertyWidgetMixin, Widget):
     def get_context(self, value, options):
         from mezzanine.conf import settings
         self.client_package_name = getattr(settings, 'GC_FOOTER_CLIENT_DOWNLOAD_PACKAGE_NAME', '')
-        from django.core.urlresolvers import reverse
         self.options = deepcopy(options)
         self.product = options.get('product')
-        download_url = reverse('clientapp-latest_download',
-                               kwargs=dict(package_name=self.client_package_name))
+        from clientapp.models import client_download_url
+        download_url = client_download_url(package_name=self.client_package_name,
+                                           entrytype=self.product)
         data = deepcopy(options)
         data.update(dict(
             download_url=download_url,
@@ -237,10 +237,10 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
         )
 
     def get_client_download_url(self):
-        from django.core.urlresolvers import reverse
-        client_dw_url = reverse('clientapp-latest_download',
-                                kwargs=dict(package_name=''))
         from toolkit import helpers
+        from clientapp.models import client_download_url
+        client_dw_url = client_download_url(package_name='',
+                                            entrytype=self.product)
         return self._full_url(helpers.get_global_site(), client_dw_url)
 
     def get_context(self, value, options):

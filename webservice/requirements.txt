@@ -35,8 +35,9 @@ django-redis-sessions==0.4.0
 
 mongoengine
 
-# **for support py3**
-https://github.com/killuavx/django-static-precompiler/archive/support/py3.zip#egg=django-static-precompiler
+# frontend
+django-static-precompiler
+django-compressor
 
 # haml templatetags
 https://github.com/killuavx/HamlPy/archive/support/py3.zip#egg=HamlPy
@@ -54,3 +55,14 @@ drest
 
 #django-floppyforms
 #django-daterange-filter
+django-chart-tools
+django-classy-tags
+django-meta
+django-meta-mixin
+
+
+# django-memoize
+#https://github.com/akanouras/django-memoize/archive/akanouras/old-django-compat.zip
+django-import-export
+# 2to3
+django-url-tools

@@ -13,6 +13,7 @@ rest_framework_swagger_url = url(r'^api-docs/', include('rest_framework_swagger.
 urlpatterns = patterns("",
                        url(r'^mob/', include('webmob.urls')),
                        url("^admin/", include(admin.site.urls)),
+                       url("^admin/analysis/", include('analysis.data_urls')),
                        url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
                        url(r'^api/', include('mobapi.urls')),
                        url(r'^api/v2/', include('mobapi2.urls')),

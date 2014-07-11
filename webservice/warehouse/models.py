@@ -1,8 +1,6 @@
 # -*- encoding=utf-8 -*-
 import datetime
 from os.path import join, splitext
-from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
-
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.core import exceptions
@@ -22,7 +20,7 @@ from toolkit.managers import CurrentSitePassThroughManager, PassThroughManager
 from toolkit.fields import StarsField, PkgFileField, MultiResourceField
 from toolkit.models import SiteRelated
 from toolkit import model_url_mixin as urlmixin
-from toolkit.helpers import import_from, sync_status_from, released_hourly_datetime
+from toolkit.helpers import import_from, sync_status_from, released_hourly_datetime, qurl_to
 from toolkit.storage import package_storage
 
 storage = package_storage
@@ -725,15 +723,7 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
             url = self.get_download_dynamic_url(filetype=filetype)
         else:
             url = self.get_download_static_url(filetype=filetype)
-
-        if kwargs:
-            part = list(urlparse(url))
-            query_idx = 4
-            _args = list(filter(lambda x: x[0] is None, kwargs.items()))
-            query_params = list(parse_qsl(part[query_idx])) + _args
-            part[query_idx] = urlencode(query_params)
-            url = urlunparse(part)
-        return url
+        return qurl_to(url, **kwargs)
 
     def get_download_static_url(self, filetype=None):
         return self.get_download(filetype=filetype).url

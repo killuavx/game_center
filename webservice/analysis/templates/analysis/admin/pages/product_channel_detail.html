@@ -1,0 +1,33 @@
+{% extends "analysis/admin/base.haml" %}
+{% load analysis_tags url_tags %}
+{% block main %}
+    <h2>{{ product.entrytype }} | {{ product.channel }}</h2>
+    <ul class="nav nav-tabs" role="tablist">
+        <li><a href="javascript:;" onclick="history.back();" type="button" class="btn" style="margin-right:5px">&lt; 返回</a></li>
+        <li class="active"><a href="{% url 'analysis_product_channel_activate_list' entrytype=product.entrytype %}">渠道统计明细</a></li>
+    </ul>
+
+    <table class="table table-condensed table-striped table-hover">
+        <thead>
+            <tr>
+                <th>日期</th>
+                <th>日期段内新增（%）</th>
+                <th>日期段内活跃（%）</th>
+                <th>累计用户总量（%）</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in object_list %}
+            <tr>
+                <td>{{ item.start_date }}~{{ item.end_date }}</td>
+                <td>{{ item.reserve_count }}</td>
+                <td>{{ item.active_count }}</td>
+                <td>{{ item.total_reserve_count }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-center">
+        {% pagination page_obj %}
+    </div>
+{% endblock %}

@@ -1,0 +1,34 @@
+@charset "utf-8";
+body,div,p,ul,ol,li,table,tbody,tr,td,textarea,form,input,h1,h2,h3,h4,h5,dl,dt,dd,img,figure{margin:0;padding:0;outline: none;border:none;font-size:100%;font-weight:normal;list-style:none;}
+body{color:#333;font-family:"\5FAE\8F6F\96C5\9ED1",Helvetica;-webkit-user-select:none;-webkit-text-size-adjust:none;}
+a{text-decoration:none;}
+
+/*公共*/
+.icon{background:url(http://static.ccplay.com.cn/static/android_mobile/img/icon.png) no-repeat}
+
+/*头部*/
+.top{background:#e53333; padding:10px}
+.logo{width:120px; height:30px; background-size:120px auto}
+.down img{width:50px; margin:6px 0 0 5px}
+.top .r{height:30px}
+.top .r a{width:30px; height:30px; display:inline-block; background-size:190px auto}
+.top .r .search{background-position:0 -92px}
+.top .r .bbs{background-position:-30px -92px; margin-left:10px}
+
+nav ul li{float:left; width:20%}
+nav a{height:60px; display:block; background-size:190px auto; text-align:center}
+nav a span{width:30px; height:30px; position:relative; overflow:hidden; display:block; margin:0 auto}
+nav a span img{size:190px auto; position:relative}
+.home img{left:10px; top:-100px}
+.category{}
+.ranking{}
+.collection{}
+.user{}
+
+
+
+
+
+
+
+

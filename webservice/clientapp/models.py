@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from django.utils.timezone import now
 from django.db import models
 from django.db.models.query import QuerySet
@@ -8,7 +9,7 @@ from model_utils.fields import StatusField
 from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
-from toolkit.helpers import sync_status_from, released_hourly_datetime
+from toolkit.helpers import sync_status_from, released_hourly_datetime, qurl_to
 from toolkit.managers import CurrentSitePassThroughManager, PublishedManager
 from toolkit.models import SiteRelated, PublishDisplayable
 from mezzanine.core.models import TimeStamped, Orderable
@@ -151,6 +152,12 @@ class ClientPackageVersion(SiteRelated, models.Model):
 
     def __str__(self):
         return "%s:%s" %(self.package_name, self.version_name)
+
+
+def client_download_url(package_name, **kwargs):
+    client_dw_url = reverse('clientapp-latest_download',
+                            kwargs=dict(package_name=package_name))
+    return qurl_to(client_dw_url, **kwargs)
 
 
 from django.db.models.signals import pre_save

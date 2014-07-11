@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import MultipleObjectsReturned
+from django.utils.timezone import timedelta, get_default_timezone
 from django.db import IntegrityError
 from django.db import transaction
 from .models import *
 from .documents.event import Event
 from mongoengine import Q
-from django.utils.timezone import datetime, timedelta, get_default_timezone
 from dateutil.relativedelta import *
+from analysis.helpers import *
+from datetime import datetime, date
 import logging
+import gc
 
 USING = UsinglogFact.objects.db
 
@@ -77,7 +80,8 @@ class ExtractEventDimensionTask(ExtractDimensionTask):
 
     def get_mapreduce_functions(self):
         map_func = """function(){
-            emit(this.eventtype, {eventtype: this.eventtype});
+            var eventtype = String(this.eventtype).trim();
+            emit(eventtype, {eventtype:eventtype});
         }
         """
         return map_func, self.reduce_func
@@ -96,9 +100,11 @@ class ExtractProductDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = [this.entrytype, this.channel].join(" ");
-            var value = {entrytype: this.entrytype,
-                         channel: this.channel};
+            var entrytype = String(this.entrytype).trim();
+            var channel = String(this.channel).trim();
+            var key = [entrytype, channel].join(" ");
+            var value = {entrytype: entrytype,
+                         channel: channel};
             emit(key, value);
         }
         """
@@ -116,18 +122,27 @@ class ExtractPackageDimensionTask(ExtractDimensionTask):
 
     dimension_class = PackageDim
 
+
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = [this.package_name, this.version_name].join(" ");
-            var value = {package_name: this.package_name,
-                         version_name: this.version_name };
+            var platform = String(this.platform).trim();
+            var package_name = String(this.package_name).trim('"').trim();
+            var version_name = String(this.version_name).trim();
+            var key = [package_name, version_name, platform].join(" ");
+            var value = {package_name: package_name,
+                         version_name: version_name,
+                         platform: platform};
             emit(key, value);
             if(['download', 'downloaded'].indexOf(this.eventtype) != -1 ){
-                key = [this.download_package_name,
-                       this.download_version_name].join(" ");
-                value = {package_name: this.download_package_name,
-                         version_name: this.download_version_name };
+                var download_package_name = String(this.download_package_name).trim();
+                var download_version_name = String(this.download_version_name).trim();
+                var key = [download_package_name,
+                           download_version_name,
+                           platform].join(" ");
+                var value = {package_name: download_package_name,
+                             version_name: download_version_name,
+                             platform: platform};
                 emit(key, value);
             }
         }
@@ -136,10 +151,21 @@ class ExtractPackageDimensionTask(ExtractDimensionTask):
 
     @classmethod
     def get_or_create_dimension(cls, val):
-        defaults = dict(package_name=val.get('package_name') or UNDEFINED,
-                        version_name=val.get('version_name') or UNDEFINED)
-        return cls.dimension_class.objects\
-            .get_or_create(defaults=defaults, **defaults)
+        lookup = dict(package_name=val.get('package_name') or UNDEFINED,
+                      version_name=val.get('version_name') or UNDEFINED,
+                      platform=val.get('platform') or PLATFORM_DEFAULT)
+        obj, created = cls.dimension_class.objects\
+            .get_or_create(**lookup)
+        if created or not obj.pid:
+            obj = packagecategorydim_fill_to(obj)
+            obj = packageversion_id_fill(obj)
+            obj.save()
+
+        # packagekey_dim
+        pk_obj, pk_created = PackageKeyDim.objects\
+            .get_or_create_from_package_dim(obj)
+
+        return obj, created
 
 
 class ExtractSubscriberIdDimensionTask(ExtractDimensionTask):
@@ -149,10 +175,11 @@ class ExtractSubscriberIdDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """function(){
             var mnc = this.cell && this.cell.mnc;
-            var key = this.imsi;
-            var value = {imsi: this.imsi,
+            mnc = String(mnc).trim();
+            var imsi = String(this.imsi).trim();
+            var value = {imsi: imsi,
                          mnc: mnc };
-            emit(key, value);
+            emit(imsi, value);
         }
         """
         return map_func, self.reduce_func
@@ -161,7 +188,7 @@ class ExtractSubscriberIdDimensionTask(ExtractDimensionTask):
     def get_or_create_dimension(cls, val):
         mnc = val.get('mnc')
         if str(mnc).isnumeric():
-            mnc = "%02d" % mnc
+            mnc = "%02d" % int(mnc)
         else:
             mnc = UNDEFINED
         imsi = imsi=val.get('imsi') or UNDEFINED
@@ -177,10 +204,11 @@ class ExtractDeviceDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            if(this.imei == '') this.imei = null;
-            var key = this.imei;
+            if(this.imei == '') this.imei = 'undefined';
+            var platform = String(this.platform).trim();
+            var key = String(this.imei).trim();
             var value = {imei: key,
-                         platform: this.platform };
+                         platform: platform };
             emit(key, value);
         }
         """
@@ -189,7 +217,8 @@ class ExtractDeviceDimensionTask(ExtractDimensionTask):
     @classmethod
     def get_or_create_dimension(cls, val):
         imei = val.get('imei') or UNDEFINED
-        defaults = dict(imei=imei, platform=val.get('platform') or UNDEFINED)
+        defaults = dict(imei=imei,
+                        platform=val.get('platform') or PLATFORM_DEFAULT)
         return cls.dimension_class.objects.get_or_create(imei=imei,
                                                          defaults=defaults)
 
@@ -201,16 +230,16 @@ class ExtractDevicePlatformDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = this.platform;
-            var value = {platform: this.platform };
-            emit(key, value);
+            var platform = String(this.platform).trim();
+            var value = {platform: platform};
+            emit(platform, value);
         }
         """
         return map_func, self.reduce_func
 
     @classmethod
     def get_or_create_dimension(cls, val):
-        defaults=dict(platform=val.get('platform') or UNDEFINED)
+        defaults=dict(platform=val.get('platform') or PLATFORM_DEFAULT)
         return cls.dimension_class.objects\
             .get_or_create(defaults=defaults, **defaults)
 
@@ -222,9 +251,11 @@ class ExtractDeviceOSDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = [this.platform, this.os_version].join(" ");
-            var value = {platform: this.platform,
-                         os_version: this.os_version };
+            var platform = String(this.platform).trim();
+            var os_version = String(this.os_version).trim();
+            var key = [platform, os_version].join(" ");
+            var value = {platform: platform,
+                         os_version: os_version };
             emit(key, value);
         }
         """
@@ -232,7 +263,7 @@ class ExtractDeviceOSDimensionTask(ExtractDimensionTask):
 
     @classmethod
     def get_or_create_dimension(cls, val):
-        defaults = dict(platform=val.get('platform') or UNDEFINED,
+        defaults = dict(platform=val.get('platform') or PLATFORM_DEFAULT,
                         os_version=val.get('os_version') or UNDEFINED)
         return cls.dimension_class.objects\
             .get_or_create(defaults=defaults, **defaults)
@@ -245,8 +276,8 @@ class ExtractDeviceResolutionDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = this.resolution;
-            var val = {resolution: this.resolution};
+            var key = String(this.resolution).trim();
+            var val = {resolution: key};
             emit(key, val);
         }
         """
@@ -266,14 +297,18 @@ class ExtractDeviceModelDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = [this.manufacturer,
-                       this.device_name,
-                       this.module_name,
-                       this.model_name].join("|");
-            var value = {manufacturer: this.manufacturer,
-                         device_name: this.device_name,
-                         module_name: this.module_name,
-                         model_name: this.model_name }
+            var manufacturer = String(this.manufacturer).trim();
+            var device_name = String(this.device_name).trim();
+            var module_name = String(this.module_name).trim();
+            var model_name = String(this.model_name).trim();
+            var key = [manufacturer,
+                       device_name,
+                       module_name,
+                       model_name].join("|");
+            var value = {manufacturer: manufacturer,
+                         device_name: device_name,
+                         module_name: module_name,
+                         model_name: model_name }
             emit(key, value);
         }
         """
@@ -297,13 +332,15 @@ class ExtractDeviceSupplierDimensionTask(ExtractDimensionTask):
         map_func = """
         function(){
             var mcc = this.cell && this.cell.mcc;
+            mcc = String(mcc).trim();
             var mnc = this.cell && this.cell.mnc;
-            var key = [String(mcc), String(mnc)].join("");
-            if(typeof(mcc) == "undefined" || typeof(mnc) == "undefined"){
+            mnc = String(mnc).trim();
+            var key = [mcc, mnc].join("");
+            if(mcc == "undefined" || mnc == "undefined"){
                 key = null;
             }
             var value = {mccmnc: key,
-                         country_code: String(mcc),
+                         country_code: mcc,
                          cell: this.cell,
                          mcc: mcc,
                          mnc: mnc
@@ -340,8 +377,8 @@ class ExtractDeviceLanguageDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = this.language;
-            var value = {language: this.language };
+            var key = String(this.language).trim();
+            var value = {language: key };
             emit(key, value);
         }
         """
@@ -361,8 +398,8 @@ class ExtractNetworkDimensionTask(ExtractDimensionTask):
     def get_mapreduce_functions(self):
         map_func = """
         function(){
-            var key = this.network;
-            var value = {network: this.network};
+            var key = String(this.network).trim();
+            var value = {network: key};
             emit(key, value);
         }
         """
@@ -381,12 +418,15 @@ class ExtractPageDimensionTask(ExtractDimensionTask):
 
     def get_mapreduce_functions(self):
         map_func = """function(){
-            emit(this.page_name, {page_name: this.page_name, is_url:false});
+            var page_name = String(this.page_name).trim();
+            emit(page_name, {page_name: page_name, is_url:false});
             if(this.referer){
-                emit(this.referer, {page_name: this.referer, is_url:true});
+                var referer = String(this.referer).trim();
+                emit(referer, {page_name: referer, is_url:true});
             }
             if(this.current_uri){
-                emit(this.current_uri, {page_name: this.current_uri, is_url:true});
+                var current_uri = String(this.current_uri).trim();
+                emit(current_uri, {page_name: current_uri, is_url:true});
             }
         }
         """
@@ -419,7 +459,8 @@ class ExtractMediaUrlDimensionTask(ExtractDimensionTask):
 
     def get_mapreduce_functions(self):
         map_func = """function(){
-            emit(this.current_uri, {page_name: this.current_uri, is_url:true});
+            var current_uri = String(this.current_uri).trim();
+            emit(current_uri, {page_name: current_uri, is_url:true});
         }
         """
         return map_func, self.reduce_func
@@ -440,16 +481,15 @@ class ExtractBaiduPushDimensionTask(ExtractDimensionTask):
 
     def get_mapreduce_functions(self):
         map_func = """function(){
-            var val = {channel_id: this.baidu_push_channel_id,
-                       user_id: this.baidu_push_user_id,
-                       app_id: this.baidu_push_app_id,
-                       baidu_push_channel_id: this.baidu_push_channel_id,
-                       baidu_push_user_id: this.baidu_push_user_id,
-                       baidu_push_app_id: this.baidu_push_app_id
-                       };
-            var key = val.channel_id && val.user_id && val.app_id && [val.channel_id,
-                                                                      val.user_id,
-                                                                      val.app_id].join(" ");
+            var channel_id = String(this.baidu_push_channel_id).trim();
+            var user_id = String(this.baidu_push_user_id).trim();
+            var app_id = String(this.baidu_push_app_id).trim();
+            var val = {channel_id: channel_id,
+                       user_id: user_id,
+                       app_id: app_id};
+            var key = this.baidu_push_channel_id && this.baidu_push_user_id && this.baidu_push_app_id && [val.channel_id,
+                                                                                                          val.user_id,
+                                                                                                          val.app_id].join(" ");
             emit(key, val);
         }
         """
@@ -457,9 +497,9 @@ class ExtractBaiduPushDimensionTask(ExtractDimensionTask):
 
     @classmethod
     def get_or_create_dimension(cls, val):
-        defaults = dict(channel_id=val.get('channel_id') or val.get('baidu_push_channel_id') or UNDEFINED,
-                        user_id=val.get('user_id') or val.get('baidu_push_user_id') or UNDEFINED,
-                        app_id=val.get('app_id') or val.get('baidu_push_app_id') or UNDEFINED)
+        defaults = dict(channel_id=val.get('channel_id') or UNDEFINED,
+                        user_id=val.get('user_id') or UNDEFINED,
+                        app_id=val.get('app_id') or UNDEFINED)
         return cls.dimension_class.objects.get_or_create(defaults=defaults,
                                                          **defaults)
 
@@ -546,6 +586,7 @@ class UsinglogETLProcessor(ETLProcessor):
                 doc.save()
             msg = "%s/%s %s" %(created_count, doc_count, doc.created_datetime)
             self.logger.info(msg)
+            del doc
 
 
 # - Transform fact
@@ -605,14 +646,16 @@ class TransformDownloadFactFromUsinglogFactTask(TransformFactFromUsingFactTask):
                 fact = DownloadFact.objects.create_by_usinglogfact(usinglog)
                 self.logger.info(",, ".join([
                                              str(fact.event),
+                                             str(fact.device_platform),
                                              str(fact.productkey),
-                                             str(fact.packagekey),
-                                             str(fact.package),
-                                             str(fact.download_package),
-                                             str(fact.download_packagekey),
+                                             str(fact.packagekey.package_name if fact.packagekey else None),
+                                             str(fact.package.version_name if fact.package else None),
+                                             str(fact.download_packagekey.package_name if fact.download_packagekey else None),
+                                             str(fact.download_package.version_name if fact.download_package else None),
                                              str(fact.created_datetime)])
                 )
                 transaction.savepoint_commit(sid, USING)
+                del fact
             except IntegrityError as e:
                 self.logger.warning(e)
                 transaction.savepoint_rollback(sid, USING)
@@ -623,6 +666,7 @@ class TransformDownloadFactFromUsinglogFactTask(TransformFactFromUsingFactTask):
                 self.logger.error(doc.get('download_package_name'),
                                   doc.get('download_version_name'))
                 break
+            del usinglog
             self.logger.info(cnt)
 
 
@@ -645,10 +689,16 @@ class TransformActivateFactFromUsinglogFactTask(TransformFactFromUsingFactTask):
                       str(fact.is_new_product_package),
                       str(fact.is_new_product_package_version),
                       str(fact.is_new_package),
-                      str(fact.is_new_package_version)]))
+                      str(fact.is_new_package_version),
+
+                      str(fact.is_new_product_channel_package),
+                      str(fact.is_new_product_channel_package_version),
+                      ]))
+                del fact
             except IntegrityError as e:
                 self.logger.warning(e)
                 transaction.savepoint_rollback(sid, USING)
+            del usinglog
 
 
 class TransformOpenCloseDailyFactFromUsinglogFactTask(TransformFactFromUsingFactTask):
@@ -669,7 +719,6 @@ class TransformOpenCloseDailyFactFromUsinglogFactTask(TransformFactFromUsingFact
 
 
 # - Load result
-from datetime import date
 _datedims_mapset = dict()
 
 
@@ -772,24 +821,29 @@ class LoadResultTask(object):
         self.process_monthly(dt)
 
 
-class LoadSumActivateDeviceProductsResultTask(LoadResultTask):
+class BaseLoadActivateDeviceResultTask(LoadResultTask):
 
     CHOICE_CYCLE_TYPE = CHOICE_CYCLE_TYPE
 
-    model = SumActivateDeviceProductResult
+    model = None
+
+    sum_field_names = None
+
+    flag_field_name = None
 
     def get_queryset(self):
         return ActivateNewReserveFact.objects
 
     def _process_queryset(self, queryset, start_datedim, end_datedim,
                           cycle_type=CHOICE_CYCLE_TYPE['custom']):
-        reserve_values = queryset.reserve_device_values('productkey',
-                                                        is_new_product=True)
-        active_values = queryset.active_device_values('productkey')
-        open_values = queryset.open_values('productkey')
+        reserve_values = queryset.reserve_device_values(*self.sum_field_names,
+                                                        **{self.flag_field_name:True}
+        )
+        active_values = queryset.active_device_values(*self.sum_field_names)
+        open_values = queryset.open_values(*self.sum_field_names)
 
         total_vals = self._total_activate_values('reserve_count',
-                                                 reserve_values, dict())
+                                                 reserve_values)
         self.logger.info(total_vals)
         total_vals = self._total_activate_values('active_count',
                                                  active_values, total_vals)
@@ -800,8 +854,8 @@ class LoadSumActivateDeviceProductsResultTask(LoadResultTask):
 
         until_date_reserve_values = self._until_date_total_reserve_values(end_datedim)
         total_vals = self._total_activate_values('total_reserve_count',
-                                                   until_date_reserve_values,
-                                                   total_vals)
+                                                 until_date_reserve_values,
+                                                 total_vals)
         self.logger.info(total_vals)
 
         try:
@@ -814,14 +868,17 @@ class LoadSumActivateDeviceProductsResultTask(LoadResultTask):
 
     def _until_date_total_reserve_values(self, end_datedim):
         datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
-        values = self.get_queryset()\
-            .in_days(datedims)\
-            .reserve_device_values('productkey', is_new_product=True)
+        values = self.get_queryset() \
+            .in_days(datedims) \
+            .reserve_device_values(*self.sum_field_names,
+                                   **{self.flag_field_name: True} )
         return values
 
-    def _total_activate_values(self, count_field, values, total_vals):
+    def _total_activate_values(self, count_field, values, total_vals=None):
+        if total_vals is None:
+            total_vals = dict()
         for val in values:
-            key = val['productkey']
+            key = tuple({field_name:val[field_name] for field_name in self.sum_field_names}.items())
             if key not in total_vals:
                 total_vals[key] = dict()
 
@@ -830,22 +887,34 @@ class LoadSumActivateDeviceProductsResultTask(LoadResultTask):
         return total_vals
 
     def _save_activate_values(self, values, cycle_type, start_date, end_date):
-        self.logger.info("%s, %s" %(start_date, end_date))
+        self.logger.info("%s, %s, %s" %(cycle_type, start_date, end_date))
 
         for key, val in values.items():
             defaults = val
-            result, created = self.model.objects.get_or_create(
-                productkey_id=key,
-                cycle_type=cycle_type,
-                start_date=start_date,
-                end_date=end_date,
-                defaults=defaults
-            )
-            self.logger.info("created: %s, %s, %s" %(created, result.productkey, defaults))
-            if created:
-                return
+            self.logger.info(key)
+            lookup_dict = {"%s_id"%field_name: field_val for field_name, field_val in key}
+            lookup_dict.update(cycle_type=cycle_type,
+                               start_date=start_date,
+                               end_date=end_date)
+            self.logger.info(lookup_dict)
+            try:
+                result, created = self.model.objects.get(**lookup_dict), False
+            except self.model.DoesNotExist:
+                create_params = deepcopy(lookup_dict)
+                create_params.update(**defaults)
+                result, created = self.model(**create_params), True
+                try:
+                    sid = transaction.savepoint(USING)
+                    result.save()
+                    transaction.savepoint_commit(sid, USING)
+                except IntegrityError:
+                    transaction.savepoint_rollback(sid, USING)
+                    continue
 
-            # overwrite count field
+            self.logger.info("created: %s, %s, %s" % (created, lookup_dict, defaults))
+            if created:
+                continue
+                # overwrite count field
             for fieldname in self.model._meta.get_all_field_names():
                 if fieldname in defaults:
                     setattr(result, fieldname, defaults.get(fieldname))
@@ -854,91 +923,79 @@ class LoadSumActivateDeviceProductsResultTask(LoadResultTask):
             result.save()
 
 
-class LoadSumActivateDeviceProductPackagesResultTask(
-    LoadSumActivateDeviceProductsResultTask):
+def factory_load_sum_activate_result_task(sum_activate_result_model):
+    """
+        sum_field_names:
+            1.device_paltform, productkey
+            2.device_paltform, product(entrytype, channel)
+            3.device_paltform, productkey, packagekey
+            4.device_paltform, productkey, package(package_name, version_name)
+            5.device_paltform, product(entrytype, channel), packagekey
+            6.device_paltform, product(entrytype, channel), package(package_name, version_name)
 
-    model = SumActivateDeviceProductPackageResult
+        flag_field_name:
+            1. is_new_product
+            2. is_new_product_channel
+            3. is_new_product_package
+            4. is_new_product_package_version
+            5. is_new_product_channel_package
+            6. is_new_product_channel_package_version
 
-    def _process_queryset(self, queryset, start_datedim, end_datedim,
-                          cycle_type=CHOICE_CYCLE_TYPE['custom']):
+        sum_activate_result_model:
 
-        reserve_values = queryset.reserve_device_values('productkey',
-                                                        'packagekey',
-                                                        is_new_product_package=True)
-        active_values = queryset.active_device_values('productkey', 'packagekey')
-        open_values = queryset.open_values('productkey', 'packagekey')
+    """
+    sum_field_names = sum_activate_result_model._sum_field_names
+    flag_field_name = sum_activate_result_model._flag_field_name
 
-        total_values = self._total_activate_values('reserve_count',
-                                                   reserve_values, dict())
-        total_values = self._total_activate_values('active_count',
-                                                   active_values, total_values)
-        total_values = self._total_activate_values('open_count',
-                                                   open_values, total_values)
-        until_date_reserve_values = self._until_date_total_reserve_values(end_datedim)
-        total_values = self._total_activate_values('total_reserve_count',
-                                                   until_date_reserve_values,
-                                                   total_values)
-
-        try:
-            sid = transaction.savepoint(USING)
-            self._save_activate_values(total_values, cycle_type,
-                                       start_datedim, end_datedim)
-        except Exception as e:
-            self.logger.info(e)
-            transaction.savepoint_rollback(sid)
-
-    def _until_date_total_reserve_values(self, end_datedim):
-        datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
-        values = self.get_queryset() \
-            .in_days(datedims) \
-            .reserve_device_values('productkey',
-                                   'packagekey',
-                                   is_new_product_package=True)
-        return values
+    base_name = "".join([name.capitalize() \
+                         for name in flag_field_name.lstrip('is_new_').split('_')])
+    class_name = 'LoadSumActivateDevice%ssResultTask' % base_name
+    class_attrs = {
+        'model' : sum_activate_result_model,
+        'flag_field_name': flag_field_name,
+        'sum_field_names': sum_field_names,
+        '__module__': 'analysis.etl'
+    }
+    return type(BaseLoadActivateDeviceResultTask)(class_name, (BaseLoadActivateDeviceResultTask, ), class_attrs)
 
 
-class LoadSumActivateDeviceProductPackageVersionsResultTask(
-    LoadSumActivateDeviceProductPackagesResultTask):
+LoadSumActivateDeviceProductsResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductResult)
+LoadSumActivateDeviceProductPackagesResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductPackageResult)
+LoadSumActivateDeviceProductPackageVersionsResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductPackageVersionResult)
 
-    model = SumActivateDeviceProductPackageVersionResult
+LoadSumActivateDeviceProductChannelsResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductChannelResult)
+LoadSumActivateDeviceProductChannelPackagesResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductChannelPackageResult)
+LoadSumActivateDeviceProductChannelPackageVersionsResultTask = factory_load_sum_activate_result_task(SumActivateDeviceProductChannelPackageVersionResult)
 
-    def _process_queryset(self, queryset, start_datedim, end_datedim,
-                          cycle_type=CHOICE_CYCLE_TYPE['custom']):
 
-        reserve_values = queryset.reserve_device_values('productkey',
-                                                  'package',
-                                                  is_new_product_package_version=True)
-        active_values = queryset.active_device_values('productkey', 'package')
-        open_values = queryset.open_values('productkey', 'package')
+def factory_load_cube_activate_result_task(cube_activate_result_model):
+    """
+        sum_field_names:
+            5.device_paltform, product(entrytype, channel), packagekey
+            6.device_paltform, product(entrytype, channel), package(package_name, version_name)
 
-        total_values = self._total_activate_values('reserve_count',
-                                                   reserve_values, dict())
-        total_values = self._total_activate_values('active_count',
-                                                   active_values, total_values)
-        total_values = self._total_activate_values('open_count',
-                                                   open_values, total_values)
-        until_date_reserve_values = self._until_date_total_reserve_values(end_datedim)
-        total_values = self._total_activate_values('total_reserve_count',
-                                                   until_date_reserve_values,
-                                                   total_values)
+        flag_field_name:
+            5. is_new_product_channel_package
+            6. is_new_product_channel_package_version
 
-        try:
-            sid = transaction.savepoint(USING)
-            self._save_activate_values(total_values, cycle_type,
-                                       start_datedim, end_datedim)
-            transaction.savepoint_commit(sid)
-        except Exception as e:
-            self.logger.info(e)
-            transaction.savepoint_rollback(sid)
+        cube_activate_result_model:
+    """
+    sum_field_names = cube_activate_result_model._sum_field_names
+    flag_field_name = cube_activate_result_model._flag_field_name
+    base_name = "".join([name.capitalize() \
+                         for name in flag_field_name.lstrip('is_new_').split('_')])
+    class_name = 'LoadCubeActivateDevice%sResultTask' % base_name
+    class_attrs = {
+        'model': cube_activate_result_model,
+        'flag_field_name': flag_field_name,
+        'sum_field_names': sum_field_names,
+        '__module__': 'analysis.etl'
+    }
+    return type(BaseLoadActivateDeviceResultTask)(class_name, (BaseLoadActivateDeviceResultTask, ), class_attrs)
 
-    def _until_date_total_reserve_values(self, end_datedim):
-        datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
-        values = self.get_queryset() \
-            .in_days(datedims) \
-            .reserve_device_values('productkey',
-                                   'package',
-                                   is_new_product_package=True)
-        return values
+
+LoadCubeActivateDeviceProductChannelPackageResultTask = factory_load_cube_activate_result_task(CubeActivateDeviceProductChannelPackageResult)
+LoadCubeActivateDeviceProductChannelPackageVersionResultTask = factory_load_cube_activate_result_task(CubeActivateDeviceProductChannelPackageVersionResult)
 
 
 class LoadSumDownloadProductResultTask(LoadResultTask):
@@ -1016,13 +1073,122 @@ class LoadSumDownloadProductResultTask(LoadResultTask):
                 defaults=defaults
             )
             if creatd:
-                return
+                continue
 
             result.total_download_count = defaults.get('total_download_count', 0)
             result.total_downloaded_count = defaults.get('total_downloaded_count', 0)
             result.download_count = defaults.get('download_count', 0)
             result.downloaded_count = defaults.get('downloaded_count', 0)
             result.save()
+
+
+class BaseLoadCubeDownloadResultTask(LoadResultTask):
+
+    model = None
+
+    sum_field_names = None
+
+    def get_queryset(self):
+        return DownloadFact.objects
+
+    def _get_download_events(self):
+        if not hasattr(self, '_events'):
+            eventtypes = ['download', 'downloaded']
+            events = dict()
+            for e in EventDim.objects.filter(eventtype__in=eventtypes):
+                events[e.pk] = e
+            self._events = events
+        return self._events
+
+    def _process_queryset(self, queryset, start_datedim, end_datedim,
+                          cycle_type=CHOICE_CYCLE_TYPE['custom']):
+        download_values = queryset.download_values(*self.sum_field_names)
+        self.logger.info("%s, %s" %(start_datedim, end_datedim))
+        total_download_values = self._until_date_download_values(end_datedim)
+        self.logger.info(total_download_values)
+        cb_dw_values = self._combine_values(download_values,
+                                            result=dict(), is_total=False)
+        cb_dw_values = self._combine_values(total_download_values,
+                                            cb_dw_values, is_total=True)
+        self.logger.info(cb_dw_values)
+        self._save_values(cb_dw_values, cycle_type, start_datedim, end_datedim)
+
+    def _until_date_download_values(self, end_datedim):
+        datedims = DateDim.objects.until_dim(end_datedim, with_self=True)
+        self.logger.info(datedims.count())
+        return self.get_queryset().in_days(datedims).download_values(*self.sum_field_names)
+
+    def _combine_values(self, values, result, is_total=False):
+        events = self._get_download_events()
+        for val in values:
+            key = tuple({field_name:val[field_name] for field_name in self.sum_field_names}.items())
+            event_pk = val['event']
+            eventtype = events[event_pk].eventtype
+            if key not in result:
+                result[key] = dict(download_count=0, total_download_count=0,
+                                   downloaded_count=0, total_downloaded_count=0)
+            prefix = ''
+            if is_total:
+                prefix = 'total_'
+            if eventtype == 'download':
+                result[key]['%sdownload_count' % prefix] = val['cnt']
+            elif eventtype == 'downloaded':
+                result[key]['%sdownloaded_count' % prefix] = val['cnt']
+
+        return result
+
+    def _save_values(self, values, cycle_type, start_date, end_date):
+        self.logger.info(values)
+        for key, val in values.items():
+            self.logger.info("%s,  %s" % (key, val))
+            defaults = val
+            lookup_dict = {"%s_id"%field_name: field_val for field_name, field_val in key}
+            lookup_dict.update(cycle_type=cycle_type,
+                               start_date=start_date,
+                               end_date=end_date)
+            try:
+                result, created = self.model.objects.get(**lookup_dict), False
+            except self.model.DoesNotExist:
+                create_params = deepcopy(lookup_dict)
+                create_params.update(**defaults)
+                result, created = self.model(**create_params), True
+                try:
+                    sid = transaction.savepoint(USING)
+                    result.save()
+                    transaction.savepoint_commit(sid, USING)
+                except IntegrityError as e:
+                    transaction.savepoint_rollback(sid, USING)
+                    continue
+
+            if created:
+                continue
+            result.total_download_count = defaults.get('total_download_count', 0)
+            result.total_downloaded_count = defaults.get('total_downloaded_count', 0)
+            result.download_count = defaults.get('download_count', 0)
+            result.downloaded_count = defaults.get('downloaded_count', 0)
+            result.save()
+
+
+def factory_load_cube_download_result_task(model_base_name, cube_download_result_model):
+    sum_field_names = cube_download_result_model._sum_field_names
+    class_name = 'LoadCubeDownload%sResultTask' % model_base_name
+    class_attrs = {
+        'model': cube_download_result_model,
+        'sum_field_names': sum_field_names,
+        '__module__': 'analysis.etl'
+    }
+    return type(BaseLoadCubeDownloadResultTask)(class_name, (BaseLoadCubeDownloadResultTask, ), class_attrs)
+
+
+LoadCubeDownloadProductResultTask = factory_load_cube_download_result_task('Product', CubeDownloadProductResult)
+
+# 分发出去的下载量
+LoadCubeDownloadProductPackageResultTask = factory_load_cube_download_result_task('ProductPacakge', CubeDownloadProductPackageResult)
+LoadCubeDownloadProductPackageVersionResultTask = factory_load_cube_download_result_task('ProductPacakgeVersion', CubeDownloadProductPackageVersionResult)
+
+# 自身被下载数量
+LoadCubeDownloadProductPackageIncomingResultTask = factory_load_cube_download_result_task('ProductPacakgeIncoming', CubeDownloadProductPackageIncomingResult)
+LoadCubeDownloadProductPackageVersionIncomingResultTask = factory_load_cube_download_result_task('ProductPacakgeVersionIncoming', CubeDownloadProductPackageVersionIncomingResult)
 
 
 class InitialDimensionsTask(object):
@@ -1124,7 +1290,6 @@ class InitialDimensionsTask(object):
                                     app_id=UNDEFINED)
 
     def import_cell_tower_from_csv(self, f):
-        from django.utils.timezone import datetime, utc
         from analysis.documents.event import CellTower
         import csv
         reader = csv.reader(f)
@@ -1156,3 +1321,38 @@ class InitialDimensionsTask(object):
                 updated=updated,
                 averageSignalStrength=averageSignalStrength)
             ct.save()
+
+
+class ExtractDimensionProcessor(ETLProcessor):
+
+    # Transform Fact
+    def transform_to_fact(self, queryset):
+        pass
+
+
+class CleaningPackageDimensionsTask(object):
+
+    def execute(self):
+        from django.db.models.query import Q as DQ
+        qs = PackageDim.objects.filter(DQ(platform=UNDEFINED)|
+                                       DQ(platform=PLATFORM_ANDROID))\
+            .order_by('package_name', 'version_name')
+        for pd in qs:
+            try:
+                pd.platform = PLATFORM_ANDROID
+                pd.save()
+            except IntegrityError:
+                pd.delete()
+
+        qs = PackageDim.objects.exclude(platform=UNDEFINED)\
+            .filter(DQ(pid=None)|DQ(title=''))
+        for pd in qs:
+            if pd.pid and pd.title:
+                continue
+            pd = packagecategorydim_fill_to(pd)
+            pd = packageversion_id_fill(pd)
+            pd.save()
+            pkd, created = PackageKeyDim.objects\
+                .get_or_create_from_package_dim(pd)
+
+

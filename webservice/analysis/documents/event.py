@@ -60,7 +60,7 @@ class Event(DynamicDocument):
 
     tags = fields.ListField(fields.StringField(max_length=100), required=False)
 
-    package_name = fields.StringField(max_length=150, required=False)
+    package_name = fields.StringField(required=False)
 
     created_datetime = fields.DateTimeField(default=now)
 
@@ -98,6 +98,12 @@ class Event(DynamicDocument):
 
     def __str__(self):
         return str(self.id)
+
+    def save(self, *args, **kwargs):
+        for f, v in self._data.items():
+            if isinstance(v, str):
+                setattr(self, f, v.strip())
+        return super(Event, self).save(*args, **kwargs)
 
 
 class CellTower(Document):

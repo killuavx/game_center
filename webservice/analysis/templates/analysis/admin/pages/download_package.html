@@ -1,0 +1,66 @@
+{% extends "analysis/admin/base.haml" %}
+{% load analysis_tags url_tags %}
+{% block main %}
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#">产品激活</a></li>
+        <li class="pull-right">
+            <form class="navbar-form" role="search" style="margin:0" action="{{ request.get_full_path }}" method="GET" >
+                <div class="form-group">
+                    <input type="date" name="start_date" value="{{ query.start_date }}" class="form-control">
+                    <!--<input type="date" name="end_date" class="form-control">-->
+                </div>
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" value="{{ query.q|default:'' }}" placeholder="关键词">
+                    <div class="input-group-btn">
+                        <button type="submit" value="search" class="btn btn-default btn-primary">搜索</button>
+                        <a href="{% qurl request.get_full_path q=None %}" class="btn btn-default">全部</a>
+                    </div>
+                </div>
+            </form>
+        </li>
+    </ul>
+
+    <table class="table table-condensed table-striped table-hover">
+        <thead>
+        <tr>
+            <th>应用</th>
+            <th>平台</th>
+            <th>累计下载</th>
+            <th>下载 | 完成</th>
+            <th>详情</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>合计</th>
+            <th></th>
+            <th>{{ total_result.total_download_count }}</th>
+            <th>{{ total_result.download_count }} | {{ total_result.downloaded_count }}</th>
+            <th></th>
+        </tr>
+        {% for item in object_list %}
+            {% url 'analysis_package_download_detail' package_name=item.download_packagekey.package_name as apca_url %}
+            <tr>
+                <td>
+                    {% if item.download_packagekey.package %}
+                    <a target="_blank" title="{{ item.download_packagekey.title }}" href="{{ item.download_packagekey.package_admin_url }}">
+                        {{ item.download_packagekey.title }}
+                    </a>
+                    {% else %}
+                        {{ item.download_packagekey.title|default:item.download_packagekey.package_name }}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ item.device_platform.platform }}
+                </td>
+                <td>{{ item.total_download_count }}</td>
+                <td>{{ item.download_count }} | {{ item.downloaded_count }}</td>
+                <td><a href="{% qurl apca_url %}" class="btn btn-default btn-xs">明细</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-center">
+        {% pagination page_obj %}
+    </div>
+{% endblock %}

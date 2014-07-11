@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from bson import ObjectId
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db.models import Count, Q
 from django.utils.timezone import *
 from datetime import timedelta, datetime
@@ -11,8 +11,12 @@ from django.utils.encoding import force_bytes
 from model_utils.managers import PassThroughManager
 from model_utils.tracker import FieldTracker
 from .documents.event import Event
-from django.core.urlresolvers import resolve, Resolver404
+from django.core.urlresolvers import resolve, Resolver404, reverse
 from hashlib import md5
+from .helpers import PLATFORM_ANDROID, PLATFORM_IOS, packageversion_id_fill, find_platform_categories
+
+import logging
+logger = logging.getLogger('scripts')
 
 UNDEFINED = 'undefined'
 
@@ -20,14 +24,23 @@ UNDEFINED = 'undefined'
 
 PLATFORM_CHOICES = (
     (UNDEFINED, 'None'),
-    ('android', 'Android'),
-    ('ios', 'iOS'),
+    (PLATFORM_ANDROID, 'Android'),
+    (PLATFORM_IOS, 'iOS'),
 )
+
+PLATFORM_DEFAULT = PLATFORM_ANDROID
 
 platform = models.CharField(max_length=20,
                             db_index=True,
-                            default=UNDEFINED,
+                            default=PLATFORM_DEFAULT,
                             choices=PLATFORM_CHOICES)
+
+def dictdata_strip_val(data):
+    for f, v in data.items():
+        if isinstance(v, str):
+            data[f] = v.strip()
+    return data
+
 
 def dictfetchall(cursor):
     "Returns all rows from a cursor as a dict"
@@ -258,25 +271,40 @@ class HourDim(Dimension):
         return str(self.hour)
 
 
-class PackageKeyDim(Dimension):
+def packagecategorydim_fill_to(pkg_or_ver_dim):
+    obj = pkg_or_ver_dim
+    cats = find_platform_categories(obj.platform, obj)
+    if cats:
+        root_cat, primary_cat, second_cat = cats
+        if root_cat:
+            obj.root_category, created = packagecategorydim_get_or_category_from(root_cat)
+        if primary_cat:
+            obj.primary_category, created = packagecategorydim_get_or_category_from(primary_cat)
+        if second_cat:
+            obj.second_category, created = packagecategorydim_get_or_category_from(second_cat)
+    return obj
 
-    title = models.CharField(max_length=255, default='')
 
-    package_name = models.CharField(max_length=255, unique=True)
-
-    class Meta:
-        db_table = 'dim_packagekey'
-        verbose_name = '应用'
-        verbose_name_plural = '应用列表'
-
-    def __str__(self):
-        if self.title:
-            return self.title
-        else:
-            return self.package_name
+def packagecategorydim_get_or_category_from(category):
+    if not category:
+        return None, None
+    obj, created = PackageCategoryDim.objects.get_or_create(
+        cid=category.pk,
+        slug=category.slug,
+        defaults=dict(
+            name=category.name
+        )
+    )
+    if obj.name != category.name:
+        category.name = obj.name
+        category.save()
+    return obj, created
 
 
 class PackageCategoryDim(Dimension):
+
+    cid = models.IntegerField(verbose_name='源数据taxonomy_category.id',
+                              null=True)
 
     name = models.CharField(max_length=100,
                             default=UNDEFINED)
@@ -285,15 +313,106 @@ class PackageCategoryDim(Dimension):
                             default=UNDEFINED,
                             unique=True)
 
+    def __str__(self):
+        return "%s:%s:%s" %(self.name, self.slug, self.cid)
+
     class Meta:
         db_table = 'dim_packagecategory'
         verbose_name = '应用分类'
         verbose_name_plural = '应用分类列表'
 
 
-class PackageDim(Dimension):
+class BasePackageDim(Dimension):
 
     title = models.CharField(max_length=255, default='')
+
+    PLATFORM_CHOICES = PLATFORM_CHOICES
+
+    platform = deepcopy(platform)
+
+    root_category = models.ForeignKey(PackageCategoryDim, null=True, related_name='+')
+
+    primary_category = models.ForeignKey(PackageCategoryDim, null=True, related_name='+')
+
+    second_category = models.ForeignKey(PackageCategoryDim, null=True, related_name='+')
+
+    class Meta:
+        abstract = True
+
+
+def sync_package_dim(from_, to_):
+    to_.root_category_id = from_.root_category_id
+    to_.primary_category_id = from_.primary_category_id
+    to_.second_category_id = from_.second_category_id
+    to_.pid = from_.pid
+    to_.title = from_.title
+    return to_
+
+
+def packagekey_dim_has_diff_between(obj1, obj2):
+    return not(obj1.root_category_id == obj2.root_category_id
+               and obj1.primary_category_id == obj2.primary_category_id
+               and obj1.second_category_id == obj2.second_category_id
+               and obj1.title == obj2.title)
+
+
+class PackageKeyManager(models.Manager):
+
+    def get_or_create_from_package_dim(self, package_dim):
+        packagekey, created = PackageKeyDim.objects \
+            .get_or_create(platform=package_dim.platform,
+                           package_name=package_dim.package_name)
+        if created or (package_dim.pid and not packagekey.pid) \
+            or packagekey_dim_has_diff_between(packagekey, package_dim):
+            packagekey = sync_package_dim(package_dim, packagekey)
+            packagekey.save()
+        return packagekey, created
+
+
+class PackageKeyDim(BasePackageDim):
+
+    objects = PackageKeyManager()
+
+    pid = models.IntegerField(verbose_name='源数据库warehouse_package.id',
+                              null=True)
+
+    package_name = models.CharField(max_length=255, db_index=True)
+
+    class Meta:
+        db_table = 'dim_packagekey'
+        unique_together = (
+            ('platform', 'package_name',)
+        )
+        verbose_name = '应用'
+        verbose_name_plural = '应用列表'
+
+    def __str__(self):
+        return "%s:%s:%s" %(self.title, self.package_name, self.pid)
+
+    @property
+    def package(self):
+        if not self.pid:
+            return None
+        from warehouse.models import Package
+        try:
+            return Package.objects.get(pk=self.pid)
+        except Package.DoesNotExist:
+            return None
+
+    def package_admin_url(self):
+        link = reverse(
+            'admin:%s_%s_change' % ('warehouse', 'package'),
+            args=[self.pid])
+        return link
+
+
+class PackageDim(BasePackageDim):
+
+    pid = models.IntegerField(verbose_name='源数据库warehouse_package.id',
+                              null=True)
+
+    vid = models.IntegerField(verbose_name='源数据库warehouse_packageversion.id',
+                              null=True)
 
     package_name = models.CharField(max_length=255, db_index=True)
 
@@ -302,7 +421,10 @@ class PackageDim(Dimension):
     class Meta:
         db_table = 'dim_package'
         unique_together = (
-            ('package_name', 'version_name',),
+            ('platform', 'package_name', 'version_name',),
+        )
+        index_together = (
+            ('platform', 'package_name',),
         )
         verbose_name = '应用版本'
         verbose_name_plural = '应用版本列表'
@@ -338,7 +460,41 @@ class PackageDim(Dimension):
         """
 
     def __str__(self):
-        return "%s, %s" % (self.package_name, self.version_name)
+        return "%s:%s:%s:%s:%s" % (self.title,
+                                   self.package_name, self.pid,
+                                   self.version_name, self.vid)
+
+    @property
+    def package(self):
+        if not self.pid:
+            return None
+        from warehouse.models import Package
+        try:
+            return Package.objects.get(pk=self.pid)
+        except Package.DoesNotExist:
+            return None
+
+    def package_admin_url(self):
+        link = reverse(
+            'admin:%s_%s_change' % ('warehouse', 'package'),
+            args=[self.pid])
+        return link
+
+    @property
+    def version(self):
+        if not self.vid:
+            return None
+        from warehouse.models import PackageVersion
+        try:
+            return PackageVersion.objects.get(pk=self.vid)
+        except PackageVersion.DoesNotExist:
+            return None
+
+    def package_admin_url(self):
+        link = reverse(
+            'admin:%s_%s_change' % ('warehouse', 'packageversion'),
+            args=[self.vid])
+        return link
 
 
 class SubscriberIdDim(Dimension):
@@ -946,26 +1102,25 @@ class EventFact(Fact):
                  channel=doc.get('channel') or UNDEFINED)
 
     def package_from_doc(self, doc):
+        platform = doc.get('platform') or PLATFORM_DEFAULT
         self.package = PackageDim.objects\
-            .get(package_name=doc.get('package_name') or UNDEFINED,
+            .get(platform=platform,
+                 package_name=doc.get('package_name') or UNDEFINED,
                  version_name=doc.get('version_name') or UNDEFINED)
-        package_name = self.package.package_name
-        packagekey, created = PackageKeyDim.objects\
-            .get_or_create(package_name=package_name,
-                           defaults=dict(package_name=package_name))
-        self.packagekey = packagekey
+        self.packagekey, created = PackageKeyDim.objects\
+            .get_or_create_from_package_dim(self.package)
 
     def device_from_doc(self, doc):
         self.device = DeviceDim.objects.get(imei=doc.get('imei') or UNDEFINED)
 
     def device_os_from_doc(self, doc):
         self.device_os = DeviceOSDim.objects\
-            .get(platform=doc.get('platform') or UNDEFINED,
+            .get(platform=doc.get('platform') or PLATFORM_DEFAULT,
                  os_version=doc.get('os_version') or UNDEFINED)
 
     def device_platform_from_doc(self, doc):
         self.device_platform = DevicePlatformDim.objects\
-            .get(platform=doc.get('platform') or UNDEFINED)
+            .get(platform=doc.get('platform') or PLATFORM_DEFAULT)
 
     def device_supplier_from_doc(self, doc):
         cell = doc.get('cell', dict())
@@ -1011,7 +1166,7 @@ class EventFact(Fact):
                  app_id=doc.get('baidu_push_app_id') or UNDEFINED)
 
     def transform_from_doc(self):
-        doc = self.doc._data
+        doc = dictdata_strip_val(self.doc._data)
         self.event_from_doc(doc)
         self.product_from_doc(doc)
         self.package_from_doc(doc)
@@ -1259,6 +1414,16 @@ class ActivateFact(EventFact):
             ('productkey', 'device', 'packagekey'),
             ('productkey', 'package'),
             ('productkey', 'device', 'package'),
+
+            ('device_platform', 'package', 'date', ),
+            ('device_platform', 'device', 'package', 'date'),
+            ('device_platform', 'product', 'device'),
+            ('device_platform', 'product', 'device', 'package'),
+            ('device_platform', 'productkey', 'device'),
+            ('device_platform', 'productkey', 'packagekey'),
+            ('device_platform', 'productkey', 'device', 'packagekey'),
+            ('device_platform', 'productkey', 'package'),
+            ('device_platform', 'productkey', 'device', 'package'),
         )
         ordering = ('-date', )
 
@@ -1268,10 +1433,25 @@ class ActivateFact(EventFact):
 
 class ReserveBooleanField(models.BooleanField):
 
-    group_fields = list()
+    group_fields = None
+
+    cube_fields = None
+
+    sum_fields = None
 
     def __init__(self, *args, **kwargs):
-        self.group_fields = kwargs.pop('group_fields')
+        try:
+            self.group_fields = kwargs.pop('group_fields')
+        except:
+            self.group_fields = list()
+        try:
+            self.cube_fields = kwargs.pop('cube_fields')
+        except:
+            self.cube_fields = list()
+        try:
+            self.sum_fields = kwargs.pop('sum_fields')
+        except:
+            self.sum_fields = list()
         super(ReserveBooleanField, self).__init__(*args, **kwargs)
 
 
@@ -1293,6 +1473,10 @@ class ActivateNewReserveFactManager(ActivateFactManager):
             queries = {k: getattr(inst, k) for k in field.group_fields}
             statuses[field.name] = self.check_is_new_device(inst, **queries)
         return statuses
+
+    @property
+    def reserve_fields(self):
+        return self._fetch_reserve_fields()
 
 
 class ActivateNewReserveFactQuerySet(QuerySet):
@@ -1386,46 +1570,94 @@ class ActivateNewReserveFact(ActivateFact):
     objects = ActivateNewReserveFactManager\
         .for_queryset_class(ActivateNewReserveFactQuerySet)()
 
+    platform = models.ForeignKey(DevicePlatformDim,
+                                 null=True)
+
     # 产品 新增
-    is_new_product = ReserveBooleanField(default=False,
-                                         db_index=True,
-                group_fields=('device', 'productkey')
+    is_new_product = ReserveBooleanField(
+        verbose_name='产品 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey'),
+        cube_fields=('device_platform', 'productkey'),
+        group_fields=('device', 'device_platform', 'productkey')
     )
 
     # 产品-渠道 新增
-    is_new_product_channel = ReserveBooleanField(default=False,
-                                                 db_index=True,
-                 group_fields=('device', 'product')
+    is_new_product_channel = ReserveBooleanField(
+        verbose_name='产品-渠道 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey', 'product'),
+        cube_fields=('device_platform', 'productkey', 'product'),
+        group_fields=('device', 'device_platform', 'product')
+    )
+
+    # 产品-渠道-package 新增
+    is_new_product_channel_package = ReserveBooleanField(
+        verbose_name='产品-渠道-package 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey', 'product'),
+        cube_fields=('device_platform', 'productkey', 'product', 'packagekey'),
+        group_fields=('device', 'device_platform', 'product', 'packagekey')
+    )
+
+    # 产品-渠道-packge-version 新增
+    is_new_product_channel_package_version = ReserveBooleanField(
+        verbose_name='产品-渠道-package-version 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey', 'product'),
+        cube_fields=('device_platform', 'productkey', 'product', 'packagekey', 'package'),
+        group_fields=('device', 'device_platform', 'product', 'package')
     )
 
     # 产品-package_name 新增
-    is_new_product_package = ReserveBooleanField(default=False,
-                                                 db_index=True,
-                 group_fields=('device', 'productkey', 'packagekey')
+    is_new_product_package = ReserveBooleanField(
+        verbose_name='产品-package 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey'),
+        cube_fields=('device_platform', 'productkey', 'packagekey'),
+        group_fields=('device', 'device_platform', 'productkey', 'packagekey')
     )
 
     # 产品-package-version 新增
-    is_new_product_package_version = ReserveBooleanField(default=False,
-                                                         db_index=True,
-                 group_fields=('device', 'productkey', 'package')
+    is_new_product_package_version = ReserveBooleanField(
+        verbose_name='产品-package-version 新增',
+        default=False, db_index=True,
+        sum_fields=('device_platform', 'productkey', ),
+        cube_fields=('device_platform', 'productkey', 'package'),
+        group_fields=('device', 'device_platform', 'productkey', 'package')
     )
 
     # 应用 新增
-    is_new_package = ReserveBooleanField(default=False,
-                                         db_index=True,
-                 group_fields=('device', 'packagekey')
+    is_new_package = ReserveBooleanField(
+        verbose_name='package 新增',
+        default=False, db_index=True,
+        cube_fields=('device_platform', 'packagekey'),
+        group_fields=('device', 'device_platform', 'packagekey')
     )
 
     # 应用-版本 新增
-    is_new_package_version = ReserveBooleanField(default=False,
-                                                 db_index=True,
-                 group_fields=('device', 'package')
+    is_new_package_version = ReserveBooleanField(
+        verbose_name='package-version 新增',
+        default=False, db_index=True,
+        cube_fields=('device_platform', 'packagekey', 'package'),
+        group_fields=('device', 'device_platform', 'package')
     )
 
     class Meta:
         db_table = 'fact_activate_newreserve'
         verbose_name = '事实日志 开启日志<新激活>'
         verbose_name_plural = '事实日志 开启日志<新激活>列表'
+        index_together = (
+            ('platform', 'is_new_product'),
+            ('platform', 'is_new_product_channel'),
+            ('platform', 'is_new_product_channel_package'),
+            ('platform', 'is_new_product_channel_package_version'),
+            ('platform', 'is_new_product_package'),
+            ('platform', 'is_new_product_package_version'),
+
+            ('platform', 'is_new_package'),
+            ('platform', 'is_new_package_version'),
+        )
 
     def _set_new_status(self, statuses):
         for f, v in statuses.items():
@@ -1437,13 +1669,13 @@ class ActivateNewReserveFact(ActivateFact):
             self.productkey, created = ProductKeyDim.objects \
                 .get_or_create(defaults=_defaults, **_defaults)
         if not self.packagekey:
-            _defaults = dict(package_name=self.package.package_name)
-            self.packagekey, created = PackageKeyDim.objects \
-                .get_or_create(defaults=_defaults, **_defaults)
+            self.packagekey, created = PackageKeyDim.objects\
+                .get_or_create_from_package_dim(self.package)
 
     def transform_from_usinglog(self):
         copy_model_instance(self.usinglog, self)
         self._fill_key()
+        self.platform = self.device_platform
         statuses = self.__class__.objects.check_all_new_status(self)
         self._set_new_status(statuses)
 
@@ -1562,41 +1794,79 @@ class DownloadFact(EventFact):
             ('event', 'productkey', 'device', 'packagekey', 'download_packagekey', 'created_datetime',),
             ('event', 'productkey'),
             ('event', 'product'),
+
+        #    ('event', 'device_platform', 'productkey', 'packagekey'),
+        #    ('event', 'device_platform', 'productkey', 'packagekey', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'packagekey', 'package'),
+        #    ('event', 'device_platform', 'productkey', 'packagekey', 'package', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'download_package'),
+        #    ('event', 'device_platform', 'productkey', 'download_package', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'download_packagekey'),
+        #    ('event', 'device_platform', 'productkey', 'download_packagekey', 'date'),
+
+        #    ('event', 'device_platform', 'productkey', 'product', 'packagekey'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'packagekey', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'packagekey', 'package'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'packagekey', 'package', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'download_packagekey'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'download_packagekey', 'date'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'download_packagekey', 'download_package'),
+        #    ('event', 'device_platform', 'productkey', 'product', 'download_packagekey', 'download_package', 'date'),
         )
+
+    def transform_from_usinglog(self):
+        copy_model_instance(self.usinglog, self)
+        self.download_dim_from_page()
 
     def download_dim_from_page(self):
         self.download_url, created = MediaUrlDim.objects\
             .get_or_create_by_page_url(page_url=self.page.urlvalue)
         doc_data = self.doc._data
         if 'redirect_to' in doc_data:
+            redirect_to = str(self.doc.redirect_to).strip()
             self.redirect_to, created = MediaUrlDim.objects\
-                .get_or_create_by_page_url(page_url=self.doc.redirect_to, is_static=True)
+                .get_or_create_by_page_url(page_url=redirect_to, is_static=True)
 
         if 'download_package_name' in doc_data:
-            self.download_package = PackageDim.objects \
-                .get(package_name=doc_data.get('download_package_name') or UNDEFINED,
-                     version_name=doc_data.get('download_version_name') or UNDEFINED)
-            defaults =dict(package_name=self.download_package.package_name)
-            self.download_packagekey, created = PackageKeyDim.objects\
-                .get_or_create(defaults=defaults, **defaults)
-        """else:
-            package_name, version_name = self\
-                .get_download_packageversion_by_urlpath(self.page.path)
-            self.download_package = PackageDim.objects \
-                .get(package_name=package_name, version_name=version_name)
-            defaults =dict(package_name=self.download_package.package_name)
-            self.download_packagekey, created = PackageKeyDim.objects\
-                .get_or_create(defaults=defaults, **defaults)
-        """
+            self.fill_download_package_by_doc(doc_data)
+        else:
+            self.fill_download_package_by_url(self.download_url)
 
-    def fill_download_package_by_url(self):
-        package_name, version_name = self \
-            .get_download_packageversion_by_urlpath(self.page.path)
+    def fill_download_package_by_doc(self, doc_data):
+        package_name = doc_data.get('download_package_name') or UNDEFINED
+        package_name = package_name.strip('"').strip()
+        version_name = doc_data.get('download_version_name') or UNDEFINED
+        version_name = version_name.strip()
         self.download_package = PackageDim.objects \
-            .get(package_name=package_name, version_name=version_name)
-        defaults =dict(package_name=self.download_package.package_name)
-        self.download_packagekey, created = PackageKeyDim.objects \
-            .get_or_create(defaults=defaults, **defaults)
+            .get(platform=self.device_platform.platform,
+                 package_name=package_name,
+                 version_name=version_name)
+        self.download_packagekey, pk_created = PackageKeyDim.objects \
+            .get_or_create_from_package_dim(self.download_package)
+
+    def fill_download_package_by_url(self, url_dim):
+        pv_names = self.get_download_packageversion_by_urlpath(url_dim.path)
+        if not pv_names:
+            return
+        package_name, version_name = pv_names
+        try:
+            dw_pkg, created = PackageDim.objects \
+                .get_or_create(platform=self.device_platform.platform,
+                               package_name=package_name,
+                               version_name=version_name)
+            if created:
+                dw_pkg = packagecategorydim_fill_to(dw_pkg)
+                dw_pkg = packageversion_id_fill(dw_pkg)
+                dw_pkg.save()
+            self.download_package = dw_pkg
+            self.download_packagekey, created = PackageKeyDim.objects \
+                .get_or_create_from_package_dim(self.download_package)
+        except ObjectDoesNotExist:
+            logger.error(pv_names)
+            logger.error("%s %s %s"% (self.device_platform.platform,
+                                      package_name,
+                                      version_name))
+            raise
 
     def get_download_packageversion_by_urlpath(self, path):
         package_name = version_name = UNDEFINED
@@ -1609,18 +1879,17 @@ class DownloadFact(EventFact):
 
         from warehouse.models import PackageVersion
         pk = resolver_match.kwargs.get('pk')
-        #if resolver_match.url_name == 'download_packageversion':
-        try:
-            version = PackageVersion.objects.get(pk=pk)
-            package_name = version.package.package_name
-            version_name = version.version_name
-        except PackageVersion.DoesNotExist:
-            pass
-        return package_name, version_name
+        if resolver_match.url_name == 'download_packageversion':
+            try:
+                version = PackageVersion.objects.get(pk=pk)
+                package_name = version.package.package_name
+                version_name = version.version_name
+            except PackageVersion.DoesNotExist:
+                return None
+        else:
+            return None
 
-    def transform_from_usinglog(self):
-        copy_model_instance(self.usinglog, self)
-        self.download_dim_from_page()
+        return package_name, version_name
 
 
 class DownloadBeginFinishManager(models.Manager):
@@ -1688,6 +1957,8 @@ class DownloadBeginFinishFact(Fact):
 # Result
 class BaseResult(models.Model):
 
+    device_platform = models.ForeignKey(DevicePlatformDim, null=True)
+
     CYCLE_TYPES = (
         (0, 'all'),
         (1, 'daily'),
@@ -1738,71 +2009,196 @@ class BaseSumActivateResult(BaseResult):
 
 productkey_verbose_name = '产品类型'
 
+def factory_sum_activate_result_model(flag_field_name,
+                                      base_model=BaseSumActivateResult):
+    bind_fields_map = {
+        #'device_platform': models.ForeignKey(DevicePlatformDim, null=True, related_name='+'),
+        'productkey': models.ForeignKey(ProductKeyDim, related_name='+'),
+        'product': models.ForeignKey(ProductDim, related_name='+'),
+        'packagekey': models.ForeignKey(PackageKeyDim, related_name='+'),
+        'package': models.ForeignKey(PackageDim, related_name='+'),
+    }
+    reserve_fields = ActivateNewReserveFact.objects.reserve_fields
 
-class SumActivateDeviceProductResult(BaseSumActivateResult):
+    flag_field = None
+    for field in reserve_fields:
+        if field.name == flag_field_name:
+            flag_field = field
 
-    productkey = models.ForeignKey(ProductKeyDim,
-                                   verbose_name= productkey_verbose_name,
-                                   related_name='+')
+    if not flag_field:
+        raise KeyError('field %s not found' %flag_field_name)
 
-    class Meta:
-        verbose_name = '产品的激活启动'
-        verbose_name_plural = '产品的激活启动统计'
-        db_table = 'result_sum_activate_product'
-        unique_together = (
-            ('productkey', 'start_date', 'end_date',),
-        )
-        index_together = (
-            ('productkey', 'cycle_type', 'end_date', ),
-            ('productkey', 'cycle_type', 'start_date', ),
-            ('productkey', 'cycle_type', 'start_date', 'end_date',),
-            ('cycle_type', 'start_date', 'end_date', ),
-        )
-        ordering = ('-start_date', 'productkey')
+    if not flag_field.sum_fields:
+        raise ValueError('field %s not supported' %flag_field_name)
 
+    base_name = "".join([name.capitalize() \
+                    for name in flag_field.name.lstrip('is_new_').split('_')])
+    class_name = 'SumActivateDevice%sResult' % base_name
 
-class SumActivateDeviceProductPackageResult(BaseSumActivateResult):
-
-    productkey = models.ForeignKey(ProductKeyDim,
-                                   verbose_name=productkey_verbose_name,
-                                   related_name='+')
-
-    class Meta:
-        verbose_name = '产品-应用的激活启动'
-        verbose_name_plural = '产品-应用的激活启动统计'
-        db_table = 'result_sum_activate_productpackage'
-        unique_together = (
-            ('productkey', 'start_date', 'end_date',),
-        )
-        index_together = (
-            ('productkey', 'cycle_type', 'end_date', ),
-            ('productkey', 'cycle_type', 'start_date', ),
-            ('productkey', 'cycle_type', 'start_date', 'end_date',),
-            ('cycle_type', 'start_date', 'end_date', ),
-        )
-        ordering = ('-start_date', 'productkey')
-
-
-class SumActivateDeviceProductPackageVersionResult(BaseSumActivateResult):
-
-    productkey = models.ForeignKey(ProductKeyDim,
-                                   verbose_name=productkey_verbose_name,
-                                   related_name='+')
+    index_fields1 = deepcopy(list(flag_field.sum_fields))
+    index_fields2 = deepcopy(index_fields1)
+    index_fields2.append('cycle_type')
+    index_fields3 = deepcopy(index_fields2)
+    index_fields3.append('start_date')
+    index_fields4 = deepcopy(index_fields3)
+    index_fields4.append('end_date')
+    index_fields5 = ['cycle_type', 'start_date', 'end_date']
 
     class Meta:
-        verbose_name = '产品-应用-版本的激活启动'
-        verbose_name_plural =  '产品-应用-版本的激活启动统计'
-        db_table = 'result_sum_activate_productpackageversion'
+        verbose_name = flag_field.verbose_name
+        verbose_name_plural = flag_field.verbose_name
+        db_table = 'result_sum_activate_%s' % base_name.lower()
         unique_together = (
-            ('productkey', 'start_date', 'end_date',),
+            index_fields4,
         )
         index_together = (
-            ('productkey', 'cycle_type', 'end_date', ),
-            ('productkey', 'cycle_type', 'start_date', ),
-            ('productkey', 'cycle_type', 'start_date', 'end_date',),
-            ('cycle_type', 'start_date', 'end_date', ),
+            index_fields1,
+            index_fields2,
+            index_fields3,
+            index_fields4,
+            index_fields5,
         )
-        ordering = ('-start_date', 'productkey')
+
+    class_attrs = {
+        'Meta': Meta,
+        '__module__': base_model.__module__,
+    }
+    new_model = type(base_model)(class_name, (base_model,), class_attrs)
+    for bind_field_name in flag_field.sum_fields:
+        if bind_field_name in bind_fields_map:
+            bind_fields_map[bind_field_name].contribute_to_class(new_model,
+                                                                 bind_field_name)
+
+    new_model._sum_field_names = flag_field.sum_fields
+    new_model._flag_field_name = flag_field.name
+    return new_model
+
+SumActivateDeviceProductChannelResult = factory_sum_activate_result_model('is_new_product_channel')
+SumActivateDeviceProductChannelPackageResult = factory_sum_activate_result_model('is_new_product_channel_package')
+SumActivateDeviceProductChannelPackageVersionResult = factory_sum_activate_result_model('is_new_product_channel_package_version')
+SumActivateDeviceProductResult = factory_sum_activate_result_model('is_new_product')
+SumActivateDeviceProductPackageResult = factory_sum_activate_result_model('is_new_product_package')
+SumActivateDeviceProductPackageVersionResult = factory_sum_activate_result_model('is_new_product_package_version')
+
+
+class BaseAnalysisResult(models.Model):
+
+    date = models.ForeignKey(DateDim, related_name='+')
+
+
+    d3au_count = models.PositiveIntegerField('3日活跃数D3AU',
+                                             default=0,
+                                             max_length=11)
+
+    d3au_rate = models.DecimalField('3日活跃比D3AU-R',
+                                    default=0,
+                                    max_digits=5,
+                                    decimal_places=2)
+
+    dau_count = models.PositiveIntegerField('日活跃数DAU',
+                                            default=0,
+                                            max_length=11)
+
+    dau_rate = models.DecimalField('日活跃比DAU-R',
+                                   default=0,
+                                   max_digits=5,
+                                   decimal_places=2)
+
+    wau_count = models.PositiveIntegerField('周活跃WAU',
+                                            default=0,
+                                            max_length=11)
+
+    wau_rate = models.DecimalField('周活跃比WAU-R',
+                                   default=0,
+                                   max_digits=5,
+                                   decimal_places=2)
+
+    mau_count = models.PositiveIntegerField('月活跃MAU',
+                                            default=0,
+                                            max_length=11)
+
+    mau_rate = models.DecimalField('月活跃比MAU-R',
+                                   default=0,
+                                   max_digits=5,
+                                   decimal_places=2)
+
+    class Meta:
+        abstract = True
+
+
+class BaseCubePackageActivateResult(BaseSumActivateResult):
+
+    class Meta:
+        abstract = True
+
+
+def factory_cube_activate_package_result_model(flag_field_name, base_model=BaseCubePackageActivateResult):
+    bind_fields_map = {
+        #'device_platform': models.ForeignKey(DevicePlatformDim, related_name='+'),
+        'packagekey': models.ForeignKey(PackageKeyDim, related_name='+'),
+        'package': models.ForeignKey(PackageDim, related_name='+'),
+        'productkey': models.ForeignKey(ProductKeyDim, related_name='+'),
+        'product': models.ForeignKey(ProductDim, related_name='+'),
+    }
+    reserve_fields = ActivateNewReserveFact.objects.reserve_fields
+
+    flag_field = None
+    for field in reserve_fields:
+        if field.name == flag_field_name:
+            flag_field = field
+
+    if not flag_field:
+        raise KeyError('field %s not found' %flag_field_name)
+
+    field_names_to_add = flag_field.cube_fields
+    if not field_names_to_add:
+        raise ValueError('field %s not supported' %flag_field_name)
+
+    base_name = "".join([name.capitalize() \
+                         for name in flag_field.name.lstrip('is_new_').split('_')])
+    class_name = 'CubeActivateDevice%sResult' % base_name
+
+    index_fields1 = deepcopy(list(field_names_to_add))
+    index_fields2 = deepcopy(index_fields1)
+    index_fields2.append('cycle_type')
+    index_fields3 = deepcopy(index_fields2)
+    index_fields3.append('start_date')
+    index_fields4 = deepcopy(index_fields3)
+    index_fields4.append('end_date')
+    index_fields5 = ['cycle_type', 'start_date', 'end_date']
+
+    class Meta:
+        verbose_name = "Cube %s"% flag_field.verbose_name
+        verbose_name_plural = "Cube %s"% flag_field.verbose_name
+        db_table = 'result_cube_activate_%s' % base_name.lower()
+        unique_together = (
+            index_fields4,
+        )
+        index_together = (
+            index_fields1,
+            index_fields2,
+            index_fields3,
+            index_fields4,
+            index_fields5,
+        )
+
+    class_attrs = {
+        'Meta': Meta,
+        '__module__': base_model.__module__,
+    }
+
+    new_model = type(base_model)(class_name, (base_model,), class_attrs)
+    for bind_field_name in field_names_to_add:
+        if bind_field_name in bind_fields_map:
+            bind_fields_map[bind_field_name].contribute_to_class(new_model,
+                                                                 bind_field_name)
+    new_model._sum_field_names = field_names_to_add
+    new_model._flag_field_name = flag_field.name
+    return new_model
+
+
+CubeActivateDeviceProductChannelPackageResult = factory_cube_activate_package_result_model('is_new_product_channel_package')
+CubeActivateDeviceProductChannelPackageVersionResult = factory_cube_activate_package_result_model('is_new_product_channel_package_version')
 
 
 class SumDownloadProductResult(BaseResult):
@@ -1846,6 +2242,98 @@ class SumDownloadProductResult(BaseResult):
         )
         ordering = ('-start_date', 'productkey')
 
+
+class CubeDownloadResult(BaseResult):
+
+    total_download_count = models.PositiveIntegerField('累计下载次数',
+                                                       default=0,
+                                                       max_length=11,
+                                                       )
+
+    download_count = models.PositiveIntegerField('下载次数',
+                                                 default=0,
+                                                 max_length=11,
+                                                 )
+
+    total_downloaded_count = models.PositiveIntegerField('累计下载完成数',
+                                                         default=0,
+                                                         max_length=11,
+                                                         )
+
+    downloaded_count = models.PositiveIntegerField('下载完成数',
+                                                   default=0,
+                                                   max_length=11,
+                                                   )
+
+    class Meta:
+        abstract = True
+
+
+def factory_cube_download_result_model(model_name, field_names_to_add, base_model=CubeDownloadResult):
+    bind_fields_map = {
+        #'device_platform': models.ForeignKey(DevicePlatformDim, related_name='+'),
+        'packagekey': models.ForeignKey(PackageKeyDim, related_name='+'),
+        'package': models.ForeignKey(PackageDim, related_name='+'),
+        'productkey': models.ForeignKey(ProductKeyDim, related_name='+'),
+        'product': models.ForeignKey(ProductDim, related_name='+'),
+        'download_packagekey': models.ForeignKey(PackageKeyDim, related_name='+'),
+        'download_package': models.ForeignKey(PackageDim, related_name='+'),
+    }
+
+    if not field_names_to_add:
+        raise ValueError('fields must not empty')
+
+    new_field_names_to_add = list(deepcopy(field_names_to_add))
+    if 'device_platform' not in new_field_names_to_add:
+        new_field_names_to_add.insert(0, 'device_platform')
+
+
+    index_fields1 = deepcopy(list(new_field_names_to_add))
+    index_fields2 = deepcopy(index_fields1)
+    index_fields2.append('cycle_type')
+    index_fields3 = deepcopy(index_fields2)
+    index_fields3.append('start_date')
+    index_fields4 = deepcopy(index_fields3)
+    index_fields4.append('end_date')
+    index_fields5 = ['cycle_type', 'start_date', 'end_date']
+
+    class Meta:
+        db_table = 'result_cube_download_%s' % model_name.lower()
+        unique_together = (
+            index_fields4,
+        )
+        index_together = (
+            index_fields1,
+            index_fields2,
+            index_fields3,
+            index_fields4,
+            index_fields5,
+        )
+
+    class_attrs = {
+        'Meta': Meta,
+        '__module__': base_model.__module__,
+    }
+
+    class_name = 'CubeDownload%sResult' % model_name
+    new_model = type(base_model)(class_name, (base_model,), class_attrs)
+    for bind_field_name in field_names_to_add:
+        if bind_field_name in bind_fields_map:
+            bind_fields_map[bind_field_name].contribute_to_class(new_model,
+                                                                 bind_field_name)
+    new_model._sum_field_names = new_field_names_to_add
+    return new_model
+
+
+CubeDownloadProductResult = factory_cube_download_result_model('Product', ('productkey',))
+
+# package/packagekey 分发出去的下载量
+CubeDownloadProductPackageResult = factory_cube_download_result_model('ProductPackage', ('productkey', 'packagekey'))
+CubeDownloadProductPackageVersionResult = factory_cube_download_result_model('ProductPackageVersion', ('productkey', 'packagekey', 'package'))
+
+# download_package/download_packagekey自身被下载数量
+CubeDownloadProductPackageIncomingResult = factory_cube_download_result_model('ProductPackageIncoming', ('productkey', 'download_packagekey'))
+CubeDownloadProductPackageVersionIncomingResult = factory_cube_download_result_model('ProductPackageVersionIncoming', ('productkey', 'download_packagekey', 'download_package'))
 
 from django.conf import settings
 

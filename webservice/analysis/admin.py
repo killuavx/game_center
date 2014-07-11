@@ -72,15 +72,69 @@ class SumActivateDeviceProductResultAdmin(DiseditableAdminMixin,
         return super(SumActivateDeviceProductResultAdmin, self)\
             .lookup_allowed(lookup, value)
 
+class BaseSumActivateDeviceProductResultAdmin(DiseditableAdminMixin,
+                                       admin.ModelAdmin):
 
-#admin.site.register(ActivateFact, ActivateFactAdmin)
-#admin.site.register(UsinglogFact, UsinglogFactAdmin)
-admin.site.register(SumActivateDeviceProductResult,
-                    SumActivateDeviceProductResultAdmin)
-admin.site.register(SumActivateDeviceProductPackageResult,
-                    SumActivateDeviceProductResultAdmin)
-admin.site.register(SumActivateDeviceProductPackageVersionResult,
-                    SumActivateDeviceProductResultAdmin)
+    list_display = [
+                    'cycle_type',
+                    'start_date', 'end_date',
+                    'total_reserve_count',
+                    'reserve_count',
+                    'active_count',
+                    'open_count']
+    list_filter = [
+        'cycle_type',
+    ]
+
+    def get_list_display(self, request):
+        list_display = list(self.list_display)
+        if 'pk' not in list_display:
+            list_display.insert(0, 'pk')
+        return list_display
+
+
+def factory_sum_activate_result_admin(model, base_admin=BaseSumActivateDeviceProductResultAdmin):
+    sorted_fields = [
+        'device_platform',
+        'productkey',
+        'product',
+        'packagekey',
+        'package',
+    ]
+    fields_to_insert = list(set(sorted_fields).intersection(set(model._sum_field_names)))
+    fields_to_insert = sorted(fields_to_insert, key=lambda x:sorted_fields.index(x))
+
+    flag_field_name = model._flag_field_name
+    base_name = "".join([name.capitalize() \
+                         for name in flag_field_name.lstrip('is_new_').split('_')])
+    class_name = "SumActivateDevice%sResultAdmin" % base_name
+    class_attrs = {
+        '__module__': base_admin.__module__,
+    }
+    new_admin = type(base_admin)(class_name, (base_admin,), class_attrs)
+
+    list_filter = list(new_admin.list_filter)
+    list_display = list(new_admin.list_display)
+    for i, f in enumerate(fields_to_insert):
+        if f not in list_display:
+            list_display.insert(i, f)
+        if f not in list_filter:
+            list_filter.insert(i, f)
+    new_admin.list_filter = list_filter
+    new_admin.list_display = list_display
+    return new_admin
+
+
+def factory_register_admin(model, base_admin=BaseSumActivateDeviceProductResultAdmin):
+    result_admin = factory_sum_activate_result_admin(model, base_admin=base_admin)
+    admin.site.register(model, result_admin)
+
+factory_register_admin(SumActivateDeviceProductResult)
+factory_register_admin(SumActivateDeviceProductPackageResult)
+factory_register_admin(SumActivateDeviceProductPackageVersionResult)
+factory_register_admin(SumActivateDeviceProductChannelResult)
+factory_register_admin(SumActivateDeviceProductChannelPackageResult)
+factory_register_admin(SumActivateDeviceProductChannelPackageVersionResult)
 
 
 class PackageDimAdmin(DiseditableAdminMixin,
