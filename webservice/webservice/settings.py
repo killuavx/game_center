@@ -503,3 +503,9 @@ CELERY_ENABLE_UTC = True
 CELERY_TIMEZONE = 'Asia/Shanghai'
 
 
+try:
+    import djcelery
+    djcelery.setup_loader()
+except:
+    pass
+

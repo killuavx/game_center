@@ -419,13 +419,6 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
         return main_category, cats
 
     def clean(self):
-        if self.status == self.STATUS.published:
-            latest_version = None
-            try:
-                latest_version = self.versions.latest_published(False)
-            except exceptions.ObjectDoesNotExist:
-                raise exceptions.ValidationError('不能发布该应用，没有可发布的版本')
-
         super(Package, self).clean()
         self.updated_datetime = now()
 
@@ -900,21 +893,13 @@ def package_version_post_save(sender, instance, **kwargs):
         1. updated_datetime when self version published and changed
         2. download_count when self version download_count changed
     """
-    package = instance.package
-    if instance.status == instance.STATUS.published \
-        and instance.tracker.changed():
-        package.updated_datetime = instance.updated_datetime
-
     if instance.tracker.has_changed('status') \
-        or instance.tracker.has_changed('download_count'):
-        aggregate = package.versions.published() \
-            .aggregate(download_count=models.Sum('download_count'))
-        total_count = aggregate.get('download_count', 0)
-        package.download_count = total_count if total_count else 0
+        and instance.status == PackageVersion.STATUS.published:
+        from warehouse import tasks
+        tasks.publish_packageversion\
+            .apply_async((instance.pk,),
+                         eta=instance.released_datetime)
 
-    if package.tracker.changed():
-        package.save()
-        pass
 
 @receiver(pre_save, sender=PackageVersion)
 def package_version_pre_save(sender, instance, **kwargs):
@@ -948,8 +933,12 @@ def package_pre_save(sender, instance, **kwargs):
     except KeyError:
         pass
 
+    if changed and not instance.tracker.has_changed('updated_datetime'):
+        instance.updated_datetime = now().astimezone()
+
     if not instance.workspace:
         instance.workspace = ''
+
 
 @receiver(post_save, sender=Package)
 def package_post_save(sender, instance, created=False, **kwargs):
