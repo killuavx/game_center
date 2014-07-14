@@ -1,4 +1,46 @@
 /*固定菜单菜单*/
+$(".go-menu").on("click", function() {
+	$(".nav").toggle();
+});
+
+
+//搜索提示
+$(".search-input").keyup(function(){		
+	var inputvalue = $(".search-input").val();
+	if(inputvalue  != ""){
+		$('.search-input-submit').show().animate({opacity:"1"},200);
+		$('.search-input-cancel').hide().animate({opacity:"0"},200);
+	}else if(inputvalue == ""){
+		$(".search-input-submit").hide().animate({opacity:"0"},200);
+		$(".search-input-cancel").show().animate({opacity:"1"},200);
+	};		
+});
+
+$(".search-input-cancel").click(function(){	
+	window.history.go(-1);	
+	return false;
+});
+
+
+
+
+//查看更多
+$(function() { 	
+	$(".text_inner").click(function(){
+		var hei = $(this).find('div').css("height");
+		if ( hei == "42px" )
+		{
+			$(this).find('div').css({"overflow":"hidden","height":"auto"});
+			$(this).find('span').addClass('p-up');
+		}
+		else
+		{
+			$(this).find('div').css({"overflow":"hidden","height":"42px"});
+			$(this).find('span').removeClass('p-up');
+		}		
+    });		
+})
+
 
 
 
