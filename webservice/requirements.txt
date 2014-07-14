@@ -66,3 +66,7 @@ django-meta-mixin
 django-import-export
 # 2to3
 django-url-tools
+
+celery[redis]
+django-celery
+flower

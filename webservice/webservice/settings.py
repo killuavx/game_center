@@ -196,9 +196,10 @@ INTERNAL_APPS = [
     'redis_cache.stats',
     'static_precompiler',
     'django_widgets',
-    'url_tools'
+    'url_tools',
     #'memoize',
     #'import_export',
+    'djcelery',
 ]
 
 EXTENDAL_APPS = [
@@ -486,3 +487,19 @@ DATABASE_ROUTERS = [
 DEFAULT_FILE_STORAGE = 'toolkit.storage.QiniuResourceFileStorage'
 
 FONT_DIRECTORY = join(STATIC_ROOT, 'common/font')
+
+
+# celery
+CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_RESULT_SERIALIZER = 'json'
+
+BROKER_URL='redis://localhost:6379/3',
+
+CELERY_RESULT_BACKEND = BROKER_URL
+
+CELERY_ENABLE_UTC = True
+
+CELERY_TIMEZONE = 'Asia/Shanghai'
+
+
