@@ -2,8 +2,8 @@
 {% load cache widgets url_tags templatehelper_tags web_tags %}
 {% block main %}
     {% with c_author=request.GET.author c_page=request.GET.page|default:1 %}
-    {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
-    {% cache TEMPLATE_CACHE_TIMEOUT product_web_vendors request.get_host request.path_info c_author c_page %}
+    {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
+    {% cache CACHE_TIMEOUT_DAYS product_web_vendors request.get_host request.path_info c_author c_page %}
     <!--START 厂商 开始 vendor-page-->
     <div class="auto mt30 width app-list-page vendor-page">
         <div class="cell">
