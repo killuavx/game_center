@@ -1,8 +1,42 @@
-/*固定菜单菜单*/
+/*虫虫助手下载*/
+document.writeln("<figcaption class=\"cc-down-tip\">");
+document.writeln("	<div class=\"p10\" onclick=\"location=\'http://android.ccplay.com.cn/download/client/\'\">");
+document.writeln("          <img src=\"http://static.ccplay.com.cn/static/common/img/favicon.png\" class=\"l tip-logo\"/>");
+document.writeln("          <div class=\"l ml10 tip-text\">");
+document.writeln("              <h2>虫虫助手</h2>");
+document.writeln("              <p>免费玩精品</p>");
+document.writeln("          </div>");
+document.writeln("          <img src=\"http://static.ccplay.com.cn/static/android_mobile/img/down.png\" class=\"l ml20 mt10 tip-down\"/>");
+document.writeln("          <div class=\"fix\"></div>");
+document.writeln("    </div>");
+document.writeln("    <div class=\"r tip-close-box\">");
+document.writeln("    	<img src=\"http://static.ccplay.com.cn/static/android_mobile/img/browsers_ad_close_gray.png\" class=\"tip-close\"/>");
+document.writeln("    </div>    ");
+document.writeln("</figcaption>");
+/*隐藏提示*/
+$(".tip-close-box").on("click", function() {
+	$(".cc-down-tip").toggle();
+});
+
+
+//最小高度
+var screen_height = $(window).height();
+var head_height = $('header').outerHeight(true);  
+var foot_height = $('footer').outerHeight(true);
+var $body = $('.minheight-page');
+if ($body.size()) {
+  var bodyMarginTop = $body.css("marginTop").replace('px', '');
+  var bodyMarginBottom = $body.css("marginBottom").replace('px', '');  
+  var body_height = screen_height - head_height - foot_height - bodyMarginTop - bodyMarginBottom;  
+  $body.css('min-height', body_height + 'px');
+}
+
+
+
+/*菜单*/
 $(".go-menu").on("click", function() {
 	$(".nav").toggle();
 });
-
 
 //搜索提示
 $(".search-input").keyup(function(){		
@@ -16,7 +50,7 @@ $(".search-input").keyup(function(){
 	};		
 });
 
-$(".search-input-cancel").click(function(){	
+$(".search-input-cancel,.go-back").click(function(){	
 	window.history.go(-1);	
 	return false;
 });
@@ -534,4 +568,9 @@ var slider =
     }
   });
 var bullets = document.getElementById('position').getElementsByTagName('li');
+
+
+
+
+
 
