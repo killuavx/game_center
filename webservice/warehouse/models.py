@@ -893,7 +893,7 @@ def package_version_post_save(sender, instance, **kwargs):
         1. updated_datetime when self version published and changed
         2. download_count when self version download_count changed
     """
-    if instance.tracker.has_changed('status') \
+    if instance.tracker.changed()\
         and instance.status == PackageVersion.STATUS.published:
         from warehouse import tasks
         tasks.publish_packageversion\
