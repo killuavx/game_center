@@ -9,7 +9,6 @@
   / START 应用列表 app-list-page
   .auto.mt30.width.app-list-page.minheight-page
     {% is_site_android as is_android %}{% is_site_ios as is_ios %}
-    {% cache CACHE_TIMEOUT_DAYS product_web_category_leftmenu request.get_host c_cat %}
     {% widget WebCategorySelectorWidget root_category=root_category %}
     .cell
       .f18.cell.rel.t-title
@@ -24,10 +23,9 @@
                 %a{:href => "javascript:;"}= select.name
       / t-title
     / cell
-    {% endcache %}
 
     .rel.cell-bk
-
+      {% cache CACHE_TIMEOUT_DAYS product_web_category_leftmenu request.get_host request.path_info c_cat %}
       .l.left-list
         %ul.f14.left-nav
           -for cat in category_selectlist
@@ -49,6 +47,7 @@
                   %a{:href => "={second_url}"}
                     = cat.name
                     %span.r
+      {% endcache %}
 
       {% widget WebCategoryComplexPackageList category=category topic=topic lang=lang per_page=27 page=request.GET.page %}
       .l.btn-s-box.tj.p20.right-list

@@ -17,7 +17,7 @@
     / cell
 
     .rel.cell-bk
-      {% cache CACHE_TIMEOUT_DAYS product_web_search_leftmenu request.get_host c_cat %}
+      {% cache CACHE_TIMEOUT_DAYS product_web_search_leftmenu request.get_host request.path_info c_cat %}
       {% widget WebSearchCategorySelectorWidget root_category=root_category %}
       .l.left-list
         %ul.f14.left-nav
