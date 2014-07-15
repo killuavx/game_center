@@ -11,23 +11,23 @@ a,a:active{text-decoration:none !important}
 
 /*公共*/
 .icon,.star{background:url(http://static.ccplay.com.cn/static/android_mobile/img/icon.png) no-repeat}
-.star{width:73px; height:20px; background-size:195px auto; background-position:-65px -145px; display:inline-block}
-.s0{background-position:-72px -169px}
-.s1{background-position:-57px -169px}
-.s2{background-position:-43px -169px}
-.s3{background-position:-29px -169px}
-.s4{background-position:-14px -169px}
-.s5{background-position:0 -169px}
+.star{width:73px; height:14px; background-size:195px auto; background-position:-65px -172px; display:inline-block}
+.s0{background-position:-72px -172px}
+.s1{background-position:-57px -172px}
+.s2{background-position:-43px -172px}
+.s3{background-position:-29px -172px}
+.s4{background-position:-14px -172px}
+.s5{background-position:0 -172px}
 
 .game-icon{-moz-border-radius:15px; -webkit-border-radius:15px; border-radius:15px;-moz-box-shadow:1px 1px 2px #ccc; -webkit-box-shadow:1px 1px 2px #ccc; box-shadow:1px 1px 2px #ccc}
 .text-ell,.search-key li a{text-overflow:ellipsis; overflow: hidden;white-space: nowrap;word-wrap: normal;}
 
 /*头部*/
 header{position:relative; z-index:10}
-.top{background:#e53333; border-bottom:1px solid #d12525; padding:5px 10px}
+.top{background:#e53333; border-bottom:1px solid #d12525; padding:5px 10px; min-height:31px}
 .logo{width:120px; height:30px; background-size:120px auto}
 .down img{width:50px; margin:6px 0 0 5px}
-.top .r{height:30px}
+.top .r{height:30px; position:absolute; right:10px}
 .top .search,.top .bbs,.back,.menu-more,.arrow{width:25px; height:30px; display:inline-block; background-size:150px auto}
 .top .search{background-position:0 -69px}
 .top .bbs{background-position:-25px -69px; margin-left:10px}
@@ -36,10 +36,10 @@ header{position:relative; z-index:10}
 .menu-more{background-position:-100px -69px}
 
 /*搜索*/
-.search-top{}
+.search-top{position:absolute; width:85%; margin-left:30px}
 .search-form input{border:none}
 .search-input{height:30px; line-height:30px; font-size:14px; width:70%; text-align:center}
-.search-input-submit,.search-input-cancel{height:30px; line-height:30px; width:19%; text-align:center; font-size:14px; background:#970000; color:#fff; float:right}
+.search-input-submit,.search-input-cancel{height:30px; line-height:30px; width:19%; text-align:center; font-size:14px; background:#970000; color:#fff}
 .search-input-cancel{background:#fff; color:#e53333}
 .search-key {text-align:center}
 .search-key li{width:31%; display:inline-block; padding:4px 0 0 0}
@@ -57,6 +57,7 @@ header{position:relative; z-index:10}
 .menu a.hover{border-bottom:2px solid #e53333; color:#e53333}
 
 /*焦点图*/
+.page-swipe{min-height:150px}
 .page-swipe #slider figure {display: block}
 .page-swipe #slider figure a {display: block; position: relative; margin:0 auto; background:url(http://static.ccplay.com.cn/static/common/img/bg_40x40.png); text-align:center}
 .page-swipe #slider figure a img {width:100%; max-width:620px}
@@ -65,7 +66,7 @@ header{position:relative; z-index:10}
 .swipe-wrap > figure {float: left;width: 100%;position: relative;}
 .focus-dot { position:absolute; margin: -30px auto 0; z-index:5; width:100%}
 #position { text-align: center; list-style: none; margin: 0; padding: 0 }
-#position li { display: inline-block; width: 4px; height:4px; border-radius:5px; background: #fff; -moz-box-shadow:0px 0px 2px #333333; -webkit-box-shadow:0px 0px 2px #333333; box-shadow:0px 0px 2px #333333;}
+#position li { display: inline-block; width: 4px; height:4px; border-radius:50%; background: #fff; -moz-box-shadow:0px 0px 2px #333333; -webkit-box-shadow:0px 0px 2px #333333; box-shadow:0px 0px 2px #333333;}
 #position li.on { border:1px solid #fff; background:none; position:relative; top:1px}
 
 /*快捷菜单*/
@@ -79,16 +80,18 @@ header{position:relative; z-index:10}
 
 /*首页列表*/
 
-section{background:#eee; padding:1px 0}
+section{background:#eee}
 .main figure{position:relative; margin:5px; background:#fff; font-size:80%}
 .main figure:active{background:#f8f8f8}
 .main figcaption h2{padding-top:15px; font-size:130%}
+.main figcaption ul li{padding-top:3px}
 .main figcaption img{width:70px; height:70px}
 .main figcaption i{margin:0 2px}
 .main figure .btn{right:10px; top:45px; padding:5px 15px}
 .main figcaption p{padding-bottom:7px}
 
 /*分类列表*/
+.go-menu,.go-back{display:inline-block; width:100%}
 .ul{background:#fff}
 .ul li{width:25%; float:left; text-align:center}
 .category-lsit figure h2{font-size:100%}
@@ -110,7 +113,7 @@ section{background:#eee; padding:1px 0}
 .collection-list figcaption h2{background:rgba(0,0,0,0.5); position:relative; margin-top:-30px; color:#fff}
 
 /*详情*/
-.dis {padding-bottom:15px}
+.dis {padding-bottom:20px}
 .dis figure{margin:0}
 .up_pic{position: relative;
 width: 100%;
@@ -146,7 +149,6 @@ vertical-align: middle;
 .comment-list-top{}
 .comment-list-top dd{width:50%; float:left; text-align:center}
 .comment-list-top h2{font-size:50px}
-.comment-list-top .star{vertical-align:bottom}
 
 .comment-box ul{background:#fff}
 .comment-box ul li{padding:10px; border-bottom:1px solid #ddd; min-height:80px; clear:both}
@@ -156,6 +158,43 @@ vertical-align: middle;
 .comment-list li{background:#f5f5f5}
 .comment-list>li:nth-child(odd){background-color:#fff}
 .button .add-comment{width:100%}
+
+/*个人中心*/
+.user-dis{padding:30px 0}
+.user-list li{background:#fff; padding:10px; border-top:1px solid #ccc; border-bottom:1px solid #ccc; margin-top:-1px}
+.user-list li span{color:#999}
+.user-list li.separated{margin-top:30px}
+.user-list li:active,.user-list li:hover{background:#f8f8f8}
+
+/*登录 注册*/
+.user-login,.user-feedback{padding:0}
+.user-login form,.user-feedback form{padding:30px 0}
+.user-login input{border-color:#ccc}
+.txt-box{background:#fff; padding:5px 10px; border-top:1px solid #ccc; border-bottom:1px solid #ccc; margin-top:-1px}
+input.txt{width:100%; font-size:16px; padding:10px 0; border:none}
+
+/*一键反馈*/
+.textarea{border:none; width:100%;}
+.user-feedback select{font-size:16px; position:absolute; right:10px}
+.user-feedback input.txt{width:70%;padding:5px 0;}
+
+.about-cc ul{background:url(http://static.ccplay.com.cn/static/android_mobile/img/top_logo.png) no-repeat center 0; background-size:50% auto; padding-top:150px}
+.about-cc li{position:relative; padding-left:40px}
+.about-cc li img{position:absolute; height:20px; left:10px}
+
+/*提示下载*/
+.cc-down-tip{background:rgba(0,0,0,.8); position:fixed; bottom:0px; z-index:99999; color:#fff; width:100%}
+.tip-logo{width:40px}
+.tip-text{font-size:80%}
+.tip-down{height:25px}
+.tip-close-box{display:block; padding:15px; position:relative; margin:-55px 0 0 0}
+.tip-close{height:20px; background:#666; border-radius:50%;}
+
+/*.no_content{background:url(http://static.ccplay.com.cn/static/android_mobile/img/no_content.png) no-repeat center; background-size:100px auto; overflow:hidden}*/
+.no_content{padding-top:20%}
+.no_content img{height:100px; display:block; margin:10px auto}
+
+
 
 
 
