@@ -81,7 +81,7 @@
       .abs.right
         {% cache CACHE_TIMEOUT_DAYS product_web_home_ranking_game request.get_host %}
         {% include_widget WebRankingPackageListWidget cat_slug='game' per_page=10 %}
-        {% encache %}
+        {% endcache %}
       / right
   / END game 行3
 
