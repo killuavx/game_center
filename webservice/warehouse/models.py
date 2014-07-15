@@ -650,16 +650,6 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
         super(PackageVersion, self).clean()
         self.updated_datetime = now()
 
-        if self.status == self.STATUS.published:
-
-            if self.package:
-                try:
-                    v = self.package.versions.latest_published(False)
-                    if v and (v == self or self.version_code > v.version_code):
-                        self.package.released_datetime = self.released_datetime
-                except ObjectDoesNotExist:
-                    pass
-
     def get_absolute_url(self, link_type=0):
         if link_type == 0:
             return '/packages/%s/%s' %(self.package.package_name, self.version_name)
@@ -893,7 +883,8 @@ def package_version_post_save(sender, instance, **kwargs):
         1. updated_datetime when self version published and changed
         2. download_count when self version download_count changed
     """
-    if instance.tracker.changed()\
+    if (instance.tracker.has_changed('status') or
+            instance.tracker.has_changed('released_datetime'))\
         and instance.status == PackageVersion.STATUS.published:
         from warehouse import tasks
         tasks.publish_packageversion\
