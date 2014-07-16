@@ -57,7 +57,7 @@ header{position:relative; z-index:10}
 .menu a.hover{border-bottom:2px solid #e53333; color:#e53333}
 
 /*焦点图*/
-.page-swipe{min-height:150px}
+.swipe{min-height:150px}
 .page-swipe #slider figure {display: block}
 .page-swipe #slider figure a {display: block; position: relative; margin:0 auto; background:url(http://static.ccplay.com.cn/static/common/img/bg_40x40.png); text-align:center}
 .page-swipe #slider figure a img {width:100%; max-width:620px}
@@ -79,7 +79,7 @@ header{position:relative; z-index:10}
 .quick-menu .a4{background-color:#666}
 
 /*首页列表*/
-
+.index{padding-top:1px}
 section{background:#eee}
 .main figure{position:relative; margin:5px; background:#fff; font-size:80%}
 .main figure:active{background:#f8f8f8}
