@@ -196,7 +196,8 @@ INTERNAL_APPS = [
     'redis_cache.stats',
     'static_precompiler',
     'django_widgets',
-    'url_tools'
+    'url_tools',
+    'django_user_agents',
     #'memoize',
     #'import_export',
 ]

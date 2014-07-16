@@ -256,3 +256,28 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
             client_download_url=self.get_client_download_url(),
         ))
         return data
+
+
+class WebFooterFloatBarWidget(base.ProductPropertyWidgetMixin, Widget):
+
+    template = 'pages/widgets/common/mobile_floatbar.haml'
+
+    def get_client_download_url(self):
+        from toolkit import helpers
+        from clientapp.models import client_download_url
+        client_dw_url = client_download_url(package_name='',
+                                            entrytype=self.product)
+        return self._full_url(helpers.get_global_site(), client_dw_url)
+
+    def _full_url(self, site, url):
+        domain = site.domain
+        return "http://%s/%s" % (domain, url.lstrip('/'))
+
+    def get_context(self, value, options):
+        from toolkit.helpers import current_request
+        self.request = current_request()
+        data = deepcopy(options)
+        data.update(dict(
+            client_download_url=self.get_client_download_url()
+        ))
+        return data
