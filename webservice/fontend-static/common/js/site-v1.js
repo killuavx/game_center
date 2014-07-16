@@ -126,6 +126,12 @@ $(document).ready(function(){
 
 $(function(){
 
+//一键安装提示
+	$(".browsers_ad_close_gray").on("click", function() {
+		$(".cc-down-tip-box").toggle();
+	});
+
+
 //搜索
 	$(".search").hover(function(){
 		$(this).find(".box").addClass("hover");
