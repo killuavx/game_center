@@ -197,6 +197,7 @@ INTERNAL_APPS = [
     'static_precompiler',
     'django_widgets',
     'url_tools',
+    'django_user_agents',
     #'memoize',
     #'import_export',
     'djcelery',

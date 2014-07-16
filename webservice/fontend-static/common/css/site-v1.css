@@ -14,7 +14,6 @@ a:focus,input,select,textarea{outline:0;resize: none}
 :-ms-input-placeholder{color:#ddd}
 ::-moz-selection{background:#ff7900;color:#fff}
 
-
 /*		公共		*/
 .top img,.roll_box img,.maste_lsit img,.collection_box .l img,.app-list-min img,.app-list-xl img,.app-list-m img,.app-list-l img{background:url(http://static.ccplay.com.cn/static/common/img/no-cc-45.png) no-repeat center}
 .cc-a-d-2,.cc-a-d-3,.up_pic img{background:url(http://static.ccplay.com.cn/static/common/img/loading_red.gif) no-repeat center}
@@ -722,6 +721,10 @@ clear: both; line-height: 1.8em;}
 .page-500{background:url(http://static.ccplay.com.cn/static/common/img/500.png) no-repeat center}
 
 
+.cc-down-tip-box{background:rgba(0,0,0,.8); position:fixed; bottom:0px; z-index:99999; color:#fff; width:100%; display:none}
+.browsers_ad_close_gray img{background:#fff; border-radius:50%; height:50px}
+
+#cc-s .cc-down-tip-box{display:block}
 
 
 /*			cc-l			*/

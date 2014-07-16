@@ -70,3 +70,7 @@ django-url-tools
 celery[redis]
 django-celery
 flower
+pyyaml
+ua-parser
+user-agents
+django-user-agents
