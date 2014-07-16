@@ -3,8 +3,8 @@
 {% block meta_title %}{{ request.GET.q }}{% endblock %}
 -block main
   {% with c_cat=request.GET.cat|default:root_category.slug c_q=request.GET.q c_page=request.GET.page|default:1 %}
-  {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
-  {% cache TEMPLATE_CACHE_TIMEOUT product_web_search request.get_host request.path_info c_cat c_q c_page %}
+  {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
+  {% cache CACHE_TIMEOUT_HOURS product_web_search request.get_host request.path_info c_cat c_q c_page %}
   / START 应用列表 app-list-page
   .auto.mt30.width.app-list-page
 
@@ -17,7 +17,7 @@
     / cell
 
     .rel.cell-bk
-
+      {% cache CACHE_TIMEOUT_DAYS product_web_search_leftmenu request.get_host request.path_info c_cat %}
       {% widget WebSearchCategorySelectorWidget root_category=root_category %}
       .l.left-list
         %ul.f14.left-nav
@@ -44,6 +44,7 @@
               = cat.name
               %span.r
       {% endwidget %}
+      {% endcache %}
 
       .l.btn-s-box.tj.p20.right-list
         -for search_item in items

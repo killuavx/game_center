@@ -464,6 +464,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-dis-page .google{background-position:-166px -300px}
 .app-dis-page .google.no{background-position:-166px -267px}
 
+.app-dis-page .up_pic{background:url(http://static.ccplay.com.cn/static/common/img/up_pic_img_bg.png); height:370px; overflow:hidden}
 .app-dis-page .right .up,.app-dis-page .right .up .up_box{ margin-bottom:10px; overflow:hidden; position:relative; padding:10px}
 .app-dis-page .right .up ul{padding:10px}
 .app-dis-page .right .up li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}

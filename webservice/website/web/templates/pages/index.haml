@@ -2,19 +2,24 @@
 -load widgets templatehelper_tags cache templatehelper_tags
 
 -block main
+  {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
   {% cache TEMPLATE_CACHE_TIMEOUT product_web_home request.get_host request.path_info %}
   / START Banner
   .rel.ovh.banner
     {% settings_value "GC_WEB_HOME_A1_PLACE_SLUG" as BANNER_SLUG %}
+    {% cache CACHE_TIMEOUT_DAYS product_web_home_banner request.get_host BANNER_SLUG %}
     {% include_widget WebHomeTopBannersWidget slug=BANNER_SLUG %}
+    {% endcache %}
   / END Banner
 
   / START Masterpiece
   .auto.rel.width.box_btn.roll.masterpiece
     .tj.pct100
       {% settings_value "GC_TOPICS_MASTERPIECE_SLUG" as MASTERPIECE_SLUG %}
+      {% cache CACHE_TIMEOUT_DAYS product_web_home_masterpiece request.get_host MASTERPIECE_SLUG %}
       {% include_widget WebHomeMasterpiecePackageListWidget slug=MASTERPIECE_SLUG %}
+      {% endcache %}
     / pct100
   / END Masterpiece
 
@@ -25,23 +30,31 @@
       / START 首发破解
       .l.pt20.hot-news
         {% settings_value "GC_WEB_HOME_T1_TOPIC_SLUG" as R1C2P_TOPIC_SLUG %}
+        {% cache CACHE_TIMEOUT_HOURS product_web_home_crack request.get_host R1C2P_TOPIC_SLUG %}
         {% include_widget WebHomeTopicalPackageListWidget slug=R1C2P_TOPIC_SLUG per_page=6 template='pages/widgets/home/r1c2-package-panel.haml'%}
+        {% endcache %}
       / END 首发破解
 
       .l.abs.pt20.latest-release.btn-s-box
         / START 最新发布
+        {% cache CACHE_TIMEOUT_HOURS product_web_home_latest request.get_host %}
         {% include_widget WebHomeLatestPackageListWidget title="最新发布" per_page=10 template='pages/widgets/home/r1c1-package-panel.haml' %}
+        {% endcache %}
         / END 最新发布
       / latest-released
 
       .r.abs.pt20.most-expensive
         {% settings_value "GC_WEB_HOME_T2_TOPIC_SLUG" as R1C3P_TOPIC_SLUG %}
+        {% cache CACHE_TIMEOUT_DAYS product_web_home_t2 request.get_host R1C3P_TOPIC_SLUG %}
         {% include_widget WebHomeTopicalPackageListWidget slug=R1C3P_TOPIC_SLUG per_page=8 template='pages/widgets/home/r1c3-package-panel.haml'%}
+        {% endcache %}
       / most-expensive
 
     / cell-bk
   / END 最新发布 热点资讯 最贵应用 multi
 
+
+  {% cache CACHE_TIMEOUT_DAYS product_web_home_a2_a3 request.get_host %}
   / START 广告 行2
   .auto.width.cc-a-d-box
     .rel.pt20.cell-bk.ovh
@@ -52,6 +65,7 @@
         {% settings_value "GC_WEB_HOME_A3_PLACE_SLUG" as R2C2A_PLACE_SLUG %}
         {% include_widget WebSingleAdvertisementWidget slug=R2C2A_PLACE_SLUG %}
   / END 广告 行2
+  {% endcache %}
 
   {% settings_value "GC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS" as COMPLEX_TOPIC_SLUGS %}
   / START game 行3
@@ -59,16 +73,21 @@
     .rel.cell-bk.app-box
 
       .left.tab-box-o
+        {% cache CACHE_TIMEOUT_HOURS product_web_home_cpp_game request.get_host %}
         {% include_widget WebHomeComplexPackagePanelWidget cat_slug='game' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
+        {% endcache %}
       / left
 
       .abs.right
+        {% cache CACHE_TIMEOUT_DAYS product_web_home_ranking_game request.get_host %}
         {% include_widget WebRankingPackageListWidget cat_slug='game' per_page=10 %}
+        {% endcache %}
       / right
   / END game 行3
 
   {% is_site_android as is_android %}{% is_site_ios as is_ios %}
 
+  {% cache CACHE_TIMEOUT_DAYS product_web_home_a4a5_t3 request.get_host %}
   {% if is_android %}
   / START 广告 行4
   .auto.width.cc-a-d-box
@@ -90,20 +109,26 @@
     / pct100
   / END collections 行4
   {% endif %}
+  {% endcache %}
 
   / START appliction 行5
   .auto.mt20.width.soft
     .rel.cell-bk.app-box
 
       .left.tab-box-o
+        {% cache CACHE_TIMEOUT_HOURS product_web_home_cpp_application request.get_host %}
         {% include_widget WebHomeComplexPackagePanelWidget cat_slug='application' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
+        {% endcache %}
       / left
 
       .abs.right
+        {% cache CACHE_TIMEOUT_DAYS product_web_home_ranking_application request.get_host %}
         {% include_widget WebRankingPackageListWidget cat_slug='application' per_page=10 %}
+        {% endcache %}
       / right
   / END application 行5
 
+  {% cache CACHE_TIMEOUT_DAYS product_web_home_a6a7_t4 request.get_host %}
   {% if is_android %}
   / START 广告 行6
   .auto.width.cc-a-d-box
@@ -125,6 +150,7 @@
     / pct100
   / END collections 行6
   {% endif %}
+  {% endcache %}
 
 
   / START 厂商 热帖 新手 bbs
@@ -136,9 +162,11 @@
         {% include_widget WebHomeForumHotThreadPanelWidget rss_link=F1_RSS_LINK per_page=13 %}
       / hot bbs
 
+      {% cache CACHE_TIMEOUT_DAYS product_web_home_vendor request.get_host %}
       .l.pt20.abs.vendor
         {% include_widget WebHomeVendorListWidget per_page=8 %}
       / vendor
+      {% endcache %}
 
       .r.pt20.abs.novice-bbs
         {% settings_value "GC_WEB_HOME_F2_RSS_LINK" as F2_RSS_LINK %}

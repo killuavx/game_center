@@ -4,8 +4,8 @@
 
 {% block main %}
     {% with c_page=request.GET.page|default:1 %}
-    {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
-    {% cache TEMPLATE_CACHE_TIMEOUT product_web_collections request.get_host request.path_info c_page %}
+    {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
+    {% cache CACHE_TIMEOUT_DAYS product_web_collections request.get_host request.path_info c_page %}
     <!--START 合集 开始 collection-->
     <div class="auto mt30 width collection minheight-page">
         {% settings_value 'GC_TOPICS_COLLECTIONS_SLUG' as choice_slug %}

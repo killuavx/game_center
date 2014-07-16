@@ -38,17 +38,17 @@ function bindAppDetailCoverEv(vis_count){
 		});
 		
 		if(imgloadCount == imageCount){
-			jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+			jQuery(".up_box").slide({ mainCell:"ul",vis:1,scroll:1,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
 		}else{
 			e.load(function(){
 				imgloadCount++;
 				if(imgloadCount == imageCount){
-					jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+					jQuery(".up_box").slide({ mainCell:"ul",vis:1,scroll:1,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
 				}
 			});
 		}
 	}else{
-		jQuery(".up_box").slide({ mainCell:"ul",vis:vis_count,scroll:vis_count,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+		jQuery(".up_box").slide({ mainCell:"ul",vis:1,scroll:1,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
 		
 	}	
 }
