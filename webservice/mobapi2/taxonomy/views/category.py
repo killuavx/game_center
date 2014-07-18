@@ -91,8 +91,12 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         return list_view(request, *args, **kwargs)
 
     leafs_key_func = ckc.LookupListKeyConstructor()
+    etag_leafs_key_func = ckc.update_at_key_constructor(ckc.LookupListKeyConstructor,
+                                                        content_type='category_leafs',
+                                                        timeout=1800,
+                                                        hourly=False)()
 
-    @etag(leafs_key_func)
+    @etag(etag_leafs_key_func)
     @cache_response(key_func=leafs_key_func)
     @default_cache_control()
     @link()
