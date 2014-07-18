@@ -89,6 +89,9 @@ class GiftBag(PublishDisplayable,
             card.save()
             return card
 
+    def has_took_by(self, user):
+        return self.cards.filter(owner_id=user.pk).exists()
+
     def __str__(self):
         return self.title
 
@@ -98,6 +101,13 @@ class GiftCardQuerySet(QuerySet):
     def remaining(self):
         table = self.model._meta.db_table
         return self.extra(where=['%s.owner_id IS NULL' % table])
+
+    def has_took(self, giftbag, user):
+        if isinstance(giftbag, int):
+            giftbag_id = giftbag
+        else:
+            giftbag_id = giftbag.pk
+        self.filter(giftbag_id=giftbag_id, owner=user.pk).exists()
 
 
 class GiftCard(SiteRelated, models.Model):
@@ -126,6 +136,7 @@ class GiftCard(SiteRelated, models.Model):
         index_together = (
             ('site', 'giftbag', 'owner'),
             ('site', 'giftbag', 'owner', 'took_date'),
+            ('site', 'owner'),
         )
 
     def __str__(self):
@@ -209,3 +220,27 @@ def giftcard_delete(sender, instance, **kwargs):
         giftbag.save()
     except GiftBag.DoesNotExist:
         pass
+
+from django.utils.timezone import utc
+from activity import documents as docs
+
+#@receiver(post_save, sender=GiftBag)
+def giftbag_post_save_sync(sender, instance, created, **kwargs):
+    defaults=dict(
+        site_id=instance.site_id,
+        title=instance.title,
+        for_package_id=instance.for_package_id,
+        for_version_id=instance.for_version_id,
+        summary=instance.summary,
+        usage_description=instance.usage_description,
+        issue_description=instance.issue_description,
+        publish_date=instance.publish_date.astimezone(utc),
+        expirty_date=instance.expiry_date.astimezone(utc) if instance.expiry_date else None,
+        cards_total_count=instance.cards_total_count,
+        cards_remaining_count=instance.cards_remaining_count,
+    )
+    gb, created = docs.GiftBag.objects.get_or_create(id=instance.pk,
+                                            defaults=defaults)
+    if not created:
+        for k,v in defaults.items():
+            setattr(gb, k, v)
