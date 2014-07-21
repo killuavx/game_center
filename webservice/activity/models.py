@@ -223,9 +223,10 @@ def giftcard_delete(sender, instance, **kwargs):
         pass
 
 from django.utils.timezone import utc
-from activity import documents as docs
+#from activity import documents as docs
 
 #@receiver(post_save, sender=GiftBag)
+"""
 def giftbag_post_save_sync(sender, instance, created, **kwargs):
     defaults=dict(
         site_id=instance.site_id,
@@ -245,3 +246,4 @@ def giftbag_post_save_sync(sender, instance, created, **kwargs):
     if not created:
         for k,v in defaults.items():
             setattr(gb, k, v)
+"""
