@@ -35,6 +35,10 @@ class PublishedManager(Manager):
             Q(expiry_date__gte=dt) | Q(expiry_date__isnull=True),
             Q(status=CONTENT_STATUS_PUBLISHED))
 
+    def status_published(self):
+        from mezzanine.core.models import CONTENT_STATUS_PUBLISHED
+        return self.filter(status=CONTENT_STATUS_PUBLISHED)
+
     def get_by_natural_key(self, slug):
         return self.get(slug=slug)
 

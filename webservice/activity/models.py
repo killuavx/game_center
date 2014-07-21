@@ -90,7 +90,10 @@ class GiftBag(PublishDisplayable,
             return card
 
     def has_took_by(self, user):
-        return self.cards.filter(owner_id=user.pk).exists()
+        return self.get_took_card_by(user).exists()
+
+    def get_took_cards_by(self, user):
+        return self.cards.filter(owner_id=user.pk)
 
     def __str__(self):
         return self.title
@@ -107,7 +110,7 @@ class GiftCardQuerySet(QuerySet):
             giftbag_id = giftbag
         else:
             giftbag_id = giftbag.pk
-        self.filter(giftbag_id=giftbag_id, owner=user.pk).exists()
+        return self.filter(giftbag_id=giftbag_id, owner=user.pk).exists()
 
 
 class GiftCard(SiteRelated, models.Model):
@@ -156,11 +159,9 @@ class CodeWidget(widgets.CharWidget):
 
 class GiftCardResource(resources.ModelResource):
 
-    #id = ie_fields.Field(attribute='pk', widget=widgets.IntegerWidget())
-
     giftbag = ie_fields.Field(column_name='giftbag',
-                                 attribute='giftbag_id',
-                                 widget=widgets.IntegerWidget())
+                              attribute='giftbag_id',
+                              widget=widgets.IntegerWidget())
 
     code = ie_fields.Field(column_name='code',
                            attribute='code',

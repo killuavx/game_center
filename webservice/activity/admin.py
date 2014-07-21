@@ -2,10 +2,10 @@
 from django.contrib import admin
 from toolkit.admin import admin_edit_linktag
 from activity.models import GiftBag, GiftCardResource
-from import_export.admin import ImportExportModelAdmin
+from import_export.admin import ImportMixin
 
 
-class GiftBagAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+class GiftBagAdmin(ImportMixin, admin.ModelAdmin):
     resource_class = GiftCardResource
 
     search_fields = ('for_package__package_name',
