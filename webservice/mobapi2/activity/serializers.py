@@ -3,7 +3,7 @@ from activity.models import GiftBag, GiftCard
 from rest_framework import serializers
 from django.core.urlresolvers import reverse
 from mobapi2.serializers import HyperlinkedModelSerializer, ModelSerializer
-from mobapi2.helpers import PackageDetailApiUrlEncode
+from mobapi2.helpers import PackageDetailApiUrlEncode, PackageVersionDetailApiUrlEncode
 from mobapi2.settings import IMAGE_ICON_SIZE
 
 
@@ -100,9 +100,16 @@ class GiftBagDetailSerializer(HyperlinkedModelSerializer):
         return False
 
     def get_package_url(self, obj):
-        return PackageDetailApiUrlEncode(obj.for_package_id,
-                                         request=self.context.get('request'),
-                                         router=self.opts.router).get_url()
+        request = self.context.get('request')
+        router = self.opts.router
+        if obj.for_version_id:
+            return PackageVersionDetailApiUrlEncode(obj.for_version_id,
+                                                    request=request,
+                                                    router=router).get_url()
+        else:
+            return PackageDetailApiUrlEncode(obj.for_package_id,
+                                             request=request,
+                                             router=router).get_url()
 
     class Meta:
         model = GiftBag
