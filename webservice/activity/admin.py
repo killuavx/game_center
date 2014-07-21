@@ -12,7 +12,7 @@ class GiftBagAdmin(ImportMixin, admin.ModelAdmin):
                      'for_package__title',
     )
 
-    list_display = ('pk', 'title', 'package', 'version', 'total_remaining',  'publish_date', )
+    list_display = ('pk', 'title', 'package', 'version', 'total_remaining', 'status',  'publish_date', 'expiry_date', )
     fieldsets = (
         (None, {
             'fields': (
@@ -36,6 +36,7 @@ class GiftBagAdmin(ImportMixin, admin.ModelAdmin):
             ),
         }),
     )
+    list_editable = ('status', )
     raw_id_fields = ('for_package', 'for_version', )
     readonly_fields = ('created', 'updated', 'cards_total_count', 'cards_remaining_count',)
     ordering = ('-publish_date', )
