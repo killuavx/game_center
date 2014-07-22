@@ -158,15 +158,39 @@ def update_at_key_constructor(key_constructor,
                               content_type='default',
                               timeout=None,
                               hourly=False,
+                              update_at_keybit=UpdatedAtKeyBit
                               ):
 
     class _UpdatedAtKeyBitKeyConstructor(key_constructor):
 
-        updated_at = UpdatedAtKeyBit(content_type=content_type,
-                                     timeout=timeout,
-                                     hourly=hourly)
+        updated_at = update_at_keybit(content_type=content_type,
+                                      timeout=timeout,
+                                      hourly=hourly)
 
     return _UpdatedAtKeyBitKeyConstructor
+
+
+class LookupObjectUpdatedAtKeyBit(UpdatedAtKeyBit):
+
+    pk = None
+
+    def __init__(self, pk=None, *args, **kwargs):
+        self.pk = pk if pk else None
+        super(LookupObjectUpdatedAtKeyBit, self).__init__(*args, **kwargs)
+
+    def get_key(self):
+        _k = super(LookupObjectUpdatedAtKeyBit, self).get_key()
+        return "%s.%s" %(_k, self.pk)
+
+    def get_data(self, params, view_instance, view_method, request, args, kwargs):
+        self.pk = view_instance.kwargs[view_instance.lookup_field]
+        return super(LookupObjectUpdatedAtKeyBit, self).get_data(params=params,
+                                                                 view_instance=view_instance,
+                                                                 view_method=view_method,
+                                                                 request=request,
+                                                                 args=args,
+                                                                 kwargs=kwargs)
+
 
 
 class IpKeyBit(bits.RequestMetaKeyBit):

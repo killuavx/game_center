@@ -22,6 +22,7 @@ from mobapi2.event.views import EventViewSet
 from mobapi2.clientapp.views import SelfUpdateView, LoadingCoverView
 from mobapi2.rest_router import rest_router
 from mobapi2.ranking.views import PackageRankingViewSet
+from mobapi2.activity.views import GiftBagViewSet
 
 
 rest_router.register('authors', AuthorViewSet)
@@ -38,6 +39,7 @@ rest_router.register('bookmarks', PackageBookmarkViewSet, base_name='bookmark')
 rest_router.register('comments', CommentViewSet)
 rest_router.register('feedbacks', FeedbackViewSet)
 rest_router.register('events', EventViewSet, base_name='event')
+rest_router.register('giftbags', GiftBagViewSet)
 
 
 def _account_basename(name):
