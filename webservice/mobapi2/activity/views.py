@@ -107,10 +107,9 @@ class GiftBagViewSet(DetailSerializerMixin,
 
     def list(self, request, *args, **kwargs):
         data = self._list_serializerdata(request, *args, **kwargs)
-        if request.user.is_authenticated():
-            now_timestamp = int(now().astimezone().strftime('%s'))
-            for giftbag in data['results']:
-                self.check_giftcard_status(giftbag, request.user, now_timestamp)
+        now_timestamp = int(now().astimezone().strftime('%s'))
+        for giftbag in data['results']:
+            self.check_giftcard_status(giftbag, request.user, now_timestamp)
         return Response(data)
 
 
@@ -148,9 +147,8 @@ class GiftBagViewSet(DetailSerializerMixin,
 
     def retrieve(self, request, *args, **kwargs):
         data = self._retrieve_serializerdata(request, *args, **kwargs)
-        if request.user and request.user.is_authenticated():
-            now_timestamp = int(now().astimezone().strftime('%s'))
-            self.check_giftcard_status(data, request.user, now_timestamp)
+        now_timestamp = int(now().astimezone().strftime('%s'))
+        self.check_giftcard_status(data, request.user, now_timestamp)
         return Response(data)
 
     @cache_serializerdata(key_func=cache_data_object_key_func)
@@ -161,7 +159,8 @@ class GiftBagViewSet(DetailSerializerMixin,
 
     def check_giftcard_status(self, giftbag, user, now_timestamp):
         giftbag_id = giftbag['id']
-        giftbag['has_took'] = GiftCard.objects.has_took(giftbag_id, user)
+        if user and user.is_authenticated():
+            giftbag['has_took'] = GiftCard.objects.has_took(giftbag_id, user)
         giftbag['status'] = 'ok'
 
         if giftbag['expiry_datetime'] and int(giftbag['expiry_datetime']) <= now_timestamp:
