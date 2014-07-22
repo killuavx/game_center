@@ -152,7 +152,11 @@ def unique_list(*args):
 @register.simple_tag
 def unique_tags_text(*args, **kwargs):
     result = set()
-    for tags in args:
-        result.update([t.name for t in tags])
+    for obj in args:
+        try:
+            if obj.tags_text:
+                result.update(obj.tags_text.split())
+        except:
+            pass
     return ", ".join(list(result))
 
