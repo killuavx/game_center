@@ -427,6 +427,8 @@ class BasePackageVersionSummarySerializer(PackageVersionRelatedPackageMixin,
 
     version_count = serializers.SerializerMethodField('get_version_count')
 
+    tags = serializers.SerializerMethodField('get_tags')
+
     star = serializers.SerializerMethodField('get_star')
     def get_star(self, obj):
         return get_object_star(obj)

@@ -12,7 +12,9 @@ from mobapi.warehouse.serializers.helpers import (
 
 class PackageRelatedTagMin(object):
     def get_tags(self, obj):
-        return obj.tags.values_list('name', flat=True)
+        if not obj.tags_text:
+            return list()
+        return obj.tags_text.split()
 
 
 class PackageActionsMixin(object):
