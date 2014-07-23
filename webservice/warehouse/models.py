@@ -409,8 +409,6 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
 
     @property
     def main_category(self):
-        if hasattr(self, '_main_categories'):
-            return self._main_category
         cat = None
         try:
             if self.primary_category_id:
