@@ -52,9 +52,10 @@ class BaseSearcher(object):
         sqs = search_queryset._clone()
         lookups = [self.construct_search(str(search_field))
                    for search_field in search_fields]
+        or_queries = []
         for search_term in search_terms:
-            or_queries = [SQ(**{lookup: search_term}) for lookup in lookups]
-            sqs = sqs.filter(reduce(operator.or_, or_queries))
+            or_queries += [SQ(**{lookup: search_term}) for lookup in lookups]
+        sqs = sqs.filter(reduce(operator.or_, or_queries))
 
         if ordering:
             sqs = sqs.order_by(*ordering)

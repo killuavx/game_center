@@ -16,7 +16,7 @@ class RelatedPackageSearchFilter(filters.BaseFilterBackend):
     search_max_items = 30
 
     def get_search_filter(self, request, view, terms):
-        search_fields = ('tags_text', 'categories')
+        search_fields = ('tags_text',)
         search_ordering = ('-released_datetime', )
         return PackageSearcher(search_fields, terms, search_ordering)
 
@@ -31,20 +31,22 @@ class RelatedPackageSearchFilter(filters.BaseFilterBackend):
         tags = view.object.tags_text.split()
         try:
             main_category = view.object.main_category
-            terms = tags + [main_category.name]
+            category_name = main_category.name
         except:
-            terms = tags
-        searcher = self.get_search_filter(request, view, terms)
+            category_name = None
+        searcher = self.get_search_filter(request, view, tags)
         try:
             sqs = searcher.search()
             sqs = sqs.exclude(django_id=view.object.pk)
+            if category_name:
+                sqs = sqs.filter(categories=category_name)
         except SearchException:
             return queryset.none()
 
         return self.convert_queryset(queryset, sqs)
 
     def convert_queryset(self, orm_queryset, search_query):
-        return search_query.values_list('object', flat=True)[0:self.search_max_items]
+        return search_query.values_list('object', flat=True)
 
 
 class RelatedPackageSearchFilter2(filters.BaseFilterBackend):
