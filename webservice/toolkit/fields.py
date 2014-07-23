@@ -7,6 +7,28 @@ from mezzanine.generic.fields import (
 from toolkit.helpers import file_md5
 from django.db.models import FileField as DFileField
 from mezzanine.core.fields import FileField
+from tagging_autocomplete.models import TagAutocompleteField
+from django.db.models import signals
+
+
+class TagField(TagAutocompleteField):
+
+    def contribute_to_class(self, cls, name):
+        super(CharField, self).contribute_to_class(cls, name)
+
+        # Make this object the descriptor for field access.
+        setattr(cls, self.name, self)
+
+        # Save tags back to the database post-save
+        signals.post_save.connect(self._save, cls, True)
+
+        # Update tags from Tag objects post-init
+        # signals.post_init.connect(self._update, cls, True)
+
+    def _get_instance_tag_cache(self, instance):
+        if hasattr(instance, '_%s_cache' % self.attname) is False:
+            self._update_instance_tag_cache(instance)
+        return getattr(instance, '_%s_cache' % self.attname)
 
 
 def update_pkgfile_meta(instance, fieldname):

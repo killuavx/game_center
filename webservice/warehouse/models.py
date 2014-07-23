@@ -13,7 +13,7 @@ from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
 from django.utils.translation import ugettext_lazy as _
 import tagging
-from tagging_autocomplete.models import TagAutocompleteField as TagField
+from toolkit.fields import TagField
 from easy_thumbnails.fields import ThumbnailerImageField
 
 from toolkit.managers import CurrentSitePassThroughManager, PassThroughManager
@@ -433,9 +433,6 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
         return self.title
 
     __unicode__ = __str__
-
-    def __init__(self, *args, **kwargs):
-        super(Package, self).__init__(*args, **kwargs)
 
     def get_absolute_url(self, link_type=0):
         if link_type == 0:
