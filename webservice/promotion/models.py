@@ -62,23 +62,24 @@ class AdvertisementQuerySet(QuerySet):
         return self.filter(places=place)
 
 
-def advertisement_upload_to(instance, filename):
-    fbasename = basename(filename)
-    extension = fbasename.split('.')[-1]
+def advertisement_workspace_path(instance, dt):
+    path = None
     if instance.content:
         path = '%s-%s' %(instance.content_type.model, instance.object_id)
-    else:
-        path = now().astimezone().strftime('%H%M')
-    d = now().strftime("%Y%m%d")
+    if not instance.workspace:
+        d = dt.astimezone().strftime('%H%M')
+        if path is None:
+            path = dt.astimezone().strftime('%H%M')
+        instance.workspace = "%(prefix)s/%(date)s/%(path)s" % {
+            'prefix': 'advertisement', 'date': d, 'path': path
+        }
+    return instance
 
-    path = "%(prefix)s/%(date)s/%(path)s/%(fbname)s.%(extension)s" % {
-        'prefix': 'advertisement',
-        'date': d,
-        'path': path,
-        'fbname': 'cover',
-        'extension': extension
-    }
-    return path
+
+def advertisement_upload_to(instance, filename):
+    fbasename = basename(filename)
+    advertisement_workspace_path(instance, now())
+    return "%s/%s" %(instance.workspace.name, fbasename.lower())
 
 
 class Advertisement(urlmixin.AdvertisementAbsoluteUrlMixin,
@@ -231,6 +232,5 @@ def advertisement_pre_save(sender, instance, **kwargs):
         and not instance.released_datetime:
         instance.released_datetime = now()
 
-    if instance.workspace == '':
-        instance.workspace = dirname(instance.cover.name)
+    advertisement_workspace_path(instance, now())
 
