@@ -73,6 +73,10 @@ class GiftBag(PublishDisplayable,
             ('site', 'publish_date', ),
             ('site', 'for_package', 'publish_date',),
             ('site', 'for_package', 'for_version', 'publish_date', ),
+
+            ('site', 'status', 'publish_date', ),
+            ('site', 'status', 'for_package', 'publish_date',),
+            ('site', 'status', 'for_package', 'for_version', 'publish_date', ),
         )
         ordering = ('-publish_date', )
 

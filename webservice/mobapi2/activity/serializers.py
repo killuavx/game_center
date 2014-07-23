@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from activity.models import GiftBag, GiftCard
-from rest_framework import serializers
 from django.core.urlresolvers import reverse
+from toolkit.helpers import qurl_to
+from rest_framework import serializers
 from mobapi2.serializers import HyperlinkedModelSerializer, ModelSerializer
 from mobapi2.helpers import PackageDetailApiUrlEncode, PackageVersionDetailApiUrlEncode
 from mobapi2.settings import IMAGE_ICON_SIZE
@@ -133,6 +134,21 @@ class GiftBagDetailSerializer(HyperlinkedModelSerializer):
                                              request=request,
                                              router=router).get_url()
 
+    related_url = serializers.SerializerMethodField('get_related_url')
+
+    def get_related_url(self, obj):
+        router = self.opts.router
+        reverse_viewname = 'giftbag-list'
+        if router:
+            reverse_viewname = router.get_base_name(reverse_viewname)
+        url = reverse(reverse_viewname)
+
+        request = self.context.get('request')
+        url = qurl_to(url, for_package=obj.for_package_id)
+        if request:
+            url = request.build_absolute_uri(url)
+        return url
+
     class Meta:
         model = GiftBag
         fields = ('url',
@@ -148,6 +164,7 @@ class GiftBagDetailSerializer(HyperlinkedModelSerializer):
                   'remaining_count',
                   'take',
                   'package_url',
+                  'related_url',
                   'code',
                   'id',
                   'has_took',

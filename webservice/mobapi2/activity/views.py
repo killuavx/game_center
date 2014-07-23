@@ -78,6 +78,20 @@ class CacheSerializerData(CacheResponse):
 
 cache_serializerdata = CacheSerializerData
 
+import django_filters
+from rest_framework.filters import DjangoFilterBackend
+
+
+class GiftBagForPackageFilter(django_filters.FilterSet):
+
+    for_package = django_filters.CharFilter(name='for_package_id')
+
+    for_version = django_filters.CharFilter(name='for_version_id')
+
+    class Meta:
+        model = GiftBag
+        fields = ('for_package', 'for_version', )
+
 
 class GiftBagViewSet(DetailSerializerMixin,
                      viewsets.ReadOnlyModelViewSet):
@@ -89,9 +103,10 @@ class GiftBagViewSet(DetailSerializerMixin,
     permission_classes = ()
 
     filter_backends = (
+        DjangoFilterBackend,
         OrderingFilter,
     )
-
+    filter_class = GiftBagForPackageFilter
     ordering = ('-publish_date', )
 
     def get_queryset(self, is_for_detail=False):
