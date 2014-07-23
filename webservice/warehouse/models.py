@@ -884,7 +884,7 @@ def sync_pkg_cats(pkg):
     """
     main_category, main_categories = pkg._package_categories()
     if main_category:
-        if pkg.primary_category_id != pkg.main_category.pk:
+        if pkg.primary_category_id != main_category.pk:
             pkg.primary_category = main_category
             pkg.root_category = main_category.get_root()
     else:
