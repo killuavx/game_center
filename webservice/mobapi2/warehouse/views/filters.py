@@ -21,12 +21,12 @@ class RelatedPackageSearchFilter(filters.BaseFilterBackend):
             return queryset
 
         qs = queryset._clone()
-        qs = qs.exclude(pk=view.object.pk).filter(
-            categories__in=list(view.object.categories.published())).distinct()
-        tags = list(view.object.tags)
-        if len(tags) and qs.count():
+        qs = qs.exclude(pk=view.object.pk)
+            # .filter(categories__in=list(view.object.categories.published())).distinct()
+        tags = view.object.tags_text.split()
+        if len(tags):
             return type(view.object).tagged.with_any(tags, qs)
-        return queryset.filter(pk=None)
+        return queryset.none()
 
 
 class PackageIdsFilter(filters.BaseFilterBackend):
