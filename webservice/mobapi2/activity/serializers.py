@@ -33,6 +33,11 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_giftbag_icon')
 
+    package_name = serializers.SerializerMethodField('get_package_name')
+
+    def get_package_name(self, obj):
+        return obj.for_package.package_name
+
     def get_giftbag_icon(self, obj):
         if not hasattr(obj, '_icon_url'):
             obj._icon_url = giftbag_icon(obj)
@@ -64,6 +69,7 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
         model = GiftBag
         fields = ('url',
                   'title',
+                  'package_name',
                   'icon',
                   'summary',
                   'publish_datetime',
@@ -72,11 +78,17 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
                   'remaining_count',
                   'take',
                   'id',
+                  'code',
                   'has_took',
         )
 
 
 class GiftBagDetailSerializer(HyperlinkedModelSerializer):
+
+    package_name = serializers.SerializerMethodField('get_package_name')
+
+    def get_package_name(self, obj):
+        return obj.for_package.package_name
 
     icon = serializers.SerializerMethodField('get_giftbag_icon')
 
@@ -125,6 +137,7 @@ class GiftBagDetailSerializer(HyperlinkedModelSerializer):
         model = GiftBag
         fields = ('url',
                   'title',
+                  'package_name',
                   'icon',
                   'summary',
                   'usage_description',
@@ -135,6 +148,7 @@ class GiftBagDetailSerializer(HyperlinkedModelSerializer):
                   'remaining_count',
                   'take',
                   'package_url',
+                  'code',
                   'id',
                   'has_took',
         )
