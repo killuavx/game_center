@@ -20,7 +20,7 @@ from toolkit.managers import CurrentSitePassThroughManager, PassThroughManager
 from toolkit.fields import StarsField, PkgFileField, MultiResourceField
 from toolkit.models import SiteRelated
 from toolkit import model_url_mixin as urlmixin
-from toolkit.helpers import import_from, sync_status_from, released_hourly_datetime, qurl_to
+from toolkit.helpers import import_from, sync_status_from, released_hourly_datetime, qurl_to, current_site_id
 from toolkit.storage import package_storage
 
 storage = package_storage
@@ -341,6 +341,9 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
         'taxonomy.Category',
         verbose_name=_('categories'),
         related_name='packages',
+        #limit_choices_to=dict(
+        #    site_id=current_site_id,
+        #),
         blank=True)
 
     tags_text = TagField(
@@ -389,14 +392,33 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
         return self.status == self.STATUS.published \
             and self.released_datetime <= now()
 
+
+    primary_category = models.ForeignKey('taxonomy.Category',
+                                         related_name='primary_packages',
+                                         #limit_choices_to=dict(
+                                         #    site_id=current_site_id,
+                                         #),
+                                         null=True, blank=True)
+
+    root_category = models.ForeignKey('taxonomy.Category',
+                                      related_name='root_packages',
+                                      #limit_choices_to=dict(
+                                      #   site_id=current_site_id,
+                                      #),
+                                      null=True, blank=True)
+
     @property
     def main_category(self):
         if hasattr(self, '_main_categories'):
             return self._main_category
-        main_cat, cats = self._package_categories()
-        self._main_categories = cats
-        self._main_category = main_cat
-        return self._main_category
+        cat = None
+        try:
+            if self.primary_category_id:
+                cat = self.categories.model.objects\
+                    .get_cache_category(self.primary_category_id)
+        except self.categories.model.DoesNotExist:
+            pass
+        return cat
 
     @property
     def main_categories(self):
@@ -445,6 +467,7 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
             return '/package/?name=%s' % self.package_name
         else:
             return '/package/?id=%s' % self.pk
+
 
 tagging.register(Package)
 
@@ -851,8 +874,38 @@ class PackageVersionScreenshot(models.Model):
         )
 
 
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, m2m_changed
 from django.dispatch import receiver
+
+
+def sync_pkg_cats(pkg):
+    """
+        Package.categories同步(primary/root)_category
+    """
+    main_category, main_categories = pkg._package_categories()
+    if main_category:
+        if pkg.primary_category_id != pkg.main_category.pk:
+            pkg.primary_category = main_category
+            pkg.root_category = main_category.get_root()
+    else:
+        pkg.primary_category_id = None
+        pkg.root_category_id = None
+
+
+@receiver(m2m_changed, sender=Package.categories.through)
+def package_post_changed_category(sender, action, instance, model, pk_set, **kwargs):
+    if action not in ('post_add', 'post_remove', 'post_clear'):
+        return
+
+    if isinstance(instance, Package):
+        pkg = instance
+        sync_pkg_cats(pkg)
+        pkg.save()
+    else:
+        pkgs = model.objects.in_bluk(list(pk_set))
+        for p in pkgs:
+            sync_pkg_cats(p)
+            p.save()
 
 
 #@receiver(pre_save, sender=PackageVersion)

@@ -115,8 +115,19 @@ class CategoryQuerySet(QuerySet):
         return self.hidden(False)
 
 
+CACHE_CATEGORIES = {}
+
+
 class CategoryManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
-    pass
+
+    def _cache_category(self, pk):
+        global CACHE_CATEGORIES
+        if pk not in CACHE_CATEGORIES:
+            CACHE_CATEGORIES[pk] = self.get(pk=pk)
+        return CACHE_CATEGORIES[pk]
+
+    def get_cache_category(self, pk):
+        return self._cache_category(pk)
 
 
 class AllCategoryManager(TreeManager, PassThroughManager):
