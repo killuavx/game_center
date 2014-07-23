@@ -53,6 +53,11 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
     def get_has_took(self, obj):
         return False
 
+    code = serializers.SerializerMethodField('get_code')
+
+    def get_code(self, obj):
+        return None
+
     get_take_url = get_take_url
 
     class Meta:
@@ -98,6 +103,11 @@ class GiftBagDetailSerializer(HyperlinkedModelSerializer):
 
     def get_has_took(self, obj):
         return False
+
+    code = serializers.SerializerMethodField('get_code')
+
+    def get_code(self, obj):
+        return None
 
     def get_package_url(self, obj):
         request = self.context.get('request')

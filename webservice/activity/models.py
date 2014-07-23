@@ -112,6 +112,16 @@ class GiftCardQuerySet(QuerySet):
             giftbag_id = giftbag.pk
         return self.filter(giftbag_id=giftbag_id, owner=user.pk).exists()
 
+    def took_by(self, user):
+        return self.filter(owner_id=user.pk)
+
+    def took_from(self, giftbag):
+        if isinstance(giftbag, int):
+            giftbag_id = giftbag
+        else:
+            giftbag_id = giftbag.pk
+        return self.filter(giftbag_id=giftbag_id)
+
 
 class GiftCard(SiteRelated, models.Model):
 

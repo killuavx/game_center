@@ -160,7 +160,10 @@ class GiftBagViewSet(DetailSerializerMixin,
     def check_giftcard_status(self, giftbag, user, now_timestamp):
         giftbag_id = giftbag['id']
         if user and user.is_authenticated():
-            giftbag['has_took'] = GiftCard.objects.has_took(giftbag_id, user)
+            cards = list(GiftCard.objects.took_from(giftbag_id).took_by(user))
+            if cards:
+                giftbag['has_took'] = True
+                giftbag['code'] = cards[0].code
         giftbag['status'] = 'ok'
 
         if giftbag['expiry_datetime'] and int(giftbag['expiry_datetime']) <= now_timestamp:
