@@ -16,7 +16,7 @@ from rest_framework_extensions.cache.decorators import cache_response
 from rest_framework.decorators import permission_classes as rf_permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.filters import OrderingFilter
+from rest_framework.filters import OrderingFilter, BaseFilterBackend
 from django.utils.decorators import method_decorator, available_attrs
 from django.views.decorators.cache import never_cache
 import json
@@ -78,6 +78,38 @@ class CacheSerializerData(CacheResponse):
 
 cache_serializerdata = CacheSerializerData
 
+import django_filters
+from rest_framework.filters import DjangoFilterBackend
+
+
+class GiftBagForOwnerFilterBackend(BaseFilterBackend):
+
+    query_sql_exists = """SELECT id FROM %(gct)s
+                          WHERE %(gct)s.giftbag_id=%(gbt)s.id
+                          AND %(gct)s.owner_id=%(uid)s LIMIT 1"""
+
+    def filter_queryset(self, request, queryset, view):
+        if request.user and request.user.is_authenticated():
+            sql_exists = self.query_sql_exists % dict(
+                gct=GiftCard._meta.db_table,
+                gbt=GiftBag._meta.db_table,
+                uid=request.user.pk
+            )
+            return queryset.extra(where=['EXISTS( %s )' % sql_exists])
+        else:
+            return queryset.none()
+
+
+class GiftBagForPackageFilter(django_filters.FilterSet):
+
+    for_package = django_filters.CharFilter(name='for_package_id')
+
+    for_version = django_filters.CharFilter(name='for_version_id')
+
+    class Meta:
+        model = GiftBag
+        fields = ('for_package', 'for_version', )
+
 
 class GiftBagViewSet(DetailSerializerMixin,
                      viewsets.ReadOnlyModelViewSet):
@@ -89,9 +121,10 @@ class GiftBagViewSet(DetailSerializerMixin,
     permission_classes = ()
 
     filter_backends = (
+        DjangoFilterBackend,
         OrderingFilter,
     )
-
+    filter_class = GiftBagForPackageFilter
     ordering = ('-publish_date', )
 
     def get_queryset(self, is_for_detail=False):
@@ -103,7 +136,8 @@ class GiftBagViewSet(DetailSerializerMixin,
 
     cache_data_list_key_func = ckc.update_at_key_constructor(DataListKeyConstructor,
                                                              content_type='giftbag:cache',
-                                                             hourly=True)()
+                                                             hourly=False,
+                                                             update_at_keybit=ckc.UserUpdatedAtKeyBit)()
 
     def list(self, request, *args, **kwargs):
         data = self._list_serializerdata(request, *args, **kwargs)
@@ -142,7 +176,7 @@ class GiftBagViewSet(DetailSerializerMixin,
 
     cache_data_object_key_func = ckc.update_at_key_constructor(DataObjectKeyConstructor,
                                                                content_type='giftbag-detail:cache',
-                                                               hourly=True,
+                                                               hourly=False,
                                                                update_at_keybit=ckc.LookupObjectUpdatedAtKeyBit)()
 
     def retrieve(self, request, *args, **kwargs):
@@ -160,7 +194,10 @@ class GiftBagViewSet(DetailSerializerMixin,
     def check_giftcard_status(self, giftbag, user, now_timestamp):
         giftbag_id = giftbag['id']
         if user and user.is_authenticated():
-            giftbag['has_took'] = GiftCard.objects.has_took(giftbag_id, user)
+            cards = list(GiftCard.objects.took_from(giftbag_id).took_by(user))
+            if cards:
+                giftbag['has_took'] = True
+                giftbag['code'] = cards[0].code
         giftbag['status'] = 'ok'
 
         if giftbag['expiry_datetime'] and int(giftbag['expiry_datetime']) <= now_timestamp:
@@ -181,6 +218,10 @@ class GiftBagViewSet(DetailSerializerMixin,
             card = cards[0]
         else:
             card = giftbag.take_by(request.user)
+            self.cache_data_list_key_func.updated_at.pk = request.user.pk
+            self.cache_data_list_key_func.updated_at.flush()
+            self.cache_data_list_key_func.updated_at.pk = None
+
         serializer = GiftCardSerializer(card)
         return Response(serializer.data)
 
@@ -191,3 +232,18 @@ class GiftBagViewSet(DetailSerializerMixin,
             _permission_classes = handler.permission_classes
 
         return [permission() for permission in _permission_classes]
+
+    @method_decorator(rf_permission_classes((IsAuthenticated,)))
+    @method_decorator(never_cache)
+    def mine(self, request, *args, **kwargs):
+        orig_filter_backends, self.filter_backends =\
+            self.filter_backends, [GiftBagForOwnerFilterBackend]+ list(self.filter_backends)
+
+        self.kwargs.setdefault('user', True)
+        data = self._list_serializerdata(request, *args, **kwargs)
+        del self.kwargs['user']
+        self.filter_backends = orig_filter_backends
+        now_timestamp = int(now().astimezone().strftime('%s'))
+        for giftbag in data['results']:
+            self.check_giftcard_status(giftbag, request.user, now_timestamp)
+        return Response(data)

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from activity.models import GiftBag, GiftCard
-from rest_framework import serializers
 from django.core.urlresolvers import reverse
+from toolkit.helpers import qurl_to
+from rest_framework import serializers
 from mobapi2.serializers import HyperlinkedModelSerializer, ModelSerializer
 from mobapi2.helpers import PackageDetailApiUrlEncode, PackageVersionDetailApiUrlEncode
 from mobapi2.settings import IMAGE_ICON_SIZE
@@ -33,6 +34,11 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
 
     icon = serializers.SerializerMethodField('get_giftbag_icon')
 
+    package_name = serializers.SerializerMethodField('get_package_name')
+
+    def get_package_name(self, obj):
+        return obj.for_package.package_name
+
     def get_giftbag_icon(self, obj):
         if not hasattr(obj, '_icon_url'):
             obj._icon_url = giftbag_icon(obj)
@@ -53,12 +59,18 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
     def get_has_took(self, obj):
         return False
 
+    code = serializers.SerializerMethodField('get_code')
+
+    def get_code(self, obj):
+        return None
+
     get_take_url = get_take_url
 
     class Meta:
         model = GiftBag
         fields = ('url',
                   'title',
+                  'package_name',
                   'icon',
                   'summary',
                   'publish_datetime',
@@ -67,11 +79,17 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
                   'remaining_count',
                   'take',
                   'id',
+                  'code',
                   'has_took',
         )
 
 
 class GiftBagDetailSerializer(HyperlinkedModelSerializer):
+
+    package_name = serializers.SerializerMethodField('get_package_name')
+
+    def get_package_name(self, obj):
+        return obj.for_package.package_name
 
     icon = serializers.SerializerMethodField('get_giftbag_icon')
 
@@ -99,6 +117,11 @@ class GiftBagDetailSerializer(HyperlinkedModelSerializer):
     def get_has_took(self, obj):
         return False
 
+    code = serializers.SerializerMethodField('get_code')
+
+    def get_code(self, obj):
+        return None
+
     def get_package_url(self, obj):
         request = self.context.get('request')
         router = self.opts.router
@@ -111,10 +134,26 @@ class GiftBagDetailSerializer(HyperlinkedModelSerializer):
                                              request=request,
                                              router=router).get_url()
 
+    related_url = serializers.SerializerMethodField('get_related_url')
+
+    def get_related_url(self, obj):
+        router = self.opts.router
+        reverse_viewname = 'giftbag-list'
+        if router:
+            reverse_viewname = router.get_base_name(reverse_viewname)
+        url = reverse(reverse_viewname)
+
+        request = self.context.get('request')
+        url = qurl_to(url, for_package=obj.for_package_id)
+        if request:
+            url = request.build_absolute_uri(url)
+        return url
+
     class Meta:
         model = GiftBag
         fields = ('url',
                   'title',
+                  'package_name',
                   'icon',
                   'summary',
                   'usage_description',
@@ -125,6 +164,8 @@ class GiftBagDetailSerializer(HyperlinkedModelSerializer):
                   'remaining_count',
                   'take',
                   'package_url',
+                  'related_url',
+                  'code',
                   'id',
                   'has_took',
         )

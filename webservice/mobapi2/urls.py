@@ -42,6 +42,10 @@ rest_router.register('events', EventViewSet, base_name='event')
 rest_router.register('giftbags', GiftBagViewSet)
 
 
+my_giftbags_list = GiftBagViewSet.as_view({
+    'get': 'mine'
+})
+
 def _account_basename(name):
     prefix='account'
     basename = "%s-%s" %(prefix, name)
@@ -59,9 +63,12 @@ account_urlpatterns = patterns('',
                        url(r'^commented_packages/?$',
                            AccountCommentPackageView.as_view(),
                            name=_account_basename('commentedpackages')),
+                       url(r'^giftbags/?$', my_giftbags_list,
+                           name=_account_basename('giftbags')),
                        )
 
 slug_pattern = '[\w_.-]+'
+
 urlpatterns = rest_router.urls
 urlpatterns += patterns('',
     url(r'^selfupdate/?$', SelfUpdateView.as_view(),

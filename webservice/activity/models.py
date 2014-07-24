@@ -73,6 +73,10 @@ class GiftBag(PublishDisplayable,
             ('site', 'publish_date', ),
             ('site', 'for_package', 'publish_date',),
             ('site', 'for_package', 'for_version', 'publish_date', ),
+
+            ('site', 'status', 'publish_date', ),
+            ('site', 'status', 'for_package', 'publish_date',),
+            ('site', 'status', 'for_package', 'for_version', 'publish_date', ),
         )
         ordering = ('-publish_date', )
 
@@ -111,6 +115,16 @@ class GiftCardQuerySet(QuerySet):
         else:
             giftbag_id = giftbag.pk
         return self.filter(giftbag_id=giftbag_id, owner=user.pk).exists()
+
+    def took_by(self, user):
+        return self.filter(owner_id=user.pk)
+
+    def took_from(self, giftbag):
+        if isinstance(giftbag, int):
+            giftbag_id = giftbag
+        else:
+            giftbag_id = giftbag.pk
+        return self.filter(giftbag_id=giftbag_id)
 
 
 class GiftCard(SiteRelated, models.Model):
