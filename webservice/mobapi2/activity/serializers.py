@@ -66,6 +66,20 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
 
     get_take_url = get_take_url
 
+    package_url = serializers.SerializerMethodField('get_package_url')
+
+    def get_package_url(self, obj):
+        request = self.context.get('request')
+        router = self.opts.router
+        if obj.for_version_id:
+            return PackageVersionDetailApiUrlEncode(obj.for_version_id,
+                                                    request=request,
+                                                    router=router).get_url()
+        else:
+            return PackageDetailApiUrlEncode(obj.for_package_id,
+                                             request=request,
+                                             router=router).get_url()
+
     class Meta:
         model = GiftBag
         fields = ('url',
@@ -78,6 +92,7 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
                   'total_count',
                   'remaining_count',
                   'take',
+                  'package_url',
                   'id',
                   'code',
                   'has_took',
