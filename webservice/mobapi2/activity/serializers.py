@@ -39,6 +39,15 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
     def get_package_name(self, obj):
         return obj.for_package.package_name
 
+    package_title = serializers.SerializerMethodField('get_package_title')
+
+    def get_package_title(self, obj):
+        try:
+            return obj.for_version.title
+        except:
+            return obj.for_package.title
+
+
     def get_giftbag_icon(self, obj):
         if not hasattr(obj, '_icon_url'):
             obj._icon_url = giftbag_icon(obj)
@@ -85,6 +94,7 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
         fields = ('url',
                   'title',
                   'package_name',
+                  'package_title',
                   'icon',
                   'summary',
                   'publish_datetime',
@@ -100,6 +110,15 @@ class GiftBagSummarySerializer(HyperlinkedModelSerializer):
 
 
 class GiftBagDetailSerializer(HyperlinkedModelSerializer):
+
+
+    package_title = serializers.SerializerMethodField('get_package_title')
+
+    def get_package_title(self, obj):
+        try:
+            return obj.for_version.title
+        except:
+            return obj.for_package.title
 
     package_name = serializers.SerializerMethodField('get_package_name')
 
@@ -169,6 +188,7 @@ class GiftBagDetailSerializer(HyperlinkedModelSerializer):
         fields = ('url',
                   'title',
                   'package_name',
+                  'package_title',
                   'icon',
                   'summary',
                   'usage_description',
