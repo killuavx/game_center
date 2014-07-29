@@ -954,7 +954,7 @@ def package_version_post_save(sender, instance, **kwargs):
             return
         # 2. 在过去或当时发布 则及时处理
         elif now_dt >= version_released_dt:
-            tasks.publish_packageversion(instance.pk)
+            tasks.publish_packageversion.delay(instance.pk)
             return
 
         package = instance.package
