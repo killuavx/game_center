@@ -199,6 +199,7 @@ INTERNAL_APPS = [
     'url_tools',
     'django_user_agents',
     #'memoize',
+    'djcelery',
     'import_export',
 ]
 
@@ -487,3 +488,25 @@ DATABASE_ROUTERS = [
 DEFAULT_FILE_STORAGE = 'toolkit.storage.QiniuResourceFileStorage'
 
 FONT_DIRECTORY = join(STATIC_ROOT, 'common/font')
+
+
+# celery
+CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_RESULT_SERIALIZER = 'json'
+
+BROKER_URL='redis://localhost:6379/3'
+
+CELERY_RESULT_BACKEND = BROKER_URL
+
+CELERY_ENABLE_UTC = True
+
+CELERY_TIMEZONE = 'Asia/Shanghai'
+
+
+try:
+    import djcelery
+    djcelery.setup_loader()
+except:
+    pass
+

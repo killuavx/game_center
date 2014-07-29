@@ -439,13 +439,6 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
         return main_category, cats
 
     def clean(self):
-        if self.status == self.STATUS.published:
-            latest_version = None
-            try:
-                latest_version = self.versions.latest_published(False)
-            except exceptions.ObjectDoesNotExist:
-                raise exceptions.ValidationError('不能发布该应用，没有可发布的版本')
-
         super(Package, self).clean()
         self.updated_datetime = now()
 
@@ -674,16 +667,6 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
     def clean(self):
         super(PackageVersion, self).clean()
         self.updated_datetime = now()
-
-        if self.status == self.STATUS.published:
-
-            if self.package:
-                try:
-                    v = self.package.versions.latest_published(False)
-                    if v and (v == self or self.version_code > v.version_code):
-                        self.package.released_datetime = self.released_datetime
-                except ObjectDoesNotExist:
-                    pass
 
     def get_absolute_url(self, link_type=0):
         if link_type == 0:
@@ -942,27 +925,42 @@ def package_version_pre_save(sender, instance, **kwargs):
             elif instance.tracker.has_changed('icon'):
                 return
 
+
+_sync_pkg_field = '_version_sync_package_published'
+
+@receiver(pre_save, sender=PackageVersion)
+def package_version_pre_save_check_publish_to_sync(sender, instance, **kwargs):
+    if instance.tracker.has_changed('status') \
+        and instance.status == PackageVersion.STATUS.published:
+        setattr(instance, _sync_pkg_field, True)
+
+
 @receiver(post_save, sender=PackageVersion)
 def package_version_post_save(sender, instance, **kwargs):
-    """package sync ...
-        1. updated_datetime when self version published and changed
-        2. download_count when self version download_count changed
     """
-    package = instance.package
-    if instance.status == instance.STATUS.published \
-        and instance.tracker.changed():
-        package.updated_datetime = instance.updated_datetime
+        发布软件版本 同步package状态(status/released_datetime)
+    """
+    if getattr(instance, _sync_pkg_field, False) \
+        and instance.status == PackageVersion.STATUS.published:
+        from warehouse import tasks
 
-    if instance.tracker.has_changed('status') \
-        or instance.tracker.has_changed('download_count'):
-        aggregate = package.versions.published() \
-            .aggregate(download_count=models.Sum('download_count'))
-        total_count = aggregate.get('download_count', 0)
-        package.download_count = total_count if total_count else 0
+        version_released_dt = instance.released_datetime.astimezone()
+        now_dt = now().astimezone()
+        # 1. 在未来的时间发布 使用消息队列
+        if now_dt < version_released_dt:
+            tasks.publish_packageversion\
+                .apply_async((instance.pk,),
+                         eta=version_released_dt)
+            return
+        # 2. 在过去或当时发布 则及时处理
+        elif now_dt >= version_released_dt:
+            tasks.publish_packageversion(instance.pk)
+            return
 
-    if package.tracker.changed():
-        package.save()
-        pass
+        package = instance.package
+        if version_released_dt == package.released_datetime.astimezone():
+            return
+
 
 @receiver(pre_save, sender=PackageVersion)
 def package_version_pre_save(sender, instance, **kwargs):
@@ -996,8 +994,12 @@ def package_pre_save(sender, instance, **kwargs):
     except KeyError:
         pass
 
+    if changed and not instance.tracker.has_changed('updated_datetime'):
+        instance.updated_datetime = now().astimezone()
+
     if not instance.workspace:
         instance.workspace = ''
+
 
 @receiver(post_save, sender=Package)
 def package_post_save(sender, instance, created=False, **kwargs):
