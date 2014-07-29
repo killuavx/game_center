@@ -877,19 +877,41 @@ def package_version_pre_save(sender, instance, **kwargs):
             elif instance.tracker.has_changed('icon'):
                 return
 
+
+_sync_pkg_field = '_version_sync_package_published'
+
+@receiver(pre_save, sender=PackageVersion)
+def package_version_pre_save_check_publish_to_sync(sender, instance, **kwargs):
+    if instance.tracker.has_changed('status') \
+        and instance.status == PackageVersion.STATUS.published:
+        setattr(instance, _sync_pkg_field, True)
+
+
 @receiver(post_save, sender=PackageVersion)
 def package_version_post_save(sender, instance, **kwargs):
-    """package sync ...
-        1. updated_datetime when self version published and changed
-        2. download_count when self version download_count changed
     """
-    if (instance.tracker.has_changed('status') or
-            instance.tracker.has_changed('released_datetime'))\
+        发布软件版本 同步package状态(status/released_datetime)
+    """
+    if getattr(instance, _sync_pkg_field, False) \
         and instance.status == PackageVersion.STATUS.published:
         from warehouse import tasks
-        tasks.publish_packageversion\
-            .apply_async((instance.pk,),
-                         eta=instance.released_datetime)
+
+        version_released_dt = instance.released_datetime.astimezone()
+        now_dt = now().astimezone()
+        # 1. 在未来的时间发布 使用消息队列
+        if now_dt < version_released_dt:
+            tasks.publish_packageversion\
+                .apply_async((instance.pk,),
+                         eta=version_released_dt)
+            return
+        # 2. 在过去或当时发布 则及时处理
+        elif now_dt >= version_released_dt:
+            tasks.publish_packageversion(instance.pk)
+            return
+
+        package = instance.package
+        if version_released_dt == package.released_datetime.astimezone():
+            return
 
 
 @receiver(pre_save, sender=PackageVersion)
