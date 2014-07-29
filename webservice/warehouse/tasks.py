@@ -2,6 +2,8 @@
 from celery import app
 from django.db import models
 from toolkit.helpers import set_global_site_id, SITE_NOT_SET
+import warehouse.documents as doc
+from warehouse.models import Package, PackageVersion
 
 import logging
 logger = logging.getLogger('scripts')
@@ -18,7 +20,6 @@ TASK_ABORT_OBJECT_NOT_MATCH = 103
 
 
 def delete_package_data_center(package_id):
-    import warehouse.documents as doc
     handler = doc.SyncPackageDocumentHandler()
     handler.delete(package_id)
     return TASK_OK
@@ -29,7 +30,6 @@ def publish_packageversion(version_id):
     """
     新发布package version, 同步Package.released_datetime/status
     """
-    from warehouse.models import Package, PackageVersion
     try:
         version = PackageVersion.all_objects.get(pk=version_id)
     except PackageVersion.DoesNotExist:
@@ -59,16 +59,19 @@ def publish_packageversion(version_id):
 
     set_global_site_id(version.site_id)
     task_result = _task_process()
+
+    package = version.package
+    handler = doc.SyncPackageDocumentHandler()
     if task_result == TASK_OK:
-        import warehouse.documents as doc
-        package = version.package
-        handler = doc.SyncPackageDocumentHandler()
         try:
             handler.all_sync(package, version)
         except:
             task_result = TASK_ABORT
         else:
             task_result = TASK_OK
+    elif task_result == TASK_ABORT_OBJECT_NOT_MATCH:
+        delete_package_data_center(version.package_id)
+
 
     set_global_site_id(SITE_NOT_SET)
     return task_result
@@ -92,7 +95,6 @@ def unpublish_packageversion_from_published(version_id):
     """
     将已经发布的package version设置为未发布
     """
-    from warehouse.models import Package, PackageVersion
     try:
         version = PackageVersion.all_objects.get(pk=version_id)
     except PackageVersion.DoesNotExist:

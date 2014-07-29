@@ -855,7 +855,7 @@ class PackageVersionScreenshot(models.Model):
         )
 
 
-from django.db.models.signals import post_save, pre_save, m2m_changed
+from django.db.models.signals import post_save, pre_save, m2m_changed, pre_delete, post_delete
 from django.dispatch import receiver
 
 
@@ -930,8 +930,10 @@ _sync_pkg_field = '_version_sync_package_published'
 
 @receiver(pre_save, sender=PackageVersion)
 def package_version_pre_save_check_publish_to_sync(sender, instance, **kwargs):
-    if instance.tracker.has_changed('status') \
-        and instance.status == PackageVersion.STATUS.published:
+    # 状态更改 或者发布时间更改至未来时间
+    if instance.tracker.has_changed('status') or \
+            (instance.status == PackageVersion.STATUS.published
+             and instance.tracker.has_changed('released_datetime')):
         setattr(instance, _sync_pkg_field, True)
 
 
@@ -940,26 +942,60 @@ def package_version_post_save(sender, instance, **kwargs):
     """
         发布软件版本 同步package状态(status/released_datetime)
     """
-    if getattr(instance, _sync_pkg_field, False) \
-        and instance.status == PackageVersion.STATUS.published:
+    if getattr(instance, _sync_pkg_field, False):
         from warehouse import tasks
-
-        version_released_dt = instance.released_datetime.astimezone()
-        now_dt = now().astimezone()
-        # 1. 在未来的时间发布 使用消息队列
-        if now_dt < version_released_dt:
-            tasks.publish_packageversion\
-                .apply_async((instance.pk,),
-                         eta=version_released_dt)
-            return
-        # 2. 在过去或当时发布 则及时处理
-        elif now_dt >= version_released_dt:
-            tasks.publish_packageversion.delay(instance.pk)
-            return
-
         package = instance.package
-        if version_released_dt == package.released_datetime.astimezone():
-            return
+        try:
+            latest_published = package.versions.latest_published(released_hourly=False)
+        except ObjectDoesNotExist:
+            # 没有最后可发布版本(未到发布时间) 清除热数据
+            tasks.delete_package_data_center(package.pk)
+
+        if instance.status == PackageVersion.STATUS.published:
+            version_released_dt = instance.released_datetime.astimezone()
+            now_dt = now().astimezone()
+
+            # 1. 在过去或当时发布 则及时处理
+            if now_dt >= version_released_dt:
+                # 因为当前线程保存数据至数据库耗时比 后台执行发布task.publish_packageversion慢
+                # countdown 10s保证数据状态同步
+                tasks.publish_packageversion.apply_async((instance.pk,),
+                                                         countdown=10)
+                return
+
+            # 2. 在未来的时间发布 使用消息队列
+            elif now_dt < version_released_dt:
+                # 在未来发布时间基础上加10秒，保证数据状态同步
+                # 原因同上
+                tasks.publish_packageversion \
+                    .apply_async((instance.pk,),
+                                 eta=version_released_dt+datetime.timedelta(seconds=10))
+                return
+
+
+@receiver(pre_delete, sender=PackageVersion)
+def package_version_pre_delete(sender, instance, **kwargs):
+    setattr(instance, '_delete_version_pk', instance.package.pk)
+    setattr(instance, '_package_pk', instance.package.pk)
+
+
+@receiver(post_delete, sender=PackageVersion)
+def package_version_post_delete(sender, instance, **kwargs):
+    #pk = getattr(instance, '_delete_version_pk', None)
+    pkg_pk = getattr(instance, '_package_pk', None)
+    from warehouse import tasks
+    try:
+        latest_published = instance.package.versions.latest_published(released_hourly=False)
+        released_dt = latest_published.released_datetime.astimezone()
+        now_dt = now().astimezone()
+        if released_dt > now_dt:
+            eta = released_dt + datetime.timedelta(seconds=10)
+        else:
+            eta = now_dt + datetime.timedelta(seconds=10)
+        tasks.publish_packageversion.apply_async((latest_published.pk,), eta=eta)
+
+    except ObjectDoesNotExist:
+        tasks.delete_package_data_center(pkg_pk)
 
 
 @receiver(pre_save, sender=PackageVersion)
@@ -1006,6 +1042,24 @@ def package_post_save(sender, instance, created=False, **kwargs):
     if created:
         instance.workspace = package_workspace_path(instance)
         instance.save()
+
+    if instance.status != Package.STATUS.published:
+        from warehouse.tasks import delete_package_data_center
+        delete_package_data_center(instance.pk)
+
+
+@receiver(pre_delete, sender=Package)
+def package_pre_delete(sender, instance, **kwargs):
+    setattr(instance, '_delete_pk', instance.pk)
+
+
+@receiver(post_delete, sender=Package)
+def package_post_delete(sender, instance, **kwargs):
+    pk = getattr(instance, '_delete_pk', None)
+    from warehouse.tasks import delete_package_data_center
+    delete_package_data_center(pk)
+
+
 
 @receiver(pre_save, sender=Author)
 def author_pre_save(sender, instance, **kwargs):
