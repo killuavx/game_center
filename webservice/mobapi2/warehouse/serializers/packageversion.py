@@ -312,6 +312,12 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
     def get_supported_languages(self, obj):
         return get_packageversion_supported_languages(obj)
 
+    tags = serializers.SerializerMethodField('get_tags')
+    def get_tags(self, obj):
+        if not obj.tags_text:
+            return list()
+        return obj.tags_text.split()
+
     class Meta:
         model = PackageVersion
         fields = ('url',
@@ -332,6 +338,7 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
                   'summary',
                   'description',
                   'star',
+                  'tags',
                   'stars_good_rate',
                   'stars_medium_rate',
                   'stars_low_rate',
@@ -426,6 +433,8 @@ class BasePackageVersionSummarySerializer(PackageVersionRelatedPackageMixin,
     versions_url = serializers.SerializerMethodField('get_versions_url')
 
     version_count = serializers.SerializerMethodField('get_version_count')
+
+    tags = serializers.SerializerMethodField('get_tags')
 
     star = serializers.SerializerMethodField('get_star')
     def get_star(self, obj):

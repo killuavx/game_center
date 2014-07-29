@@ -199,8 +199,8 @@ INTERNAL_APPS = [
     'url_tools',
     'django_user_agents',
     #'memoize',
-    #'import_export',
     'djcelery',
+    'import_export',
 ]
 
 EXTENDAL_APPS = [
@@ -218,7 +218,7 @@ EXTENDAL_APPS = [
     'ranking',
     'mobapi2',
     'crawler',
-    #'activity',
+    'activity',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 

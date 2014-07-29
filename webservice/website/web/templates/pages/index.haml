@@ -3,7 +3,7 @@
 
 -block main
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}
-  {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}
+  {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT' as TEMPLATE_CACHE_TIMEOUT %}{% is_site_android as is_android %}{% is_site_ios as is_ios %}
   {% cache TEMPLATE_CACHE_TIMEOUT product_web_home request.get_host request.path_info %}
   / START Banner
   .rel.ovh.banner
@@ -30,9 +30,14 @@
       / START 首发破解
       .l.pt20.hot-news
         {% settings_value "GC_WEB_HOME_T1_TOPIC_SLUG" as R1C2P_TOPIC_SLUG %}
-        {% cache CACHE_TIMEOUT_HOURS product_web_home_crack request.get_host R1C2P_TOPIC_SLUG %}
-        {% include_widget WebHomeTopicalPackageListWidget slug=R1C2P_TOPIC_SLUG per_page=6 template='pages/widgets/home/r1c2-package-panel.haml'%}
-        {% endcache %}
+        {% if is_android %}
+        {% cache CACHE_TIMEOUT_HOURS product_web_home_crack request.get_host 'web-home-first-crack' %}
+        {% include_widget WebHomeTopicalPackageListWidget slug='web-home-first-crack' per_page=6 template='pages/widgets/home/r1c2-package-panel.haml'%}
+        {% endcache %}{% endif %}
+        {% if is_ios %}
+        {% cache CACHE_TIMEOUT_HOURS product_web_home_crack request.get_host 'paying' %}
+        {% include_widget WebHomeTopicalPackageListWidget slug='paying' per_page=6 template='pages/widgets/home/r1c2-package-panel.haml'%}
+        {% endcache %}{% endif %}
       / END 首发破解
 
       .l.abs.pt20.latest-release.btn-s-box
@@ -85,7 +90,6 @@
       / right
   / END game 行3
 
-  {% is_site_android as is_android %}{% is_site_ios as is_ios %}
 
   {% cache CACHE_TIMEOUT_DAYS product_web_home_a4a5_t3 request.get_host %}
   {% if is_android %}

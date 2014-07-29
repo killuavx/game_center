@@ -1,15 +1,10 @@
 /*虫虫助手下载*/
 document.writeln("<figcaption class=\"cc-down-tip\">");
 document.writeln("	<div class=\"p10\" onclick=\"location=\'http://android.ccplay.com.cn/download/client/\'\">");
-document.writeln("          <img src=\"http://static.ccplay.com.cn/static/common/img/favicon.png\" class=\"l tip-logo\"/>");
-document.writeln("          <div class=\"l ml10 tip-text\">");
-document.writeln("              <h2>虫虫助手</h2>");
-document.writeln("              <p>免费玩精品</p>");
-document.writeln("          </div>");
-document.writeln("          <img src=\"http://static.ccplay.com.cn/static/android_mobile/img/down.png\" class=\"l ml20 mt10 tip-down\"/>");
+document.writeln("          <img src=\"http://static.ccplay.com.cn/static/common/img/cc-down-tip.png\" class=\"l tip-logo\"/>");
 document.writeln("          <div class=\"fix\"></div>");
 document.writeln("    </div>");
-document.writeln("    <div class=\"r tip-close-box\">");
+document.writeln("    <div class=\"tip-close-box\">");
 document.writeln("    	<img src=\"http://static.ccplay.com.cn/static/android_mobile/img/browsers_ad_close_gray.png\" class=\"tip-close\"/>");
 document.writeln("    </div>    ");
 document.writeln("</figcaption>");

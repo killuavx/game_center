@@ -83,7 +83,13 @@ class PackageLookupConstructor(constructors.DefaultKeyConstructor):
     package = PackageLookupKeyBit()
 
 
-class UpdatedAtKeyBit(bits.KeyBitBase):
+class KeyBitFlushKeyMixin(object):
+
+    def flush(self):
+        cache.delete(self.get_key())
+
+
+class UpdatedAtKeyBit(bits.KeyBitBase, KeyBitFlushKeyMixin):
 
     content_type = 'default'
 
@@ -111,7 +117,7 @@ class UpdatedAtKeyBit(bits.KeyBitBase):
         return force_text(value)
 
 
-class CommentUpdatedAtKeyBit(bits.QueryParamsKeyBit):
+class CommentUpdatedAtKeyBit(bits.QueryParamsKeyBit, KeyBitFlushKeyMixin):
 
     target = 'comment'
 
@@ -158,15 +164,67 @@ def update_at_key_constructor(key_constructor,
                               content_type='default',
                               timeout=None,
                               hourly=False,
+                              update_at_keybit=UpdatedAtKeyBit
                               ):
 
     class _UpdatedAtKeyBitKeyConstructor(key_constructor):
 
-        updated_at = UpdatedAtKeyBit(content_type=content_type,
-                                     timeout=timeout,
-                                     hourly=hourly)
+        updated_at = update_at_keybit(content_type=content_type,
+                                      timeout=timeout,
+                                      hourly=hourly)
 
     return _UpdatedAtKeyBitKeyConstructor
+
+
+class LookupObjectUpdatedAtKeyBit(UpdatedAtKeyBit):
+
+    pk = None
+
+    def __init__(self, pk=None, *args, **kwargs):
+        self.pk = pk if pk else None
+        super(LookupObjectUpdatedAtKeyBit, self).__init__(*args, **kwargs)
+
+    def get_key(self):
+        _k = super(LookupObjectUpdatedAtKeyBit, self).get_key()
+        return "%s.%s" %(_k, self.pk)
+
+    def get_data(self, params, view_instance, view_method, request, args, kwargs):
+        self.pk = view_instance.kwargs[view_instance.lookup_field]
+        return super(LookupObjectUpdatedAtKeyBit, self).get_data(params=params,
+                                                                 view_instance=view_instance,
+                                                                 view_method=view_method,
+                                                                 request=request,
+                                                                 args=args,
+                                                                 kwargs=kwargs)
+
+
+class UserUpdatedAtKeyBit(UpdatedAtKeyBit):
+
+    pk = None
+
+    view_use_kwargs_param = None
+
+    def __init__(self, pk=None, use_kwargs_param=None, *args, **kwargs):
+        self.pk = pk if pk else None
+        self.view_use_kwargs_param = use_kwargs_param if use_kwargs_param else 'user'
+        super(UserUpdatedAtKeyBit, self).__init__(*args, **kwargs)
+
+    def get_key(self):
+        _k = super(UserUpdatedAtKeyBit, self).get_key()
+        key = "%s.user:%s" %(_k, self.pk)
+        return key
+
+    def get_data(self, params, view_instance, view_method, request, args, kwargs):
+        if request.user and request.user.is_authenticated() and view_instance.kwargs.get(self.view_use_kwargs_param, False):
+            self.pk = request.user.pk
+        else:
+            self.pk = None
+        return super(UserUpdatedAtKeyBit, self).get_data(params=params,
+                                                         view_instance=view_instance,
+                                                         view_method=view_method,
+                                                         request=request,
+                                                         args=args,
+                                                         kwargs=kwargs)
 
 
 class IpKeyBit(bits.RequestMetaKeyBit):

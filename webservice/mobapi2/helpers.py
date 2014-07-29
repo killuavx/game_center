@@ -194,6 +194,13 @@ class PackageDetailApiUrlEncode(BaseWarehouseApiUrlEncode):
         return path
 
 
+class PackageVersionDetailApiUrlEncode(PackageDetailApiUrlEncode):
+
+    viewname = 'packageversion-detail'
+
+    pk = None
+
+
 def get_category_packages_url(category, ordering=None, router=None, request=None):
     if ordering is None:
         ordering = '-released_datetime'

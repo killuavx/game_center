@@ -23,5 +23,5 @@ class PackageSearchRestFilter(filters.SearchFilter):
         return self.convert_queryset(orm_queryset=queryset, search_queryset=sqs)
 
     def convert_queryset(self, orm_queryset, search_queryset):
-        return [result.object for result in search_queryset]
+        return search_queryset.values_list('object', flat=True)
 

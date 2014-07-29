@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import filters
 from django.http import Http404
 from taxonomy.models import Category
+from searcher.searchers import SearchException, PackageSearcher
 from searcher.search_filters import PackageSearchRestFilter as SolrSearchFilter
 
 
@@ -12,6 +13,13 @@ class SphinxSearchFilter(filters.SearchFilter):
 
 class RelatedPackageSearchFilter(filters.BaseFilterBackend):
 
+    search_max_items = 30
+
+    def get_search_filter(self, request, view, terms):
+        search_fields = ('tags_text',)
+        search_ordering = ('-released_datetime', )
+        return PackageSearcher(search_fields, terms, search_ordering)
+
     def filter_queryset(self, request, queryset, view):
         if not hasattr(view, 'object') or not view.object:
             return queryset
@@ -20,13 +28,44 @@ class RelatedPackageSearchFilter(filters.BaseFilterBackend):
             or view.related_package_list is not None:
             return queryset
 
+        tags = view.object.tags_text.split()
+        try:
+            main_category = view.object.main_category
+            category_name = main_category.name
+        except:
+            category_name = None
+        searcher = self.get_search_filter(request, view, tags)
+        try:
+            sqs = searcher.search()
+            sqs = sqs.exclude(django_id=view.object.pk)
+            if category_name:
+                sqs = sqs.filter(categories=category_name)
+        except SearchException:
+            return queryset.none()
+
+        return self.convert_queryset(queryset, sqs)
+
+    def convert_queryset(self, orm_queryset, search_query):
+        return search_query.values_list('object', flat=True)
+
+
+class RelatedPackageSearchFilter2(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        if not hasattr(view, 'object') or not view.object:
+            return queryset
+
+        if not hasattr(view, 'related_package_list') \
+            or view.related_package_list is not None:
+            return queryset
+
+        main_category = view.object.main_category
         qs = queryset._clone()
-        qs = qs.exclude(pk=view.object.pk).filter(
-            categories__in=list(view.object.categories.published())).distinct()
-        tags = list(view.object.tags)
-        if len(tags) and qs.count():
+        qs = qs.exclude(pk=view.object.pk).filter(categories=main_category)
+        tags = view.object.tags_text.split()
+        if len(tags):
             return type(view.object).tagged.with_any(tags, qs)
-        return queryset.filter(pk=None)
+        return queryset.none()
 
 
 class PackageIdsFilter(filters.BaseFilterBackend):

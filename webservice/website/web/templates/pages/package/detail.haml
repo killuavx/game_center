@@ -1,7 +1,7 @@
 -extends "pages/page_web.html"
 -load mezzanine_tags cache widgets url_tags util_tags templatehelper_tags web_tags comment_star_tags
 {% block meta_title %}{{ version.subtitle|default:package.title }}{% endblock%}
-{% block meta_keywords %}{% unique_tags_text version.tags package.tags %}{% endblock %}
+{% block meta_keywords %}{% unique_tags_text version package %}{% endblock %}
 {% block meta_description %}{{ package.summary }} | {{ version.whatsnew }}{% endblock %}
 
 -block main

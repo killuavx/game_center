@@ -3,10 +3,12 @@
 .bg-red{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-t1-bg.jpg) repeat-x; height:404px}
 .banner{top:0; right:0%}
 #cc-s .bg-red .rel img{margin-left:-200px}
-.banner .text{text-indent:-9999999px; height:230px; width:480px !important}
-.text-1{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-1.png) no-repeat right top}
-.text-2{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-2.png) no-repeat right top}
-.text-3{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-3.png) no-repeat right top}
+.banner .text{height:230px; width:480px !important; position:relative}
+.banner .text span{position:absolute; font-size:16px; color:#fff; right:12px; top:25px}
+.text-box h1,.text-box p{text-indent:-99999px}
+.text-1{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-1.png?v=0729) no-repeat right top}
+.text-2{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-2.png?v=0729) no-repeat right top}
+.text-3{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-3.png?v=0729) no-repeat right top}
 #cc-l .banner{right:70px}
 #cc-l .banner .text{background-position:left top}
 
