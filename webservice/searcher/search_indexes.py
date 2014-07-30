@@ -146,7 +146,9 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
     def _prepare_summary(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
         prepare_data['title'] = latest_version.subtitle or obj.title
+        prepare_data['title'] = prepare_data['title'].strip()
         prepare_data['summary'] = latest_version.summary or obj.summary
+        prepare_data['summary'] = prepare_data['summary'].strip()
 
     def _prepare_latest_version(self, prepare_data, obj):
         latest_version = self._latest_version(obj)

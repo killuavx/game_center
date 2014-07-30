@@ -4,6 +4,7 @@ from django.db import models
 from toolkit.helpers import set_global_site_id, SITE_NOT_SET
 import warehouse.documents as doc
 from warehouse.models import Package, PackageVersion
+from searcher.search_indexes import PackageSearchIndex
 
 import logging
 logger = logging.getLogger('scripts')
@@ -22,6 +23,12 @@ TASK_ABORT_OBJECT_NOT_MATCH = 103
 def delete_package_data_center(package_id):
     handler = doc.SyncPackageDocumentHandler()
     handler.delete(package_id)
+    try:
+        psi = PackageSearchIndex()
+        package = Package.all_objects.get(pk=package_id)
+        psi.remove_object(package)
+    except:
+        pass
     return TASK_OK
 
 
@@ -60,18 +67,20 @@ def publish_packageversion(version_id):
     set_global_site_id(version.site_id)
     task_result = _task_process()
 
+
     package = version.package
+    search_index = PackageSearchIndex()
     handler = doc.SyncPackageDocumentHandler()
     if task_result == TASK_OK:
         try:
             handler.all_sync(package, version)
+            search_index.update_object(package)
         except:
             task_result = TASK_ABORT
         else:
             task_result = TASK_OK
     elif task_result == TASK_ABORT_OBJECT_NOT_MATCH:
         delete_package_data_center(version.package_id)
-
 
     set_global_site_id(SITE_NOT_SET)
     return task_result
