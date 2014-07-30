@@ -945,15 +945,29 @@ def package_version_post_save(sender, instance, **kwargs):
     if getattr(instance, _sync_pkg_field, False):
         from warehouse import tasks
         package = instance.package
+        now_dt = now().astimezone()
         try:
             latest_published = package.versions.latest_published(released_hourly=False)
+
+            # 当前最后可发布版本,不是刚保存的这个版本(instance)则重置最后发布版本
+            # 使得热数据重置为最后可发布版本
+            if latest_published.pk != instance.pk:
+                latest_published_released_dt = latest_published.released_datetime.astimezone()
+
+                if now_dt >= latest_published_released_dt:
+                    tasks.publish_packageversion.apply_async((latest_published.pk),
+                                                             countdown=10)
+                elif now_dt < latest_published_released_dt:
+                    tasks.publish_packageversion\
+                        .apply_async((latest_published.pk),
+                                     eta=latest_published_released_dt+datetime.timedelta(seconds=10))
+
         except ObjectDoesNotExist:
             # 没有最后可发布版本(未到发布时间) 清除热数据
             tasks.delete_package_data_center(package.pk)
 
         if instance.status == PackageVersion.STATUS.published:
             version_released_dt = instance.released_datetime.astimezone()
-            now_dt = now().astimezone()
 
             # 1. 在过去或当时发布 则及时处理
             if now_dt >= version_released_dt:
