@@ -955,11 +955,11 @@ def package_version_post_save(sender, instance, **kwargs):
                 latest_published_released_dt = latest_published.released_datetime.astimezone()
 
                 if now_dt >= latest_published_released_dt:
-                    tasks.publish_packageversion.apply_async((latest_published.pk),
+                    tasks.publish_packageversion.apply_async((latest_published.pk, ),
                                                              countdown=10)
                 elif now_dt < latest_published_released_dt:
                     tasks.publish_packageversion\
-                        .apply_async((latest_published.pk),
+                        .apply_async((latest_published.pk, ),
                                      eta=latest_published_released_dt+datetime.timedelta(seconds=10))
 
         except ObjectDoesNotExist:
