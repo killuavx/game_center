@@ -45,14 +45,22 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
 
     def prepare(self, obj):
         prepare_data = super(PackageSearchIndex, self).prepare(obj)
-        set_global_site_id(SITE_DISABLE)
 
-        self._prepare_platform(prepare_data, obj)
-        self._prepare_full_categories(prepare_data, obj)
-        self._prepare_all_topics(prepare_data, obj)
+        try:
+            set_global_site_id(obj.site_id)
+            self._prepare_platform(prepare_data, obj)
+            self._prepare_summary(prepare_data, obj)
+            self._prepare_latest_version(prepare_data, obj)
+            self._prepare_images(prepare_data, obj)
+            self._prepare_download(prepare_data, obj)
+            self._prepare_tags(prepare_data, obj)
+            self._prepare_full_categories(prepare_data, obj)
+            self._prepare_all_topics(prepare_data, obj)
+        except:
+            raise
+        finally:
+            set_global_site_id(SITE_NOT_SET)
 
-
-        set_global_site_id(SITE_NOT_SET)
         return prepare_data
 
     platform = indexes.CharField(default='android')
@@ -63,13 +71,13 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
         if obj.is_ios:
             prepare_data['platform'] = obj.PLATFORM_IOS
 
-    root_category_id = indexes.IntegerField(weight=10)
-    root_category_slug = indexes.CharField(weight=10)
-    root_category_name = indexes.CharField(weight=10)
+    root_category_id = indexes.IntegerField(default=0)
+    root_category_slug = indexes.CharField(weight=10, default='')
+    root_category_name = indexes.CharField(weight=10, default='')
 
-    primary_category_id = indexes.IntegerField(weight=10)
-    primary_category_name = indexes.CharField(weight=10)
-    primary_category_slug = indexes.CharField(weight=10)
+    primary_category_id = indexes.IntegerField(default=0)
+    primary_category_name = indexes.CharField(weight=10, default='')
+    primary_category_slug = indexes.CharField(weight=10, default='')
 
     main_categories = indexes.MultiValueField()
 
@@ -78,12 +86,18 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
     category_slugs = indexes.MultiValueField(weight=10)
 
     def _prepare_full_categories(self, prepare_data, obj):
-        prepare_data['primary_category_id'] = obj.main_category.pk
-        prepare_data['primary_category_name'] = obj.main_category.name
-        prepare_data['primary_category_slug'] = obj.main_category.slug
-        prepare_data['root_category_id'] = obj.root_category.pk
-        prepare_data['root_category_name'] = obj.root_category.name
-        prepare_data['root_category_slug'] = obj.root_category.slug
+        try:
+            prepare_data['primary_category_id'] = obj.main_category.pk
+            prepare_data['primary_category_name'] = obj.main_category.name
+            prepare_data['primary_category_slug'] = obj.main_category.slug
+        except:
+            pass
+        try:
+            prepare_data['root_category_id'] = obj.root_category.pk
+            prepare_data['root_category_name'] = obj.root_category.name
+            prepare_data['root_category_slug'] = obj.root_category.slug
+        except:
+            pass
 
         cat_pools = set()
         main_categories = []
@@ -105,7 +119,6 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
         prepare_data['category_ids'] = category_ids
         prepare_data['category_slugs'] = category_slugs
 
-
     topics = indexes.MultiValueField(weight=10)
     topic_slugs = indexes.MultiValueField(weight=10)
     topic_ids = indexes.MultiValueField(weight=10)
@@ -122,43 +135,39 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
         prepare_data['topic_ids'] = topic_ids
         prepare_data['topic_slugs'] = topic_slugs
 
-    latest_version_id = indexes.IntegerField(weight=5)
+    latest_version_id = indexes.IntegerField()
 
-    version_name = indexes.CharField(weight=20)
+    version_name = indexes.CharField(weight=20, indexed=False)
 
-    version_code = indexes.IntegerField(weight=20)
+    version_code = indexes.IntegerField(default=0)
 
-    summary = indexes.CharField(weight=10)
-
-    description = indexes.CharField(weight=10)
-
-    whatsnew = indexes.CharField(weight=10)
+    summary = indexes.CharField(weight=10, default='')
 
     def _prepare_summary(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
-        prepare_data['latest_version_id'] = latest_version.pk
         prepare_data['title'] = latest_version.subtitle or obj.title
         prepare_data['summary'] = latest_version.summary or obj.summary
-        prepare_data['description'] = latest_version.description or obj.description
 
     def _prepare_latest_version(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
         prepare_data['latest_version_id'] = latest_version.pk
         prepare_data['version_name'] = latest_version.version_name
         prepare_data['version_code'] = latest_version.version_code
-        prepare_data['whatsnew'] = latest_version.whatsnew
 
-    download_url = indexes.CharField(indexed=False)
-    static_download_url = indexes.CharField(indexed=False)
-    download_size = indexes.IntegerField(indexed=False)
-    download_count = indexes.IntegerField(indexed=False)
-    total_download_count = indexes.IntegerField(indexed=False)
+    download_url = indexes.CharField(indexed=False, default='')
+    static_download_url = indexes.CharField(indexed=False, default='')
+    download_size = indexes.IntegerField(indexed=False, default=0)
+    download_count = indexes.IntegerField(indexed=False, default=0)
+    total_download_count = indexes.IntegerField(indexed=False, default=0)
 
     def _prepare_download(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
         dw_url = latest_version.get_download_url(entrytype=None)
-        prepare_data['download_url'] = self._site_build_absolute_uri(obj.site_id, dw_url)
-        prepare_data['static_download_url'] = latest_version.get_download_url(entrytype=None, is_dynamic=True)
+        try:
+            prepare_data['download_url'] = self._site_build_absolute_uri(obj.site_id, dw_url)
+            prepare_data['static_download_url'] = latest_version.get_download_url(entrytype=None, is_dynamic=False)
+        except:
+            pass
         prepare_data['download_size'] = latest_version.get_download_size()
         prepare_data['download_count'] = latest_version.download_count
         prepare_data['total_download_count'] = obj.download_count
@@ -166,11 +175,22 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
     def _site_build_absolute_uri(self, site_id, path):
         return "http://%s%s" % (get_global_site(site_id).domain, path)
 
-    #icon_datas = indexes.CharField(indexed=False)
-    #cover_datas = indexes.CharField(indexed=False)
+    icon_small = indexes.CharField(indexed=False, default='')
+    icon_large = indexes.CharField(indexed=False, default='')
+    icon_middle = indexes.CharField(indexed=False, default='')
+    icon_xlarge = indexes.CharField(indexed=False, default='')
+
+    cover_small = indexes.CharField(indexed=False, default='')
+    cover_large = indexes.CharField(indexed=False, default='')
+    cover_middle = indexes.CharField(indexed=False, default='')
 
     def _prepare_images(self, prepare_data, obj):
-        pass
+        latest_version = self._latest_version(obj)
+        if latest_version.icon:
+            fetch_image_field_urls(prepare_data, 'icon', latest_version.icon, icon_sizes_alias)
+
+        if latest_version.cover:
+            fetch_image_field_urls(prepare_data, 'cover', latest_version.cover, cover_sizes_alias)
 
     def _prepare_tags(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
@@ -182,4 +202,11 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
             obj._latest_version = obj.versions.latest_published()
         return obj._latest_version
 
+
+def fetch_image_field_urls(images, prefix, field, sizes_alias):
+    for sa in sizes_alias:
+        try:
+            images["%s_%s" %(prefix, sa)] = field[sa].url
+        except:
+            pass
 
