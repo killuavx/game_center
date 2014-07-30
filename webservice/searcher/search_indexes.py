@@ -187,10 +187,10 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
     def _prepare_images(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
         if latest_version.icon:
-            fetch_image_field_urls(prepare_data, 'icon', latest_version.icon, icon_sizes_alias)
+            self._fetch_image_field_urls(prepare_data, 'icon', latest_version.icon, icon_sizes_alias)
 
         if latest_version.cover:
-            fetch_image_field_urls(prepare_data, 'cover', latest_version.cover, cover_sizes_alias)
+            self._fetch_image_field_urls(prepare_data, 'cover', latest_version.cover, cover_sizes_alias)
 
     def _prepare_tags(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
@@ -202,11 +202,13 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
             obj._latest_version = obj.versions.latest_published()
         return obj._latest_version
 
-
-def fetch_image_field_urls(images, prefix, field, sizes_alias):
-    for sa in sizes_alias:
-        try:
-            images["%s_%s" %(prefix, sa)] = field[sa].url
-        except:
-            pass
+    def _fetch_image_field_urls(self, images, prefix, field, sizes_alias):
+        for sa in sizes_alias:
+            key = "%s_%s" %(prefix, sa)
+            if not hasattr(self, key):
+                continue
+            try:
+                images[key] = field[sa].url
+            except:
+                pass
 
