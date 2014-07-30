@@ -220,6 +220,8 @@
 
     <field name="download_count" type="long" indexed="false" stored="true" multiValued="false" />
 
+    <field name="star" type="float" indexed="true" stored="true" multiValued="false" />
+
     <field name="icon_small" type="string" indexed="false" stored="true" multiValued="false" />
     <field name="icon_middle" type="string" indexed="false" stored="true" multiValued="false" />
     <field name="icon_large" type="string" indexed="false" stored="true" multiValued="false" />

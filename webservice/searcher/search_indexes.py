@@ -141,6 +141,8 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
 
     version_code = indexes.IntegerField(default=0)
 
+    star = indexes.FloatField(default=0)
+
     summary = indexes.CharField(weight=10, default='')
 
     def _prepare_summary(self, prepare_data, obj):
@@ -155,6 +157,7 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
         prepare_data['latest_version_id'] = latest_version.pk
         prepare_data['version_name'] = latest_version.version_name
         prepare_data['version_code'] = latest_version.version_code
+        prepare_data['star'] = latest_version.stars_average
 
     download_url = indexes.CharField(indexed=False, default='')
     static_download_url = indexes.CharField(indexed=False, default='')
