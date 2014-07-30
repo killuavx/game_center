@@ -59,6 +59,7 @@ def publish_packageversion(version_id):
             # 3. 没有最后可发布版本
             return TASK_ABORT_OBJECT_NOT_MATCH
 
+        package.latest_version = version
         _sync_version_status(package, version, status=Package.STATUS.published)
         _sync_package_download_count(package)
         package.save()

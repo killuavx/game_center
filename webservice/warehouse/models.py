@@ -297,6 +297,11 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
         unique_together = (
             ('site', 'package_name',)
         )
+        index_together = (
+            ('site', 'id'),
+            ('site', 'status', ),
+            ('site', 'status', 'released_datetime'),
+        )
 
     title = models.CharField(
         verbose_name=_('package title'),
@@ -321,6 +326,12 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
         blank=True)
 
     author = models.ForeignKey(Author, related_name='packages')
+
+    latest_version = models.ForeignKey('PackageVersion',
+                                       null=True,
+                                       default=None,
+                                       db_index=True,
+                                       related_name='+')
 
     released_datetime = models.DateTimeField(
         verbose_name=_('released time'),
@@ -406,6 +417,9 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
                                       #   site_id=current_site_id,
                                       #),
                                       null=True, blank=True)
+
+    main_category_names = models.CharField(max_length=500, default='')
+
 
     @property
     def main_category(self):
@@ -545,6 +559,12 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
         verbose_name_plural = _("Package Versions")
         unique_together = (
             ('site', 'package', 'version_code'),
+        )
+        index_together = (
+            ('site', 'package', ),
+            ('site', 'id', ),
+            ('site', 'status', ),
+            ('site', 'status', 'released_datetime'),
         )
 
     icon = QiniuThumbnailerImageField(
@@ -871,6 +891,10 @@ def sync_pkg_cats(pkg):
     else:
         pkg.primary_category_id = None
         pkg.root_category_id = None
+
+    if main_categories:
+        main_category_names = [cat.name for cat in main_categories]
+        pkg.main_category_names = ",".join(main_category_names)
 
 
 @receiver(m2m_changed, sender=Package.categories.through)
