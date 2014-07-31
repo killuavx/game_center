@@ -315,6 +315,7 @@ class SyncPackageDocumentHandler(object):
         self.sync_download()
         self.sync_comments()
         self.sync_supporteds()
+        self.sync_version_detail()
         self.doc.save()
         return self.doc
 
@@ -458,6 +459,15 @@ class SyncPackageDocumentHandler(object):
             .values_list('code', flat=True))
         self.doc.supported_features = list(self.version.supported_features\
             .values_list('code', flat=True))
+
+    def sync_version_detail(self):
+        if self.version.is_ios:
+            iversion = self.version.as_ios
+            self.doc.is_free = iversion.is_free
+            self.doc.formatted_price = iversion.formatted_price
+            self.doc.support_ipad = iversion.support_ipad
+            self.doc.support_ipad = iversion.support_iphone
+            self.doc.support_idevices = iversion.support_alldevices
 
     def delete(self, package_id):
         try:

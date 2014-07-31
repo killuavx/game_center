@@ -10,7 +10,8 @@ screenshot_sizes_alias = settings.THUMBNAIL_ALIASES_SCREENSHOT.keys()
 CharField = indexes.CharField
 
 
-class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
+class PackageSearchIndex(indexes.SearchIndex,
+                         indexes.Indexable):
 
     text = indexes.CharField(document=True,
                              use_template=False)
@@ -26,9 +27,9 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
     package_name = indexes.CharField(model_attr='package_name',
                                      weight=20)
 
-    released_datetime = indexes.DateTimeField(model_attr='released_datetime')
+    released_datetime = indexes.DateTimeField()
 
-    updated_datetime = indexes.DateTimeField(model_attr='updated_datetime')
+    updated_datetime = indexes.DateTimeField()
 
     # ERROR:root:Error updating warehouse using package
     # TypeError: expected bytes, bytearray or buffer compatible object
@@ -51,6 +52,7 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
             self._prepare_platform(prepare_data, obj)
             self._prepare_summary(prepare_data, obj)
             self._prepare_latest_version(prepare_data, obj)
+            self._prepare_version_detail(prepare_data, obj)
             self._prepare_images(prepare_data, obj)
             self._prepare_download(prepare_data, obj)
             self._prepare_tags(prepare_data, obj)
@@ -158,12 +160,34 @@ class PackageSearchIndex(indexes.SearchIndex, indexes.Indexable):
         prepare_data['version_name'] = latest_version.version_name
         prepare_data['version_code'] = latest_version.version_code
         prepare_data['star'] = latest_version.stars_average
+        prepare_data['released_datetime'] = latest_version.released_datetime.astimezone()
+        prepare_data['updated_datetime'] = latest_version.updated_datetime.astimezone()
+
 
     download_url = indexes.CharField(indexed=False, default='')
     static_download_url = indexes.CharField(indexed=False, default='')
     download_size = indexes.IntegerField(indexed=False, default=0)
     download_count = indexes.IntegerField(indexed=False, default=0)
     total_download_count = indexes.IntegerField(indexed=False, default=0)
+
+    is_free = indexes.BooleanField(index_fieldname='is_free_b')
+    formatted_price = indexes.CharField(indexed=False,
+                                        index_fieldname='formatted_price_s',
+                                        default='free')
+
+    support_ipad = indexes.BooleanField(index_fieldname='support_ipad_b')
+    support_iphone = indexes.BooleanField(index_fieldname='support_iphone_b')
+    support_idevices = indexes.BooleanField(index_fieldname='support_idevices_b')
+
+    def _prepare_version_detail(self, prepare_data, obj):
+        latest_version = self._latest_version(obj)
+        if obj.is_ios:
+            iversion = latest_version.as_ios
+            prepare_data['is_free_b'] = iversion.is_free()
+            prepare_data['formatted_price_s'] = iversion.formatted_price
+            prepare_data['support_ipad_b'] = iversion.support_ipad
+            prepare_data['support_ipad_b'] = iversion.support_iphone
+            prepare_data['support_idevices_b'] = iversion.support_alldevices
 
     def _prepare_download(self, prepare_data, obj):
         latest_version = self._latest_version(obj)

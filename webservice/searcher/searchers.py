@@ -28,6 +28,8 @@ class BaseSearcher(object):
 
     search_ordering = ()
 
+    search_result_class = None
+
     def __init__(self, fields=None, terms=None, ordering=None):
         self.search_fields = fields if fields else self.search_fields
         self.search_terms = terms if terms else self.search_terms
@@ -62,7 +64,14 @@ class BaseSearcher(object):
         return sqs
 
     def get_search_qeuryset(self):
-        return SearchQuerySet(using=self.collection_name)
+        sqs = SearchQuerySet(using=self.collection_name)
+        search_result_class = self.get_search_result_class()
+        if search_result_class:
+            return sqs.result_class(search_result_class)
+        return sqs
+
+    def get_search_result_class(self):
+        return self.search_result_class
 
     def construct_search(self, field_name):
         if field_name.startswith('^'):
@@ -104,4 +113,7 @@ class PackageSearcher(BaseSearchCurrentSiteSearcher):
     )
     search_ordering = ('-released_datetime', )
 
+    def get_search_result_class(self):
+        from searcher.search_results import PackageSearchResult
+        return PackageSearchResult
 
