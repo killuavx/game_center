@@ -198,7 +198,7 @@ INTERNAL_APPS = [
     'django_widgets',
     'url_tools',
     'django_user_agents',
-    #'memoize',
+    'memoize',
     'djcelery',
     'import_export',
 ]

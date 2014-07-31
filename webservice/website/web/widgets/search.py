@@ -17,5 +17,5 @@ class WebSearchCategorySelectorWidget(ProductPropertyWidgetMixin,
                                       BaseCategorySelectorWidget,
                                       Widget):
 
-    def get_second_selectlist(self):
+    def get_second_selectlist(self, slugs=None):
         return list()
