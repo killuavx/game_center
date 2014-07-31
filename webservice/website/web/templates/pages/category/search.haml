@@ -17,7 +17,7 @@
     / cell
 
     .rel.cell-bk
-      {% cache CACHE_TIMEOUT_DAYS product_web_search_leftmenu request.get_host request.path_info c_cat %}
+      {% comment %}{% cache CACHE_TIMEOUT_DAYS product_web_search_leftmenu request.get_host request.path_info c_cat %}{% endcomment %}
       {% widget WebSearchCategorySelectorWidget root_category=root_category %}
       .l.left-list
         %ul.f14.left-nav
@@ -44,7 +44,7 @@
               = cat.name
               %span.r
       {% endwidget %}
-      {% endcache %}
+      {% comment %}{% endcache %}{% endcomment %}
 
       .l.btn-s-box.tj.p20.right-list
         -for search_item in items
