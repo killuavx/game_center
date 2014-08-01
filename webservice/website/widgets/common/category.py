@@ -4,7 +4,8 @@ from django.core.urlresolvers import reverse
 from taxonomy.models import Category, Topic, TopicalItem
 from warehouse.models import Author
 from toolkit.memoizes import orms_memoize, memoize
-from django.core import serializers
+from toolkit.helpers import get_global_site
+
 
 import re
 
@@ -109,10 +110,11 @@ class BaseCategorySelectorWidget(object):
         return catlist
 
     def get_category_selectlist(self, cat_id):
-        return self.get_cache_category_selectlist(cat_id)
+        cats = self.get_cache_category_selectlist(cat_id)
+        return cats
 
     @memoize(timeout=default_timeout)
-    def get_second_selectlist(self, slugs=None):
+    def get_second_selectlist(self, site_id=None, slugs=None):
         #slugs = slugs + ['ZH', 'EN']
         result = []
         for s in slugs:
@@ -127,8 +129,8 @@ class BaseCategorySelectorWidget(object):
                     result.append(dict(params=params, name='英文'))
             else:
                 try:
-                    topic = Topic.objects.get(slug=s)
-                except ObjectDoesNotExist:
+                    topic = Topic.objects.get(pk=s)
+                except Topic.DoesNotExist:
                     continue
                 params['topic'] = topic.pk
                 result.append(dict(params=params, name=topic.name))
@@ -146,7 +148,7 @@ class BaseCategorySelectorWidget(object):
         from mezzanine.conf import settings
         slug_text = getattr(settings, 'GC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS')
         slugs = list(filter(lambda x: x, slug_text.split(',')))
-        second_selectlist = self.get_second_selectlist(slugs)
+        second_selectlist = self.get_second_selectlist(get_global_site().pk, slugs)
 
         return dict(
             product=self.product,

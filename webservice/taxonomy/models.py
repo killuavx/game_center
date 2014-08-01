@@ -22,6 +22,7 @@ from toolkit.managers import CurrentSitePassThroughManager, CurrentSiteManager
 from toolkit.helpers import sync_status_from, current_site_id
 from toolkit.models import SiteRelated
 from toolkit.fields import MultiResourceField
+from toolkit.memoizes import orms_memoize
 
 slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
                                 'toolkit.helpers.slugify_unicode')
@@ -117,8 +118,30 @@ class CategoryQuerySet(QuerySet):
 
 CACHE_CATEGORIES = {}
 
+DEFAULT_TIMEOUT = 86400 * 7
 
-class CategoryManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
+
+class TaxonomyCacheMemoizerManagerMixin(object):
+
+    @orms_memoize(timeout=DEFAULT_TIMEOUT)
+    def cache_object_in_list(self, pk):
+        try:
+            return [self.get(pk=pk)]
+        except:
+            return []
+
+    def get_cache_by(self, pk):
+        try:
+            return self.cache_object_in_list(pk)[0]
+        except IndexError:
+            return None
+
+
+class CategoryManager(TreeManager,
+                      PassThroughManagerMixin,
+                      CurrentSiteManager,
+                      TaxonomyCacheMemoizerManagerMixin,
+                      ):
 
     def _cache_category(self, pk):
         global CACHE_CATEGORIES
@@ -126,8 +149,8 @@ class CategoryManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
             CACHE_CATEGORIES[pk] = self.get(pk=pk)
         return CACHE_CATEGORIES[pk]
 
-    def get_cache_category(self, pk):
-        return self._cache_category(pk)
+    def get_cache_category(self, cat):
+        return self.get_cache_by(cat)
 
 
 class AllCategoryManager(TreeManager, PassThroughManager):
@@ -239,7 +262,11 @@ class TopicQuerySet(QuerySet):
         return self.order_by('ordering')
 
 
-class TopicManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
+class TopicManager(TreeManager,
+                   PassThroughManagerMixin,
+                   CurrentSiteManager,
+                   TaxonomyCacheMemoizerManagerMixin,
+                   ):
     pass
 
 
