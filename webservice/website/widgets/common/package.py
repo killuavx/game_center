@@ -6,6 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 import six
 from website.widgets.common import filters
+from haystack.query import SearchQuerySet
+from toolkit.helpers import get_global_site
 
 
 class BasePackageListWidget(base.FilterWidgetMixin, base.BaseListWidget):
@@ -357,3 +359,146 @@ class BaseCategoryComplexPackageList(BasePackageListWidget):
                                                                      context=context,
                                                                      pagination=pagination)
         return data
+
+
+class SearchByCategoryFilterBackend(base.BaseWidgetFilterBackend):
+
+    filter_ignore = False
+
+    category_param = 'category'
+
+    category_id_param = 'category_id'
+
+    category_slug_param = 'category_slug'
+
+    def filter_queryset(self, request, queryset, widget):
+        category = getattr(widget, self.category_param, None)
+        category_id = getattr(widget, self.category_id_param, None)
+        category_slug = getattr(widget, self.category_slug_param, None)
+        if not category and not category_id and not category_slug:
+            if self.filter_ignore:
+                return queryset
+            else:
+                return queryset.none()
+
+        if category is not None:
+            if isinstance(category, int):
+                category_id = category
+            elif isinstance(category, str):
+                category_slug = category
+            else:
+                category_id = category.pk
+
+        if category_id:
+            return queryset.filter(category_ids=category_id)
+        elif category_slug:
+            return queryset.filter(category_slugs=category_slug)
+        else:
+            return queryset
+
+
+class SearchByTopicFilterBackend(base.BaseWidgetFilterBackend):
+
+    topic_param = 'topic'
+    topic_id_param = 'topic_id'
+    topic_slug_param = 'topic_slug'
+
+    filter_ignore = True
+
+    def filter_queryset(self, request, queryset, widget):
+        topic = getattr(widget, self.topic_param, None)
+        topic_id = getattr(widget, self.topic_id_param, None)
+        topic_slug = getattr(widget, self.topic_slug_param, None)
+        if not topic and not topic_slug and not topic_id:
+            if self.filter_ignore:
+                return queryset
+            else:
+                return queryset.none()
+
+        if topic is not None:
+            if isinstance(topic, int):
+                topic_id = topic
+            elif isinstance(topic, str):
+                topic_slug = topic
+            else:
+                topic_id = topic.pk
+
+        if topic_id:
+            return queryset.filter(topic_ids=topic_id)
+        elif topic_slug:
+            return queryset.filter(topic_slugs=topic_slug)
+        else:
+            return queryset
+
+
+class SearchOrderByFilterBackend(base.BaseWidgetFilterBackend):
+
+    def filter_queryset(self, request, queryset, widget):
+        ordering = getattr(widget, 'search_ordering')
+        if ordering is None:
+            return queryset
+        elif isinstance(ordering, str):
+            ordering = (ordering,)
+        qs = queryset.order_by(*ordering)
+        print(qs.query.__str__())
+        return qs
+
+
+class BaseCategoryComplexPackageBySearchList(base.FilterWidgetMixin, base.BaseListWidget):
+
+    search_ordering = ('-released_datetime', )
+
+    filter_backends = (
+        SearchByCategoryFilterBackend,
+        SearchByTopicFilterBackend,
+        SearchOrderByFilterBackend,
+    )
+
+    topic = None
+
+    topic_id = None
+
+    topic_slug = None
+
+    category = None
+
+    category_id = None
+
+    category_slug = None
+
+    lang = None
+
+    collection_name = 'package'
+
+    def setup_category(self, category=None, category_id=None, category_slug=None, **kwargs):
+        self.category = category
+        self.category_id = category_id
+        self.category_slug = category_slug
+
+    def setup_topic(self, topic=None, topic_id=None, topic_slug=None, **kwargs):
+        self.topic=topic
+        self.topic_id = topic_id
+        self.topic_slug = topic_slug if topic_slug != 'NONE' else topic_slug
+
+    def get_context(self, value=None, options=None, context=None, pagination=True):
+        self.setup_category(**options)
+        self.setup_topic(**options)
+        data = super(BaseCategoryComplexPackageBySearchList, self).get_context(value=value,
+                                                                               options=options,
+                                                                               context=context,
+                                                                               pagination=pagination)
+        return data
+
+    def get_list(self):
+        return self.filter_queryset(self.get_search_qeuryset())
+
+    def get_search_qeuryset(self):
+        sqs = SearchQuerySet(using=self.collection_name)
+        search_result_class = self.get_search_result_class()
+        if search_result_class:
+            return sqs.result_class(search_result_class)
+        return sqs
+
+    def get_search_result_class(self):
+        from searcher.search_results import PackageSearchResult
+        return PackageSearchResult

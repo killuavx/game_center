@@ -49,10 +49,10 @@
                     %span.r
       {% comment %}{% endcache %}{% endcomment %}
 
-      {% widget WebCategoryComplexPackageList category=category topic=topic lang=lang per_page=27 page=request.GET.page %}
+      {% widget WebCategoryComplexPackageBySearchList category=category topic=topic lang=lang per_page=27 page=request.GET.page %}
       .l.btn-s-box.tj.p20.right-list
-        -for package in items
-          {% package_box package %}
+        -for search_item in items
+          {% package_box2 search_item %}
         {% pagination items %}
       / right-list
       {% endwidget %}
