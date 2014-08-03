@@ -2,9 +2,8 @@
 from django.http import Http404
 from mezzanine.pages.page_processors import processor_for
 from taxonomy.models import Category, Topic
+from toolkit.helpers import get_global_site
 from django.core.exceptions import ObjectDoesNotExist
-from mezzanine.pages.page_processors import processor_for
-from taxonomy.models import Category, Topic
 from warehouse.models import Author
 
 __all__ = ['vendors_fill', 'category_fill', 'ranking_fill']
@@ -17,25 +16,20 @@ def category_fill(request, page):
     if page.slug.endswith('application'):
         cat_slug = 'application'
 
+    root = Category.all_objects.get_cache_by_slug(site_id=get_global_site().pk,
+                                                  slug=cat_slug)
     cat_pk = request.GET.get('category')
     category = None
     if cat_pk:
-        try:
-            category = Category.objects.get(pk=cat_pk)
-        except ObjectDoesNotExist:
-            pass
+        category = Category.objects.get_cache_by(cat_pk)
+    if not category:
+        category = root
 
     topic_pk = request.GET.get('topic')
     topic = None
     if topic_pk:
-        try:
-            topic = Topic.objects.get(pk=topic_pk)
-        except ObjectDoesNotExist:
-            pass
+        topic = Topic.objects.get_cache_by(topic_pk)
 
-    root = Category.objects.get(slug=cat_slug)
-    if not category:
-        category = root
     data = dict(
         category=category,
         topic=topic,
@@ -67,7 +61,7 @@ def ranking_fill(request, page):
         cat_slug = 'game'
     else:
         cat_slug = page.slug.split('/')[1]
-    category = Category.objects.get(slug=cat_slug)
+    category = Category.objects.get_cache_by_slug(get_global_site().pk, slug=cat_slug)
 
     return dict(
         category=category

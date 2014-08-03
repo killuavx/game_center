@@ -31,11 +31,13 @@
     %noscript
       %h1{:style => "font-size:100%;color:#e53333;display:block;text-align:center"} 由于您的浏览器禁用了javascript脚本，网页无法正常浏览!
   %body
+    {% cache 86400 product_web_topmenu request.get_host request.path_info %}
     {% block top_menu %}
     / 头部开始 head
     {% page_menu "pages/menus/web/header_platform.haml" %}
     / 头部结束 head
     {% endblock %}
+    {% endcache %}
 
     {% block main %}{% endblock %}
 

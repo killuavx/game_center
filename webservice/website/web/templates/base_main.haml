@@ -25,11 +25,13 @@
     {% compress js %}{% block extra_js_header %}{% endblock %}{% endcompress %}
     -block head_base
   %body
+    {% cache 86400 product_web_topmenu request.get_host request.path_info %}
     {% block top_menu %}
     / 头部开始 head
     {% include "pages/menus/web/header_product.haml" with logo_url='/' %}
     / 头部结束 head
     {% endblock %}
+    {% endcache %}
 
     {% block main %}{% endblock %}
 

@@ -110,8 +110,7 @@ class BaseCategorySelectorWidget(object):
         return catlist
 
     def get_category_selectlist(self, cat_id):
-        cats = self.get_cache_category_selectlist(cat_id)
-        return cats
+        return self.get_cache_category_selectlist(cat_id)
 
     @memoize(timeout=default_timeout)
     def get_second_selectlist(self, site_id=None, slugs=None):
@@ -128,9 +127,8 @@ class BaseCategorySelectorWidget(object):
                 if s == 'EN':
                     result.append(dict(params=params, name='英文'))
             else:
-                try:
-                    topic = Topic.objects.get(pk=s)
-                except Topic.DoesNotExist:
+                topic = Topic.objects.get_cache_by_slug(site_id=site_id, slug=s)
+                if not topic:
                     continue
                 params['topic'] = topic.pk
                 result.append(dict(params=params, name=topic.name))
@@ -148,7 +146,8 @@ class BaseCategorySelectorWidget(object):
         from mezzanine.conf import settings
         slug_text = getattr(settings, 'GC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS')
         slugs = list(filter(lambda x: x, slug_text.split(',')))
-        second_selectlist = self.get_second_selectlist(get_global_site().pk, slugs)
+        second_selectlist = self.get_second_selectlist(site_id=get_global_site().pk,
+                                                       slugs=slugs)
 
         return dict(
             product=self.product,

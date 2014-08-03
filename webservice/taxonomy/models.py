@@ -130,10 +130,23 @@ class TaxonomyCacheMemoizerManagerMixin(object):
         except:
             return []
 
-    def get_cache_by(self, pk):
+    def get_cache_by(self, pk=None):
         try:
             return self.cache_object_in_list(pk)[0]
         except IndexError:
+            return None
+
+    @orms_memoize(timeout=DEFAULT_TIMEOUT)
+    def cache_object_in_list_by_slug(self, site_id, slug):
+        try:
+            return [self.get(site_id=site_id, slug=slug)]
+        except Exception as e:
+            return []
+
+    def get_cache_by_slug(self, site_id, slug):
+        try:
+            return self.cache_object_in_list_by_slug(site_id, slug)[0]
+        except:
             return None
 
 
@@ -153,7 +166,10 @@ class CategoryManager(TreeManager,
         return self.get_cache_by(cat)
 
 
-class AllCategoryManager(TreeManager, PassThroughManager):
+class AllCategoryManager(TreeManager,
+                         PassThroughManager,
+                         TaxonomyCacheMemoizerManagerMixin,
+                         ):
     pass
 
 
@@ -170,6 +186,8 @@ class Category(urlmixin.CategoryAbsoluteUrlMixin,
     #_default_manager = AllCategoryManager.for_queryset_class(CategoryQuerySet)()
 
     objects = CategoryManager.for_queryset_class(CategoryQuerySet)()
+
+    all_objects = AllCategoryManager.for_queryset_class(CategoryQuerySet)()
 
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children')
@@ -270,9 +288,18 @@ class TopicManager(TreeManager,
     pass
 
 
+class AllTopicManager(TreeManager,
+                      PassThroughManager,
+                      TaxonomyCacheMemoizerManagerMixin,
+                      ):
+    pass
+
+
 class Topic(MPTTModel, Taxonomy, urlmixin.TopicAbsoluteUrlMixin):
 
     objects = TopicManager.for_queryset_class(TopicQuerySet)()
+
+    all_objects = AllTopicManager.for_queryset_class(TopicQuerySet)()
 
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children')
@@ -432,3 +459,6 @@ def topic_pre_save(sender, instance, **kwargs):
         instance.released_datetime = now()
 
 
+
+def taxonomy_get_cache_slug(model, site_id, slug):
+    pass
