@@ -416,7 +416,7 @@ class BaseCategoryComplexPackageBySearchListWidget(BasePackageBySearchListWidget
     def get_context(self, value=None, options=None, context=None, pagination=True):
         self.setup_category(**options)
         self.setup_topic(**options)
-        data = super(BaseCategoryComplexPackageBySearchList, self).get_context(value=value,
+        data = super(BaseCategoryComplexPackageBySearchListWidget, self).get_context(value=value,
                                                                                options=options,
                                                                                context=context,
                                                                                pagination=pagination)

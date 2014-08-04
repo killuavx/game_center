@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.utils.timezone import now, get_default_timezone
+from django.utils.timezone import now, get_default_timezone, make_aware
 from datetime import datetime, timedelta
 from dateutil import rrule
 from django_widgets import Widget
@@ -16,7 +16,7 @@ from . import base
 from toolkit.helpers import get_global_site
 
 
-__all__ = ['WebCrackTopBannersWidget', 'WebCrackTimeLinePanelWidget']
+__all__ = ['WebCrackTopBannersWidget', 'WebCrackTimeLinePanelWidget', 'WebCrackTimeLineBySearchPanelWidget']
 
 def _default_slug():
     return 'crack-game'
@@ -164,10 +164,11 @@ class SearchReleasedInDateFilterbackend(BaseWidgetFilterBackend):
 
         start_dt = datetime(year=dt.year,
                             month=dt.month,
-                            day=dt.day,
-                            tzinfo=get_default_timezone())
+                            day=dt.day)
+        start_dt = make_aware(start_dt, get_default_timezone())
         end_dt = start_dt + timedelta(days=1)
-        return queryset.filter(released_datetime__gte=start_dt, released_datetime__lt=end_dt)
+        return queryset.filter(released_datetime__gte=start_dt,
+                               released_datetime__lt=end_dt)
 
 
 from haystack.query import EmptySearchQuerySet
@@ -190,7 +191,7 @@ class BaseTimeLineBySearchPanelWidget(base.ProductPropertyWidgetMixin,
 
     latest_day_count = 4
 
-    max_timedelta_days = 15
+    max_timedelta_days = 30
 
     def get_title(self):
         return self.title
@@ -203,14 +204,14 @@ class BaseTimeLineBySearchPanelWidget(base.ProductPropertyWidgetMixin,
             et = now_dt
         end_dt = datetime(year=et.year,
                           month=et.month,
-                          day=et.day,
-                          tzinfo=get_default_timezone())
+                          day=et.day)
         start_dt = end_dt - timedelta(days=self.max_timedelta_days)
         dts = rrule.rrule(rrule.DAILY, dtstart=start_dt, until=end_dt)
         days = sorted(dts, reverse=True)
         _days = []
+        tzinfo=get_default_timezone()
         for d in days:
-            dt = d.astimezone()
+            dt = make_aware(d, tzinfo)
             _days.append(dict(
                 time_name=datesince(now_dt, dt),
                 dt=dt,
@@ -267,7 +268,7 @@ class BaseTimeLineBySearchPanelWidget(base.ProductPropertyWidgetMixin,
 
 class WebCrackTimeLineBySearchPanelWidget(BaseTimeLineBySearchPanelWidget):
 
-    title = '最新破解'
+    title = '首发破解'
 
     first_filter_backends = (SearchByCategoryFilterBackend, )
 
