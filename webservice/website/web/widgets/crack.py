@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 from django.utils.timezone import now, get_default_timezone
+from datetime import datetime, timedelta
+from dateutil import rrule
 from django_widgets import Widget
 from dateutil.relativedelta import relativedelta
 from website.widgets.common.promotion import BaseMultiAdvWidget
+from website.widgets.common.filters import SearchByCategoryFilterBackend, SearchOrderByFilterBackend
+from website.widgets.common.package import BasePackageBySearchListWidget
 from website.widgets.common.base import FilterWidgetMixin, BaseWidgetFilterBackend
 from website.widgets.common.filters import (
     CategorizedPackageFilterbackend,
     PackageReleasedOrderFilterBackend
     )
 from . import base
+from toolkit.helpers import get_global_site
 
 
 __all__ = ['WebCrackTopBannersWidget', 'WebCrackTimeLinePanelWidget']
@@ -150,6 +155,140 @@ class WebCrackTimeLinePanelWidget(base.ProductPropertyWidgetMixin,
         )
 
 
+class SearchReleasedInDateFilterbackend(BaseWidgetFilterBackend):
+
+    def filter_queryset(self, request, queryset, widget):
+        dt = getattr(widget, 'in_date')
+        if not dt:
+            return queryset
+
+        start_dt = datetime(year=dt.year,
+                            month=dt.month,
+                            day=dt.day,
+                            tzinfo=get_default_timezone())
+        end_dt = start_dt + timedelta(days=1)
+        return queryset.filter(released_datetime__gte=start_dt, released_datetime__lt=end_dt)
+
+
+from haystack.query import EmptySearchQuerySet
+
+
+class BaseTimeLineBySearchPanelWidget(base.ProductPropertyWidgetMixin,
+                                      BasePackageBySearchListWidget,
+                                      Widget):
+
+    title = None
+
+    filter_backends = ()
+
+    first_filter_backends = ()
+    second_filter_backends = (SearchReleasedInDateFilterbackend,
+                              SearchOrderByFilterBackend,)
+    search_ordering = ('-released_datetime', )
+
+    in_date = None
+
+    latest_day_count = 4
+
+    max_timedelta_days = 15
+
+    def get_title(self):
+        return self.title
+
+    def get_latest_days_by(self, queryset, now_dt):
+        try:
+            item = queryset.latest('released_datetime')
+            et = item.released_datetime
+        except:
+            et = now_dt
+        end_dt = datetime(year=et.year,
+                          month=et.month,
+                          day=et.day,
+                          tzinfo=get_default_timezone())
+        start_dt = end_dt - timedelta(days=self.max_timedelta_days)
+        dts = rrule.rrule(rrule.DAILY, dtstart=start_dt, until=end_dt)
+        days = sorted(dts, reverse=True)
+        _days = []
+        for d in days:
+            dt = d.astimezone()
+            _days.append(dict(
+                time_name=datesince(now_dt, dt),
+                dt=dt,
+                url=None))
+        return _days
+
+    def setup_options(self, context, options):
+        self.options = options
+        self.product = options.get('product')
+        if context:
+            self.request = context.get('request')
+        self.current_datetime = now().astimezone()
+
+    def fill_latest_one(self, result, grp):
+        result[-1]['time_name'] = '以前'
+
+    def query_group_packages(self, queryset, grp, result):
+        self.in_date = grp['dt']
+        packages = list(self.filter_queryset(queryset))
+        if not packages:
+            return False
+        result.append(dict(time_name=grp['time_name'],
+                           url=grp['url'],
+                           packages=packages))
+        return True
+
+    def get_context(self, value=None, options=dict(), context=None, **kwargs):
+        self.setup_options(context, options)
+
+        result = list()
+        queryset = self.get_list()
+        self.filter_backends = self.first_filter_backends
+        queryset = self.filter_queryset(queryset)
+
+        if not isinstance(queryset, EmptySearchQuerySet):
+            self.filter_backends = self.second_filter_backends
+            grp_count = 0
+            for grp in self.get_latest_days_by(queryset,
+                                               now_dt=self.current_datetime):
+                if not self.query_group_packages(queryset, grp, result):
+                    continue
+                grp_count += 1
+                if grp_count >= self.latest_day_count:
+                    self.fill_latest_one(result, grp)
+                    break
+
+        self.filter_backends = ()
+        return dict(
+            title=self.get_title(),
+            result=result,
+            product=self.product
+        )
+
+
+class WebCrackTimeLineBySearchPanelWidget(BaseTimeLineBySearchPanelWidget):
+
+    title = '最新破解'
+
+    first_filter_backends = (SearchByCategoryFilterBackend, )
+
+    category_slug = None
+
+    category = None
+
+    def setup_options(self, context, options):
+        super(WebCrackTimeLineBySearchPanelWidget, self).setup_options(context, options)
+        from taxonomy.models import Category
+        self.category_slug = _default_slug()
+        self.category = Category.objects.get_cache_by_slug(get_global_site().pk,
+                                                           self.category_slug)
+
+    def fill_latest_one(self, result, grp):
+        super(WebCrackTimeLineBySearchPanelWidget, self)\
+            .fill_latest_one(result, grp)
+        result[-1]['url'] = self.category\
+            .get_absolute_url_as(product=self.product)
+
+
 class WebLatestTopBannersWidget(BaseMultiAdvWidget,
                                 base.ProductPropertyWidgetMixin,
                                 Widget):
@@ -161,6 +300,13 @@ class WebLatestTopBannersWidget(BaseMultiAdvWidget,
         return super(WebLatestTopBannersWidget, self).get_context(value=value,
                                                                   options=options,
                                                                   context=context)
+
+
+class WebLatestTimeLineBySearchPanelWidget(BaseTimeLineBySearchPanelWidget):
+
+    title = '最新发布'
+
+    first_filter_backends = ()
 
 
 class WebLatestTimeLinePanelWidget(base.ProductPropertyWidgetMixin,

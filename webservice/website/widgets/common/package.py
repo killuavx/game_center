@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 import six
 from website.widgets.common import filters
 from haystack.query import SearchQuerySet
+from searcher.helpers import get_default_package_query
 from toolkit.helpers import get_global_site
 
 
@@ -361,97 +362,31 @@ class BaseCategoryComplexPackageList(BasePackageListWidget):
         return data
 
 
-class SearchByCategoryFilterBackend(base.BaseWidgetFilterBackend):
+class BasePackageBySearchListWidget(base.FilterWidgetMixin, base.BaseListWidget):
 
-    filter_ignore = False
+    def get_list(self):
+        return self.filter_queryset(self.get_search_qeuryset())
 
-    category_param = 'category'
+    def get_search_qeuryset(self):
+        sqs = get_default_package_query().filter(site=get_global_site().pk)
+        search_result_class = self.get_search_result_class()
+        if search_result_class:
+            return sqs.result_class(search_result_class)
+        return sqs
 
-    category_id_param = 'category_id'
-
-    category_slug_param = 'category_slug'
-
-    def filter_queryset(self, request, queryset, widget):
-        category = getattr(widget, self.category_param, None)
-        category_id = getattr(widget, self.category_id_param, None)
-        category_slug = getattr(widget, self.category_slug_param, None)
-        if not category and not category_id and not category_slug:
-            if self.filter_ignore:
-                return queryset
-            else:
-                return queryset.none()
-
-        if category is not None:
-            if isinstance(category, int):
-                category_id = category
-            elif isinstance(category, str):
-                category_slug = category
-            else:
-                category_id = category.pk
-
-        if category_id:
-            return queryset.filter(category_ids=category_id)
-        elif category_slug:
-            return queryset.filter(category_slugs=category_slug)
-        else:
-            return queryset
+    def get_search_result_class(self):
+        from searcher.search_results import PackageSearchResult
+        return PackageSearchResult
 
 
-class SearchByTopicFilterBackend(base.BaseWidgetFilterBackend):
-
-    topic_param = 'topic'
-    topic_id_param = 'topic_id'
-    topic_slug_param = 'topic_slug'
-
-    filter_ignore = True
-
-    def filter_queryset(self, request, queryset, widget):
-        topic = getattr(widget, self.topic_param, None)
-        topic_id = getattr(widget, self.topic_id_param, None)
-        topic_slug = getattr(widget, self.topic_slug_param, None)
-        if not topic and not topic_slug and not topic_id:
-            if self.filter_ignore:
-                return queryset
-            else:
-                return queryset.none()
-
-        if topic is not None:
-            if isinstance(topic, int):
-                topic_id = topic
-            elif isinstance(topic, str):
-                topic_slug = topic
-            else:
-                topic_id = topic.pk
-
-        if topic_id:
-            return queryset.filter(topic_ids=topic_id)
-        elif topic_slug:
-            return queryset.filter(topic_slugs=topic_slug)
-        else:
-            return queryset
-
-
-class SearchOrderByFilterBackend(base.BaseWidgetFilterBackend):
-
-    def filter_queryset(self, request, queryset, widget):
-        ordering = getattr(widget, 'search_ordering')
-        if ordering is None:
-            return queryset
-        elif isinstance(ordering, str):
-            ordering = (ordering,)
-        qs = queryset.order_by(*ordering)
-        print(qs.query.__str__())
-        return qs
-
-
-class BaseCategoryComplexPackageBySearchList(base.FilterWidgetMixin, base.BaseListWidget):
+class BaseCategoryComplexPackageBySearchListWidget(BasePackageBySearchListWidget):
 
     search_ordering = ('-released_datetime', )
 
     filter_backends = (
-        SearchByCategoryFilterBackend,
-        SearchByTopicFilterBackend,
-        SearchOrderByFilterBackend,
+        filters.SearchByCategoryFilterBackend,
+        filters.SearchByTopicFilterBackend,
+        filters.SearchOrderByFilterBackend,
     )
 
     topic = None
@@ -467,8 +402,6 @@ class BaseCategoryComplexPackageBySearchList(base.FilterWidgetMixin, base.BaseLi
     category_slug = None
 
     lang = None
-
-    collection_name = 'package'
 
     def setup_category(self, category=None, category_id=None, category_slug=None, **kwargs):
         self.category = category
@@ -489,16 +422,3 @@ class BaseCategoryComplexPackageBySearchList(base.FilterWidgetMixin, base.BaseLi
                                                                                pagination=pagination)
         return data
 
-    def get_list(self):
-        return self.filter_queryset(self.get_search_qeuryset())
-
-    def get_search_qeuryset(self):
-        sqs = SearchQuerySet(using=self.collection_name)
-        search_result_class = self.get_search_result_class()
-        if search_result_class:
-            return sqs.result_class(search_result_class)
-        return sqs
-
-    def get_search_result_class(self):
-        from searcher.search_results import PackageSearchResult
-        return PackageSearchResult
