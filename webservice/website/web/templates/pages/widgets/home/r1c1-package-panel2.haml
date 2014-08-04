@@ -1,0 +1,39 @@
+-load url_tags util_tags templatehelper_tags
+.f18.cell.rel.t-title
+  %h3.l.n.mr30
+    %span.abs.ios-web-icon>
+    = title
+  %a.r.f12.mt5.more{:href => "={more_url}", :target => "_blank"} 更多&gt;
+/ t-title
+
+.latest-list.pl10.pr10
+  .time-box-t
+    .time-box-b
+      -for package in items
+        -with title=package.title icon_url=package.icon_small star=package.star dw_size=package.download_size dw_count=package.download_count version_name=package.version_name released_datetime=package.released_datetime
+          {% absolute_url_as package product=product as detail_url %}
+          %dl.cell-bk.pt15.rel.app-list-m
+            %dt.abs
+              %a.pic{:href => "={detail_url}", :target => "_blank" , :title => "={title}"}
+                %img{:alt => "={title}", :src => "={icon_url}"}
+                  %span.ios-web-icon.abs
+            %dd.g9
+              %h3.n.rel.g3.f14
+                %a{:href => "={detail_url}", :target => "_blank" , :title => "={title}"}= title|slice:"8"
+                -if package.platform == 'android'
+                  %span.abs.ios-web-icon.star{:class => "s={star|floatformat:'0'}"}
+              %p
+                {{ dw_size|filesizeformat }}
+                %em> |
+                {{ dw_count|intwordcn }}+下载
+              %p
+                v{{ version_name }}
+                %em> |
+                {{ released_datetime|date:"m-d" }}
+              -#
+                .btn-s
+                  %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+                  %a.a2{:href => "{% download_url version product=product %}", :class => "app-download-btn-js"} 下载
+    / time-box-b
+  / time-box-t
+/ latest-list

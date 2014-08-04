@@ -16,6 +16,7 @@ __all__ = ['WebHeaderSiteListWidget',
            'WebHomeTopicalPackageListWidget',
            'WebHomeMasterpiecePackageListWidget',
            'WebHomeLatestPackageListWidget',
+           'WebHomeLatestPackageBySearchListWidget',
            'WebSingleAdvertisementWidget',
            'WebHomeComplexPackagePanelWidget',
            'WebRankingPackageListWidget',
@@ -70,8 +71,10 @@ class WebHomeMasterpiecePackageListWidget(pkgwidget.BaseTopicalPackageListWidget
 
 
 
-class WebHomeLatestPackageListWidget(pkgwidget.BasePackageListWidget,
+class WebHomeLatestPackageListWidget(#pkgwidget.BasePackageListWidget,
+                                     pkgwidget.BasePackageBySearchListWidget,
                                      base.ProductPropertyWidgetMixin,
+
                                      Widget):
 
     filter_backends = (
@@ -80,6 +83,19 @@ class WebHomeLatestPackageListWidget(pkgwidget.BasePackageListWidget,
 
     by_released = True
 
+
+    def get_more_url(self):
+        return '/latest/'
+
+class WebHomeLatestPackageBySearchListWidget(pkgwidget.BasePackageBySearchListWidget,
+                                             base.ProductPropertyWidgetMixin,
+                                             Widget):
+
+    filter_backends = (
+        filters.SearchOrderByFilterBackend,
+    )
+
+    search_ordering = ('-released_datetime', )
 
     def get_more_url(self):
         return '/latest/'
