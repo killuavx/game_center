@@ -16,7 +16,7 @@
     <!--应用列表 开始 app-list-page-->
     <div class="auto width rel app-list-page crack-page">
 
-        {% widget WebLatestTimeLinePanelWidget %}
+        {% widget WebLatestTimeLineBySearchPanelWidget %}
         <div class="cell most-expensive">
             <div class="f18 cell rel t-title">
                 <h3 class="l n mr30"><span class="abs ios-web-icon"></span>{{ title }}</h3>
@@ -31,19 +31,20 @@
                     {% for grp in result %}
                         <div class="cell-bk">
                             <dl class="f14 bde dib p15 n-{{ forloop.counter }}">
-                                <dt class="rel pb15">虫虫<em class="g6">{{ grp.time_name }}</em>发布{{ grp.packages.count }}个应用
+                                <dt class="rel pb15">虫虫<em class="g6">{{ grp.time_name }}</em>发布{{ grp.packages|length }}个应用
                                     <div class="abs tag-time"><a class="ios-web-icon f12" href="javascript:;">{{ grp.time_name }}</a></div>
                                     <span class="user-icon abs triangle"></span>
                                 </dt>
                                 <dd>
-                                    {% for package in grp.packages %}{% with version=package.versions.latest_published title=version.subtitle|default:package.title %}
+                                    {% for package in grp.packages %}
+                                    {% with title=package.title icon_url=package.icon_large cat_name=package.primary_category_name %}
                                     {% absolute_url_as package product=product as detail_url %}
                                     <div class="dib rel app-list-min">
                                         <a href="{{ detail_url }}" class="db tc f14" target="_blank" title="{{ title }}">
-                                            <img src="{% resource_url version 'icon' size_alias="large" %}" class="db auto">
+                                            <img src="{{ icon_url }}" class="db auto">
                                             <span class="ios-web-icon abs db auto"></span>
                                             {{ title|slice:"5" }}
-                                            <i class="db n f12 g9">{{ package.main_category.name }}</i>
+                                            <i class="db n f12 g9">{{ cat_name }}</i>
                                         </a>
                                     </div>
                                     {% if forloop.last and grp.url %}
