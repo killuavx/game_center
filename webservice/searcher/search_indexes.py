@@ -178,6 +178,7 @@ class PackageSearchIndex(indexes.SearchIndex,
     support_ipad = indexes.BooleanField(index_fieldname='support_ipad_b')
     support_iphone = indexes.BooleanField(index_fieldname='support_iphone_b')
     support_idevices = indexes.BooleanField(index_fieldname='support_idevices_b')
+    support_device_types = indexes.MultiValueField(indexed=False)
 
     def _prepare_version_detail(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
@@ -188,6 +189,7 @@ class PackageSearchIndex(indexes.SearchIndex,
             prepare_data['support_ipad_b'] = iversion.support_ipad
             prepare_data['support_ipad_b'] = iversion.support_iphone
             prepare_data['support_idevices_b'] = iversion.support_alldevices
+            prepare_data['support_device_types'] = iversion.device_types
 
     def _prepare_download(self, prepare_data, obj):
         latest_version = self._latest_version(obj)

@@ -231,6 +231,8 @@
     <field name="cover_middle" type="string" indexed="false" stored="true" multiValued="false" />
     <field name="cover_large" type="string" indexed="false" stored="true" multiValued="false" />
 
+    <field name="support_device_types" type="string" indexed="false" stored="true" multiValued="true" />
+
   </fields>
 
   <!-- field to use to determine and enforce document uniqueness. -->

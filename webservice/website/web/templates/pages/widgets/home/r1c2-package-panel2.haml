@@ -1,0 +1,51 @@
+-load url_tags util_tags templatehelper_tags
+.f18.cell.rel.t-title
+  %h3.l.n.mr30
+    %span.abs.ios-web-icon>
+    = title
+  %a.r.f12.mt5.more{:href => "={more_url}", :target => "_blank"} 更多>
+
+.crack-rcd
+  .time-box-t
+    .time-box-b
+      - for package in items
+        -with title=package.title cat_name=package.primary_category_name summary=package.summary star=package.star dw_size=package.download_size dw_count=package.download_count icon_url=package.icon_large
+          {% absolute_url_as package product=product as detail_url %}
+          %dl.dib.rel.app-list-xl
+            %dt.abs
+              %a.pic{:href => "={detail_url}", :target => "_blank" , :title => "={title}"}
+                %img{:alt => "={title}", :src => "={icon_url}"}
+                  %span.ios-web-icon.abs
+            %dd.g9
+              %h3.n.rel.g3.f16.pb5.text-db
+                %a{:href => "={detail_url}", :target => "_blank", :title => "={title}" }= title
+              .g9.lh20= summary|default:''
+              - if package.platform == 'ios'
+                %p.l
+                  - if not package.is_free
+                    %span.price.gr><= package.formatted_price
+                  - else
+                    %span>< 免费
+                  {% with dev_types=package.support_device_types|join:"、"%}
+                  - if package.support_idevices
+                    %span.ml5.ios-web-icon.vt.i-all{:title => '适用：={dev_types}'}
+                  - elif package.support_iphone
+                    %span.ml5.ios-web-icon.vt.i-phone{:title => '适用：={dev_types}'}
+                  - else
+                    %span.ml5.ios-web-icon.vt.i-pad{:title => '适用：={dev_types}'}
+                  {% endwith %}
+              - else
+                .l.mt5.ios-web-icon.star{:class => "s={star|floatformat:'0'}"}
+              %p.pt2.r
+                {{ dw_size|filesizeformat }}
+                %em> |
+                {{ dw_count|intwordcn }}+下载
+                %em> |
+                = cat_name
+              -#
+                .btn-s
+                  %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+                  %a.a2{:href => "{% download_url version product=product %}", :class => "app-download-btn-js"} 下载
+    / time-box-b
+  / time-box-t
+/ crack-rcd
