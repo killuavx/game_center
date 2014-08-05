@@ -1,4 +1,4 @@
--load staticfiles pages_tags widgets
+-load staticfiles pages_tags widgets cache
 .auto.head
   .auto.width.top
     .pt10.pb10
@@ -14,11 +14,13 @@
         / search
         .inline-three.r.user-switch
           %ul.r
+            {% cache 86400 product_web_headersite %}
             {% widget WebHeaderSiteListWidget %}
             -for site in items
               %li<
                 %a.ios-web-icon{:class => "={site.css_class}", :href => "={site.url}"}= site.name
             {% endwidget %}
+            {% endcache %}
             %li#login-reg
               %a.ios-web-icon.a4.open-login{:href => "javascript:;", :class => "{% if request.user.is_authenticated %}open-login{% endif %}",  :target => ""}><
                 -if request.user.is_authenticated
@@ -39,8 +41,10 @@
       / cell-bk
   / top
 
+  {% cache 86400 product_web_navigation request.get_host request.path_info %}
   .cell-bk.nav#nav
     .auto.rel.width
       {% page_menu "pages/menus/web/navigation.haml" %}
     / width
   / nav
+  {% endcache %}
