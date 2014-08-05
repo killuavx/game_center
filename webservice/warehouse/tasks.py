@@ -68,7 +68,6 @@ def publish_packageversion(version_id):
     set_global_site_id(version.site_id)
     task_result = _task_process()
 
-
     package = version.package
     search_index = PackageSearchIndex()
     handler = doc.SyncPackageDocumentHandler()
@@ -154,6 +153,30 @@ def unpublish_packageversion_from_published(version_id):
     delete_package_data_center(version.package_id)
     set_global_site_id(SITE_NOT_SET)
 
+    return task_result
+
+
+@app.shared_task(name='warehouse.tasks.sync_package')
+def sync_package(package_id):
+    try:
+        package = Package.all_objects.get(pk=package_id)
+    except Package.DoesNotExist:
+        return TASK_ABORT_OBJECT_NOT_MATCH
+
+    task_result = TASK_OK
+    set_global_site_id(package.site_id)
+    if package.is_published() and package.latest_version:
+        search_index = PackageSearchIndex()
+        handler = doc.SyncPackageDocumentHandler()
+        try:
+            handler.all_sync(package, package.latest_version)
+            search_index.update_object(package)
+        except:
+            task_result = TASK_ABORT
+    else:
+        task_result = TASK_ABORT_STATUS_NOT_PUBLISHED
+
+    set_global_site_id(SITE_NOT_SET)
     return task_result
 
 
