@@ -2,6 +2,7 @@
 from . import base
 from . import filters
 from . import package as pkgwidget
+from . import package as pkgwidget, filters
 
 
 class BaseTopicAuthorPanelWidget(base.BaseListWidget):
@@ -98,3 +99,27 @@ class BaseVendorPackageListWidget(BaseVendorCurrentAuthorMixin,
                          options=options,
                          context=context,
                          pagination=pagination)
+
+
+class BaseVendorPackageBySearchListWidget(BaseVendorCurrentAuthorMixin,
+                                          pkgwidget.BasePackageBySearchListWidget):
+    filter_backends = (
+        filters.SearchByAuthorFilterBackend,
+        filters.SearchOrderByFilterBackend,
+    )
+
+    per_page = 18
+
+    author_id = None
+
+    def setup_options(self, context, options):
+        super(BaseVendorPackageBySearchListWidget, self).setup_options(context,
+                                                                       options)
+        self.setup_author(context, **options)
+
+    def setup_author(self, context, author=None, **options):
+        if not author:
+            author = self.get_current_author(context)
+            self.author_id = author.pk
+        else:
+            self.author_id = author.pk

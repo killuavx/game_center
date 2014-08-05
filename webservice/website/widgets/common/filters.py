@@ -211,3 +211,22 @@ class SearchOrderByFilterBackend(base.BaseWidgetFilterBackend):
         return qs
 
 
+class SearchByAuthorFilterBackend(base.BaseWidgetFilterBackend):
+
+    author_param = 'author'
+    author_id_param = 'author_id'
+
+    filter_ignore = True
+
+    def filter_queryset(self, request, queryset, widget):
+        author = getattr(widget, self.author_param, None)
+        author_id = getattr(widget, self.author_id_param, None)
+        if not author and not author_id:
+            if self.filter_ignore:
+                return queryset
+            else:
+                return queryset.none()
+        if author:
+            author_id = author.pk
+        return queryset.filter(author_id=author_id)
+

@@ -154,6 +154,7 @@
     <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="false"/>
 
     <dynamicField name="*_ik"  type="text_ik"  indexed="true"  stored="true"/>
+    <dynamicField name="*_url"  type="string"  indexed="false"  stored="false"/>
 
 
     <field name="_version_" type="long" indexed="true" stored="true" multiValued="false" />
@@ -207,6 +208,8 @@
     <field name="root_category_id" type="long" indexed="true" stored="true" multiValued="false" />
 
     <field name="author_name" type="text_ik" indexed="true" stored="true" multiValued="false" />
+
+    <field name="author_id" type="long" indexed="true" stored="true" multiValued="false" />
 
     <field name="primary_category_slug" type="text_en" indexed="true" stored="true" multiValued="false" />
 

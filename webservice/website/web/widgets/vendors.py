@@ -3,7 +3,9 @@ from django_widgets import Widget
 from website.widgets.common import author as awidget
 from website.web.widgets.base import ProductPropertyWidgetMixin
 
-__all__ = ['WebVendorNavListWidget', 'WebVendorPackageListWidget']
+__all__ = ['WebVendorNavListWidget',
+           'WebVendorPackageBySearchListWidget',
+           ]
 
 
 class WebVendorNavListWidget(awidget.BaseVendorNavListWidget,
@@ -17,3 +19,11 @@ class WebVendorPackageListWidget(awidget.BaseVendorPackageListWidget,
                                  Widget):
 
     per_page = 18
+
+
+class WebVendorPackageBySearchListWidget(awidget.BaseVendorPackageBySearchListWidget,
+                                         ProductPropertyWidgetMixin,
+                                         Widget):
+
+    per_page = 18
+

@@ -20,6 +20,8 @@ class PackageSearchIndex(indexes.SearchIndex,
 
     author_name = CharField(model_attr='author__name')
 
+    author_id = indexes.IntegerField(model_attr='author_id')
+
     tags_text = CharField(weight=100)
 
     title = CharField(weight=90)
@@ -229,9 +231,7 @@ class PackageSearchIndex(indexes.SearchIndex,
         prepare_data['tags_text'] = " ".join(tags)
 
     def _latest_version(self, obj):
-        if not hasattr(obj, '_latest_version'):
-            obj._latest_version = obj.versions.latest_published()
-        return obj._latest_version
+        return obj.latest_version
 
     def _fetch_image_field_urls(self, images, prefix, field, sizes_alias):
         for sa in sizes_alias:
@@ -242,4 +242,3 @@ class PackageSearchIndex(indexes.SearchIndex,
                 images[key] = field[sa].url
             except:
                 pass
-
