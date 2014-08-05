@@ -14,13 +14,11 @@ from . import base
 
 __all__ = ['WebHeaderSiteListWidget',
            'WebHomeTopBannersWidget',
-           'WebHomeTopicalPackageListWidget',
            'WebHomeTopicalPackageBySearchListWidget',
            'WebHomeMasterpiecePackageListWidget',
-           'WebHomeLatestPackageListWidget',
            'WebHomeLatestPackageBySearchListWidget',
            'WebSingleAdvertisementWidget',
-           'WebHomeComplexPackagePanelWidget',
+           'WebHomeComplexPackageBySearchPanelWidget',
            'WebRankingPackageListWidget',
            'WebHomeForumHotThreadPanelWidget',
            'WebHomeForumNoviceThreadPanelWidget',
@@ -167,6 +165,12 @@ class WebHomeComplexPackagePanelWidget(pkgwidget.BaseComplexPackageListWidget,
                                        Widget):
 
     template = 'pages/widgets/home/complex-package-panel.haml'
+
+
+class WebHomeComplexPackageBySearchPanelWidget(pkgwidget.BaseComplexPackageBySearchListWidget,
+                                       base.ProductPropertyWidgetMixin,
+                                       Widget):
+    template = 'pages/widgets/home/complex-package-panel2.haml'
 
 
 class WebRankingPackageListWidget(pkgwidget.BaseRankingPackageListWidget,

@@ -5,7 +5,7 @@
 - if is_ios
   {% qurl package.static_download_url as dw_url %}
 - else
-  {% qurl package.download_url product=product as dw_url %}
+  {% qurl package.download_url entrytype=product as dw_url %}
 %dl.dib.rel.app-list-xl
   %dt.abs
     %a.pic{:href => "={detail_url}", :title => "={title}"}

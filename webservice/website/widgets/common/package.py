@@ -8,7 +8,7 @@ import six
 from website.widgets.common import filters
 from haystack.query import SearchQuerySet
 from searcher.helpers import get_default_package_query
-from toolkit.helpers import get_global_site
+from toolkit.helpers import get_global_site, qurl_to
 
 
 class BasePackageListWidget(base.FilterWidgetMixin, base.BaseListWidget):
@@ -185,7 +185,6 @@ class BaseComplexPackageListWidget(base.FilterWidgetMixin,
             urlp[4] = urlencode(qp, True)
             url = urlunparse(urlp)
         return url
-
 
 class BaseTopicalPackageListWidget(BasePackageListWidget):
 
@@ -421,4 +420,129 @@ class BaseCategoryComplexPackageBySearchListWidget(BasePackageBySearchListWidget
                                                                                context=context,
                                                                                pagination=pagination)
         return data
+
+
+class BaseComplexPackageBySearchListWidget(BasePackageBySearchListWidget):
+
+    filter_backends = ()
+
+    category = None
+
+    topic = None
+
+    topic_slugs = []
+
+    per_page = 12
+
+    TOPIC_NONE = 'NONE'
+
+    max_paging_links = 10
+
+    search_ordering = ('-released_datetime', )
+
+    def get_topic_slugs_from(self, topic_slugs='', **options):
+        return [slug.strip() for slug in topic_slugs.split(',') if slug]
+
+    def setup_options(self, context, options):
+        super(BaseComplexPackageBySearchListWidget, self).setup_options(context, options)
+        self.topic_slugs = self.get_topic_slugs_from(**options)
+        self.setup_category(**options)
+
+    def setup_category(self, category=None, category_id=None, category_slug=None, **kwargs):
+        Category = self._cls_category
+        if category:
+            self.category = category
+            self.category_slug = category.slug
+            self.category_id = category.pk
+            return
+
+        if category_id:
+            self.category = Category.objects.get_cache_by(category_id)
+            self.category_slug = self.category.slug if self.category else None
+            self.category_id = self.category.pk if self.category else None
+        elif category_slug:
+            self.category = Category.objects.get_cache_by_slug(get_global_site().pk,
+                                                            category_slug)
+            self.category_slug = self.category.slug if self.category else None
+            self.category_id = self.category.pk if self.category else None
+        else:
+            self.category = self.category_id = self.category_slug = None
+
+    def setup_topic(self, topic=None, topic_id=None, topic_slug=None, **kwargs):
+        Topic = self._cls_topic
+        topic_slug = topic_slug if topic_slug != 'NONE' else None
+        if topic:
+            self.topic = topic
+            self.topic_slug = topic.slug
+            self.topic_id = topic.pk
+            return
+
+        if topic_id:
+            self.topic = Topic.objects.get_cache_by(topic_id)
+            self.topic_slug = self.topic.slug if self.topic else None
+            self.topic_id = self.topic.pk if self.topic else None
+        elif topic_slug:
+            self.topic = Topic.objects.get_cache_by_slug(get_global_site().pk,
+                                                         topic_slug)
+            self.topic_slug = self.topic.slug if self.topic else None
+            self.topic_id = self.topic.pk if self.topic else None
+        else:
+            self.topic = self.topic_id = self.topic_slug = None
+
+    def get_context(self, value=None, options=dict(), context=None, **kwargs):
+        from taxonomy.models import Topic, Category
+        self._cls_category = Category
+        self._cls_topic = Topic
+        self.setup_options(context, options)
+        from mezzanine.utils.views import paginate
+        self.per_page, cur_page = self.get_paginator_vars(self.options)
+
+        # 过滤分类
+        self.filter_backends = (filters.SearchByCategoryFilterBackend, )
+        queryset = self.get_list()
+
+        results = []
+        # 过滤专区，当前专区为空，则以最新发布排序
+        for topic_slug in self.topic_slugs:
+
+            if topic_slug == self.TOPIC_NONE:
+                self.setup_topic(topic_slug=topic_slug)
+                grp_name = '最新发布'
+                grp_more_url = self.get_more_url_by(self.category, None)
+                self.filter_backends = (filters.SearchOrderByFilterBackend, )
+            else:
+                self.filter_backends = (filters.SearchByTopicFilterBackend,
+                                        filters.SearchOrderByFilterBackend)
+                self.setup_topic(topic_slug=topic_slug)
+                if not self.topic:
+                    continue
+                grp_name = self.topic.name
+                grp_more_url =self.get_more_url_by(self.category, self.topic)
+
+            qs = self.filter_queryset(queryset).all()
+            items = paginate(qs,
+                             page_num=cur_page,
+                             per_page=self.per_page,
+                             max_paging_links=self.max_paging_links)
+            results.append(dict(
+                name=grp_name,
+                packages=items,
+                paginator=items.paginator,
+                more_url=grp_more_url,
+                ))
+
+        data = deepcopy(options)
+        data.update(
+            title=self.category.name,
+            result=results,
+            product=self.product
+        )
+        return data
+
+    def get_more_url_by(self, category, topic):
+        url = category.get_absolute_url_as(product=self.product, pagetype='special')
+        if topic:
+            url = qurl_to(url, topic=topic.pk)
+        return url
+
 

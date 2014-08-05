@@ -79,7 +79,7 @@
 
       .left.tab-box-o
         {% cache CACHE_TIMEOUT_HOURS product_web_home_cpp_game request.get_host %}
-        {% include_widget WebHomeComplexPackagePanelWidget cat_slug='game' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
+        {% include_widget WebHomeComplexPackageBySearchPanelWidget category_slug='game' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
         {% endcache %}
       / left
 
@@ -121,7 +121,7 @@
 
       .left.tab-box-o
         {% cache CACHE_TIMEOUT_HOURS product_web_home_cpp_application request.get_host %}
-        {% include_widget WebHomeComplexPackagePanelWidget cat_slug='application' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
+        {% include_widget WebHomeComplexPackageBySearchPanelWidget category_slug='application' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
         {% endcache %}
       / left
 
