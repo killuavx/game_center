@@ -313,7 +313,7 @@ class SyncPackageDocumentHandler(object):
         self.sync_tags()
         self.sync_taxonomies()
         self.sync_download()
-        self.sync_comments()
+        #self.sync_comments()
         self.sync_supporteds()
         self.sync_version_detail()
         self.doc.save()
@@ -463,11 +463,12 @@ class SyncPackageDocumentHandler(object):
     def sync_version_detail(self):
         if self.version.is_ios:
             iversion = self.version.as_ios
-            self.doc.is_free = iversion.is_free
+            self.doc.is_free = iversion.is_free()
             self.doc.formatted_price = iversion.formatted_price
             self.doc.support_ipad = iversion.support_ipad
             self.doc.support_ipad = iversion.support_iphone
             self.doc.support_idevices = iversion.support_alldevices
+            self.doc.support_device_types = iversion.device_types
 
     def delete(self, package_id):
         try:
