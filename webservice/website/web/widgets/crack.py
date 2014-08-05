@@ -226,7 +226,10 @@ class BaseTimeLineBySearchPanelWidget(base.ProductPropertyWidgetMixin,
         self.current_datetime = now().astimezone()
 
     def fill_latest_one(self, result, grp):
+        from taxonomy.models import Category
         result[-1]['time_name'] = '以前'
+        result[-1]['url'] = Category.absolute_url_as(slug=Category.ROOT_SLUG_GAME,
+                                                     product=self.product)
 
     def query_group_packages(self, queryset, grp, result):
         self.in_date = grp['dt']
