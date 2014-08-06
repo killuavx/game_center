@@ -1055,17 +1055,36 @@ def package_version_pre_save(sender, instance, **kwargs):
         instance.workspace = packageversion_workspace_path(instance)
 
 
+SYNC_PACKAGEVERSION_CHANGED_FIELDS = [
+    'stars_count',
+]
+
+
 @receiver(pre_save, sender=PackageVersion)
-def package_version_pre_changed_star(sender, instance, **kwargs):
-    if instance.tracker.has_changed('stars_count'):
-        setattr(instance, '_changed_stars_count', True)
+def package_version_pre_save_check_changed_fields(sender, instance, **kwargs):
+    # ignore new create
+    if instance.pk is None:
+        return
+    instance._sync_changed_fields = getattr(instance, '_sync_changed_fields', dict())
+    for field_name in SYNC_PACKAGEVERSION_CHANGED_FIELDS:
+        if instance.tracker.has_changed(field_name):
+            instance._sync_changed_fields[field_name] = True
+
 
 @receiver(post_save, sender=PackageVersion)
-def package_version_post_changed_star(sender, instance, **kwargs):
-    if getattr(instance, '_changed_stars_count', False) \
-        and instance.status == PackageVersion.STATUS.published:
-        from warehouse.tasks import sync_package
-        sync_package.apply_async((instance.package.pk,), countdown=10)
+def package_version_post_save_check_to_sync(sender, instance, created=False, **kwargs):
+    has_changed = getattr(instance, '_sync_changed_fields', dict())
+    # ignore not published
+    if instance.status != PackageVersion.STATUS.published:
+        return
+
+    for field_name in SYNC_PACKAGEVERSION_CHANGED_FIELDS:
+        if has_changed.get(field_name):
+            from warehouse.tasks import sync_package
+            sync_package.apply_async((instance.package.pk,),
+                                     countdown=10)
+            break
+    delattr(instance, '_sync_changed_fields')
 
 
 # fix for PackageVersion save to update Package(set auto_now=False) updated_datetime
