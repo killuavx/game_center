@@ -28,7 +28,6 @@ class DjORMMemoizerProxy(BaseMemoizer):
             if hasattr(m, 'get_all_cache_identifier_tags'):
                 tags.extend(m.get_all_cache_identifier_tags())
         val = serializers.serialize('json', value)
-        print(tags)
         self.cache.set(key, value=val, tags=tags, timeout=timeout)
 
     def add(self, key, value, timeout=DEFAULT_TIMEOUT):
@@ -36,7 +35,6 @@ class DjORMMemoizerProxy(BaseMemoizer):
         for m in value:
             if hasattr(m, 'get_all_cache_identifier_tags'):
                 tags.extend(m.get_all_cache_identifier_tags())
-        print(tags)
         val = serializers.serialize('json', value)
         self.cache.set(key, value=val, tags=tags, timeout=timeout)
 

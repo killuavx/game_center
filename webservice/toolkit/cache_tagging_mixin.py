@@ -3,7 +3,6 @@ from toolkit.helpers import get_global_site
 from toolkit.memoizes import orms_memoize
 from cache_tagging.django_cache_tagging import cache, caches
 import logging
-logger = logging.getLogger('scripts')
 
 DEFAULT_TIMEOUT = 3600
 
@@ -33,7 +32,6 @@ class CacheTaggingMixin(object):
 
     def invalidate_tagging_cache(self):
         tags = self.get_all_cache_identifier_tags()
-        logger.info(tags)
         self._get_tagging_cache().invalidate_tags(*tags)
 
 
