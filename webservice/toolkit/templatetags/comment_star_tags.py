@@ -6,6 +6,7 @@ from django.template.base import Library
 from collections import defaultdict
 from django.contrib.contenttypes.models import ContentType
 from toolkit.forms import CommentWithStarForm
+from django.db import models
 
 
 DEFAULT_PER_PAGE = 10
@@ -24,6 +25,7 @@ def comment_star_thread(context, parent, page=1,
                         max_paging_links=10,
                         load_selector='#comment-list',
                         *args, **kwargs):
+
     if "all_comments" not in context:
         if "request" in context and context["request"].user.is_staff:
             comments_queryset = parent.comments.all()
@@ -58,8 +60,26 @@ def comment_star_thread(context, parent, page=1,
     })
     return context
 
+
+def get_content_object(obj, content_type=None):
+    if not content_type:
+        return obj
+
+    if obj and isinstance(obj, int) \
+        and content_type and isinstance(content_type, str):
+        app_label, model = content_type.split('.')
+        model_cls = models.get_model(app_label, model, only_installed=False)
+        if hasattr(model_cls.objects, 'get_cache_by'):
+            return model_cls.objects.get_cache_by(obj)
+        else:
+            return model_cls.objects.get(pk=obj)
+
+    raise TypeError
+
+
 @register.inclusion_tag("generic/web/includes/comments.html", takes_context=True)
-def comment_star_for(context, obj):
+def comment_star_for(context, obj, content_type=None):
+    obj = get_content_object(obj, content_type)
     form = CommentWithStarForm(context["request"], obj)
     try:
         context["posted_comment_form"]

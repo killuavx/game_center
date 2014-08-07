@@ -1,18 +1,16 @@
 -extends "pages/page_web.html"
--load mezzanine_tags cache widgets url_tags util_tags templatehelper_tags web_tags comment_star_tags
+-load mezzanine_tags widgets url_tags util_tags templatehelper_tags web_tags cache_tagging_tags comment_star_tags
 {% block meta_title %}{{ version.subtitle|default:package.title }}{% endblock%}
 {% block meta_keywords %}{% unique_tags_text version package %}{% endblock %}
 {% block meta_description %}{{ package.summary }} | {{ version.whatsnew }}{% endblock %}
 
 -block main
-  {% with c_pkg=package.pk %}
   {% is_site_android as is_android %}{% is_site_ios as is_ios %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
   {% with title=version.subtitle|default:package.title %}
   .auto.mt30.width.app-dis-page
     .cell-bk.ovh
-
-      {% cache CACHE_TIMEOUT_HOURS product_web_package_tl request.get_host request.path_info c_pkg %}
+      {% cache_tagging 'product_web_package_tl:'|add:package.get_cache_identifier tags=package.get_all_cache_identifier_tags 'product_web_package_tl' request.get_host timeout=CACHE_TIMEOUT_HOURS %}
       .pb10.location>
         {% breadcrumbs_from package category=package.main_category product=product home_url='/' %}
 
@@ -74,18 +72,18 @@
             %span>< {{ version.download_count|intwordcn }}+
 
         .cell-bk.pt10.pb30.left-top-list
-          {% with cat_slug=package.main_category.get_root.slug %}
-          {% cache CACHE_TIMEOUT_DAYS product_web_package_ranking request.get_host cat_slug %}
-          {% include_widget WebRankingPackageListWidget cat_slug=cat_slug per_page=10 %}
-          {% endcache %}
+          {% with root_cat=package.root_category %}
+          {% cache_tagging 'product_web_package_ranking:'|add:root_cat.get_cache_identifier tags=root_cat.get_all_cache_identifier_tags 'product_web_pacakge_ranking' request.get_host timeout=CACHE_TIMEOUT_DAYS %}
+          {% include_widget WebRankingPackageListWidget cat_slug=root_cat.slug per_page=10 %}
+          {% end_cache_tagging %}
           {% endwith %}
         / left-top-list
       / left-list
-      {% endcache %}
+      {% end_cache_tagging %}
 
       .r.right
 
-        {% cache CACHE_TIMEOUT_HOURS product_web_package_rt request.get_host request.path_info c_pkg %}
+        {% cache_tagging 'product_web_package_rt:'|add:package.get_cache_identifier tags=package.get_all_cache_identifier_tags 'product_web_package_rt' request.get_host timeout=CACHE_TIMEOUT_HOURS  %}
         .up.box_btn.up_box
           .up_pic
             %ul
@@ -136,12 +134,11 @@
           / 相关推荐
           {% endif %}
           {% endwidget %}
-        {% endcache %}
+        {% end_cache_tagging %}
 
         .down.mb30
-          {% comment_star_for version %}
+          {% comment_star_for version.pk 'warehouse.packageversion' %}
 
       / right
     / cell-bk
-  {% endwith %}
   {% endwith %}

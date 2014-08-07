@@ -201,6 +201,7 @@ INTERNAL_APPS = [
     'memoize',
     'djcelery',
     'import_export',
+    'cache_tagging.django_cache_tagging',
 ]
 
 EXTENDAL_APPS = [

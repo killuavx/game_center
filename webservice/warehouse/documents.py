@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from warehouse import models as wh
 from mongoengine import fields, document, errors
-from mongoengine.queryset import QuerySet
+from mongoengine.queryset import QuerySet, queryset_manager
 from mongoengine import register_connection
 from django.conf import settings
+from toolkit import model_url_mixin as urlmixin, cache_tagging_mixin as cachemixin
 
 con_key = 'data_center'
 con_opts = settings.MOGOENGINE_CONNECTS[con_key]
@@ -24,7 +25,17 @@ class SiteRelated(object):
 
 
 class Taxonomy(document.DynamicEmbeddedDocument,
+               cachemixin.TaxonomyTaggingMixin,
                SiteRelated):
+
+    @property
+    def pk(self):
+        return self.id
+
+    @pk.setter
+    def pk(self, id):
+        self.id = id
+
 
     id = fields.IntField()
 
@@ -42,15 +53,24 @@ class Taxonomy(document.DynamicEmbeddedDocument,
         return self.name
 
 
-class Category(Taxonomy):
+class Category(urlmixin.CategoryAbsoluteUrlMixin, Taxonomy):
     pass
 
 
-class Topic(Taxonomy):
+class Topic(urlmixin.TopicAbsoluteUrlMixin, Taxonomy):
     pass
 
 
-class Author(document.EmbeddedDocument, SiteRelated):
+class Author(urlmixin.AuthorAbsoluteUrlMixin,
+             document.EmbeddedDocument, SiteRelated):
+
+    @property
+    def pk(self):
+        return self.id
+
+    @pk.setter
+    def pk(self, id):
+        self.id = id
 
     id = fields.IntField()
 
@@ -175,7 +195,9 @@ class PackageVersionMixin(object):
     screenshots = fields.ListField(fields.EmbeddedDocumentField(PackageVersionScreenshot))
 
 
-class Package(document.DynamicDocument,
+class Package(urlmixin.PackageAbsoluteUrlMixin,
+              cachemixin.PackageTaggingMixin,
+              document.DynamicDocument,
               PackageVersionMixin,
               PlatformRelated,
               SiteRelated):
@@ -272,7 +294,6 @@ class Package(document.DynamicDocument,
 
 from mezzanine.core.templatetags.mezzanine_tags import gravatar_url
 from toolkit.helpers import get_global_site
-from django.conf import settings
 icon_sizes_alias = settings.THUMBNAIL_ALIASES_ICON.keys()
 cover_sizes_alias = settings.THUMBNAIL_ALIASES_COVER.keys()
 screenshot_sizes_alias = settings.THUMBNAIL_ALIASES_SCREENSHOT.keys()
@@ -307,6 +328,7 @@ class SyncPackageDocumentHandler(object):
         self.site = get_global_site(self.package.site_id)
 
         self.sync_platform()
+        self.sync_author()
         self.sync_summary()
         self.sync_images()
         self.sync_stars()
@@ -320,11 +342,8 @@ class SyncPackageDocumentHandler(object):
         return self.doc
 
     def sync_author(self):
-        self.doc.author = Author.objects\
-            .get_or_create(id=self.package.author.pk,
-                           defaults=dict(
-                               name=self.package.author.name
-                           ))
+        self.doc.author = Author(id=self.package.author.pk,
+                                 name=self.package.author.name)
 
     def sync_platform(self):
         self.doc.site_id = self.package.site_id
@@ -356,6 +375,8 @@ class SyncPackageDocumentHandler(object):
         dw = self.version.get_download()
         dw_url = self.version.get_download_url(entrytype=None)
         self.doc.download_url = self.site_build_absolute_uri(dw_url)
+        self.doc.static_download_url = self.version.get_download_url(is_dynamic=False,
+                                                                     entrytype=None)
         self.doc.download_size = self.version.get_download_size()
         self.doc.download_md5 = self.version.download_md5 if dw is self.version.download else self.version.di_download_md5
         self.doc.download_count = self.version.download_count

@@ -27,6 +27,7 @@ def delete_package_data_center(package_id):
         psi = PackageSearchIndex()
         package = Package.all_objects.get(pk=package_id)
         psi.remove_object(package)
+        package.invalidate_tagging_cache()
     except:
         pass
     return TASK_OK
@@ -75,6 +76,8 @@ def publish_packageversion(version_id):
         try:
             handler.all_sync(package, version)
             search_index.update_object(package)
+            package.invalidate_tagging_cache()
+            package.latest_version.invalidate_tagging_cache()
         except:
             task_result = TASK_ABORT
         else:
@@ -171,6 +174,8 @@ def sync_package(package_id):
         try:
             handler.all_sync(package, package.latest_version)
             search_index.update_object(package)
+            package.invalidate_tagging_cache()
+            package.latest_version.invalidate_tagging_cache()
         except:
             task_result = TASK_ABORT
     else:

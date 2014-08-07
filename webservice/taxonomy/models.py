@@ -17,7 +17,7 @@ from django.core.urlresolvers import reverse
 
 from django.core.urlresolvers import get_callable
 from django.conf import settings
-from toolkit import model_url_mixin as urlmixin
+from toolkit import model_url_mixin as urlmixin, cache_tagging_mixin as cachemixin
 from toolkit.managers import CurrentSitePassThroughManager, CurrentSiteManager
 from toolkit.helpers import sync_status_from, current_site_id
 from toolkit.models import SiteRelated
@@ -121,39 +121,10 @@ CACHE_CATEGORIES = {}
 DEFAULT_TIMEOUT = 86400 * 7
 
 
-class TaxonomyCacheMemoizerManagerMixin(object):
-
-    @orms_memoize(timeout=DEFAULT_TIMEOUT)
-    def cache_object_in_list(self, pk):
-        try:
-            return [self.get(pk=pk)]
-        except:
-            return []
-
-    def get_cache_by(self, pk=None):
-        try:
-            return self.cache_object_in_list(pk)[0]
-        except IndexError:
-            return None
-
-    @orms_memoize(timeout=DEFAULT_TIMEOUT)
-    def cache_object_in_list_by_slug(self, site_id, slug):
-        try:
-            return [self.get(site_id=site_id, slug=slug)]
-        except Exception as e:
-            return []
-
-    def get_cache_by_slug(self, site_id, slug):
-        try:
-            return self.cache_object_in_list_by_slug(site_id, slug)[0]
-        except:
-            return None
-
-
 class CategoryManager(TreeManager,
                       PassThroughManagerMixin,
                       CurrentSiteManager,
-                      TaxonomyCacheMemoizerManagerMixin,
+                      cachemixin.TaxonomyCacheManagerMixin
                       ):
 
     def _cache_category(self, pk):
@@ -168,12 +139,13 @@ class CategoryManager(TreeManager,
 
 class AllCategoryManager(TreeManager,
                          PassThroughManager,
-                         TaxonomyCacheMemoizerManagerMixin,
+                         cachemixin.TaxonomyCacheManagerMixin
                          ):
     pass
 
 
 class Category(urlmixin.CategoryAbsoluteUrlMixin,
+               cachemixin.TaxonomyTaggingMixin,
                MPTTModel, Taxonomy):
 
     # FIXME 重建全文索引，需要使用 package.categories 关联获取分类列表，
@@ -283,19 +255,21 @@ class TopicQuerySet(QuerySet):
 class TopicManager(TreeManager,
                    PassThroughManagerMixin,
                    CurrentSiteManager,
-                   TaxonomyCacheMemoizerManagerMixin,
+                   cachemixin.TaxonomyCacheManagerMixin
                    ):
     pass
 
 
 class AllTopicManager(TreeManager,
                       PassThroughManager,
-                      TaxonomyCacheMemoizerManagerMixin,
+                      cachemixin.TaxonomyCacheManagerMixin
                       ):
     pass
 
 
-class Topic(MPTTModel, Taxonomy, urlmixin.TopicAbsoluteUrlMixin):
+class Topic(MPTTModel, Taxonomy,
+            cachemixin.TaxonomyTaggingMixin,
+            urlmixin.TopicAbsoluteUrlMixin):
 
     objects = TopicManager.for_queryset_class(TopicQuerySet)()
 

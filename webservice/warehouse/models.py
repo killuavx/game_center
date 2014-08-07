@@ -19,8 +19,8 @@ from easy_thumbnails.fields import ThumbnailerImageField
 from toolkit.managers import CurrentSitePassThroughManager, PassThroughManager
 from toolkit.fields import StarsField, PkgFileField, MultiResourceField
 from toolkit.models import SiteRelated
-from toolkit import model_url_mixin as urlmixin
-from toolkit.helpers import import_from, sync_status_from, released_hourly_datetime, qurl_to, current_site_id
+from toolkit import model_url_mixin as urlmixin, cache_tagging_mixin as cachemixin
+from toolkit.helpers import import_from, sync_status_from, released_hourly_datetime, qurl_to
 from toolkit.storage import package_storage
 
 storage = package_storage
@@ -279,12 +279,25 @@ class PackageQuerySet(QuerySet):
             .exclude(status=self.model.STATUS.published)
 
 
-class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
+class PackageManager(cachemixin.PackageCacheManagerMixin,
+                     CurrentSitePassThroughManager):
+
+    pass
+
+
+class AllPackageManager(cachemixin.PackageCacheManagerMixin,
+                        PassThroughManager):
+    pass
+
+
+class Package(PlatformBase,
+              urlmixin.PackageAbsoluteUrlMixin,
+              cachemixin.PackageTaggingMixin,
               SiteRelated, models.Model):
 
-    objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
+    objects = PackageManager.for_queryset_class(PackageQuerySet)()
 
-    all_objects = PassThroughManager.for_queryset_class(PackageQuerySet)()
+    all_objects = AllPackageManager.for_queryset_class(PackageQuerySet)()
 
     class Meta:
         permissions = (
@@ -546,13 +559,26 @@ def version_upload_path(instance, filename):
 from toolkit.fields import QiniuThumbnailerImageField
 
 
-class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
+class PackageVersionManager(cachemixin.PackageVersionCacheManagerMixin,
+                            CurrentSitePassThroughManager):
+    pass
+
+class AllPackageVersionManager(cachemixin.PackageCacheManagerMixin,
+                               PassThroughManager):
+    pass
+
+
+
+class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
+                     cachemixin.PackageVersionTaggingMixin,
+                     PlatformBase,
                      SiteRelated, models.Model):
 
-    objects = CurrentSitePassThroughManager\
+    objects = PackageVersionManager\
         .for_queryset_class(PackageVersionQuerySet)()
 
-    all_objects = PassThroughManager.for_queryset_class(PackageVersionQuerySet)()
+    all_objects = AllPackageVersionManager\
+        .for_queryset_class(PackageVersionQuerySet)()
 
     class Meta:
         verbose_name = _("Package Version")

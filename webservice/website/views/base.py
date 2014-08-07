@@ -21,8 +21,12 @@ def package_detail(request, pk,
                    template_not_found_class=TemplateResponseNotFound,
                    *args, **kwargs):
     try:
-        package = Package.objects.published().get(pk=pk)
-        version = package.versions.latest_published()
+        package = Package.objects.get_cache_by(pk)
+        if not package or package.status != Package.STATUS.published:
+            raise ObjectDoesNotExist
+        version = PackageVersion.objects.get_cache_by(package.latest_version_id)
+        if not version or version.status != PackageVersion.STATUS.published:
+            raise ObjectDoesNotExist
     except ObjectDoesNotExist:
         return template_not_found_class(request)
 
@@ -40,8 +44,12 @@ def packageversion_detail(request, pk,
                           template_not_found_class=TemplateResponseNotFound,
                           *args, **kwargs):
     try:
-        version = PackageVersion.objects.published().get(pk=pk)
-        package = version.package
+        version = PackageVersion.objects.get_cache_by(pk=pk)
+        if not version or version.status != PackageVersion.STATUS.published:
+            raise ObjectDoesNotExist
+        package = Package.objects.get_cache_by(version.package_id)
+        if not package or package.status != Package.STATUS.published:
+            raise ObjectDoesNotExist
     except ObjectDoesNotExist:
         return template_not_found_class(request)
 
