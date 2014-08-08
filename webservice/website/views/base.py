@@ -4,6 +4,7 @@ from django.http import HttpResponseNotFound
 from django.template.response import TemplateResponse
 from taxonomy.models import Category, Topic, TopicalItem
 from warehouse.models import Package, PackageVersion
+from toolkit.helpers import get_global_site
 
 
 class TemplateResponseNotFound(TemplateResponse,
@@ -67,7 +68,9 @@ def category_page(request, slug,
                   template_not_found_class=TemplateResponseNotFound,
                   *args, **kwargs):
     try:
-        category = Category.objects.published().get(slug=slug)
+        category = Category.objects.get_cache_by_slug(site_id=get_global_site().pk, slug=slug)
+        if not category:
+            raise ObjectDoesNotExist
     except ObjectDoesNotExist:
         return TemplateResponseNotFound(request)
 
@@ -85,8 +88,10 @@ def topic_detail(request, slug,
                  template_not_found_class=TemplateResponseNotFound,
                  *args, **kwargs):
     try:
-        topic = Topic.objects.published().get(slug=slug)
-        topic.packages_count = TopicalItem.objects \
+        topic = Topic.objects.get_cache_by_slug(get_global_site().pk, slug=slug)
+        if not topic or not topic.is_published():
+            raise ObjectDoesNotExist
+        topic.packages_count = lambda: TopicalItem.objects \
             .get_items_by_topic(topic, Package).published().count()
     except ObjectDoesNotExist:
         return template_not_found_class(request)
