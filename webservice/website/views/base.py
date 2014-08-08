@@ -24,7 +24,7 @@ def package_detail(request, pk,
         package = Package.objects.get_cache_by(pk)
         if not package or package.status != Package.STATUS.published:
             raise ObjectDoesNotExist
-        version = PackageVersion.objects.get_cache_by(package.latest_version_id)
+        version = package.get_cache_latest_version()
         if not version or version.status != PackageVersion.STATUS.published:
             raise ObjectDoesNotExist
     except ObjectDoesNotExist:
@@ -47,7 +47,7 @@ def packageversion_detail(request, pk,
         version = PackageVersion.objects.get_cache_by(pk=pk)
         if not version or version.status != PackageVersion.STATUS.published:
             raise ObjectDoesNotExist
-        package = Package.objects.get_cache_by(version.package_id)
+        package = version.get_cache_package()
         if not package or package.status != Package.STATUS.published:
             raise ObjectDoesNotExist
     except ObjectDoesNotExist:

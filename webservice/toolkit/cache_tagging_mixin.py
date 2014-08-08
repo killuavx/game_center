@@ -87,6 +87,14 @@ class PackageTaggingMixin(CacheTaggingMixin):
         return 'warehouse.package.{0}:{1}'.format(self._get_site_id(),
                                                   self.package_name)
 
+    def get_cache_latest_version(self):
+        if self.latest_version_id:
+            version_cls = self.__class__.latest_version.field.rel.to
+            version =  version_cls.all_objects.get_cache_by(self.latest_version_id)
+            version.package = self
+            return version
+        return None
+
 
 class PackageVersionTaggingMixin(CacheTaggingMixin):
 
@@ -99,6 +107,12 @@ class PackageVersionTaggingMixin(CacheTaggingMixin):
         return 'warehouse.packageversion.{0}:{1}:{2}'.format(self._get_site_id(),
                                                   self.package.package_name,
                                                   self.version_name)
+
+    def get_cache_package(self):
+        pkg_cls = self.__class__.package.field.rel.to
+        package = pkg_cls.all_objects.get_cache_by(self.package_id)
+        package.latest_version = self
+        return package
 
 
 class PackageVersionCacheManagerMixin(CacheManagerMixin):

@@ -165,6 +165,10 @@ class PackageVersionMixin(object):
 
     covers = fields.DictField(required=False)
 
+    latest_version_id = fields.IntField(required=False)
+
+    version_id = fields.IntField(required=False)
+
     version_name = fields.StringField()
 
     version_code = fields.IntField()
@@ -356,6 +360,7 @@ class SyncPackageDocumentHandler(object):
         self.doc.package_name = self.package.package_name
         self.doc.version_name = self.version.version_name
         self.doc.version_code = self.version.version_code
+        self.doc.version_id = self.doc.latest_version_id = self.version.pk
         self.doc.title = self.version.subtitle or self.package.title
         self.doc.whatsnew = self.version.whatsnew
         self.doc.summary = self.version.summary or self.package.summary
