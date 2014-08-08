@@ -76,8 +76,12 @@ def publish_packageversion(version_id):
         try:
             handler.all_sync(package, version)
             search_index.update_object(package)
+            # invalidate tagging cache
             package.invalidate_tagging_cache()
             package.latest_version.invalidate_tagging_cache()
+            # build object cache
+            Package.all_objects.get_cache_by(package.pk)
+            PackageVersion.all_objects.get_cache_by(package.latest_version_id)
         except:
             task_result = TASK_ABORT
         else:
@@ -174,8 +178,14 @@ def sync_package(package_id):
         try:
             handler.all_sync(package, package.latest_version)
             search_index.update_object(package)
+
+            # invalidate tagging cache
             package.invalidate_tagging_cache()
             package.latest_version.invalidate_tagging_cache()
+            # build object cache
+            Package.all_objects.get_cache_by(package.pk)
+            PackageVersion.all_objects.get_cache_by(package.latest_version_id)
+
         except:
             task_result = TASK_ABORT
     else:

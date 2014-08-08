@@ -74,3 +74,5 @@ pyyaml
 ua-parser
 user-agents
 django-user-agents
+
+https://github.com/killuavx/cache-tagging/archive/support/py3.zip
