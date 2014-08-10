@@ -215,11 +215,13 @@ class BaseTopicalPackageListWidget(BasePackageListWidget):
 
     def get_topic(self, slug):
         from taxonomy.models import Topic
-        return Topic.objects.get(slug=slug)
+        return Topic.objects.get_cache_by_slug(get_global_site().pk, slug=slug)
 
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
         try:
             self.topic = self.get_topic(slug=options.get('slug'))
+            if not self.topic:
+                raise ObjectDoesNotExist
         except ObjectDoesNotExist:
             self.topic = None
         return super(BaseTopicalPackageListWidget, self).get_context(
