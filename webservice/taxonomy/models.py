@@ -351,6 +351,14 @@ class Topic(MPTTModel, Taxonomy,
     def get_absolute_iospc_url(self):
         return reverse('iospc_collection_detail', kwargs=dict(slug=self.slug))
 
+    def get_items(self, item_class):
+        return TopicalItem.objects \
+            .get_items_by_topic(self, item_class)
+
+    def get_packages(self):
+        from warehouse.models import Package
+        return self.get_items(Package)
+
 
 class TopicalItemQuerySet(QuerySet):
     def get_items_by_topic(self, topic, item_model, order=True):
