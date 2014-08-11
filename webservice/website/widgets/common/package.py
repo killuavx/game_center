@@ -186,6 +186,7 @@ class BaseComplexPackageListWidget(base.FilterWidgetMixin,
             url = urlunparse(urlp)
         return url
 
+
 class BaseTopicalPackageListWidget(BasePackageListWidget):
 
     class TopicalFilter(filters.ItemListByTopicFilterBackend):
@@ -547,4 +548,42 @@ class BaseComplexPackageBySearchListWidget(BasePackageBySearchListWidget):
             url = qurl_to(url, topic=topic.pk)
         return url
 
+
+class BaseTopicalPackageBySearchListWidget(BasePackageBySearchListWidget):
+
+    topic = None
+
+    filter_backends = (
+        filters.SearchByTopicFilterBackend,
+        filters.SearchOrderByTopicalFilterBackend,
+    )
+
+    def get_more_url(self):
+        if self.topic:
+            return self.topic.get_absolute_url_as(product=self.product,
+                                                  pagetype='special')
+        return 'javascript:;'
+
+    def get_title(self):
+        if self.topic:
+            return self.topic.name
+        return self.title
+
+    def get_topic(self, slug):
+        from taxonomy.models import Topic
+        return Topic.objects.get_cache_by_slug(get_global_site().pk, slug=slug)
+
+    def get_context(self, value=None, options=dict(), context=None, pagination=True):
+        try:
+            self.topic = self.get_topic(slug=options.get('slug'))
+            if not self.topic:
+                raise ObjectDoesNotExist
+        except ObjectDoesNotExist:
+            self.topic = None
+
+        return super(BaseTopicalPackageBySearchListWidget, self).get_context(
+            value=value,
+            options=options,
+            context=context,
+            pagination=pagination)
 

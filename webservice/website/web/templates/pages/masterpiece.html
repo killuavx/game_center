@@ -8,11 +8,11 @@
 <div class="auto mt30 width masterpiece minheight-page">
     <div class="cell-bk mb30">
         {% settings_value 'GC_TOPICS_MASTERPIECE_SLUG' as masterpiece_slug %}
-        {% widget WebMasterpiecePackageListWidget slug=masterpiece_slug page=request.GET.page per_page=12 %}
+        {% widget WebMasterpiecePackageBySearchListWidget slug=masterpiece_slug page=request.GET.page per_page=12 %}
             {% for package in items %}
             <div class="maste_lsit">
             {% cache_add_tags package.get_all_cache_identifier_tags %}
-            {% include "pages/widgets/masterpiece/package-list.haml" with package=package %}
+            {% include "pages/widgets/masterpiece/package-list2.haml" with package=package %}
             </div>
             {% endfor %}
         {% pagination items %}

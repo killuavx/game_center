@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from . import base
 from django.db.models.query import EmptyQuerySet
+from mongoengine import queryset_manager
 from website.widgets.common.base import BaseWidgetFilterBackend
 from toolkit.helpers import get_global_site
 
@@ -229,4 +230,20 @@ class SearchByAuthorFilterBackend(base.BaseWidgetFilterBackend):
         if author:
             author_id = author.pk
         return queryset.filter(author_id=author_id)
+
+
+class SearchOrderByTopicalFilterBackend(base.BaseWidgetFilterBackend):
+
+    topic_param = 'topic'
+    topic_id_param = 'topic_id'
+
+    def filter_queryset(self, request, queryset, widget):
+        topic = getattr(widget, self.topic_param, None)
+        topic_id = getattr(widget, self.topic_id_param, None)
+        if topic:
+            topic_id = topic.pk
+        if topic_id:
+            return queryset.order_by('topic_%d_ordering_i' % topic_id)
+        else:
+            return queryset
 

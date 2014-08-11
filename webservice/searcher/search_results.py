@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from haystack.models import SearchResult
 from toolkit.model_url_mixin import PackageAbsoluteUrlMixin
+from toolkit.cache_tagging_mixin import PackageTaggingMixin, PackageWithLatestVersionTaggingMixin
 
 
-class PackageSearchResult(SearchResult, PackageAbsoluteUrlMixin):
+class PackageSearchResult(SearchResult,
+                          PackageWithLatestVersionTaggingMixin,
+                          PackageAbsoluteUrlMixin):
 
     def _get_module_name(self):
         return 'package'

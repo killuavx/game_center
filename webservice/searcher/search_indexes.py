@@ -9,6 +9,8 @@ screenshot_sizes_alias = settings.THUMBNAIL_ALIASES_SCREENSHOT.keys()
 
 CharField = indexes.CharField
 
+RESOURCE_ALIASES = ('default', 'pc20', 'web', 'pc')
+
 
 class PackageSearchIndex(indexes.SearchIndex,
                          indexes.Indexable):
@@ -47,25 +49,26 @@ class PackageSearchIndex(indexes.SearchIndex,
         return qs
 
     def prepare(self, obj):
-        prepare_data = super(PackageSearchIndex, self).prepare(obj)
+        self.prepared_data = super(PackageSearchIndex, self).prepare(obj)
 
         try:
             set_global_site_id(obj.site_id)
-            self._prepare_platform(prepare_data, obj)
-            self._prepare_summary(prepare_data, obj)
-            self._prepare_latest_version(prepare_data, obj)
-            self._prepare_version_detail(prepare_data, obj)
-            self._prepare_images(prepare_data, obj)
-            self._prepare_download(prepare_data, obj)
-            self._prepare_tags(prepare_data, obj)
-            self._prepare_full_categories(prepare_data, obj)
-            self._prepare_all_topics(prepare_data, obj)
+            self._prepare_platform(self.prepared_data, obj)
+            self._prepare_summary(self.prepared_data, obj)
+            self._prepare_latest_version(self.prepared_data, obj)
+            self._prepare_version_detail(self.prepared_data, obj)
+            self._prepare_images(self.prepared_data, obj)
+            self._prepare_images_from_resources(self.prepared_data, obj)
+            self._prepare_download(self.prepared_data, obj)
+            self._prepare_tags(self.prepared_data, obj)
+            self._prepare_full_categories(self.prepared_data, obj)
+            self._prepare_all_topics(self.prepared_data, obj)
         except:
             raise
         finally:
             set_global_site_id(SITE_NOT_SET)
 
-        return prepare_data
+        return self.prepared_data
 
     platform = indexes.CharField(default='android')
 
@@ -135,6 +138,7 @@ class PackageSearchIndex(indexes.SearchIndex,
             topics.append(ti.topic.name)
             topic_ids.append(ti.topic.pk)
             topic_slugs.append(ti.topic.slug)
+            prepare_data['topic_%d_ordering_i' % ti.topic.pk] = ti.ordering
         prepare_data['topics'] = topics
         prepare_data['topic_ids'] = topic_ids
         prepare_data['topic_slugs'] = topic_slugs
@@ -225,6 +229,18 @@ class PackageSearchIndex(indexes.SearchIndex,
         if latest_version.cover:
             self._fetch_image_field_urls(prepare_data, 'cover', latest_version.cover, cover_sizes_alias)
 
+    def _prepare_images_from_resources(self, prepare_data, obj):
+        latest_version = self._latest_version(obj)
+        resources = getattr(latest_version, 'resources')
+        kinds = ('cover', 'icon')
+        for kind in kinds:
+            for alias in RESOURCE_ALIASES:
+                try:
+                    res = getattr(resources, kind)[alias]
+                    prepare_data['%s_%s_url' %(kind, alias)] = res.file.url
+                except:
+                    pass
+
     def _prepare_tags(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
         tags = list(set(latest_version.tags_text.split() + obj.tags_text.split()))
@@ -234,11 +250,17 @@ class PackageSearchIndex(indexes.SearchIndex,
         return obj.latest_version
 
     def _fetch_image_field_urls(self, images, prefix, field, sizes_alias):
+        try:
+            default_url = field.url
+        except:
+            default_url = ''
+        images["%s_%s_url" %(prefix, 'default')] = default_url
         for sa in sizes_alias:
             key = "%s_%s" %(prefix, sa)
+            key_url = "%s_url" % key
             if not hasattr(self, key):
                 continue
             try:
-                images[key] = field[sa].url
+                images[key_url] = images[key] = field[sa].url
             except:
-                pass
+                images[key_url] = images[key] = default_url

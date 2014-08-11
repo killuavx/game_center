@@ -96,6 +96,22 @@ class PackageTaggingMixin(CacheTaggingMixin):
         return None
 
 
+class PackageWithLatestVersionTaggingMixin(PackageTaggingMixin):
+
+    def get_cache_latestversion_identifier(self):
+        return 'warehouse.packageversion.{0}'.format(self.latest_version_id)
+
+    def get_cache_latestversion_identifier_alias(self):
+        return 'warehouse.packageversion.{0}:{1}:{2}'.format(self._get_site_id(),
+                                                             self.package_name,
+                                                             self.version_name)
+
+    def get_all_cache_identifier_tags(self):
+        tags = super(PackageWithLatestVersionTaggingMixin, self).get_all_cache_identifier_tags()
+        return tags + (self.get_cache_latestversion_identifier(),
+                       self.get_cache_latestversion_identifier_alias(), )
+
+
 class PackageVersionTaggingMixin(CacheTaggingMixin):
 
     DEFAULT_TIMEOUT = DEFAULT_TIMEOUT * 3
