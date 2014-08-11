@@ -1,9 +1,11 @@
 -extends "pages/page_web.html"
 -load widgets url_tags templatehelper_tags web_tags cache_tagging_tags
 -block main
+  {% get_site_name as site_name %}
   {% with c_cat=request.GET.category c_topic=topic.pk c_page=request.GET.page|default:'1' %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
-  {% cache_tagging 'product_web_collection_page.'|add:topic.slug|add:".p"|add:c_page request.get_host request.path_info timeout=CACHE_TIMEOUT_DAYS %}
+  {% cache_tagging 'product_web_collection_page.'|add:site_name|add:'.'|add:topic.slug|add:".p"|add:c_page request.get_host 'page:'|add:request.path_info request.get_host|add:request.path_info timeout=CACHE_TIMEOUT_DAYS %}
+  {% spaceless %}
   .auto.mt30.width.collection-dis.minheight-page
     .cell-bk.mb30.bdc
 
@@ -14,11 +16,11 @@
           %span.date 更新日期：{{ topic.updated_datetime|date }} | 共 {{ topic.packages_count|default:0 }} 个应用
           .cl
 
-      {% widget WebCollectionPackageListWidget slug=topic.slug per_page=24 page=request.GET.page %}
+      {% widget WebCollectionPackageBySearchListWidget slug=topic.slug per_page=24 page=request.GET.page %}
       .btn-s-box.p20.right-list
         -for package in items
           {% cache_add_tags package.get_all_cache_identifier_tags %}
-          {% package_box package product=product %}
+          {% package_box2 package product=product %}
 
         {% pagination items %}
       / right-list
@@ -26,4 +28,5 @@
 
     / cell-bk
   {% end_cache_tagging %}
+  {% endspaceless %}
   {% endwith %}
