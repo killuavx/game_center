@@ -64,6 +64,26 @@ def is_site_ios():
     site = helpers.get_global_site()
     return helpers.SITE_IOS == site.pk
 
+@register.assignment_tag
+def get_site_id():
+    from toolkit import helpers
+    site = helpers.get_global_site()
+    if site:
+        return site.pk
+    return None
+
+@register.assignment_tag
+def get_site_name():
+    from toolkit import helpers
+    site = helpers.get_global_site()
+    if not site:
+        return None
+    if site.pk == helpers.SITE_IOS:
+        return 'ios'
+    elif site.pk == helpers.SITE_ANDROID:
+        return 'android'
+    else:
+        return 'unknown'
 
 @register.assignment_tag
 def mz_page_get(slug):

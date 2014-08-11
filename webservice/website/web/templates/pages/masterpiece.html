@@ -1,9 +1,9 @@
 {% extends "pages/page_web.html" %}
 {% load cache_tagging_tags widgets templatehelper_tags web_tags %}
-{% block main %}
+{% block main %}{% get_site_name as site_name %}
     {% with c_page=request.GET.page|default:'1' %}
     {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
-    {% cache_tagging 'product_web_masterpiece.'|add:c_page request.get_host 'page:'|add:request.path_info timeout=CACHE_TIMEOUT_DAYS %}
+    {% cache_tagging 'product_web_masterpiece.'|add:site_name|add:'.'|add:c_page request.get_host 'page:'|add:request.path_info request.get_host|add:request.path_info timeout=CACHE_TIMEOUT_DAYS %}
 <!-- START 巨作 开始 masterpiece-->
 <div class="auto mt30 width masterpiece minheight-page">
     <div class="cell-bk mb30">

@@ -9,7 +9,7 @@
     %img{:alt => "={title}", :src => "{{ cover_url }}"}
     %h3.l= title|slice:"10"
     .r.ios-web-icon.star{:class => "s={star|floatformat:'0'}"}
-  %p.cl.des.g9= package.summary
+  %p.cl.des.g9= package.summary|default:''
   %p.l.g9 {{ dw_size|filesizeformat }} | {{ dw_count|default:0|intwordcn }}+下载
   -if is_android
     %p.r= cat_name
