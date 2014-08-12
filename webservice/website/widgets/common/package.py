@@ -570,7 +570,7 @@ class BaseTopicalPackageBySearchListWidget(BasePackageBySearchListWidget):
         return self.title
 
     def get_topic(self, slug):
-        from taxonomy.models import Topic
+        from website.models import TopicProxy as Topic
         return Topic.objects.get_cache_by_slug(get_global_site().pk, slug=slug)
 
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
@@ -580,7 +580,6 @@ class BaseTopicalPackageBySearchListWidget(BasePackageBySearchListWidget):
                 raise ObjectDoesNotExist
         except ObjectDoesNotExist:
             self.topic = None
-
         return super(BaseTopicalPackageBySearchListWidget, self).get_context(
             value=value,
             options=options,

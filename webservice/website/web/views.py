@@ -66,6 +66,32 @@ def topic_detail(request, slug,
                              product=ETS.web,
                              template_not_found_class=NotFound, *args, **kwargs)
 
+from toolkit.helpers import get_global_site
+from website.models import TopicProxy
+
+
+@cache_control(public=True, max_age=max_age)
+def topic_detail(request, slug,
+                 template_name=join(template_prefix, 'collections/page.haml'),
+                 template_not_found_class=NotFound,
+                 *args, **kwargs):
+    try:
+        topic = TopicProxy.objects.get_cache_by_slug(get_global_site().pk,
+                                                     slug=slug)
+        if not topic or not topic.is_published():
+            raise ObjectDoesNotExist
+    except ObjectDoesNotExist:
+        return template_not_found_class(request)
+
+    ETS = settings.ENTRY_TYPES()
+    return TemplateResponse(
+        request=request, template=template_name,
+        context=dict(
+            topic=topic,
+            product=ETS.web,
+            )
+    )
+
 
 @cache_control(public=True, max_age=max_age)
 def search(request, template_name=join(template_prefix, 'category/search.haml'),
