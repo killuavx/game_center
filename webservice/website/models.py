@@ -51,18 +51,26 @@ if settings.DEBUG:
 from searcher.helpers import get_default_package_query
 from searcher.search_results import PackageSearchResult
 from toolkit.helpers import get_global_site
-from taxonomy.models import Topic, TopicManager, AllTopicManager, TopicQuerySet
+from taxonomy.models import Topic, Category
 
 
-class TopicProxy(Topic):
+class TaxonomyProxyMixin(object):
+
+    def get_root(self):
+        if not hasattr(self, '_root'):
+            self._root = self.get_root()
+        return self._root
+
+    def prepare_root(self, root):
+        self._root = root
 
     @property
     def parent(self):
         if hasattr(self, '__parent'):
             return self.__parent
-        parent = super(TopicProxy, self).parent
+        parent = super(TaxonomyProxyMixin, self).parent
         if parent:
-            parent.__class__ = TopicProxy
+            parent.__class__ = self.__class__
 
         self.__parent = parent
         return parent
@@ -71,28 +79,24 @@ class TopicProxy(Topic):
     def parent(self, parent):
         self.__parent = parent
 
-
     @property
     def children(self):
-        children = super(TopicProxy, self).children
-        children.model = TopicProxy
+        children = super(TaxonomyProxyMixin, self).children
+        children.model = self.__class__
         return children
 
     @property
     def get_children(self):
-        children = super(TopicProxy, self).get_children()
-        children.model = TopicProxy
+        children = super(TaxonomyProxyMixin, self).get_children()
+        children.model = self.__class__
         return children
 
     def _search_packages_queryset(self):
-        return get_default_package_query(PackageSearchResult)\
+        return get_default_package_query(PackageSearchResult) \
             .filter(site=get_global_site().pk)
 
     def get_packages(self):
-        return self._search_packages_queryset().filter(topic_ids=self.pk)
-
-    def get_packages_topicalordering(self):
-        return self.get_packages().order_by('topic_%d_ordering_i' % self.pk)
+        raise NotImplementedError
 
     @property
     def packages_count(self):
@@ -102,9 +106,27 @@ class TopicProxy(Topic):
     def packages(self):
         return self.get_packages().order_by('-released_datetime')
 
+
+class TopicProxy(TaxonomyProxyMixin, Topic):
+
+    def get_packages(self):
+        return self._search_packages_queryset().filter(topic_ids=self.pk)
+
+    def get_packages_topicalordering(self):
+        return self.get_packages().order_by('topic_%d_ordering_i' % self.pk)
+
     @property
     def packages_topicalordering(self):
         return self.get_packages_topicalordering()
+
+    class Meta:
+        proxy = True
+
+
+class CategoryProxy(TaxonomyProxyMixin, Category):
+
+    def get_packages(self):
+        return self._search_packages_queryset().filter(category_ids=self.pk)
 
     class Meta:
         proxy = True

@@ -205,3 +205,64 @@ class TaxonomyCacheManagerMixin(CacheManagerMixin):
 
     def get_cache_by_slug(self, site_id, slug):
         return self.get_cache_by_alias(site_id, slug)
+
+
+from django.utils.encoding import force_str
+from toolkit import helpers
+from cache_tagging.tagging import tag_prepare_name
+
+default_cache = cache
+
+
+class CacheLocationHandler(object):
+
+    def __init__(self, cache=None):
+        self.cache = cache if cache else default_cache
+        self.key_mark = 'tag_location:%s:%s'
+
+    def get_site_name(self):
+        site = helpers.get_global_site()
+        if not site:
+            return None
+        if site.pk == helpers.SITE_IOS:
+            return 'ios'
+        elif site.pk == helpers.SITE_ANDROID:
+            return 'android'
+        else:
+            return 'unknown'
+
+    def get_key(self, tag, site_name=None):
+        return self.key_mark % (site_name, tag_prepare_name(tag))
+
+    def register(self, url, *tags, **kwargs):
+        tags = set(tags)
+        if kwargs.get('tags'):
+            tags.update(kwargs.get('tags'))
+        site_name = self.get_site_name()
+        for tag in tags:
+            key = self.get_key(tag, site_name)
+            self.cache.raw_client.sadd(key, url)
+
+    def get_urls(self, *tags, **kwargs):
+        tags = set(tags)
+        if kwargs.get('tags'):
+            tags.update(kwargs.get('tags'))
+        site_name = self.get_site_name()
+        all_urls = set()
+        for tag in tags:
+            key = self.get_key(tag, site_name)
+            urls = self.cache.raw_client.smembers(key)
+            all_urls.update(urls)
+        for url in all_urls:
+            yield force_str(url)
+
+    def remove_urls(self, *tags, **kwargs):
+        tags = set(tags)
+        if kwargs.get('tags'):
+            tags.update(kwargs.get('tags'))
+        site_name = self.get_site_name()
+        for tag in tags:
+            self.cache.delete(self.get_key(tag, site_name))
+
+
+cache_locator = CacheLocationHandler()

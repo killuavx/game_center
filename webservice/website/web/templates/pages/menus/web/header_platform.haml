@@ -1,4 +1,5 @@
--load staticfiles pages_tags widgets cache
+-load staticfiles pages_tags widgets cache_tagging_tags templatehelper_tags
+{% get_site_name as site_name %}
 .auto.head
   .auto.width.top
     .pt10.pb10
@@ -14,13 +15,13 @@
         / search
         .inline-three.r.user-switch
           %ul.r
-            {% cache 86400 product_web_headersite %}
+            {% cache_tagging 'product_web_headersite' 'product_web_headersite' %}
             {% widget WebHeaderSiteListWidget %}
             -for site in items
               %li<
                 %a.ios-web-icon{:class => "={site.css_class}", :href => "={site.url}"}= site.name
             {% endwidget %}
-            {% endcache %}
+            {% end_cache_tagging %}
             %li#login-reg
               %a.ios-web-icon.a4.open-login{:href => "javascript:;", :class => "{% if request.user.is_authenticated %}open-login{% endif %}",  :target => ""}><
                 -if request.user.is_authenticated
@@ -41,10 +42,12 @@
       / cell-bk
   / top
 
-  {% cache 86400 product_web_navigation request.get_host request.path_info %}
+  {% cache_tagging 'product_web_navigation'|add_param:request.path_info %}{% spaceless %}
+  {% cache_add_tags request.get_host|add:request.path_info request.build_absolute_uri %}
+  {% cache_location_register 'product_web_navigation' %}
   .cell-bk.nav#nav
     .auto.rel.width
       {% page_menu "pages/menus/web/navigation.haml" %}
     / width
   / nav
-  {% endcache %}
+  {% endspaceless %}{% end_cache_tagging %}

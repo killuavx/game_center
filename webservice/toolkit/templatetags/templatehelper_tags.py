@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.template.base import Library
+from toolkit import helpers
 
 register = Library()
 
@@ -74,7 +75,6 @@ def get_site_id():
 
 @register.assignment_tag
 def get_site_name():
-    from toolkit import helpers
     site = helpers.get_global_site()
     if not site:
         return None
@@ -85,6 +85,18 @@ def get_site_name():
     else:
         return 'unknown'
 
+@register.filter
+def add_param(text, param):
+    return "%s.%s" %(text, param)
+
+from toolkit.cache_tagging_mixin import cache_locator
+
+@register.simple_tag(takes_context=True)
+def cache_location_register(context, *tags, **kwargs):
+    url = context.get('request').build_absolute_uri()
+    cache_locator.register(url, *tags, **kwargs)
+    return ''
+
 @register.assignment_tag
 def mz_page_get(slug):
     from mezzanine.pages.models import Page
@@ -92,3 +104,5 @@ def mz_page_get(slug):
         return Page.objects.get(slug=slug)
     except Page.DoesNotExist:
         return None
+
+

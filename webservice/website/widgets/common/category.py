@@ -155,3 +155,33 @@ class BaseCategorySelectorWidget(object):
             second_selectlist=second_selectlist,
             )
 
+
+class BaseCategorySelectorWithPackageSearchCountWidget(BaseCategorySelectorWidget):
+
+    default_timeout = 86400 * 7
+
+    packages_zero_ignore = True
+
+    @orms_memoize(timeout=default_timeout)
+    def get_cache_category_selectlist(self, cat_id):
+        from website.models import CategoryProxy
+        category = CategoryProxy.objects.get_cache_category(cat_id)
+        catlist = list()
+        for cat in category.get_leafnodes():
+            cat.__class__ = CategoryProxy
+            if cat.packages_count == 0 and self.packages_zero_ignore:
+                continue
+            cat.prepare_root(category)
+            catlist.append(cat)
+        category.__class__ = CategoryProxy
+        catlist.insert(0, category)
+        return catlist
+
+    def get_category_selectlist(self, cat_id):
+        from website.models import CategoryProxy
+        catlist = []
+        for cat in self.get_cache_category_selectlist(cat_id):
+            cat.__class__ = CategoryProxy
+            catlist.append(cat)
+        return catlist
+

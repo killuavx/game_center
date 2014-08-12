@@ -9,7 +9,8 @@ from django.template.response import TemplateResponse
 from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
 from django.views.decorators.cache import cache_control
-from taxonomy.models import Category
+#from taxonomy.models import Category
+from website.models import CategoryProxy as Category
 from website.views import base
 from os.path import join
 
@@ -51,10 +52,23 @@ def packageversion_detail(request, pk,
 @cache_control(public=True, max_age=max_age)
 def category_page(request, slug,
                   template_name=join(template_prefix, 'category/page.haml'),
+                  template_not_found_class=NotFound,
                   *args, **kwargs):
-    return base.category_page(request=request, slug=slug, template_name=template_name,
-                              template_not_found_class=NotFound,
-                              *args, **kwargs)
+    try:
+        category = Category.objects.get_cache_by_slug(site_id=get_global_site().pk, slug=slug)
+        if not category:
+            raise ObjectDoesNotExist
+        else:
+            category.__class__ = Category
+    except ObjectDoesNotExist:
+        return template_not_found_class(request)
+
+    return TemplateResponse(
+        request=request, template=template_name,
+        context=dict(
+            category=category
+        )
+    )
 
 
 @cache_control(public=True, max_age=max_age)
@@ -99,17 +113,23 @@ def search(request, template_name=join(template_prefix, 'category/search.haml'),
     cat_slug = request.GET.get('cat', 'game')
     if cat_slug not in Category.ROOT_SLUGS:
         cat_slug = 'game'
-    root_category = Category.objects.get(slug=cat_slug)
+    root_category = Category.objects\
+        .get_cache_by_slug(site_id=get_global_site().pk, slug=cat_slug)
 
     cat_pk = request.GET.get('category')
     category = None
     if cat_pk:
         try:
-            category = Category.objects.get(pk=cat_pk)
+            category = Category.objects.get_cache_by(pk=cat_pk)
         except ObjectDoesNotExist:
             pass
     else:
         category = root_category
+
+    if category:
+        category.__class__ = Category
+    if root_category:
+        root_category.__class__ = Category
 
     return TemplateResponse(
         request=request,
