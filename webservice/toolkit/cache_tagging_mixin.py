@@ -262,7 +262,7 @@ class CacheLocationHandler(object):
             tags.update(kwargs.get('tags'))
         site_name = self.get_site_name()
         for tag in tags:
-            self.cache.delete(self.get_key(tag, site_name))
+            self.cache.raw_client.delete(self.get_key(tag, site_name))
 
 
 cache_locator = CacheLocationHandler()

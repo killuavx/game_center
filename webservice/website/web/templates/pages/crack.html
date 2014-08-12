@@ -1,11 +1,8 @@
 {% extends "pages/page_web.html" %}
-{% load cache widgets url_tags templatehelper_tags %}
-
-{% block main %}
-    {% with c_page=request.GET.page|default:1 %}
-    {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}
-    {% cache CACHE_TIMEOUT_HOURS product_web_crack request.get_host request.path_info %}
-
+{% load cache_tagging_tags widgets url_tags templatehelper_tags %}
+{% block main %} {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %} {% get_site_name as site_name %}
+{% cache_tagging 'product_web_crack'|add_param:site_name timeout=CACHE_TIMEOUT_HOURS %}
+{% cache_add_tags request.get_host|add:request.path_info request.build_absolute_uri %} {% cache_location_register 'product_web_crack' %}
     {% settings_value "GC_WEB_CRACK_A1_PLACE_SLUG" as A1_PLACE_SLUG %}
     <!--广告开始 banner {{ A1_PLACE_SLUG }}-->
     <div class="rel ovh banner crack-banner">
@@ -37,7 +34,8 @@
                                 </dt>
                                 <dd>
                                     {% for package in grp.packages %}
-                                    {% with title=package.title icon_url=package.icon_large cat_name=package.primary_category_name %}
+                                    {% with title=package.title icon_url=package.icon_large_url|default:package.icon_default_url cat_name=package.primary_category_name %}
+                                    {% cache_location_register tags=package.get_all_cache_identifier_tags %}
                                     {% absolute_url_as package product=product as detail_url %}
                                     <div class="dib rel app-list-min">
                                         <a href="{{ detail_url }}" class="db tc f14" title="{{ title }}" target="_blank">
@@ -66,7 +64,4 @@
 
     </div>
     <!--应用列表 结束 app-list-page-->
-    {% endcache %}
-    {% endwith %}
-
-{% endblock %}
+{% end_cache_tagging %}{% endblock %}

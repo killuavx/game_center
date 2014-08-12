@@ -6,8 +6,8 @@
   {% with c_cat=category.slug c_topic=request.GET.topic|default:'0' c_page=request.GET.page|default:'1' %} {% get_site_name as site_name %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
   {% cache_tagging 'product_web_category'|add_param:site_name|add_param:c_cat|add_param:c_topic|add_param:c_page timeout=CACHE_TIMEOUT_HOURS %}{% spaceless %}
-  {% cache_add_tags request.get_host|add:request.path_info request.build_absolute_uri %}
-  {% cache_add_tags 'category_page'|add_param:c_cat %}
+  {% cache_add_tags 'product_web_category'|add_param:site_name|add_param:c_cat request.get_host|add:request.path_info request.build_absolute_uri %}
+  {% cache_location_register 'product_web_category' 'product_web_category'|add_param:c_cat 'product_web_category'|add_param:c_cat|add_param:c_topic 'product_web_category'|add_param:c_cat|add_param:c_topic|add_param:c_page %}
   / START 应用列表 app-list-page
   .auto.mt30.width.app-list-page.minheight-page
     {% is_site_android as is_android %}{% is_site_ios as is_ios %}
