@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django_widgets import Widget
-from website.widgets.common.topic import BaseCollectionTopicListWidget
+from website.widgets.common.topic import BaseCollectionTopicListWidget, BaseCollectionTopicListWithPackageWidget
 from website.widgets.common.package import BaseTopicalPackageListWidget
 from website.widgets.pc.base import ProductPropertyWidgetMixin
 
@@ -8,7 +8,7 @@ from website.widgets.pc.base import ProductPropertyWidgetMixin
 __all__ = ['PCCollectionTopicListWidget', 'PCCollectionPackageListWidget']
 
 
-class PCCollectionTopicListWidget(BaseCollectionTopicListWidget,
+class PCCollectionTopicListWidget(BaseCollectionTopicListWithPackageWidget,
                                   ProductPropertyWidgetMixin,
                                   Widget):
 
