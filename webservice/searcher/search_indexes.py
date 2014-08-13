@@ -86,7 +86,7 @@ class PackageSearchIndex(indexes.SearchIndex,
     main_category_ids = indexes.MultiValueField()
 
     categories = indexes.MultiValueField(weight=10)
-    category_ids = indexes.MultiValueField(weight=10)
+    category_ids = indexes.MultiValueField()
     category_slugs = indexes.MultiValueField(weight=10)
 
     def _prepare_full_categories(self, prepare_data, obj):
@@ -128,7 +128,7 @@ class PackageSearchIndex(indexes.SearchIndex,
 
     topics = indexes.MultiValueField(weight=10)
     topic_slugs = indexes.MultiValueField(weight=10)
-    topic_ids = indexes.MultiValueField(weight=10)
+    topic_ids = indexes.MultiValueField()
 
     def _prepare_all_topics(self, prepare_data, obj):
         topics = list()
