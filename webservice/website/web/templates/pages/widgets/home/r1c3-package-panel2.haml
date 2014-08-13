@@ -6,7 +6,7 @@
 
 .most-list.pl10.pr10.pb10.btn-s-box
   - for package in items
-    -with title=package.title icon_url=package.icon_middle star=package.star summary=package.summary cat_name=package.primary_category_name dw_count=package.download_count
+    -with title=package.title icon_url=package.icon_middle_url star=package.star summary=package.summary cat_name=package.primary_category_name dw_count=package.download_count
       {% absolute_url_as package product=product as detail_url %}
       %dl.cell-bk.pt15.rel.app-list-l
         %dt.abs

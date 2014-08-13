@@ -586,3 +586,21 @@ class BaseTopicalPackageBySearchListWidget(BasePackageBySearchListWidget):
             context=context,
             pagination=pagination)
 
+
+class BasePackageRelatedBySearchListWidget(BasePackageBySearchListWidget):
+
+    filter_backends = [
+        filters.RelatedPackageSearcherBySearchFilterBackend,
+    ]
+
+    package = None
+
+    def get_context(self, value=None, options=dict(), context=None, pagination=True):
+        self.package = options.get('package')
+        if not self.package:
+            raise ValueError
+        return super(BasePackageRelatedBySearchListWidget, self)\
+            .get_context(value=value,
+                         options=options,
+                         context=context,
+                         pagination=pagination)

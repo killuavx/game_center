@@ -172,6 +172,30 @@ def get_client_event_data(request):
     return kwargs
 
 
+def language_codes_to_names(lang_codes):
+    """
+        根据language code列表，获取语言描述内容
+    """
+    lang_desc_maps = dict(
+        ZH='中文',
+        EN='英文',
+        _='其他'
+    )
+    desc_langs = []
+    if len(lang_codes):
+        if 'ZH' in lang_codes:
+            del lang_codes[lang_codes.index('ZH')]
+            desc_langs.append(lang_desc_maps['ZH'])
+        if 'EN' in lang_codes:
+            del lang_codes[lang_codes.index('EN')]
+            desc_langs.append(lang_desc_maps['EN'])
+        if len(lang_codes):
+            desc_langs.append(lang_desc_maps['_'])
+    else:
+        desc_langs.append(lang_desc_maps['_'])
+    return desc_langs
+
+
 # -1 not using
 # 0 not set using hostname
 # 1 android

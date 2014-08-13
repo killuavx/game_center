@@ -10,7 +10,7 @@
   .time-box-t
     .time-box-b
       -for package in items
-        -with title=package.title icon_url=package.icon_small star=package.star dw_size=package.download_size dw_count=package.download_count version_name=package.version_name released_datetime=package.released_datetime
+        -with title=package.title icon_url=package.icon_small_url star=package.star dw_size=package.download_size dw_count=package.download_count version_name=package.version_name released_datetime=package.released_datetime
           {% absolute_url_as package product=product as detail_url %}
           %dl.cell-bk.pt15.rel.app-list-m
             %dt.abs

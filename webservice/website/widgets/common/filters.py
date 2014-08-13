@@ -247,3 +247,27 @@ class SearchOrderByTopicalFilterBackend(base.BaseWidgetFilterBackend):
         else:
             return queryset
 
+
+import operator
+from functools import reduce
+from haystack.constants import ID
+from haystack.query import SQ
+
+
+class RelatedPackageSearcherBySearchFilterBackend(BaseWidgetFilterBackend):
+
+    package_search_result_param = 'package'
+
+    def filter_queryset(self, request, queryset, widget):
+        package = getattr(widget, self.package_search_result_param, None)
+        qs = queryset.exclude(**{ID:package.id})
+        if package.main_category_ids:
+            cats_or_queries = [SQ(main_category_ids=cid) for cid in package.main_category_ids]
+            qs = qs.filter(reduce(operator.or_, cats_or_queries))
+        else:
+            qs = qs.filter(root_category_id=package.root_category_id)
+        tags = package.tags_text.split() if package.tags_text else None
+        if tags:
+            or_queries = [SQ(**{'tags_text': tag}) for tag in tags]
+            qs = qs.filter(reduce(operator.or_, or_queries))
+        return qs

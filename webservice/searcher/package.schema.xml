@@ -154,87 +154,66 @@
     <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="false"/>
 
     <dynamicField name="*_ik"  type="text_ik"  indexed="true"  stored="true"/>
-    <dynamicField name="*_url"  type="string"  indexed="false"  stored="false"/>
-
+    <dynamicField name="*_url"  type="string"  indexed="false"  stored="true"/>
+    <dynamicField name="*_id"  type="long"  indexed="true"  stored="true"/>
+    <dynamicField name="*_ordering"  type="int"  indexed="true"  stored="true"/>
 
     <field name="_version_" type="long" indexed="true" stored="true" multiValued="false" />
+    <field name="text" type="text_en" indexed="true" stored="true" multiValued="false" />
 
-    <field name="main_categories" type="text_en" indexed="true" stored="true" multiValued="true" />
-
-    <field name="title" type="text_ik" indexed="true" stored="true" multiValued="false" />
-
-    <field name="latest_version_id" type="long" indexed="true" stored="true" multiValued="false" />
-
-    <field name="topics" type="text_ik" indexed="true" stored="true" multiValued="true" />
+    <field name="platform" type="text_en" indexed="true" stored="true" multiValued="false" />
+    <field name="site" type="long" indexed="true" stored="true" multiValued="false" />
 
     <field name="package_name" type="text_ik" indexed="true" stored="true" multiValued="false" />
 
-    <field name="primary_category_name" type="text_ik" indexed="true" stored="true" multiValued="false" />
+    <field name="version_code" type="long" indexed="true" stored="true" multiValued="false" />
+    <field name="version_name" type="text_en" indexed="true" stored="true" multiValued="false" />
+    <field name="version_id" type="long" indexed="true" stored="true" multiValued="false" />
+    <field name="latest_version_id" type="long" indexed="true" stored="true" multiValued="false" />
 
-    <field name="download_url" type="string" indexed="false" stored="true" multiValued="false" />
-
-    <field name="platform" type="text_en" indexed="true" stored="true" multiValued="false" />
-
-    <field name="root_category_slug" type="text_en" indexed="true" stored="true" multiValued="false" />
-
-    <field name="site" type="long" indexed="true" stored="true" multiValued="false" />
-
+    <field name="title" type="text_ik" indexed="true" stored="true" multiValued="false" />
     <field name="summary" type="text_ik" indexed="true" stored="true" multiValued="false" />
-
-    <field name="topic_slugs" type="text_en" indexed="true" stored="true" multiValued="true" />
-
-    <field name="download_size" type="long" indexed="false" stored="true" multiValued="false" />
-
-    <field name="categories" type="text_ik" indexed="true" stored="true" multiValued="true" />
+    <field name="whatsnew" type="text_ik" indexed="false" stored="true" multiValued="false" />
+    <field name="description" type="text_ik" indexed="false" stored="true" multiValued="false" />
 
     <field name="updated_datetime" type="date" indexed="true" stored="true" multiValued="false" />
+    <field name="released_datetime" type="date" indexed="true" stored="true" multiValued="false" />
 
     <field name="tags_text" type="text_ik" indexed="true" stored="true" multiValued="false" />
 
-    <field name="category_ids" type="text_en" indexed="true" stored="true" multiValued="true" />
-
-    <field name="primary_category_id" type="long" indexed="true" stored="true" multiValued="false" />
-
-    <field name="topic_ids" type="text_en" indexed="true" stored="true" multiValued="true" />
-
-    <field name="released_datetime" type="date" indexed="true" stored="true" multiValued="false" />
-
+    <field name="categories" type="text_ik" indexed="true" stored="true" multiValued="true" />
+    <field name="category_ids" type="int" indexed="true" stored="true" multiValued="true" />
     <field name="category_slugs" type="text_en" indexed="true" stored="true" multiValued="true" />
 
-    <field name="version_code" type="long" indexed="true" stored="true" multiValued="false" />
+    <field name="main_categories" type="text_ik" indexed="true" stored="true" multiValued="true" />
+    <field name="main_category_ids" type="int" indexed="true" stored="true" multiValued="true" />
 
-    <field name="total_download_count" type="long" indexed="false" stored="true" multiValued="false" />
+    <field name="root_category_id" type="int" indexed="true" stored="true" multiValued="false" />
+    <field name="root_category_name" type="text_ik" indexed="true" stored="true" multiValued="false" />
+    <field name="root_category_slug" type="text_en" indexed="true" stored="true" multiValued="false" />
 
-    <field name="root_category_id" type="long" indexed="true" stored="true" multiValued="false" />
-
-    <field name="author_name" type="text_ik" indexed="true" stored="true" multiValued="false" />
-
-    <field name="author_id" type="long" indexed="true" stored="true" multiValued="false" />
-
+    <field name="primary_category_id" type="int" indexed="true" stored="true" multiValued="false" />
+    <field name="primary_category_name" type="text_ik" indexed="true" stored="true" multiValued="false" />
     <field name="primary_category_slug" type="text_en" indexed="true" stored="true" multiValued="false" />
 
-    <field name="text" type="text_en" indexed="true" stored="true" multiValued="false" />
+    <field name="topics" type="text_ik" indexed="true" stored="true" multiValued="true" />
+    <field name="topic_ids" type="int" indexed="true" stored="true" multiValued="true" />
+    <field name="topic_slugs" type="text_en" indexed="true" stored="true" multiValued="true" />
 
-    <field name="version_name" type="text_en" indexed="true" stored="true" multiValued="false" />
-
-    <field name="root_category_name" type="text_ik" indexed="true" stored="true" multiValued="false" />
-
-    <field name="static_download_url" type="string" indexed="false" stored="true" multiValued="false" />
-
+    <field name="total_download_count" type="long" indexed="false" stored="true" multiValued="false" />
     <field name="download_count" type="long" indexed="false" stored="true" multiValued="false" />
+    <field name="static_download_url" type="string" indexed="false" stored="true" multiValued="false" />
+    <field name="download_url" type="string" indexed="false" stored="true" multiValued="false" />
+    <field name="download_size" type="long" indexed="false" stored="true" multiValued="false" />
+
+    <field name="author_id" type="long" indexed="true" stored="true" multiValued="false" />
+    <field name="author_name" type="text_ik" indexed="true" stored="true" multiValued="false" />
 
     <field name="star" type="float" indexed="true" stored="true" multiValued="false" />
-
-    <field name="icon_small" type="string" indexed="false" stored="true" multiValued="false" />
-    <field name="icon_middle" type="string" indexed="false" stored="true" multiValued="false" />
-    <field name="icon_large" type="string" indexed="false" stored="true" multiValued="false" />
-    <field name="icon_xlarge" type="string" indexed="false" stored="true" multiValued="false" />
-
-    <field name="cover_small" type="string" indexed="false" stored="true" multiValued="false" />
-    <field name="cover_middle" type="string" indexed="false" stored="true" multiValued="false" />
-    <field name="cover_large" type="string" indexed="false" stored="true" multiValued="false" />
+    <field name="stars_count" type="int" indexed="false" stored="true" multiValued="false" />
 
     <field name="support_device_types" type="string" indexed="false" stored="true" multiValued="true" />
+    <field name="support_language_codes" type="string" indexed="false" stored="true" multiValued="true" />
 
   </fields>
 

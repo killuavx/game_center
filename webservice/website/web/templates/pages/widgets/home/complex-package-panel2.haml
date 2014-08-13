@@ -14,18 +14,18 @@
   -for grp in result
     .tj.pt5.app-list-left
       - for package in grp.packages
-        -with title=package.title cat_name=package.primary_category_name icon_url=package.icon_middle
+        -with title=package.title cat_name=package.primary_category_name icon_url=package.icon_middle_url
           - if is_ios
             {% qurl package.static_download_url as dw_url %}
           - else
             {% qurl package.download_url entrytype=product as dw_url %}
           {% absolute_url_as package product=product as detail_url %}
           .dib.rel.app-list-min
-            %a.db.tc.f14{:href => "={detail_url}", :target => "_blank", :title => "={title}" }
+            %a.db.tc.f14{:href => "={detail_url}", :target => "_blank", :title => "={title}" }><
               %img.db.auto{:src => "={icon_url}"}
-                %span.ios-web-icon.abs.db.auto
-                = title|slice:"5"
-                %i.db.n.f12.g9= cat_name
+              %span.ios-web-icon.abs.db.auto
+              = title|slice:"5"
+              %i.db.n.f12.g9= cat_name
             .btn-s
               -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
               %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载

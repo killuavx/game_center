@@ -207,14 +207,18 @@ class TaxonomyCacheManagerMixin(CacheManagerMixin):
         return self.get_cache_by_alias(site_id, slug)
 
 
+from datetime import timedelta
 from django.utils.encoding import force_str
 from toolkit import helpers
 from cache_tagging.tagging import tag_prepare_name
+from itertools import chain
 
 default_cache = cache
 
 
 class CacheLocationHandler(object):
+
+    timeout = timedelta(days=1)
 
     def __init__(self, cache=None):
         self.cache = cache if cache else default_cache
@@ -239,21 +243,23 @@ class CacheLocationHandler(object):
         if kwargs.get('tags'):
             tags.update(kwargs.get('tags'))
         site_name = self.get_site_name()
+        pip = self.cache.raw_client.pipeline()
         for tag in tags:
             key = self.get_key(tag, site_name)
-            self.cache.raw_client.sadd(key, url)
+            pip.sadd(key, url)
+            pip.expire(key, self.timeout)
+        pip.execute()
 
     def get_urls(self, *tags, **kwargs):
         tags = set(tags)
         if kwargs.get('tags'):
             tags.update(kwargs.get('tags'))
         site_name = self.get_site_name()
-        all_urls = set()
+        pip = self.cache.raw_client.pipeline()
         for tag in tags:
             key = self.get_key(tag, site_name)
-            urls = self.cache.raw_client.smembers(key)
-            all_urls.update(urls)
-        for url in all_urls:
+            pip.smembers(key)
+        for url in set(chain.from_iterable(pip.execute())):
             yield force_str(url)
 
     def remove_urls(self, *tags, **kwargs):
@@ -261,8 +267,8 @@ class CacheLocationHandler(object):
         if kwargs.get('tags'):
             tags.update(kwargs.get('tags'))
         site_name = self.get_site_name()
-        for tag in tags:
-            self.cache.raw_client.delete(self.get_key(tag, site_name))
+        self.cache.raw_client.delete(*[self.get_key(tag, site_name)
+                                       for tag in tags])
 
 
 cache_locator = CacheLocationHandler()
