@@ -1,10 +1,11 @@
 {% extends "pages/page_web.html" %}
 {% load widgets templatehelper_tags web_tags cache_tagging_tags %}
 {% block main %} {% get_site_name as site_name %}
-    {% with c_page=request.GET.page|default:'1' %}
-    {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
-    {% cache_tagging 'product_web_collections.'|add:site_name|add:'.p'|add:c_page request.get_host 'page:'|add:request.path_info request.get_host|add:request.path_info timeout=CACHE_TIMEOUT_DAYS %}
-{% spaceless %}
+    {% with c_page=request.GET.page|default:'1' %} {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
+    {% cache_tagging 'product_web_collections'|add_param:site_name|add_param:c_page timeout=CACHE_TIMEOUT_DAYS %}{% spaceless %}
+    {% cache_add_tags request.get_host|add:request.path_info request.build_absolute_uri %}
+    {% cache_add_tags 'product_web_collections'|add_param:site_name 'product_web_collections' %}
+    {% cache_location_register 'product_web_collections' %}
     <!--START 合集 开始 collection-->
     <div class="auto mt30 width collection minheight-page">
         {% settings_value 'GC_TOPICS_COLLECTIONS_SLUG' as choice_slug %}
@@ -13,8 +14,10 @@
     {% for topic in items %}
         {% cache_tagging 'product_web_collection_row.'|add:site_name|add:'.'|add:topic.slug request.get_host 'area:'|add:request.path_info timeout=CACHE_TIMEOUT_DAYS %}
             <div class="collection_box">
-            {% cache_add_tags topic.get_all_cache_identifier_tags %}
+            {% with topic_tags=topic.get_all_cache_identifier_tags %}
+            {% cache_location_register tags=topic_tags %} {% cache_add_tags topic_tags %}
             {% include "pages/widgets/collections/topic-list2.haml" with topic=topic %}
+            {% endwith %}
             </div><!--collection_box-->
         {% end_cache_tagging %}
     {% endfor %}
@@ -23,7 +26,5 @@
         {% endwidget %}
     </div>
     <!--END 合集 结束 collection-->
-{% endspaceless %}
-    {% end_cache_tagging %}
-    {% endwith %}
-{% endblock %}
+{% endspaceless %}{% end_cache_tagging %}
+{% endwith %}{% endblock %}

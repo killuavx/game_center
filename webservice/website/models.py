@@ -109,6 +109,10 @@ class TaxonomyProxyMixin(object):
 
 class TopicProxy(TaxonomyProxyMixin, Topic):
 
+    @classmethod
+    def _module_name(cls):
+        return Topic.__name__.lower()
+
     def get_packages(self):
         return self._search_packages_queryset().filter(topic_ids=self.pk)
 
@@ -124,6 +128,10 @@ class TopicProxy(TaxonomyProxyMixin, Topic):
 
 
 class CategoryProxy(TaxonomyProxyMixin, Category):
+
+    @classmethod
+    def _module_name(cls):
+        return Category.__name__.lower()
 
     def get_packages(self):
         return self._search_packages_queryset().filter(category_ids=self.pk)
