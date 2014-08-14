@@ -98,15 +98,15 @@
           .up_pic
             %ul
               -if is_ios
-                -for screenshot in package.screenshots.default
+                -for screenshot in package.screenshots_default
                   -with image=screenshot.image
                     %li><
                       %img{:src => "={image.url}", :alt => "={screenshot.alt}"}/
               -if is_android
-                -for screenshot in package.screenshots.all
-                  -with image=screenshot.image image_url=image.small.url
+                -for screenshot in package.screenshots
+                  -with image=screenshot.image image_url=image.url
                     %li><
-                      %img{:src => "={image_url|default:image.url}", :height =>"{% if not image_url %}370{% endif %}", :alt => "={screenshot.alt}"}/
+                      %img{:src => "={image_url}", :height =>"{% if not image_url %}370{% endif %}", :alt => "={screenshot.alt}"}/
           / up_pic
           .cl.rel.a_btn{:style => "display: none;"}
             %a.ios-web-icon.abs.prev.prevStop{:href => "javascript:;", :style => "display: none;"}

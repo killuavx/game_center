@@ -63,34 +63,14 @@ class PackageDetailSearchResult(PackageSearchResult):
         from warehouse.models import PackageVersionScreenshot
         qs = PackageVersionScreenshot.objects\
             .filter(version_id=self.latest_version_id)
+        return qs
 
-        class FilterKindDict(dict):
+    @property
+    def screenshots_default(self):
+        return self.screenshots.filter(kind='default')
 
-            def ipad(self):
-                return qs.filter(kind='ipad')
+    @property
+    def screenshots_ipad(self):
+        return self.screenshots.filter(kind='ipad')
 
-            def default(self):
-                return qs.filter(kind='default')
-
-            def count(self):
-                return qs.count()
-
-            def __getattr__(self, kind):
-                return qs.get(kind=kind)
-
-            def __getitem__(self, kind):
-                if hasattr(qs, kind):
-                    return getattr(qs, kind)
-
-                if isinstance(kind, int):
-                    return qs[kind]
-                return qs.get(kind=kind)
-
-            def __iter__(self):
-                return qs
-
-            def __repr__(self):
-                return '<FilterKindDict: screenshots of version:%d>' % self.latest_version_id
-
-        return FilterKindDict()
 
