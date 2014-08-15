@@ -11,15 +11,15 @@
         {% settings_value 'GC_TOPICS_COLLECTIONS_SLUG' as choice_slug %}
         {% widget WebCollectionTopicListWithSearchPackageWidget slug=choice_slug page=request.GET.page per_page=4 %}
         <div class="cell-bk">
-    {% for topic in items %}
-        {% cache_tagging 'product_web_collection_row.'|add:site_name|add:'.'|add:topic.slug request.get_host 'area:'|add:request.path_info timeout=CACHE_TIMEOUT_DAYS %}
+    {% for topic in items %}{% with cache_name='product_web_collection_row'|add_param:site_name|add_param:topic.slug %}
+        {% cache_tagging cache_name request.build_absolute_uri|add_param:'#row'|add_param:topic.slug timeout=CACHE_TIMEOUT_DAYS %}
             <div class="collection_box">
             {% with topic_tags=topic.get_all_cache_identifier_tags %}
             {% cache_location_register tags=topic_tags %} {% cache_add_tags topic_tags %}
             {% include "pages/widgets/collections/topic-list2.haml" with topic=topic %}
             {% endwith %}
             </div><!--collection_box-->
-        {% end_cache_tagging %}
+        {% end_cache_tagging %}{% endwith %}
     {% endfor %}
         {% pagination items %}
         </div>

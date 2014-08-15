@@ -38,7 +38,7 @@ class WebCollectionTopicListWithSearchPackageWidget(BaseCollectionTopicListWidge
         from website.models import TopicProxy
         try:
             topic = TopicProxy.objects.filter(slug=self.slug).published().get()
-            return topic.children.published()
+            return self.filter_queryset(topic.children.published())
         except TopicProxy.DoesNotExist:
             return TopicProxy.objects.none()
 
