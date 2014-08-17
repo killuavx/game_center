@@ -18,7 +18,7 @@ from mobapi2.account.views import (AccountCreateView,
                                    AccountSignoutView,
                                    AccountAuthTokenView,
                                    AccountCommentPackageView)
-from mobapi2.event.views import EventViewSet
+from analysis.views.rest_views import EventCreateView
 from mobapi2.clientapp.views import SelfUpdateView, LoadingCoverView
 from mobapi2.rest_router import rest_router
 from mobapi2.ranking.views import PackageRankingViewSet
@@ -38,7 +38,6 @@ rest_router.register('advertisements', AdvertisementViewSet)
 rest_router.register('bookmarks', PackageBookmarkViewSet, base_name='bookmark')
 rest_router.register('comments', CommentViewSet)
 rest_router.register('feedbacks', FeedbackViewSet)
-rest_router.register('events', EventViewSet, base_name='event')
 rest_router.register('giftbags', GiftBagViewSet)
 
 
@@ -82,5 +81,6 @@ urlpatterns += patterns('',
                                                                          slug_pattern),
         LoadingCoverView.as_view(),
         name=rest_router.get_base_name('loadingcover')),
+    url(r'^events/?$', EventCreateView.as_view(), name=rest_router.get_base_name('event'))
 )
 

@@ -49,10 +49,12 @@ class EventViewSet(mixins.CreateModelMixin,
     """
 
     model = Event
-    queryset = Event.objects
     serializer_class = EventSerializer
     permission_classes = ()
     authentication_classes = (PlayerTokenAuthentication, )
+
+    def get_queryset(self):
+        return Event.objects
 
     def get_serializer(self, instance=None, data=None,
                        files=None, many=False, partial=False):
@@ -70,3 +72,5 @@ class EventViewSet(mixins.CreateModelMixin,
                 serializer.object.client_ip = request.get_client_ip()
                 serializer.object.domain = request.get_host()
         return serializer
+
+

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework import mixins
-from analysis.serializers import EventSerializer
+from analysis.serializers import EventSerializer, EventCreateSerializer
 from analysis.documents.event import Event
 from mobapi.authentications import PlayerTokenAuthentication
 
@@ -49,10 +49,12 @@ class EventViewSet(mixins.CreateModelMixin,
     """
 
     model = Event
-    queryset = Event.objects
     serializer_class = EventSerializer
     permission_classes = ()
     authentication_classes = (PlayerTokenAuthentication, )
+
+    def get_queryset(self):
+        return Event.objects
 
     def get_serializer(self, instance=None, data=None,
                        files=None, many=False, partial=False):
@@ -71,3 +73,22 @@ class EventViewSet(mixins.CreateModelMixin,
                 serializer.object.domain = request.get_host()
         return serializer
 
+
+class EventCreateView(generics.CreateAPIView):
+
+    model = Event
+    permission_classes = ()
+    authentication_classes = (PlayerTokenAuthentication, )
+    serializer_class = EventCreateSerializer
+
+    def get_serializer(self, instance=None, data=None,
+                       files=None, many=False, partial=False):
+        if instance is None and data:
+            instance = self.model(**data)
+        serializer = super(EventCreateView, self).get_serializer(instance=instance,
+                                                                 data=data,
+                                                                 files=files,
+                                                                 many=many,
+                                                                 partial=partial)
+        serializer.set_request_datas(self.request)
+        return serializer

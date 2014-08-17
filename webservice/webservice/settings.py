@@ -496,14 +496,32 @@ CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_RESULT_SERIALIZER = 'json'
 
-BROKER_URL='redis://localhost:6379/3'
-
-CELERY_RESULT_BACKEND = BROKER_URL
+import os
+CELERY_BROKER_HOST = os.getenv('CELERY_BROKER_HOST', 'localhost')
+BROKER_URL='redis://{0}:6379/2'.format(CELERY_BROKER_HOST)
+CELERY_RESULT_HOST = os.getenv('CELERY_RESULT_HOST', 'localhost')
+CELERY_RESULT_BACKEND = 'redis://{0}:6379/3'.format(CELERY_RESULT_HOST)
 
 CELERY_ENABLE_UTC = True
 
 CELERY_TIMEZONE = 'Asia/Shanghai'
 
+CELERY_TASK_RESULT_EXPIRES = 3600
+
+CELERY_ROUTES = ({
+    'analysis.tasks.record_event': {
+        'queue': 'record_event',
+        'exchange': 'analysis',
+        'routing_key': 'analysis.record_event',
+    },
+}, )
+
+from kombu import Queue, Exchange
+CELERY_DEFAULT_QUEUE = 'default'
+CELERY_QUEUES = [
+    Queue('default', Exchange('default'), routing_key='default'),
+    Queue('record_event', Exchange('analysis'), routing_key='analysis.record_event'),
+]
 
 try:
     import djcelery
