@@ -10,7 +10,7 @@
 .app-list-right
   %ol
     -for pkg in items
-      -with ver=pkg.versions.latest_published ptitle=ver.subtitle|default:pkg.title
+      -with ver=pkg.latest_version ptitle=ver.subtitle|default:pkg.title
         {% absolute_url_as pkg product=product as detail_url %}
         - if is_ios
           {% download_url_as ver is_dynamic=0 product=product as dw_url %}
