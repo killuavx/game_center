@@ -118,9 +118,9 @@
           %h3.n 应用介绍
           .text_inner= package.description|linebreaksbr
           / text_inner
-          -if version.whatsnew
+          -if whatsnew
             %h3.n 新版特性
-            .text_inner= version.whatsnew|linebreaksbr
+            .text_inner= whatsnew
           / text_inner
 
           {% widget WebPackageRelatedBySearchListWidget package=package per_page=10 %}
