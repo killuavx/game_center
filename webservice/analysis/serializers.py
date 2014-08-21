@@ -110,7 +110,8 @@ class DownloadEventCreateSerializer(EventCreateSerializer):
     def save_object(self, obj, **kwargs):
         # FIX client 2.2 bug
         if obj.entrytype == 'client':
-            obj.setdefault('package_name', 'com.lion.market')
+            if not hasattr(obj, 'package_name'):
+                setattr(obj, 'package_name', 'com.lion.market')
         #obj.eventtype = 'download'
         super(DownloadEventCreateSerializer, self).save_object(obj, **kwargs)
 

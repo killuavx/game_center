@@ -187,7 +187,7 @@ def clientapp_latest_download(request, package_name=None,
         #                             download_package_name=app.package_name,
         #                             download_version_name=app.version_name)
         _download_make_event_delay(request, response,
-                                   download_package_name=app.package.package_name,
+                                   download_package_name=app.package_name,
                                    download_version_name=app.version_name)
     except Exception as e:
         print(e)
