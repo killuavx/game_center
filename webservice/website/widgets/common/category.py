@@ -3,6 +3,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from taxonomy.models import Category, Topic, TopicalItem
 from warehouse.models import Author
+from toolkit.memoizes import orms_memoize, memoize
+from toolkit.helpers import get_global_site
+
+
 import re
 
 
@@ -86,27 +90,30 @@ class BaseTopicAuthorPackageListWidget(object):
 
 class BaseCategorySelectorWidget(object):
 
+    default_timeout = 86400 * 7
+
     packages_zero_ignore = True
 
-    def get_category_selectlist(self, category):
+    @orms_memoize(timeout=default_timeout)
+    def get_cache_category_selectlist(self, cat_id):
+        category = Category.objects.get_cache_category(cat_id)
         catlist = list()
         for cat in category.get_leafnodes():
-            cat.affiliated_packages_count = cat.get_affiliated_packages()\
-                                                .published().count()
+            cat.affiliated_packages_count = cat.get_affiliated_packages() \
+                .published().count()
             if cat.affiliated_packages_count == 0 and self.packages_zero_ignore:
                 continue
             catlist.append(cat)
-        category.affiliated_packages_count = category.get_affiliated_packages()\
-                                                .published().count()
+        category.affiliated_packages_count = category.get_affiliated_packages() \
+            .published().count()
         catlist.insert(0, category)
         return catlist
 
-    def get_second_selectlist(self):
-        from taxonomy.models import Topic
-        from mezzanine.conf import settings
-        slug_text = getattr(settings, 'GC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS')
-        slugs = list(filter(lambda x: x, slug_text.split(',')))
+    def get_category_selectlist(self, cat_id):
+        return self.get_cache_category_selectlist(cat_id)
 
+    @memoize(timeout=default_timeout)
+    def get_second_selectlist(self, site_id=None, slugs=None):
         #slugs = slugs + ['ZH', 'EN']
         result = []
         for s in slugs:
@@ -120,9 +127,8 @@ class BaseCategorySelectorWidget(object):
                 if s == 'EN':
                     result.append(dict(params=params, name='英文'))
             else:
-                try:
-                    topic = Topic.objects.get(slug=s)
-                except ObjectDoesNotExist:
+                topic = Topic.objects.get_cache_by_slug(site_id=site_id, slug=s)
+                if not topic:
                     continue
                 params['topic'] = topic.pk
                 result.append(dict(params=params, name=topic.name))
@@ -131,11 +137,51 @@ class BaseCategorySelectorWidget(object):
     def get_context(self, value, options):
         self.product = options.get('product')
         root_category = options.get('root_category')
-        category_selectlist = self.get_category_selectlist(root_category)
-        second_selectlist = self.get_second_selectlist()
+        if isinstance(root_category, int):
+            cat_id = root_category
+        else:
+            cat_id = root_category.pk
+        category_selectlist = self.get_category_selectlist(cat_id)
+
+        from mezzanine.conf import settings
+        slug_text = getattr(settings, 'GC_COMPLEX_PACKAGE_FILTER_TOPIC_SLUGS')
+        slugs = list(filter(lambda x: x, slug_text.split(',')))
+        second_selectlist = self.get_second_selectlist(site_id=get_global_site().pk,
+                                                       slugs=slugs)
+
         return dict(
             product=self.product,
             category_selectlist=category_selectlist,
             second_selectlist=second_selectlist,
             )
+
+
+class BaseCategorySelectorWithPackageSearchCountWidget(BaseCategorySelectorWidget):
+
+    default_timeout = 86400 * 7
+
+    packages_zero_ignore = True
+
+    @orms_memoize(timeout=default_timeout)
+    def get_cache_category_selectlist(self, cat_id):
+        from website.models import CategoryProxy
+        category = CategoryProxy.objects.get_cache_category(cat_id)
+        catlist = list()
+        for cat in category.get_leafnodes():
+            cat.__class__ = CategoryProxy
+            if cat.packages_count == 0 and self.packages_zero_ignore:
+                continue
+            cat.prepare_root(category)
+            catlist.append(cat)
+        category.__class__ = CategoryProxy
+        catlist.insert(0, category)
+        return catlist
+
+    def get_category_selectlist(self, cat_id):
+        from website.models import CategoryProxy
+        catlist = []
+        for cat in self.get_cache_category_selectlist(cat_id):
+            cat.__class__ = CategoryProxy
+            catlist.append(cat)
+        return catlist
 

@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 from django.http import Http404
 from django.shortcuts import redirect
 from toolkit.helpers import get_client_event_data
 from clientapp.models import ClientPackageVersion
 from warehouse.models import PackageVersion
-from analysis.documents.event import Event
 from mezzanine.conf import settings
+from analysis.documents.event import Event
+from analysis.tasks import record_event, event_fields_datetime_format_to_isostring
+from analysis.serializers import DownloadEventCreateSerializer
 
 
 def _download_packageversion_response(packageversion, filetype):
@@ -82,8 +85,31 @@ def _download_make_event(request, response, **kwargs):
     event.redirect_to = response.get('Location')
     event.referer = request.META.get('HTTP_REFERER')
     event.user = user
-    event.save()
+    #event.save()
+    #_data = deepcopy(event._data)
+    #event_fields_datetime_format_to_isostring(_data)
+    #res = record_event.delay(**_data)
     return event
+
+
+def _download_make_event_delay(request, response, **kwargs):
+    if _is_breakpoint_continual_download(request):
+        return None
+    event_data = get_client_event_data(request)
+    event_data['entrytype'] = kwargs.get('entrytype', request.GET.get('entrytype', 'web'))
+    event_data['imei'] = event_data.get('imei', request.GET.get('imei', ''))
+    event_data['file_type'] = kwargs.get('filetype', None)
+    event_data['download_package_name'] = kwargs.get('download_package_name')
+    event_data['download_version_name'] = kwargs.get('download_version_name')
+    serializer = DownloadEventCreateSerializer\
+        .factory_serializer(data=event_data,
+                            request=request,
+                            response=response)
+    if serializer.is_valid():
+        serializer.save(force_insert=True)
+        return serializer, True
+    else:
+        return serializer, False
 
 
 def download_package(request, package_name, version_name=None,
@@ -97,12 +123,20 @@ def download_package(request, package_name, version_name=None,
     except (PackageVersion.DoesNotExist, PackageVersion.MultipleObjectsReturned):
         raise Http404()
 
-    response = _download_packageversion_response(packageversion, filetype)
+    response = _download_packageversion_response(packageversion, filetype=filetype)
     try:
-        event = _download_make_event(request, response,
-                                     download_package_name=packageversion.package.package_name,
-                                     download_version_name=packageversion.version_name,
-                                     filetype=filetype)
+        #event = _download_make_event(request, response,
+        #                             download_package_name=packageversion.package.package_name,
+        #                             download_version_name=packageversion.version_name,
+        #                             filetype=filetype)
+        r = _download_make_event_delay(request, response,
+                                   download_package_name=packageversion.package.package_name,
+                                   download_version_name=packageversion.version_name,
+                                   filetype=filetype)
+        try:
+            serializer, created = r
+        except:
+            pass
     except Exception as e:
         pass
     return response
@@ -110,17 +144,24 @@ def download_package(request, package_name, version_name=None,
 
 def download_packageversion(request, pk, filetype=None, *args, **kwargs):
     try:
-        packageversion = PackageVersion.objects.published().get(pk=pk)
+        packageversion = PackageVersion.objects.get_cache_by(pk)
+        if not packageversion:
+            raise PackageVersion.DoesNotExist
     except PackageVersion.DoesNotExist:
         raise Http404()
 
-    response = _download_packageversion_response(packageversion, filetype)
+    response = _download_packageversion_response(packageversion, filetype=filetype)
+    #event = _download_make_event(request, response,
+    #                             download_package_name=packageversion.package.package_name,
+    #                             download_version_name=packageversion.version_name,
+    #                             filetype=filetype)
     try:
-        event = _download_make_event(request, response,
-                                     download_package_name=packageversion.package.package_name,
-                                     download_version_name=packageversion.version_name,
-                                     filetype=filetype)
+        _download_make_event_delay(request, response,
+                                   download_package_name=packageversion.package.package_name,
+                                   download_version_name=packageversion.version_name,
+                                   filetype=filetype)
     except Exception as e:
+        print(e)
         pass
     return response
 
@@ -142,9 +183,13 @@ def clientapp_latest_download(request, package_name=None,
 
     response = redirect(app.download.url)
     try:
-        event = _download_make_event(request, response,
-                                     download_package_name=app.package_name,
-                                     download_version_name=app.version_name)
+        #event = _download_make_event(request, response,
+        #                             download_package_name=app.package_name,
+        #                             download_version_name=app.version_name)
+        _download_make_event_delay(request, response,
+                                   download_package_name=app.package_name,
+                                   download_version_name=app.version_name)
     except Exception as e:
+        print(e)
         pass
     return response

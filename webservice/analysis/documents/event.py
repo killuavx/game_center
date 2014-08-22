@@ -4,6 +4,16 @@ from mongoengine import DynamicDocument, fields, Document, DoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.conf import settings
+from mongoengine.connection import register_connection
+
+
+con_key = 'datawarehouse'
+con_opts = settings.MOGOENGINE_CONNECTS[con_key]
+register_connection(alias=con_key,
+                    name=con_opts.get('name'),
+                    host=con_opts.get('host'),
+                    port=con_opts.get('port'))
 
 
 class Event(DynamicDocument):
@@ -65,7 +75,7 @@ class Event(DynamicDocument):
     created_datetime = fields.DateTimeField(default=now)
 
     meta = {
-        #'allow_inheritance': True,
+        'db_alias': 'datawarehouse',
         'indexes': ['created_datetime',
                     'imei',
                     'eventtype',
@@ -127,6 +137,7 @@ class CellTower(Document):
     averageSignalStrength = fields.FloatField(default=0)
 
     meta = {
+        'db_alias': 'datawarehouse',
         'collection': 'cell_tower',
         'indexes': [
             'mcc',

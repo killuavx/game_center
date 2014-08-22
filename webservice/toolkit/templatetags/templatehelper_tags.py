@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.template.base import Library
+from toolkit import helpers
 
 register = Library()
 
@@ -64,6 +65,37 @@ def is_site_ios():
     site = helpers.get_global_site()
     return helpers.SITE_IOS == site.pk
 
+@register.assignment_tag
+def get_site_id():
+    from toolkit import helpers
+    site = helpers.get_global_site()
+    if site:
+        return site.pk
+    return None
+
+@register.assignment_tag
+def get_site_name():
+    site = helpers.get_global_site()
+    if not site:
+        return None
+    if site.pk == helpers.SITE_IOS:
+        return 'ios'
+    elif site.pk == helpers.SITE_ANDROID:
+        return 'android'
+    else:
+        return 'unknown'
+
+@register.filter
+def add_param(text, param):
+    return "%s.%s" %(text, param)
+
+from toolkit.cache_tagging_mixin import cache_locator
+
+@register.simple_tag(takes_context=True)
+def cache_location_register(context, *tags, **kwargs):
+    url = context.get('request').build_absolute_uri()
+    cache_locator.register(url, *tags, **kwargs)
+    return ''
 
 @register.assignment_tag
 def mz_page_get(slug):
@@ -72,3 +104,5 @@ def mz_page_get(slug):
         return Page.objects.get(slug=slug)
     except Page.DoesNotExist:
         return None
+
+

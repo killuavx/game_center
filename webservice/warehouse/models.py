@@ -19,8 +19,8 @@ from easy_thumbnails.fields import ThumbnailerImageField
 from toolkit.managers import CurrentSitePassThroughManager, PassThroughManager
 from toolkit.fields import StarsField, PkgFileField, MultiResourceField
 from toolkit.models import SiteRelated
-from toolkit import model_url_mixin as urlmixin
-from toolkit.helpers import import_from, sync_status_from, released_hourly_datetime, qurl_to, current_site_id
+from toolkit import model_url_mixin as urlmixin, cache_tagging_mixin as cachemixin
+from toolkit.helpers import import_from, sync_status_from, released_hourly_datetime, qurl_to
 from toolkit.storage import package_storage
 
 storage = package_storage
@@ -279,12 +279,25 @@ class PackageQuerySet(QuerySet):
             .exclude(status=self.model.STATUS.published)
 
 
-class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
+class PackageManager(cachemixin.PackageCacheManagerMixin,
+                     CurrentSitePassThroughManager):
+
+    pass
+
+
+class AllPackageManager(cachemixin.PackageCacheManagerMixin,
+                        PassThroughManager):
+    pass
+
+
+class Package(PlatformBase,
+              urlmixin.PackageAbsoluteUrlMixin,
+              cachemixin.PackageTaggingMixin,
               SiteRelated, models.Model):
 
-    objects = CurrentSitePassThroughManager.for_queryset_class(PackageQuerySet)()
+    objects = PackageManager.for_queryset_class(PackageQuerySet)()
 
-    all_objects = PassThroughManager.for_queryset_class(PackageQuerySet)()
+    all_objects = AllPackageManager.for_queryset_class(PackageQuerySet)()
 
     class Meta:
         permissions = (
@@ -296,6 +309,11 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
         verbose_name_plural = _("Packages")
         unique_together = (
             ('site', 'package_name',)
+        )
+        index_together = (
+            ('site', 'id'),
+            ('site', 'status', ),
+            ('site', 'status', 'released_datetime'),
         )
 
     title = models.CharField(
@@ -321,6 +339,12 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
         blank=True)
 
     author = models.ForeignKey(Author, related_name='packages')
+
+    latest_version = models.ForeignKey('PackageVersion',
+                                       null=True,
+                                       default=None,
+                                       db_index=True,
+                                       related_name='+')
 
     released_datetime = models.DateTimeField(
         verbose_name=_('released time'),
@@ -406,6 +430,9 @@ class Package(PlatformBase, urlmixin.PackageAbsoluteUrlMixin,
                                       #   site_id=current_site_id,
                                       #),
                                       null=True, blank=True)
+
+    main_category_names = models.CharField(max_length=500, default='')
+
 
     @property
     def main_category(self):
@@ -532,19 +559,38 @@ def version_upload_path(instance, filename):
 from toolkit.fields import QiniuThumbnailerImageField
 
 
-class PackageVersion(urlmixin.ModelAbsoluteUrlMixin, PlatformBase,
+class PackageVersionManager(cachemixin.PackageVersionCacheManagerMixin,
+                            CurrentSitePassThroughManager):
+    pass
+
+class AllPackageVersionManager(cachemixin.PackageCacheManagerMixin,
+                               PassThroughManager):
+    pass
+
+
+
+class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
+                     cachemixin.PackageVersionTaggingMixin,
+                     PlatformBase,
                      SiteRelated, models.Model):
 
-    objects = CurrentSitePassThroughManager\
+    objects = PackageVersionManager\
         .for_queryset_class(PackageVersionQuerySet)()
 
-    all_objects = PassThroughManager.for_queryset_class(PackageVersionQuerySet)()
+    all_objects = AllPackageVersionManager\
+        .for_queryset_class(PackageVersionQuerySet)()
 
     class Meta:
         verbose_name = _("Package Version")
         verbose_name_plural = _("Package Versions")
         unique_together = (
             ('site', 'package', 'version_code'),
+        )
+        index_together = (
+            ('site', 'package', ),
+            ('site', 'id', ),
+            ('site', 'status', ),
+            ('site', 'status', 'released_datetime'),
         )
 
     icon = QiniuThumbnailerImageField(
@@ -855,7 +901,7 @@ class PackageVersionScreenshot(models.Model):
         )
 
 
-from django.db.models.signals import post_save, pre_save, m2m_changed
+from django.db.models.signals import post_save, pre_save, m2m_changed, pre_delete, post_delete
 from django.dispatch import receiver
 
 
@@ -871,6 +917,10 @@ def sync_pkg_cats(pkg):
     else:
         pkg.primary_category_id = None
         pkg.root_category_id = None
+
+    if main_categories:
+        main_category_names = [cat.name for cat in main_categories]
+        pkg.main_category_names = ",".join(main_category_names)
 
 
 @receiver(m2m_changed, sender=Package.categories.through)
@@ -930,8 +980,10 @@ _sync_pkg_field = '_version_sync_package_published'
 
 @receiver(pre_save, sender=PackageVersion)
 def package_version_pre_save_check_publish_to_sync(sender, instance, **kwargs):
-    if instance.tracker.has_changed('status') \
-        and instance.status == PackageVersion.STATUS.published:
+    # 状态更改 或者发布时间更改至未来时间
+    if instance.tracker.has_changed('status') or \
+            (instance.status == PackageVersion.STATUS.published
+             and instance.tracker.has_changed('released_datetime')):
         setattr(instance, _sync_pkg_field, True)
 
 
@@ -940,26 +992,74 @@ def package_version_post_save(sender, instance, **kwargs):
     """
         发布软件版本 同步package状态(status/released_datetime)
     """
-    if getattr(instance, _sync_pkg_field, False) \
-        and instance.status == PackageVersion.STATUS.published:
+    if getattr(instance, _sync_pkg_field, False):
         from warehouse import tasks
-
-        version_released_dt = instance.released_datetime.astimezone()
-        now_dt = now().astimezone()
-        # 1. 在未来的时间发布 使用消息队列
-        if now_dt < version_released_dt:
-            tasks.publish_packageversion\
-                .apply_async((instance.pk,),
-                         eta=version_released_dt)
-            return
-        # 2. 在过去或当时发布 则及时处理
-        elif now_dt >= version_released_dt:
-            tasks.publish_packageversion(instance.pk)
-            return
-
         package = instance.package
-        if version_released_dt == package.released_datetime.astimezone():
-            return
+        now_dt = now().astimezone()
+        try:
+            latest_published = package.versions.latest_published(released_hourly=False)
+
+            # 当前最后可发布版本,不是刚保存的这个版本(instance)则重置最后发布版本
+            # 使得热数据重置为最后可发布版本
+            if latest_published.pk != instance.pk:
+                latest_published_released_dt = latest_published.released_datetime.astimezone()
+
+                if now_dt >= latest_published_released_dt:
+                    tasks.publish_packageversion.apply_async((latest_published.pk, ),
+                                                             countdown=10)
+                elif now_dt < latest_published_released_dt:
+                    tasks.publish_packageversion\
+                        .apply_async((latest_published.pk, ),
+                                     eta=latest_published_released_dt+datetime.timedelta(seconds=10))
+
+        except ObjectDoesNotExist:
+            # 没有最后可发布版本(未到发布时间) 清除热数据
+            tasks.delete_package_data_center(package.pk)
+
+        if instance.status == PackageVersion.STATUS.published:
+            version_released_dt = instance.released_datetime.astimezone()
+
+            # 1. 在过去或当时发布 则及时处理
+            if now_dt >= version_released_dt:
+                # 因为当前线程保存数据至数据库耗时比 后台执行发布task.publish_packageversion慢
+                # countdown 10s保证数据状态同步
+                tasks.publish_packageversion.apply_async((instance.pk,),
+                                                         countdown=10)
+                return
+
+            # 2. 在未来的时间发布 使用消息队列
+            elif now_dt < version_released_dt:
+                # 在未来发布时间基础上加10秒，保证数据状态同步
+                # 原因同上
+                tasks.publish_packageversion \
+                    .apply_async((instance.pk,),
+                                 eta=version_released_dt+datetime.timedelta(seconds=10))
+                return
+
+
+@receiver(pre_delete, sender=PackageVersion)
+def package_version_pre_delete(sender, instance, **kwargs):
+    setattr(instance, '_delete_version_pk', instance.package.pk)
+    setattr(instance, '_package_pk', instance.package.pk)
+
+
+@receiver(post_delete, sender=PackageVersion)
+def package_version_post_delete(sender, instance, **kwargs):
+    #pk = getattr(instance, '_delete_version_pk', None)
+    pkg_pk = getattr(instance, '_package_pk', None)
+    from warehouse import tasks
+    try:
+        latest_published = instance.package.versions.latest_published(released_hourly=False)
+        released_dt = latest_published.released_datetime.astimezone()
+        now_dt = now().astimezone()
+        if released_dt > now_dt:
+            eta = released_dt + datetime.timedelta(seconds=10)
+        else:
+            eta = now_dt + datetime.timedelta(seconds=10)
+        tasks.publish_packageversion.apply_async((latest_published.pk,), eta=eta)
+
+    except ObjectDoesNotExist:
+        tasks.delete_package_data_center(pkg_pk)
 
 
 @receiver(pre_save, sender=PackageVersion)
@@ -979,6 +1079,38 @@ def package_version_pre_save(sender, instance, **kwargs):
 
     if not instance.workspace:
         instance.workspace = packageversion_workspace_path(instance)
+
+
+SYNC_PACKAGEVERSION_CHANGED_FIELDS = [
+    'stars_count',
+]
+
+
+@receiver(pre_save, sender=PackageVersion)
+def package_version_pre_save_check_changed_fields(sender, instance, **kwargs):
+    # ignore new create
+    if instance.pk is None:
+        return
+    instance._sync_changed_fields = getattr(instance, '_sync_changed_fields', dict())
+    for field_name in SYNC_PACKAGEVERSION_CHANGED_FIELDS:
+        if instance.tracker.has_changed(field_name):
+            instance._sync_changed_fields[field_name] = True
+
+
+@receiver(post_save, sender=PackageVersion)
+def package_version_post_save_check_to_sync(sender, instance, created=False, **kwargs):
+    has_changed = getattr(instance, '_sync_changed_fields', dict())
+    # ignore not published
+    if instance.status != PackageVersion.STATUS.published:
+        return
+
+    for field_name in SYNC_PACKAGEVERSION_CHANGED_FIELDS:
+        if has_changed.get(field_name):
+            from warehouse.tasks import sync_package
+            sync_package.apply_async((instance.package.pk,),
+                                     countdown=10)
+            break
+    delattr(instance, '_sync_changed_fields')
 
 
 # fix for PackageVersion save to update Package(set auto_now=False) updated_datetime
@@ -1006,6 +1138,24 @@ def package_post_save(sender, instance, created=False, **kwargs):
     if created:
         instance.workspace = package_workspace_path(instance)
         instance.save()
+
+    if instance.status != Package.STATUS.published:
+        from warehouse.tasks import delete_package_data_center
+        delete_package_data_center(instance.pk)
+
+
+@receiver(pre_delete, sender=Package)
+def package_pre_delete(sender, instance, **kwargs):
+    setattr(instance, '_delete_pk', instance.pk)
+
+
+@receiver(post_delete, sender=Package)
+def package_post_delete(sender, instance, **kwargs):
+    pk = getattr(instance, '_delete_pk', None)
+    from warehouse.tasks import delete_package_data_center
+    delete_package_data_center(pk)
+
+
 
 @receiver(pre_save, sender=Author)
 def author_pre_save(sender, instance, **kwargs):

@@ -65,19 +65,13 @@ class BaseCollectionTopicListWidget(base.FilterWidgetMixin, BaseTopicListWidget)
         qs = super(BaseCollectionTopicListWidget, self).get_list()
         return self.filter_queryset(qs)
 
+
+class BaseCollectionTopicListWithPackageWidget(BaseCollectionTopicListWidget):
+
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
-        self.slug = options.get('slug')
-        data = super(BaseCollectionTopicListWidget, self) \
-            .get_context(value=value,
-                         options=options,
-                         context=context,
-                         pagination=pagination)
-
-        from taxonomy.models import TopicalItem
-        from warehouse.models import Package
+        data = super(BaseCollectionTopicListWithPackageWidget, self)\
+            .get_context(value=value, options=options, context=context, pagination=pagination)
         for topic in data['items']:
-            packages = TopicalItem.objects.get_items_by_topic(topic, Package).published()
-            topic.packages = packages[0:self.topic_max_items]
-            topic.packages_count = packages.count()
-
+            topic.packages = topic.get_packages().published()[0:self.topic_max_items]
+            topic.packages_count = topic.get_packages().published().count()
         return data

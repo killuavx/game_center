@@ -24,10 +24,10 @@
                     </ul>
 
                 </div><!--left-list-->
-                {% widget WebVendorPackageListWidget author=author per_page=18 page=request.GET.page %}
+                {% widget WebVendorPackageBySearchListWidget author=author per_page=18 page=request.GET.page %}
                 <div class="l btn-s-box tj p20 right-list">
                 {% for package in items %}
-                    {% package_box package product=product %}
+                   {% package_box2 package product=product %}
                 {% endfor %}
                 {% pagination items %}
                 </div><!--right-list-->

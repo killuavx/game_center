@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-from website.widgets.common.package import BaseCategoryComplexPackageList
+from website.widgets.common.package import BaseCategoryComplexPackageList,\
+    BaseCategoryComplexPackageBySearchListWidget
 from website.web.widgets.base import ProductPropertyWidgetMixin
-from website.widgets.common.category import BaseCategorySelectorWidget
+from website.widgets.common.category import BaseCategorySelectorWithPackageSearchCountWidget
 from django_widgets import Widget
 
 
-__all__ = ['WebCategorySelectorWidget', 'WebCategoryComplexPackageList']
+__all__ = ['WebCategorySelectorWidget', 'WebCategoryComplexPackageList', 'WebCategoryComplexPackageBySearchList']
+
 
 
 class WebCategorySelectorWidget(ProductPropertyWidgetMixin,
-                                BaseCategorySelectorWidget,
+                                BaseCategorySelectorWithPackageSearchCountWidget,
                                 Widget):
     pass
 
@@ -17,4 +19,10 @@ class WebCategorySelectorWidget(ProductPropertyWidgetMixin,
 class WebCategoryComplexPackageList(BaseCategoryComplexPackageList,
                                     ProductPropertyWidgetMixin,
                                     Widget):
+    pass
+
+
+class WebCategoryComplexPackageBySearchList(BaseCategoryComplexPackageBySearchListWidget,
+                                            ProductPropertyWidgetMixin,
+                                            Widget):
     pass

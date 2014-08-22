@@ -3,6 +3,7 @@ from copy import deepcopy
 from django.contrib.sites.models import Site
 from os.path import join
 from django_widgets import Widget
+from toolkit.helpers import get_global_site
 from website.widgets.common.promotion import BaseSingleAdvWidget, BaseMultiAdvWidget
 from website.widgets.common import package as pkgwidget
 from website.widgets.common import topic as tpwidget
@@ -13,11 +14,11 @@ from . import base
 
 __all__ = ['WebHeaderSiteListWidget',
            'WebHomeTopBannersWidget',
-           'WebHomeTopicalPackageListWidget',
+           'WebHomeTopicalPackageBySearchListWidget',
            'WebHomeMasterpiecePackageListWidget',
-           'WebHomeLatestPackageListWidget',
+           'WebHomeLatestPackageBySearchListWidget',
            'WebSingleAdvertisementWidget',
-           'WebHomeComplexPackagePanelWidget',
+           'WebHomeComplexPackageBySearchPanelWidget',
            'WebRankingPackageListWidget',
            'WebHomeForumHotThreadPanelWidget',
            'WebHomeForumNoviceThreadPanelWidget',
@@ -70,8 +71,10 @@ class WebHomeMasterpiecePackageListWidget(pkgwidget.BaseTopicalPackageListWidget
 
 
 
-class WebHomeLatestPackageListWidget(pkgwidget.BasePackageListWidget,
+class WebHomeLatestPackageListWidget(#pkgwidget.BasePackageListWidget,
+                                     pkgwidget.BasePackageBySearchListWidget,
                                      base.ProductPropertyWidgetMixin,
+
                                      Widget):
 
     filter_backends = (
@@ -84,6 +87,19 @@ class WebHomeLatestPackageListWidget(pkgwidget.BasePackageListWidget,
     def get_more_url(self):
         return '/latest/'
 
+class WebHomeLatestPackageBySearchListWidget(pkgwidget.BasePackageBySearchListWidget,
+                                             base.ProductPropertyWidgetMixin,
+                                             Widget):
+
+    filter_backends = (
+        filters.SearchOrderByFilterBackend,
+    )
+
+    search_ordering = ('-released_datetime', )
+
+    def get_more_url(self):
+        return '/latest/'
+
 
 class WebHomeTopicalPackageListWidget(pkgwidget.BaseTopicalPackageListWidget,
                                       base.ProductPropertyWidgetMixin,
@@ -91,6 +107,50 @@ class WebHomeTopicalPackageListWidget(pkgwidget.BaseTopicalPackageListWidget,
     per_page = 8
 
     template = 'pages/widgets/home/roll-collections.haml'
+
+
+class WebHomeTopicalPackageBySearchListWidget(pkgwidget.BasePackageBySearchListWidget,
+                                              base.ProductPropertyWidgetMixin,
+                                              Widget):
+    topic = None
+    topic_id = None
+    topic_slug = None
+
+    per_page = 8
+    filter_backends = (
+        filters.SearchByTopicFilterBackend,
+        filters.SearchOrderByFilterBackend,
+    )
+    search_ordering = ('-released_datetime', )
+
+    def setup_options(self, context, options):
+        super(WebHomeTopicalPackageBySearchListWidget, self).setup_options(context, options)
+        self.setup_topic(**options)
+
+    def setup_topic(self, topic=None, topic_id=None, topic_slug=None, **kwargs):
+        self.topic=topic
+        self.topic_id = topic_id
+        self.topic_slug = topic_slug if topic_slug != 'NONE' else topic_slug
+        if self.topic:
+            return
+        from taxonomy.models import Topic
+        if self.topic_id:
+            self.topic = Topic.objects.get_cache_by(self.topic_id)
+        elif self.topic_slug:
+            self.topic = Topic.objects.get_cache_by_slug(get_global_site().pk,
+                                                         self.topic_slug)
+
+    def get_more_url(self):
+        if self.topic:
+            return self.topic.get_absolute_url_as(product=self.product,
+                                                  pagetype='special')
+        return 'javascript:;'
+
+    def get_title(self):
+        if self.topic:
+            return self.topic.name
+        else:
+            return ''
 
 
 class WebSingleAdvertisementWidget(BaseSingleAdvWidget,
@@ -105,6 +165,12 @@ class WebHomeComplexPackagePanelWidget(pkgwidget.BaseComplexPackageListWidget,
                                        Widget):
 
     template = 'pages/widgets/home/complex-package-panel.haml'
+
+
+class WebHomeComplexPackageBySearchPanelWidget(pkgwidget.BaseComplexPackageBySearchListWidget,
+                                       base.ProductPropertyWidgetMixin,
+                                       Widget):
+    template = 'pages/widgets/home/complex-package-panel2.haml'
 
 
 class WebRankingPackageListWidget(pkgwidget.BaseRankingPackageListWidget,

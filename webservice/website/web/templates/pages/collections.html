@@ -1,26 +1,30 @@
 {% extends "pages/page_web.html" %}
-{% load cache templatehelper_tags web_tags %}
-{% load widgets %}
-
-{% block main %}
-    {% with c_page=request.GET.page|default:1 %}
-    {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
-    {% cache CACHE_TIMEOUT_DAYS product_web_collections request.get_host request.path_info c_page %}
+{% load widgets templatehelper_tags web_tags cache_tagging_tags %}
+{% block main %} {% get_site_name as site_name %}
+    {% with c_page=request.GET.page|default:'1' %} {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
+    {% cache_tagging 'product_web_collections'|add_param:site_name|add_param:c_page timeout=CACHE_TIMEOUT_DAYS %}{% spaceless %}
+    {% cache_add_tags request.get_host|add:request.path_info request.build_absolute_uri %}
+    {% cache_add_tags 'product_web_collections'|add_param:site_name 'product_web_collections' %}
+    {% cache_location_register 'product_web_collections' %}
     <!--START 合集 开始 collection-->
     <div class="auto mt30 width collection minheight-page">
         {% settings_value 'GC_TOPICS_COLLECTIONS_SLUG' as choice_slug %}
-        {% widget WebCollectionTopicListWidget slug=choice_slug page=request.GET.page per_page=4 %}
+        {% widget WebCollectionTopicListWithSearchPackageWidget slug=choice_slug page=request.GET.page per_page=4 %}
         <div class="cell-bk">
-    {% for topic in items %}
+    {% for topic in items %}{% with cache_name='product_web_collection_row'|add_param:site_name|add_param:topic.slug %}
+        {% cache_tagging cache_name request.build_absolute_uri|add_param:'#row'|add_param:topic.slug timeout=CACHE_TIMEOUT_DAYS %}
             <div class="collection_box">
-            {% include "pages/widgets/collections/topic-list.haml" with topic=topic %}
+            {% with topic_tags=topic.get_all_cache_identifier_tags %}
+            {% cache_location_register tags=topic_tags %} {% cache_add_tags topic_tags %}
+            {% include "pages/widgets/collections/topic-list2.haml" with topic=topic %}
+            {% endwith %}
             </div><!--collection_box-->
+        {% end_cache_tagging %}{% endwith %}
     {% endfor %}
         {% pagination items %}
         </div>
         {% endwidget %}
     </div>
     <!--END 合集 结束 collection-->
-    {% endcache %}
-    {% endwith %}
-{% endblock %}
+{% endspaceless %}{% end_cache_tagging %}
+{% endwith %}{% endblock %}

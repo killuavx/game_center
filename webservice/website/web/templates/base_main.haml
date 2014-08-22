@@ -1,5 +1,4 @@
 -load pages_tags mezzanine_tags templatehelper_tags widgets cache future staticfiles user_agents
-{% spaceless %}
 {% is_site_android as is_android %}{% is_site_ios as is_ios %}
 !!!5
 %html{:lang => '={LANGUAGE_CODE}'}<
@@ -25,11 +24,13 @@
     {% compress js %}{% block extra_js_header %}{% endblock %}{% endcompress %}
     -block head_base
   %body
+    {% cache 86400 product_web_topmenu request.get_host request.path_info %}
     {% block top_menu %}
     / 头部开始 head
     {% include "pages/menus/web/header_product.haml" with logo_url='/' %}
     / 头部结束 head
     {% endblock %}
+    {% endcache %}
 
     {% block main %}{% endblock %}
 
@@ -62,4 +63,3 @@
     /[if IE 6]
       <script src="{% static 'common/js/DD_PNG.js' %}"></script>
       <script>window.onload = function() {DD_belatedPNG.fix(".png,.ios-web-icon,.ios-web-icon:hover"}</script>
-{% endspaceless %}

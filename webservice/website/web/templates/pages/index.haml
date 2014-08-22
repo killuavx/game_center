@@ -32,18 +32,18 @@
         {% settings_value "GC_WEB_HOME_T1_TOPIC_SLUG" as R1C2P_TOPIC_SLUG %}
         {% if is_android %}
         {% cache CACHE_TIMEOUT_HOURS product_web_home_crack request.get_host 'web-home-first-crack' %}
-        {% include_widget WebHomeTopicalPackageListWidget slug='web-home-first-crack' per_page=6 template='pages/widgets/home/r1c2-package-panel.haml'%}
+        {% include_widget WebHomeTopicalPackageBySearchListWidget topic_slug='web-home-first-crack' per_page=6 template='pages/widgets/home/r1c2-package-panel2.haml'%}
         {% endcache %}{% endif %}
         {% if is_ios %}
         {% cache CACHE_TIMEOUT_HOURS product_web_home_crack request.get_host 'paying' %}
-        {% include_widget WebHomeTopicalPackageListWidget slug='paying' per_page=6 template='pages/widgets/home/r1c2-package-panel.haml'%}
+        {% include_widget WebHomeTopicalPackageBySearchListWidget topic_slug='paying' per_page=6 template='pages/widgets/home/r1c2-package-panel2.haml'%}
         {% endcache %}{% endif %}
       / END 首发破解
 
       .l.abs.pt20.latest-release.btn-s-box
         / START 最新发布
         {% cache CACHE_TIMEOUT_HOURS product_web_home_latest request.get_host %}
-        {% include_widget WebHomeLatestPackageListWidget title="最新发布" per_page=10 template='pages/widgets/home/r1c1-package-panel.haml' %}
+        {% include_widget WebHomeLatestPackageBySearchListWidget title="最新发布" per_page=10 template='pages/widgets/home/r1c1-package-panel2.haml' %}
         {% endcache %}
         / END 最新发布
       / latest-released
@@ -51,7 +51,7 @@
       .r.abs.pt20.most-expensive
         {% settings_value "GC_WEB_HOME_T2_TOPIC_SLUG" as R1C3P_TOPIC_SLUG %}
         {% cache CACHE_TIMEOUT_DAYS product_web_home_t2 request.get_host R1C3P_TOPIC_SLUG %}
-        {% include_widget WebHomeTopicalPackageListWidget slug=R1C3P_TOPIC_SLUG per_page=8 template='pages/widgets/home/r1c3-package-panel.haml'%}
+        {% include_widget WebHomeTopicalPackageBySearchListWidget topic_slug=R1C3P_TOPIC_SLUG per_page=8 template='pages/widgets/home/r1c3-package-panel2.haml'%}
         {% endcache %}
       / most-expensive
 
@@ -79,7 +79,7 @@
 
       .left.tab-box-o
         {% cache CACHE_TIMEOUT_HOURS product_web_home_cpp_game request.get_host %}
-        {% include_widget WebHomeComplexPackagePanelWidget cat_slug='game' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
+        {% include_widget WebHomeComplexPackageBySearchPanelWidget category_slug='game' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
         {% endcache %}
       / left
 
@@ -121,7 +121,7 @@
 
       .left.tab-box-o
         {% cache CACHE_TIMEOUT_HOURS product_web_home_cpp_application request.get_host %}
-        {% include_widget WebHomeComplexPackagePanelWidget cat_slug='application' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
+        {% include_widget WebHomeComplexPackageBySearchPanelWidget category_slug='application' topic_slugs=COMPLEX_TOPIC_SLUGS per_page=27 %}
         {% endcache %}
       / left
 

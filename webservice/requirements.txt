@@ -62,7 +62,7 @@ django-meta-mixin
 
 
 # django-memoize
-#https://github.com/akanouras/django-memoize/archive/akanouras/old-django-compat.zip
+https://github.com/akanouras/django-memoize/archive/akanouras/old-django-compat.zip
 django-import-export
 # 2to3
 django-url-tools
@@ -74,3 +74,5 @@ pyyaml
 ua-parser
 user-agents
 django-user-agents
+
+https://github.com/killuavx/cache-tagging/archive/support/py3.zip

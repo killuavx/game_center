@@ -34,8 +34,7 @@ rest_router.register('bookmarks',
                      base_name='bookmark')
 rest_router.register('comments', CommentViewSet)
 
-from analysis.views.rest_views import EventViewSet
-rest_router.register('events', EventViewSet, base_name='event')
+from analysis.views.rest_views import EventCreateView
 
 urlpatterns = rest_router.urls
 
@@ -50,5 +49,6 @@ urlpatterns += patterns('',
     url(r'^push/packages/?$', PackagePushView.as_view(), name='push-packages', prefix='push'),
 
     url(r'^updates/?$', PackageUpdateView.as_view(), name='update-create', prefix='update'),
+    url(r'^events/?$', EventCreateView.as_view(), name='event-create')
 )
 

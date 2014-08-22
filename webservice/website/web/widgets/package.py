@@ -6,7 +6,7 @@ from .base import ProductPropertyWidgetMixin
 from haystack.utils import get_identifier
 from haystack.constants import ID
 
-__all__ = ['WebPackageRelatedListWidget']
+__all__ = ['WebPackageRelatedBySearchListWidget']
 
 class ExcludePackageSearcherFilterBackend(BaseWidgetFilterBackend):
 
@@ -62,3 +62,8 @@ class WebPackageRelatedListWidget(pkgwidget.BasePackageSearchListWidget,
                                                                     context=context,
                                                                     pagination=pagination)
 
+
+class WebPackageRelatedBySearchListWidget(pkgwidget.BasePackageRelatedBySearchListWidget,
+                                          ProductPropertyWidgetMixin,
+                                          Widget):
+    pass

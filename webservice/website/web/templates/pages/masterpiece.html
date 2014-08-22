@@ -1,17 +1,21 @@
 {% extends "pages/page_web.html" %}
-{% load cache widgets templatehelper_tags web_tags %}
-{% block main %}
-    {% with c_page=request.GET.page|default:1 %}
+{% load cache_tagging_tags widgets templatehelper_tags web_tags %}
+{% block main %}{% get_site_name as site_name %}
+    {% with c_page=request.GET.page|default:'1' %}
     {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
-    {% cache CACHE_TIMEOUT_DAYS product_web_masterpiece request.get_host request.path_info c_page %}
+    {% cache_tagging 'product_web_masterpiece'|add_param:site_name|add_param:c_page timeout=CACHE_TIMEOUT_DAYS %} {% spaceless %}
+    {% cache_add_tags 'product_web_masterpiece' request.get_host|add:request.path_info request.build_absolute_uri %}
+    {% cache_location_register 'product_web_masterpiece' %}
 <!-- START 巨作 开始 masterpiece-->
 <div class="auto mt30 width masterpiece minheight-page">
     <div class="cell-bk mb30">
         {% settings_value 'GC_TOPICS_MASTERPIECE_SLUG' as masterpiece_slug %}
-        {% widget WebMasterpiecePackageListWidget slug=masterpiece_slug page=request.GET.page per_page=12 %}
+        {% widget WebMasterpiecePackageBySearchListWidget slug=masterpiece_slug page=request.GET.page per_page=12 %}
             {% for package in items %}
             <div class="maste_lsit">
-            {% include "pages/widgets/masterpiece/package-list.haml" with package=package %}
+            {% with pkg_tags=package.get_all_cache_identifier_tags %} {% cache_location_register tags=pkg_tags %} {% cache_add_tags pkg_tags %}
+            {% include "pages/widgets/masterpiece/package-list2.haml" with package=package %}
+            {% endwith %}
             </div>
             {% endfor %}
         {% pagination items %}
@@ -19,6 +23,7 @@
     </div><!--cell-bk-->
 </div>
 <!-- END 巨作 结束 masterpiece-->
-    {% endcache %}
+{% endspaceless %}
+    {% end_cache_tagging %}
     {% endwith %}
 {% endblock %}

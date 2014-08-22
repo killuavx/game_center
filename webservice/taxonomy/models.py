@@ -17,11 +17,12 @@ from django.core.urlresolvers import reverse
 
 from django.core.urlresolvers import get_callable
 from django.conf import settings
-from toolkit import model_url_mixin as urlmixin
+from toolkit import model_url_mixin as urlmixin, cache_tagging_mixin as cachemixin
 from toolkit.managers import CurrentSitePassThroughManager, CurrentSiteManager
 from toolkit.helpers import sync_status_from, current_site_id
 from toolkit.models import SiteRelated
 from toolkit.fields import MultiResourceField
+from toolkit.memoizes import orms_memoize
 
 slugify_function_path = getattr(settings, 'SLUGFIELD_SLUGIFY_FUNCTION',
                                 'toolkit.helpers.slugify_unicode')
@@ -117,8 +118,14 @@ class CategoryQuerySet(QuerySet):
 
 CACHE_CATEGORIES = {}
 
+DEFAULT_TIMEOUT = 86400 * 7
 
-class CategoryManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
+
+class CategoryManager(TreeManager,
+                      PassThroughManagerMixin,
+                      CurrentSiteManager,
+                      cachemixin.TaxonomyCacheManagerMixin
+                      ):
 
     def _cache_category(self, pk):
         global CACHE_CATEGORIES
@@ -126,15 +133,19 @@ class CategoryManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
             CACHE_CATEGORIES[pk] = self.get(pk=pk)
         return CACHE_CATEGORIES[pk]
 
-    def get_cache_category(self, pk):
-        return self._cache_category(pk)
+    def get_cache_category(self, cat):
+        return self.get_cache_by(cat)
 
 
-class AllCategoryManager(TreeManager, PassThroughManager):
+class AllCategoryManager(TreeManager,
+                         PassThroughManager,
+                         cachemixin.TaxonomyCacheManagerMixin
+                         ):
     pass
 
 
 class Category(urlmixin.CategoryAbsoluteUrlMixin,
+               cachemixin.TaxonomyTaggingMixin,
                MPTTModel, Taxonomy):
 
     # FIXME 重建全文索引，需要使用 package.categories 关联获取分类列表，
@@ -147,6 +158,8 @@ class Category(urlmixin.CategoryAbsoluteUrlMixin,
     #_default_manager = AllCategoryManager.for_queryset_class(CategoryQuerySet)()
 
     objects = CategoryManager.for_queryset_class(CategoryQuerySet)()
+
+    all_objects = AllCategoryManager.for_queryset_class(CategoryQuerySet)()
 
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children')
@@ -239,13 +252,28 @@ class TopicQuerySet(QuerySet):
         return self.order_by('ordering')
 
 
-class TopicManager(TreeManager, PassThroughManagerMixin, CurrentSiteManager):
+class TopicManager(TreeManager,
+                   PassThroughManagerMixin,
+                   CurrentSiteManager,
+                   cachemixin.TaxonomyCacheManagerMixin
+                   ):
     pass
 
 
-class Topic(MPTTModel, Taxonomy, urlmixin.TopicAbsoluteUrlMixin):
+class AllTopicManager(TreeManager,
+                      PassThroughManager,
+                      cachemixin.TaxonomyCacheManagerMixin
+                      ):
+    pass
+
+
+class Topic(MPTTModel, Taxonomy,
+            cachemixin.TaxonomyTaggingMixin,
+            urlmixin.TopicAbsoluteUrlMixin):
 
     objects = TopicManager.for_queryset_class(TopicQuerySet)()
+
+    all_objects = AllTopicManager.for_queryset_class(TopicQuerySet)()
 
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children')
@@ -322,6 +350,14 @@ class Topic(MPTTModel, Taxonomy, urlmixin.TopicAbsoluteUrlMixin):
 
     def get_absolute_iospc_url(self):
         return reverse('iospc_collection_detail', kwargs=dict(slug=self.slug))
+
+    def get_items(self, item_class):
+        return TopicalItem.objects \
+            .get_items_by_topic(self, item_class)
+
+    def get_packages(self):
+        from warehouse.models import Package
+        return self.get_items(Package)
 
 
 class TopicalItemQuerySet(QuerySet):
@@ -405,3 +441,6 @@ def topic_pre_save(sender, instance, **kwargs):
         instance.released_datetime = now()
 
 
+
+def taxonomy_get_cache_slug(model, site_id, slug):
+    pass

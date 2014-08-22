@@ -33,9 +33,12 @@ class AbsoluteUrlMixin(object):
 
 class ModelAbsoluteUrlMixin(AbsoluteUrlMixin):
 
+    def _get_module_name(self):
+        return self.__class__._meta.module_name
+
     def get_absolute_url_as(self, product, **kwargs):
         ETS = self._get_entry_types()
-        name = self.__class__._meta.module_name
+        name = self._get_module_name()
         if product == ETS.web:
             view_name = 'website.%s.views.%s_detail' % (product, name)
         elif product == ETS.pc:

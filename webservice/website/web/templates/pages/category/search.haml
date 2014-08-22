@@ -1,10 +1,14 @@
 -extends "pages/page_web.html"
--load widgets url_tags templatehelper_tags web_tags cache
+-load widgets url_tags templatehelper_tags web_tags cache_tagging_tags
 {% block meta_title %}{{ request.GET.q }}{% endblock %}
 -block main
-  {% with c_cat=request.GET.cat|default:root_category.slug c_q=request.GET.q c_page=request.GET.page|default:1 %}
+  {% with c_cat=category.slug c_q=request.GET.q|lower c_page=request.GET.page|default:1 %}{% get_site_name as site_name %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
-  {% cache CACHE_TIMEOUT_HOURS product_web_search request.get_host request.path_info c_cat c_q c_page %}
+  {% cache_tagging 'product_web_search'|add_param:site_name|add_param:c_cat|add_param:c_q|add_param:c_page timeout=CACHE_TIMEOUT_HOURS %}{% spaceless %}
+  {% cache_add_tags request.get_host|add:request.path_info request.build_absolute_uri %}
+  {% cache_add_tags 'search_word'|add_param:c_q 'search_category'|add_param:c_cat %}
+  {% cache_location_register 'product_web_search' 'search_word'|add_param:c_q 'search_category'|add_param:c_cat %}
+  {% cache_location_register 'product_web_search'|add_param:c_cat|add_param:c_q %}
   / START 应用列表 app-list-page
   .auto.mt30.width.app-list-page
 
@@ -17,7 +21,7 @@
     / cell
 
     .rel.cell-bk
-      {% cache CACHE_TIMEOUT_DAYS product_web_search_leftmenu request.get_host request.path_info c_cat %}
+      {% cache_tagging 'product_web_search_selector'|add_param:site_name|add_param:c_cat %}
       {% widget WebSearchCategorySelectorWidget root_category=root_category %}
       .l.left-list
         %ul.f14.left-nav
@@ -39,18 +43,16 @@
                   %a{:href => "{% absolute_url cat product=product %}"}
                     = cat.name
                     %span.r
-          %li
-            %a{:href => "" }
-              = cat.name
-              %span.r
       {% endwidget %}
-      {% endcache %}
+      {% end_cache_tagging %}
 
       .l.btn-s-box.tj.p20.right-list
-        -for search_item in items
-          {% package_box search_item.object %}
+        -for package in items
+          -with pkg_tags=package.get_all_cache_identifier_tags
+            {% cache_location_register tags=pkg_tags %} {% cache_add_tags pkg_tags %}
+            {% package_box2 package %}
         {% pagination items %}
       / right-list
     {% endwidget %}
-  {% endcache %}
+  {% endspaceless  %}{% end_cache_tagging %}
   {% endwith %}

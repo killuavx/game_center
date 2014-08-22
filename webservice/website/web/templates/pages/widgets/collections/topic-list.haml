@@ -1,4 +1,4 @@
--load url_tags util_tags web_tags
+-load url_tags util_tags web_tags cache_tagging_tags
 {% absolute_url_as topic product=product as detail_url %}
 .l
   %a{:href => "={detail_url}", :target => "_blank" }
@@ -10,6 +10,7 @@
   .pt20.btn-s-box.inner
     .inner-box
       - for package in topic.packages
+        {% cache_add_tags package.get_all_cache_identifier_tags %}
         {% package_box package product=product %}
       %dl.more-dl
         %a.tc.db.ml10.f16.gr{:href => "={detail_url}", :target => "_blank" } 更多应用 >

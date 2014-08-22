@@ -4,6 +4,7 @@ from django.utils import timezone
 from easy_thumbnails.exceptions import InvalidImageFormatError
 from rest_framework import serializers
 from rest_framework.fields import DateTimeField as RFDateTimeField
+from django.conf import settings
 
 
 class ImageUrlField(serializers.ImageField):
@@ -42,13 +43,14 @@ def factory_imageurl_field(size_alias='middle'):
 
 class DateTimeField(RFDateTimeField):
 
-    def from_native(self, value):
-        from django.conf import settings
-        if isinstance(value, datetime.datetime):
-            if settings.USE_TZ:
-                default_timezone = timezone.get_default_timezone()
-                if timezone.is_aware(value):
-                    return value.astimezone(default_timezone)
-                else:
-                    return timezone.make_aware(value, default_timezone)
-        return super(DateTimeField, self).from_native(value)
+    def to_native(self, value):
+        if value is None or self.format is None:
+            return value
+        if settings.USE_TZ:
+            default_timezone = timezone.get_default_timezone()
+            if timezone.is_aware(value):
+                value = value.astimezone(default_timezone)
+            else:
+                value = timezone.make_aware(value, default_timezone)
+
+        return super(DateTimeField, self).to_native(value)

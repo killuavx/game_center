@@ -1,30 +1,37 @@
 -extends "pages/page_web.html"
--load mezzanine_tags cache widgets url_tags util_tags templatehelper_tags web_tags comment_star_tags
-{% block meta_title %}{{ version.subtitle|default:package.title }}{% endblock%}
-{% block meta_keywords %}{% unique_tags_text version package %}{% endblock %}
-{% block meta_description %}{{ package.summary }} | {{ version.whatsnew }}{% endblock %}
+-load mezzanine_tags widgets url_tags util_tags templatehelper_tags web_tags cache_tagging_tags comment_star_tags
+{% block meta_title %}{{ package.title }}{% endblock%}
+{% block meta_keywords %}{{ package.tags_text.split|join:', ' }}{% endblock %}
+{% block meta_description %}{{ package.summary }} | {{ package.whatsnew }}{% endblock %}
 
 -block main
-  {% with c_pkg=package.pk %}
-  {% is_site_android as is_android %}{% is_site_ios as is_ios %}
+  {% is_site_android as is_android %}{% is_site_ios as is_ios %}{% get_site_name as site_name %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
-  {% with title=version.subtitle|default:package.title %}
+  {% with title=package.title icon_url=package.icon_large_url|default:package.icon_default_url pkg_cache_tags=package.get_all_cache_identifier_tags id_cache_tag=package.get_cache_identifier root_category=package.root_category main_category=package.primary_category %}
   .auto.mt30.width.app-dis-page
     .cell-bk.ovh
-
-      {% cache CACHE_TIMEOUT_HOURS product_web_package_tl request.get_host request.path_info c_pkg %}
-      .pb10.location>
-        {% breadcrumbs_from package category=package.main_category product=product home_url='/' %}
+      {% cache_tagging 'product_web_package_tl'|add_param:site_name|add_param:id_cache_tag tags=pkg_cache_tags timeout=CACHE_TIMEOUT_HOURS %}{% spaceless %}
+      {% cache_add_tags 'product_web_package_tl' 'product_web_package_tl'|add_param:site_name request.build_absolute_uri|add_param:'#product_web_package_tl' %}
+      {% cache_location_register 'product_web_package_detail' 'product_web_package_detail'|add_param:id_cache_tag tags=pkg_cache_tags %}
+      - if is_ios
+        {% qurl package.static_download_url as dw_url %}
+      - else
+        {% qurl package.download_url entrytype=product as dw_url %}
+      .pb10.location><
+        当前位置：
+        %a{:href => "/"} 首页
+        %em &gt;
+        %a{:href => "{% absolute_url root_category product=product %}"}><= root_category.name
+        %em &gt;
+        %a{:href => "{% absolute_url main_category product=product %}"}><= main_category.name
+        %em &gt;
+        %a{:href => "javascript:;"}><= title
 
       .cell-bk.title
         %h1.l.n.dib.tc= title
-      - if is_ios
-        {% download_url_as version is_dynamic=0 product=product as dw_url %}
-      - else
-        {% download_url_as version product=product as dw_url %}
       .l.rel.left
         .auto.rel.pic
-          %img.db.auto.pt1.mt20{:height => "175px", :src => "{% resource_url version 'icon' size_alias='large' %}", :width => "175px"}
+          %img.db.auto.pt1.mt20{:height => "175px", :src => "={icon_url}", :width => "175px"}
             %span.dib.abs.cover.png
         %a.mt20.db.btn.btn-green.f16.app-download-btn-js{:href => "={dw_url}"} 下载应用
         -#
@@ -44,61 +51,62 @@
           %li<
             评分
             %span><
-              .ios-web-icon.star.mr5{:class => "s={version.stars_average|default:0|floatformat:'0'}" }>
-              {{ version.stars_count }}人评分
+              .ios-web-icon.star.mr5{:class => "s={package.star|default:0|floatformat:'0'}" }>
+              {{ package.stars_count|default:0 }}人评分
           -if is_android
             %li<
               厂商
-              %span><= package.author.name
+              %span><= package.author_name
           %li<
             发布
-            %span><= version.released_datetime|date
+            %span><= package.released_datetime|date
           %li<
             版本
-            %span><= version.version_name
+            %span><= package.version_name
           %li<
             大小
-            %span><= version.get_download_size|filesizeformat
+            %span><= package.download_size|filesizeformat
           %li<
             类别
             %span><= package.main_categories|join:", "
           %li<
             语言
-            %span><= version.language_names|join:", "
-          -if version.is_ios
+            %span><= package.language_names|join:", "
+          -if is_ios
             %li<
               设备
-              %span><= version.as_ios.device_types|join:", "
+              %span><= package.support_device_types|join:", "
           %li<
             下载
-            %span>< {{ version.download_count|intwordcn }}+
+            %span>< {{ package.download_count|intwordcn }}+
 
         .cell-bk.pt10.pb30.left-top-list
-          {% with cat_slug=package.main_category.get_root.slug %}
-          {% cache CACHE_TIMEOUT_DAYS product_web_package_ranking request.get_host cat_slug %}
-          {% include_widget WebRankingPackageListWidget cat_slug=cat_slug per_page=10 %}
-          {% endcache %}
+          {% with root_cat=package.root_category %}
+          {% cache_tagging 'product_web_package_ranking:'|add:root_cat.get_cache_identifier tags=root_cat.get_all_cache_identifier_tags timeout=CACHE_TIMEOUT_DAYS %}{% spaceless %}
+          {% cache_add_tags 'product_web_package_ranking' 'product_web_package_ranking'|add_param:id_cache_tag request.build_absolute_uri|add:'#product_web_package_ranking' %}
+          {% include_widget WebRankingPackageListWidget cat_slug=root_cat.slug per_page=10 %}
+          {% endspaceless  %}{% end_cache_tagging %}
           {% endwith %}
         / left-top-list
       / left-list
-      {% endcache %}
+      {% endspaceless %}{% end_cache_tagging %}
 
       .r.right
-
-        {% cache CACHE_TIMEOUT_HOURS product_web_package_rt request.get_host request.path_info c_pkg %}
+        {% cache_tagging 'product_web_package_rt'|add_param:id_cache_tag tags=pkg_cache_tags timeout=CACHE_TIMEOUT_DAYS  %}{% spaceless %}
+        {% cache_add_tags 'product_web_package_rt' 'product_web_package_rt'|add_param:site_name request.build_absolute_uri|add_param:'#product_web_package_rt' %}
         .up.box_btn.up_box
           .up_pic
             %ul
               -if is_ios
-                -for screenshot in version.screenshots.default
+                -for screenshot in package.screenshots_default
                   -with image=screenshot.image
                     %li><
                       %img{:src => "={image.url}", :alt => "={screenshot.alt}"}/
               -if is_android
-                -for screenshot in version.screenshots.all
+                -for screenshot in package.screenshots
                   -with image=screenshot.image
                     %li><
-                      %img{:src => "={image.small.url}", :alt => "={screenshot.alt}"}/
+                      %img{:src => "={image.small.url}", :height =>"{% if not image.small.url %}370{% endif %}", :alt => "={screenshot.alt}"}/
           / up_pic
           .cl.rel.a_btn{:style => "display: none;"}
             %a.ios-web-icon.abs.prev.prevStop{:href => "javascript:;", :style => "display: none;"}
@@ -106,42 +114,45 @@
           / a_btn
         / up
         .down
+          -with description=package.description
           %h3.n 应用介绍
           .text_inner= package.description|linebreaksbr
           / text_inner
-          -if version.whatsnew
+          -if package.whatsnew
             %h3.n 新版特性
-            .text_inner= version.whatsnew|linebreaksbr
+            .text_inner= package.whatsnew|linebreaksbr
           / text_inner
 
-          {% widget WebPackageRelatedListWidget package=package version=version per_page=10 %}
+          {% widget WebPackageRelatedBySearchListWidget package=package per_page=10 %}
           {% if items %}
           / 相关推荐
           .ovh.relevant-app
             %h3.n 相关推荐
             .cell-bk.tj
-              -for related in items
-                -with p=related.object
-                  -with pv=p.versions.latest_published title=pv.subtitle|default:p.title
-                    {% absolute_url_as p product=product as dt_url %}
-                    .dib.rel.app-list-min<
-                      %a.db.tc.f14{:href => "={dt_url}", :target => "_blank", :title => "={title}"}
-                        %img.db.auto{:src => "{% resource_url pv 'icon' size_alias='middle' %}"}
-                          %span.ios-web-icon.abs.db.auto
-                          {{ title|slice:"5"}}
-                          %i.db.n.f12.g9= p.main_category.name
-                      .btn-s
-                        -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
-                        %a.a2{:href => "{% download_url pv product=product %}", :class => "app-download-btn-js"} 下载
+              -for pkg in items
+                -with related_title=pkg.title mcat_name=pkg.primary_category_name related_icon_url=pkg.icon_middle_url|default:pkg.icon_default_url
+                  {% absolute_url_as pkg product=product as related_dt_url %}
+                  - if is_ios
+                    {% qurl pkg.static_download_url as related_dw_url %}
+                  - else
+                    {% qurl pkg.download_url entrytype=product as related_dw_url %}
+                  .dib.rel.app-list-min<
+                    %a.db.tc.f14{:href => "={related_dt_url}", :target => "_blank", :title => "={related_title}"}><
+                      %img.db.auto{:src => "={related_icon_url}"}
+                      %span.ios-web-icon.abs.db.auto
+                      {{ related_title|slice:"5"}}
+                      %i.db.n.f12.g9= mcat_name
+                    .btn-s
+                      -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+                      %a.a2{:href => "={related_dw_url}", :class => "app-download-btn-js"} 下载
           / 相关推荐
           {% endif %}
           {% endwidget %}
-        {% endcache %}
+        {% endspaceless %}{% end_cache_tagging %}
 
         .down.mb30
-          {% comment_star_for version %}
+          {% comment_star_for package.latest_version_id 'warehouse.packageversion' %}
 
       / right
     / cell-bk
-  {% endwith %}
   {% endwith %}

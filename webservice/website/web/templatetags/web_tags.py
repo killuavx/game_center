@@ -25,3 +25,11 @@ def package_box(context, package, *args, **kwargs):
         package=package,
         product='web',
     )
+
+@register.inclusion_tag('pages/widgets/common/package-box-solr.haml', takes_context=True)
+def package_box2(context, package, *args, **kwargs):
+    return dict(
+        request=context.get('request'),
+        package=package,
+        product='web',
+        )

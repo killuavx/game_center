@@ -9,7 +9,14 @@ from django.template.response import TemplateResponse
 from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
 from django.views.decorators.cache import cache_control
-from taxonomy.models import Category
+#from taxonomy.models import Category
+from searcher.helpers import (
+    get_default_package_query,
+    get_package_search_result,
+    get_package_search_result_by_version_id
+    )
+from searcher.search_results import PackageDetailSearchResult
+from website.models import CategoryProxy as Category
 from website.views import base
 from os.path import join
 
@@ -27,34 +34,60 @@ class NotFound(base.TemplateResponseNotFound):
 
 @cache_control(public=True, max_age=max_age)
 def package_detail(request, pk,
-                   template_name=join(template_prefix, 'package/detail.haml'), *args, **kwargs):
+                   template_name=join(template_prefix, 'package/detail.haml'),
+                   template_not_found_class=NotFound,
+                   *args, **kwargs):
     ETS = settings.ENTRY_TYPES()
-    return base.package_detail(request=request, pk=pk,
-                               template_name=template_name,
-                               template_not_found_class=NotFound,
-                               product=ETS.web,
-                               *args, **kwargs)
+    sqs = get_default_package_query(PackageDetailSearchResult)
+    package = get_package_search_result(sqs, pk)
+    if not package:
+        return template_not_found_class(request)
+    return TemplateResponse(request=request,
+                            template=template_name,
+                            context=dict(
+                                package=package,
+                                product=ETS.web,
+                            ))
 
 
 @cache_control(public=True, max_age=max_age)
 def packageversion_detail(request, pk,
                           template_name=join(template_prefix, 'package/detail.haml'),
+                          template_not_found_class=NotFound,
                           *args, **kwargs):
     ETS = settings.ENTRY_TYPES()
-    return base.packageversion_detail(request=request, pk=pk,
-                                      template_name=template_name,
-                                      template_not_found_class=NotFound,
-                                      product=ETS.web,
-                                      *args, **kwargs)
+    sqs = get_default_package_query(PackageDetailSearchResult)
+    package = get_package_search_result_by_version_id(sqs, pk)
+    if not package:
+        return template_not_found_class(request)
+    return TemplateResponse(request=request,
+                            template=template_name,
+                            context=dict(
+                                package=package,
+                                product=ETS.web,
+                                ))
 
 
 @cache_control(public=True, max_age=max_age)
 def category_page(request, slug,
                   template_name=join(template_prefix, 'category/page.haml'),
+                  template_not_found_class=NotFound,
                   *args, **kwargs):
-    return base.category_page(request=request, slug=slug, template_name=template_name,
-                              template_not_found_class=NotFound,
-                              *args, **kwargs)
+    try:
+        category = Category.objects.get_cache_by_slug(site_id=get_global_site().pk, slug=slug)
+        if not category:
+            raise ObjectDoesNotExist
+        else:
+            category.__class__ = Category
+    except ObjectDoesNotExist:
+        return template_not_found_class(request)
+
+    return TemplateResponse(
+        request=request, template=template_name,
+        context=dict(
+            category=category
+        )
+    )
 
 
 @cache_control(public=True, max_age=max_age)
@@ -66,6 +99,32 @@ def topic_detail(request, slug,
                              product=ETS.web,
                              template_not_found_class=NotFound, *args, **kwargs)
 
+from toolkit.helpers import get_global_site
+from website.models import TopicProxy
+
+
+@cache_control(public=True, max_age=max_age)
+def topic_detail(request, slug,
+                 template_name=join(template_prefix, 'collections/page.haml'),
+                 template_not_found_class=NotFound,
+                 *args, **kwargs):
+    try:
+        topic = TopicProxy.objects.get_cache_by_slug(get_global_site().pk,
+                                                     slug=slug)
+        if not topic or not topic.is_published():
+            raise ObjectDoesNotExist
+    except ObjectDoesNotExist:
+        return template_not_found_class(request)
+
+    ETS = settings.ENTRY_TYPES()
+    return TemplateResponse(
+        request=request, template=template_name,
+        context=dict(
+            topic=topic,
+            product=ETS.web,
+            )
+    )
+
 
 @cache_control(public=True, max_age=max_age)
 def search(request, template_name=join(template_prefix, 'category/search.haml'),
@@ -73,17 +132,24 @@ def search(request, template_name=join(template_prefix, 'category/search.haml'),
     cat_slug = request.GET.get('cat', 'game')
     if cat_slug not in Category.ROOT_SLUGS:
         cat_slug = 'game'
-    root_category = Category.objects.get(slug=cat_slug)
+    root_category = Category.objects\
+        .get_cache_by_slug(site_id=get_global_site().pk,
+                                                  slug=cat_slug)
 
     cat_pk = request.GET.get('category')
     category = None
     if cat_pk:
         try:
-            category = Category.objects.get(pk=cat_pk)
+            category = Category.objects.get_cache_by(pk=cat_pk)
         except ObjectDoesNotExist:
             pass
     else:
         category = root_category
+
+    if category:
+        category.__class__ = Category
+    if root_category:
+        root_category.__class__ = Category
 
     return TemplateResponse(
         request=request,

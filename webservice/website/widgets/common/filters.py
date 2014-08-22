@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from . import base
 from django.db.models.query import EmptyQuerySet
+from mongoengine import queryset_manager
 from website.widgets.common.base import BaseWidgetFilterBackend
+from toolkit.helpers import get_global_site
 
 
 class ItemListByTopicFilterBackend(base.BaseWidgetFilterBackend):
@@ -121,3 +123,151 @@ class AuthorPackageWidgetFilter(BaseWidgetFilterBackend):
             author = getattr(widget, self.author_param)
             return queryset.filter(author=author)
         return queryset
+
+# Backend using haystack.query.SearchQuerySet
+class SearchBySiteFilterbackend(base.BaseWidgetFilterBackend):
+
+    def filter_queryset(self, request, queryset, widget):
+        return queryset.filter(site=get_global_site().pk)
+
+
+class SearchByCategoryFilterBackend(base.BaseWidgetFilterBackend):
+
+    filter_ignore = False
+
+    category_param = 'category'
+
+    category_id_param = 'category_id'
+
+    category_slug_param = 'category_slug'
+
+    def filter_queryset(self, request, queryset, widget):
+        category = getattr(widget, self.category_param, None)
+        category_id = getattr(widget, self.category_id_param, None)
+        category_slug = getattr(widget, self.category_slug_param, None)
+        if not category and not category_id and not category_slug:
+            if self.filter_ignore:
+                return queryset
+            else:
+                return queryset.none()
+
+        if category is not None:
+            if isinstance(category, int):
+                category_id = category
+            elif isinstance(category, str):
+                category_slug = category
+            else:
+                category_id = category.pk
+
+        if category_id:
+            queryset = queryset.filter(category_ids=category_id)
+        elif category_slug:
+            queryset = queryset.filter(category_slugs=category_slug)
+        return queryset
+
+
+class SearchByTopicFilterBackend(base.BaseWidgetFilterBackend):
+
+    topic_param = 'topic'
+    topic_id_param = 'topic_id'
+    topic_slug_param = 'topic_slug'
+
+    filter_ignore = True
+
+    def filter_queryset(self, request, queryset, widget):
+        topic = getattr(widget, self.topic_param, None)
+        topic_id = getattr(widget, self.topic_id_param, None)
+        topic_slug = getattr(widget, self.topic_slug_param, None)
+        if not topic and not topic_slug and not topic_id:
+            if self.filter_ignore:
+                return queryset
+            else:
+                return queryset.none()
+
+        if topic is not None:
+            if isinstance(topic, int):
+                topic_id = topic
+            elif isinstance(topic, str):
+                topic_slug = topic
+            else:
+                topic_id = topic.pk
+
+        if topic_id:
+            return queryset.filter(topic_ids=topic_id)
+        elif topic_slug:
+            return queryset.filter(topic_slugs=topic_slug)
+        else:
+            return queryset
+
+
+class SearchOrderByFilterBackend(base.BaseWidgetFilterBackend):
+
+    def filter_queryset(self, request, queryset, widget):
+        ordering = getattr(widget, 'search_ordering', None)
+        if ordering is None:
+            return queryset
+        elif isinstance(ordering, str):
+            ordering = (ordering,)
+        qs = queryset.order_by(*ordering)
+        return qs
+
+
+class SearchByAuthorFilterBackend(base.BaseWidgetFilterBackend):
+
+    author_param = 'author'
+    author_id_param = 'author_id'
+
+    filter_ignore = True
+
+    def filter_queryset(self, request, queryset, widget):
+        author = getattr(widget, self.author_param, None)
+        author_id = getattr(widget, self.author_id_param, None)
+        if not author and not author_id:
+            if self.filter_ignore:
+                return queryset
+            else:
+                return queryset.none()
+        if author:
+            author_id = author.pk
+        return queryset.filter(author_id=author_id)
+
+
+class SearchOrderByTopicalFilterBackend(base.BaseWidgetFilterBackend):
+
+    topic_param = 'topic'
+    topic_id_param = 'topic_id'
+
+    def filter_queryset(self, request, queryset, widget):
+        topic = getattr(widget, self.topic_param, None)
+        topic_id = getattr(widget, self.topic_id_param, None)
+        if topic:
+            topic_id = topic.pk
+        if topic_id:
+            return queryset.order_by('topic_%d_ordering_i' % topic_id)
+        else:
+            return queryset
+
+
+import operator
+from functools import reduce
+from haystack.constants import ID
+from haystack.query import SQ
+
+
+class RelatedPackageSearcherBySearchFilterBackend(BaseWidgetFilterBackend):
+
+    package_search_result_param = 'package'
+
+    def filter_queryset(self, request, queryset, widget):
+        package = getattr(widget, self.package_search_result_param, None)
+        qs = queryset.exclude(**{ID:package.id})
+        if package.main_category_ids:
+            cats_or_queries = [SQ(main_category_ids=cid) for cid in package.main_category_ids]
+            qs = qs.filter(reduce(operator.or_, cats_or_queries))
+        else:
+            qs = qs.filter(root_category_id=package.root_category_id)
+        tags = package.tags_text.split() if package.tags_text else None
+        if tags:
+            or_queries = [SQ(**{'tags_text': tag}) for tag in tags]
+            qs = qs.filter(reduce(operator.or_, or_queries))
+        return qs
