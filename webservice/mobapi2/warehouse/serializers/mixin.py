@@ -59,13 +59,8 @@ class PackageRelatedVersionsMixin(object):
 
 class PackageRelatedLatestVersinoMixin(object):
 
-    _package_latest_version_maps = dict()
-
     def _latest_version(self, obj):
-        #if obj.pk not in self._package_latest_version_maps:
-        #    self._package_latest_version_maps[obj.pk] = obj.versions.latest_published()
-        #return self._package_latest_version_maps[obj.pk]
-        return obj.versions.latest_published()
+        return obj.get_cache_latest_version()
 
     def get_latest_version_title(self, obj):
         try:

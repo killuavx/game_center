@@ -90,7 +90,7 @@ class PackageTaggingMixin(CacheTaggingMixin):
     def get_cache_latest_version(self):
         if self.latest_version_id:
             version_cls = self.__class__.latest_version.field.rel.to
-            version =  version_cls.all_objects.get_cache_by(self.latest_version_id)
+            version = version_cls.all_objects.get_cache_by(self.latest_version_id)
             version.package = self
             return version
         return None
