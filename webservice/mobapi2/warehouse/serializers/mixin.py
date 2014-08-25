@@ -50,7 +50,7 @@ class PackageRelatedCategoryMixin(object):
 class PackageRelatedVersionsMixin(object):
 
     def get_version_count(self, obj):
-        return obj.versions.published().count()
+        return 0
 
     def get_versions_url(self, obj):
         return get_versions_url(request=self.context.get('request'),
