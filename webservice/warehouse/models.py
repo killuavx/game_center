@@ -563,10 +563,10 @@ class PackageVersionManager(cachemixin.PackageVersionCacheManagerMixin,
                             CurrentSitePassThroughManager):
     pass
 
-class AllPackageVersionManager(cachemixin.PackageCacheManagerMixin,
+
+class AllPackageVersionManager(cachemixin.PackageVersionCacheManagerMixin,
                                PassThroughManager):
     pass
-
 
 
 class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
