@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from kombu import uuid
 from account.utils import *
 from account import settings as account_settings
+from account.models import Profile
 
 from django.contrib.auth import authenticate
 
@@ -29,10 +31,7 @@ class SignupForm(forms.Form):
                                label=_("Create password"),
                                error_messages={'required': _(required_message_template%"Password")})
 
-    def _random_email(self):
-        identification = sha_constructor(str(random.random()).encode('utf-8'))\
-                             .hexdigest()[:10]
-        return "%s@%s" %(identification, 'uc.ccplay.com.cn')
+    email = forms.EmailField(required=False)
 
     def _random_phone(self):
         now = get_datetime_now()
@@ -52,7 +51,8 @@ class SignupForm(forms.Form):
         return self.cleaned_data['username']
 
     def clean(self):
-        self.cleaned_data['email'] = self._random_email()
+        if not self.cleaned_data['email']:
+            self.cleaned_data['email'] = generate_random_email()
         self.cleaned_data['phone'] = self._random_phone()
         return self.cleaned_data
 
@@ -69,4 +69,42 @@ class SignupForm(forms.Form):
         return user
 
 
+class DeviceAnonymousSignupForm(forms.Form):
 
+    imei = forms.CharField(max_length=100)
+
+    def _imei_identifier(self, imei):
+        return sha_constructor(str(imei) .encode('utf-8')).hexdigest()[:20]
+
+    def _random_phone(self):
+        now = get_datetime_now()
+        return now.strftime('%Y%m%d%H%M%S%f')
+
+    def clean(self):
+        self.cleaned_data['email'] = generate_random_email()
+        self.cleaned_data['phone'] = self._random_phone()
+        self.cleaned_data['password'] = uuid()
+        self.cleaned_data['username'] = ("guest_%s" % self._imei_identifier(self.cleaned_data['imei'])).lower()
+        return self.cleaned_data
+
+    def save(self):
+        try:
+            profile = Profile.objects.get(imei=self.cleaned_data['imei'].lower())
+        except Profile.DoesNotExist:
+            username, email, phone, password =(self.cleaned_data['username'],
+                                               self.cleaned_data['email'],
+                                               self.cleaned_data['phone'],
+                                               self.cleaned_data['password'])
+            UserModel = get_user_model()
+            user = UserModel.objects.create_user(username=username,
+                                                 password=password,
+                                                 email=email,
+                                                 phone=phone)
+            profile = user.profile
+            profile.imei = self.cleaned_data['imei']
+            profile.save()
+            user.is_active = False
+            user.save()
+            return user
+        else:
+            return profile.user

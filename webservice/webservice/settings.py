@@ -5,6 +5,8 @@ from os.path import join, dirname, abspath
 gettext = lambda s: s
 PROJECT_PATH = abspath(dirname(dirname(__file__)))
 
+#APPEND_SLASH = False
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -349,7 +351,7 @@ THUMBNAIL_PROCESSORS = (
 )
 
 REST_FRAMEWORK = {
-    'DATE_FORMAT': '%s',
+    'DATE_FORMAT': 'iso-8601',
     'DATETIME_FORMAT': '%s',
     'PAGINATE_BY': 10,
     'PAGINATE_BY_PARAM': 'page_size',

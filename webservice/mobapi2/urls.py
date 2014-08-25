@@ -15,6 +15,7 @@ from mobapi2.comment.views import CommentViewSet, FeedbackViewSet
 from mobapi2.warehouse.views.packageversion import PackageVersionViewSet
 from mobapi2.account.views import (AccountCreateView,
                                    AccountMyProfileView,
+                                   AccountChangePasswordView,
                                    AccountSignoutView,
                                    AccountAuthTokenView,
                                    AccountCommentPackageView)
@@ -59,6 +60,8 @@ account_urlpatterns = patterns('',
                            name=_account_basename('signout')),
                        url(r'^myprofile/?$', AccountMyProfileView.as_view(),
                            name=_account_basename('myprofile')),
+                       url(r'^newpassword/?$', AccountChangePasswordView.as_view(),
+                           name=_account_basename('newpassword')),
                        url(r'^commented_packages/?$',
                            AccountCommentPackageView.as_view(),
                            name=_account_basename('commentedpackages')),

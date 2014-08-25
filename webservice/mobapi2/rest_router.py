@@ -7,7 +7,7 @@ class ApiVersionRouter(routers.DefaultRouter):
 
     version_prefix = 'v2'
 
-    def __init__(self, version, trailing_slash=True):
+    def __init__(self, version, trailing_slash=False):
         super(ApiVersionRouter, self).__init__(trailing_slash=trailing_slash)
         self.version_prefix = version
 
@@ -23,4 +23,4 @@ class ApiVersionRouter(routers.DefaultRouter):
     def get_base_name(self, base_name):
         return "-".join([self.prefix+self.version_prefix, base_name])
 
-rest_router = ApiVersionRouter('v2')
+rest_router = ApiVersionRouter('v2', trailing_slash=True)

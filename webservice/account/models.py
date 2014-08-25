@@ -18,30 +18,15 @@ from mezzanine.core.models import TimeStamped
 from account.managers import UserQuerySet, UserManager, ProfileManager, UserAppBindManager
 
 
-def factory_userprofile_upload_to(basename):
-    def update_to(instance, filename):
-        fbasename = os.path.basename(filename)
-        fbname, extension = fbasename.split('.')
-        path = "%(prefix)s/%(date)s/%(user_id)d/%(fbname)s.%(extension)s" % {
-            'prefix': 'userprofile',
-            'date': now().strftime("%Y%m%d"),
-            'user_id': instance.user.pk,
-            'fbname': basename,
-            'extension': extension
-        }
-        return path
+USER_PROFILE_SIGNUP_DIRECTORY_DTFORMAT = 'user/%Y/%m/%d/%H%M-%S-%f'
 
-    return update_to
-
-
-def upload_to_cover(instance, filename):
-    extension = filename.split('.')[-1].lower()
-    path = "users/%d" % instance.user.pk
-    fname = 'cover'
-    return '%(path)s/%(filename)s.%(extension)s' % {'path': path,
-                                                    'filename': fname,
-                                                    'extension': extension,
-    }
+def user_profile_upload_to(instance, filename):
+    #SimpleUploadedFile
+    if not instance.signup_date:
+        instance.signup_date = now().astimezone()
+    sd = instance.signup_date.astimezone()
+    basename = os.path.basename(filename)
+    return "%s/%s" % (sd.strftime(USER_PROFILE_SIGNUP_DIRECTORY_DTFORMAT), basename)
 
 
 class User(UserBase):
@@ -54,6 +39,8 @@ class User(UserBase):
     @profile.setter
     def profile(self, value):
         self.gamecenter_profile = value
+
+    tracker = FieldTracker()
 
     class Meta:
         #proxy = True
@@ -168,8 +155,7 @@ class Profile(ProfileBase):
 
     cover = ThumbnailerImageField(_('cover image'),
                                   blank=True,
-                                  upload_to=factory_userprofile_upload_to(
-                                      'cover'),
+                                  upload_to=user_profile_upload_to,
                                   help_text=_(
                                       "A personal cover image displayed in your profile"),
     )
@@ -211,12 +197,27 @@ class Profile(ProfileBase):
                                        auto_created=True,
                                        auto_now=True)
 
+    #imei = models.CharField(max_length=100, null=True, blank=True)
+
+    SEX = Choices(
+        ('male', 'male', _('Male')),
+        ('female', 'female', _('Female')),
+        ('other', 'other', _('Other')),
+    )
+
+    sex = models.CharField(choices=SEX, max_length=6,
+                           null=True, blank=True)
+
+    birthday = models.DateField(null=True, blank=True)
+
 
 # Hack to override mugshot.upload_to and mugshot.generate_filename
 # In Django, this is not permitted for override django.models.Model attributes
 Profile.__dict__.get('mugshot').field.upload_to = \
     Profile.__dict__.get('mugshot').field.generate_filename = \
-    factory_userprofile_upload_to('icon')
+    user_profile_upload_to
+
+
 
 
 @receiver(post_delete, sender=User)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from rest_framework import generics, status, viewsets, filters
+from rest_framework import generics, status, viewsets, filters, mixins
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -13,6 +13,7 @@ from mobapi2.warehouse.serializers.package import PackageSummarySerializer
 from mobapi2.warehouse.serializers.packageversion import PackageVersionWithMyCommentSummarySerializer
 from warehouse.models import Package, PackageVersion
 from comment.models import Comment
+from mobapi2.account.serializers import *
 
 
 import logging
@@ -31,7 +32,7 @@ class AccountCreateView(generics.CreateAPIView):
 
     ## 接口访问形式
 
-        POST /api/accounts/signup/
+        POST /api/v2/accounts/signup/
         Content-Type:application/x-www-form-urlencoded
         ....
 
@@ -56,10 +57,56 @@ class AccountCreateView(generics.CreateAPIView):
     """
     authentication_classes = ()
     permission_classes = ()
-    serializer_class = AccountDetailSerializer
+    serializer_class = AccountProfileSignupSerizlizer
 
     form_class = account_forms.SignupForm
 
+    def create(self, request, *args, **kwargs):
+        form = self.form_class(request.DATA, files=request.FILES)
+        if form.is_valid():
+            user = form.save()
+            self.object = user.profile
+            self.post_save(self.object, created=True)
+            serializer = self.serializer_class(self.object)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data,
+                            status=status.HTTP_201_CREATED,
+                            headers=headers)
+        else:
+            return Response({'detail': errors_flat_to_str(form.errors)},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class AccountDeviceCreateView(generics.CreateAPIView):
+    """ 设备账户登陆
+
+    ## 接口访问形式
+
+        POST /api/v2/accounts/signup/device
+        Content-Type:application/x-www-form-urlencoded
+        ....
+
+        imei=3S355D6F6A7A7K88Z8CL6ADFK
+
+    ## 请求数据:
+
+    1. `imei`: 设备国际标识码
+
+    ## 响应状态
+
+    * 201 HTTP_201_CREATED
+        * 创建成功, 返回用户profile信息,
+        * {"username": "admin1", "email": "test@admin.com", "phone": "+86-021-123321123", "icon": null}
+    * 400 HTTP_400_BAD_REQUEST
+        * 错误请求，请求数据错误
+        * {"detail": ["\u5177\u6709 \u7528\u6237\u540d \u7684 User \u5df2\u5b58\u5728\u3002"]}
+
+    """
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = AccountDetailSerializer
+
+    form_class = account_forms.DeviceAnonymousSignupForm
     def create(self, request, *args, **kwargs):
         form = self.form_class(request.DATA, files=request.FILES)
         if form.is_valid():
@@ -72,35 +119,130 @@ class AccountCreateView(generics.CreateAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
 
-class AccountMyProfileView(generics.RetrieveAPIView):
+class AccountMyProfileView(mixins.UpdateModelMixin, generics.RetrieveAPIView):
     """ 账户信息
 
-    ## 访问方式
+    ## 获取账户信息
 
-        GET /api/accounts/myprofile/
+        GET /api/v2/accounts/myprofile/
         Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    ## 修改账户信息
+
+        POST /api/v2/accounts/myprofile/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+        email=test@test.com&sex=male
+
+    ## 上传头像图片
+
+        POST /api/v2/accounts/myprofile/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+        Content-Type: multipart/form-data; boundary=---------------------------11535082321677973755949647881
+        Content-Length: 35856
+
+        -----------------------------11535082321677973755949647881
+        Content-Disposition: form-data; name="icon"; filename="aboutme.icon.png"
+        Content-Type: image/png
+
+        .PNG
+        ....
+        ...
+
 
     ## 请求数据:
 
     * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
-    * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
+    * 通过登陆接口 [/api/v2/accounts/signin/](/api/v2/accounts/signin/)，获得登陆`Token <Key>`
 
     ## 响应状态
 
-    * 201 HTTP_200_OK
-        * 创建成功, 返回用户profile信息,
-        * {"username": "admin1", "email": "test@admin.com", "phone": "+86-021-123321123", "icon": null}
+    * 200 HTTP_200_OK
+        * 返回用户profile信息,
+        * {"username": "admin1", "email": "test@admin.com", "phone": "+86-021-123321123", "icon": null, ...}
+    * 400 HTTP_400_BAD_REQUEST
+        * 编辑用户信息格式有误
     * 401 HTTP_401_UNAUTHORIZED
         * 未登陆
         * 无效的HTTP Header: Authorization
     """
     authentication_classes = (PlayerTokenAuthentication, )
     permission_classes = (IsAuthenticated, )
-    serializer_class = AccountDetailSerializer
+    serializer_class = AccountProfileStatsSerializer
 
-    def get(self, request, *args, **kwargs):
-        serializer = self.get_serializer(request.user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def post(self, request, *args, **kwargs):
+        """
+        update profile basic infomation
+        """
+        partial = kwargs.pop('partial', True)
+        self.object = self.get_object()
+        serializer = self.get_serializer(self.object, data=request.DATA,
+                                         files=request.FILES, partial=partial)
+        created = False
+        save_kwargs = {'force_update': True}
+        if serializer.is_valid():
+            self.pre_save(serializer.object)
+            self.object = serializer.save(**save_kwargs)
+            self.post_save(self.object, created=created)
+            response = Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            response = Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return response
+
+
+from django.contrib.auth.forms import PasswordChangeForm
+
+
+class AccountChangePasswordView(APIView):
+    """ 更改密码接口
+
+    ## 访问方式
+
+        POST /api/v2/accounts/newpassword/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+        new_password=123123&old_password=abcdefg
+
+    ## 请求数据
+
+    1. `new_password`: 新密码
+    2. `old_password`: 老密码确认
+
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 通过登陆接口 [/api/v2/accounts/signin/](/api/v2/accounts/signin/)，获得登陆`Token <Key>`
+
+    ## 响应内容
+
+    * 200 HTTP_200_OK
+        * 修改成功
+    * 400 HTTP_400_BAD_REQUEST
+        * 错误请求参数
+    * 401 HTTP_401_UNAUTHORIZED
+        * 未登陆
+        * 无效的HTTP Header: Authorization
+
+    """
+
+    authentication_classes = (PlayerTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request, *args, **kwargs):
+        new_password = request.DATA.get('new_password')
+        data = dict(
+            old_password=request.DATA.get('old_password'),
+            new_password1=new_password,
+            new_password2=new_password,
+        )
+        chpass = PasswordChangeForm(user=request.user, data=data)
+        if chpass.is_valid():
+            chpass.save()
+            response = Response({'detail': 'ok'}, status=status.HTTP_200_OK)
+        else:
+            response = Response(chpass.errors, status=status.HTTP_400_BAD_REQUEST)
+        return response
 
 
 class AccountSignoutView(APIView):
@@ -114,7 +256,7 @@ class AccountSignoutView(APIView):
     ## 请求数据
 
     * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
-    * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
+    * 通过登陆接口 [/api/v2/accounts/signin/](/api/v2/accounts/signin/)，获得登陆`Token <Key>`
 
     ## 响应内容
 
@@ -141,7 +283,7 @@ class AccountAuthTokenView(ObtainAuthToken):
 
     ## 请求方式
 
-        POST /api/accounts/signin/
+        POST /api/v2/accounts/signin/
         Content-Type:application/x-www-form-urlencoded
         ...
 
@@ -183,13 +325,13 @@ class AccountCommentPackageView(generics.ListAPIView):
 
     ## 访问方式
 
-        GET /api/accounts/commented_packages/
+        GET /api/v2/accounts/commented_packages/
         Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
 
     ## 请求数据
 
     * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
-    * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
+    * 通过登陆接口 [/api/v2/accounts/signin/](/api/v2/accounts/signin/)，获得登陆`Token <Key>`
 
     ## 列表软件结构
 
@@ -240,7 +382,7 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
     ### 必备请求数据
 
     * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
-    * 通过登陆接口 [/api/accounts/signin/](/api/accounts/signin/)，获得登陆`Token <Key>`
+    * 通过登陆接口 [/api/v2/accounts/signin/](/api/v2/accounts/signin/)，获得登陆`Token <Key>`
 
     ### 无效访问
 
@@ -256,7 +398,7 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
 
     #### 访问方式
 
-        GET /api/bookmarks/
+        GET /api/v2/bookmarks/
         Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
 
     #### 响应内容
@@ -271,7 +413,7 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
 
     #### 访问方式
 
-        POST /api/bookmarks/
+        POST /api/v2/bookmarks/
         Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
         ...
 
@@ -293,7 +435,7 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
 
     #### 访问方式
 
-        DETELE /api/bookmarks/3/
+        DETELE /api/v2/bookmarks/3/
         Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
 
     #### 响应内容
@@ -314,7 +456,7 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
 
     #### 访问方式
 
-        HEAD /api/bookmarks/3/
+        HEAD /api/v2/bookmarks/3/
         Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
 
     #### 响应内容
@@ -395,11 +537,13 @@ class PackageBookmarkViewSet(viewsets.ModelViewSet):
 def documentation_account_view(view):
     _link_mask = '* %s: [%s](%s)'
     _maps = (
-        ('注册', '/api/accounts/signup/'),
-        ('登陆', '/api/accounts/signin/'),
-        ('注销', '/api/accounts/signout/'),
-        ('账户信息', '/api/accounts/myprofile/'),
-        ('评论软件列表', '/api/accounts/commented_packages/'),
+        ('注册', '/api/v2/accounts/signup/'),
+        ('登陆', '/api/v2/accounts/signin/'),
+        ('注销', '/api/v2/accounts/signout/'),
+        ('账户信息', '/api/v2/accounts/myprofile/'),
+        ('更改密码', '/api/v2/accounts/newpassword/'),
+        ('收藏', '/api/v2/bookmarks/'),
+        ('评论软件列表', '/api/v2/accounts/commented_packages/'),
     )
     apis = [
         _link_mask % (r[0], r[1], r[1] ) for r in _maps
@@ -416,6 +560,7 @@ documentation_account_view(AccountSignoutView)
 documentation_account_view(AccountMyProfileView)
 documentation_account_view(AccountCommentPackageView)
 documentation_account_view(PackageBookmarkViewSet)
+documentation_account_view(AccountChangePasswordView)
 
 """
 class ObtainExpiringAuthToken(ObtainAuthToken):
@@ -434,3 +579,4 @@ class ObtainExpiringAuthToken(ObtainAuthToken):
             return Response({'token': token.key})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 """
+
