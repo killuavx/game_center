@@ -495,6 +495,7 @@ from rest_framework import mixins
 from mobapi2.warehouse.serializers import search as search_serializers
 from searcher.helpers import get_default_package_query, get_package_search_result
 from toolkit.helpers import get_global_site
+from mobapi2.rest_views import NotePaginationAPIViewMixin
 
 
 class SearchSiteRelatedFilterBackend(filters.BaseFilterBackend):
@@ -537,8 +538,8 @@ class SearchOrderFilterBackend(filters.BaseFilterBackend):
         return queryset
 
 
-
-class PackageCoinViewSet(DetailSerializerMixin,
+class PackageCoinViewSet(NotePaginationAPIViewMixin,
+                         DetailSerializerMixin,
                          mixins.RetrieveModelMixin,
                          mixins.ListModelMixin,
                          viewsets.GenericViewSet):
@@ -571,5 +572,5 @@ class PackageCoinViewSet(DetailSerializerMixin,
         return super(PackageCoinViewSet, self).get_queryset(is_for_detail=is_for_detail)
 
     def get_note_slug(self):
-        return 'package-list-coin'
+        return 'package-award-coin'
 

@@ -162,3 +162,23 @@ class SerializerRelatedField(serializers.RelatedField):
         return self.get_serializer_class()(value,
                                      many=self.many,
                                      context=self.context).data
+
+
+from rest_framework.pagination import PaginationSerializer, PaginationSerializerOptions
+
+
+class PaginationSerializerWithRouterOptions(PaginationSerializerOptions):
+
+    def __init__(self, meta):
+        self.router = getattr(meta, 'router', rest_router)
+        super(PaginationSerializerWithRouterOptions, self).__init__(meta)
+
+
+class NotePaginationSerializer(PaginationSerializer):
+
+    _options_class = PaginationSerializerWithRouterOptions
+
+    note_url = serializers.SerializerMethodField('get_note_url')
+
+    def get_note_url(self, obj):
+        raise NotImplementedError
