@@ -22,16 +22,23 @@ class PackageRelatedTagMin(object):
 class PackageActionsMixin(object):
     def get_action_links(self, obj):
         mark_url = None
+        share_url = None
         try:
             request = self.context.get('request')
             base_name = self.opts.router.get_base_name('bookmark-detail')
             mark_url = request.build_absolute_uri(
                 reverse(base_name, kwargs=dict(pk=obj.pk))
             )
+
+            base_name = self.opts.router.get_base_name('package-share')
+            share_url = request.build_absolute_uri(
+                reverse(base_name, kwargs=dict(pk=obj.pk))
+            )
         except AttributeError:
             pass
         return dict(
             mark=mark_url,
+            share=share_url,
         )
 
 
@@ -183,6 +190,20 @@ class PackageRelatedLatestVersinoMixin(object):
     def get_latest_version_supported_languages(self, obj):
         latest_version = self._latest_version(obj)
         return get_packageversion_supported_languages(latest_version)
+
+    def get_latest_version_has_award(self, obj):
+        latest_version = self._latest_version(obj)
+        try:
+            return latest_version.has_award
+        except:
+            return False
+
+    def get_latest_version_award_coin(self, obj):
+        latest_version = self._latest_version(obj)
+        try:
+            return latest_version.award_coin
+        except:
+            return 0
 
 
 class PackageRelatedPackageUrlMixin(object):

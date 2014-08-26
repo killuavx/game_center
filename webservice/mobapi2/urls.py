@@ -6,6 +6,7 @@ from mobapi2.warehouse.views.package import (
     PackagePushView,
     PackageSearchViewSet,
     PackageUpdateView)
+from mobapi2.warehouse.views import package as package_views
 from mobapi2.taxonomy.views.category import CategoryViewSet
 from mobapi2.taxonomy.views.topic import TopicViewSet
 from mobapi2.searcher.views import TipsWordViewSet
@@ -39,6 +40,7 @@ rest_router.register('bookmarks', PackageBookmarkViewSet, base_name='bookmark')
 rest_router.register('comments', CommentViewSet)
 rest_router.register('feedbacks', FeedbackViewSet)
 rest_router.register('giftbags', GiftBagViewSet)
+rest_router.register('coin_packages', package_views.PackageCoinViewSet, base_name='coin_package')
 
 
 my_giftbags_list = GiftBagViewSet.as_view({
@@ -83,4 +85,3 @@ urlpatterns += patterns('',
         name=rest_router.get_base_name('loadingcover')),
     url(r'^events/?$', EventCreateView.as_view(), name=rest_router.get_base_name('event'))
 )
-

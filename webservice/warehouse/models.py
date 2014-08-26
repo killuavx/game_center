@@ -465,6 +465,12 @@ class Package(PlatformBase,
             main_category = None
         return main_category, cats
 
+
+    # 奖励金币
+    has_award = models.BooleanField(default=False)
+
+    award_coin = models.IntegerField(default=0)
+
     def clean(self):
         super(Package, self).clean()
         self.updated_datetime = now()
@@ -591,6 +597,9 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
             ('site', 'id', ),
             ('site', 'status', ),
             ('site', 'status', 'released_datetime'),
+            ('has_award', ),
+            ('site', 'has_award', ),
+            ('site', 'award_coin', ),
         )
 
     icon = QiniuThumbnailerImageField(
@@ -709,6 +718,11 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
     resources = MultiResourceField()
 
     comments = CommentsField()
+
+    # 奖励金币
+    has_award = models.BooleanField(default=False)
+
+    award_coin = models.IntegerField(default=0)
 
     def clean(self):
         super(PackageVersion, self).clean()
@@ -1083,6 +1097,8 @@ def package_version_pre_save(sender, instance, **kwargs):
 
 SYNC_PACKAGEVERSION_CHANGED_FIELDS = [
     'stars_count',
+    'has_award',
+    'award_coin',
 ]
 
 
@@ -1095,6 +1111,9 @@ def package_version_pre_save_check_changed_fields(sender, instance, **kwargs):
     for field_name in SYNC_PACKAGEVERSION_CHANGED_FIELDS:
         if instance.tracker.has_changed(field_name):
             instance._sync_changed_fields[field_name] = True
+
+    instance.has_award = bool(instance.award_coin)
+
 
 
 @receiver(post_save, sender=PackageVersion)

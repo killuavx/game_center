@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from easy_thumbnails.exceptions import InvalidImageFormatError
 
 from rest_framework import serializers
+from rest_framework.relations import HyperlinkedIdentityField
 from rest_framework.serializers import (
     ModelSerializer as RFModelSerializer,
     ModelSerializerOptions,
@@ -90,6 +91,58 @@ class HyperlinkedWithRouterModelSerializer(RFHyperlinkedModelSerializer):
 
 
 HyperlinkedModelSerializer = HyperlinkedWithRouterModelSerializer
+
+
+class HyperlinkedSearchSerializerWithRouterOptions(serializers.SerializerOptions):
+
+    def __init__(self, meta):
+        self.model = getattr(meta, 'model', None)
+        self.router = getattr(meta, 'router', rest_router)
+        self.view_name = getattr(meta, 'view_name', None)
+        self.lookup_field = getattr(meta, 'lookup_field', None)
+        super(HyperlinkedSearchSerializerWithRouterOptions, self).__init__(meta)
+
+
+class HyperlinkedSearchSerializer(serializers.Serializer):
+
+    field_mapping = _hlink_serializer_field_mapping
+
+    _options_class = HyperlinkedSearchSerializerWithRouterOptions
+    _default_view_name = '%(model_name)s-detail'
+
+    def get_default_fields(self):
+        fields = super(HyperlinkedSearchSerializer, self).get_default_fields()
+
+        if self.opts.view_name is None:
+            self.opts.view_name = self._get_default_view_name(self.opts.model)
+
+        if 'url' not in fields:
+            url_field = HyperlinkedIdentityField(
+                view_name=self.opts.view_name,
+                lookup_field=self.opts.lookup_field
+            )
+            ret = self._dict_class()
+            ret['url'] = url_field
+            ret.update(fields)
+            fields = ret
+        return fields
+
+    def _get_default_view_name(self, search):
+        format_kwargs = {
+            'model_name': search._module_name()
+        }
+        view_name = self._default_view_name % format_kwargs
+        return self.opts.router.get_base_name(view_name)
+
+    def get_identity(self, data):
+        """
+        This hook is required for bulk update.
+        We need to override the default, to use the url as the identity.
+        """
+        try:
+            return data.get('url', None)
+        except AttributeError:
+            return None
 
 
 class SerializerRelatedField(serializers.RelatedField):

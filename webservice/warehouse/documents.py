@@ -198,6 +198,10 @@ class PackageVersionMixin(object):
 
     screenshots = fields.ListField(fields.EmbeddedDocumentField(PackageVersionScreenshot))
 
+    has_award = fields.BooleanField(default=False)
+
+    award_coin = fields.IntField(default=0)
+
 
 class Package(urlmixin.PackageAbsoluteUrlMixin,
               cachemixin.PackageTaggingMixin,
@@ -205,6 +209,10 @@ class Package(urlmixin.PackageAbsoluteUrlMixin,
               PackageVersionMixin,
               PlatformRelated,
               SiteRelated):
+
+    @classmethod
+    def _module_name(cls):
+        return 'package'
 
     id = fields.IntField(primary_key=True)
 
@@ -284,6 +292,11 @@ class Package(urlmixin.PackageAbsoluteUrlMixin,
             ('site_id', 'root_category.id', '-total_download_count'),
             ('site_id', 'root_category.slug', '-total_download_count'),
 
+            ('platform', 'has_award', ),
+            ('platform', 'has_award', '-award_coin'),
+            ('site_id', 'has_award', ),
+            ('site_id', 'has_award', '-award_coin'),
+
             'id',
             'comments.id',
             ('taxonomies.id', 'taxonomies._cls', )
@@ -309,6 +322,10 @@ def sync_image_field(doc_field, field, sizes_alias):
             doc_field[sa] = field[sa].url
         except:
             pass
+    try:
+        doc_field['default'] = field.url
+    except:
+        pass
 
 
 class SyncPackageDocumentHandler(object):
@@ -367,6 +384,8 @@ class SyncPackageDocumentHandler(object):
         self.doc.description = self.version.description or self.package.description
         self.doc.released_datetime = self.version.released_datetime.astimezone()
         self.doc.updated_datetime = self.version.updated_datetime.astimezone()
+        self.doc.has_award = self.version.has_award
+        self.doc.award_coin = self.version.award_coin
 
     def sync_tags(self):
         tags = set(self.package.tags_text.split() + self.version.tags_text.split())
@@ -502,3 +521,30 @@ class SyncPackageDocumentHandler(object):
         except:
             pass
 
+
+class PackageDocumentIndex(SyncPackageDocumentHandler):
+
+    model = None
+
+    def read_queryset(self, using=None):
+        return None
+
+    def index_queryset(self, using=None):
+        return None
+
+    def update_object(self, package_orm):
+        self.all_sync(package_orm, package_orm.latest_version)
+
+    def remove_object(self, package_orm):
+        self.delete(package_orm.pk)
+
+    def clear(self, using=None):
+        Package.objects.delete()
+
+    def update(self, using=None):
+        for instance in self.index_queryset():
+            self.update_object(instance)
+
+    def reindex(self, using=None):
+        self.clear(using=using)
+        self.update(using=using)
