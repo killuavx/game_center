@@ -216,3 +216,26 @@ class GiftCardSerializer(ModelSerializer):
             'code',
             'took_datetime',
         )
+
+from activity.models import Note
+
+
+class NoteSummarySerializer(HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Note
+        fields = (
+            'url',
+            'title',
+        )
+
+
+class NoteDetailSerializer(HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Note
+        fields = (
+            'url',
+            'title',
+            'description',
+        )

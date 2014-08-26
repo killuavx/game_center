@@ -247,3 +247,34 @@ class GiftBagViewSet(DetailSerializerMixin,
         for giftbag in data['results']:
             self.check_giftcard_status(giftbag, request.user, now_timestamp)
         return Response(data)
+
+
+from mobapi2.decorators import default_cache_control
+from rest_framework_extensions.utils import (
+    default_object_cache_key_func,
+    default_list_cache_key_func,
+    )
+from activity.models import Note
+from mobapi2.activity.serializers import NoteSummarySerializer, NoteDetailSerializer
+
+
+class NoteViewSet(DetailSerializerMixin,
+                  viewsets.ReadOnlyModelViewSet):
+
+    lookup_field = 'slug'
+    model = Note
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = NoteSummarySerializer
+    serializer_detail_class = NoteDetailSerializer
+
+    @cache_response(key_func=default_object_cache_key_func)
+    @default_cache_control(max_age=3600*24*7)
+    def retrieve(self, request, *args, **kwargs):
+        return super(NoteViewSet, self).retrieve(request, *args, **kwargs)
+
+    @cache_response(key_func=default_list_cache_key_func)
+    @default_cache_control(max_age=3600*24*7)
+    def list(self, request, *args, **kwargs):
+        return super(NoteViewSet, self).list(request, *args, **kwargs)
+        #return Response(status=status.HTTP_403_FORBIDDEN)

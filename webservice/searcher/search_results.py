@@ -10,7 +10,7 @@ class PackageSearchResult(SearchResult,
                           PackageAbsoluteUrlMixin):
 
     @classmethod
-    def _get_module_name(self):
+    def _module_name(cls):
         return 'package'
 
     # for ios
