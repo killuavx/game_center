@@ -220,38 +220,57 @@ class AccountProfileStatsSerializer(ProfileStatsSerializerMixin,
     bookmark_count = serializers \
         .SerializerMethodField('get_bookmark_count')
 
+    giftbag_count = serializers.SerializerMethodField('get_giftbag_count')
+    def get_giftbag_count(self, obj):
+        return 0
+
+    level = serializers.SerializerMethodField('get_level')
+    def get_level(self, obj):
+        return 0
+
+    coin = serializers.SerializerMethodField('get_coin')
+    def get_coin(self, obj):
+        return 0
+
+    experience = serializers.SerializerMethodField('get_experience')
+    def get_experience(self, obj):
+        return 0
+
     class Meta:
         model = Profile
         fields = PROFILE_BASIC_FIELDS + (
             'comment_count',
             'bookmark_count',
+            'giftbag_count',
+            'level',
+            'coin',
+            'experience'
         )
 
 
-class AccountProfileSigninSerializer(ProfileStatsSerializerMixin,
-                                     AccountProfileSerializer):
+class AccountProfileSigninSerializer(AccountProfileStatsSerializer):
+
     icon = profile_icon
 
     username = profile_username
 
     token = serializers.SerializerMethodField('get_token_key')
 
-    comment_count = serializers.SerializerMethodField('get_comment_count')
-
-    bookmark_count = serializers \
-        .SerializerMethodField('get_profile_bookmark_count')
-
     class Meta:
         model = Profile
         fields = PROFILE_BASIC_FIELDS + (
             'comment_count',
             'bookmark_count',
+            'giftbag_count',
+            'level',
+            'coin',
+            'experience'
             'token'
         )
 
 
-class AccountProfileSignupSerizlizer(ProfileStatsSerializerMixin,
-                                     AccountProfileSerializer):
+class AccountProfileSignupSerizlizer(AccountProfileStatsSerializer):
+
     icon = profile_icon
 
     username = profile_username
@@ -273,5 +292,9 @@ class AccountProfileSignupSerizlizer(ProfileStatsSerializerMixin,
         fields = PROFILE_BASIC_FIELDS + (
             'comment_count',
             'bookmark_count',
+            'giftbag_count',
+            'level',
+            'coin',
+            'experience'
             'token'
         )

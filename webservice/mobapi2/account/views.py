@@ -307,6 +307,15 @@ class AccountAuthTokenView(ObtainAuthToken):
     """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
     serializer_class = MultiAppAuthTokenSerializer
+    serializer_class_myprofile = AccountProfileSigninSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.DATA)
+        if serializer.is_valid():
+            myprofile_serializer = self.serializer_class_myprofile(
+                serializer.object['user'].profile)
+            return Response(myprofile_serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MyCommentedPackageVersionFilter(filters.BaseFilterBackend):
