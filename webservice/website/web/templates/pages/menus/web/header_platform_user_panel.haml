@@ -1,0 +1,43 @@
+{% if request.user.is_authenticated %}
+%dl.abs.dn.bdc.bg-white.zx2.f14
+  %i.abs.ios-web-icon
+  %dd.h24.lh24.pl10.pr10.pt5.pb5.red<
+    你好，
+    %a.red{:href => "#"}= request.user.username
+    %a.ml10.log-out{:href => "{% url 'logout' %}"} [退出]
+{% else %}
+{% include "accounts/web/account_login_form.html" %}
+:javascript
+  function open_login(){
+      $(".login-box").zxxbox({
+          title: "会员登录",
+          fix: true
+      });
+  }
+  //登录表单-表单验证
+  $(function(){
+    var reg = $(".login-form").Validform({
+        showAllError:true,
+        ajaxPost:true,
+        btnSubmit: '.login-btn',
+        callback: function(data){
+            if(data.code == 0){
+                $.zxxbox.hide();
+                $('.login-form').remove();
+                window.location.reload();
+            }
+            else
+            {
+                var msgs = [];
+                for(k in data.errors)
+                {
+                    msgs.push(data.errors[k].join(','));
+                }
+                alert(msgs.join(','));
+                refresh_captcha('.yzm-img');
+            }
+        }
+    });
+    window.login_form = reg;
+  });
+{% endif %}

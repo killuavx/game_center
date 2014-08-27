@@ -1,8 +1,4 @@
-{% load url_tags %}
-{% url 'login' as login_url %}
-{% url 'signup' as signup_url %}
-{% qurl login_url is_ajax=1 as login_url %}
-{% qurl signup_url next=request.get_full_path as signup_url %}
+{% load url_tags %}{% url 'login' as login_url %}{% url 'signup' as signup_url %}{% qurl login_url is_ajax=1 as login_url %}{% qurl signup_url next=request.get_full_path as signup_url %}
 <!--登录-->
 <form class="cell-bk dn bg-white login-box ovh login-form" action="{{ login_url }}" method="POST">
     {% csrf_token %}
@@ -17,7 +13,7 @@
             </li>
             <li class="pl10 h32 pb10 ovh rel bg-white bde">
                 <input class="bd-none pt10 pb10 f16 pct40" id="p-yzm" name="captcha_verify" maxlength="4" type="text" placeholder="验证码" datatype="*4-4">
-                <img src="{% url 'captcha' %}" width="90px" height="37px" class="abs yzm-img">
+                <img onerror="refresh_captcha(this);" src="#" width="90px" height="37px" class="abs yzm-img">
                 <a href="javascript:;" onclick="refresh_captcha($('.yzm-img'));" class="dib ml5 pt10 gr r">看不清？</a>
             </li>
             <li class="mt10 rel"><button type="button" class="db pct100 btn btn-red f16 poi login-btn">立即登录</button></li>

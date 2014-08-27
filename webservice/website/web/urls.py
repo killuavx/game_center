@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url, include
+from website.web.views import UserAuthenticatedPanelView
 
 
 account_urlpatterns = patterns('website.web.views',
+                               url(r'^authpanel/?', UserAuthenticatedPanelView.as_view(), name='authpanel'),
                                url(r'^login/?', 'login', name='login'),
                                url(r'^logout/?', 'logout', name='logout'),
                                url(r'^signup/?', 'signup', name='signup'),
