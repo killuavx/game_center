@@ -11,33 +11,41 @@
   function open_login(){
       $(".login-box").zxxbox({
           title: "会员登录",
-          fix: true
+          fix: true,
       });
   }
-  //登录表单-表单验证
-  $(function(){
-    var reg = $(".login-form").Validform({
-        showAllError:true,
-        ajaxPost:true,
-        btnSubmit: '.login-btn',
-        callback: function(data){
-            if(data.code == 0){
-                $.zxxbox.hide();
-                $('.login-form').remove();
+  function submit_login(form_dom){
+    var form = $(form_dom)
+    $.ajax({
+      url: form.attr('action'),
+      type:'post',
+      dataType:'json',
+      data:form.serialize(),
+      beforeSubmit:function(){
+        form.find('.validation-block')
+          .removeClass('validation-active')
+          .find('.validation-block').text('');
+      },
+      success:function(data){
+          if( data.code == 0 ){
+              if(data.next){
+                window.location = data.next;
+              }
+              else{
                 window.location.reload();
-            }
-            else
-            {
-                var msgs = [];
-                for(k in data.errors)
-                {
-                    msgs.push(data.errors[k].join(','));
-                }
-                alert(msgs.join(','));
-                refresh_captcha('.yzm-img');
-            }
-        }
+              }
+          }
+          else
+          {
+              for(k in data.errors){
+                form.find('.validation-message[validate=' + k + ']')
+                  .text(data.errors[k].join(","));
+              }
+              form.find('.validation-block').addClass('validation-active');
+              refresh_captcha('.yzm-img');
+          }
+      }
     });
-    window.login_form = reg;
-  });
+    return false;
+  }
 {% endif %}

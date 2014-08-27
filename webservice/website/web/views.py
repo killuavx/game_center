@@ -273,7 +273,7 @@ def login(request, template='accounts/web/account_login.html'):
             auth_login(request, user)
             data = dict(code=0, msg='登陆成功', next=next_url(request))
         else:
-            data = dict(code=1, msg='登陆失败', errors=form.errors)
+            data = dict(code=1, msg='登陆失败', errors=dict(form.errors.items()))
 
     if is_ajax_request(request):
         return HttpResponse(json.dumps(data), content_type='application/json')
