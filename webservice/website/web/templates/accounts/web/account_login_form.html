@@ -3,13 +3,7 @@
 <form id="login-form" class="cell-bk dn bg-white login-box ovh login-form" action="{{ login_url }}" method="POST">
     {% csrf_token %}
     <div class="cell-bk rel w750">
-        <div class="abs f14 tc cell-bk login-tip"></div>
-        <div class="validation-block">
-        <div validate="__all__" class="validation-message"></div>
-        <div validate="captcha_verify" class="validation-message"></div>
-        <div validate="useranme" class="validation-message"></div>
-        <div validate="password" class="validation-message"></div>
-        </div>
+        <div class="abs f14 tc cell-bk login-tip Validform_wrong"></div>
         <ul class="p15 fw">
             <li class="pl10 bg-white bde">
                 <input class="bd-none pt10 pb10 f16 pct100" id="p-id" name="username" type="text" placeholder="用户名\手机号码\电子邮箱" datatype="*">
@@ -19,7 +13,7 @@
             </li>
             <li class="pl10 h32 pb10 ovh rel bg-white bde">
                 <input class="bd-none pt10 pb10 f16 pct40" id="p-yzm" name="captcha_verify" maxlength="4" type="text" placeholder="验证码" datatype="*4-4">
-                <img onerror="refresh_captcha(this);" src="#" width="90px" height="37px" class="abs yzm-img">
+                <img src="#" width="90px" height="37px" class="abs yzm-img">
                 <a href="javascript:;" onclick="refresh_captcha($('.yzm-img'));" class="dib ml5 pt10 gr r">看不清？</a>
             </li>
             <li class="mt10 rel"><button type="submit" onclick="submit_login('#login-form');return false;" class="db pct100 btn btn-red f16 poi login-btn">立即登录</button></li>
@@ -39,12 +33,5 @@
 </form>
 <script type="text/javascript">
 function refresh_captcha(dom, url){$(dom).attr('src',"{% url 'captcha' %}?" + (new Date()).getTime());}
+refresh_captcha('#login-form img.yzm-img');
 </script>
-<style>
-    .validation-block {
-        display: none;
-    }
-    .validation-block.validation-active  {
-        display: block;
-    }
-</style>

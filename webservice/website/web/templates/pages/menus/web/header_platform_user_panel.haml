@@ -15,19 +15,20 @@
       });
   }
   function submit_login(form_dom){
-    var form = $(form_dom)
+    var form = $(form_dom);
+    var vc_tips_cls = 'Validform_checktip';
+    var validation_msg = form.find('.Validform_wrong');
+    window.msg = validation_msg;
     $.ajax({
       url: form.attr('action'),
       type:'post',
       dataType:'json',
       data:form.serialize(),
-      beforeSubmit:function(){
-        form.find('.validation=message').text('');
-        form.find('.validation-block')
-          .removeClass('validation-active')
-          .find('.validation-block').text('');
+      beforeSend:function(){
+        validation_msg.removeClass(vc_tips_cls).text('');
       },
       success:function(data){
+          console.log(data);
           if( data.code == 0 ){
               if(data.next){
                 window.location = data.next;
@@ -38,11 +39,14 @@
           }
           else
           {
+              var tips = [];
               for(k in data.errors){
-                form.find('.validation-message[validate=' + k + ']')
-                  .text(data.errors[k].join(","));
+                 alert(k);
+                 alert(data.errors[k]);
+                 tips.push(data.errors[k].join(","));
+                 break;
               }
-              form.find('.validation-block').addClass('validation-active');
+              validation_msg.text(tips.join(',')).addClass(vc_tips_cls);
               refresh_captcha('.yzm-img');
           }
       }

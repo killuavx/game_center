@@ -261,6 +261,8 @@ def previous_url(request):
     host = request.get_host()
     return previous if previous and is_safe_url(previous, host=host) else None
 
+from django.utils.datastructures import SortedDict
+
 @csrf_exempt
 def login(request, template='accounts/web/account_login.html'):
     form = LoginForm(request=request,
@@ -273,7 +275,7 @@ def login(request, template='accounts/web/account_login.html'):
             auth_login(request, user)
             data = dict(code=0, msg='登陆成功', next=next_url(request))
         else:
-            data = dict(code=1, msg='登陆失败', errors=dict(form.errors.items()))
+            data = dict(code=1, msg='登陆失败', errors=SortedDict(form.errors))
 
     if is_ajax_request(request):
         return HttpResponse(json.dumps(data), content_type='application/json')
