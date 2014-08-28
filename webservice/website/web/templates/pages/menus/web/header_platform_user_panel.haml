@@ -28,7 +28,6 @@
         validation_msg.removeClass(vc_tips_cls).text('');
       },
       success:function(data){
-          console.log(data);
           if( data.code == 0 ){
               if(data.next){
                 window.location = data.next;
@@ -41,8 +40,6 @@
           {
               var tips = [];
               for(k in data.errors){
-                 alert(k);
-                 alert(data.errors[k]);
                  tips.push(data.errors[k].join(","));
                  break;
               }
