@@ -22,6 +22,7 @@
       dataType:'json',
       data:form.serialize(),
       beforeSubmit:function(){
+        form.find('.validation=message').text('');
         form.find('.validation-block')
           .removeClass('validation-active')
           .find('.validation-block').text('');
