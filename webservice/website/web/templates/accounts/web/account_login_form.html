@@ -22,7 +22,7 @@
                 <img onerror="refresh_captcha(this);" src="#" width="90px" height="37px" class="abs yzm-img">
                 <a href="javascript:;" onclick="refresh_captcha($('.yzm-img'));" class="dib ml5 pt10 gr r">看不清？</a>
             </li>
-            <li class="mt10 rel"><button type="button" onclick="submit_login('#login-form');" class="db pct100 btn btn-red f16 poi login-btn">立即登录</button></li>
+            <li class="mt10 rel"><button type="submit" onclick="submit_login('#login-form');return false;" class="db pct100 btn btn-red f16 poi login-btn">立即登录</button></li>
             <li class="p10 mb5">
                 <label class="l"><input name="app" value="bbs" type="checkbox"> 论坛账号</label>
                 <!-- <a href="#" class="gr r">忘记密码？</a></li> -->
