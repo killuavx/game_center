@@ -7,21 +7,22 @@ from django.db.models.signals import post_save, post_delete
 from mobapi2.rest_router import rest_router
 from mobapi2.utils import comment_list_cache_key_func
 from django.core.cache import cache
-from django.utils.http import urlencode
 import requests
 
 PURGE_URL = "http://android.ccplay.com.cn/purge/?key=%s"
 
 def api_comment_url(data, router=None):
     view_name = router.get_base_name('comment-list') if router else 'comment-list'
+    qstr = "content_type=%s&object_pk=%s" %(data['content_type'], data['object_pk'])
     url = rest_reverse(view_name)
-    return "%s?%s" % (url, urlencode(data))
+    return "%s?%s" % (url, qstr)
 
 
 def web_comment_url(data):
     view_name = 'comment_list'
+    qstr = "content_type=%s&object_pk=%s" %(data['content_type'], data['object_pk'])
     url = reverse(view_name)
-    return "%s?%s" % (url, urlencode(data))
+    return "%s?%s" % (url, qstr)
 
 
 def change_comment_updated_at(sender=None, instance=None, *args, **kwargs):
