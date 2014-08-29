@@ -29,7 +29,7 @@
       / cell-bk
   / top
 
-  {% cache_tagging 'product_web_navigation'|add_param:request.path_info %}{% spaceless %}
+  {% cache_tagging 'product_web_navigation'|add_param:site_name|add_param:request.path_info %}{% spaceless %}
   {% cache_add_tags request.get_host|add:request.path_info request.build_absolute_uri %}
   {% cache_location_register 'product_web_navigation' %}
   .cell-bk.nav#nav
