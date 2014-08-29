@@ -150,9 +150,30 @@
           {% endwidget %}
         {% endspaceless %}{% end_cache_tagging %}
 
-        .down.mb30
-          {% comment_star_for package.latest_version_id 'warehouse.packageversion' %}
+        #comment-panel.down.mb30
+          {% comment %} {% comment_star_for package.latest_version_id 'warehouse.packageversion' %}{% endcomment %}
+          #comment-list
 
       / right
     / cell-bk
   {% endwith %}
+-block extra_js_footer
+  :javascript
+    $(function(){
+      $.ajax({
+        url: '{% comment_star_form_url_for package.latest_version_id "warehouse.packageversion" %}',
+        type:'get',
+        dataType:'text',
+        success:function(text){
+          $('#comment-panel').prepend(text);
+        }
+      });
+      $.ajax({
+        url:'{% comment_list_url package.latest_version_id "warehouse.packageversion" %}',
+        type:'get',
+        dataType:'text',
+        success:function(text){
+          $('#comment-list').html(text);
+        }
+      });
+    });

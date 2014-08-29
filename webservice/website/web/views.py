@@ -333,7 +333,7 @@ def signup(request, template='accounts/web/account_signup.html'):
 
 from mezzanine.conf import settings as mz_settings
 from toolkit.forms import CommentWithStarForm
-from toolkit.templatetags.comment_star_tags import comment_star_thread
+from toolkit.templatetags.comment_star_tags import comment_star_thread, comment_star_for
 from django.db.models import get_model
 from django.contrib.contenttypes.models import ContentType
 
@@ -443,6 +443,20 @@ def comment_list(request, template='generic/web/includes/comment.html'):
             context=context,
             parent=target_object,
             page=request.GET.get('page', 1)
+        )
+        return TemplateResponse(request, template=template,
+                                context=response_context)
+    else:
+        raise Http404
+
+
+def comment_form(request, template='generic/web/includes/comments.html'):
+    model, target_object = initial_model_object(request.GET)
+    if target_object and target_object.pk:
+        context = {"obj": target_object, "request": request}
+        response_context = comment_star_for(
+            context=context,
+            obj=target_object
         )
         return TemplateResponse(request, template=template,
                                 context=response_context)
