@@ -168,8 +168,9 @@
           $('#comment-panel').prepend(text);
         }
       });
+      {% comment_list_url_as package.latest_version_id "warehouse.packageversion" as cmt_list_url %}
       $.ajax({
-        url:'{% comment_list_url package.latest_version_id "warehouse.packageversion" %}',
+        url:'{% qurl cmt_list_url page=1 %}',
         type:'get',
         dataType:'text',
         success:function(text){

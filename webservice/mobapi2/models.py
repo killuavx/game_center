@@ -18,9 +18,11 @@ def api_comment_url(data, router=None):
     return "%s?%s" % (url, qstr)
 
 
-def web_comment_url(data):
+def web_comment_url(data, page=1):
     view_name = 'comment_list'
-    qstr = "content_type=%s&object_pk=%s" %(data['content_type'], data['object_pk'])
+    qstr = "content_type=%s&object_pk=%s&page=%s" %(data['content_type'],
+                                                    data['object_pk'],
+                                                    page)
     url = reverse(view_name)
     return "%s?%s" % (url, qstr)
 
@@ -28,7 +30,6 @@ def web_comment_url(data):
 def change_comment_updated_at(sender=None, instance=None, *args, **kwargs):
     data = dict(content_type=instance.content_type_id,
                 object_pk=instance.object_pk)
-    data = SortedDict(data)
     key = comment_list_cache_key_func.comment_updated_at.get_key(**data)
     cache.delete(key)
 

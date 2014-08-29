@@ -25,6 +25,7 @@ def comment_list_url(obj, content_type=None, view_name='comment_list'):
     return reverse(view_name) + qstr
 
 register.simple_tag(comment_list_url)
+register.assignment_tag(comment_list_url, name='comment_list_url_as')
 
 
 @register.simple_tag()
