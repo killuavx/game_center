@@ -19,8 +19,8 @@ urlpatterns = patterns('website.web.views',
                        url(r'^qrcode/?', 'qrcode_gen'),
                        url(r'^captcha/?', 'captcha', name='captcha'),
                        url(r'^accounts/', include(account_urlpatterns)),
-                       url(r'^comments/?$', 'comment_list', name='comment_list'),
-                       url(r'^comment_form/?$', 'comment_form', name='comment_form'),
+                       url(r'^comments/$', 'comment_list', name='comment_list'),
+                       url(r'^comment_form/$', 'comment_form', name='comment_form'),
                        url(r'^comment/?$', 'comment', name='comment'),
                        )
 

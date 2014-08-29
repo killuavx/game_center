@@ -31,7 +31,7 @@ class CommentWithStarForm(ThreadedCommentForm):
 
     def clean_star(self):
         from mezzanine.conf import settings
-        if self.cleaned_data['star'] not in settings.RATINGS_RANGE:
+        if self.cleaned_data['star'] not in settings.RATINGS_RANGE + [0]:
             raise forms.ValidationError('评星错误', code=1)
 
         bits = (self.data["content_type"], self.data["object_pk"])
@@ -53,7 +53,7 @@ class CommentWithStarForm(ThreadedCommentForm):
         value = self.cleaned_data["star"]
         name = self.target_object.get_starsfield_name()
         manager = getattr(self.target_object, name)
-        if user.is_authenticated():
+        if user.is_authenticated() and value:
             try:
                 instance = manager.get(user=user)
             except Star.DoesNotExist:

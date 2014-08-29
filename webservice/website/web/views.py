@@ -417,7 +417,7 @@ def comment(request):
             data['code'] = 2
             data['msg'] = '请先登陆后再评论'
             data['errors'] = []
-        if form.is_valid():
+        elif form.is_valid():
             comment = form.save(request)
             data['code'], data['msg'] = 0, '评论成功'
         else:
