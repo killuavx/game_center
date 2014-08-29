@@ -20,7 +20,7 @@ urlpatterns = patterns('website.web.views',
                        url(r'^captcha/?', 'captcha', name='captcha'),
                        url(r'^accounts/', include(account_urlpatterns)),
                        url(r'^comments/$', 'comment_list', name='comment_list'),
-                       url(r'^comment_form/$', 'comment_form', name='comment_form'),
-                       url(r'^comment/?$', 'comment', name='comment'),
+                       url(r'^form_comment/$', 'comment_form', name='comment_form'),
+                       url(r'^comment/$', 'comment', name='comment'),
                        )
 
