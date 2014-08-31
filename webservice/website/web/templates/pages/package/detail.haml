@@ -138,7 +138,7 @@
                     {% qurl pkg.download_url entrytype=product as related_dw_url %}
                   .dib.rel.app-list-min<
                     %a.db.tc.f14{:href => "={related_dt_url}", :target => "_blank", :title => "={related_title}"}><
-                      %img.db.auto{:src => "={related_icon_url}"}
+                      %img.db.auto.lazy{"data-original" => "={related_icon_url}"}
                       %span.ios-web-icon.abs.db.auto
                       {{ related_title|slice:"5"}}
                       %i.db.n.f12.g9= mcat_name

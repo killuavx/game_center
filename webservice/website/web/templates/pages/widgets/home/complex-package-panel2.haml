@@ -22,7 +22,7 @@
           {% absolute_url_as package product=product as detail_url %}
           .dib.rel.app-list-min
             %a.db.tc.f14{:href => "={detail_url}", :target => "_blank", :title => "={title}" }><
-              %img.db.auto{:src => "={icon_url}"}
+              %img.db.auto.lazy{"data-original" => "={icon_url}"}
               %span.ios-web-icon.abs.db.auto
               = title|slice:"5"
               %i.db.n.f12.g9= cat_name

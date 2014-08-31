@@ -6,7 +6,7 @@
         {% absolute_url_as package product=product as detail_url %}
         %li.dib.rel
           %a{:href => "={detail_url}", :target => "_blank" , :title => "={title}"}
-            %img{:alt => "={title}", :src => "{% resource_url version 'cover' %}"}
+            %img.lazy{:alt => "={title}", "data-original" => "{% resource_url version 'cover' %}"}
               %span.bg
               %span.abs.tc.ovh.pl5.pr5.white.text.png= title
 / roll_box

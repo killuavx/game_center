@@ -9,7 +9,7 @@
       %li.cell-bk{:class => "{% if forloop.first %}first{% endif %}"}
         %h4.l
           %a{:href => "={post.url}", :target => "_blank"}
-            %img{:src => "={post.avatar_url}"}
+            %img.lazy{"data-original" => "={post.avatar_url}"}
             = post.title
         %span.r.g9.f10{:title => "回复|查看"}
           = post.replies_count
