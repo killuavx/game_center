@@ -45,12 +45,10 @@
         {% include_widget WebFooterWidget %}
         {% endcache %}
     / 底部结束 footer
-    {% if request|is_mobile or request|is_tablet %}
-      {% if is_android %}
+    {% if is_android %}
       {% cache 86400 product_web_footer_floatbar request.get_host %}
       {% include_widget WebFooterFloatBarWidget %}
       {% endcache %}
-      {% endif %}
     {% endif %}
 
     {% block after_footer %}{% endblock %}
