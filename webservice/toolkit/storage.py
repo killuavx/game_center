@@ -60,7 +60,7 @@ qboxctl = QBoxCtlLazy()
 class PackageStorage(LazyObject):
 
     def _setup(self):
-        self._wrapped = get_storage_class('toolkit.storage.QiniuPackageFileStorage')()
+        self._wrapped = get_storage_class('toolkit.storage.QiniuPackageWithRandomHostFileStorage')()
 
 
 class QiniuPackageFileStorageMixin(object):
@@ -146,6 +146,25 @@ class QiniuPackageFileStorageMixin(object):
 
 class QiniuPackageFileStorage(QiniuPackageFileStorageMixin, FileSystemStorage):
     pass
+
+
+class QiniuPackageWithRandomHostFileStorage(QiniuPackageFileStorage):
+
+    host_subname = 'd{0}.media'
+
+    host_sequeue_min = 1
+
+    host_sequeue_max = 4
+
+    use_random_source = True
+
+    def get_host_url(self, name):
+        if self.use_random_source:
+            if not self.is_qiniu_file(name):
+                new_host = self.host_subname.format(randint(self.host_sequeue_min,
+                                                            self.host_sequeue_max))
+                return self.base_url.replace('//media', '//%s' % new_host)
+        return super(QiniuPackageWithRandomHostFileStorage, self).get_host_url(name)
 
 
 package_storage = PackageStorage()
