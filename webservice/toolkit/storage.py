@@ -157,17 +157,40 @@ FileSystemStorageMixin = import_from("%s.storage.FileSystemStorageMixin" % setti
 from easy_thumbnails.storage import ThumbnailFileSystemStorage
 
 
-class QiniuPackageVersionScreenshotThumbnailImageStorage(QiniuPackageFileStorageMixin,
-                                                         ThumbnailFileSystemStorage):
+class QiniuThumbnailImageStorage(QiniuPackageFileStorageMixin,
+                                 ThumbnailFileSystemStorage):
     pass
 
 
-class PackageVersionScreenshotThumbnailFileStorage(LazyObject):
+from random import randint
+
+
+class QiniuThumbnailImageWithRandomHostStorage(QiniuThumbnailImageStorage):
+
+    host_subname = 'i{0}.media'
+
+    host_sequeue_min = 1
+
+    host_sequeue_max = 4
+
+    use_random_source = True
+
+    def get_host_url(self, name):
+        if self.use_random_source:
+            if not self.is_qiniu_file(name):
+                new_host = self.host_subname.format(randint(self.host_sequeue_min,
+                                                            self.host_sequeue_max))
+                return self.base_url.replace('//media', '//%s' % new_host)
+        return super(QiniuThumbnailImageWithRandomHostStorage, self).get_host_url(name)
+
+
+class ImageRandomHostStorage(LazyObject):
 
     def _setup(self):
-        self._wrapped = get_storage_class('toolkit.storage.QiniuPackageVersionScreenshotThumbnailImageStorage')()
+        self._wrapped = get_storage_class('toolkit.storage.QiniuThumbnailImageWithRandomHostStorage')()
 
-screenshot_thumbnail_storage = PackageVersionScreenshotThumbnailFileStorage()
+
+screenshot_thumbnail_storage = image_storage = ImageRandomHostStorage()
 
 
 class QiniuResourceFileStorage(QiniuPackageFileStorageMixin,
@@ -183,3 +206,6 @@ class ResourceStorage(LazyObject):
 
 
 resource_storage = ResourceStorage()
+
+
+
