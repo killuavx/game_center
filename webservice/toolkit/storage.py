@@ -9,6 +9,8 @@ from django.core.files.storage import get_storage_class
 from django.utils.functional import LazyObject
 from django.conf import settings
 from toolkit.helpers import import_from
+import hashlib
+from django.utils.encoding import force_bytes
 import os
 import sh
 import json
@@ -148,21 +150,24 @@ class QiniuPackageFileStorage(QiniuPackageFileStorageMixin, FileSystemStorage):
     pass
 
 
+def hash_string_mod_index(string, m=4):
+    return ord(hashlib.md5(force_bytes(string)).hexdigest()[0]) % m
+
+
 class QiniuPackageWithRandomHostFileStorage(QiniuPackageFileStorage):
 
     host_subname = 'd{0}.media'
 
-    host_sequeue_min = 1
-
-    host_sequeue_max = 4
+    host_sequeues = [1, 2, 3, 4]
 
     use_random_source = True
 
     def get_host_url(self, name):
         if self.use_random_source:
             if not self.is_qiniu_file(name):
-                new_host = self.host_subname.format(randint(self.host_sequeue_min,
-                                                            self.host_sequeue_max))
+                seq = self.host_sequeues[hash_string_mod_index(name,
+                                                               len(self.host_sequeues))]
+                new_host = self.host_subname.format(seq)
                 return self.base_url.replace('//media', '//%s' % new_host)
         return super(QiniuPackageWithRandomHostFileStorage, self).get_host_url(name)
 
@@ -181,24 +186,20 @@ class QiniuThumbnailImageStorage(QiniuPackageFileStorageMixin,
     pass
 
 
-from random import randint
-
-
 class QiniuThumbnailImageWithRandomHostStorage(QiniuThumbnailImageStorage):
 
     host_subname = 'i{0}.media'
 
-    host_sequeue_min = 1
-
-    host_sequeue_max = 4
+    host_sequeues = [1, 2, 3, 4]
 
     use_random_source = True
 
     def get_host_url(self, name):
         if self.use_random_source:
             if not self.is_qiniu_file(name):
-                new_host = self.host_subname.format(randint(self.host_sequeue_min,
-                                                            self.host_sequeue_max))
+                seq = self.host_sequeues[hash_string_mod_index(name,
+                                                               len(self.host_sequeues))]
+                new_host = self.host_subname.format(seq)
                 return self.base_url.replace('//media', '//%s' % new_host)
         return super(QiniuThumbnailImageWithRandomHostStorage, self).get_host_url(name)
 
@@ -225,6 +226,7 @@ class ResourceStorage(LazyObject):
 
 
 resource_storage = ResourceStorage()
+
 
 
 
