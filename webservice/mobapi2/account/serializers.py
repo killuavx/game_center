@@ -261,7 +261,7 @@ class AccountProfileSigninSerializer(AccountProfileStatsSerializer):
             'giftbag_count',
             'level',
             'coin',
-            'experience'
+            'experience',
             'token'
         )
 
@@ -292,6 +292,6 @@ class AccountProfileSignupSerizlizer(AccountProfileStatsSerializer):
             'giftbag_count',
             'level',
             'coin',
-            'experience'
+            'experience',
             'token'
         )
