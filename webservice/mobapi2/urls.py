@@ -10,7 +10,7 @@ from mobapi2.warehouse.views import package as package_views
 from mobapi2.taxonomy.views.category import CategoryViewSet
 from mobapi2.taxonomy.views.topic import TopicViewSet
 from mobapi2.searcher.views import TipsWordViewSet
-from mobapi2.promotion.views import AdvertisementViewSet
+from mobapi2.promotion import views as promotion_views
 from mobapi2.account.views import PackageBookmarkViewSet
 from mobapi2.comment.views import CommentViewSet, FeedbackViewSet
 from mobapi2.warehouse.views.packageversion import PackageVersionViewSet
@@ -37,7 +37,7 @@ rest_router.register('rankings', PackageRankingViewSet,
 rest_router.register('categories', CategoryViewSet)
 rest_router.register('topics', TopicViewSet)
 rest_router.register('tipswords', TipsWordViewSet)
-rest_router.register('advertisements', AdvertisementViewSet)
+rest_router.register('advertisements', promotion_views.AdvertisementViewSet)
 rest_router.register('bookmarks', PackageBookmarkViewSet, base_name='bookmark')
 rest_router.register('comments', CommentViewSet)
 rest_router.register('feedbacks', FeedbackViewSet)
@@ -77,6 +77,8 @@ slug_pattern = '[\w_.-]+'
 
 urlpatterns = rest_router.urls
 urlpatterns += patterns('',
+    url(r'^recommends/(?P<date>[\d-]+)/(.(?P<format>[\w_-]+))?$', promotion_views.RecommendView.as_view(),
+        name=rest_router.get_base_name('recommend-detail')),
     url(r'^selfupdate/?$', SelfUpdateView.as_view(),
         name=rest_router.get_base_name('selfupdate')),
     url(r'^push/packages/?$', PackagePushView.as_view(),

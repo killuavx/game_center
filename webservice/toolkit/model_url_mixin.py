@@ -217,5 +217,10 @@ class AdvertisementAbsoluteUrlMixin(AbsoluteUrlMixin):
             return None
 
 
+class RecommendAbsoluteUrlMixin(AbsoluteUrlMixin):
 
-
+    def get_absolute_url_as(self, product, **kwargs):
+        if self.content and isinstance(self.content, AbsoluteUrlMixin):
+            return self.content.get_absolute_url_as(product=product, **kwargs)
+        else:
+            return None

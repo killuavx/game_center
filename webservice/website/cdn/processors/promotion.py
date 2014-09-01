@@ -23,3 +23,16 @@ class AdvertisementProcessor(ModelProcessor):
             raise WorkingDirectoryNotFound(
                 "working direcotry %s not found" % self.instance)
         return dirname(self.instance.cover.name)
+
+
+class RecommendProcessor(ModelProcessor):
+
+    def __init__(self, instance):
+        super(RecommendProcessor, self).__init__(instance)
+        self.relative_path = self.get_relative_working_path()
+
+    def get_relative_working_path(self):
+        if self.instance.workspace:
+            return str(self.instance.workspace)
+        raise WorkingDirectoryNotFound(
+                "Recommend %s working direcotry not found" % self.instance)
