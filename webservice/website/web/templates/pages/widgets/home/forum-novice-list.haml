@@ -8,7 +8,7 @@
   {% settings_value "GC_WEB_HOME_A8_PLACE_SLUG" as A8_PLACE_SLUG %}
   {% widget WebSingleAdvertisementWidget slug=A8_PLACE_SLUG %}
   %a.rel.top{:href => "{% absolute_url item product=product %}", :target => "={item.target}"}
-    %img{:src => "{% resource_url item 'cover' %}"}
+    %img.lazy{"data-original" => "{% resource_url item 'cover' %}"}
       %span.abs.tc.white.png= item.title
   {% endwidget %}
 
@@ -17,7 +17,7 @@
       %li.cell-bk
         %h4.l
           %a{:href => "={post.url}", :target => "_blank"}
-            %img{:src => "={post.avatar_url}"}
+            %img.lazy{"data-original" => "={post.avatar_url}"}
             = post.title
         %span.r.g9.f10{:title => "回复|查看"}
           = post.replies_count

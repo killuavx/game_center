@@ -40,7 +40,7 @@
                                     {% absolute_url_as package product=product as detail_url %}
                                     <div class="dib rel app-list-min">
                                         <a href="{{ detail_url }}" class="db tc f14" target="_blank" title="{{ title }}">
-                                            <img src="{{ icon_url }}" class="db auto">
+                                            <img data-original="{{ icon_url }}" class="db auto lazy">
                                             <span class="ios-web-icon abs db auto"></span>
                                             {{ title|slice:"5" }}
                                             <i class="db n f12 g9">{{ cat_name }}</i>

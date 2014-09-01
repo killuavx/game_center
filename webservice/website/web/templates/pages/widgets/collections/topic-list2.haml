@@ -2,7 +2,7 @@
 {% absolute_url_as topic product=product as detail_url %}
 .l
   %a{:href => "={detail_url}", :target => "_blank" }
-    %img{:alt => "={topic.name}", :src => "{% resource_url topic.resources 'cover' product %}"}
+    %img.lazy{:alt => "={topic.name}", "data-original" => "{% resource_url topic.resources 'cover' product %}"}
     %h3= topic.name
 / l
 

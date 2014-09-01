@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url, include
+from website.web.views import UserAuthenticatedPanelView
 
 
 account_urlpatterns = patterns('website.web.views',
+                               url(r'^authpanel/?', UserAuthenticatedPanelView.as_view(), name='authpanel'),
                                url(r'^login/?', 'login', name='login'),
                                url(r'^logout/?', 'logout', name='logout'),
                                url(r'^signup/?', 'signup', name='signup'),
@@ -17,7 +19,8 @@ urlpatterns = patterns('website.web.views',
                        url(r'^qrcode/?', 'qrcode_gen'),
                        url(r'^captcha/?', 'captcha', name='captcha'),
                        url(r'^accounts/', include(account_urlpatterns)),
-                       url(r'^comments/?', 'comment_list', name='comment_list'),
-                       url(r'^comment/?', 'comment', name='comment'),
+                       url(r'^comments/$', 'comment_list', name='comment_list'),
+                       url(r'^form_comment/$', 'comment_form', name='comment_form'),
+                       url(r'^comment/$', 'comment', name='comment'),
                        )
 
