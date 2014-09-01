@@ -250,6 +250,11 @@ class RecommendQuerySet(AdvertisementQuerySet):
             .filter(Q(released_datetime__lte=dt))\
             .filter(Q(expiry_datetime__gt=dt) | Q(expiry_datetime=None))
 
+    def published_with_date(self, date):
+        return self.filter(status=self.model.STATUS.published) \
+            .filter(Q(released_datetime__lte=date)) \
+            .filter(Q(expiry_datetime__gt=date) | Q(expiry_datetime=None))
+
 
 RECOMMEND_DIRECTORY_DTFORMAT = 'recommend/%Y/%m/%d/%H%M-%S-%f'
 
