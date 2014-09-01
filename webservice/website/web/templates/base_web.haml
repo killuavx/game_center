@@ -45,12 +45,10 @@
         {% include_widget WebFooterWidget %}
         {% endcache %}
     / 底部结束 footer
-    {% if request|is_mobile or request|is_tablet %}
-      {% if is_android %}
+    {% if is_android %}
       {% cache 86400 product_web_footer_floatbar request.get_host %}
       {% include_widget WebFooterFloatBarWidget %}
       {% endcache %}
-      {% endif %}
     {% endif %}
 
     {% block after_footer %}{% endblock %}
@@ -63,6 +61,20 @@
     %script{:src => "{% static 'common/zxxbox/js/jquery.zxxbox.3.0.js' %}"}
     %script{:src => "{% static 'common/js/Validform_v5.3.2_min.js' %}"}
     %script{:src => "{% static 'common/js/site-v1.js' %}"}
+    %script{:src => "{% static 'common/js/jquery.lazyload.min.js' %}" }
+    :javascript
+      $(function(){
+        $("img.lazy").lazyload({effect : "fadeIn"});
+        $.ajax({url: '{% url "authpanel" %}',
+                dataType: 'json',
+                success: function(data){
+                  var login = $('#login-reg');
+                  if(data.title) login.find('.open-login').text(data.title);
+                  login.append(data.panel);
+                }
+        });
+      });
+      function open_login(){return false;}
     -block platform_js
       -if is_android
         %script{:src => "{% static 'android_web/js/site.js' %}"}

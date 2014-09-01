@@ -187,7 +187,7 @@ class GameCenterModelBackend(UserSyncAPI,
         try:
             filters = {"%s__iexact" % User.USERNAME_FIELD: username}
             user = User.objects.get(**filters)
-        except User.DoesNotExist:
+        except (User.DoesNotExist, ValueError):
             return None
 
         if not check_password:
@@ -254,10 +254,10 @@ class GameCenterProfileBackend(GetUserMixin):
             return None
         try:
             user = Profile.objects.get(phone__iexact=username).user
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, ValueError):
             try:
                 user = Profile.objects.get(email__iexact=username).user
-            except ObjectDoesNotExist:
+            except (ObjectDoesNotExist, ValueError):
                 return None
 
         if user.check_password(password):

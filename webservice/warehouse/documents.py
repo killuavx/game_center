@@ -304,11 +304,16 @@ screenshot_sizes_alias = settings.THUMBNAIL_ALIASES_SCREENSHOT.keys()
 
 
 def sync_image_field(doc_field, field, sizes_alias):
+    try:
+        default_url = field.url
+    except:
+        default_url = ''
     for sa in sizes_alias:
         try:
             doc_field[sa] = field[sa].url
         except:
-            pass
+            doc_field[sa] = default_url
+    doc_field['default'] = default_url
 
 
 class SyncPackageDocumentHandler(object):

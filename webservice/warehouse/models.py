@@ -14,14 +14,15 @@ from model_utils.fields import StatusField
 from django.utils.translation import ugettext_lazy as _
 import tagging
 from toolkit.fields import TagField
-from easy_thumbnails.fields import ThumbnailerImageField
+#from easy_thumbnails.fields import ThumbnailerImageField
+from toolkit.fields import QiniuThumbnailerImageField
 
 from toolkit.managers import CurrentSitePassThroughManager, PassThroughManager
 from toolkit.fields import StarsField, PkgFileField, MultiResourceField
 from toolkit.models import SiteRelated
 from toolkit import model_url_mixin as urlmixin, cache_tagging_mixin as cachemixin
 from toolkit.helpers import import_from, sync_status_from, released_hourly_datetime, qurl_to
-from toolkit.storage import package_storage
+from toolkit.storage import package_storage, image_storage, screenshot_thumbnail_storage
 
 storage = package_storage
 
@@ -177,12 +178,16 @@ class Author(urlmixin.AuthorAbsoluteUrlMixin,
     all_objects = PassThroughManager.for_queryset_class(AuthorQuerySet)()
 
 
-    icon = ThumbnailerImageField(upload_to=factory_author_upload_to('icon'),
+    icon = QiniuThumbnailerImageField(upload_to=factory_author_upload_to('icon'),
                                  blank=True,
+                                 thumbnail_storage=image_storage,
+                                 storage=image_storage,
                                  default='')
 
-    cover = ThumbnailerImageField(upload_to=factory_author_upload_to('cover'),
+    cover = QiniuThumbnailerImageField(upload_to=factory_author_upload_to('cover'),
                                   blank=True,
+                                  thumbnail_storage=image_storage,
+                                  storage=image_storage,
                                   default='')
 
     resources = MultiResourceField()
@@ -556,7 +561,6 @@ def version_upload_path(instance, filename):
     return join(prefix, filename)
 
 
-from toolkit.fields import QiniuThumbnailerImageField
 
 
 class PackageVersionManager(cachemixin.PackageVersionCacheManagerMixin,
@@ -598,6 +602,8 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
         upload_to=version_upload_path,
         blank=True,
         max_length=500,
+        thumbnail_storage=image_storage,
+        storage=image_storage,
     )
 
     cover = QiniuThumbnailerImageField(
@@ -605,6 +611,8 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
         upload_to=version_upload_path,
         blank=True,
         max_length=500,
+        thumbnail_storage=image_storage,
+        storage=image_storage,
     )
 
     download = PkgFileField(
@@ -836,20 +844,18 @@ class PackageVersionScreenshotManager(models.Manager):
         return self.filter(kind='default')
 
 
-from toolkit.storage import screenshot_thumbnail_storage
-
-
 class PackageVersionScreenshot(models.Model):
 
     objects = PackageVersionScreenshotManager()
 
     version = models.ForeignKey(PackageVersion, related_name='screenshots')
 
-    image = ThumbnailerImageField(
+    image = QiniuThumbnailerImageField(
         upload_to=screenshot_upload_path,
         max_length=500,
         blank=False,
         thumbnail_storage=screenshot_thumbnail_storage,
+        storage=screenshot_thumbnail_storage,
     )
 
     KIND = Choices(

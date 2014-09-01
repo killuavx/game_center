@@ -17,7 +17,7 @@
                         {% widget WebVendorNavListWidget author=author per_page=12 %} {% for cur_author in items %}
                         <li>
                             <a href="{% absolute_url cur_author product=product %}"{% if cur_author.is_current %} class="hover"{% endif %}>
-                                <img src="{% resource_url cur_author.resources 'cover' product %}" />
+                                <img class="lazy" data-original="{% resource_url cur_author.resources 'cover' product %}" />
                             </a>
                         </li>
                         {% endfor %}{% endwidget %}

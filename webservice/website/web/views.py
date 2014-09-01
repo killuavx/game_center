@@ -261,6 +261,8 @@ def previous_url(request):
     host = request.get_host()
     return previous if previous and is_safe_url(previous, host=host) else None
 
+from django.utils.datastructures import SortedDict
+
 @csrf_exempt
 def login(request, template='accounts/web/account_login.html'):
     form = LoginForm(request=request,
@@ -273,7 +275,7 @@ def login(request, template='accounts/web/account_login.html'):
             auth_login(request, user)
             data = dict(code=0, msg='登陆成功', next=next_url(request))
         else:
-            data = dict(code=1, msg='登陆失败', errors=form.errors)
+            data = dict(code=1, msg='登陆失败', errors=SortedDict(form.errors))
 
     if is_ajax_request(request):
         return HttpResponse(json.dumps(data), content_type='application/json')
@@ -331,7 +333,7 @@ def signup(request, template='accounts/web/account_signup.html'):
 
 from mezzanine.conf import settings as mz_settings
 from toolkit.forms import CommentWithStarForm
-from toolkit.templatetags.comment_star_tags import comment_star_thread
+from toolkit.templatetags.comment_star_tags import comment_star_thread, comment_star_for
 from django.db.models import get_model
 from django.contrib.contenttypes.models import ContentType
 
@@ -415,7 +417,7 @@ def comment(request):
             data['code'] = 2
             data['msg'] = '请先登陆后再评论'
             data['errors'] = []
-        if form.is_valid():
+        elif form.is_valid():
             comment = form.save(request)
             data['code'], data['msg'] = 0, '评论成功'
         else:
@@ -446,3 +448,50 @@ def comment_list(request, template='generic/web/includes/comment.html'):
                                 context=response_context)
     else:
         raise Http404
+
+
+def comment_form(request, template='generic/web/includes/comments.html'):
+    model, target_object = initial_model_object(request.GET)
+    if target_object and target_object.pk:
+        context = {"obj": target_object, "request": request}
+        response_context = comment_star_for(
+            context=context,
+            obj=target_object
+        )
+        return TemplateResponse(request, template=template,
+                                context=response_context)
+    else:
+        raise Http404
+
+
+from django.views.generic import View
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import patch_cache_control
+from django.views.decorators.vary import vary_on_cookie
+from django.template import loader, RequestContext
+
+
+class UserAuthenticatedPanelView(View):
+
+    template_prefix = 'pages/menus/web'
+    template_name = 'header_platform_user_panel.haml'
+
+    @method_decorator(vary_on_cookie)
+    def get(self, request):
+        data = dict(
+            title=None if request.user.is_anonymous() else request.user.username,
+            panel=loader.render_to_string(template_name="%s/%s" %(self.template_prefix,
+                                                                  self.template_name),
+                                          context_instance=RequestContext(request,
+                                                                          dict(request=request)
+                                          )
+            )
+        )
+        response = HttpResponse(content=json.dumps(data),
+                                content_type='application/json')
+        if request.user.is_anonymous():
+            patch_cache_control(response, public=True)
+        else:
+            patch_cache_control(response, private=True)
+
+        return response

@@ -3,4 +3,4 @@
   %a{:href => "{% absolute_url item product=product %}",
      :title => "={item.title}",
      :target => "={item.target}"}
-    %img{:src => "{% resource_url item 'cover' %}"}/
+    %img.lazy{"data-original" => "{% resource_url item 'cover' %}"}/
