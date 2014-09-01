@@ -50,7 +50,7 @@ class LoginForm(CaptchaVerifyForm):
         app = app if app else None
         self._user = authenticate(username=username, password=password, app=app)
         if self._user is None:
-            raise forms.ValidationError('无效用户名/邮箱或码错误')
+            raise forms.ValidationError('无效用户名/邮箱或密码错误')
         elif not self._user.is_active:
             raise forms.ValidationError('你的账号未激活')
         return self.cleaned_data

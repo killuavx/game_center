@@ -9,4 +9,4 @@
     -for author in items
       %li
         %a{:href => "{% absolute_url author product=product %}", :title => "={author.name}" , :target => "_blank" }
-          %img{:src => "{% resource_url author.resources 'cover' product %}"}/
+          %img.lazy{"data-original" => "{% resource_url author.resources 'cover' product %}"}/

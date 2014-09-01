@@ -5,7 +5,7 @@
       {% absolute_url_as topic product=product as detail_url %}
       %li.dib.rel
         %a{:href => "={detail_url}", :target => "_blank" , :title => "={topic.name}"}
-          %img{:alt => "={topic.name}", :src => "{% resource_url topic 'cover' %}"}
+          %img.lazy{:alt => "={topic.name}", "data-original" => "{% resource_url topic 'cover' %}"}
             %span.bg
             %span.abs.tc.ovh.pl5.pr5.white.text.png= topic.name
 / roll_box

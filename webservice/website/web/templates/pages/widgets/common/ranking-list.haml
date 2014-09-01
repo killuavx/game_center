@@ -19,7 +19,7 @@
         %li.rel
           %b.l{:class => "{% if forloop.counter <= 3 %}gr{% endif %}"}= forloop.counter
           %a.l{:href => "={detail_url}", :title => "={ptitle}"}
-            %img{:src => "{% resource_url ver 'icon' size_alias='large' %}"}
+            %img.lazy{"data-original" => "{% resource_url ver 'icon' size_alias='large' %}"}
               %span.ios-web-icon.abs
           %h3.n
             %a{:href => "={detail_url}", :title => "={ptitle}" }><

@@ -5,6 +5,7 @@ from mezzanine.utils.views import paginate
 from django.template.base import Library
 from collections import defaultdict
 from django.contrib.contenttypes.models import ContentType
+from warehouse.models import PackageVersion
 from toolkit.forms import CommentWithStarForm
 from django.db import models
 
@@ -16,6 +17,22 @@ register = Library()
 def content_object_id(obj):
     ct = ContentType.objects.get_for_model(obj)
     return ct.id, obj.pk
+
+
+def comment_list_url(obj, content_type=None, view_name='comment_list'):
+    obj = get_content_object(obj, content_type)
+    qstr = "?content_type=%s&object_pk=%s" % content_object_id(obj)
+    return reverse(view_name) + qstr
+
+register.simple_tag(comment_list_url)
+register.assignment_tag(comment_list_url, name='comment_list_url_as')
+
+
+@register.simple_tag()
+def comment_star_form_url_for(obj, content_type, view_name='comment_form'):
+    obj = get_content_object(obj, content_type)
+    qstr = "?content_type=%s&object_pk=%s" % content_object_id(obj)
+    return reverse(view_name) + qstr
 
 
 @register.inclusion_tag("generic/web/includes/comment.html", takes_context=True)
@@ -45,8 +62,7 @@ def comment_star_thread(context, parent, page=1,
             context['comments_page'] = None
         context['comments'] = context['comments_page']
     parent_id = parent.id if isinstance(parent, ThreadedComment) else None
-    qstr = "?content_type=%s&object_pk=%s" % content_object_id(parent)
-    context["comment_list_url"] = reverse("comment_list") + qstr
+    context["comment_list_url"] = comment_list_url(parent)
     try:
         replied_to = int(context["request"].POST["replied_to"])
     except KeyError:
@@ -118,3 +134,24 @@ def comment_content_star_value(comment):
     else:
         return 0
 
+
+"""
+-block extra_js_footer
+  :javascript
+    $(function(){
+      $.ajax({
+        url: '{% comment_star_form_url_for package.latest_version_id "warehouse.packageversion" %}',
+        type:'text',
+        success:function(text){
+          $('#comment-panel').prepend(text);
+        }
+      });
+      $.ajax({
+        url:'{% comment_list_url package.latest_version_id "warehouse.packageversion" %}',
+        type:'text',
+        success:function(text){
+          $('#comment-list').html(text);
+        }
+      });
+    });
+"""
