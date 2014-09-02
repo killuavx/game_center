@@ -3,7 +3,7 @@ from functools import wraps
 import warnings
 from django.http import Http404
 from rest_framework import viewsets, status
-from rest_framework.decorators import link
+from rest_framework.decorators import link, action
 from rest_framework_extensions.mixins import DetailSerializerMixin
 from activity.models import GiftBag, GiftCard
 from mobapi2.authentications import PlayerTokenAuthentication
@@ -278,3 +278,95 @@ class NoteViewSet(DetailSerializerMixin,
     def list(self, request, *args, **kwargs):
         return super(NoteViewSet, self).list(request, *args, **kwargs)
         #return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+
+from activity.documents.scratchcard import ScratchCard, OwnerNotMatch
+from activity.documents.scratchcard import generate_scratchcard_by_user, receive_scratchcard
+from mobapi2.activity.serializers import WinnerScratchCardSerializer, GenerateScratchCardSerializer, AwardScratchCardSerializer
+from mongoengine import DoesNotExist
+from mobapi2.helpers import get_note_url
+
+
+class ScratchCardViewSet(viewsets.GenericViewSet):
+
+    base_name = 'scratchcard'
+
+    note_slug = 'scratchcard'
+
+    model = ScratchCard
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (PlayerTokenAuthentication,)
+
+    SERIALIZER_CLS_WINNER = 'winner'
+    SERIALIZER_CLS_GENERATE = 'generate'
+    SERIALIZER_CLS_AWARD = 'award'
+    serializer_classes = {
+        SERIALIZER_CLS_GENERATE: GenerateScratchCardSerializer,
+        SERIALIZER_CLS_WINNER: WinnerScratchCardSerializer,
+        SERIALIZER_CLS_AWARD: AwardScratchCardSerializer,
+
+    }
+    serializer_class = AwardScratchCardSerializer
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = ScratchCard.objects.all()
+        return self.queryset
+
+    def get_serializer(self, instance=None, data=None,
+                       files=None, many=False, partial=False,
+                       cls_type=SERIALIZER_CLS_WINNER):
+        serializer_class = self.get_serializer_class(cls_type)
+        context = self.get_serializer_context()
+        return serializer_class(instance, data=data, files=files,
+                                many=many, partial=partial, context=context)
+
+    def get_serializer_class(self, cls_type=SERIALIZER_CLS_WINNER):
+        return self.serializer_classes[cls_type]
+
+    @link()
+    def play(self, request, *args, **kwargs):
+        card = generate_scratchcard_by_user(request.user)
+        if card.award_coin:
+            card.save()
+        card_serializer = self.get_serializer(card, cls_type=self.SERIALIZER_CLS_GENERATE)
+        winner_serializer = self.get_winner_serializer(self.get_winner_list(),
+                                                       many=True)
+        return Response(data=dict(
+            note_url=get_note_url(self.note_slug,
+                                  router=card_serializer.opts.router,
+                                  request=request,
+                                  format=card_serializer.context.get('format')),
+            scratchcard=card_serializer.data,
+            winners=winner_serializer.data
+        ))
+
+    max_winner_items = 5
+
+    def get_winner_list(self):
+        return self.get_queryset().received()[0:self.max_winner_items]
+
+    def get_winner_serializer(self, instance, many=False):
+        return self.get_serializer(instance=instance,
+                                   many=many,
+                                   cls_type=self.SERIALIZER_CLS_WINNER)
+
+    @action()
+    def award(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+        signcode = request.POST.get('signcode')
+        if not signcode:
+            data = dict(detail='invalid code')
+            Response(data, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            card = receive_scratchcard(qs, signcode=signcode, user=request.user)
+            data = self.get_serializer(card, cls_type=self.SERIALIZER_CLS_AWARD).data
+            status_code = status.HTTP_200_OK
+        except DoesNotExist:
+            data = dict(detail='invalid code')
+            status_code = status.HTTP_400_BAD_REQUEST
+        except OwnerNotMatch:
+            data = dict(detail='invalid code')
+            status_code = status.HTTP_400_BAD_REQUEST
+        return Response(data, status=status_code)

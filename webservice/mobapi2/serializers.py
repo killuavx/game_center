@@ -6,6 +6,8 @@ from easy_thumbnails.exceptions import InvalidImageFormatError
 from rest_framework import serializers
 from rest_framework.relations import HyperlinkedIdentityField
 from rest_framework.serializers import (
+    Serializer as RFSerializer,
+    SerializerOptions,
     ModelSerializer as RFModelSerializer,
     ModelSerializerOptions,
     HyperlinkedModelSerializerOptions,
@@ -40,6 +42,18 @@ class ModelGetResourceMixin(GetResourceFileMixin):
             return obj.cover[self.DEFAULT_COVER_SIZE].url
         except (ValueError, KeyError, InvalidImageFormatError):
             return None
+
+
+class SerializerWithRouterOptions(SerializerOptions):
+
+    def __init__(self, meta):
+        self.router = getattr(meta, 'router', rest_router)
+        super(SerializerWithRouterOptions, self).__init__(meta)
+
+
+class Serializer(RFSerializer):
+
+    _options_class = SerializerWithRouterOptions
 
 
 class ModelSerializerWithRouterOptions(ModelSerializerOptions):
@@ -182,3 +196,5 @@ class NotePaginationSerializer(PaginationSerializer):
 
     def get_note_url(self, obj):
         raise NotImplementedError
+
+

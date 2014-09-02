@@ -3,7 +3,7 @@ from activity.models import GiftBag, GiftCard
 from django.core.urlresolvers import reverse
 from toolkit.helpers import qurl_to
 from rest_framework import serializers
-from mobapi2.serializers import HyperlinkedModelSerializer, ModelSerializer
+from mobapi2.serializers import HyperlinkedModelSerializer, ModelSerializer, Serializer
 from mobapi2.helpers import PackageDetailApiUrlEncode, PackageVersionDetailApiUrlEncode
 from mobapi2.settings import IMAGE_ICON_SIZE
 
@@ -217,6 +217,7 @@ class GiftCardSerializer(ModelSerializer):
             'took_datetime',
         )
 
+
 from activity.models import Note
 
 
@@ -239,3 +240,35 @@ class NoteDetailSerializer(HyperlinkedModelSerializer):
             'title',
             'description',
         )
+
+
+class GenerateScratchCardSerializer(Serializer):
+
+    title = serializers.CharField()
+    signcode = serializers.CharField()
+    is_win = serializers.SerializerMethodField('get_is_win')
+    def get_is_win(self, obj):
+        return bool(obj.award_coin)
+
+
+import math
+
+
+class WinnerScratchCardSerializer(Serializer):
+
+    title = serializers.CharField()
+    username = serializers.SerializerMethodField('get_username')
+
+    def get_username(self, obj):
+        name_len = len(obj.winner_name)
+        mask_idx = math.floor(name_len/2)
+        name = list(obj.winner_name)
+        mask_num = 2
+        name[mask_idx:min(name_len, mask_idx+ mask_num)] = "*" * mask_num
+        return "".join(name)
+
+
+class AwardScratchCardSerializer(Serializer):
+
+    title = serializers.CharField()
+    signcode = serializers.CharField()
