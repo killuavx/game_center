@@ -22,7 +22,7 @@ from analysis.views.rest_views import EventCreateView
 from mobapi2.clientapp.views import SelfUpdateView, LoadingCoverView
 from mobapi2.rest_router import rest_router
 from mobapi2.ranking.views import PackageRankingViewSet
-from mobapi2.activity.views import GiftBagViewSet
+from mobapi2.activity import views as activity_views
 
 
 rest_router.register('authors', AuthorViewSet)
@@ -38,10 +38,18 @@ rest_router.register('advertisements', AdvertisementViewSet)
 rest_router.register('bookmarks', PackageBookmarkViewSet, base_name='bookmark')
 rest_router.register('comments', CommentViewSet)
 rest_router.register('feedbacks', FeedbackViewSet)
-rest_router.register('giftbags', GiftBagViewSet)
+rest_router.register('giftbags', activity_views.GiftBagViewSet)
+
+scratchcard_play = activity_views.ScratchCardViewSet.as_view({'get': 'play'})
+scratchcard_award = activity_views.ScratchCardViewSet.as_view({'post': 'award'})
+scratchcard_basename = rest_router.get_default_base_name(activity_views.ScratchCardViewSet)
+scratchcard_urlpatterns = patterns('',
+   url('^play/?$', scratchcard_play, name="%s-play" %scratchcard_basename),
+   url('^award/?$', scratchcard_award, name="%s-award" %scratchcard_basename),
+)
 
 
-my_giftbags_list = GiftBagViewSet.as_view({
+my_giftbags_list = activity_views.GiftBagViewSet.as_view({
     'get': 'mine'
 })
 
@@ -70,6 +78,7 @@ slug_pattern = '[\w_.-]+'
 
 urlpatterns = rest_router.urls
 urlpatterns += patterns('',
+    url(r'^scratchcards/', include(scratchcard_urlpatterns)),
     url(r'^selfupdate/?$', SelfUpdateView.as_view(),
         name=rest_router.get_base_name('selfupdate')),
     url(r'^push/packages/?$', PackagePushView.as_view(),
@@ -83,4 +92,3 @@ urlpatterns += patterns('',
         name=rest_router.get_base_name('loadingcover')),
     url(r'^events/?$', EventCreateView.as_view(), name=rest_router.get_base_name('event'))
 )
-

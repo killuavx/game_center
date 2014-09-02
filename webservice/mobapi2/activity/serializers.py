@@ -216,3 +216,35 @@ class GiftCardSerializer(ModelSerializer):
             'code',
             'took_datetime',
         )
+
+
+class GenerateScratchCardSerializer(serializers.Serializer):
+
+    title = serializers.CharField()
+    signcode = serializers.CharField()
+    is_win = serializers.SerializerMethodField('get_is_win')
+    def get_is_win(self, obj):
+        return bool(obj.award_coin)
+
+
+import math
+
+
+class WinnerScratchCardSerializer(serializers.Serializer):
+
+    title = serializers.CharField()
+    username = serializers.SerializerMethodField('get_username')
+
+    def get_username(self, obj):
+        name_len = len(obj.winner_name)
+        mask_idx = math.floor(name_len/2)
+        name = list(obj.winner_name)
+        mask_num = 2
+        name[mask_idx:min(name_len, mask_idx+ mask_num)] = "*" * mask_num
+        return "".join(name)
+
+
+class AwardScratchCardSerializer(serializers.Serializer):
+
+    title = serializers.CharField()
+    signcode = serializers.CharField()
