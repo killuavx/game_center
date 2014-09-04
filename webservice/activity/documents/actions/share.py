@@ -29,7 +29,7 @@ class ShareAction(Action):
     def content(self):
         if not hasattr(self, '_version'):
             try:
-                self._version = self.get_packageversion_class()(pk=self.version_id)
+                self._version = self.get_packageversion_class().objects.get(pk=self.version_id)
             except:
                 self._version = None
         return self._version
