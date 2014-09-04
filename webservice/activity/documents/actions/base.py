@@ -130,6 +130,8 @@ class Task(Ownerable, DynamicDocument):
 
     CODE = None
 
+    code = fields.StringField()
+
     rule = fields.ReferenceField(TaskRule, dbref=False)
 
     actions = fields.ListField(fields.ReferenceField(Action, dbref=False))
@@ -139,6 +141,8 @@ class Task(Ownerable, DynamicDocument):
     updated_datetime = fields.DateTimeField(default=lambda: now().astimezone())
 
     completed_datetime = fields.DateTimeField(required=False)
+
+    ip_address = fields.StringField(default='0.0.0.0')
 
     STATUS = TASK_STATUS
 
@@ -151,6 +155,7 @@ class Task(Ownerable, DynamicDocument):
         'indexes': [
             ('created_datetime', ),
             ('status', 'created_datetime', ),
+            ('user_id', 'created_datetime', ),
             ('user_id', 'status', '-completed_datetime', ),
         ],
         #'queryset_class':,
@@ -190,6 +195,7 @@ class Task(Ownerable, DynamicDocument):
             action.save()
 
         self.actions.append(action)
+        self.ip_address = action.ip_address
         self.updated_datetime = action.created_datetime
 
     def update_status(self, user, action, rule_status, *args, **kwargs):
@@ -203,3 +209,34 @@ class Task(Ownerable, DynamicDocument):
 
     def make_done(self):
         pass
+
+    def save(self, *args, **kwargs):
+        self.code = self.CODE
+        return super(Task, self).save(*args, **kwargs)
+
+    @classmethod
+    def factory(cls, *args, **kwargs):
+        """
+            factory
+                ::task
+                ::user
+                ::action
+                ::rule
+        """
+        raise NotImplementedError
+
+    @classmethod
+    def get_rule_class(self):
+        raise NotImplementedError
+
+    @classmethod
+    def get_rule(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @classmethod
+    def get_action_class(self):
+        raise NotImplementedError
+
+    @classmethod
+    def get_action(cls, *args, **kwargs):
+        raise NotImplementedError

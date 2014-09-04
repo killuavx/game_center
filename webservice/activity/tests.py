@@ -50,32 +50,25 @@ class CommentTestCase(TestCase):
 
     rule = None
 
-    @classmethod
-    def setUpClass(cls):
-        try:
-            cls.rule = CommentTaskRule.objects.get(code=CommentTaskRule.CODE)
-        except:
-            cls.rule = CommentTaskRule(name='post comment', comment_count=3)
-            cls.rule.save()
-
-    @classmethod
-    def tearDownClass(cls):
+    def tearDown(self):
         CommentTask.objects.delete()
         CommentTaskRule.objects.delete()
         CommentAction.objects.delete()
-        pass
 
-    def tearDown(self):
-        if hasattr(self, 'task'):
-            self.task.delete()
-        pass
+    def get_rule(self):
+        try:
+            return CommentTaskRule.objects.get(code=CommentTaskRule.CODE)
+        except:
+            rule = CommentTaskRule(name='post comment', comment_count=3)
+            rule.save()
+            return rule
 
     def test_add_duplicate_action(self):
+        self.rule = self.get_rule().comment_count |should| equal_to(3)
+
         user = User.objects.get(username='killuavx')
         task = CommentTask()
         self.task = task
-        task.make_done = Mock(return_value=None)
-        self.rule.comment_count |should| equal_to(3)
 
         same_cmt = user.comment_comments.all()[1]
         action = CommentAction(content=same_cmt)
@@ -88,8 +81,9 @@ class CommentTestCase(TestCase):
         (task.process, user, action, task.rule) |should| throw(TaskConditionDoesNotMeet)
         task.actions |should| have(1).items
 
-
     def test_finish_comment_task(self):
+        self.rule = self.get_rule().comment_count |should| equal_to(3)
+
         user = User.objects.get(username='killuavx')
         task = CommentTask()
         self.task = task
@@ -126,6 +120,42 @@ class CommentTestCase(TestCase):
         (task.process, user, action, task.rule) |should| throw(TaskAlreadyDone)
         task.make_done.call_count |should| equal_to(1)
 
+    def test_factory(self):
+        self.rule = self.get_rule().comment_count |should| equal_to(3)
+        user = User.objects.get(username='killuavx')
+        cmt1 = user.comment_comments.all()[1]
+        cmt2 = user.comment_comments.all()[2]
+        cmt3 = user.comment_comments.all()[3]
+        cmt4 = user.comment_comments.all()[4]
+        CommentTask.make_done = Mock(return_value=None)
+
+        action_datetime = now().astimezone()
+
+        task1, user, action, rule = CommentTask.factory(comment=cmt1, action_datetime=action_datetime)
+        task1.process(user=user, action=action, rule=rule)
+        task1.make_done.called |should| be(False)
+        task1.status |should| equal_to(CommentTask.STATUS.inprogress)
+        task1.actions |should| have(1).items
+
+        task2, user, action, rule = CommentTask.factory(comment=cmt2, action_datetime=action_datetime)
+        task2.id |should| equal_to(task1.id)
+
+        task2.process(user=user, action=action, rule=rule)
+        task2.make_done.called |should| be(False)
+        task2.status |should| equal_to(CommentTask.STATUS.inprogress)
+        task2.actions |should| have(2).items
+
+        task3, user, action, rule = CommentTask.factory(comment=cmt3, action_datetime=action_datetime)
+        task3.process(user=user, action=action, rule=rule)
+        task3.make_done.called |should| be(True)
+        task3.status |should| equal_to(CommentTask.STATUS.done)
+        task3.actions |should| have(3).items
+
+        cmt4 = user.comment_comments.all()[4]
+        task4, user, action, rule = CommentTask.factory(comment=cmt4, action_datetime=action_datetime)
+        (task4.process, user, action, task4.rule) |should| throw(TaskAlreadyDone)
+        task4.make_done.call_count |should| equal_to(1)
+
 
 from activity.documents.actions.signin import *
 
@@ -134,13 +164,13 @@ class SigninTestCase(TestCase):
 
     rule = None
 
-    @classmethod
-    def setUpClass(cls):
+    def get_rule(self):
         try:
-            cls.rule = SigninTaskRule.objects.get(code=SigninTaskRule.CODE)
+            rule = SigninTaskRule.objects.get(code=SigninTaskRule.CODE)
         except:
-            cls.rule = SigninTaskRule()
-            cls.rule.save()
+            rule = SigninTaskRule()
+            rule.save()
+        return rule
 
     @classmethod
     def tearDownClass(cls):
@@ -156,16 +186,41 @@ class SigninTestCase(TestCase):
         user = User.objects.get(username='killuavx')
         task = SigninTask()
         self.task = task
+        self.rule = self.get_rule()
 
         action = SigninAction(user=user)
         task.make_done = Mock(return_value=None)
         task.process(user=user, action=action, rule=self.rule)
         task.make_done.called |should| be(True)
 
-        task.status |should| equal_to(CommentTask.STATUS.done)
+        task.status |should| equal_to(SigninTaskRule.STATUS.done)
         task.actions |should| have(1).items
 
         action = SigninAction(user=user)
         (task.process, user, action, task.rule) |should| throw(TaskAlreadyDone)
         task.make_done.call_count |should| equal_to(1)
-        assert False
+
+    def test_factory(self):
+        user = User.objects.get(username='killuavx')
+        task, user, action, rule = SigninTask.factory(user=user,
+                                                      ip_address='127.0.0.1')
+        task.make_done = Mock(return_value=None)
+        task.process(user=user, action=action, rule=rule)
+        task.make_done.called |should| be(True)
+
+        action.ip_address |should| equal_to('127.0.0.1')
+        task.ip_address |should| equal_to('127.0.0.1')
+
+        task.status |should| equal_to(SigninTaskRule.STATUS.done)
+        task.actions |should| have(1).items
+
+        sec_task, user, sec_action, rule = SigninTask.factory(user=user,
+                                                              ip_address='127.0.0.2')
+
+        sec_task.id |should| equal_to(task.id)
+        sec_action.ip_address |should| equal_to('127.0.0.2')
+
+        (task.process, user, action, task.rule) |should| throw(TaskAlreadyDone)
+        task.make_done.call_count |should| equal_to(1)
+        sec_task.ip_address |should| equal_to('127.0.0.1')
+
