@@ -16,6 +16,8 @@ class SigninTaskRule(TaskRule):
 
     CODE = CODE
 
+    experience = fields.IntField(verbose_name='成长经验值', default=10)
+
     def pre_update_action_check(self, task, action, *args, **kwargs):
         if len(task.actions):
             return self.STATUS.done
