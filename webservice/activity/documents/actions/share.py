@@ -89,37 +89,22 @@ class ShareTask(Task):
         return ShareTaskRule
 
     @classmethod
-    def get_rule(cls, *args, **kwargs):
-        rule_cls = cls.get_rule_class()
-        try:
-            return rule_cls.objects.get(code=rule_cls.CODE)
-        except:
-            rule = rule_cls()
-            rule.save()
-            return rule
-
-    @classmethod
     def get_action_class(cls):
         return ShareAction
 
     @classmethod
-    def get_action(cls, user, version, ip_address, *args, **kwargs):
+    def factory_action(cls, user, version, ip_address, *args, **kwargs):
         return cls.get_action_class()(content=version, user=user, ip_address=ip_address)
 
     @classmethod
     def factory(cls, user, version, action_datetime=None, ip_address=None, *args, **kwargs):
         dt = action_datetime.astimezone() if action_datetime else now().astimezone()
-        action = cls.get_action(user=user, version=version, ip_address=ip_address)
-        rule = cls.get_rule()
-        try:
-            begin_dt = datetime(year=dt.year, month=dt.month, day=dt.day,
-                                tzinfo=get_default_timezone())
-            finish_dt = begin_dt + timedelta(days=1)
-            qs = cls.objects.filter(user_id=user.pk,
-                                    created_datetime__gte=begin_dt,
-                                    created_datetime__lt=finish_dt) \
-                .order_by('-created_datetime')
-            task = qs[0]
-            return task, user, action, rule
-        except IndexError:
-            return cls(), user, action, rule
+        return cls.factory_task(user, dt), user,\
+               cls.factory_action(user=user,
+                                  version=version,
+                                  ip_address=ip_address),\
+               cls.factory_rule()
+
+    @property
+    def standard_count(self):
+        return self.rule.share_count

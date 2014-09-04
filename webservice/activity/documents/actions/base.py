@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from django.utils.timezone import now
+from datetime import datetime, timedelta
+from django.utils.timezone import now, get_default_timezone
 from model_utils import Choices
 from mongoengine import queryset, fields, errors
 from mongoengine.document import DynamicDocument, EmbeddedDocument
@@ -226,17 +227,57 @@ class Task(Ownerable, DynamicDocument):
         raise NotImplementedError
 
     @classmethod
-    def get_rule_class(self):
+    def factory_task(cls, user, action_datetime):
+        try:
+            begin_dt = datetime(year=action_datetime.year,
+                                month=action_datetime.month,
+                                day=action_datetime.day,
+                                tzinfo=get_default_timezone())
+            finish_dt = begin_dt + timedelta(days=1)
+            qs = cls.objects.filter(user_id=user.pk,
+                                    created_datetime__gte=begin_dt,
+                                    created_datetime__lt=finish_dt) \
+                .order_by('-created_datetime')
+            task = qs[0]
+        except IndexError:
+            task = cls()
+        return task
+
+    @classmethod
+    def get_rule_class(cls):
         raise NotImplementedError
 
     @classmethod
-    def get_rule(self, *args, **kwargs):
+    def factory_rule(cls, *args, **kwargs):
+        rule_cls = cls.get_rule_class()
+        try:
+            return rule_cls.objects.get(code=rule_cls.CODE)
+        except:
+            rule = rule_cls()
+            rule.save()
+            return rule
+
+    @classmethod
+    def get_action_class(cls):
         raise NotImplementedError
 
     @classmethod
-    def get_action_class(self):
+    def factory_action(cls, *args, **kwargs):
         raise NotImplementedError
 
-    @classmethod
-    def get_action(cls, *args, **kwargs):
+    @property
+    def standard_count(self):
         raise NotImplementedError
+
+    @property
+    def progress(self):
+        """
+            progress::
+                current, standard_count
+        """
+        return len(self.actions), self.standard_count
+
+    def __str__(self):
+        return "%s, %s, %s" %(self.user,
+                              self.created_datetime.astimezone().date(),
+                              "%d/%d" % self.progress)

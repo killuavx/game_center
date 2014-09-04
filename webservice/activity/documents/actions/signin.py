@@ -62,25 +62,17 @@ class SigninTask(Task):
         return SigninAction
 
     @classmethod
-    def get_action(cls, user, ip_address=None, *args, **kwargs):
+    def factory_action(cls, user, ip_address=None, *args, **kwargs):
         return cls.get_action_class()(user=user, ip_address=ip_address)
 
     @classmethod
     def factory(cls, user, action_datetime=None, ip_address=None, *args, **kwargs):
         dt = action_datetime.astimezone() if action_datetime else now().astimezone()
-        action = cls.get_action(user=user, ip_address=ip_address)
-        rule = cls.get_rule()
-        try:
-            begin_dt = datetime(year=dt.year, month=dt.month, day=dt.day,
-                                tzinfo=get_default_timezone())
-            finish_dt = begin_dt + timedelta(days=1)
-            task = cls.objects.filter(user_id=user.pk,
-                                      created_datetime__gte=begin_dt,
-                                      created_datetime__lt=finish_dt) \
-                .order_by('-created_datetime')[0]
-            return task, user, action, rule
-        except IndexError:
-            return cls(), user, action, rule
+        return cls.factory_task(user, dt), user, \
+               cls.factory_action(user=user, ip_address=ip_address),\
+               cls.factory_rule()
 
-    def __str__(self):
-        return "%s, %s" %(self.user, self.created_datetime)
+    @property
+    def standard_count(self):
+        return 1
+
