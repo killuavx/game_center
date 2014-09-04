@@ -103,13 +103,13 @@ class ShareTask(Task):
         return ShareAction
 
     @classmethod
-    def get_action(cls, version, ip_address, *args, **kwargs):
-        return cls.get_action_class()(content=version, ip_address=ip_address)
+    def get_action(cls, user, version, ip_address, *args, **kwargs):
+        return cls.get_action_class()(content=version, user=user, ip_address=ip_address)
 
     @classmethod
     def factory(cls, user, version, action_datetime=None, ip_address=None, *args, **kwargs):
         dt = action_datetime.astimezone() if action_datetime else now().astimezone()
-        action = cls.get_action(version, ip_address=ip_address)
+        action = cls.get_action(user=user, version=version, ip_address=ip_address)
         rule = cls.get_rule()
         try:
             begin_dt = datetime(year=dt.year, month=dt.month, day=dt.day,
