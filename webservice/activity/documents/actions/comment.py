@@ -55,12 +55,13 @@ class CommentTaskRule(TaskRule):
 
     experience = fields.IntField(verbose_name='成长经验值', default=10)
 
-    def _comment_same_object(self, cmt1, cmt2):
+    def _action_duplicate_object(self, action1, action2):
+        cmt1, cmt2 = action1, action2
         return (cmt1.content_type_id, cmt1.object_pk) == (cmt2.content_type_id, cmt2.object_pk)
 
     def pre_update_action_check(self, task, action, *args, **kwargs):
         if self.comment_count > len(task.actions):
-            if any((self._comment_same_object(action.content, cmt_action.content)
+            if any((self._action_duplicate_object(action, cmt_action)
                     for cmt_action in task.actions)):
                 raise TaskConditionDoesNotMeet('需要评论不同得游戏/应用')
 

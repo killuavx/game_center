@@ -51,12 +51,12 @@ class ShareTaskRule(TaskRule):
 
     experience = fields.IntField(verbose_name='成长经验值', default=10)
 
-    def _share_duplicate_object(self, version1, version2):
-        return version1.pk == version2.pk
+    def _action_duplicate_object(self, action1, action2):
+        return action1.version_id == action2.version_id
 
     def pre_update_action_check(self, task, action, *args, **kwargs):
         if self.share_count > len(task.actions):
-            if any((self._share_duplicate_object(action.content, share_action.content)
+            if any((self._action_duplicate_object(action, share_action)
                     for share_action in task.actions)):
                 raise TaskConditionDoesNotMeet('分享不同的游戏/应用')
             return super(ShareTaskRule, self).pre_update_action_check(task=task, action=action, *args, **kwargs)
