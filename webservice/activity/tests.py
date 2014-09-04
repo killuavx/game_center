@@ -148,8 +148,8 @@ class CommentTestCase(TaskTestCase):
         user = User.objects.get(username='killuavx')
         cmt1 = user.comment_comments.all()[1]
         cmt2 = user.comment_comments.all()[2]
-        cmt3 = user.comment_comments.all()[3]
-        cmt4 = user.comment_comments.all()[4]
+        cmt3 = user.comment_comments.all()[10]
+        cmt4 = user.comment_comments.all()[11]
         CommentTask.make_done = Mock(return_value=None)
 
         action_datetime = now().astimezone()
@@ -174,7 +174,6 @@ class CommentTestCase(TaskTestCase):
         task3.status |should| equal_to(CommentTask.STATUS.done)
         task3.actions |should| have(3).items
 
-        cmt4 = user.comment_comments.all()[4]
         task4, user, action, rule = CommentTask.factory(comment=cmt4, action_datetime=action_datetime)
         (task4.process, user, action, task4.rule) |should| throw(TaskAlreadyDone)
         task4.make_done.call_count |should| equal_to(1)
@@ -248,9 +247,97 @@ class ShareTestCase(TaskTestCase):
 
     rule_class = ShareTaskRule
 
-    @classmethod
-    def setUpClass(cls):
-        cls.task_class.make_done = Mock(return_value=None)
+    def get_rule(self):
+        try:
+            rule = self.rule_class.objects.get(code=self.rule_class.CODE)
+        except:
+            rule = self.rule_class(share_count=3)
+            rule.save()
+        return rule
+
+    def test_factory(self):
+        self.rule = self.get_rule()
+        self.rule.share_count |should| equal_to(3)
+        user = User.objects.get(username='killuavx')
+        ip_address = '127.0.0.1'
+        queryset = PackageVersion.objects.published()
+        ShareTask.make_done = Mock(return_value=None)
+
+        version1 = queryset[0]
+        task1, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version1,
+                                                      ip_address=ip_address)
+        task1.process(user=user, action=action, rule=rule)
+        task1.make_done.called |should| be(False)
+        task1.actions |should| have(1).items
+        task1.status |should| equal_to(ShareTask.STATUS.inprogress)
+
+        version2 = queryset[1]
+        task2, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version2,
+                                                      ip_address=ip_address)
+
+        task2.id |should| equal_to(task1.id)
+
+        task2.process(user=user, action=action, rule=rule)
+        task2.make_done.called |should| be(False)
+        task2.actions |should| have(2).items
+        task2.status |should| equal_to(ShareTask.STATUS.inprogress)
+
+        version3 = queryset[2]
+        task3, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version3,
+                                                      ip_address=ip_address)
+        task3.process(user=user, action=action, rule=rule)
+        task3.make_done.called |should| be(True)
+        task3.actions |should| have(3).items
+        task3.status |should| equal_to(ShareTask.STATUS.done)
+
+
+        version4 = queryset[3]
+        task4, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version4,
+                                                      ip_address=ip_address)
+        (task4.process, user, action, rule) |should| throw(TaskAlreadyDone)
+        task4.actions |should| have(3).items
+
+    def test_factory_duplicate(self):
+        self.rule = self.get_rule()
+        self.rule.share_count |should| equal_to(3)
+        user = User.objects.get(username='killuavx')
+        ip_address = '127.0.0.1'
+        queryset = PackageVersion.objects.published()
+        ShareTask.make_done = Mock(return_value=None)
+
+        same_version = version = queryset[0]
+        task1, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version,
+                                                      ip_address=ip_address)
+        task1.process(user=user, action=action, rule=rule)
+        task1.make_done.called |should| be(False)
+        task1.actions |should| have(1).items
+        task1.status |should| equal_to(ShareTask.STATUS.inprogress)
+
+        task2, user, action, rule = ShareTask.factory(user=user,
+                                                      version=same_version,
+                                                      ip_address=ip_address)
+
+        task2.id |should| equal_to(task1.id)
+
+        (task2.process, user, action, rule) |should| throw(TaskConditionDoesNotMeet)
+        task2.actions |should| have(1).items
+
+
+from activity.documents.actions.install import *
+
+
+class InstallTestCase(TaskTestCase):
+
+    task_class = InstallTask
+
+    action_class = InstallAction
+
+    rule_class = InstallTaskRule
 
     def get_rule(self):
         try:
@@ -266,45 +353,46 @@ class ShareTestCase(TaskTestCase):
         user = User.objects.get(username='killuavx')
         ip_address = '127.0.0.1'
         queryset = PackageVersion.objects.published()
+        InstallTask.make_done = Mock(return_value=None)
 
         version1 = queryset[0]
-        task1, user, action, rule = ShareTask.factory(user=user,
-                                                      version=version1,
-                                                      ip_address=ip_address)
+        version2 = queryset[1]
+        version3 = queryset[2]
+        version4 = queryset[3]
+
+        task1, user, action, rule = InstallTask.factory(user=user,
+                                                        version=version1,
+                                                        ip_address=ip_address)
         task1.process(user=user, action=action, rule=rule)
         task1.make_done.called |should| be(False)
         task1.actions |should| have(1).items
-        task1.status |should| equal_to(ShareTaskRule.STATUS.inprogress)
+        task1.status |should| equal_to(InstallTask.STATUS.inprogress)
 
-        version2 = queryset[1]
-        task2, user, action, rule = ShareTask.factory(user=user,
-                                                      version=version2,
-                                                      ip_address=ip_address)
+        task2, user, action, rule = InstallTask.factory(user=user,
+                                                        version=version2,
+                                                        ip_address=ip_address)
 
         task2.id |should| equal_to(task1.id)
 
         task2.process(user=user, action=action, rule=rule)
         task2.make_done.called |should| be(False)
         task2.actions |should| have(2).items
-        task2.status |should| equal_to(ShareTaskRule.STATUS.inprogress)
+        task2.status |should| equal_to(InstallTask.STATUS.inprogress)
 
-        version3 = queryset[2]
-        task3, user, action, rule = ShareTask.factory(user=user,
+        task3, user, action, rule = InstallTask.factory(user=user,
                                                       version=version3,
                                                       ip_address=ip_address)
         task3.process(user=user, action=action, rule=rule)
         task3.make_done.called |should| be(True)
         task3.actions |should| have(3).items
-        task3.status |should| equal_to(ShareTaskRule.STATUS.done)
+        task3.status |should| equal_to(InstallTask.STATUS.done)
 
 
-        version4 = queryset[3]
-        task4, user, action, rule = ShareTask.factory(user=user,
-                                                      version=version4,
-                                                      ip_address=ip_address)
+        task4, user, action, rule = InstallTask.factory(user=user,
+                                                        version=version4,
+                                                        ip_address=ip_address)
         (task4.process, user, action, rule) |should| throw(TaskAlreadyDone)
         task4.actions |should| have(3).items
-
 
     def test_factory_duplicate(self):
         self.rule = self.get_rule()
@@ -312,21 +400,23 @@ class ShareTestCase(TaskTestCase):
         user = User.objects.get(username='killuavx')
         ip_address = '127.0.0.1'
         queryset = PackageVersion.objects.published()
+        ShareTask.make_done = Mock(return_value=None)
 
         same_version = version = queryset[0]
-        task1, user, action, rule = ShareTask.factory(user=user,
-                                                      version=version,
-                                                      ip_address=ip_address)
+        task1, user, action, rule = InstallTask.factory(user=user,
+                                                        version=version,
+                                                        ip_address=ip_address)
         task1.process(user=user, action=action, rule=rule)
         task1.make_done.called |should| be(False)
         task1.actions |should| have(1).items
-        task1.status |should| equal_to(ShareTaskRule.STATUS.inprogress)
+        task1.status |should| equal_to(InstallTask.STATUS.inprogress)
 
-        task2, user, action, rule = ShareTask.factory(user=user,
-                                                      version=same_version,
-                                                      ip_address=ip_address)
+        task2, user, action, rule = InstallTask.factory(user=user,
+                                                        version=same_version,
+                                                        ip_address=ip_address)
 
         task2.id |should| equal_to(task1.id)
 
         (task2.process, user, action, rule) |should| throw(TaskConditionDoesNotMeet)
         task2.actions |should| have(1).items
+
