@@ -63,10 +63,31 @@ class CommentTestCase(TestCase):
         CommentTask.objects.delete()
         CommentTaskRule.objects.delete()
         CommentAction.objects.delete()
+        pass
 
     def tearDown(self):
         if hasattr(self, 'task'):
             self.task.delete()
+        pass
+
+    def test_add_duplicate_action(self):
+        user = User.objects.get(username='killuavx')
+        task = CommentTask()
+        self.task = task
+        task.make_done = Mock(return_value=None)
+        self.rule.comment_count |should| equal_to(3)
+
+        same_cmt = user.comment_comments.all()[1]
+        action = CommentAction(content=same_cmt)
+        task.process(user=user, action=action, rule=self.rule)
+
+        task.status |should| equal_to(CommentTask.STATUS.inprogress)
+        task.actions |should| have(1).items
+
+        action = CommentAction(content=same_cmt)
+        (task.process, user, action, task.rule) |should| throw(TaskConditionDoesNotMeet)
+        task.actions |should| have(1).items
+
 
     def test_finish_comment_task(self):
         user = User.objects.get(username='killuavx')

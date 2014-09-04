@@ -38,6 +38,10 @@ class TaskAlreadyDone(Exception):
     pass
 
 
+class TaskConditionDoesNotMeet(Exception):
+    pass
+
+
 TASK_STATUS = Choices(
     ('posted', 'posted', _('Posted')),
     ('inprogress', 'inprogress', _('In Progress')),
