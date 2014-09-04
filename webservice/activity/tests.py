@@ -46,25 +46,49 @@ import logging
 logger = logging.getLogger('console')
 
 
-class CommentTestCase(TestCase):
+class TaskTestCase(TestCase):
 
-    rule = None
+    action_class = None
 
-    def tearDown(self):
-        CommentTask.objects.delete()
-        CommentTaskRule.objects.delete()
-        CommentAction.objects.delete()
+    task_class = None
+
+    rule_class = None
 
     def get_rule(self):
         try:
-            return CommentTaskRule.objects.get(code=CommentTaskRule.CODE)
+            rule = self.rule_class.objects.get(code=self.rule_class.CODE)
+        except:
+            rule = self.rule_class()
+            rule.save()
+        return rule
+
+    def tearDown(self):
+        self.task_class.objects.delete()
+        self.action_class.objects.delete()
+        self.rule_class.objects.delete()
+
+
+class CommentTestCase(TaskTestCase):
+
+    action_class = CommentAction
+
+    task_class = CommentTask
+
+    rule_class = CommentTaskRule
+
+    rule = None
+
+    def get_rule(self):
+        try:
+            rule = CommentTaskRule.objects.get(code=CommentTaskRule.CODE)
         except:
             rule = CommentTaskRule(name='post comment', comment_count=3)
             rule.save()
-            return rule
+        return rule
 
     def test_add_duplicate_action(self):
-        self.rule = self.get_rule().comment_count |should| equal_to(3)
+        self.rule = self.get_rule()
+        self.rule.comment_count |should| equal_to(3)
 
         user = User.objects.get(username='killuavx')
         task = CommentTask()
@@ -82,13 +106,13 @@ class CommentTestCase(TestCase):
         task.actions |should| have(1).items
 
     def test_finish_comment_task(self):
-        self.rule = self.get_rule().comment_count |should| equal_to(3)
+        self.rule = self.get_rule()
+        self.rule.comment_count |should| equal_to(3)
 
         user = User.objects.get(username='killuavx')
         task = CommentTask()
         self.task = task
         task.make_done = Mock(return_value=None)
-        self.rule.comment_count |should| equal_to(3)
 
         cmt1 = user.comment_comments.all()[1]
         action = CommentAction(content=cmt1)
@@ -106,7 +130,7 @@ class CommentTestCase(TestCase):
         task.status |should| equal_to(CommentTask.STATUS.inprogress)
         task.actions |should| have(2).items
 
-        cmt3 = user.comment_comments.all()[3]
+        cmt3 = user.comment_comments.all()[10]
         action = CommentAction(content=cmt3)
         task.process(user=user, action=action, rule=self.rule)
         task.make_done.called |should| be(True)
@@ -114,8 +138,7 @@ class CommentTestCase(TestCase):
         task.status |should| equal_to(CommentTask.STATUS.done)
         task.actions |should| have(3).items
 
-
-        cmt3 = user.comment_comments.all()[4]
+        cmt3 = user.comment_comments.all()[8]
         action = CommentAction(content=cmt3)
         (task.process, user, action, task.rule) |should| throw(TaskAlreadyDone)
         task.make_done.call_count |should| equal_to(1)
@@ -160,27 +183,15 @@ class CommentTestCase(TestCase):
 from activity.documents.actions.signin import *
 
 
-class SigninTestCase(TestCase):
+class SigninTestCase(TaskTestCase):
+
+    action_class = SigninAction
+
+    task_class = SigninTask
+
+    rule_class = SigninTaskRule
 
     rule = None
-
-    def get_rule(self):
-        try:
-            rule = SigninTaskRule.objects.get(code=SigninTaskRule.CODE)
-        except:
-            rule = SigninTaskRule()
-            rule.save()
-        return rule
-
-    @classmethod
-    def tearDownClass(cls):
-        SigninTaskRule.objects.delete()
-        SigninAction.objects.delete()
-        SigninTask.objects.delete()
-
-    def tearDown(self):
-        if hasattr(self, 'task'):
-            self.task.delete()
 
     def test_signin_task(self):
         user = User.objects.get(username='killuavx')
@@ -224,3 +235,98 @@ class SigninTestCase(TestCase):
         task.make_done.call_count |should| equal_to(1)
         sec_task.ip_address |should| equal_to('127.0.0.1')
 
+
+from activity.documents.actions.share import *
+from warehouse.models import PackageVersion
+
+
+class ShareTestCase(TaskTestCase):
+
+    task_class = ShareTask
+
+    action_class = ShareAction
+
+    rule_class = ShareTaskRule
+
+    @classmethod
+    def setUpClass(cls):
+        cls.task_class.make_done = Mock(return_value=None)
+
+    def get_rule(self):
+        try:
+            rule = self.rule_class.objects.get(code=self.rule_class.CODE)
+        except:
+            rule = self.rule_class(share_count=3)
+            rule.save()
+        return rule
+
+    def test_factory(self):
+        self.rule = self.get_rule()
+        self.rule.share_count |should| equal_to(3)
+        user = User.objects.get(username='killuavx')
+        ip_address = '127.0.0.1'
+        queryset = PackageVersion.objects.published()
+
+        version1 = queryset[0]
+        task1, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version1,
+                                                      ip_address=ip_address)
+        task1.process(user=user, action=action, rule=rule)
+        task1.make_done.called |should| be(False)
+        task1.actions |should| have(1).items
+        task1.status |should| equal_to(ShareTaskRule.STATUS.inprogress)
+
+        version2 = queryset[1]
+        task2, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version2,
+                                                      ip_address=ip_address)
+
+        task2.id |should| equal_to(task1.id)
+
+        task2.process(user=user, action=action, rule=rule)
+        task2.make_done.called |should| be(False)
+        task2.actions |should| have(2).items
+        task2.status |should| equal_to(ShareTaskRule.STATUS.inprogress)
+
+        version3 = queryset[2]
+        task3, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version3,
+                                                      ip_address=ip_address)
+        task3.process(user=user, action=action, rule=rule)
+        task3.make_done.called |should| be(True)
+        task3.actions |should| have(3).items
+        task3.status |should| equal_to(ShareTaskRule.STATUS.done)
+
+
+        version4 = queryset[3]
+        task4, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version4,
+                                                      ip_address=ip_address)
+        (task4.process, user, action, rule) |should| throw(TaskAlreadyDone)
+        task4.actions |should| have(3).items
+
+
+    def test_factory_duplicate(self):
+        self.rule = self.get_rule()
+        self.rule.share_count |should| equal_to(3)
+        user = User.objects.get(username='killuavx')
+        ip_address = '127.0.0.1'
+        queryset = PackageVersion.objects.published()
+
+        same_version = version = queryset[0]
+        task1, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version,
+                                                      ip_address=ip_address)
+        task1.process(user=user, action=action, rule=rule)
+        task1.make_done.called |should| be(False)
+        task1.actions |should| have(1).items
+        task1.status |should| equal_to(ShareTaskRule.STATUS.inprogress)
+
+        task2, user, action, rule = ShareTask.factory(user=user,
+                                                      version=same_version,
+                                                      ip_address=ip_address)
+
+        task2.id |should| equal_to(task1.id)
+
+        (task2.process, user, action, rule) |should| throw(TaskConditionDoesNotMeet)
+        task2.actions |should| have(1).items
