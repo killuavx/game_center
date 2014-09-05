@@ -82,6 +82,9 @@ task_urlpatterns = patterns('',
     url(r'^mystatus/(.(?P<format>[\w_-]+))?$',
         activity_views.TaskViewSet.as_view({'get': 'mystatus'}),
         name=rest_router.get_base_name('task-mystatus')),
+    url(r'^install/(.(?P<format>[\w_-]+))?$',
+        activity_views.TaskViewSet.as_view({'post': 'install'}),
+        name=rest_router.get_base_name('task-install')),
 )
 
 slug_pattern = '[\w_.-]+'

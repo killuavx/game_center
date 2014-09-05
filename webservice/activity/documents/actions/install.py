@@ -66,9 +66,9 @@ class InstallTaskRule(TaskRule):
             return self.STATUS.done
 
     def post_update_action_check(self, task, action, *args, **kwargs):
-        if self.share_count == len(task.actions):
+        if self.install_count == len(task.actions):
             return self.STATUS.finish
-        elif self.share_count < len(task.actions):
+        elif self.install_count < len(task.actions):
             return self.STATUS.done
         else:
             return self.STATUS.inprogress

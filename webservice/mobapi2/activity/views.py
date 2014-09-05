@@ -373,6 +373,10 @@ class ScratchCardViewSet(viewsets.GenericViewSet):
 
 
 from mobapi2.activity.serializers import MyTasksStatusSerializer
+from activity.documents.actions.base import TaskAlreadyDone, TaskConditionDoesNotMeet
+from activity.documents.actions.install import InstallTask
+from warehouse.models import Package, PackageVersion
+from toolkit.helpers import get_global_site
 
 
 class TaskViewSet(viewsets.GenericViewSet):
@@ -448,3 +452,42 @@ class TaskViewSet(viewsets.GenericViewSet):
                                         )
         return Response(data)
 
+    def get_packageversion(self, package_name, version_name):
+        package = Package.all_objects.get_cache_by_alias(
+            site_id=get_global_site().pk,
+            package_name=package_name)
+        version = PackageVersion \
+            .all_objects \
+            .get_cache_by_alias(package_id=package.pk,
+                                version_name=version_name)
+        return version
+
+    def get_permissions(self):
+        _permission_classes = self.permission_classes
+        handler = getattr(self, self.request.method.lower(), None)
+        if handler and hasattr(handler, 'permission_classes'):
+            _permission_classes = handler.permission_classes
+
+        return [permission() for permission in _permission_classes]
+
+    def install(self, request, *args, **kwargs):
+        ip_address = request.get_client_ip()
+        package_name = request.DATA.get('package_name')
+        version_name = request.DATA.get('version_name')
+        version = self.get_packageversion(package_name=package_name,
+                                          version_name=version_name)
+        if not version:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        task, user, action, rule = InstallTask.factory(user=request.user,
+                                                       version=version,
+                                                       ip_address=ip_address)
+        try:
+            task.process(user=request.user, action=action, rule=rule)
+        except TaskConditionDoesNotMeet:
+            pass
+        except TaskAlreadyDone:
+            pass
+
+        data = dict()
+        return Response(data)
