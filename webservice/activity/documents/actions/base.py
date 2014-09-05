@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
-from django.utils.timezone import now, get_default_timezone
+from django.utils.timezone import now, get_default_timezone, is_aware, make_aware
 from model_utils import Choices
 from mongoengine import queryset, fields, errors
 from mongoengine.document import DynamicDocument, EmbeddedDocument
@@ -127,6 +127,21 @@ class TaskRule(DynamicDocument):
     }
 
 
+class TaskQuerySet(queryset.QuerySet):
+
+    def with_user(self, user):
+        return self.filter(user_id=user.pk)
+
+    def in_date(self, action_datetime):
+        begin_dt = datetime(year=action_datetime.year,
+                            month=action_datetime.month,
+                            day=action_datetime.day,
+                            tzinfo=get_default_timezone())
+        finish_dt = begin_dt + timedelta(days=1)
+        return self.filter(created_datetime__gte=begin_dt,
+                           created_datetime__lt=finish_dt)
+
+
 class Task(Ownerable, DynamicDocument):
 
     CODE = None
@@ -159,7 +174,7 @@ class Task(Ownerable, DynamicDocument):
             ('user_id', 'created_datetime', ),
             ('user_id', 'status', '-completed_datetime', ),
         ],
-        #'queryset_class':,
+        'queryset_class': TaskQuerySet,
     }
 
     def process(self, user, action, rule, *args, **kwargs):
@@ -229,15 +244,7 @@ class Task(Ownerable, DynamicDocument):
     @classmethod
     def factory_task(cls, user, action_datetime):
         try:
-            begin_dt = datetime(year=action_datetime.year,
-                                month=action_datetime.month,
-                                day=action_datetime.day,
-                                tzinfo=get_default_timezone())
-            finish_dt = begin_dt + timedelta(days=1)
-            qs = cls.objects.filter(user_id=user.pk,
-                                    created_datetime__gte=begin_dt,
-                                    created_datetime__lt=finish_dt) \
-                .order_by('-created_datetime')
+            qs = cls.objects.with_user(user).in_date(action_datetime).order_by('-created_datetime')
             task = qs[0]
         except IndexError:
             task = cls()
@@ -273,11 +280,18 @@ class Task(Ownerable, DynamicDocument):
     def progress(self):
         """
             progress::
-                current, standard_count
+                current, standard
         """
-        return len(self.actions), self.standard_count
+        return dict(
+            current=len(self.actions),
+            standard=self.standard_count
+        )
+
 
     def __str__(self):
+        dt = self.created_datetime.astimezone() \
+            if is_aware(self.created_datetime) \
+            else make_aware(self.created_datetime, get_default_timezone())
         return "%s, %s, %s" %(self.user,
-                              self.created_datetime.astimezone().date(),
-                              "%d/%d" % self.progress)
+                              dt.date(),
+                              "%(current)d/%(standard)d" %self.progress)

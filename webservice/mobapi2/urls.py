@@ -78,10 +78,17 @@ account_urlpatterns = patterns('',
                            name=_account_basename('giftbags')),
                        )
 
+task_urlpatterns = patterns('',
+    url(r'^mystatus/(.(?P<format>[\w_-]+))?$',
+        activity_views.TaskViewSet.as_view({'get': 'mystatus'}),
+        name=rest_router.get_base_name('task-mystatus')),
+)
+
 slug_pattern = '[\w_.-]+'
 
 urlpatterns = rest_router.urls
 urlpatterns += patterns('',
+    url(r'^tasks/', include(task_urlpatterns)),
     url(r'^recommends/(?P<date>[\d-]+)/(.(?P<format>[\w_-]+))?$', promotion_views.RecommendView.as_view(),
         name=rest_router.get_base_name('recommend-detail')),
     url(r'^scratchcards/', include(scratchcard_urlpatterns)),

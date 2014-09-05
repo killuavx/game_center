@@ -56,7 +56,7 @@ class CommentTaskRule(TaskRule):
     experience = fields.IntField(verbose_name='成长经验值', default=10)
 
     def _action_duplicate_object(self, action1, action2):
-        cmt1, cmt2 = action1, action2
+        cmt1, cmt2 = action1.content, action2.content
         return (cmt1.content_type_id, cmt1.object_pk) == (cmt2.content_type_id, cmt2.object_pk)
 
     def pre_update_action_check(self, task, action, *args, **kwargs):

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from activity.models import GiftBag, GiftCard
+from django.utils.timezone import now
 from django.core.urlresolvers import reverse
 from toolkit.helpers import qurl_to
 from rest_framework import serializers
@@ -272,3 +273,93 @@ class AwardScratchCardSerializer(Serializer):
 
     title = serializers.CharField()
     signcode = serializers.CharField()
+
+
+from activity.documents.actions.base import Task
+from activity.documents.actions.comment import CommentTask
+from activity.documents.actions.install import InstallTask
+from activity.documents.actions.share import ShareTask
+from activity.documents.actions.signin import SigninTask
+
+
+class TaskStatusSerializer(Serializer):
+
+    progress_current = serializers.IntegerField(source='progress.current')
+
+    progress_standard = serializers.IntegerField(source='progress.standard')
+
+    status = serializers.CharField()
+
+    experience = serializers.SerializerMethodField('get_experience')
+    def get_experience(self, obj):
+        if obj.status != Task.STATUS.done:
+            return 0
+        return getattr(obj.rule, 'experience', 0)
+
+    #coin = serializers.SerializerMethodField('get_coin')
+    def get_coin(self, obj):
+        if obj.status != Task.STATUS.done:
+            return 0
+        return getattr(obj.rule, 'coin', 0)
+
+
+class MyTasksStatusSerializer(Serializer):
+
+    summary = serializers.SerializerMethodField('get_summary')
+
+    def get_summary(self, obj):
+        experience = coin = 0
+        for key, task in obj.items():
+            if not task:
+                continue
+            if not isinstance(task, Task):
+                continue
+            if task.status == Task.STATUS.done:
+                experience += getattr(task.rule, 'experience', 0)
+                coin += getattr(task.rule, 'coin', 0)
+
+        msgs = list()
+        if experience:
+            msgs.append("%d经验" % experience)
+        if coin:
+            msgs.append("%d金币" % coin)
+
+        if msgs:
+            return "今天你已攒到%s, %s" % (",".join(msgs), "继续加油哦~")
+        else:
+            return "今天你还没有完成任务, 快来参加吧~"
+
+    signin = TaskStatusSerializer(many=False)
+    share = TaskStatusSerializer(many=False)
+    install = TaskStatusSerializer(many=False)
+    comment = TaskStatusSerializer(many=False)
+
+    @classmethod
+    def factory(cls, user, action_datetime=None):
+        action_datetime = action_datetime.astimezone() if action_datetime else now().astimezone()
+
+        comment_task = CommentTask.factory_task(user, action_datetime)
+        comment_task.rule = comment_task.rule if comment_task.id else CommentTask.factory_rule()
+        comment_task.user = user
+
+        share_task = ShareTask.factory_task(user, action_datetime)
+        share_task.rule = share_task.rule \
+            if share_task.id else ShareTask.factory_rule()
+        share_task.user = user
+
+        install_task = InstallTask.factory_task(user, action_datetime)
+        install_task.rule = install_task.rule if install_task.id else InstallTask.factory_rule()
+        install_task.user = user
+
+        signin_task = SigninTask.factory_task(user, action_datetime)
+        signin_task.rule = signin_task.rule if signin_task.id else SigninTask.factory_rule()
+        signin_task.user = user
+
+        data = dict(
+            signin=signin_task,
+            comment=comment_task,
+            share=share_task,
+            install=install_task,
+        )
+        return cls(data)
+

@@ -370,3 +370,81 @@ class ScratchCardViewSet(viewsets.GenericViewSet):
             data = dict(detail='invalid code')
             status_code = status.HTTP_400_BAD_REQUEST
         return Response(data, status=status_code)
+
+
+from mobapi2.activity.serializers import MyTasksStatusSerializer
+
+
+class TaskViewSet(viewsets.GenericViewSet):
+    """ 任务接口
+
+    ## 获取任务信息
+
+        GET /api/v2/tasks/mystatus/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    ## 响应数据
+
+        {
+            // 评论
+            "comment": {
+                "experience": 10, //任务完成后奖励的成长经验
+                "progress_current": 3, //当前进度
+                "progress_standard": 3, //额定进度值
+                "status": "done" //完成状态, done 已经完成
+            },
+            "install": {
+                "experience": 10,
+                "progress_current": 1,
+                "progress_standard": 3,
+                "status": "inprogress" //完成状态，进行中
+            },
+            "note_url": "http://a.ccplay.com.cn:8080/api/v2/notes/task/",
+            "share": {
+                "experience": 5,
+                "progress_current": 0,
+                "progress_standard": 5,
+                "status": "posted" //完成状态，刚提交
+            },
+            "signin": {
+                "experience": 10,
+                "progress_current": 0,
+                "progress_standard": 1,
+                "status": "posted"
+            },
+            "summary": "\u4eca\u5929\u4f60\u5df2\u6512\u523010\u7ecf\u9a8c, \u7ee7\u7eed\u52a0\u6cb9\u54e6~" //描述内容
+        }
+
+
+    ## 请求数据:
+
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 通过登陆接口 [/api/v2/accounts/signin/](/api/v2/accounts/signin/)，获得登陆`Token <Key>`
+
+    ## 响应状态
+
+    * 200 HTTP_200_OK
+        * 返回用户任务状态,
+    * 401 HTTP_401_UNAUTHORIZED
+        * 未登陆
+        * 无效的HTTP Header: Authorization
+
+    """
+
+    base_name = 'task'
+    note_slug = 'task'
+
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (PlayerTokenAuthentication,)
+    serializer_class = MyTasksStatusSerializer
+
+    def mystatus(self, request, *args, **kwargs):
+        serializer = self.serializer_class.factory(request.user)
+        data = serializer.data
+        data['note_url'] = get_note_url(self.note_slug,
+                                        router=serializer.opts.router,
+                                        request=request,
+                                        format=serializer.context.get('format'),
+                                        )
+        return Response(data)
+

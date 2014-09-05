@@ -63,9 +63,10 @@ class TaskTestCase(TestCase):
         return rule
 
     def tearDown(self):
-        self.task_class.objects.delete()
-        self.action_class.objects.delete()
-        self.rule_class.objects.delete()
+        #self.task_class.objects.delete()
+        #self.action_class.objects.delete()
+        #self.rule_class.objects.delete()
+        pass
 
 
 class CommentTestCase(TaskTestCase):
@@ -159,7 +160,7 @@ class CommentTestCase(TaskTestCase):
         task1.make_done.called |should| be(False)
         task1.status |should| equal_to(CommentTask.STATUS.inprogress)
         task1.actions |should| have(1).items
-        task1.progress |should| equal_to((1, 3))
+        list(task1.progress.values()) |should| equal_to((1, 3))
 
         task2, user, action, rule = CommentTask.factory(comment=cmt2, action_datetime=action_datetime)
         task2.id |should| equal_to(task1.id)
@@ -168,14 +169,14 @@ class CommentTestCase(TaskTestCase):
         task2.make_done.called |should| be(False)
         task2.status |should| equal_to(CommentTask.STATUS.inprogress)
         task2.actions |should| have(2).items
-        task2.progress |should| equal_to((2, 3))
+        list(task2.progress.values()) |should| equal_to((2, 3))
 
         task3, user, action, rule = CommentTask.factory(comment=cmt3, action_datetime=action_datetime)
         task3.process(user=user, action=action, rule=rule)
         task3.make_done.called |should| be(True)
         task3.status |should| equal_to(CommentTask.STATUS.done)
         task3.actions |should| have(3).items
-        task3.progress |should| equal_to((3, 3))
+        list(task3.progress.values()) |should| equal_to((3, 3))
 
         task4, user, action, rule = CommentTask.factory(comment=cmt4, action_datetime=action_datetime)
         (task4.process, user, action, task4.rule) |should| throw(TaskAlreadyDone)
@@ -220,7 +221,7 @@ class SigninTestCase(TaskTestCase):
         task.make_done = Mock(return_value=None)
         task.process(user=user, action=action, rule=rule)
         task.make_done.called |should| be(True)
-        task.progress |should| equal_to((1, 1))
+        list(task.progress.values()) |should| equal_to((1, 1))
 
         action.ip_address |should| equal_to('127.0.0.1')
         task.ip_address |should| equal_to('127.0.0.1')
@@ -275,7 +276,7 @@ class ShareTestCase(TaskTestCase):
         task1.make_done.called |should| be(False)
         task1.actions |should| have(1).items
         task1.status |should| equal_to(ShareTask.STATUS.inprogress)
-        task1.progress |should| equal_to((1, 3))
+        list(task1.progress.values()) |should| equal_to((1, 3))
 
         version2 = queryset[1]
         task2, user, action, rule = ShareTask.factory(user=user,
@@ -288,7 +289,7 @@ class ShareTestCase(TaskTestCase):
         task2.make_done.called |should| be(False)
         task2.actions |should| have(2).items
         task2.status |should| equal_to(ShareTask.STATUS.inprogress)
-        task2.progress |should| equal_to((2, 3))
+        list(task2.progress.values()) |should| equal_to((2, 3))
 
         version3 = queryset[2]
         task3, user, action, rule = ShareTask.factory(user=user,
@@ -298,7 +299,7 @@ class ShareTestCase(TaskTestCase):
         task3.make_done.called |should| be(True)
         task3.actions |should| have(3).items
         task3.status |should| equal_to(ShareTask.STATUS.done)
-        task3.progress |should| equal_to((3, 3))
+        list(task3.progress.values()) |should| equal_to((3, 3))
 
 
         version4 = queryset[3]
@@ -307,7 +308,7 @@ class ShareTestCase(TaskTestCase):
                                                       ip_address=ip_address)
         (task4.process, user, action, rule) |should| throw(TaskAlreadyDone)
         task4.actions |should| have(3).items
-        task4.progress |should| equal_to((3, 3))
+        list(task4.progress.values()) |should| equal_to((3, 3))
 
     def test_factory_duplicate(self):
         self.rule = self.get_rule()
@@ -375,7 +376,7 @@ class InstallTestCase(TaskTestCase):
         task1.make_done.called |should| be(False)
         task1.actions |should| have(1).items
         task1.status |should| equal_to(InstallTask.STATUS.inprogress)
-        task1.progress |should| equal_to((1, 3))
+        list(task1.progress.values()) |should| equal_to((1, 3))
 
         task2, user, action, rule = InstallTask.factory(user=user,
                                                         version=version2,
@@ -387,7 +388,7 @@ class InstallTestCase(TaskTestCase):
         task2.make_done.called |should| be(False)
         task2.actions |should| have(2).items
         task2.status |should| equal_to(InstallTask.STATUS.inprogress)
-        task2.progress |should| equal_to((2, 3))
+        list(task2.progress.values()) |should| equal_to((2, 3))
 
         task3, user, action, rule = InstallTask.factory(user=user,
                                                       version=version3,
@@ -396,7 +397,7 @@ class InstallTestCase(TaskTestCase):
         task3.make_done.called |should| be(True)
         task3.actions |should| have(3).items
         task3.status |should| equal_to(InstallTask.STATUS.done)
-        task3.progress |should| equal_to((3, 3))
+        list(task3.progress.values()) |should| equal_to((3, 3))
 
 
         task4, user, action, rule = InstallTask.factory(user=user,
@@ -404,7 +405,7 @@ class InstallTestCase(TaskTestCase):
                                                         ip_address=ip_address)
         (task4.process, user, action, rule) |should| throw(TaskAlreadyDone)
         task4.actions |should| have(3).items
-        task4.progress |should| equal_to((3, 3))
+        list(task4.progress.values()) |should| equal_to((3, 3))
 
     def test_factory_duplicate(self):
         self.rule = self.get_rule()
