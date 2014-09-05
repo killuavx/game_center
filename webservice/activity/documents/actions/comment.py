@@ -104,9 +104,10 @@ class CommentTask(Task):
     @classmethod
     def factory(cls, comment, action_datetime=None, *args, **kwargs):
         dt = action_datetime.astimezone() if action_datetime else comment.submit_date.astimezone()
-        user = comment.user
-        return cls.factory_task(user, dt), comment.user,\
-               cls.factory_action(comment=comment), cls.factory_rule()
+        task = cls.factory_task(comment.user, dt)
+        task.rule = cls.factory_rule()
+        task.user = comment.user
+        return task, task.user, cls.factory_action(comment=comment), task.rule
 
     @property
     def standard_count(self):

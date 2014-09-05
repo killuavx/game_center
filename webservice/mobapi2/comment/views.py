@@ -16,6 +16,8 @@ from comment.models import Feedback, FeedbackType
 from rest_framework_extensions.cache.decorators import cache_response
 from mobapi2.utils import comment_list_cache_key_func
 from comment import get_model as get_comment_model
+from activity.documents.actions.base import TaskAlreadyDone, TaskConditionDoesNotMeet
+from activity.documents.actions.comment import CommentTask
 
 
 class CommentViewSet(mixins.CreateModelMixin,
@@ -190,6 +192,7 @@ class CommentViewSet(mixins.CreateModelMixin,
         if response.status_code == status.HTTP_201_CREATED:
             serializer = self.serializer_class(self.object)
             response.data = serializer.data
+            self.process_comment_task(comment=self.object)
 
         return response
 
@@ -214,6 +217,13 @@ class CommentViewSet(mixins.CreateModelMixin,
 
         return super(CommentViewSet, self).get_serializer(instance, data,
                                                           files, many, partial)
+
+    def process_comment_task(self, comment):
+        task, user, action, rule = CommentTask.factory(comment, action_datetime=comment.submit_date)
+        try:
+            task.process(user=user, action=action, rule=rule)
+        except (TaskAlreadyDone, TaskConditionDoesNotMeet):
+            pass
 
 
 class FeedbackViewSet(mixins.CreateModelMixin,
