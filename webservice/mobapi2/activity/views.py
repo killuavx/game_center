@@ -389,7 +389,7 @@ class TaskViewSet(viewsets.GenericViewSet):
         GET /api/v2/tasks/mystatus/
         Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
 
-    ## 响应数据
+    ### 响应数据
 
         {
             // 评论
@@ -421,6 +421,69 @@ class TaskViewSet(viewsets.GenericViewSet):
             "summary": "\u4eca\u5929\u4f60\u5df2\u6512\u523010\u7ecf\u9a8c, \u7ee7\u7eed\u52a0\u6cb9\u54e6~" //描述内容
         }
 
+    ----
+
+    ## 签到接口
+
+        POST /api/v2/tasks/signin/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    ### 响应数据
+
+        {
+            "experience": 10,
+            "progress_current": 0,
+            "progress_standard": 1,
+            "status": "posted"
+        }
+
+    ----
+
+    ## 分享接口
+
+        POST /api/v2/tasks/share/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+        package_name=com.rovio.gold&version_name=1.0.8
+
+    ### 请求参数
+
+    * `package_name`: 应用包名
+    * `version_name`: 版本名
+
+    ### 响应数据
+
+        {
+            "experience": 10,
+            "progress_current": 0,
+            "progress_standard": 5,
+            "status": "posted"
+        }
+
+    ----
+
+    ## 安装接口
+
+        POST /api/v2/tasks/install/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+        package_name=com.rovio.gold&version_name=1.0.8
+
+    ### 请求参数
+
+    * `package_name`: 应用包名
+    * `version_name`: 版本名
+
+    ### 响应数据
+
+        {
+            "experience": 10,
+            "progress_current": 0,
+            "progress_standard": 5,
+            "status": "posted"
+        }
+
+    ----
 
     ## 请求数据:
 
