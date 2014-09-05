@@ -372,7 +372,7 @@ class ScratchCardViewSet(viewsets.GenericViewSet):
         return Response(data, status=status_code)
 
 
-from mobapi2.activity.serializers import MyTasksStatusSerializer
+from mobapi2.activity.serializers import MyTasksStatusSerializer, TaskStatusSerializer
 from activity.documents.actions.base import TaskAlreadyDone, TaskConditionDoesNotMeet
 from activity.documents.actions.install import InstallTask
 from activity.documents.actions.share import ShareTask
@@ -457,6 +457,8 @@ class TaskViewSet(viewsets.GenericViewSet):
         package = Package.all_objects.get_cache_by_alias(
             site_id=get_global_site().pk,
             package_name=package_name)
+        if not package:
+            return None
         version = PackageVersion \
             .all_objects \
             .get_cache_by_alias(package_id=package.pk,
@@ -490,8 +492,8 @@ class TaskViewSet(viewsets.GenericViewSet):
         except TaskAlreadyDone:
             pass
 
-        data = dict()
-        return Response(data)
+        serializer = TaskStatusSerializer(task, many=False)
+        return Response(serializer.data)
 
     def share(self, request, *args, **kwargs):
         ip_address = request.get_client_ip()
@@ -512,5 +514,6 @@ class TaskViewSet(viewsets.GenericViewSet):
         except TaskAlreadyDone:
             pass
 
-        data = dict()
-        return Response(data)
+        serializer = TaskStatusSerializer(task, many=False)
+        return Response(serializer.data)
+

@@ -99,11 +99,15 @@ class ShareTask(Task):
     @classmethod
     def factory(cls, user, version, action_datetime=None, ip_address=None, *args, **kwargs):
         dt = action_datetime.astimezone() if action_datetime else now().astimezone()
-        return cls.factory_task(user, dt), user,\
+
+        task = cls.factory_task(user, dt)
+        task.rule = cls.factory_rule()
+        task.user = user
+        return task, task.user, \
                cls.factory_action(user=user,
                                   version=version,
-                                  ip_address=ip_address),\
-               cls.factory_rule()
+                                  ip_address=ip_address), \
+               task.rule
 
     @property
     def standard_count(self):
