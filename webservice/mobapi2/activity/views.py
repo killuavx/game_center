@@ -376,6 +376,7 @@ from mobapi2.activity.serializers import MyTasksStatusSerializer, TaskStatusSeri
 from activity.documents.actions.base import TaskAlreadyDone, TaskConditionDoesNotMeet
 from activity.documents.actions.install import InstallTask
 from activity.documents.actions.share import ShareTask
+from activity.documents.actions.signin import SigninTask
 from warehouse.models import Package, PackageVersion
 from toolkit.helpers import get_global_site
 
@@ -517,3 +518,16 @@ class TaskViewSet(viewsets.GenericViewSet):
         serializer = TaskStatusSerializer(task, many=False)
         return Response(serializer.data)
 
+    def signin(self, request, *args, **kwargs):
+        ip_address = request.get_client_ip()
+        task, user, action, rule = SigninTask.factory(user=request.user,
+                                                     ip_address=ip_address)
+        try:
+            task.process(user=request.user, action=action, rule=rule)
+        except TaskConditionDoesNotMeet:
+            pass
+        except TaskAlreadyDone:
+            pass
+
+        serializer = TaskStatusSerializer(task, many=False)
+        return Response(serializer.data)

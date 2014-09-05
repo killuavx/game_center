@@ -48,16 +48,6 @@ class SigninTask(Task):
         return SigninTaskRule
 
     @classmethod
-    def get_rule(cls, *args, **kwargs):
-        rule_cls = cls.get_rule_class()
-        try:
-            return rule_cls.objects.get(code=rule_cls.CODE)
-        except:
-            rule = rule_cls()
-            rule.save()
-            return rule
-
-    @classmethod
     def get_action_class(cls):
         return SigninAction
 
@@ -68,9 +58,13 @@ class SigninTask(Task):
     @classmethod
     def factory(cls, user, action_datetime=None, ip_address=None, *args, **kwargs):
         dt = action_datetime.astimezone() if action_datetime else now().astimezone()
-        return cls.factory_task(user, dt), user, \
+        task = cls.factory_task(user, dt)
+        task.rule = cls.factory_rule()
+        task.user = user
+        return task, task.user, \
                cls.factory_action(user=user, ip_address=ip_address),\
-               cls.factory_rule()
+               task.rule
+
 
     @property
     def standard_count(self):

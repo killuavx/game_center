@@ -88,6 +88,9 @@ task_urlpatterns = patterns('',
     url(r'^share/(.(?P<format>[\w_-]+))?$',
         activity_views.TaskViewSet.as_view({'post': 'share'}),
         name=rest_router.get_base_name('task-share')),
+    url(r'^signin/(.(?P<format>[\w_-]+))?$',
+        activity_views.TaskViewSet.as_view({'post': 'signin'}),
+        name=rest_router.get_base_name('task-signin')),
 )
 
 slug_pattern = '[\w_.-]+'
