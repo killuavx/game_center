@@ -85,6 +85,9 @@ task_urlpatterns = patterns('',
     url(r'^install/(.(?P<format>[\w_-]+))?$',
         activity_views.TaskViewSet.as_view({'post': 'install'}),
         name=rest_router.get_base_name('task-install')),
+    url(r'^share/(.(?P<format>[\w_-]+))?$',
+        activity_views.TaskViewSet.as_view({'post': 'share'}),
+        name=rest_router.get_base_name('task-share')),
 )
 
 slug_pattern = '[\w_.-]+'

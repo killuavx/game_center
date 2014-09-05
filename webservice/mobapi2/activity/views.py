@@ -375,6 +375,7 @@ class ScratchCardViewSet(viewsets.GenericViewSet):
 from mobapi2.activity.serializers import MyTasksStatusSerializer
 from activity.documents.actions.base import TaskAlreadyDone, TaskConditionDoesNotMeet
 from activity.documents.actions.install import InstallTask
+from activity.documents.actions.share import ShareTask
 from warehouse.models import Package, PackageVersion
 from toolkit.helpers import get_global_site
 
@@ -482,6 +483,28 @@ class TaskViewSet(viewsets.GenericViewSet):
         task, user, action, rule = InstallTask.factory(user=request.user,
                                                        version=version,
                                                        ip_address=ip_address)
+        try:
+            task.process(user=request.user, action=action, rule=rule)
+        except TaskConditionDoesNotMeet:
+            pass
+        except TaskAlreadyDone:
+            pass
+
+        data = dict()
+        return Response(data)
+
+    def share(self, request, *args, **kwargs):
+        ip_address = request.get_client_ip()
+        package_name = request.DATA.get('package_name')
+        version_name = request.DATA.get('version_name')
+        version = self.get_packageversion(package_name=package_name,
+                                          version_name=version_name)
+        if not version:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        task, user, action, rule = ShareTask.factory(user=request.user,
+                                                     version=version,
+                                                     ip_address=ip_address)
         try:
             task.process(user=request.user, action=action, rule=rule)
         except TaskConditionDoesNotMeet:
