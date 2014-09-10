@@ -2,6 +2,8 @@
 from mongoengine import fields, queryset
 from mongoengine.document import DynamicDocument
 from account.models import User
+from account.documents.credit import CreditLog
+from activity.documents.actions.base import Action
 
 from django.utils.timezone import now
 from random import randint
@@ -159,6 +161,41 @@ class OwnerNotMatch(Exception):
     pass
 
 
+class ScratchAction(Action):
+
+    CODE = 'scratch'
+
+    name = fields.StringField(default='刮刮卡')
+
+    card = fields.GenericReferenceField()
+
+    def build_summary(self):
+        return "刮中%d金币" % self.credit_exchange_coin
+
+    @property
+    def content(self):
+        return self.card
+
+    @content.setter
+    def content(self, content):
+        self.card = content
+
+    def can_execute(self):
+        if self.card and self.card.award_coin:
+            return True
+        return False
+
+    def execute(self):
+        log = CreditLog.factory(exchangable=self,
+                                user=self.card.winner,
+                                credit_datetime=self.card.received_datetime)
+        log.save()
+
+    def save(self, *args, **kwargs):
+        self.credit_exchange_coin = self.card.award_coin
+        return super(ScratchAction, self).save(*args, **kwargs)
+
+
 scratch_luckydraw = ScratchLuckyDraw()
 
 
@@ -171,7 +208,7 @@ def generate_scratchcard_by_user(user):
                        award_coin=coin)
 
 
-def receive_scratchcard(queryset, signcode, user):
+def receive_scratchcard(queryset, signcode, user, ip_address=None):
     card = queryset.get(signcode=signcode)
     if card.winner_id != user.pk:
         raise OwnerNotMatch
@@ -180,7 +217,13 @@ def receive_scratchcard(queryset, signcode, user):
     card.is_received = True
     card.received_datetime = now().astimezone()
     card.save()
+
+    action = ScratchAction(content=card,
+                           user=user,
+                           ip_address=ip_address,
+                           created_datetime=card.received_datetime)
+    action.save()
+    if action.can_execute():
+        action.execute()
+
     return card
-
-
-

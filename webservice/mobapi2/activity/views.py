@@ -355,7 +355,7 @@ class ScratchCardViewSet(viewsets.GenericViewSet):
     @action()
     def award(self, request, *args, **kwargs):
         qs = self.get_queryset()
-        signcode = request.POST.get('signcode')
+        signcode = request.DATA.get('signcode')
         if not signcode:
             data = dict(detail='invalid code')
             Response(data, status=status.HTTP_400_BAD_REQUEST)
