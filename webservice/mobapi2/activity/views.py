@@ -549,6 +549,9 @@ class TaskViewSet(viewsets.GenericViewSet):
         task, user, action, rule = InstallTask.factory(user=request.user,
                                                        version=version,
                                                        ip_address=ip_address)
+        if action.can_execute():
+            action.save()
+            action.execute()
         try:
             task.process(user=request.user, action=action, rule=rule)
         except TaskConditionDoesNotMeet:

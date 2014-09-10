@@ -578,3 +578,66 @@ class InstallTestCase(TaskTestCase):
 
         user.profile.experience |should| equal_to(10)
         self.user = user
+
+
+class InstallAwardCoinTestCase(TestCase):
+
+    task_class = InstallTask
+
+    action_class = InstallAction
+
+    rule_class = InstallTaskRule
+
+    def get_rule(self):
+        try:
+            rule = self.rule_class.objects.get(code=self.rule_class.CODE)
+        except:
+            rule = self.rule_class(install_count=3)
+            rule.save()
+        return rule
+
+    def setUp(self):
+        self.rule = self.get_rule()
+        self.user = User.objects.get(username='killuavx')
+        self.user.profile.experience = 0
+        self.user.profile.coin = 0
+        self.user.profile.level = 0
+        self.user.save()
+
+    def tearDown(self):
+        self.task_class.objects.delete()
+        self.action_class.objects.delete()
+        self.rule_class.objects.delete()
+        CreditLog.objects.delete()
+        if hasattr(self, 'user'):
+            self.user.profile.experience = 0
+            self.user.profile.coin = 0
+            self.user.profile.level = 0
+            self.user.save()
+
+    def test_install_award_coin(self):
+        self.user.profile.experience |should| equal_to(0)
+        user = self.user
+        ip_address = '127.0.0.1'
+        queryset = PackageVersion.objects.published()
+
+        # package version with award coin
+        same_version = version = queryset[0]
+        version.has_award = True
+        version.award_coin = 20
+        version.save()
+
+        # first install
+        action = InstallTask.factory_action(user=user, version=version, ip_address=ip_address)
+        action.can_execute() |should| be(True)
+        if action.can_execute():
+            action.save()
+            action.execute()
+        user.profile.coin |should| equal_to(20)
+
+        # install duplicate
+        action = InstallTask.factory_action(user=user, version=same_version, ip_address=ip_address)
+        action.save()
+        action.can_execute() |should| be(False)
+
+        user.profile.coin |should| equal_to(20)

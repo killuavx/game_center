@@ -33,6 +33,21 @@ TASK_STATUS = Choices(
 )
 
 
+class ActionQuerySet(queryset.QuerySet):
+
+    def with_user(self, user):
+        return self.filter(user_id=user.pk)
+
+    def in_date(self, action_datetime):
+        begin_dt = datetime(year=action_datetime.year,
+                            month=action_datetime.month,
+                            day=action_datetime.day,
+                            tzinfo=get_default_timezone())
+        finish_dt = begin_dt + timedelta(days=1)
+        return self.filter(created_datetime__gte=begin_dt,
+                           created_datetime__lt=finish_dt)
+
+
 class Action(Ownerable, CreditExchangable, DynamicDocument):
 
     CODE = None
@@ -53,7 +68,7 @@ class Action(Ownerable, CreditExchangable, DynamicDocument):
             ('created_datetime', ),
             ('user_id', '-created_datetime', ),
         ],
-        #'queryset_class':,
+        'queryset_class': ActionQuerySet,
     }
 
     @property

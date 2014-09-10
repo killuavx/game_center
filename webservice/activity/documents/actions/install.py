@@ -42,6 +42,36 @@ class InstallAction(Action):
         if version.has_award:
             self.coin = version.award_coin
 
+    def build_summary(self):
+        version = self.content
+        if version.has_award:
+            return "安装奖励%d金币" % version.award_coin
+        return "无奖励"
+
+    def execute(self):
+        dt = self.created_datetime
+        version = self.content
+        if version.has_award:
+            log = CreditLog.factory(exchangable=self,
+                                    user=self.user,
+                                    credit_datetime=dt)
+            log.save()
+
+    def can_execute(self):
+        cls = self.__class__
+        qs = cls.objects.with_user(user=self.user)\
+            .in_date(self.created_datetime.astimezone())\
+            .filter(version_id=self.version_id)
+        if qs.count():
+            return False
+        return self.content.has_award
+
+    def save(self, *args, **kwargs):
+        version = self.content
+        if version.has_award:
+            self.credit_exchange_coin = version.award_coin
+        return super(InstallAction, self).save(*args, **kwargs)
+
 
 class InstallTaskRule(TaskRule):
 
