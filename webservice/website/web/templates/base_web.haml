@@ -61,10 +61,10 @@
     %script{:src => "{% static 'common/zxxbox/js/jquery.zxxbox.3.0.js' %}"}
     %script{:src => "{% static 'common/js/Validform_v5.3.2_min.js' %}"}
     %script{:src => "{% static 'common/js/site-v1.js' %}"}
-    %script{:src => "{% static 'common/js/jquery.lazyload.min.js' %}" }
+    %script{:src => "{% static 'common/js/scrollLoading.js' %}" }
     :javascript
       $(function(){
-        $("img.lazy").lazyload({ effect : "fadeIn", hold:500, failure_limit:5, event:"scroll" });
+        $("img.lazy").scrollLoading({attr:"data-original"});
         $.ajax({url: '{% url "authpanel" %}',
                 dataType: 'json',
                 success: function(data){
