@@ -154,6 +154,10 @@ class ProfileStatsSerializerMixin(object):
             pass
         return 0
 
+    def get_giftbag_count(self, obj):
+        user = obj.user
+        return user.giftcard_set.count()
+
 
 PROFILE_BASIC_FIELDS = ('username', 'icon', 'email', 'sex', 'birthday')
 
@@ -217,9 +221,8 @@ class AccountProfileStatsSerializer(ProfileStatsSerializerMixin,
     bookmark_count = serializers \
         .SerializerMethodField('get_bookmark_count')
 
-    giftbag_count = serializers.SerializerMethodField('get_giftbag_count')
-    def get_giftbag_count(self, obj):
-        return 0
+    giftbag_count = serializers \
+        .SerializerMethodField('get_bookmark_count')
 
     class Meta:
         model = Profile
@@ -240,6 +243,14 @@ class AccountProfileSigninSerializer(AccountProfileStatsSerializer):
     username = profile_username
 
     token = serializers.SerializerMethodField('get_token_key')
+
+    comment_count = serializers.SerializerMethodField('get_comment_count')
+
+    bookmark_count = serializers \
+        .SerializerMethodField('get_bookmark_count')
+
+    giftbag_count = serializers \
+        .SerializerMethodField('get_bookmark_count')
 
     class Meta:
         model = Profile
@@ -270,6 +281,10 @@ class AccountProfileSignupSerizlizer(AccountProfileStatsSerializer):
     bookmark_count = serializers.SerializerMethodField('get_bookmark_count')
 
     def get_bookmark_count(self, obj):
+        return 0
+
+    giftbag_count = serializers.SerializerMethodField('get_giftbag_count')
+    def get_giftbag_count(self, obj):
         return 0
 
     class Meta:
