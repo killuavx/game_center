@@ -1,5 +1,6 @@
 import os
 import re
+import math
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -211,13 +212,25 @@ class Profile(ProfileBase):
     birthday = models.DateField(null=True, blank=True)
 
 
+    coin = models.IntegerField(verbose_name='金币', default=0)
+
+    experience = models.IntegerField(verbose_name='经验', default=0)
+
+    level = models.IntegerField(verbose_name='等级', default=1)
+
+    def change_experience(self, experience=0):
+        self.experience = experience
+        if experience < 80:
+            self.level = 1
+        else:
+            self.level = math.floor(math.sqrt(experience/50.0) + 1)
+
+
 # Hack to override mugshot.upload_to and mugshot.generate_filename
 # In Django, this is not permitted for override django.models.Model attributes
 Profile.__dict__.get('mugshot').field.upload_to = \
     Profile.__dict__.get('mugshot').field.generate_filename = \
     user_profile_upload_to
-
-
 
 
 @receiver(post_delete, sender=User)

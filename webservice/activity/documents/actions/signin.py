@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from activity.documents.actions.base import *
-from django.utils.timezone import get_default_timezone
-from datetime import datetime, timedelta
+from account.documents.credit import CreditLog
 
 CODE = 'signin'
 
@@ -16,7 +15,7 @@ class SigninTaskRule(TaskRule):
 
     CODE = CODE
 
-    experience = fields.IntField(verbose_name='成长经验值', default=10)
+    experience = fields.IntField(verbose_name='成长经验值', default=5)
 
     def pre_update_action_check(self, task, action, *args, **kwargs):
         if len(task.actions):
@@ -39,9 +38,8 @@ class SigninTask(Task):
 
     CODE = CODE
 
-    def make_done(self):
-        logger.info('signin task done')
-        #self.uesr.profile.save()
+    def build_summary(self):
+        return "签到获得经验 %d" % self.rule.experience
 
     @classmethod
     def get_rule_class(cls):
@@ -64,7 +62,6 @@ class SigninTask(Task):
         return task, task.user, \
                cls.factory_action(user=user, ip_address=ip_address),\
                task.rule
-
 
     @property
     def standard_count(self):

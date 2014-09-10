@@ -62,11 +62,18 @@ class TaskTestCase(TestCase):
             rule.save()
         return rule
 
+    def setUp(self):
+        self.user = User.objects.get(username='killuavx')
+
     def tearDown(self):
-        #self.task_class.objects.delete()
-        #self.action_class.objects.delete()
-        #self.rule_class.objects.delete()
-        pass
+        self.task_class.objects.delete()
+        self.action_class.objects.delete()
+        self.rule_class.objects.delete()
+        if hasattr(self, 'user'):
+            self.user.profile.experience = 0
+            self.user.profile.coin = 0
+            self.user.profile.level = 0
+            self.user.save()
 
 
 class CommentTestCase(TaskTestCase):
@@ -198,6 +205,7 @@ class SigninTestCase(TaskTestCase):
 
     def test_signin_task(self):
         user = User.objects.get(username='killuavx')
+        self.user = user
         task = SigninTask()
         self.task = task
         self.rule = self.get_rule()
@@ -218,6 +226,7 @@ class SigninTestCase(TaskTestCase):
         user = User.objects.get(username='killuavx')
         task, user, action, rule = SigninTask.factory(user=user,
                                                       ip_address='127.0.0.1')
+        self.user = user
         task.make_done = Mock(return_value=None)
         task.process(user=user, action=action, rule=rule)
         task.make_done.called |should| be(True)
@@ -239,6 +248,13 @@ class SigninTestCase(TaskTestCase):
         task.make_done.call_count |should| equal_to(1)
         sec_task.ip_address |should| equal_to('127.0.0.1')
 
+    def test_signin_task_exchange_user_experience(self):
+        task, user, action, rule = SigninTask.factory(user=self.user,
+                                                      ip_address='127.0.0.1')
+        rule.experience |should| equal_to(5)
+        self.user.profile.experience |should| equal_to(0)
+        task.process(user=user, action=action, rule=rule)
+        self.user.profile.experience |should| equal_to(5)
 
 from activity.documents.actions.share import *
 from warehouse.models import PackageVersion

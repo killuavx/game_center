@@ -37,7 +37,7 @@ class ShareAction(Action):
     @content.setter
     def content(self, version):
         self.version_id = version.pk
-        self.package_id = version.package.pk
+        self.package_id = version.package_id
         self._version = version
 
 

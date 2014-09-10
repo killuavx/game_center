@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from django.utils.timezone import get_default_timezone
-from datetime import datetime, timedelta
 from activity.documents.actions.base import *
 
 import logging
@@ -39,8 +37,10 @@ class InstallAction(Action):
     @content.setter
     def content(self, version):
         self.version_id = version.pk
-        self.package_id = version.package.pk
+        self.package_id = version.package_id
         self._version = version
+        if version.has_award:
+            self.coin = version.award_coin
 
 
 class InstallTaskRule(TaskRule):
@@ -108,3 +108,6 @@ class InstallTask(Task):
     @property
     def standard_count(self):
         return self.rule.install_count
+
+
+
