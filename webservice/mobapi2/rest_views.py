@@ -40,3 +40,15 @@ class NotePaginationAPIViewMixin(object):
         return pagination_serializer_class(instance=page, context=context)
 
 
+
+class CustomMethodPermissionsViewSetMixin(object):
+
+    permission_classes = ()
+
+    def get_permissions(self):
+        _permission_classes = self.permission_classes
+        handler = getattr(self, self.request.method.lower(), None)
+        if handler and hasattr(handler, 'permission_classes'):
+            _permission_classes = handler.permission_classes
+
+        return [permission() for permission in _permission_classes]

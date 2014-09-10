@@ -286,16 +286,86 @@ from activity.documents.scratchcard import generate_scratchcard_by_user, receive
 from mobapi2.activity.serializers import WinnerScratchCardSerializer, GenerateScratchCardSerializer, AwardScratchCardSerializer
 from mongoengine import DoesNotExist
 from mobapi2.helpers import get_note_url
+from mobapi2.rest_views import CustomMethodPermissionsViewSetMixin
 
 
-class ScratchCardViewSet(viewsets.GenericViewSet):
+class ScratchCardViewSet(CustomMethodPermissionsViewSetMixin,
+                         viewsets.GenericViewSet):
+    """ 刮刮卡接口
+
+    ## 获取获奖者列表
+
+        GET /api/v2/scratchcards/winners/
+
+    ### 响应数据
+
+        {
+            "note_url": "http://android.ccplay.com.cn/api/v2/notes/scratchcard/", //描述内容
+            "winners":[
+                {"title":"xxx", "username": "xxxx"},
+                ...
+            ]
+        }
+
+    ----
+
+    ## 获取刮奖接口
+
+        GET /api/v2/scratchcards/play/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    ### 响应数据
+
+        {
+            "title": "+5\u91d1\u5e01",
+            "signcode": "52de1a07-c845-4ef7-96d4-ca4900b020a5",
+            "is_win": true
+        }
+
+    ### 数据说明
+
+    * `title`: 刮刮卡显示内容
+    * `signcode`: 刮刮卡兑奖号
+    * `is_win`: 刮刮卡是否有奖
+
+    ----
+
+    ## 兑奖接口
+
+        POST /api/v2/scratchcards/award/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+        signcode=52de1a07-c845-4ef7-96d4-ca4900b020a5
+
+    ### 请求参数
+
+    * `signcode`: 刮刮卡兑奖号
+
+
+    ## 请求数据:
+
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 通过登陆接口 [/api/v2/accounts/signin/](/api/v2/accounts/signin/)，获得登陆`Token <Key>`
+
+    ## 响应状态
+
+    * 200 HTTP_200_OK
+        * 返回用户任务状态,
+    * 401 HTTP_401_UNAUTHORIZED
+        * 未登陆
+        * 无效的HTTP Header: Authorization
+
+    * 400 HTTP_400_BAD_REQUEST
+        * 兑奖时出现这个状态，表示兑奖号无效或已经失效
+
+    """
 
     base_name = 'scratchcard'
 
     note_slug = 'scratchcard'
 
     model = ScratchCard
-    permission_classes = (IsAuthenticated, )
+    permission_classes = ()
     authentication_classes = (PlayerTokenAuthentication,)
 
     SERIALIZER_CLS_WINNER = 'winner'
@@ -325,22 +395,14 @@ class ScratchCardViewSet(viewsets.GenericViewSet):
     def get_serializer_class(self, cls_type=SERIALIZER_CLS_WINNER):
         return self.serializer_classes[cls_type]
 
+    @method_decorator(rf_permission_classes((IsAuthenticated, )))
     @link()
     def play(self, request, *args, **kwargs):
         card = generate_scratchcard_by_user(request.user)
         if card.award_coin:
             card.save()
         card_serializer = self.get_serializer(card, cls_type=self.SERIALIZER_CLS_GENERATE)
-        winner_serializer = self.get_winner_serializer(self.get_winner_list(),
-                                                       many=True)
-        return Response(data=dict(
-            note_url=get_note_url(self.note_slug,
-                                  router=card_serializer.opts.router,
-                                  request=request,
-                                  format=card_serializer.context.get('format')),
-            scratchcard=card_serializer.data,
-            winners=winner_serializer.data
-        ))
+        return Response(data=card_serializer.data)
 
     max_winner_items = 5
 
@@ -352,6 +414,22 @@ class ScratchCardViewSet(viewsets.GenericViewSet):
                                    many=many,
                                    cls_type=self.SERIALIZER_CLS_WINNER)
 
+    @link()
+    def winners(self, request, *args, **kwargs):
+        winner_serializer = self.get_winner_serializer(self.get_winner_list(),
+                                                       many=True)
+        winners=winner_serializer.data
+        return Response(data=dict(
+            note_url=get_note_url(self.note_slug,
+                                  router=winner_serializer.opts.router,
+                                  request=request,
+                                  format=winner_serializer.context.get('format')
+                                  ),
+            winners=winners
+        ))
+        pass
+
+    @method_decorator(rf_permission_classes((IsAuthenticated, )))
     @action()
     def award(self, request, *args, **kwargs):
         qs = self.get_queryset()

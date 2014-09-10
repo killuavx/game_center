@@ -45,8 +45,10 @@ rest_router.register('notes', activity_views.NoteViewSet)
 rest_router.register('giftbags', activity_views.GiftBagViewSet)
 scratchcard_play = activity_views.ScratchCardViewSet.as_view({'get': 'play'})
 scratchcard_award = activity_views.ScratchCardViewSet.as_view({'post': 'award'})
+scratchcard_winners = activity_views.ScratchCardViewSet.as_view({'get': 'winners'})
 scratchcard_basename = rest_router.get_default_base_name(activity_views.ScratchCardViewSet)
 scratchcard_urlpatterns = patterns('',
+   url('^winners/?$', scratchcard_winners, name="%s-winners" %scratchcard_basename),
    url('^play/?$', scratchcard_play, name="%s-play" %scratchcard_basename),
    url('^award/?$', scratchcard_award, name="%s-award" %scratchcard_basename),
 )
