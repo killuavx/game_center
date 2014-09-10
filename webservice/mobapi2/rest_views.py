@@ -43,8 +43,6 @@ class NotePaginationAPIViewMixin(object):
 
 class CustomMethodPermissionsViewSetMixin(object):
 
-    permission_classes = ()
-
     def get_permissions(self):
         _permission_classes = self.permission_classes
         handler = getattr(self, self.request.method.lower(), None)
@@ -52,3 +50,15 @@ class CustomMethodPermissionsViewSetMixin(object):
             _permission_classes = handler.permission_classes
 
         return [permission() for permission in _permission_classes]
+
+
+class CustomMethodThrottleViewSetMixin(object):
+
+    def get_throttles(self):
+        _classes = self.throttle_classes
+        handler = getattr(self, self.request.method.lower(), None)
+        if handler and hasattr(handler, 'throttle_classes'):
+            _classes = handler.throttle_classes
+
+        return [throttle() for throttle in _classes]
+

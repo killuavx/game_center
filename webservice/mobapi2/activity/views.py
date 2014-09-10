@@ -4,6 +4,8 @@ import warnings
 from django.http import Http404
 from rest_framework import viewsets, status
 from rest_framework.decorators import link, action
+from rest_framework.exceptions import Throttled
+from rest_framework.throttling import UserRateThrottle
 from rest_framework_extensions.mixins import DetailSerializerMixin
 from activity.models import GiftBag, GiftCard
 from mobapi2.authentications import PlayerTokenAuthentication
@@ -13,14 +15,14 @@ from rest_framework_extensions.cache.decorators import CacheResponse
 from rest_framework_extensions.key_constructor import bits
 from rest_framework_extensions.key_constructor.constructors import KeyConstructor
 from rest_framework_extensions.cache.decorators import cache_response
-from rest_framework.decorators import permission_classes as rf_permission_classes
+from rest_framework.decorators import permission_classes as rf_permission_classes, throttle_classes as rf_throttle_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, BaseFilterBackend
 from django.utils.decorators import method_decorator, available_attrs
 from django.views.decorators.cache import never_cache
 import json
-from django.utils.timezone import now
+from django.utils.timezone import now, get_default_timezone
 
 
 class DataKeyConstructor(KeyConstructor):
@@ -286,10 +288,39 @@ from activity.documents.scratchcard import generate_scratchcard_by_user, receive
 from mobapi2.activity.serializers import WinnerScratchCardSerializer, GenerateScratchCardSerializer, AwardScratchCardSerializer
 from mongoengine import DoesNotExist
 from mobapi2.helpers import get_note_url
-from mobapi2.rest_views import CustomMethodPermissionsViewSetMixin
+from mobapi2.rest_views import CustomMethodPermissionsViewSetMixin, CustomMethodThrottleViewSetMixin
+from datetime import timedelta, datetime
+
+
+class ScratchCardPlayThrottle(UserRateThrottle):
+
+    scope = 'scratch_card_play'
+
+    def get_rate(self):
+        return "3/day"
+
+    def parse_rate(self, rate):
+        num, period = rate.split('/')
+        num_requests = int(num)
+        timenow = now().astimezone()
+        next_datetime = (timenow + timedelta(days=1))\
+            .replace(hour=0, minute=0, second=0, microsecond=0)
+        duration = (next_datetime - timenow).seconds
+        return (num_requests, duration)
+
+
+class ScratchCardPlayThrottled(Throttled):
+
+    default_detail = "超出当天刮刮卡上限"
+    extra_detail = "请明天再来"
+
+    def __init__(self, wait=None, detail=None):
+        self.wait = wait
+        self.detail = ",".join([self.default_detail, self.extra_detail])
 
 
 class ScratchCardViewSet(CustomMethodPermissionsViewSetMixin,
+                         CustomMethodThrottleViewSetMixin,
                          viewsets.GenericViewSet):
     """ 刮刮卡接口
 
@@ -354,9 +385,10 @@ class ScratchCardViewSet(CustomMethodPermissionsViewSetMixin,
     * 401 HTTP_401_UNAUTHORIZED
         * 未登陆
         * 无效的HTTP Header: Authorization
-
     * 400 HTTP_400_BAD_REQUEST
         * 兑奖时出现这个状态，表示兑奖号无效或已经失效
+    * 429 HTTP_429_TOO_MANY_REQUESTS
+        * 获取刮刮卡每天只能获取3张，超出限制后次日后才能继续参与刮刮卡
 
     """
 
@@ -396,6 +428,7 @@ class ScratchCardViewSet(CustomMethodPermissionsViewSetMixin,
         return self.serializer_classes[cls_type]
 
     @method_decorator(rf_permission_classes((IsAuthenticated, )))
+    @method_decorator(rf_throttle_classes((ScratchCardPlayThrottle,)))
     @link()
     def play(self, request, *args, **kwargs):
         card = generate_scratchcard_by_user(request.user)
@@ -403,6 +436,9 @@ class ScratchCardViewSet(CustomMethodPermissionsViewSetMixin,
             card.save()
         card_serializer = self.get_serializer(card, cls_type=self.SERIALIZER_CLS_GENERATE)
         return Response(data=card_serializer.data)
+
+    def throttled(self, request, wait):
+        raise ScratchCardPlayThrottled(wait)
 
     max_winner_items = 5
 
