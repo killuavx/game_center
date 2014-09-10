@@ -173,7 +173,7 @@ class CommentTestCase(TaskTestCase):
         task1.make_done.called |should| be(False)
         task1.status |should| equal_to(CommentTask.STATUS.inprogress)
         task1.actions |should| have(1).items
-        list(task1.progress.values()) |should| equal_to((1, 3))
+        task1.progress |should| equal_to(dict(current=1, standard=3))
 
         task2, user, action, rule = CommentTask.factory(comment=cmt2, action_datetime=action_datetime)
         task2.id |should| equal_to(task1.id)
@@ -182,14 +182,14 @@ class CommentTestCase(TaskTestCase):
         task2.make_done.called |should| be(False)
         task2.status |should| equal_to(CommentTask.STATUS.inprogress)
         task2.actions |should| have(2).items
-        list(task2.progress.values()) |should| equal_to((2, 3))
+        task2.progress |should| equal_to(dict(current=2, standard=3))
 
         task3, user, action, rule = CommentTask.factory(comment=cmt3, action_datetime=action_datetime)
         task3.process(user=user, action=action, rule=rule)
         task3.make_done.called |should| be(True)
         task3.status |should| equal_to(CommentTask.STATUS.done)
         task3.actions |should| have(3).items
-        list(task3.progress.values()) |should| equal_to((3, 3))
+        task3.progress |should| equal_to(dict(standard=3, current=3))
 
         task4, user, action, rule = CommentTask.factory(comment=cmt4, action_datetime=action_datetime)
         (task4.process, user, action, task4.rule) |should| throw(TaskAlreadyDone)
@@ -201,31 +201,31 @@ class CommentTestCase(TaskTestCase):
         rule = self.rule = self.get_rule()
         rule.experience |should| equal_to(10)
         rule.comment_count |should| equal_to(3)
-        user = User.objects.get(username='killuavx')
+        user = self.user
         cmt1 = user.comment_comments.all()[1]
         cmt2 = user.comment_comments.all()[2]
         cmt3 = user.comment_comments.all()[10]
 
         action_datetime = now().astimezone()
-        task1, user, action, rule = CommentTask.factory(comment=cmt1, action_datetime=action_datetime)
+        task1, user, action, rule = commenttask.factory(comment=cmt1, action_datetime=action_datetime)
         rule.id |should| equal_to(self.rule.id)
 
         task1.process(user=user, action=action, rule=rule)
-        task1.status |should| equal_to(CommentTask.STATUS.inprogress)
+        task1.status |should| equal_to(commenttask.status.inprogress)
         task1.actions |should| have(1).items
         task1.progress |should| equal_to(dict(standard=3, current=1))
 
-        task2, user, action, rule = CommentTask.factory(comment=cmt2, action_datetime=action_datetime)
+        task2, user, action, rule = commenttask.factory(comment=cmt2, action_datetime=action_datetime)
         task2.id |should| equal_to(task1.id)
 
         task2.process(user=user, action=action, rule=rule)
-        task2.status |should| equal_to(CommentTask.STATUS.inprogress)
+        task2.status |should| equal_to(commenttask.status.inprogress)
         task2.actions |should| have(2).items
         task2.progress |should| equal_to(dict(standard=3, current=2))
 
-        task3, user, action, rule = CommentTask.factory(comment=cmt3, action_datetime=action_datetime)
+        task3, user, action, rule = commenttask.factory(comment=cmt3, action_datetime=action_datetime)
         task3.process(user=user, action=action, rule=rule)
-        task3.status |should| equal_to(CommentTask.STATUS.done)
+        task3.status |should| equal_to(commenttask.status.done)
         task3.actions |should| have(3).items
         task3.progress |should| equal_to(dict(standard=3, current=3))
 
@@ -299,6 +299,7 @@ class SigninTestCase(TaskTestCase):
         task.process(user=user, action=action, rule=rule)
         self.user.profile.experience |should| equal_to(5)
 
+
 from activity.documents.actions.share import *
 from warehouse.models import PackageVersion
 
@@ -335,7 +336,7 @@ class ShareTestCase(TaskTestCase):
         task1.make_done.called |should| be(False)
         task1.actions |should| have(1).items
         task1.status |should| equal_to(ShareTask.STATUS.inprogress)
-        list(task1.progress.values()) |should| equal_to((1, 3))
+        task1.progress |should| equal_to(dict(current=1, standard=3))
 
         version2 = queryset[1]
         task2, user, action, rule = ShareTask.factory(user=user,
@@ -348,7 +349,7 @@ class ShareTestCase(TaskTestCase):
         task2.make_done.called |should| be(False)
         task2.actions |should| have(2).items
         task2.status |should| equal_to(ShareTask.STATUS.inprogress)
-        list(task2.progress.values()) |should| equal_to((2, 3))
+        task2.progress |should| equal_to(dict(current=2, standard=3))
 
         version3 = queryset[2]
         task3, user, action, rule = ShareTask.factory(user=user,
@@ -358,7 +359,7 @@ class ShareTestCase(TaskTestCase):
         task3.make_done.called |should| be(True)
         task3.actions |should| have(3).items
         task3.status |should| equal_to(ShareTask.STATUS.done)
-        list(task3.progress.values()) |should| equal_to((3, 3))
+        task3.progress |should| equal_to(dict(standard=3, current=3))
 
 
         version4 = queryset[3]
@@ -367,12 +368,12 @@ class ShareTestCase(TaskTestCase):
                                                       ip_address=ip_address)
         (task4.process, user, action, rule) |should| throw(TaskAlreadyDone)
         task4.actions |should| have(3).items
-        list(task4.progress.values()) |should| equal_to((3, 3))
+        task4.progress |should| equal_to(dict(current=3, standard=3))
 
     def test_factory_duplicate(self):
         self.rule = self.get_rule()
         self.rule.share_count |should| equal_to(3)
-        user = User.objects.get(username='killuavx')
+        user = self.user
         ip_address = '127.0.0.1'
         queryset = PackageVersion.objects.published()
         ShareTask.make_done = Mock(return_value=None)
@@ -394,6 +395,49 @@ class ShareTestCase(TaskTestCase):
 
         (task2.process, user, action, rule) |should| throw(TaskConditionDoesNotMeet)
         task2.actions |should| have(1).items
+
+    def test_task_exchange_user_experience(self):
+        self.user.profile.experience |should| equal_to(0)
+        user = self.user
+
+        rule = self.rule = self.get_rule()
+        rule.experience |should| equal_to(10)
+        rule.share_count |should| equal_to(3)
+        ip_address = '127.0.0.1'
+        queryset = PackageVersion.objects.published()
+
+        version1 = queryset[0]
+        task1, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version1,
+                                                      ip_address=ip_address)
+        task1.process(user=user, action=action, rule=rule)
+        task1.actions |should| have(1).items
+        task1.status |should| equal_to(ShareTask.STATUS.inprogress)
+        task1.progress |should| equal_to(dict(current=1, standard=3))
+
+        version2 = queryset[1]
+        task2, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version2,
+                                                      ip_address=ip_address)
+
+        task2.id |should| equal_to(task1.id)
+
+        task2.process(user=user, action=action, rule=rule)
+        task2.actions |should| have(2).items
+        task2.status |should| equal_to(ShareTask.STATUS.inprogress)
+        task2.progress |should| equal_to(dict(current=2, standard=3))
+
+        version3 = queryset[2]
+        task3, user, action, rule = ShareTask.factory(user=user,
+                                                      version=version3,
+                                                      ip_address=ip_address)
+        task3.process(user=user, action=action, rule=rule)
+        task3.actions |should| have(3).items
+        task3.status |should| equal_to(ShareTask.STATUS.done)
+        task3.progress |should| equal_to(dict(standard=3, current=3))
+
+        user.profile.experience |should| equal_to(10)
+        self.user = user
 
 
 from activity.documents.actions.install import *

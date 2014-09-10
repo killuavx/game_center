@@ -80,9 +80,9 @@ class ShareTask(Task):
 
     CODE = CODE
 
-    def make_done(self):
-        logger.info('share task done')
-        #self.uesr.profile.save()
+    def build_summary(self):
+        return "分享%d款应用获得经验%d" % (self.rule.share_count,
+                                        self.rule.experience)
 
     @classmethod
     def get_rule_class(cls):
