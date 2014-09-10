@@ -63,12 +63,18 @@ class TaskTestCase(TestCase):
         return rule
 
     def setUp(self):
+        CreditLog.objects.delete()
         self.user = User.objects.get(username='killuavx')
+        self.user.profile.experience = 0
+        self.user.profile.coin = 0
+        self.user.profile.level = 0
+        self.user.save()
 
     def tearDown(self):
         self.task_class.objects.delete()
         self.action_class.objects.delete()
         self.rule_class.objects.delete()
+        CreditLog.objects.delete()
         if hasattr(self, 'user'):
             self.user.profile.experience = 0
             self.user.profile.coin = 0
@@ -188,6 +194,43 @@ class CommentTestCase(TaskTestCase):
         task4, user, action, rule = CommentTask.factory(comment=cmt4, action_datetime=action_datetime)
         (task4.process, user, action, task4.rule) |should| throw(TaskAlreadyDone)
         task4.make_done.call_count |should| equal_to(1)
+
+    def test_task_exchange_user_experience(self):
+        self.user.profile.experience |should| equal_to(0)
+
+        rule = self.rule = self.get_rule()
+        rule.experience |should| equal_to(10)
+        rule.comment_count |should| equal_to(3)
+        user = User.objects.get(username='killuavx')
+        cmt1 = user.comment_comments.all()[1]
+        cmt2 = user.comment_comments.all()[2]
+        cmt3 = user.comment_comments.all()[10]
+
+        action_datetime = now().astimezone()
+        task1, user, action, rule = CommentTask.factory(comment=cmt1, action_datetime=action_datetime)
+        rule.id |should| equal_to(self.rule.id)
+
+        task1.process(user=user, action=action, rule=rule)
+        task1.status |should| equal_to(CommentTask.STATUS.inprogress)
+        task1.actions |should| have(1).items
+        task1.progress |should| equal_to(dict(standard=3, current=1))
+
+        task2, user, action, rule = CommentTask.factory(comment=cmt2, action_datetime=action_datetime)
+        task2.id |should| equal_to(task1.id)
+
+        task2.process(user=user, action=action, rule=rule)
+        task2.status |should| equal_to(CommentTask.STATUS.inprogress)
+        task2.actions |should| have(2).items
+        task2.progress |should| equal_to(dict(standard=3, current=2))
+
+        task3, user, action, rule = CommentTask.factory(comment=cmt3, action_datetime=action_datetime)
+        task3.process(user=user, action=action, rule=rule)
+        task3.status |should| equal_to(CommentTask.STATUS.done)
+        task3.actions |should| have(3).items
+        task3.progress |should| equal_to(dict(standard=3, current=3))
+
+        user.profile.experience |should| equal_to(10)
+        self.user = user
 
 
 from activity.documents.actions.signin import *

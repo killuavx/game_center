@@ -85,9 +85,9 @@ class CommentTask(Task):
 
     CODE = CODE
 
-    def make_done(self):
-        logger.info('task done')
-        #self.uesr.profile.save()
+    def build_summary(self):
+        return "评论%d条获得经验%d" %(self.rule.comment_count,
+                                     self.rule.experience)
 
     @classmethod
     def get_rule_class(cls):
