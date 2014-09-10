@@ -221,18 +221,6 @@ class AccountProfileStatsSerializer(ProfileStatsSerializerMixin,
     def get_giftbag_count(self, obj):
         return 0
 
-    level = serializers.SerializerMethodField('get_level')
-    def get_level(self, obj):
-        return 0
-
-    coin = serializers.SerializerMethodField('get_coin')
-    def get_coin(self, obj):
-        return 0
-
-    experience = serializers.SerializerMethodField('get_experience')
-    def get_experience(self, obj):
-        return 0
-
     class Meta:
         model = Profile
         fields = PROFILE_BASIC_FIELDS + (
