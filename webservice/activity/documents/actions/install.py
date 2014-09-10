@@ -78,9 +78,9 @@ class InstallTask(Task):
 
     CODE = CODE
 
-    def make_done(self):
-        logger.info('install task done')
-        #self.uesr.profile.save()
+    def build_summary(self):
+        return "安装%d款应用获得经验%d" % (self.rule.install_count,
+                                  self.rule.experience)
 
     @classmethod
     def get_rule_class(cls):
