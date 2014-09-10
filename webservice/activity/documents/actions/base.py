@@ -5,7 +5,8 @@ from model_utils import Choices
 from mongoengine import queryset, fields, errors
 from mongoengine.document import DynamicDocument, EmbeddedDocument
 from django.utils.translation import ugettext_lazy as _
-from account.models import User
+from activity.documents.base import Ownerable
+from account.documents.credit import CreditLog, CreditExchangable
 
 PREFIX = 'activity'
 
@@ -14,25 +15,6 @@ db_alias = 'data_center'
 
 def collection_name(name):
     return "%s_%s" %(PREFIX, name)
-
-
-class Ownerable(object):
-
-    user_id = fields.IntField()
-
-    @property
-    def user(self):
-        if not hasattr(self, '_user'):
-            try:
-                self._user = User.objects.get(pk=self.user_id)
-            except:
-                self._user = None
-        return self._user
-
-    @user.setter
-    def user(self, user):
-        self._user = user
-        self.user_id = user.pk
 
 
 class TaskAlreadyDone(Exception):
@@ -51,7 +33,7 @@ TASK_STATUS = Choices(
 )
 
 
-class Action(Ownerable, DynamicDocument):
+class Action(Ownerable, CreditExchangable, DynamicDocument):
 
     CODE = None
 
@@ -142,7 +124,7 @@ class TaskQuerySet(queryset.QuerySet):
                            created_datetime__lt=finish_dt)
 
 
-class Task(Ownerable, DynamicDocument):
+class Task(Ownerable, CreditExchangable, DynamicDocument):
 
     CODE = None
 
@@ -206,6 +188,8 @@ class Task(Ownerable, DynamicDocument):
         if TaskRule.STATUS.posted == rule_status:
             self.user = user
             self.rule = rule
+            self.credit_exchange_coin = getattr(self.rule, 'coin', 0)
+            self.credit_exchange_experience = getattr(self.rule, 'experience', 0)
 
         if not action.id:
             action.save()
@@ -224,7 +208,10 @@ class Task(Ownerable, DynamicDocument):
             self.completed_datetime = self.updated_datetime
 
     def make_done(self):
-        pass
+        log = CreditLog.factory(exchangable=self,
+                                user=self.user,
+                                credit_datetime=self.completed_datetime)
+        log.save()
 
     def save(self, *args, **kwargs):
         self.code = self.CODE
@@ -286,7 +273,6 @@ class Task(Ownerable, DynamicDocument):
             current=len(self.actions),
             standard=self.standard_count
         )
-
 
     def __str__(self):
         dt = self.created_datetime.astimezone() \
