@@ -66,7 +66,7 @@ class PackageVersionScreenshotInlines(admin.StackedInline):
         try:
             iospackageversion = obj.iospackageversion
             return [(None, {'fields': fields})]
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, AttributeError):
             pass
 
         try:
