@@ -216,14 +216,22 @@ class Profile(ProfileBase):
 
     experience = models.IntegerField(verbose_name='经验', blank=True, default=0)
 
-    level = models.IntegerField(verbose_name='等级', blank=True, default=1)
+    level = models.IntegerField(verbose_name='等级', blank=True, default=0)
+
+    LEVEL_FUNC_MAPS = [
+        lambda e: 0 if e < 50 else None,
+        lambda e: 1 if e < 80 else None,
+        lambda e: 2 if e < 200 else None,
+        lambda e: math.floor(math.sqrt(e/50.0) + 1)
+    ]
 
     def change_experience(self, experience=0):
         self.experience = experience
-        if experience < 80:
-            self.level = 1
-        else:
-            self.level = math.floor(math.sqrt(experience/50.0) + 1)
+        for level_func in self.LEVEL_FUNC_MAPS:
+            level = level_func(experience)
+            if level is not None:
+                self.level = level
+                break
 
 
 # Hack to override mugshot.upload_to and mugshot.generate_filename

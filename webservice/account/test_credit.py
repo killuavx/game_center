@@ -25,41 +25,69 @@ class ExchangeLevelTestCase(TestCase):
         self.user.profile.experience = 0
 
     def test_change_experience(self):
-        self.user.profile.change_experience(10)
-        self.user.profile.level |should| equal_to(1)
+        """
+        等级 经验
+        Lv0   0
+        Lv1   50
+        Lv2   80
+        Lv3   200
+        Lv4   450
+        从3级开始，经验值的计算公式为
+        (等级-1)*(等级-1)*50
+        """
+        # level 0
+        self.user.profile.change_experience(0)
+        self.user.profile.level |should| equal_to(0)
 
+        self.user.profile.change_experience(10)
+        self.user.profile.level |should| equal_to(0)
+
+        self.user.profile.change_experience(50-1)
+        self.user.profile.level |should| equal_to(0)
+
+        # level 1
         self.user.profile.change_experience(50)
         self.user.profile.level |should| equal_to(1)
 
+        self.user.profile.change_experience(60)
+        self.user.profile.level |should| equal_to(1)
+
+        self.user.profile.change_experience(80-1)
+        self.user.profile.level |should| equal_to(1)
+
+        # level 2
         self.user.profile.change_experience(80)
         self.user.profile.level |should| equal_to(2)
 
+        self.user.profile.change_experience(100)
+        self.user.profile.level |should| equal_to(2)
+
+        self.user.profile.change_experience(200-1)
+        self.user.profile.level |should| equal_to(2)
+
+        # level 3
         self.user.profile.change_experience(200)
         self.user.profile.level |should| equal_to(3)
 
-        self.user.profile.change_experience(210)
+        self.user.profile.change_experience(280)
         self.user.profile.level |should| equal_to(3)
 
-        self.user.profile.change_experience(440)
+        self.user.profile.change_experience(450-1)
         self.user.profile.level |should| equal_to(3)
 
+        # level 4
         self.user.profile.change_experience(450)
         self.user.profile.level |should| equal_to(4)
 
+
+        self.user.profile.change_experience(800-1)
+        self.user.profile.level |should| equal_to(4)
+
+        # level 5
         self.user.profile.change_experience(800)
         self.user.profile.level |should| equal_to(5)
 
-        self.user.profile.change_experience(1250)
-        self.user.profile.level |should| equal_to(6)
+        self.user.profile.change_experience(820)
+        self.user.profile.level |should| equal_to(5)
 
-        self.user.profile.change_experience(1800)
-        self.user.profile.level |should| equal_to(7)
 
-        self.user.profile.change_experience(1900)
-        self.user.profile.level |should| equal_to(7)
-
-        self.user.profile.change_experience(2450)
-        self.user.profile.level |should| equal_to(8)
-
-        self.user.profile.change_experience(2451)
-        self.user.profile.level |should| equal_to(8)
