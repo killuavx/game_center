@@ -297,11 +297,14 @@ class ScratchCardPlayDailyThrottle(UserRateThrottle):
 
     scope = 'scratch_card_play_daily'
 
-    # 3/day
-    daily_max_times = 3
+    # 每天最多次数
+    daily_max_times = 15
 
-    # 5 minutes
+    # 5分钟间隔
     interval_seconds = 60 * 5
+
+    # 间隔5次，等候间隔时间
+    interval_times = 5
 
     def __init__(self, *args, **kwargs):
         super(ScratchCardPlayDailyThrottle, self).__init__(*args, **kwargs)
@@ -375,13 +378,18 @@ class ScratchCardPlayDailyThrottle(UserRateThrottle):
         if len(self.history) == 0 or not self.previous_time:
             return True, None
 
-        wait_seconds = (self.previous_time + self.interval_seconds) - self.now
-        if wait_seconds <= 0:
-            return True, None
+        if len(self.history) % self.interval_times == 0:
+            wait_seconds = (self.previous_time + self.interval_seconds) - self.now
+            if wait_seconds <= 0:
+                return True, None
+            else:
+                return False, wait_seconds
         else:
-            return False, wait_seconds
+            return True, None
+
 
 import math
+
 
 class ScratchCardPlayThrottled(Throttled):
 
