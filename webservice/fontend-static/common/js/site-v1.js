@@ -138,6 +138,7 @@ $(function(){
 	},function(){
 		$(this).find(".box").removeClass("hover");
 	});	
+	
 //搜索框
 	var sea=$(".search").Validform({
 		//tiptype:3,
@@ -147,7 +148,7 @@ $(function(){
 		ele:".key",datatype:"*"}
 	]);
 //搜索提示
-	/*$(".key").keyup(function(){		
+/*	$(".key").keyup(function(){		
 		var inputvalue = $(".key").val();
 		if(inputvalue  != ""){
 			$('#search-drop').show().animate({opacity:"1"},200);
@@ -200,6 +201,8 @@ $(function(){
 	li_btn($(".sort"),".sort-menu");
 	li_btn($(".box_btn,.collection_box"),".a_btn");
 	li_btn($(".game-gift-list"),".btn");	
+	li_btn($(".review_list"),".r3");	
+	li_btn($(".review_list"),".r4");	
 	
 //首个APP展开	
 	function li_hover(eobj,cssClass){
@@ -327,6 +330,24 @@ $(function(){
 		ele:".pct50",datatype:"*"}
 	]);
 
+//举报 纠错-表单验证
+	var report=$(".report-form").Validform({
+		showAllError:true,	
+		tiptype:function(msg,o,cssctl){
+			var objtip=$(".Validform_checktip");
+			cssctl(objtip,o.type);
+			objtip.text(msg);
+		}
+	});	
+	report.addRule([{
+		ele:".fbkcontent",datatype:"*"}
+	]);
+	
+	
+	
+	
+	
+
 //评论
     var comment_tips = $('#comments .comment-tip');
     var review=$(".comment-form").Validform({
@@ -451,32 +472,18 @@ $(function(){
 				title: "用户注册"	 ,fix: true
 				});
 		});
+		//举报 纠错
+		$(".report").click(function(){
+			$(".report-box").zxxbox({
+				title: "虫虫游戏问题反馈"	,fix: true, bgclose:true
+				});
+		});
 		//许愿
 		$("#go-wish").click(function(){
 			$(".go-wish-box").zxxbox({
 				title: "我要许愿"	 ,fix: true
 				});
 		});
-		//关于我们
-		$("#about").click(function(){
-			$("#about-box").zxxbox({
-				title: "关于我们"	 ,fix: true, bgclose:true
-				});
-		});
-		//发展愿景
-		$("#vision").click(function(){
-			$("#vision-box").zxxbox({
-				title: "发展愿景"	 ,fix: true, bgclose:true
-				});
-		});
-		//联系方式
-		$("#contact").click(function(){
-			$("#contact-box").zxxbox({
-				title: "联系方式"	 ,fix: true, bgclose:true
-				});
-		});
-		
-		
 		
 		
 	//提示

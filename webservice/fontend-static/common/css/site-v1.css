@@ -96,7 +96,7 @@ opacity: 0;}
 .search button:hover,.search .hover button{background-position:-120px -370px; background-color:#b72929}
 .search .Validform_checktip{position: absolute;right: -85px;top: 8px;}
 
-.search-drop{padding:9px 0 0 60px; opacity:0; z-index:10}
+.search-drop{padding:3px 0 0 60px; opacity:0; z-index:10}
 .search-drop-box{z-index:10; width:358px; border-top:none !important; -webkit-box-shadow: 0px 6px 24px -4px gray;-moz-box-shadow: 0px 6px 24px -4px gray;box-shadow: 0px 6px 24px -4px gray;}
 .search-drop-box a{display:block; padding-left:5px}
 .search-drop-box a:hover,.emailist li:hover,.emailist li.on{text-decoration:none; background:#ddd; color:#e53333; padding-left:15px}
@@ -443,7 +443,9 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-dis-page .right,.user-page .right{width:1019px}
 .app-dis-page .pic{width:177px; height:177px}
 .cover{background:url(http://static.ccplay.com.cn/static/common/img/app_bg.png) no-repeat; width:177px; height:177px; top:0}
-.instr li{border-bottom:1px solid #e8e8e8; padding:3px 10px}
+
+.instr{border-top:1px solid #e8e8e8; padding-top:3px !important; margin-top:20px}
+.instr li{border-bottom:1px solid #e8e8e8; padding:3px 10px; vertical-align:top}
 .instr li span{padding-left:10px; color:#333}
 .left-top-list .t-title{background:none}
 .left-top-list .t-title li{padding:0 20px}
@@ -452,12 +454,12 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .left-top-list li span.ios-web-icon{left:24px; top:5px}
 .left-top-list li.hover .btn-s{width:48%}
 
-
-.app-dis-page .title .ios-web-icon{padding-left:16px; margin-left:5px; display:none}
+.prompt{display:inline-block; width:160px;}
+.prompt span{padding-left:16px !important; vertical-align:middle}
 .app-dis-page .ad{background-position:-166px -166px}
 .app-dis-page .ad.no{background-position:-166px -133px}
 
-.app-dis-page .wifi{background-position:-166px -234px}
+.app-dis-page .wifi{background-position:-166px -234px; margin-left:40px}
 .app-dis-page .wifi.no{background-position:-166px -201px}
 
 .app-dis-page .google{background-position:-166px -300px}
@@ -465,20 +467,34 @@ white-space:nowrap; overflow:hidden; color:#fff}
 
 .app-dis-page .up_pic{background:url(http://static.ccplay.com.cn/static/common/img/up_pic_img_bg.png); height:370px; overflow:hidden}
 .app-dis-page .right .up,.app-dis-page .right .up .up_box{ margin-bottom:10px; overflow:hidden; position:relative; padding:10px}
-.app-dis-page .right .up ul{padding:10px}
-.app-dis-page .right .up li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
-.app-dis-page .right .up img{height:370px}
+.app-dis-page .right .up_pic ul{padding:10px}
+.app-dis-page .right .up_pic li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
+.app-dis-page .right .up_pic img{height:370px}
 
 .app-dis-page .right .up .ios-web-icon{top:-210px; display:inline-block; z-index:99999}
 .app-dis-page .right .up .prev{left:-10px}
 .app-dis-page .right .up .next{right:-10px}
 .app-dis-page .right .down{padding:0 20px 0 20px; clear:both}
 .app-dis-page .right h3{font-size:18px; margin-bottom:5px}
+.down h3{position:relative}
 .app-dis-page .right .text_inner{font-size:14px}
+.text_inner{color:#555; padding-bottom:15px}
+.down .text_inner{border-top:1px solid #eee; padding-top:10px; padding:10px 0 20px 0}
+.relevant-app .cell-bk{border-top:1px solid #eee}
+
+/*虫虫下载提示*/
+.game-dis-cc-down{background:#e53333 url(http://static.ccplay.com.cn/static/common/img/cc-down-tip-2.png) no-repeat right; margin-top:10px; height:100px; position:relative}
+.game-dis-cc-down .l{position:absolute}
+.game-dis-cc-down a:hover{color:#333; text-decoration:none}
+#cc-m .game-dis-cc-down .l,#cc-s .game-dis-cc-down{display:none}
+#cc-m .cc-down-pic{width:759px; background-color:#e53333; background-position:15px 0}
+
+.report-box h5{margin-bottom:10px}
+.report-box li{display:inline-block; margin:0 10px 20px 0}
+
 
 .review{margin-bottom:15px}
 .review .login{padding-top:5px}
-.text_inner{padding-bottom:15px; color:#555}
 .review textarea{height:60px; width:100%; outline: 0 none; overflow:auto; resize: none;}
 
 .review_list {border-top:1px solid #ddd; clear:both; padding:7px 0; color:#666}
@@ -492,15 +508,21 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .user img{width:48px; height:48px; border-radius:48px;}
 
 
+.review_list .d3{float:right}
+.review_list .d3 a{display:inline-block; height:14px; margin-left:13px}
+.review_list .d3 .ios-web-icon{display:inline-block; width:16px; height:14px; cursor:pointer; position:relative; left:-3px; top:3px; *top:0; _top:3px;}
+.review_list .d3 .r1 .ios-web-icon{background-position:-166px -337px}
+.review_list .d3 .r1:hover .ios-web-icon{background-position:-166px -370px}
+.review_list .d3 .r2 .ios-web-icon{background-position:-166px -403px}
+.review_list .d3 .r2:hover .ios-web-icon{background-position:-166px -437px}
+.review_list .d3 .r3,.review_list .d3 .r4{display:none}
+.review_list .d3 .r3 .ios-web-icon{background-position:-193px -336px}
+.review_list .d3 .r3:hover .ios-web-icon{background-position:-193px -369px}
 
-.d3 a{float:right}
-.d3 a{display:inline-block; height:14px; margin-left:13px}
-.d3 .ios-web-icon{display:inline-block; width:16px; height:14px; cursor:pointer; position:relative; left:-3px; top:3px; *top:0; _top:3px;}
-.d3 .r1 .ios-web-icon{background-position:-166px -337px}
-.d3 .r1:hover .ios-web-icon{background-position:-166px -370px}
-.d3 .r2 .ios-web-icon{background-position:-166px -403px}
-.d3 .r2:hover .ios-web-icon{background-position:-166px -437px}
+.review_list .d3 .r4 .ios-web-icon{background-position:-193px -403px}
+.review_list .d3 .r4:hover .ios-web-icon{background-position:-193px -403px}
 .i_reply{margin-left:58px}
+.admin-review{border-left:3px solid #ccc; padding:7px 10px; margin-top:10px; background:#f8f8f8}
 
 .app-dis-page .page,.n-review .page{border-top:1px solid #ddd}
 
@@ -930,7 +952,6 @@ input.Validform_error,select.Validform_error,textarea.Validform_error{border-col
 .login-box .w750{padding-top:15px}
 
 input:focus, textarea:focus, isindex:focus, keygen:focus, select:focus{border-color:#999}
-
 
 
 
