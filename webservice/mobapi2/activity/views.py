@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
 import warnings
+from django.core.cache import cache
 from django.http import Http404
 from rest_framework import viewsets, status
 from rest_framework.decorators import link, action
@@ -292,12 +293,23 @@ from mobapi2.rest_views import CustomMethodPermissionsViewSetMixin, CustomMethod
 from datetime import timedelta, datetime
 
 
-class ScratchCardPlayThrottle(UserRateThrottle):
+class ScratchCardPlayDailyThrottle(UserRateThrottle):
 
-    scope = 'scratch_card_play'
+    scope = 'scratch_card_play_daily'
+
+    # 3/day
+    daily_max_times = 3
+
+    # 5 minutes
+    interval_seconds = 60 * 5
+
+    def __init__(self, *args, **kwargs):
+        super(ScratchCardPlayDailyThrottle, self).__init__(*args, **kwargs)
+        self.previous_time = None
+        self._cache = cache
 
     def get_rate(self):
-        return "3/day"
+        return "%d/day" % self.daily_max_times
 
     def parse_rate(self, rate):
         num, period = rate.split('/')
@@ -308,15 +320,81 @@ class ScratchCardPlayThrottle(UserRateThrottle):
         duration = (next_datetime - timenow).seconds
         return (num_requests, duration)
 
+    def wait(self):
+        if self.daily_max_times == len(self.history):
+            return None
+
+        if self.history:
+            remaining_duration = self.duration - (self.now - self.history[-1])
+        else:
+            remaining_duration = self.duration
+
+        allow, wait_seconds = self.allow_next_interval()
+        if not allow:
+            return wait_seconds
+
+        available_requests = self.num_requests - len(self.history) + 1
+
+        return remaining_duration / float(available_requests)
+
+    def allow_request(self, request, view):
+        """
+        Implement the check to see if the request should be throttled.
+
+        On success calls `throttle_success`.
+        On failure calls `throttle_failure`.
+        """
+        if self.rate is None:
+            return True
+
+        self.key = self.get_cache_key(request, view)
+        if self.key is None:
+            return True
+
+        self.history = self._cache.get(self.key, [])
+        self.now = self.timer()
+        self.previous_time = self._cache.get("%s_previous" % self.key)
+        allow, wait_seconds = self.allow_next_interval()
+        if not allow:
+            return False
+
+        # Drop any requests from the history which have now passed the
+        # throttle duration
+        while self.history and self.history[-1] <= self.now - self.duration:
+            self.history.pop()
+        if len(self.history) >= self.num_requests:
+            return self.throttle_failure()
+        return self.throttle_success()
+
+    def throttle_success(self):
+        flag = super(ScratchCardPlayDailyThrottle, self).throttle_success()
+        self._cache.set("%s_previous" % self.key, self.now, self.interval_seconds)
+        return flag
+
+    def allow_next_interval(self):
+        if len(self.history) == 0 or not self.previous_time:
+            return True, None
+
+        wait_seconds = (self.previous_time + self.interval_seconds) - self.now
+        if wait_seconds <= 0:
+            return True, None
+        else:
+            return False, wait_seconds
+
+import math
 
 class ScratchCardPlayThrottled(Throttled):
 
-    default_detail = "超出当天刮刮卡上限"
-    extra_detail = "请明天再来"
-
     def __init__(self, wait=None, detail=None):
         self.wait = wait
-        self.detail = ",".join([self.default_detail, self.extra_detail])
+        if wait is None:
+            self.detail = "今天已经刮完了,明天再来吧~"
+        else:
+            #minutes = int(self.wait/60.0)
+            #secoinds = int(self.wait)
+            #self.detail = "%s%s后，又可以刮奖哦~" % (minutes or secoinds, '分钟' if minutes else '秒')
+            minutes = math.ceil(self.wait/60.0)
+            self.detail = "%s%s后，又可以刮奖哦~" % (minutes, '分钟')
 
 
 class ScratchCardViewSet(CustomMethodPermissionsViewSetMixin,
@@ -407,7 +485,6 @@ class ScratchCardViewSet(CustomMethodPermissionsViewSetMixin,
         SERIALIZER_CLS_GENERATE: GenerateScratchCardSerializer,
         SERIALIZER_CLS_WINNER: WinnerScratchCardSerializer,
         SERIALIZER_CLS_AWARD: AwardScratchCardSerializer,
-
     }
     serializer_class = AwardScratchCardSerializer
 
@@ -428,7 +505,7 @@ class ScratchCardViewSet(CustomMethodPermissionsViewSetMixin,
         return self.serializer_classes[cls_type]
 
     @method_decorator(rf_permission_classes((IsAuthenticated, )))
-    @method_decorator(rf_throttle_classes((ScratchCardPlayThrottle,)))
+    @method_decorator(rf_throttle_classes((ScratchCardPlayDailyThrottle, )))
     @link()
     def play(self, request, *args, **kwargs):
         card = generate_scratchcard_by_user(request.user)
