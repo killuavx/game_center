@@ -1,0 +1,113 @@
+.product-page{}
+
+/*banner*/
+.product-banner{height:577px; background:#c12424 url(http://static.ccplay.com.cn/static/product/img/bannet-red-bg.png) repeat-x center bottom; border-bottom:45px solid #fff}
+
+/*右边文字*/
+.right-txt{padding-top:100px; height:477px;}
+#cc-l .right-txt{margin-left:38%}
+#cc-m .right-txt{margin-left:38%}
+#cc-s .right-txt{margin-left:43%}
+
+.logo-ver{width:393px; height:54px; background:url(http://static.ccplay.com.cn/static/product/img/cc-txt.png) no-repeat}
+.logo-ver em{color:#fff; display:inline-block; padding:13px 0 0 260px; font-size:20px}
+
+.SubSlogan-txt li,.qr-code{text-indent:-99999px; display:block; float:left}
+
+.SubSlogan-txt li{height:133px; background:url(http://static.ccplay.com.cn/static/product/img/SubSlogan-txt.png) no-repeat; margin-top:53px}
+#cc-l .SubSlogan-txt li{margin-right:12%}
+#cc-m .SubSlogan-txt li{margin-right:8%}
+#cc-s .SubSlogan-txt li{margin-right:18%}
+#cc-s .SubSlogan-txt li.st-2{margin-right:0}
+#cc-s .SubSlogan-txt li.st-3{display:none}
+
+li.st-1{width:158px}
+li.st-2{width:185px; background-position:-214px 0}
+li.st-3{width:144px; background-position:-446px 0; margin-right:0!important}
+
+.qr-code{width:401px; height:177px; background:url(http://static.ccplay.com.cn/static/product/img/qr-code.png) no-repeat; bottom:0; left:350px; z-index:1}
+#cc-l .qr-code{left:350px}
+#cc-m .qr-code{left:250px}
+#cc-s .qr-code{display:none}
+.down-btn{clear:both; color:#fff; padding-top:90px; z-index:9; position:relative}
+a.Download-button{color:#fff; width:149px; height:68px; padding:10px 0 0 85px; background:url(http://static.ccplay.com.cn/static/product/img/down-btn.png) no-repeat; text-decoration:none; text-shadow:1px 1px 1px #336600;}
+a.Download-button:hover{text-decoration:none; color:#FFF; background-position:0 -83px}
+a.Download-button:active{background-position:0 -167px}
+a.Download-button em{color:#fff}
+
+
+
+/*左边 轮播图*/
+.left-phone{width:328px; height:560px; background:url(http://static.ccplay.com.cn/static/product/img/mi-phone.png) no-repeat}
+#cc-l .left-phone{margin:60px 0 0 4.5%}
+#cc-m .left-phone{margin:60px 0 0 2%}
+#cc-s .left-phone{margin:60px 0 0 -15px}
+
+.focus-box{width:250px; height:428px; margin:65px 0 0 39px; position:relative; overflow:hidden}
+.focus-box ul li img{width:250px; height:428px}
+.phone-light{width:189px; height:356px; position:absolute; background:url(http://static.ccplay.com.cn/static/product/img/mi-light.png) no-repeat; top:0; left:28px}
+
+/*标语*/
+.product-SubSlogan{clear:both; padding:50px 0}
+.product-SubSlogan ul{text-align:center}
+.product-SubSlogan ul li{display:inline-block; width:24%}
+.p-title,.p-info{display:block}
+.p-icon{width:114px; height:114px; display:inline-block; margin:0 auto 10px auto; background:url(http://static.ccplay.com.cn/static/product/img/SubSlogan-icon.png) no-repeat;}
+.p-s-2 .p-icon{background-position:0 -122px}
+.p-s-3 .p-icon{background-position:0 -244px}
+.p-s-4 .p-icon{background-position:0 -366px}
+
+.product-log{background:url(http://static.ccplay.com.cn/static/product/img/time-icon.png) no-repeat bottom; padding-bottom:145px}
+.t-l-clock{background:#fff url(http://static.ccplay.com.cn/static/product/img/time-icon.png) no-repeat; width:114px; height:114px; display:block; margin:0 auto 100px auto}
+.timeline{background:#fff url(http://static.ccplay.com.cn/static/product/img/time-line.png) repeat-y center; overflow:hidden}
+.t-l-line{width:4px; background:#F00; padding-bottom:1000px; margin:0 auto -1000px auto; display:inline-block}
+
+.item-first{margin-top:-20px}
+.i-title{padding-bottom:10px}
+.i-info{clear:both; border-top:1px dotted #ddd; padding-top:10px}
+.i-info p{padding-left:5em}
+.rightCorner,.leftCorner{width:43px; height:14px; display:inline-block; position:absolute; right:-43px; top:-7px; background:url(http://static.ccplay.com.cn/static/product/img/time-icon.png) no-repeat -20px -144px;}
+.leftCorner{background-position:-49px -144px; left:-43px}
+
+.item-box{width:110%}
+.item{width:543px; padding:15px; border:1px solid #ddd; float:left; margin:0 50px 35px 20px; left:645px}
+
+
+#cc-m .item{width:413px; left:515px}
+
+#cc-s .item{width:288px; left:390px}
+#cc-s .i-info p{padding-left:2em}
+
+.p-l-title h3{top:40px; left:20px}
+.p-l-title p{right:20px; top:45px}
+.p-l-title p a{display:inline-block; padding:5px 10px; background:#bbb; color:#fff; border-radius:5px;}
+.p-l-title p a:hover{text-decoration:none; background:#e53333}
+
+
+
+
+
+
+/*手机样式*/
+@media only screen and (max-width : 600px) {
+	.width{width:100% !important}
+	body{width:100% !important}
+	.nav ul{display:none}
+	#cc-s .login .logo h2 a{width:165px !important}
+	.product-banner{height:850px; border-bottom:none}
+	#cc-s .left-phone {margin:50px 0 0 -166px;left:50%}
+	.logo-ver{background-size:70%; display:none}
+	.logo-ver em{padding: 5px 0 0 180px;
+font-size: 16px;}
+	#cc-s .SubSlogan-txt{display:none}
+	.right-txt{margin-left:2% !important; padding-top:630px; height:auto}
+    .down-btn {padding-top:20px}
+	.Download-button{float:none !important;  display:inline-block; left:50%; margin-left:-117px; position:absolute}
+	.down-btn p{display:block; clear:both; text-align:center; width:100%; padding-top:90px; margin-left:0 !important}
+	.product-SubSlogan ul li {width: 45%; margin-bottom:30px}
+	.product-log{display:none}
+	.footer .f-1,.footer .f-2,.footer .f-4,.footer .f-5{display:none}
+	.footer .f-3{float:none!important; margin:0 auto !important; width:130px !important}
+}
+
+
