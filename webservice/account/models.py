@@ -212,11 +212,11 @@ class Profile(ProfileBase):
     birthday = models.DateField(null=True, blank=True)
 
 
-    coin = models.IntegerField(verbose_name='金币', default=0)
+    coin = models.IntegerField(verbose_name='金币', blank=True, default=0)
 
-    experience = models.IntegerField(verbose_name='经验', default=0)
+    experience = models.IntegerField(verbose_name='经验', blank=True, default=0)
 
-    level = models.IntegerField(verbose_name='等级', default=1)
+    level = models.IntegerField(verbose_name='等级', blank=True, default=1)
 
     def change_experience(self, experience=0):
         self.experience = experience
