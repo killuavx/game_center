@@ -81,7 +81,8 @@ class PackageByCategorySearcherFilter(base.BaseWidgetFilterBackend):
             category = self.get_category(cat)
 
         if category:
-            slugs = self.get_category_descendant_slugs(category)
+            #slugs = self.get_category_descendant_slugs(category)
+            slugs = [category.slug]
             sqs = self.get_search_queryset(queryset, slugs).search()
             return sqs
         else:
@@ -89,6 +90,53 @@ class PackageByCategorySearcherFilter(base.BaseWidgetFilterBackend):
                 return queryset.none()
             else:
                 return queryset
+
+
+class SearchByLanguageFilterBackend(base.BaseWidgetFilterBackend):
+
+    LANGS = [
+        'ZH',
+        'EN'
+    ]
+
+    language_param = 'lang'
+
+    def filter_queryset(self, request, queryset, widget):
+        lang = getattr(widget, self.language_param, None)
+        if lang is None:
+            return queryset
+        if lang not in self.LANGS:
+            return queryset
+        return queryset.filter(support_language_codes__in=[lang])
+
+
+class SearchByPkgSizeFilterBackend(base.BaseWidgetFilterBackend):
+
+    M = 1024 * 1024
+
+    size_param = 'size'
+
+    size_choices = {
+        '0-10M': (None, 10*M),
+        '10-50M': (10*M, 50*M),
+        '50-100M': (50*M, 100*M),
+        '100-300M': (100*M, 300*M),
+        '300-500M': (300*M, 500*M),
+        '500M': (500*M, None),
+    }
+
+    def filter_queryset(self, request, queryset, widget):
+        size = getattr(widget, self.size_param, None)
+        if size is None:
+            return queryset
+        if size not in self.size_choices:
+            return queryset
+        min_size, max_size = self.size_choices[size]
+        if min_size:
+            queryset = queryset.filter(download_size__gte=min_size)
+        if max_size:
+            queryset = queryset.filter(download_size__lt=max_size)
+        return queryset
 
 
 class CategorizedPackageFilterbackend(base.BaseWidgetFilterBackend):

@@ -200,11 +200,11 @@
     <field name="topic_ids" type="int" indexed="true" stored="true" multiValued="true" />
     <field name="topic_slugs" type="text_en" indexed="true" stored="true" multiValued="true" />
 
-    <field name="total_download_count" type="long" indexed="false" stored="true" multiValued="false" />
-    <field name="download_count" type="long" indexed="false" stored="true" multiValued="false" />
+    <field name="total_download_count" type="long" indexed="true" stored="true" multiValued="false" />
+    <field name="download_count" type="long" indexed="true" stored="true" multiValued="false" />
     <field name="static_download_url" type="string" indexed="false" stored="true" multiValued="false" />
     <field name="download_url" type="string" indexed="false" stored="true" multiValued="false" />
-    <field name="download_size" type="long" indexed="false" stored="true" multiValued="false" />
+    <field name="download_size" type="long" indexed="true" stored="true" multiValued="false" />
 
     <field name="author_id" type="long" indexed="true" stored="true" multiValued="false" />
     <field name="author_name" type="text_ik" indexed="true" stored="true" multiValued="false" />
@@ -213,7 +213,7 @@
     <field name="stars_count" type="int" indexed="false" stored="true" multiValued="false" />
 
     <field name="support_device_types" type="string" indexed="false" stored="true" multiValued="true" />
-    <field name="support_language_codes" type="string" indexed="false" stored="true" multiValued="true" />
+    <field name="support_language_codes" type="string" indexed="true" stored="true" multiValued="true" />
 
   </fields>
 

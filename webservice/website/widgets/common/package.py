@@ -32,7 +32,14 @@ class BasePackageSearchListWidget(base.FilterWidgetMixin, base.BaseListWidget):
 
     ordering = ()
 
-    filter_backends = (filters.PackageByCategorySearcherFilter, )
+    filter_backends = (filters.PackageByCategorySearcherFilter,
+                       filters.SearchByLanguageFilterBackend,
+                       filters.SearchByPkgSizeFilterBackend,
+    )
+
+    lang = None
+
+    size = None
 
     def get_search_terms(self, options):
         querystr = options.get(self.search_param, '')
@@ -55,6 +62,8 @@ class BasePackageSearchListWidget(base.FilterWidgetMixin, base.BaseListWidget):
 
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
         self.search_terms = self.get_search_terms(options)
+        self.lang = options.get('lang')
+        self.size = options.get('size')
         return super(BasePackageSearchListWidget, self)\
             .get_context(value=value,
                          options=options,
