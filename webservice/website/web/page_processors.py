@@ -70,3 +70,17 @@ def ranking_fill(request, page):
 processor_for('ranking')(ranking_fill)
 processor_for('ranking/game')(ranking_fill)
 processor_for('ranking/application')(ranking_fill)
+
+
+from clientapp.models import ClientPackageVersion
+
+
+@processor_for('product')
+def product_clientapp_fill(request, page):
+    package_name = 'com.lion.market'
+    clients = ClientPackageVersion.objects.filter(package_name=package_name)\
+        .published().order_by('-version_code')
+    return dict(
+        clients=clients
+    )
+
