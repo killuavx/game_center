@@ -21,15 +21,22 @@ class SignupForm(forms.Form):
                                 max_length=30,
                                 widget=forms.TextInput(attrs=attrs_dict),
                                 label=_("Username"),
-                                error_messages={'invalid': _('Username must '
-                                                'contain only letters, numbers,'
-                                                ' dots and underscores.'),
-                                                'required': _(required_message_template%"Username")})
+                                error_messages={
+                                                #'invalid': _('Username must '
+                                                #'contain only letters, numbers,'
+                                                #' dots and underscores.'),
+                                                'invalid': '用户名只能由数字字母组合',
+                                                #'required': _(required_message_template%"Username")
+                                                'required': '用户名不能为空'
+                                })
 
     password = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict,
                                                           render_value=False),
                                label=_("Create password"),
-                               error_messages={'required': _(required_message_template%"Password")})
+                               error_messages={
+                                   #'required': _(required_message_template%"Password")
+                                   'required': '密码不能为空'
+                               })
 
     email = forms.EmailField(required=False)
 
@@ -44,9 +51,11 @@ class SignupForm(forms.Form):
         except get_user_model().DoesNotExist:
             pass
         else:
-            raise forms.ValidationError(_('This username is already taken.'))
+            # _('This username is already taken.')
+            raise forms.ValidationError('用户名已经注册了')
         if self.cleaned_data['username'].lower() in account_settings.ACCOUNT_FORBIDDEN_USERNAMES:
-            raise forms.ValidationError(_('This username is not allowed.'))
+            # _('This username is not allowed.')
+            raise forms.ValidationError('用户名不合法')
         self.cleaned_data['username'] = self.cleaned_data['username'].lower()
         return self.cleaned_data['username']
 
