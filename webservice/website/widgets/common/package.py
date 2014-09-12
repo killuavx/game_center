@@ -397,6 +397,8 @@ class BaseCategoryComplexPackageBySearchListWidget(BasePackageBySearchListWidget
     filter_backends = (
         filters.SearchByCategoryFilterBackend,
         filters.SearchByTopicFilterBackend,
+        filters.SearchByLanguageFilterBackend,
+        filters.SearchByPkgSizeFilterBackend,
         filters.SearchOrderByFilterBackend,
     )
 
@@ -427,6 +429,8 @@ class BaseCategoryComplexPackageBySearchListWidget(BasePackageBySearchListWidget
     def get_context(self, value=None, options=None, context=None, pagination=True):
         self.setup_category(**options)
         self.setup_topic(**options)
+        self.lang = options.get('lang', None)
+        self.size = options.get('size', None)
         data = super(BaseCategoryComplexPackageBySearchListWidget, self).get_context(value=value,
                                                                                options=options,
                                                                                context=context,
