@@ -250,7 +250,7 @@ class AccountProfileSigninSerializer(AccountProfileStatsSerializer):
         .SerializerMethodField('get_bookmark_count')
 
     giftbag_count = serializers \
-        .SerializerMethodField('get_bookmark_count')
+        .SerializerMethodField('get_giftbag_count')
 
     class Meta:
         model = Profile
