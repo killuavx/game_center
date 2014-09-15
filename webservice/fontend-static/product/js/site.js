@@ -30,11 +30,26 @@ $(function(){
 			  $(this).css("left","");
 		  }
 	  });
+	  
+	  //微信
+	$(".weixin-code,#cc-s .down-btn,#cc-m .down-btn").hover(function(){
+       $(this).find("img").fadeIn(300);
+	 }, function(){
+	   $(this).find("img").fadeOut(300);
+	 });
 		  
 		  
 	
 	$("#item-box").find("div:first").css('top', "-30px");	
 	jQuery(".left-phone").slide({mainCell:".focus-box ul",effect:"leftLoop",autoPlay:true,switchLoad:"_src" });
+	
 });
+
+//百度分享
+window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"0","bdPos":"right","bdTop":"100"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+
+
+
+
 
 
