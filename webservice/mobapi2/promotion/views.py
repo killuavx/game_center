@@ -7,9 +7,7 @@ from rest_framework.response import Response
 from rest_framework import filters
 from promotion.models import Advertisement, Place, Recommend
 from mobapi2.promotion.serializers import AdvertisementSerializer, RecommendSerializer
-from rest_framework_extensions.cache.decorators import cache_response
 from mobapi2.decorators import default_cache_control
-from rest_framework_extensions.utils import default_object_cache_key_func
 
 
 class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -105,6 +103,7 @@ class RecommendView(generics.RetrieveAPIView):
     serializer_class = RecommendSerializer
     filter_backends = (filters.OrderingFilter, )
     ordering = ('-released_datetime', )
+    lookup_field = None
 
     def get_queryset(self):
         if not self.queryset:
@@ -121,7 +120,6 @@ class RecommendView(generics.RetrieveAPIView):
         d = dateparser.parse(kwargs.get('date'))
         return queryset.published_with_date(d)
 
-    @cache_response(key_func=default_object_cache_key_func)
     @default_cache_control(max_age=3600*6)
     def get(self, request, *args, **kwargs):
         try:
