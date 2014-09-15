@@ -32,38 +32,6 @@ function bindAppDetailCoverEv(vis_count){
 	}	
 }
 
-function resize(){
-	var width = $(window).width();
-	var wobj = $("body");
-	if(width > 1250){
-		wobj.attr("id","cc-l");	
-
-		/*巨作*/
-		jQuery(".roll").slide({ mainCell:"ul",vis:5,scroll:2,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
-		/*详细缩略图*/
-		//jQuery(".up_box").slide({ mainCell:"ul",vis:4,scroll:4,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
-		bindAppDetailCoverEv(4);
-	}else if(width > 990){
-		wobj.attr("id","cc-m");	
-
-		/*巨作*/
-		jQuery(".roll").slide({ mainCell:"ul",vis:4,scroll:2,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
-		/*详细缩略图*/
-		//jQuery(".up_box").slide({ mainCell:"ul",vis:3,scroll:3,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
-		bindAppDetailCoverEv(3);
-
-	}else{
-		wobj.attr("id","cc-s");	
-
-		/*巨作*/
-		jQuery(".roll").slide({ mainCell:"ul",vis:3,scroll:2,prevCell:".prev",nextCell:".next",autoPage:true,effect:"leftLoop",autoPlay:false});
-		/*详细缩略图*/
-		//jQuery(".up_box").slide({ mainCell:"ul",vis:2,scroll:2,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
-		bindAppDetailCoverEv(2);
-
-	}
-};
-
 
 
 $(function(){
