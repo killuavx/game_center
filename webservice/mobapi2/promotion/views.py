@@ -110,7 +110,7 @@ class RecommendView(generics.RetrieveAPIView):
 
     def get_object(self, queryset=None):
         try:
-            return queryset.all()[0]
+            return queryset.order_by('-released_datetime')[0]
         except IndexError:
             raise Http404
 
@@ -122,7 +122,7 @@ class RecommendView(generics.RetrieveAPIView):
         try:
             self.get_queryset()
             queryset = self.filter_queryset(self.queryset)
-            queryset = self.filter_date(queryset, *args, **kwargs)
+            #queryset = self.filter_date(queryset, *args, **kwargs)
         except ValueError:
             return Response(dict(detail='bad request'), status=status.HTTP_400_BAD_REQUEST)
 

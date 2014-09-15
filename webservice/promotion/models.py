@@ -252,7 +252,7 @@ class RecommendQuerySet(AdvertisementQuerySet):
 
     def published_with_date(self, date):
         return self.filter(status=self.model.STATUS.published) \
-            .filter(Q(released_datetime__gte=date)) \
+            .filter(Q(released_datetime__lte=date)) \
             .filter(Q(expiry_datetime__gt=date) | Q(expiry_datetime=None))
 
 
