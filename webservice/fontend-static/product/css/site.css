@@ -25,7 +25,7 @@ li.st-1{width:158px}
 li.st-2{width:185px; background-position:-214px 0}
 li.st-3{width:144px; background-position:-446px 0; margin-right:0!important}
 
-.qr-code{width:401px; height:177px; background:url(http://static.ccplay.com.cn/static/product/img/qr-code.png) no-repeat; bottom:0; left:350px; z-index:1}
+.qr-code{width:401px; height:177px; background:url(http://static.ccplay.com.cn/static/product/img/qr-code.png) no-repeat; bottom:0; left:350px}
 #cc-l .qr-code{left:350px}
 #cc-m .qr-code{left:250px}
 #cc-s .qr-code{display:none}
