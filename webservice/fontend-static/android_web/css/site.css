@@ -69,8 +69,12 @@ background-repeat: no-repeat;}
 .gift-bag .pic{display:none}
 .game-gift-page .page{border:none}
 
-
-
+/*评论*/
+.more-comments:hover{background-color:#ccc; color:#fff}
+/*最近流行*/
+.recent-trend-app a{display:inline-block; width:145px; margin-right:13px; height:20px; overflow: hidden;
+word-wrap: break-word;
+word-break: break-all;}
 
 
 
