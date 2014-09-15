@@ -578,7 +578,7 @@ class InstallTestCase(TaskTestCase):
         task3.progress |should| equal_to(dict(standard=3, current=3))
 
         user.profile.experience |should| equal_to(10)
-        self.user.profile.coin |should| equal_to(10)
+        self.user.profile.coin |should| equal_to(30)
         self.user = user
 
 
