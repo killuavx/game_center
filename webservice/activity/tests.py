@@ -643,3 +643,78 @@ class InstallAwardCoinTestCase(TestCase):
         action.can_execute() |should| be(False)
 
         user.profile.coin |should| equal_to(20)
+
+    def test_install_award_outof_300max(self):
+        self.user.profile.experience |should| equal_to(0)
+        user = self.user
+        ip_address = '127.0.0.1'
+        queryset = PackageVersion.objects.published()
+
+        # package version with award coin
+        version = queryset[0]
+        version.has_award = True
+        version.award_coin = 200
+        version.save()
+
+        # first install coin
+        action = InstallTask.factory_action(user=user, version=version, ip_address=ip_address)
+        action.can_execute() |should| be(True)
+        if action.can_execute():
+            action.save()
+            action.execute()
+        user.profile.coin |should| equal_to(200)
+
+        # second install
+        version2 = queryset[3]
+        version2.has_award = True
+        version2.award_coin = 110
+        version2.save()
+
+        action = InstallTask.factory_action(user=user, version=version2, ip_address=ip_address)
+        action.can_execute() |should| be(True)
+        if action.can_execute():
+            action.save()
+            action.execute()
+        user.profile.coin |should| equal_to(310)
+
+
+        # install 3
+        version3 = queryset[5]
+        version3.has_award = True
+        version3.award_coin = 20
+        version3.save()
+
+        action = InstallTask.factory_action(user=user, version=version3, ip_address=ip_address)
+        action.can_execute() |should| be(False)
+
+        user.profile.coin |should| equal_to(310)
+
+    def test_install_award_outof_300max_2(self):
+        self.user.profile.experience |should| equal_to(0)
+        user = self.user
+        ip_address = '127.0.0.1'
+        queryset = PackageVersion.objects.published()
+
+        # package version with award coin
+        version = queryset[0]
+        version.has_award = True
+        version.award_coin = 400
+        version.save()
+
+        # first install coin
+        action = InstallTask.factory_action(user=user, version=version, ip_address=ip_address)
+        action.can_execute() |should| be(True)
+        if action.can_execute():
+            action.save()
+            action.execute()
+        user.profile.coin |should| equal_to(400)
+
+        # second install
+        version2 = queryset[3]
+        version2.has_award = True
+        version2.award_coin = 110
+        version2.save()
+
+        action = InstallTask.factory_action(user=user, version=version2, ip_address=ip_address)
+        action.can_execute() |should| be(False)
+        user.profile.coin |should| equal_to(400)

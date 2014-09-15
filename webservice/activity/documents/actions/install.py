@@ -19,6 +19,8 @@ class InstallAction(Action):
 
     packageversion_class = None
 
+    MAX_AWARD_COINS = 300
+
     def get_packageversion_class(self):
         if not self.packageversion_class:
             from warehouse.models import PackageVersion
@@ -59,10 +61,15 @@ class InstallAction(Action):
 
     def can_execute(self):
         cls = self.__class__
-        qs = cls.objects.with_user(user=self.user)\
-            .in_date(self.created_datetime.astimezone())\
-            .filter(version_id=self.version_id)
-        if qs.count():
+
+        installed_qs = cls.objects.with_user(user=self.user) \
+            .in_date(self.created_datetime.astimezone())
+
+        if installed_qs.sum('credit_exchange_coin') >= self.MAX_AWARD_COINS:
+            return False
+
+        installed_version_qs = installed_qs.filter(version_id=self.version_id)
+        if installed_version_qs.count():
             return False
         return self.content.has_award
 
