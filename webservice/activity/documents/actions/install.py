@@ -83,6 +83,8 @@ class InstallTaskRule(TaskRule):
 
     experience = fields.IntField(verbose_name='成长经验值', default=10)
 
+    coin = fields.IntField(verbose_name='奖励金币', default=10)
+
     def _action_duplicate_object(self, action1, action2):
         return action1.version_id == action2.version_id
 

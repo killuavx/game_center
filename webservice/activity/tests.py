@@ -536,8 +536,9 @@ class InstallTestCase(TaskTestCase):
         (task2.process, user, action, rule) |should| throw(TaskConditionDoesNotMeet)
         task2.actions |should| have(1).items
 
-    def test_task_exchange_user_experience(self):
+    def test_task_exchange_user_credit(self):
         self.user.profile.experience |should| equal_to(0)
+        self.user.profile.coin |should| equal_to(0)
         user = self.user
 
         rule = self.rule = self.get_rule()
@@ -577,6 +578,7 @@ class InstallTestCase(TaskTestCase):
         task3.progress |should| equal_to(dict(standard=3, current=3))
 
         user.profile.experience |should| equal_to(10)
+        self.user.profile.coin |should| equal_to(10)
         self.user = user
 
 
