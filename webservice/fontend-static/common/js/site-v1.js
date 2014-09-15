@@ -19,6 +19,39 @@ $(document).ready(function(e) {
 
 });
 
+/*
+ * app详情图片事件绑定
+*/
+
+var imgloadCount = 0;
+function bindAppDetailCoverEv(vis_count){
+
+	var e = $(".up_pic img");
+	var imageCount = e.size();
+	
+	if(imgloadCount == 0){
+	
+		e.each(function(){
+			if(this.complete){
+				imgloadCount++
+			}
+		});
+		
+		if(imgloadCount == imageCount){
+			jQuery(".up_box").slide({ mainCell:"ul",vis:1,scroll:1,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+		}else{
+			e.load(function(){
+				imgloadCount++;
+				if(imgloadCount == imageCount){
+					jQuery(".up_box").slide({ mainCell:"ul",vis:1,scroll:1,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+				}
+			});
+		}
+	}else{
+		jQuery(".up_box").slide({ mainCell:"ul",vis:1,scroll:1,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+		
+	}	
+}
 
 function resize(){
 	var width = $(window).width();
@@ -52,6 +85,7 @@ function resize(){
 	}
 };
 
+//document.writeln("<a href=\"javascript:;\" title=\"我要许愿\" id=\"go-wish\">我要许愿</a>");
 
 //返回顶部
 document.writeln("<style>#toTop{width:44px;height:44px;position:fixed;right:20px;bottom:-10px;z-index:9999;display:none;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}#toTop:hover{background-position:left bottom}</style>");
@@ -96,6 +130,36 @@ $(function(){
 	$(".browsers_ad_close_gray").on("click", function() {
 		$(".cc-down-tip-box").toggle();
 	});
+
+
+//搜索
+	$(".search").hover(function(){
+		$(this).find(".box").addClass("hover");
+	},function(){
+		$(this).find(".box").removeClass("hover");
+	});	
+	
+//搜索框
+	var sea=$(".search").Validform({
+		//tiptype:3,
+		tipSweep:true
+	});	
+	sea.addRule([{
+		ele:".key",datatype:"*"}
+	]);
+//搜索提示
+/*	$(".key").keyup(function(){		
+		var inputvalue = $(".key").val();
+		if(inputvalue  != ""){
+			$('#search-drop').show().animate({opacity:"1"},200);
+		}else if(inputvalue == ""){
+			$("#search-drop").hide().animate({opacity:"0"},200);
+		};		
+	});		
+	
+	$('.key').blur(function(){
+		$('#search-drop').hide().animate({opacity:"0"},200);
+	});*/
 	
 	//登录后
 	jQuery(".user-switch").slide({ type:"menu", titCell:"li", targetCell:"dl", delayTime:300, triggerTime:0,returnDefault:true  });
@@ -108,12 +172,21 @@ $(function(){
         });
     });
 	
+	
+    /*
+	$(".log-out").click(function(){
+    	$.zxxbox('<div class="p20 f20 white tc">安全退出成功！</span></div>', {delay: 2000, bar: false, bg: false, fix: true});							
+    }); */
+	
+	
 //微信
 	$(".weixin-code,#cc-s .down-btn,#cc-m .down-btn").hover(function(){
        $(this).find("img").fadeIn(300);
 	 }, function(){
 	   $(this).find("img").fadeOut(300);
 	 });
+
+
 
 
 //安装 下载按钮
@@ -141,6 +214,9 @@ $(function(){
 	li_hover($(".app-list-right li"),"hover");
 	
 	$(".app-list-right").find("li:first").addClass("hover");
+	
+
+
 
 //密码加强
 (function(a){a.fn.passwordStrength=function(b){b=a.extend({},a.fn.passwordStrength.defaults,b);this.each(function(){var d=a(this),e=0,c=false,f=a(this).parents("form").find("#pw-strength");d.bind("keyup blur",function(){e=a.fn.passwordStrength.ratepasswd(d.val(),b);e>=0&&c==false&&(c=true);f.find("span").removeClass("gr");if(e<35&&e>=0){f.find("span:first").addClass("gr")}else{if(e<60&&e>=35){f.find("span:lt(2)").addClass("gr")}else{if(e>=60){f.find("span:lt(3)").addClass("gr")}}}if(c&&(d.val().length<b.minLen||d.val().length>b.maxLen)){b.showmsg(d,d.attr("errormsg"),3)}else{if(c){b.showmsg(d,"",2)}}b.trigger(d,!(e>=0))})})};a.fn.passwordStrength.ratepasswd=function(c,d){var b=c.length,e;if(b>=d.minLen&&b<=d.maxLen){e=a.fn.passwordStrength.checkStrong(c)}else{e=-1}return e/4*100};a.fn.passwordStrength.checkStrong=function(d){var e=0,b=d.length;for(var c=0;c<b;c++){e|=a.fn.passwordStrength.charMode(d.charCodeAt(c))}return a.fn.passwordStrength.bitTotal(e)};a.fn.passwordStrength.charMode=function(b){if(b>=48&&b<=57){return 1}else{if(b>=65&&b<=90){return 2}else{if(b>=97&&b<=122){return 4}else{return 8}}}};a.fn.passwordStrength.bitTotal=function(b){var d=0;for(var c=0;c<4;c++){if(b&1){d++}b>>>=1}return d};a.fn.passwordStrength.defaults={minLen:0,maxLen:30,trigger:a.noop}})(jQuery);
@@ -216,6 +292,62 @@ $(function(){
             }
         }
 	});
+
+
+
+//举报 纠错-表单验证
+	var report=$(".report-form").Validform({
+		showAllError:true,	
+		tiptype:function(msg,o,cssctl){
+			var objtip=$(".Validform_checktip");
+			cssctl(objtip,o.type);
+			objtip.text(msg);
+		}
+	});	
+	report.addRule([{
+		ele:".fbkcontent",datatype:"*"}
+	]);
+	
+	
+
+
+//评论
+    var comment_tips = $('#comments .comment-tip');
+    var review=$(".comment-form").Validform({
+        showAllError:true,
+        tiptype:function(msg,o,cssctl){
+            var objtip=$("");
+            cssctl(comment_tips,o.type);
+            objtip.text(msg);
+        },
+        ajaxPost:true,
+        callback: function(data){
+            if( data.code == 0 )
+            {
+                comment_tips.html('');
+                page_load('#comment-list', $('#comment-list .page'), 1);
+                $('.comment-form textarea[name=comment]').val('');
+                $('.comment-form input[name=rating_output]').val('');
+                $('#rating_on').attr('style', '');
+                alert(data.msg);
+            }
+            else
+            {
+                var msgs = [];
+                for(k in data.errors)
+                {
+                    msgs.push(data.errors[k].join(','));
+                }
+                var _msg = data.msg + " " + msgs.join(", ")
+                comment_tips.html(_msg);
+            }
+            return false;
+        }
+    });
+	review.addRule([{
+		ele:".comment-box",datatype:"*1-300"}
+	]);		
+
 
 });
 
@@ -303,9 +435,35 @@ $(function(){
 				title: "用户注册"	 ,fix: true
 				});
 		});
+		//举报 纠错
+		$(".report").click(function(){
+			$(".report-box").zxxbox({
+				title: "虫虫游戏问题反馈"	,fix: true, bgclose:true
+				});
+		});
+		
+		
+	//提示
+	$("#win").click(function(){
+    $.zxxbox('<div class="p20 f20 white tc">操作成功！</span></div>', {
+        delay: 2000, bar: false, bg: false, fix: true
+//		   	,
+//		     onclose: function(){ 
+//            window.location.href='baidu.com';  // √
+//            }
+        });							
+    });
+	
 
 	
+	
+	
+	
 });
+
+
+
+
 
 
 
@@ -430,4 +588,3 @@ diy_select.prototype={
 
 var TTDiy_select=new diy_select({  //参数可选
 });//如同时使用多个时请保持各class一致.
-
