@@ -18,6 +18,7 @@ from mobapi.account.views import PackageBookmarkViewSet
 from mobapi.comment.views import CommentViewSet
 from mobapi.warehouse.views.packageversion import PackageVersionViewSet
 
+#rest_router = routers.DefaultRouter(trailing_slash=False)
 rest_router = routers.DefaultRouter()
 rest_router.register('authors', AuthorViewSet)
 rest_router.register('packages', PackageViewSet)

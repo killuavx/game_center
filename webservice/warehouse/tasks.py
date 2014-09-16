@@ -97,6 +97,8 @@ def _sync_version_status(package, version, status):
     if status == package.STATUS.published:
         package.released_datetime = version.released_datetime
     package.status = status
+    package.has_award = version.has_award
+    package.award_coin = version.award_coin
 
 
 def _sync_package_download_count(package):

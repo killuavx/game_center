@@ -95,6 +95,11 @@ class PackageTaggingMixin(CacheTaggingMixin):
             return version
         return None
 
+    def get_cache_version_alias(self, version_name):
+        version_cls = self.__class__.latest_version.field.rel.to
+        version_cls.all_objects.get_cache_by_
+        pass
+
 
 class PackageWithLatestVersionTaggingMixin(PackageTaggingMixin):
 
@@ -141,24 +146,15 @@ class PackageVersionCacheManagerMixin(CacheManagerMixin):
             return []
 
     @orms_memoize(timeout=DEFAULT_TIMEOUT)
-    def cache_object_in_list_by_alias(self, site_id, package_name, version_name=None, version_code=None):
+    def cache_list_by_alias(self, package_id=None, **kwargs):
         try:
-            vkwargs = dict()
-            if version_name:
-                vkwargs['version_name'] = version_name
-            elif version_code:
-                vkwargs['version_code'] = version_code
-            else:
-                raise ValueError()
-
-            return [self.get(site_id=site_id,
-                             package_name=package_name, **vkwargs)]
+            return self.filter(package_id=package_id, **kwargs)
         except:
             return []
 
-    def get_cache_by_alias(self, site_id, package_name, **kwargs):
+    def get_cache_by_alias(self, **kwargs):
         try:
-            return self.cache_object_in_list_by_alias(site_id, package_name)[0]
+            return self.cache_list_by_alias(**kwargs)[0]
         except IndexError:
             return None
 

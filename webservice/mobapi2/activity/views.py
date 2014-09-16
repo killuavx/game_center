@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
 import warnings
+from django.core.cache import cache
 from django.http import Http404
 from rest_framework import viewsets, status
-from rest_framework.decorators import link
+from rest_framework.decorators import link, action
+from rest_framework.exceptions import Throttled
+from rest_framework.throttling import UserRateThrottle
 from rest_framework_extensions.mixins import DetailSerializerMixin
 from activity.models import GiftBag, GiftCard
 from mobapi2.authentications import PlayerTokenAuthentication
@@ -13,14 +16,14 @@ from rest_framework_extensions.cache.decorators import CacheResponse
 from rest_framework_extensions.key_constructor import bits
 from rest_framework_extensions.key_constructor.constructors import KeyConstructor
 from rest_framework_extensions.cache.decorators import cache_response
-from rest_framework.decorators import permission_classes as rf_permission_classes
+from rest_framework.decorators import permission_classes as rf_permission_classes, throttle_classes as rf_throttle_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, BaseFilterBackend
 from django.utils.decorators import method_decorator, available_attrs
 from django.views.decorators.cache import never_cache
 import json
-from django.utils.timezone import now
+from django.utils.timezone import now, get_default_timezone
 
 
 class DataKeyConstructor(KeyConstructor):
@@ -247,3 +250,549 @@ class GiftBagViewSet(DetailSerializerMixin,
         for giftbag in data['results']:
             self.check_giftcard_status(giftbag, request.user, now_timestamp)
         return Response(data)
+
+
+from mobapi2.decorators import default_cache_control
+from rest_framework_extensions.utils import (
+    default_object_cache_key_func,
+    default_list_cache_key_func,
+    )
+from activity.models import Note
+from mobapi2.activity.serializers import NoteSummarySerializer, NoteDetailSerializer
+
+
+class NoteViewSet(DetailSerializerMixin,
+                  viewsets.ReadOnlyModelViewSet):
+
+    lookup_field = 'slug'
+    model = Note
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = NoteSummarySerializer
+    serializer_detail_class = NoteDetailSerializer
+
+    @cache_response(key_func=default_object_cache_key_func)
+    @default_cache_control(max_age=3600*24*7)
+    def retrieve(self, request, *args, **kwargs):
+        return super(NoteViewSet, self).retrieve(request, *args, **kwargs)
+
+    @cache_response(key_func=default_list_cache_key_func)
+    @default_cache_control(max_age=3600*24*7)
+    def list(self, request, *args, **kwargs):
+        return super(NoteViewSet, self).list(request, *args, **kwargs)
+        #return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+
+from activity.documents.scratchcard import ScratchCard, OwnerNotMatch
+from activity.documents.scratchcard import generate_scratchcard_by_user, receive_scratchcard
+from mobapi2.activity.serializers import WinnerScratchCardSerializer, GenerateScratchCardSerializer, AwardScratchCardSerializer
+from mongoengine import DoesNotExist
+from mobapi2.helpers import get_note_url
+from mobapi2.rest_views import CustomMethodPermissionsViewSetMixin, CustomMethodThrottleViewSetMixin
+from datetime import timedelta, datetime
+
+
+class ScratchCardPlayDailyThrottle(UserRateThrottle):
+
+    scope = 'scratch_card_play_daily'
+
+    # 每天最多次数
+    daily_max_times = 15
+
+    # 5分钟间隔
+    interval_seconds = 60 * 5
+
+    # 间隔5次，等候间隔时间
+    interval_times = 5
+
+    def __init__(self, *args, **kwargs):
+        super(ScratchCardPlayDailyThrottle, self).__init__(*args, **kwargs)
+        self.previous_time = None
+        self._cache = cache
+
+    def get_rate(self):
+        return "%d/day" % self.daily_max_times
+
+    def parse_rate(self, rate):
+        num, period = rate.split('/')
+        num_requests = int(num)
+        timenow = now().astimezone()
+        next_datetime = (timenow + timedelta(days=1))\
+            .replace(hour=0, minute=0, second=0, microsecond=0)
+        duration = (next_datetime - timenow).seconds
+        return (num_requests, duration)
+
+    def wait(self):
+        if self.daily_max_times == len(self.history):
+            return None
+
+        if self.history:
+            remaining_duration = self.duration - (self.now - self.history[-1])
+        else:
+            remaining_duration = self.duration
+
+        allow, wait_seconds = self.allow_next_interval()
+        if not allow:
+            return wait_seconds
+
+        available_requests = self.num_requests - len(self.history) + 1
+
+        return remaining_duration / float(available_requests)
+
+    def allow_request(self, request, view):
+        """
+        Implement the check to see if the request should be throttled.
+
+        On success calls `throttle_success`.
+        On failure calls `throttle_failure`.
+        """
+        if self.rate is None:
+            return True
+
+        self.key = self.get_cache_key(request, view)
+        if self.key is None:
+            return True
+
+        self.history = self._cache.get(self.key, [])
+        self.now = self.timer()
+        self.previous_time = self._cache.get("%s_previous" % self.key)
+        allow, wait_seconds = self.allow_next_interval()
+        if not allow:
+            return False
+
+        # Drop any requests from the history which have now passed the
+        # throttle duration
+        while self.history and self.history[-1] <= self.now - self.duration:
+            self.history.pop()
+        if len(self.history) >= self.num_requests:
+            return self.throttle_failure()
+        return self.throttle_success()
+
+    def throttle_success(self):
+        flag = super(ScratchCardPlayDailyThrottle, self).throttle_success()
+        self._cache.set("%s_previous" % self.key, self.now, self.interval_seconds)
+        return flag
+
+    def allow_next_interval(self):
+        if len(self.history) == 0 or not self.previous_time:
+            return True, None
+
+        if len(self.history) % self.interval_times == 0:
+            wait_seconds = (self.previous_time + self.interval_seconds) - self.now
+            if wait_seconds <= 0:
+                return True, None
+            else:
+                return False, wait_seconds
+        else:
+            return True, None
+
+
+import math
+
+
+class ScratchCardPlayThrottled(Throttled):
+
+    def __init__(self, wait=None, detail=None):
+        self.wait = wait
+        if wait is None:
+            self.detail = "今天已经刮完了,明天再来吧~"
+        else:
+            #minutes = int(self.wait/60.0)
+            #secoinds = int(self.wait)
+            #self.detail = "%s%s后，又可以刮奖哦~" % (minutes or secoinds, '分钟' if minutes else '秒')
+            minutes = math.ceil(self.wait/60.0)
+            self.detail = "%s%s后，又可以刮奖哦~" % (minutes, '分钟')
+
+
+class ScratchCardViewSet(CustomMethodPermissionsViewSetMixin,
+                         CustomMethodThrottleViewSetMixin,
+                         viewsets.GenericViewSet):
+    """ 刮刮卡接口
+
+    ## 获取获奖者列表
+
+        GET /api/v2/scratchcards/winners/
+
+    ### 响应数据
+
+        {
+            "note_url": "http://android.ccplay.com.cn/api/v2/notes/scratchcard/", //描述内容
+            "winners":[
+                {"title":"xxx", "username": "xxxx"},
+                ...
+            ]
+        }
+
+    ----
+
+    ## 获取刮奖接口
+
+        GET /api/v2/scratchcards/play/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    ### 响应数据
+
+        {
+            "title": "+5\u91d1\u5e01",
+            "signcode": "52de1a07-c845-4ef7-96d4-ca4900b020a5",
+            "is_win": true
+        }
+
+    ### 数据说明
+
+    * `title`: 刮刮卡显示内容
+    * `signcode`: 刮刮卡兑奖号
+    * `is_win`: 刮刮卡是否有奖
+
+    ----
+
+    ## 兑奖接口
+
+        POST /api/v2/scratchcards/award/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+        signcode=52de1a07-c845-4ef7-96d4-ca4900b020a5
+
+    ### 请求参数
+
+    * `signcode`: 刮刮卡兑奖号
+
+
+    ## 请求数据:
+
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 通过登陆接口 [/api/v2/accounts/signin/](/api/v2/accounts/signin/)，获得登陆`Token <Key>`
+
+    ## 响应状态
+
+    * 200 HTTP_200_OK
+        * 返回用户任务状态,
+    * 401 HTTP_401_UNAUTHORIZED
+        * 未登陆
+        * 无效的HTTP Header: Authorization
+    * 400 HTTP_400_BAD_REQUEST
+        * 兑奖时出现这个状态，表示兑奖号无效或已经失效
+    * 429 HTTP_429_TOO_MANY_REQUESTS
+        * 获取刮刮卡每天只能获取3张，超出限制后次日后才能继续参与刮刮卡
+
+    """
+
+    base_name = 'scratchcard'
+
+    note_slug = 'scratchcard'
+
+    model = ScratchCard
+    permission_classes = ()
+    authentication_classes = (PlayerTokenAuthentication,)
+
+    SERIALIZER_CLS_WINNER = 'winner'
+    SERIALIZER_CLS_GENERATE = 'generate'
+    SERIALIZER_CLS_AWARD = 'award'
+    serializer_classes = {
+        SERIALIZER_CLS_GENERATE: GenerateScratchCardSerializer,
+        SERIALIZER_CLS_WINNER: WinnerScratchCardSerializer,
+        SERIALIZER_CLS_AWARD: AwardScratchCardSerializer,
+    }
+    serializer_class = AwardScratchCardSerializer
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = ScratchCard.objects.all()
+        return self.queryset
+
+    def get_serializer(self, instance=None, data=None,
+                       files=None, many=False, partial=False,
+                       cls_type=SERIALIZER_CLS_WINNER):
+        serializer_class = self.get_serializer_class(cls_type)
+        context = self.get_serializer_context()
+        return serializer_class(instance, data=data, files=files,
+                                many=many, partial=partial, context=context)
+
+    def get_serializer_class(self, cls_type=SERIALIZER_CLS_WINNER):
+        return self.serializer_classes[cls_type]
+
+    @method_decorator(rf_permission_classes((IsAuthenticated, )))
+    @method_decorator(rf_throttle_classes((ScratchCardPlayDailyThrottle, )))
+    @link()
+    def play(self, request, *args, **kwargs):
+        card = generate_scratchcard_by_user(request.user)
+        if card.award_coin:
+            card.save()
+        card_serializer = self.get_serializer(card, cls_type=self.SERIALIZER_CLS_GENERATE)
+        return Response(data=card_serializer.data)
+
+    def throttled(self, request, wait):
+        raise ScratchCardPlayThrottled(wait)
+
+    max_winner_items = 5
+
+    def get_winner_list(self):
+        return self.get_queryset().received()[0:self.max_winner_items]
+
+    def get_winner_serializer(self, instance, many=False):
+        return self.get_serializer(instance=instance,
+                                   many=many,
+                                   cls_type=self.SERIALIZER_CLS_WINNER)
+
+    @link()
+    def winners(self, request, *args, **kwargs):
+        winner_serializer = self.get_winner_serializer(self.get_winner_list(),
+                                                       many=True)
+        winners=winner_serializer.data
+        return Response(data=dict(
+            note_url=get_note_url(self.note_slug,
+                                  router=winner_serializer.opts.router,
+                                  request=request,
+                                  format=winner_serializer.context.get('format')
+                                  ),
+            winners=winners
+        ))
+        pass
+
+    @method_decorator(rf_permission_classes((IsAuthenticated, )))
+    @action()
+    def award(self, request, *args, **kwargs):
+        qs = self.get_queryset()
+        signcode = request.DATA.get('signcode')
+        if not signcode:
+            data = dict(detail='invalid code')
+            Response(data, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            card = receive_scratchcard(qs, signcode=signcode, user=request.user)
+            data = self.get_serializer(card, cls_type=self.SERIALIZER_CLS_AWARD).data
+            status_code = status.HTTP_200_OK
+        except DoesNotExist:
+            data = dict(detail='invalid code')
+            status_code = status.HTTP_400_BAD_REQUEST
+        except OwnerNotMatch:
+            data = dict(detail='invalid code')
+            status_code = status.HTTP_400_BAD_REQUEST
+        return Response(data, status=status_code)
+
+
+from mobapi2.activity.serializers import MyTasksStatusSerializer, TaskStatusSerializer
+from activity.documents.actions.base import TaskAlreadyDone, TaskConditionDoesNotMeet
+from activity.documents.actions.install import InstallTask
+from activity.documents.actions.share import ShareTask
+from activity.documents.actions.signin import SigninTask
+from warehouse.models import Package, PackageVersion
+from toolkit.helpers import get_global_site
+
+
+class TaskViewSet(viewsets.GenericViewSet):
+    """ 任务接口
+
+    ## 获取任务信息
+
+        GET /api/v2/tasks/mystatus/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    ### 响应数据
+
+        {
+            // 评论
+            "comment": {
+                "experience": 10, //任务完成后奖励的成长经验
+                "progress_current": 3, //当前进度
+                "progress_standard": 3, //额定进度值
+                "status": "done" //完成状态, done 已经完成
+            },
+            "install": {
+                "experience": 10,
+                "progress_current": 1,
+                "progress_standard": 3,
+                "status": "inprogress" //完成状态，进行中
+            },
+            "note_url": "http://a.ccplay.com.cn:8080/api/v2/notes/task/",
+            "share": {
+                "experience": 5,
+                "progress_current": 0,
+                "progress_standard": 5,
+                "status": "posted" //完成状态，刚提交
+            },
+            "signin": {
+                "experience": 10,
+                "progress_current": 0,
+                "progress_standard": 1,
+                "status": "posted"
+            },
+            "summary": "\u4eca\u5929\u4f60\u5df2\u6512\u523010\u7ecf\u9a8c, \u7ee7\u7eed\u52a0\u6cb9\u54e6~" //描述内容
+        }
+
+    ----
+
+    ## 签到接口
+
+        POST /api/v2/tasks/signin/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+    ### 响应数据
+
+        {
+            "experience": 10,
+            "progress_current": 0,
+            "progress_standard": 1,
+            "status": "posted"
+        }
+
+    ----
+
+    ## 分享接口
+
+        POST /api/v2/tasks/share/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+        package_name=com.rovio.gold&version_name=1.0.8
+
+    ### 请求参数
+
+    * `package_name`: 应用包名
+    * `version_name`: 版本名
+
+    ### 响应数据
+
+        {
+            "experience": 10,
+            "progress_current": 0,
+            "progress_standard": 5,
+            "status": "posted"
+        }
+
+    ----
+
+    ## 安装接口
+
+        POST /api/v2/tasks/install/
+        Authorization: Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b
+
+        package_name=com.rovio.gold&version_name=1.0.8
+
+    ### 请求参数
+
+    * `package_name`: 应用包名
+    * `version_name`: 版本名
+
+    ### 响应数据
+
+        {
+            "experience": 10,
+            "progress_current": 0,
+            "progress_standard": 5,
+            "status": "posted"
+        }
+
+    ----
+
+    ## 请求数据:
+
+    * `HTTP Header`: Authorization: Token `9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b`,
+    * 通过登陆接口 [/api/v2/accounts/signin/](/api/v2/accounts/signin/)，获得登陆`Token <Key>`
+
+    ## 响应状态
+
+    * 200 HTTP_200_OK
+        * 返回用户任务状态,
+    * 401 HTTP_401_UNAUTHORIZED
+        * 未登陆
+        * 无效的HTTP Header: Authorization
+
+    """
+
+    base_name = 'task'
+    note_slug = 'task'
+
+    permission_classes = (IsAuthenticated, )
+    authentication_classes = (PlayerTokenAuthentication,)
+    serializer_class = MyTasksStatusSerializer
+
+    def mystatus(self, request, *args, **kwargs):
+        serializer = self.serializer_class.factory(request.user)
+        data = serializer.data
+        data['note_url'] = get_note_url(self.note_slug,
+                                        router=serializer.opts.router,
+                                        request=request,
+                                        format=serializer.context.get('format'),
+                                        )
+        return Response(data)
+
+    def get_packageversion(self, package_name, version_name):
+        package = Package.all_objects.get_cache_by_alias(
+            site_id=get_global_site().pk,
+            package_name=package_name)
+        if not package:
+            return None
+        version = PackageVersion \
+            .all_objects \
+            .get_cache_by_alias(package_id=package.pk,
+                                version_name=version_name)
+        return version
+
+    def get_permissions(self):
+        _permission_classes = self.permission_classes
+        handler = getattr(self, self.request.method.lower(), None)
+        if handler and hasattr(handler, 'permission_classes'):
+            _permission_classes = handler.permission_classes
+
+        return [permission() for permission in _permission_classes]
+
+    def install(self, request, *args, **kwargs):
+        ip_address = request.get_client_ip()
+        package_name = request.DATA.get('package_name')
+        version_name = request.DATA.get('version_name')
+        version = self.get_packageversion(package_name=package_name,
+                                          version_name=version_name)
+        if not version:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        task, user, action, rule = InstallTask.factory(user=request.user,
+                                                       version=version,
+                                                       ip_address=ip_address)
+        if action.can_execute():
+            action.save()
+            action.execute()
+        try:
+            task.process(user=request.user, action=action, rule=rule)
+        except TaskConditionDoesNotMeet:
+            pass
+        except TaskAlreadyDone:
+            pass
+
+        serializer = TaskStatusSerializer(task, many=False)
+        return Response(serializer.data)
+
+    def share(self, request, *args, **kwargs):
+        ip_address = request.get_client_ip()
+        package_name = request.DATA.get('package_name')
+        version_name = request.DATA.get('version_name')
+        version = self.get_packageversion(package_name=package_name,
+                                          version_name=version_name)
+        if not version:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        task, user, action, rule = ShareTask.factory(user=request.user,
+                                                     version=version,
+                                                     ip_address=ip_address)
+        try:
+            task.process(user=request.user, action=action, rule=rule)
+        except TaskConditionDoesNotMeet:
+            pass
+        except TaskAlreadyDone:
+            pass
+
+        serializer = TaskStatusSerializer(task, many=False)
+        return Response(serializer.data)
+
+    def signin(self, request, *args, **kwargs):
+        ip_address = request.get_client_ip()
+        task, user, action, rule = SigninTask.factory(user=request.user,
+                                                     ip_address=ip_address)
+        try:
+            task.process(user=request.user, action=action, rule=rule)
+        except TaskConditionDoesNotMeet:
+            pass
+        except TaskAlreadyDone:
+            pass
+
+        serializer = TaskStatusSerializer(task, many=False)
+        return Response(serializer.data)

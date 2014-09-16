@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 import copy
 from django.core.urlresolvers import reverse
+from django.http import Http404
 from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
 from rest_framework import filters
-from promotion.models import Advertisement, Place
-from mobapi2.promotion.serializers import AdvertisementSerializer
+from promotion.models import Advertisement, Place, Recommend
+from mobapi2.promotion.serializers import AdvertisementSerializer, RecommendSerializer
+from mobapi2.decorators import default_cache_control
 
 
 class AdvertisementViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -65,3 +67,68 @@ def documentation_advertisement_viewset():
 
     AdvertisementViewSet.__doc__ = AdvertisementViewSet.__doc__.format(
         apis="".join(contents))
+
+from rest_framework import generics
+from dateutil import parser as dateparser
+
+
+class RecommendView(generics.RetrieveAPIView):
+    """ 推荐接口
+
+    接口访问基本形式:
+
+        GET /api/v2/recommends/2014-09-01/
+
+        {
+            "title": "\u6697\u9ed1\u6218\u795e",
+            "icon": "http://a.ccplay.com.cn:8080/media/package/94276/v9/240.png",
+            "cover": "http://a.ccplay.com.cn:8080/media/recommend/2014/09/01/1527-29-500760/anheizhanshen.png",
+            "summary": "\u6697\u9ed1\u6218\u795e",
+            "content_url": "http://a.ccplay.com.cn:8080/api/v2/packages/94276/.api",
+            "content_type": "package"
+        }
+
+
+    RecommendSerializer结构:
+
+    * `title`: 推荐标题
+    * `summary`: 推荐描述
+    * `icon`: 应用icon的url
+    * `cover`: 应用cover的url
+    * `content_type`: 用于区别content_url所指内容类型, 现在只有package
+    * `content_url`: 访问内容的url，content_type为package, 则content_url为package detail
+    """
+
+    model = Recommend
+    serializer_class = RecommendSerializer
+    filter_backends = (filters.OrderingFilter, )
+    ordering = ('-released_datetime', )
+    lookup_field = None
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = self.model.objects.all()
+        return self.queryset.published()
+
+    def get_object(self, queryset=None):
+        try:
+            return queryset.order_by('-released_datetime')[0]
+        except IndexError:
+            raise Http404
+
+    def filter_date(self, queryset, *args, **kwargs):
+        d = dateparser.parse(kwargs.get('date'))
+        return queryset.published_with_date(d)
+
+    @default_cache_control(max_age=3600*6)
+    def get(self, request, *args, **kwargs):
+        try:
+            self.get_queryset()
+            queryset = self.filter_queryset(self.queryset)
+            #queryset = self.filter_date(queryset, *args, **kwargs)
+        except ValueError:
+            return Response(dict(detail='bad request'), status=status.HTTP_400_BAD_REQUEST)
+
+        self.object = self.get_object(queryset)
+        serializer = self.get_serializer(self.object)
+        return Response(serializer.data)

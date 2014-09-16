@@ -99,9 +99,8 @@
             %ul
               -if is_ios
                 -for screenshot in package.screenshots_default
-                  -with image=screenshot.image
-                    %li><
-                      %img{:src => "={image.url}", :alt => "={screenshot.alt}"}/
+                  %li><
+                    %img{:src => "={screenshot.image.large.url}", :alt => "={screenshot.alt}"}/
               -if is_android
                 -for screenshot in package.screenshots
                   -with image=screenshot.image
