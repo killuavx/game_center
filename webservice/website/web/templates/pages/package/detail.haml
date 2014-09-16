@@ -100,7 +100,7 @@
               -if is_ios
                 -for screenshot in package.screenshots_default
                   %li><
-                    %img{:src => "={screenshot.image.small.url}", :alt => "={screenshot.alt}"}/
+                    %img{:src => "={screenshot.image.large.url}", :alt => "={screenshot.alt}"}/
               -if is_android
                 -for screenshot in package.screenshots
                   -with image=screenshot.image
