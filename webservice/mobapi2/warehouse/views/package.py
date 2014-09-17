@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import copy
 from rest_framework import viewsets, filters, status, generics
-from rest_framework.decorators import link
+from rest_framework.decorators import link, action
 from rest_framework.parsers import JSONParser, FormParser
 from rest_framework.response import Response
 from warehouse.models import Package
@@ -160,6 +160,10 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     @default_cache_control()
     def list(self, request, *args, **kwargs):
         return super(PackageViewSet, self).list(request, *args, **kwargs)
+
+    @action()
+    def share(self, request, *args, **kwargs):
+        return Response({'detail':'ok'}, status=status.HTTP_200_OK)
 
 
 class PackageSearchListKeyConstructor(constructors.DefaultKeyConstructor):
@@ -482,3 +486,91 @@ class PackagePushView(generics.ListAPIView):
             serializer = self.get_serializer(self.object_list, many=True)
 
         return Response(serializer.data)
+
+
+
+import six
+from rest_framework_extensions.mixins import DetailSerializerMixin
+from rest_framework import mixins
+from mobapi2.warehouse.serializers import search as search_serializers
+from searcher.helpers import get_default_package_query, get_package_search_result
+from toolkit.helpers import get_global_site
+from mobapi2.rest_views import NotePaginationAPIViewMixin
+
+
+class SearchSiteRelatedFilterBackend(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        return queryset.filter(site=get_global_site().pk)
+
+
+class SearchHasAwardFilterBackend(filters.BaseFilterBackend):
+
+    def filter_queryset(self, request, queryset, view):
+        return queryset.filter(has_award=True)
+
+
+class SearchOrderFilterBackend(filters.BaseFilterBackend):
+
+    ordering_param = 'ordering'
+
+    def get_ordering(self, request):
+        params = request.QUERY_PARAMS.get(self.ordering_param)
+        if params:
+            return [param.strip() for param in params.split(',')]
+
+    def get_default_ordering(self, view):
+        ordering = getattr(view, 'ordering', None)
+        if isinstance(ordering, six.string_types):
+            return (ordering,)
+        return ordering
+
+    def filter_queryset(self, request, queryset, view):
+        ordering = self.get_ordering(request)
+
+        if not ordering:
+            # Use 'ordering' attribute by default
+            ordering = self.get_default_ordering(view)
+
+        if ordering:
+            return queryset.order_by(*ordering)
+
+        return queryset
+
+
+class PackageCoinViewSet(NotePaginationAPIViewMixin,
+                         DetailSerializerMixin,
+                         mixins.RetrieveModelMixin,
+                         mixins.ListModelMixin,
+                         viewsets.GenericViewSet):
+
+    serializer_detail_class = search_serializers.PackageDetailSerializer
+    serializer_class = search_serializers.PackageSummarySerializer
+    authentication_classes = ()
+    permission_classes = ()
+    filter_backends = (
+        SearchSiteRelatedFilterBackend,
+        SearchHasAwardFilterBackend,
+        SearchOrderFilterBackend,
+    )
+
+    ordering = ('-released_datetime', )
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.filter_queryset(self.get_queryset(is_for_detail=True))
+
+        lookup = self.kwargs.get(self.lookup_field, None)
+        obj = get_package_search_result(sqs=queryset, pk=lookup)
+        if obj is None:
+            raise Http404()
+        return obj
+
+    def get_queryset(self, is_for_detail=False):
+        if self.queryset is None:
+            self.queryset = get_default_package_query(search_serializers.PackageSearchResult)
+        return super(PackageCoinViewSet, self).get_queryset(is_for_detail=is_for_detail)
+
+    def get_note_slug(self):
+        return 'package-award-coin'
+

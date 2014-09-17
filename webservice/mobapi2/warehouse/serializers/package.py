@@ -119,6 +119,10 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
 
     supported_languages = serializers.SerializerMethodField('get_latest_version_supported_languages')
 
+    has_award = serializers.SerializerMethodField('get_latest_version_has_award')
+
+    award_coin = serializers.SerializerMethodField('get_latest_version_award_coin')
+
     class Meta:
         model = Package
         fields = ('url',
@@ -150,6 +154,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'versions_url',
                   'related_packages_url',
                   'supported_languages',
+                  'has_award',
+                  'award_coin',
         )
 
 
@@ -260,3 +266,5 @@ class PackageSummaryWithMyCommentSerializer(PackageSummarySerializer):
                   'comment',
                   'submit_date',
         )
+
+

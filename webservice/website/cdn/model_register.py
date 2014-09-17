@@ -4,10 +4,10 @@ from .core import Feedback
 from .errors import WorkingDirectoryNotFound
 from .processors.warehouse import PackageVersionProcessor, AuthorProcessor
 from .processors.taxonomy import TopicProcessor, CategoryProcessor
-from .processors.promotion import AdvertisementProcessor
+from .processors.promotion import AdvertisementProcessor, RecommendProcessor
 from .processors.clientapp import ClientPackageVersionProcessor, LoadingCoverProcessor
 from warehouse.models import PackageVersion, Author
-from promotion.models import Advertisement
+from promotion.models import Advertisement, Recommend
 from taxonomy.models import Category, Topic
 from clientapp.models import ClientPackageVersion, LoadingCover
 from . import feedback_signals as fb_signals
@@ -17,6 +17,8 @@ Author.sync_processor_class = AuthorProcessor
 PackageVersion.sync_processor_class = PackageVersionProcessor
 
 Advertisement.sync_processor_class = AdvertisementProcessor
+
+Recommend.sync_processor_class = RecommendProcessor
 
 Topic.sync_processor_class = TopicProcessor
 

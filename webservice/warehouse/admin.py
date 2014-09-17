@@ -66,7 +66,7 @@ class PackageVersionScreenshotInlines(admin.StackedInline):
         try:
             iospackageversion = obj.iospackageversion
             return [(None, {'fields': fields})]
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, AttributeError):
             pass
 
         try:
@@ -113,9 +113,10 @@ class PackageVersionAdmin(MainAdmin):
                     'updated_datetime',
                     'is_data_integration',
                     'download_count',
+                    'award_coin',
                     'sync_file_action',
     )
-    list_editable = ('released_datetime', )
+    list_editable = ('award_coin', )
     list_display_links = ('show_icon', 'version_name')
     actions = ['make_published']
     raw_id_fields = ('package', )
@@ -148,6 +149,7 @@ class PackageVersionAdmin(MainAdmin):
             'classes': ('suit-tab suit-tab-general',
                         'grp-collapse collapse-closed'),
             'fields': (
+                'award_coin',
                 'supported_languages',
                 'supported_devices',
                 'supported_features',
@@ -186,7 +188,7 @@ class PackageVersionAdmin(MainAdmin):
     filter_horizontal = ("supported_languages",
                          "supported_devices",
                          "supported_features")
-    list_filter = ('status',)
+    list_filter = ('status', 'has_award', )
     date_hierarchy = 'released_datetime'
     ordering = ('-released_datetime',)
     formfield_overrides = {

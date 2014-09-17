@@ -70,6 +70,15 @@ def get_datetime_now():
         return datetime.datetime.now()
 
 
+PROFILE_EMAIL_DEFAULT_HOST = 'uc.ccplay.com.cn'
+
+
+def generate_random_email(host=PROFILE_EMAIL_DEFAULT_HOST):
+    identification = sha_constructor(str(random.random()).encode('utf-8')) \
+                         .hexdigest()[:10]
+    return "%s@%s" %(identification, host)
+
+
 user_model_label = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 try:

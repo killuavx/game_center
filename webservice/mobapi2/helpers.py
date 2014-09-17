@@ -232,5 +232,14 @@ def get_topic_authors_url(topic, ordering=None, router=None, request=None):
                                        request=request,
                                        router=router)
     url = apiencode.get_url()
-    print(url)
     return url
+
+from rest_framework.reverse import reverse as rest_reverse
+
+
+def get_note_url(note_slug, router=None, request=None, format=None):
+    note_view_name = 'note-detail'
+    view_name = router.get_base_name(note_view_name) if router else note_view_name
+    kwargs = dict()
+    kwargs['slug'] = note_slug
+    return rest_reverse(view_name, kwargs=kwargs, request=request, format=format)
