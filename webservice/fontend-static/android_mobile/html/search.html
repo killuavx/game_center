@@ -23,8 +23,7 @@
     	<div class="search-top">
             <form class="search-form">
                   <input class="search-input" type="search" placeholder="应用搜索">
-                  <input type="submit" class="search-input-submit dn" value="搜索">
-                  <input type="button" class="search-input-cancel" value="取消">
+                  <input type="submit" class="search-input-submit" value="搜索">
             </form>
         </div>
     </div>
@@ -129,9 +128,24 @@
 
 
 
-<footer>©2014 www.ccplay.com.cn</footer>
+<footer>
+<a href="#" class="hover">触屏版</a> <a href="#">电脑版</a><br/>
+www.ccplay.com.cn
+</footer>
 
 <script src="http://static.ccplay.com.cn/static/common/js/jquery.min.js"></script>
+
+<script>
+$(document).ready(function() { 
+var tags_a = $(".search-key a"); 
+tags_a.each(function(){ 
+var x = 9; 
+var y = 0; 
+var rand = parseInt(Math.random() * (x - y + 1) + y); 
+$(this).addClass("tags"+rand); 
+}); 
+})
+</script>
 <script src="http://static.ccplay.com.cn/static/android_mobile/js/site.js"></script>
 </body>
 </html>
