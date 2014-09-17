@@ -209,6 +209,13 @@ class PackageRelatedLatestVersinoMixin(object):
         except:
             return 0
 
+    def get_latest_version_download_type(self, obj):
+        latest_version = self._latest_version(obj)
+        try:
+            return 'cpk' if latest_version.is_download_cpk() else 'apk'
+        except:
+            return 'apk'
+
 
 class PackageRelatedPackageUrlMixin(object):
 

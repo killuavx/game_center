@@ -198,6 +198,9 @@ class PackageSearchIndex(indexes.SearchIndex,
         lang_codes = latest_version.supported_languages.values_list('code', flat=True)
         prepare_data['support_language_codes'] = list(lang_codes)
 
+    is_download_apk = indexes.BooleanField(indexed=True, default=False)
+    is_download_cpk = indexes.BooleanField(indexed=True, default=False)
+
     download_size = indexes.IntegerField(indexed=False, default=0)
     download_url = indexes.CharField(indexed=False, default='')
     static_download_url = indexes.CharField(indexed=False, default='')
@@ -232,6 +235,8 @@ class PackageSearchIndex(indexes.SearchIndex,
         try:
             prepare_data['download_url'] = self._site_build_absolute_uri(obj.site_id, dw_url)
             prepare_data['static_download_url'] = latest_version.get_download_url(entrytype=None, is_dynamic=False)
+            prepare_data['is_download_cpk'] = latest_version.is_download_cpk()
+            prepare_data['is_download_apk'] = latest_version.is_download_apk()
         except:
             pass
         prepare_data['download_size'] = latest_version.get_download_size()
