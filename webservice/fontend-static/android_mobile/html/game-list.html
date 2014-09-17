@@ -40,7 +40,7 @@
             <div class="fix"></div>
             <p class="ml10 mr10 p5 bte">独家首发去除了烦人的广告,解锁了所有美元地图和人物，大富翁4Fun还新增了让所有</p>
         </figcaption>
-        <a href="#" class="abs btn btn-red" onclick="alert('下载失败！')">下载</a>
+        <a href="javascript:alertDialogShow();" class="abs btn btn-red">下载</a>
     </figure>
 	<figure>    	
 		<figcaption onclick="location='dis.html'">
@@ -53,7 +53,7 @@
             <div class="fix"></div>
             <p class="ml10 mr10 p5 bte">画面在同类中还算不错，这次主角不再是管道工了而是一脸胡子却不失浪漫的法国大叔。</p>
         </figcaption>
-        <a href="#" class="abs btn btn-red" onclick="alert('下载失败！')">下载</a>
+        <a href="javascript:alertDialogShow();" class="abs btn btn-red">下载</a>
     </figure>
 	<figure>    	
 		<figcaption onclick="location='dis.html'">
@@ -65,7 +65,7 @@
             </ul>
             <div class="fix"></div>
         </figcaption>
-        <a href="#" class="abs btn btn-red" onclick="alert('下载失败！')">下载</a>
+        <a href="javascript:alertDialogShow();" class="abs btn btn-red">下载</a>
     </figure>
 	<figure>    	
 		<figcaption onclick="location='dis.html'">
@@ -78,7 +78,7 @@
             <div class="fix"></div>
             <p class="ml10 mr10 p5 bte">北欧神话主题风格的祖玛游戏，完全还原了PC上经典的祖玛游戏</p>
         </figcaption>
-        <a href="#" class="abs btn btn-red" onclick="alert('下载失败！')">下载</a>
+        <a href="javascript:alertDialogShow();" class="abs btn btn-red">下载</a>
     </figure>
 	<figure>    	
 		<figcaption onclick="location='dis.html'">
@@ -91,7 +91,7 @@
             <div class="fix"></div>
             <p class="ml10 mr10 p5 bte">虫虫游戏首发，解锁关卡。火柴人山地爬坡极限运动游戏，全新的火柴人形象</p>
         </figcaption>
-        <a href="#" class="abs btn btn-red" onclick="alert('下载失败！')">下载</a>
+        <a href="javascript:alertDialogShow();" class="abs btn btn-red">下载</a>
     </figure>
 	<figure>    	
 		<figcaption onclick="location='dis.html'">
@@ -104,14 +104,34 @@
             <div class="fix"></div>
             <p class="ml10 mr10 p5 bte">虫虫游戏首发，无限钻石。策略塔防类游戏。</p>
         </figcaption>
-        <a href="#" class="abs btn btn-red" onclick="alert('下载失败！')">下载</a>
+        <a href="javascript:alertDialogShow();" class="abs btn btn-red">下载</a>
     </figure>
     <a href="#" class="db tc bde p10 bg-white m5 more">查看更多</a>
 </section>
 
 
 
-<footer>©2014 www.ccplay.com.cn</footer>
+
+<!--弹框-->
+<figcaption class="cc-pop dn" id="alertDialogId">
+	<div class="cc-pop-bg"></div>
+    <div class="bg-white tc cc-pop-wrap">
+    		<h3 class="p10">下载虫虫助手</h3>
+            <p class="f14 pb20 mt10">一键安装含数据包游戏，更方便 ^_^</p>
+            <ul class="bte">
+            	<li class="p10 red b li-down" onclick="location='http://android.ccplay.com.cn/download/client/'">立即下载</li>
+                <li class="p10 ble li-cancel">取消</li>
+            </ul>
+    </div>
+</figcaption>
+<!--弹框-->
+
+
+
+<footer>
+<a href="#" class="hover">触屏版</a> <a href="#">电脑版</a><br/>
+www.ccplay.com.cn
+</footer>
 
 <script src="http://static.ccplay.com.cn/static/common/js/jquery.min.js"></script>
 <script src="http://static.ccplay.com.cn/static/android_mobile/js/site.js"></script>
