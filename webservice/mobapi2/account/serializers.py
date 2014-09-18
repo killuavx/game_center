@@ -178,7 +178,9 @@ class ProfileIconField(serializers.ImageField):
 
     def to_native(self, value):
         if value:
-            return value.url
+            url = value.url
+            # FIXME 暂时不做cdn同步，使用其他主站服务器的域名访问用户头像
+            return url.replace('media.', 'gc.', 1)
         return None
 
 
