@@ -8,7 +8,7 @@ from django.core import validators
 from django.conf import settings
 from django.contrib.auth.models import (AbstractUser as UserBase, Group)
 from django.dispatch import receiver
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from easy_thumbnails.fields import ThumbnailerImageField
@@ -284,3 +284,24 @@ def post_save_userappbind(sender, instance, raw, created, using, update_fields, 
         uc_group, _created = Group.objects.get_or_create(name=group_name)
         instance.user.groups.add(uc_group)
 
+
+_sync_icon_attr = '_sync_icon_cdn'
+
+@receiver(pre_save, sender=Profile)
+def check_icon_upload(sender, instance, **kwargs):
+    if instance.tracker.has_changed('mugshot') and instance.icon:
+        setattr(instance, _sync_icon_attr, True)
+        from easy_thumbnails.files import generate_all_aliases
+        generate_all_aliases(instance.icon, include_global=True)
+
+
+@receiver(post_save, sender=Profile)
+def icon_sync_cdn(sender, instance, **kwargs):
+    if getattr(instance, _sync_icon_attr, False) and hasattr(sender, 'sync_processor_class'):
+        try:
+            ProfileProcessor = sender.sync_processor_class
+            processor = ProfileProcessor(instance)
+            processor.publish_one(instance.icon.name)
+        except:
+            pass
+        delattr(instance, _sync_icon_attr)
