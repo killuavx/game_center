@@ -206,7 +206,7 @@ input.txt{width:100%; font-size:16px; padding:10px 0; border:none}
 .no_content img{height:100px; display:block; margin:10px auto}
 
 .cc-pop-bg{position: fixed;z-index:997;left: 0;top: 0;width: 100%;background: url(http://static.ccplay.com.cn/static/common/img/bg_40x40.png) repeat 50% 50%;opacity: 0.4;height:100%}
-.cc-pop-wrap{ margin-left:3%; margin-right:3%; width:94%; bottom:50%; margin-bottom:-70px; left: 0px;z-index: 999;position: fixed; border-top:2px solid #e53333;-moz-box-shadow:0px 0px 5px #5C5C5C; -webkit-box-shadow:0px 0px 5px #5C5C5C; box-shadow:0px 0px 5px #5C5C5C;}
+.cc-pop-wrap{ margin-left:3%; margin-right:3%; width:94%; bottom:50%; margin-bottom:-70px; left: 0px;z-index: 999;position: fixed; border-top:2px solid #e53333}
 
 .cc-pop-wrap ul{display: table;float: left;width: 100%;table-layout: fixed;}
 .cc-pop-wrap li{display: table-cell;width: 100%;overflow: hidden; text-align:center; background:#fff}
