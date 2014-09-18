@@ -291,6 +291,8 @@ _sync_icon_attr = '_sync_icon_cdn'
 def check_icon_upload(sender, instance, **kwargs):
     if instance.tracker.has_changed('mugshot') and instance.icon:
         setattr(instance, _sync_icon_attr, True)
+        from easy_thumbnails.files import generate_all_aliases
+        generate_all_aliases(instance.icon, include_global=True)
 
 
 @receiver(post_save, sender=Profile)

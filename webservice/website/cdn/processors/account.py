@@ -11,8 +11,6 @@ class ProfileProcessor(ModelProcessor):
         self.relative_path = self.get_relative_working_path()
 
     def get_relative_working_path(self):
-        if self.instance.workspace:
-            return str(self.instance.workspace)
         try:
             self.instance.icon.size
         except FileNotFoundError:
