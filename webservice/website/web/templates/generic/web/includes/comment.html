@@ -12,7 +12,11 @@
     {% endcomment %}
     <dl class="cb">
         <dt class="ios-web-icon l user" title="{{ comment.user.username }}">
+            {% if comment.user.profile.icon %}
+            <img src="{{ comment.user.profile.icon.url }}" />
+            {% else %}
             <img src="{% gravatar_url comment.email %}" />
+            {% endif %}
         </dt>
         <dd class="d1">
             <span class="ios-web-icon l star s{{ comment|comment_content_star_value }}"></span>
