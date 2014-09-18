@@ -22,7 +22,7 @@ class CommentSerializer(CommentStarSerializerMixin, ModelSerializer):
 
     def get_user_icon_url(self, obj):
         try:
-            return obj.user.profile.icon['small'].url
+            return obj.user.profile.icon.url
         except:
             return None
 
