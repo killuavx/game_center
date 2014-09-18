@@ -1,5 +1,5 @@
 -extends "pages/page_web.html"
--load mezzanine_tags widgets url_tags util_tags templatehelper_tags web_tags cache_tagging_tags comment_star_tags
+-load staticfiles mezzanine_tags widgets url_tags util_tags templatehelper_tags web_tags cache_tagging_tags comment_star_tags
 {% block meta_title %}{{ package.title }}{% endblock%}
 {% block meta_keywords %}{{ package.tags_text.split|join:', ' }}{% endblock %}
 {% block meta_description %}{{ package.summary }} | {{ package.whatsnew }}{% endblock %}
@@ -157,6 +157,7 @@
     / cell-bk
   {% endwith %}
 -block extra_js_footer
+  %script{:src => "{% static 'android_web/js/game-dis.js' %}" }
   :javascript
     $(function(){
       $.ajax({
