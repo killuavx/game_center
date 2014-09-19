@@ -346,9 +346,49 @@ class PackageVersionInlines(admin.StackedInline):
     show_thumbnail.allow_tags = True
 
 
+class PackageVersionInlines(admin.StackedInline):
+    model = PackageVersion
+    ordering = ('-version_code', )
+    fieldsets = (
+        (None, {
+            'fields': (
+                ('version_code', 'version_name',),
+                ('subtitle', 'summary', 'tags_text',),
+                ('description', 'whatsnew', ),
+            )
+        }),
+        (_('Status'), {
+            'fields': (
+                ('status', 'released_datetime',),
+                ('updated_datetime', 'created_datetime'),
+            )
+        }),
+    )
+    #extra = 1
+    max_num = 100
+    readonly_fields = ('created_datetime',
+                       'updated_datetime',
+    )
+    ordering = ('-version_code',)
+
+
+from django.contrib.contenttypes.generic import GenericTabularInline
+from taxonomy.models import TopicalItem
+
+class TopicalItemInlines(GenericTabularInline):
+    model = TopicalItem
+    ct_field = "content_type"
+    ct_fk_field = "object_id"
+    fields = ('topic', )
+    raw_id_fields = ('topic', )
+    extra = 4
+
+
 class PackageAdmin(MainAdmin):
     model = Package
-    inlines = (PackageVersionInlines, )
+    inlines = (PackageVersionInlines,
+               TopicalItemInlines,
+    )
     list_per_page = 15
 
     fieldsets = (
