@@ -1,5 +1,20 @@
 -extends "pages/page_web.html"
 -load widgets templatehelper_tags cache templatehelper_tags
+-block extra_js_header
+  :javascript
+    function addCookie(name,value,domain,expiresHours){var cookieString=name+"="+escape(value)+"; domain="+domain;if(expiresHours>0){var date=new Date();date.setTime(date.getTime+expiresHours*3600*1000);cookieString=cookieString+"; expires="+date.toGMTString()}document.cookie=cookieString}function getCookie(name){var strCookie=document.cookie;var arrCookie=strCookie.split("; ");for(var i=0;i<arrCookie.length;i++){var arr=arrCookie[i].split("=");if(arr[0]==name){return arr[1]}}return""};
+    function mobile_redict(){
+      var appName = getCookie('appName');
+      if(appName == 'wap'){return;}
+      else
+        var mobile_url = 'http://m.ccplay.com.cn/';
+        if(/Android|Windows Phone|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) || /AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE/.test(navigator.userAgent))){
+          addCookie('appName', 'web', 'ccplay.com.cn', 4);
+          window.location = mobile_url;
+        }
+      }
+    }
+    mobile_redict();
 
 -block main
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}

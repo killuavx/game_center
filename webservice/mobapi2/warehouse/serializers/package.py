@@ -30,6 +30,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
     version_count = serializers.SerializerMethodField('get_version_count')
+    download_type = serializers.SerializerMethodField('get_latest_version_download_type')
     download = serializers.SerializerMethodField(
         'get_latest_version_download')
     download_size = serializers.SerializerMethodField(
@@ -59,6 +60,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'version_count',
                   'summary',
                   'author',
+                  'download_type',
                   'download',
                   'download_size',
                   'download_count',
@@ -93,6 +95,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
         'get_latest_version_screenshots')
     category_name = serializers.SerializerMethodField('get_main_category_name')
     categories_names = serializers.SerializerMethodField('get_categories_names')
+    download_type = serializers.SerializerMethodField('get_latest_version_download_type')
     download = serializers.SerializerMethodField('get_latest_version_download')
     download_count = serializers.SerializerMethodField(
         'get_latest_version_download_count')
@@ -132,6 +135,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'title',
                   'version_code',
                   'version_name',
+                  'download_type',
                   'download',
                   'download_count',
                   'download_size',

@@ -779,6 +779,22 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
         'fs': DOWNLOAD_FILELOCATION_FS,
     }
 
+    def is_download_cpk(self, filetype=None):
+        download = self.get_download(filetype)
+        if not download:
+            return False
+        if download == self.di_download:
+            return True
+        return False
+
+    def is_download_apk(self, filetype=None):
+        download = self.get_download(filetype)
+        if not download:
+            return False
+        if download == self.download:
+            return True
+        return False
+
     def get_download(self, filetype=None):
         if filetype is None:
             return self.di_download if self.di_download else self.download

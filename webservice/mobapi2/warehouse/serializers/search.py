@@ -104,6 +104,10 @@ class PackageSummarySerializer(PackageActionsMixin,
             return request.build_absolute_uri(url)
         return url
 
+    download_type = serializers.SerializerMethodField('get_download_type')
+    def get_download_type(self, obj):
+        return 'cpk' if obj.is_download_cpk else 'apk'
+
     download_size = serializers.IntegerField()
 
     download_count = serializers.IntegerField()
@@ -137,6 +141,7 @@ class PackageSummarySerializer(PackageActionsMixin,
                   'category_name',
                   'summary',
                   'author',
+                  'download_type',
                   'download',
                   'download_size',
                   'download_count',
@@ -228,6 +233,7 @@ class PackageDetailSerializer(PackageSummarySerializer):
                   'whatsnew',
                   'description',
                   'author',
+                  'download_type',
                   'download',
                   'download_size',
                   'download_count',
