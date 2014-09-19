@@ -63,4 +63,4 @@ $(function() {
 })
 /*百度统计*/
 var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fc9a240c247e29f79e2ee021cd7246eaf' type='text/javascript'%3E%3C/script%3E"));
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F25e5099b1b38cd1932b578842f53883b' type='text/javascript'%3E%3C/script%3E"));
