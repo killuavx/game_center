@@ -90,6 +90,7 @@ a.Download-button em{color:#fff}
 
 /*手机样式*/
 @media only screen and (max-width : 600px) {
+	.cc-down-tip-box{display:none}
 	.width{width:100% !important}
 	body{width:100% !important}
 	.nav ul{display:none}
