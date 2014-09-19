@@ -390,7 +390,6 @@ class PackageAdmin(MainAdmin):
                TopicalItemInlines,
     )
     list_per_page = 15
-
     fieldsets = (
         (_('Basic Information'), {
             'classes': ('suit-tab suit-tab-general', ),
@@ -441,7 +440,7 @@ class PackageAdmin(MainAdmin):
     raw_id_fields = ('author', )
     list_filter = ('categories', 'released_datetime', 'status')
     list_display_links = ('title', 'package_name',)
-    list_editable = ('status', 'tags_text', 'released_datetime',)
+    list_editable = ('status', 'tags_text',)
     date_hierarchy = 'released_datetime'
     ordering = ('-released_datetime',)
     filter_horizontal = ("categories",)
@@ -459,9 +458,7 @@ class PackageAdmin(MainAdmin):
     def download_url(self, obj):
         try:
             a = '<a href="{url}" target="_blank">下载地址</a>'
-            return a.format(url=self._get_packageversion_download_url(
-                obj.versions.latest_version()),
-            )
+            return a.format(url=self._get_packageversion_download_url(obj.latest_version))
         except:
             pass
         return None
