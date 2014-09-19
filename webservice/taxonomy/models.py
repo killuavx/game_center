@@ -388,7 +388,12 @@ class TopicalItem(SiteRelated, models.Model):
     topic = models.ForeignKey(Topic, related_name='items')
 
     content_type = models.ForeignKey(ContentType,
-                                     related_name='topic_content_type')
+                                     related_name='topic_content_type',
+                                     default=lambda: ContentType.objects.get_by_natural_key('warehouse', 'package'),
+                                     limit_choices_to={
+                                         'app_label': 'warehouse',
+                                         'model__in': ['package', 'author'],
+                                     })
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey("content_type", "object_id")
 

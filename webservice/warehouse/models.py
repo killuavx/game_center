@@ -2,6 +2,8 @@
 import datetime
 from os.path import join, splitext
 from django.core.exceptions import ObjectDoesNotExist
+import re
+from django.core import validators
 from django.conf import settings
 from django.core import exceptions
 from django.core.urlresolvers import reverse, get_callable
@@ -295,6 +297,9 @@ class AllPackageManager(cachemixin.PackageCacheManagerMixin,
     pass
 
 
+package_name_pattern = '[\w\d_.]+'
+
+
 class Package(PlatformBase,
               urlmixin.PackageAbsoluteUrlMixin,
               cachemixin.PackageTaggingMixin,
@@ -326,6 +331,11 @@ class Package(PlatformBase,
         max_length=255)
 
     package_name = models.CharField(
+        validators=[
+            validators.RegexValidator(
+                re.compile('^%s$' % package_name_pattern),
+                '包名无效，只能由[A-Za-z0-9_.]字符组合而成', 'invalid')
+        ],
         verbose_name=_('package name'),
         db_index=True,
         max_length=255)
