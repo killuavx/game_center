@@ -129,7 +129,6 @@ class TopicInline(TabularInline):
     fields = ('name', 'slug', 'ordering', 'status', 'released_datetime', 'updated_datetime')
     readonly_fields = ('updated_datetime', )
     ordering = ('-released_datetime', )
-
     sortable = 'ordering'
     #extra = 0
 
@@ -151,14 +150,8 @@ class TopicAdmin(MPTTModelAdmin, VersionAdmin):
 
     def show_icon_or_cover(self, obj):
         try:
-            return mark_safe('<img src="%s" alt="%s"/>' % \
-                             (obj.icon.url, obj.name))
-        except ValueError:
-            pass
-
-        try:
-            return mark_safe('<img src="%s" alt="%s"/>' % \
-                             (obj.cover.url, obj.name))
+            return mark_safe('<a href="%s" target="_blank"><img src="%s" alt="%s" width="300"/></a>' % \
+                             (obj.cover.url, obj.cover.url, obj.name))
         except ValueError:
             pass
 
