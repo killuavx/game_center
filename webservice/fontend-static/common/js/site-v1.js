@@ -85,46 +85,28 @@ function resize(){
 	}
 };
 
-//document.writeln("<a href=\"javascript:;\" title=\"我要许愿\" id=\"go-wish\">我要许愿</a>");
 
-//返回顶部
-document.writeln("<style>#toTop{width:44px;height:44px;position:fixed;right:20px;bottom:-10px;z-index:9999;display:none;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}#toTop:hover{background-position:left bottom}</style>");
+
+
+/*返回顶部*/
+document.writeln("<style>#toTop{width:44px;height:44px;position:fixed;right:20px;bottom:15px;z-index:9999;display:none;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}#toTop:hover{background-position:left bottom}</style>");
 document.writeln("<a href=\"javascript:;\" title=\"返回顶部\" id=\"toTop\">返回顶部</a>");
-$(document).ready(function(){
-	var index = 0;
-	var _window = $(window);
-	var _html = $("html");
-	var _toTop = $("#toTop");
-	$(window).scroll(function(){
-		/*var currentIndex = _window.scrollTop();
-		if(currentIndex > index){
-			_html.attr("ID","");
-		}else{
-			_html.attr("ID","fixed-head");
-		}
-		index = currentIndex;*/
-		
-		/*if($(window).scrollTop()<=0) {
-			_html.attr("ID","");
-		}else{
-			_html.attr("ID","fixed-head");
-		}*/
-		
-		if($(window).scrollTop()<=500) {
-			_toTop.stop(true,false).animate({bottom:"-10px",opacity:"0"},50);
-		}else{
-			_toTop.stop(true,false).show().animate({bottom:"20px",opacity:"1"},50);
-		}
-	});
-	$("#toTop").click(function(){
-		$("body,html").animate({scrollTop:0},200);
-	});
-});
+function toTopHide(){if(document.documentElement.scrollTop+document.body.scrollTop>400){document.getElementById("toTop").style.display="block"}else{document.getElementById("toTop").style.display="none"}}$(function(){$(window).scroll(function(){toTopHide();$("#toTop").click(function(){window.scrollTo(0,0);return false})})});
+
 
 
 
 
 $(function(){
+	
+/*返回顶部*/
+	 $(window).scroll(function(){
+        toTopHide();
+        $("#toTop").click(function(){
+            window.scrollTo(0,0);
+            return false;
+        });
+    });
 
 //一键安装提示
 	$(".browsers_ad_close_gray").on("click", function() {
