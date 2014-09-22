@@ -113,9 +113,10 @@ class PackageVersionAdmin(MainAdmin):
                     'updated_datetime',
                     'is_data_integration',
                     'download_count',
+                    'award_coin',
                     'sync_file_action',
     )
-    list_editable = ('released_datetime', )
+    list_editable = ('award_coin', )
     list_display_links = ('show_icon', 'version_name')
     actions = ['make_published']
     raw_id_fields = ('package', )
@@ -148,6 +149,7 @@ class PackageVersionAdmin(MainAdmin):
             'classes': ('suit-tab suit-tab-general',
                         'grp-collapse collapse-closed'),
             'fields': (
+                'award_coin',
                 'supported_languages',
                 'supported_devices',
                 'supported_features',
@@ -186,7 +188,7 @@ class PackageVersionAdmin(MainAdmin):
     filter_horizontal = ("supported_languages",
                          "supported_devices",
                          "supported_features")
-    list_filter = ('status',)
+    list_filter = ('status', 'has_award', )
     date_hierarchy = 'released_datetime'
     ordering = ('-released_datetime',)
     formfield_overrides = {
@@ -344,11 +346,50 @@ class PackageVersionInlines(admin.StackedInline):
     show_thumbnail.allow_tags = True
 
 
+class PackageVersionInlines(admin.StackedInline):
+    model = PackageVersion
+    ordering = ('-version_code', )
+    fieldsets = (
+        (None, {
+            'fields': (
+                ('version_code', 'version_name',),
+                ('subtitle', 'summary', 'tags_text',),
+                ('description', 'whatsnew', ),
+            )
+        }),
+        (_('Status'), {
+            'fields': (
+                ('status', 'released_datetime',),
+                ('updated_datetime', 'created_datetime'),
+            )
+        }),
+    )
+    #extra = 1
+    max_num = 100
+    readonly_fields = ('created_datetime',
+                       'updated_datetime',
+    )
+    ordering = ('-version_code',)
+
+
+from django.contrib.contenttypes.generic import GenericTabularInline
+from taxonomy.models import TopicalItem
+
+class TopicalItemInlines(GenericTabularInline):
+    model = TopicalItem
+    ct_field = "content_type"
+    ct_fk_field = "object_id"
+    fields = ('topic', )
+    raw_id_fields = ('topic', )
+    extra = 4
+
+
 class PackageAdmin(MainAdmin):
     model = Package
-    inlines = (PackageVersionInlines, )
+    inlines = (PackageVersionInlines,
+               TopicalItemInlines,
+    )
     list_per_page = 15
-
     fieldsets = (
         (_('Basic Information'), {
             'classes': ('suit-tab suit-tab-general', ),
@@ -399,7 +440,7 @@ class PackageAdmin(MainAdmin):
     raw_id_fields = ('author', )
     list_filter = ('categories', 'released_datetime', 'status')
     list_display_links = ('title', 'package_name',)
-    list_editable = ('status', 'tags_text', 'released_datetime',)
+    list_editable = ('status', 'tags_text',)
     date_hierarchy = 'released_datetime'
     ordering = ('-released_datetime',)
     filter_horizontal = ("categories",)
@@ -417,9 +458,7 @@ class PackageAdmin(MainAdmin):
     def download_url(self, obj):
         try:
             a = '<a href="{url}" target="_blank">下载地址</a>'
-            return a.format(url=self._get_packageversion_download_url(
-                obj.versions.latest_version()),
-            )
+            return a.format(url=self._get_packageversion_download_url(obj.latest_version))
         except:
             pass
         return None

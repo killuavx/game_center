@@ -34,6 +34,8 @@ class NotFound(base.TemplateResponseNotFound):
 
 @cache_control(public=True, max_age=max_age)
 def package_detail(request, pk,
+                   package_name=None,
+                   template='detail',
                    template_name=join(template_prefix, 'package/detail.haml'),
                    template_not_found_class=NotFound,
                    *args, **kwargs):
@@ -45,6 +47,7 @@ def package_detail(request, pk,
     return TemplateResponse(request=request,
                             template=template_name,
                             context=dict(
+                                template=template,
                                 package=package,
                                 product=ETS.web,
                             ))

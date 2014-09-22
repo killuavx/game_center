@@ -33,8 +33,12 @@ class AbsoluteUrlMixin(object):
 
 class ModelAbsoluteUrlMixin(AbsoluteUrlMixin):
 
+    @classmethod
+    def _module_name(cls):
+        return cls._meta.module_name
+
     def _get_module_name(self):
-        return self.__class__._meta.module_name
+        return self._module_name()
 
     def get_absolute_url_as(self, product, **kwargs):
         ETS = self._get_entry_types()
@@ -59,6 +63,11 @@ class PackageAbsoluteUrlMixin(ModelAbsoluteUrlMixin):
                                            request=current_request(),
                                            router=rest_router)
             return pec.get_url()
+        elif product == ETS.web:
+            name = self._get_module_name()
+            view_name = 'website.%s.views.%s_detail' % (product, name)
+            return reverse(view_name, kwargs=dict(pk=self.pk,
+                                                  package_name=self.package_name))
         else:
             return super(PackageAbsoluteUrlMixin, self).get_absolute_url_as(product=product, **kwargs)
 
@@ -213,5 +222,10 @@ class AdvertisementAbsoluteUrlMixin(AbsoluteUrlMixin):
             return None
 
 
+class RecommendAbsoluteUrlMixin(AbsoluteUrlMixin):
 
-
+    def get_absolute_url_as(self, product, **kwargs):
+        if self.content and isinstance(self.content, AbsoluteUrlMixin):
+            return self.content.get_absolute_url_as(product=product, **kwargs)
+        else:
+            return None

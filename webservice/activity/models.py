@@ -261,3 +261,28 @@ def giftbag_post_save_sync(sender, instance, created, **kwargs):
         for k,v in defaults.items():
             setattr(gb, k, v)
 """
+
+from toolkit.managers import CurrentSiteManager
+
+
+class Note(SiteRelated,
+           models.Model):
+
+    objects = CurrentSiteManager()
+
+    all_objects = models.Manager()
+
+    slug = models.SlugField(max_length=150)
+
+    title = models.CharField(max_length=250)
+
+    description = models.TextField()
+
+    #rich_description = RichTextField()
+
+    class Meta:
+        verbose_name_plural = verbose_name = '说明'
+        unique_together = (
+            ('site', 'slug'),
+        )
+

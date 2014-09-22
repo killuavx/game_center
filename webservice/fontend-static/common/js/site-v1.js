@@ -85,46 +85,28 @@ function resize(){
 	}
 };
 
-//document.writeln("<a href=\"javascript:;\" title=\"我要许愿\" id=\"go-wish\">我要许愿</a>");
 
-//返回顶部
-document.writeln("<style>#toTop{width:44px;height:44px;position:fixed;right:20px;bottom:-10px;z-index:9999;display:none;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}#toTop:hover{background-position:left bottom}</style>");
+
+
+/*返回顶部*/
+document.writeln("<style>#toTop{width:44px;height:44px;position:fixed;right:20px;bottom:15px;z-index:9999;display:none;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}#toTop:hover{background-position:left bottom}</style>");
 document.writeln("<a href=\"javascript:;\" title=\"返回顶部\" id=\"toTop\">返回顶部</a>");
-$(document).ready(function(){
-	var index = 0;
-	var _window = $(window);
-	var _html = $("html");
-	var _toTop = $("#toTop");
-	$(window).scroll(function(){
-		/*var currentIndex = _window.scrollTop();
-		if(currentIndex > index){
-			_html.attr("ID","");
-		}else{
-			_html.attr("ID","fixed-head");
-		}
-		index = currentIndex;*/
-		
-		/*if($(window).scrollTop()<=0) {
-			_html.attr("ID","");
-		}else{
-			_html.attr("ID","fixed-head");
-		}*/
-		
-		if($(window).scrollTop()<=500) {
-			_toTop.stop(true,false).animate({bottom:"-10px",opacity:"0"},50);
-		}else{
-			_toTop.stop(true,false).show().animate({bottom:"20px",opacity:"1"},50);
-		}
-	});
-	$("#toTop").click(function(){
-		$("body,html").animate({scrollTop:0},200);
-	});
-});
+function toTopHide(){if(document.documentElement.scrollTop+document.body.scrollTop>400){document.getElementById("toTop").style.display="block"}else{document.getElementById("toTop").style.display="none"}}$(function(){$(window).scroll(function(){toTopHide();$("#toTop").click(function(){window.scrollTo(0,0);return false})})});
+
 
 
 
 
 $(function(){
+	
+/*返回顶部*/
+	 $(window).scroll(function(){
+        toTopHide();
+        $("#toTop").click(function(){
+            window.scrollTo(0,0);
+            return false;
+        });
+    });
 
 //一键安装提示
 	$(".browsers_ad_close_gray").on("click", function() {
@@ -215,32 +197,8 @@ $(function(){
 	
 	$(".app-list-right").find("li:first").addClass("hover");
 	
-//基本资料-表单验证
-	var info=$(".user-info-form").Validform({
-		tiptype:3,
-		label:"label",
-		showAllError:true,
-		//ajaxPost:true
-	});	
-	info.addRule([{
-		ele:".w200:eq(0)",datatype:"*1-16"},{
-		ele:".w200:eq(1)",ignore:"ignore",datatype:"zh2-4"},{
-		ele:"select:eq(0)",datatype:"*"},{
-		ele:"select:eq(1)",datatype:"*"},{
-		ele:"select:eq(2)",datatype:"*"},{
-		ele:":radio:first",	datatype:"*"}
-	]);
 
-//联络信息-表单验证
-	var contact=$(".user-contact-form").Validform({
-		tiptype:3,
-		label:"label",
-		showAllError:true,
-		//ajaxPost:true
-	});	
-	contact.addRule([{
-		ele:".w200:eq(4)",datatype:"*"}
-	]);
+
 
 //密码加强
 (function(a){a.fn.passwordStrength=function(b){b=a.extend({},a.fn.passwordStrength.defaults,b);this.each(function(){var d=a(this),e=0,c=false,f=a(this).parents("form").find("#pw-strength");d.bind("keyup blur",function(){e=a.fn.passwordStrength.ratepasswd(d.val(),b);e>=0&&c==false&&(c=true);f.find("span").removeClass("gr");if(e<35&&e>=0){f.find("span:first").addClass("gr")}else{if(e<60&&e>=35){f.find("span:lt(2)").addClass("gr")}else{if(e>=60){f.find("span:lt(3)").addClass("gr")}}}if(c&&(d.val().length<b.minLen||d.val().length>b.maxLen)){b.showmsg(d,d.attr("errormsg"),3)}else{if(c){b.showmsg(d,"",2)}}b.trigger(d,!(e>=0))})})};a.fn.passwordStrength.ratepasswd=function(c,d){var b=c.length,e;if(b>=d.minLen&&b<=d.maxLen){e=a.fn.passwordStrength.checkStrong(c)}else{e=-1}return e/4*100};a.fn.passwordStrength.checkStrong=function(d){var e=0,b=d.length;for(var c=0;c<b;c++){e|=a.fn.passwordStrength.charMode(d.charCodeAt(c))}return a.fn.passwordStrength.bitTotal(e)};a.fn.passwordStrength.charMode=function(b){if(b>=48&&b<=57){return 1}else{if(b>=65&&b<=90){return 2}else{if(b>=97&&b<=122){return 4}else{return 8}}}};a.fn.passwordStrength.bitTotal=function(b){var d=0;for(var c=0;c<4;c++){if(b&1){d++}b>>>=1}return d};a.fn.passwordStrength.defaults={minLen:0,maxLen:30,trigger:a.noop}})(jQuery);
@@ -317,18 +275,7 @@ $(function(){
         }
 	});
 
-//我要许愿-表单验证
-	var wish=$(".go-wish-form").Validform({
-		showAllError:true,	
-		tiptype:function(msg,o,cssctl){
-			var objtip=$(".Validform_checktip");
-			cssctl(objtip,o.type);
-			objtip.text(msg);
-		}
-	});	
-	wish.addRule([{
-		ele:".pct50",datatype:"*"}
-	]);
+
 
 //举报 纠错-表单验证
 	var report=$(".report-form").Validform({
@@ -344,9 +291,7 @@ $(function(){
 	]);
 	
 	
-	
-	
-	
+
 
 //评论
     var comment_tips = $('#comments .comment-tip');
@@ -478,12 +423,6 @@ $(function(){
 				title: "虫虫游戏问题反馈"	,fix: true, bgclose:true
 				});
 		});
-		//许愿
-		$("#go-wish").click(function(){
-			$(".go-wish-box").zxxbox({
-				title: "我要许愿"	 ,fix: true
-				});
-		});
 		
 		
 	//提示
@@ -497,54 +436,12 @@ $(function(){
         });							
     });
 	
-	//询问
-	$("#box_remind").click(function(){
-    $.zxxbox.remind('<span class="db pb15 f16">请输入您注册的电子邮箱，下一步将发送修改密码链接到该邮箱。</span><input class="pct50 bg-white pl10 bg-white bde pt10 pb10 f16" type="text" placeholder="请输入电子邮箱" id="p-email" datatype="e">', function(){
-        //alert("哇哈哈");
-    }, {
-        title: "找回密码"	 ,bg: true, fix: true, bgclose:true
-    });						   
-	});
-	
-	
 
-	$("#box_ask").click(function(){
-    $.zxxbox.ask('<span class="f16 tc">文字内字文字内容区域文字内容区域文字内容区域文<br/>字内容区域文字内容区域文字内容区域文字内容区域文字内容区域，<br/>支持HTML 支持HTML 支持HTML</span>', function(){
-        $("body").css("background-color", "azure");	
-    }, null, {
-        title: "友情提示"	,bg: true, fix: true, bgclose:true
-    });						   
-	});	
-	
-	$("#sub1").click(function(){
-		$.zxxbox($("#box"), {
-        title: "标题"	
-        });
-    });
-	
 	
 	
 	
 	
 });
-
-
-
-//许愿
-/*document.writeln("<div class=\"bg-white go-wish-box dn\">");
-document.writeln("<form class=\"w750 fw go-wish-form\">");
-document.writeln("<div class=\"pb20\">");
-document.writeln("<input class=\"pct50 bg-white pl10 bg-white bde pt10 pb10 f16 mb10\" type=\"text\" placeholder=\"游戏名称\" id=\"wish-game-name\"><span class=\"g9 ml10\">如：暗影之刃 Shadow Blade</span>");
-document.writeln("<input class=\"pct50 bg-white pl10 bg-white bde pt10 pb10 f16 mb10\" type=\"text\" placeholder=\"版本编号\" id=\"wish-game-ver\"><span class=\"g9 ml10\">如：v1.14.2</span>");
-document.writeln("<input class=\"pct50 bg-white pl10 bg-white bde pt10 pb10 f16 mb10\" type=\"text\" placeholder=\"破解类型\" id=\"wish-game-type\"><span class=\"g9 ml10\">如：无限金币/无限道具/内购/强制购买/免验证等</span>");
-document.writeln("<input class=\"pct50 bg-white pl10 bg-white bde pt10 pb10 f16\" type=\"text\" placeholder=\"备注\" id=\"wish-game-note\"><span class=\"g9 ml10\">对虫虫游戏说的话~</span>");
-document.writeln("</div>");
-document.writeln("<div class=\"db tr pt20 pb20\">");
-document.writeln("<span class=\"Validform_checktip\"></span><button class=\"submit_btn\">提交许愿</button>");
-document.writeln("</div>");
-document.writeln("</form>");
-document.writeln("</div>");*/
-//弹出框提示 结束
 
 
 
@@ -673,60 +570,3 @@ diy_select.prototype={
 
 var TTDiy_select=new diy_select({  //参数可选
 });//如同时使用多个时请保持各class一致.
-
-
-
-//评分
-$(document).ready(function(){
-	$('#rating_btns li').hover(function(){	
-			$rating = $(this).text();
-			$('#rating_on').css('width', rateWidth($rating));
-	},function(){
-		 $rating = $('#rating').text();
-		if($rating == ""){		
-			 $('#rating_on').css('width', "0px");
-		 }
-		 else{
-			 $('#rating_on').css('width', rateWidth($rating));	
-		 }
-	});
-	$('#rating_btns li').click(function(){
-		$rating = $(this).text();			
-		$('#rating').text($rating+'分');
-		$('#rating_output').val($rating);
-	});	
-	function rateWidth($rating){		
-		$rating = parseFloat($rating);
-		switch ($rating){
-			case 1: $width = "25px"; break;
-			case 2: $width = "54px"; break;
-			case 3: $width = "81px"; break;
-			case 4: $width = "107px"; break;
-			case 5: $width = "134px"; break;
-			default:  $width =  "0";
-		}
-		return $width;
-	}
-});	
-$(document).ready(function(){
-    function page_load(load_box, dom, p){
-        var _load_box = $(load_box);
-        var url = $(dom).attr('data-url');
-        if( !url ){
-            return false
-        }
-        $.ajax({
-            type:'get',
-            url:url,
-            data:{
-                page:p
-            },
-            dataType:'html',
-            success:function(data){
-                _load_box.html(data);
-            }
-        });
-        return false;
-    }
-    window.page_load = page_load;
-});

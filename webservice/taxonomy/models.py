@@ -388,13 +388,21 @@ class TopicalItem(SiteRelated, models.Model):
     topic = models.ForeignKey(Topic, related_name='items')
 
     content_type = models.ForeignKey(ContentType,
-                                     related_name='topic_content_type')
+                                     related_name='topic_content_type',
+                                     default=lambda: ContentType.objects.get_by_natural_key('warehouse', 'package'),
+                                     limit_choices_to={
+                                         'app_label': 'warehouse',
+                                         'model__in': ['package', 'author'],
+                                     })
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey("content_type", "object_id")
 
     ordering = models.PositiveIntegerField(default=0, blank=True, db_index=True)
 
     updated_datetime = models.DateTimeField(auto_now_add=True, auto_now=True)
+
+    tracker = FieldTracker(fields=['object_id', 'content_type',
+                                   'topic', 'ordering'])
 
     class Meta:
         unique_together = (('topic', 'content_type', 'object_id'),)
@@ -413,7 +421,7 @@ class TopicalItem(SiteRelated, models.Model):
         return '%s [%s]' % (self.content_object, self.topic)
 
 
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save, post_delete, pre_delete
 from django.dispatch import receiver
 
 
@@ -441,6 +449,63 @@ def topic_pre_save(sender, instance, **kwargs):
         instance.released_datetime = now()
 
 
+topic_delete_remove_package_flag = '_sync_package_ids'
 
-def taxonomy_get_cache_slug(model, site_id, slug):
-    pass
+@receiver(pre_delete, sender=Topic)
+def topic_pre_delete(sender, instance, **kwargs):
+    sync_package_ids = []
+    from warehouse.models import Package
+    for item in instance.items.all():
+        if item.content_type.model_class() is Package:
+            sync_package_ids.append(item.object_id)
+
+    if sync_package_ids:
+        setattr(instance, topic_delete_remove_package_flag, sync_package_ids)
+
+@receiver(post_delete, sender=Topic)
+def topic_post_delete(sender, instance, **kwargs):
+    if hasattr(instance, topic_delete_remove_package_flag):
+        from warehouse.tasks import sync_package
+        ids = getattr(instance, topic_delete_remove_package_flag, [])
+        for id in ids:
+            sync_package.apply_async([id], countdown=10)
+        delattr(instance, topic_delete_remove_package_flag)
+
+
+topicalitem_sync_package_flag = '_sync_package_flag'
+
+@receiver(pre_save, sender=TopicalItem)
+def topicalitem_pre_save(sender, instance, **kwargs):
+    from warehouse.models import Package
+    obj = instance.content_object
+    if obj and isinstance(obj, Package) and instance.tracker.changed():
+        setattr(instance, topicalitem_sync_package_flag, True)
+
+
+@receiver(post_save, sender=TopicalItem)
+def topicalitem_post_save(sender, instance, **kwargs):
+    if getattr(instance, topicalitem_sync_package_flag, False):
+        from warehouse.tasks import sync_package
+        obj = instance.content_object
+        if obj.is_published():
+            sync_package.apply_async((obj.pk,), countdown=10)
+        delattr(instance, topicalitem_sync_package_flag)
+
+
+topicalitem_remove_package_search_flag = '_remove_package_search_id'
+
+@receiver(pre_delete, sender=TopicalItem)
+def topicalitem_pre_delete(sender, instance, **kwargs):
+    from warehouse.models import Package
+    cls = instance.content_type.model_class()
+    if cls == Package:
+        setattr(instance, topicalitem_remove_package_search_flag, instance.object_id)
+
+
+@receiver(post_delete, sender=TopicalItem)
+def topicalitem_post_delete(sender, instance, **kwargs):
+    if getattr(instance, topicalitem_remove_package_search_flag, False):
+        from warehouse.tasks import sync_package
+        id = getattr(instance, topicalitem_remove_package_search_flag)
+        sync_package.apply_async((id,), countdown=10)
+        delattr(instance, topicalitem_remove_package_search_flag)

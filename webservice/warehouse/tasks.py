@@ -25,8 +25,8 @@ def delete_package_data_center(package_id):
     handler.delete(package_id)
     try:
         psi = PackageSearchIndex()
+        psi.remove_object(Package(pk=package_id))
         package = Package.all_objects.get(pk=package_id)
-        psi.remove_object(package)
         package.invalidate_tagging_cache()
     except:
         pass
@@ -97,6 +97,8 @@ def _sync_version_status(package, version, status):
     if status == package.STATUS.published:
         package.released_datetime = version.released_datetime
     package.status = status
+    package.has_award = version.has_award
+    package.award_coin = version.award_coin
 
 
 def _sync_package_download_count(package):

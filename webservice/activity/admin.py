@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 from toolkit.admin import admin_edit_linktag
-from activity.models import GiftBag, GiftCardResource
+from activity.models import GiftBag, GiftCardResource, Note
 from import_export.admin import ImportMixin
+from reversion.admin import VersionAdmin
 
 
 class GiftBagAdmin(ImportMixin, admin.ModelAdmin):
@@ -64,3 +65,15 @@ class GiftBagAdmin(ImportMixin, admin.ModelAdmin):
 
 admin.site.register(GiftBag, GiftBagAdmin)
 
+
+class NoteAdmin(VersionAdmin):
+
+    list_display = ('pk', 'slug', 'title', )
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.pk:
+            return self.readonly_fields + ('slug', )
+        return self.readonly_fields
+
+
+admin.site.register(Note, NoteAdmin)

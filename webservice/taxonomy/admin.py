@@ -116,12 +116,19 @@ class TopicalItemAdmin(admin.ModelAdmin):
     topic_link.admin_order_field = 'topic__name'
 
 
+class TopicalItemInline(TabularInline):
+    model = TopicalItem
+    fields = ('content_type', 'object_id', 'ordering', 'updated_datetime')
+    readonly_fields = ('updated_datetime', )
+    ordering = ('ordering',)
+    #extra = 10
+
+
 class TopicInline(TabularInline):
     model = Topic
     fields = ('name', 'slug', 'ordering', 'status', 'released_datetime', 'updated_datetime')
     readonly_fields = ('updated_datetime', )
     ordering = ('-released_datetime', )
-
     sortable = 'ordering'
     #extra = 0
 
@@ -136,18 +143,15 @@ class TopicAdmin(MPTTModelAdmin, VersionAdmin):
     list_editable = ('status', 'is_hidden')
     mptt_level_indent = 20
     sortable = 'ordering'
-    inlines = (ResourceInlines, TopicInline,)
+    inlines = (ResourceInlines,
+               TopicInline,
+               TopicalItemInline,
+    )
 
     def show_icon_or_cover(self, obj):
         try:
-            return mark_safe('<img src="%s" alt="%s"/>' % \
-                             (obj.icon.url, obj.name))
-        except ValueError:
-            pass
-
-        try:
-            return mark_safe('<img src="%s" alt="%s"/>' % \
-                             (obj.cover.url, obj.name))
+            return mark_safe('<a href="%s" target="_blank"><img src="%s" alt="%s" width="300"/></a>' % \
+                             (obj.cover.url, obj.cover.url, obj.name))
         except ValueError:
             pass
 

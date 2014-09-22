@@ -22,9 +22,10 @@ class CommentSerializer(CommentStarSerializerMixin, ModelSerializer):
 
     def get_user_icon_url(self, obj):
         try:
-            return obj.user.profile.icon['small'].url
+            return obj.user.profile.icon.url
         except:
-            return None
+            from mezzanine.core.templatetags.mezzanine_tags import gravatar_url
+            return "http:%s" % gravatar_url(obj.user.profile.email, size=120)
 
     class Meta:
         model = Comment

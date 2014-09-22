@@ -47,6 +47,9 @@ if settings.DEBUG:
     LoadingCover.sync_processor_class = \
         mock_processor_class(LoadingCoverProcessor)
 
+    Profile.sync_processor_class = \
+        mock_processor_class(ProfileProcessor)
+
 
 from searcher.helpers import get_default_package_query
 from searcher.search_results import PackageSearchResult

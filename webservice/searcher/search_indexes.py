@@ -150,10 +150,19 @@ class PackageSearchIndex(indexes.SearchIndex,
 
     star = indexes.FloatField(default=0)
     stars_count = indexes.IntegerField(default=0)
+    stars_good_count = indexes.IntegerField(default=0, indexed=False)
+    stars_good_rate = indexes.FloatField(default=0, indexed=False)
+    stars_medium_count = indexes.IntegerField(default=0, indexed=False)
+    stars_medium_rate = indexes.FloatField(default=0, indexed=False)
+    stars_low_count = indexes.IntegerField(default=0, indexed=False)
+    stars_low_rate = indexes.FloatField(default=0, indexed=False)
 
     summary = indexes.CharField(weight=10, default='')
     description = indexes.CharField(indexed=False, default='')
     whatsnew = indexes.CharField(indexed=False, default='')
+
+    has_award = indexes.BooleanField(indexed=True, default=False)
+    award_coin = indexes.IntegerField(indexed=True, default=0)
 
     def _prepare_summary(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
@@ -164,18 +173,33 @@ class PackageSearchIndex(indexes.SearchIndex,
         prepare_data['description'] = latest_version.description or obj.description
         prepare_data['whatsnew'] = latest_version.whatsnew
 
+
     def _prepare_latest_version(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
         prepare_data['version_id'] = prepare_data['latest_version_id'] = latest_version.pk
         prepare_data['version_name'] = latest_version.version_name
         prepare_data['version_code'] = latest_version.version_code
+
         prepare_data['star'] = latest_version.stars_average
         prepare_data['stars_count'] = latest_version.stars_count
+        prepare_data['stars_good_count'] = latest_version.stars_good_count
+        prepare_data['stars_good_rate'] = latest_version.stars_good_rate
+        prepare_data['stars_medium_count'] = latest_version.stars_medium_count
+        prepare_data['stars_medium_rate'] = latest_version.stars_medium_rate
+        prepare_data['stars_low_count'] = latest_version.stars_low_count
+        prepare_data['stars_low_rate'] = latest_version.stars_low_rate
+
+        prepare_data['has_award'] = latest_version.has_award
+        prepare_data['award_coin'] = latest_version.award_coin
+
         prepare_data['released_datetime'] = latest_version.released_datetime.astimezone()
         prepare_data['updated_datetime'] = latest_version.updated_datetime.astimezone()
 
         lang_codes = latest_version.supported_languages.values_list('code', flat=True)
         prepare_data['support_language_codes'] = list(lang_codes)
+
+    is_download_apk = indexes.BooleanField(indexed=True, default=False)
+    is_download_cpk = indexes.BooleanField(indexed=True, default=False)
 
     download_size = indexes.IntegerField(indexed=False, default=0)
     download_url = indexes.CharField(indexed=False, default='')
@@ -211,6 +235,8 @@ class PackageSearchIndex(indexes.SearchIndex,
         try:
             prepare_data['download_url'] = self._site_build_absolute_uri(obj.site_id, dw_url)
             prepare_data['static_download_url'] = latest_version.get_download_url(entrytype=None, is_dynamic=False)
+            prepare_data['is_download_cpk'] = latest_version.is_download_cpk()
+            prepare_data['is_download_apk'] = latest_version.is_download_apk()
         except:
             pass
         prepare_data['download_size'] = latest_version.get_download_size()

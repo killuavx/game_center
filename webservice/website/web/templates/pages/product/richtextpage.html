@@ -1,7 +1,54 @@
 {% extends "pages/main_richtextpage.html" %}
 {% load staticfiles mezzanine_tags templatehelper_tags pages_tags %}
-{% block platform_css %}<link href="{% static 'cc_web/css/i-down.css' %}" media="all" rel="stylesheet" type="text/css"/>{% endblock %}
+{% block platform_css %}<link href="{% static 'product/css/site.css' %}" media="all" rel="stylesheet" type="text/css"/>{% endblock %}
+{% block extra_meta %}
+    {{ block.super }}
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+{% endblock %}
 {% block head_base  %}<base target="_blank"/>{% endblock %}
 {% block extra_js_footer %}
-<script src="{% static 'cc_web/js/down.js' %}" ></script>
+<script src="{% static 'product/js/site.js' %}" ></script>
+{% endblock %}
+{% block main %}
+<!--虫虫客户端下载 开始product-page-->
+<div class="cell-bk product-page">
+    {% editable page.richtextpage.content %}
+        {{ page.richtextpage.content|richtext_filters|safe }}
+    {% endeditable %}
+    <div class="product-log">
+        <div class="auto width">
+
+            <div class="rel timeline">
+                <span class="t-l-clock"></span>
+
+                <div class="p-l-title">
+                    <h3 class="abs n f28">更新日志</h3>
+                    <p class="abs f16">
+                        <a href="http://bbs.ccplay.com.cn/thread-37344-1-1.html" target="_blank">常见问题</a>
+                        <a href="http://bbs.ccplay.com.cn/forum-2-1.html" target="_blank">问题反馈</a>
+                    </p>
+                </div>
+
+                <div class="item-box" id="item-box">
+                    {% for app in clients %}
+                    <div class="item">
+                        <div class="f20 i-title">
+                            虫虫助手 v{{ app.version_name }} {% if forloop.first %}<span class="red f14">(最新)</span>{% endif %}<span class="r f14">更新：{{ app.released_datetime|date }}</span>
+                        </div>
+                        <div class="f14 lh24 i-info">
+                            <b>更新内容：</b>
+                            <p>{{ app.whatsnew|linebreaksbr }}</p>
+                        </div>
+                    </div><!--item-->
+                    {% endfor %}
+
+                </div><!--item-box-->
+
+                <div class="fix"></div>
+            </div><!--timeline-->
+
+        </div><!--auto-->
+    </div><!--product-log-->
+
+</div><!--虫虫客户端下载 结束 product-page-->
 {% endblock %}
