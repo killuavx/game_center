@@ -38,14 +38,9 @@ background-repeat: no-repeat;}
 #fixed-head #cc-m  .nav .l li{width:68px}
 
 
-
-
-
-
 /*游戏礼包*/
-.game-gift-list{width:30%; float:left; margin:0 20px 30px 20px; border:1px solid #eee}
-#cc-m .game-gift-list{margin:0 16px 35px 15px}
-#cc-s .game-gift-list{width:45%; margin:0 20px 30px 15px}
+.game-gift-list{width:31%; float:left; margin:0 1% 30px 1%; border:1px solid #eee}
+#cc-s .game-gift-list{width:47.5%;}
 .game-gift-list:hover{border-color:#ccc}
 .game-gift-list .bte{border-style:dashed}
 .game-gift-list img{width:92px; height:92px}
@@ -58,16 +53,33 @@ background-repeat: no-repeat;}
 .game-gift-list .gift-number{float:right;}
 .game-gift-list:hover .time-download{background-color:#f8f8f8; border-top:1px solid #ddd;}
 
-.page-tab ul{right:0; top:25px}
+
+.app-dis-page .t-title{border-bottom:1px solid #eee; background: #f8f8f8;}
+.app-dis-page .t-title h1{padding-top:10px}
+.page-tab-a a{display:inline-block; height:51px; line-height:51px; padding:0 25px; border-left:1px solid #eee; float:left}
+.page-tab-a a.on{border:none; background:#eee; border-top:2px solid #e53333}
+
+
 .gift-main dt .icon{width:64px; height:64px}
 .gift-main dd{margin-left:74px; padding-left:15px; border-left:4px solid #eee; background:url(http://static.ccplay.com.cn/static/android_web/img/gift-bg.png) right bottom no-repeat #f8f8f8}
 
 .gift-bag {background:url(http://static.ccplay.com.cn/static/android_web/img/gift-icon-2.png) no-repeat; padding-left:64px}
-.gift-bag .game-gift-list{margin:10px 0 0 10px; width:445px}
-#cc-m .gift-bag .game-gift-list{margin:10px 0 0 10px; width:325px}
-#cc-s .gift-bag .game-gift-list{margin:10px 0 0 10px; width:410px}
+.gift-bag .game-gift-list{margin:1% 0 0 1%; width:48%}
+#cc-s .gift-bag .game-gift-list{margin:10px 0 0 0; width:100%}
 .gift-bag .pic{display:none}
 .game-gift-page .page{border:none}
+
+
+/*礼包筛选*/
+.slideGroup{border:1px solid #ddd; text-align:left; margin-bottom:20px}
+.slideGroup .parHd{ height:30px; line-height:30px; background:#f4f4f4; padding:0 15px; border-bottom:1px solid #ddd;  position:relative;  }
+.slideGroup .parHd ul{ float:left; position:absolute; left:110px; top:-1px; height:32px;   }
+.slideGroup .parHd ul li{ float:left; padding:0 15px; cursor:pointer;  }
+.slideGroup .parHd ul li.on{ height:30px;  background:#fff; border:1px solid #ddd; border-bottom:2px solid #fff; }
+.slideGroup .slideBox{ overflow:hidden; zoom:1; padding:10px 10px 0 10px; position:relative;   }
+
+
+
 
 /*评论*/
 .more-comments:hover{background-color:#ccc; color:#fff}

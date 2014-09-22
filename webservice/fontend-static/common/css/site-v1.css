@@ -402,7 +402,7 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-list-page{padding-bottom:75px}
 .app-list-page .pin-box{width:240px}
 .app-list-page .left-list{top:0; width:240px; z-index:2}
-.app-list-page .right-list{min-height:400px; width:980px; text-align:left !important}
+.app-list-page .right-list{min-height:400px; width:1000px; text-align:left !important}
 .app-list-page .left-nav li{border-bottom:1px solid #e8e8e8}
 .app-list-page .left-nav li a{display:block; height:40px; line-height:40px; padding:0 20px}
 .app-list-page .left-nav li a span{color:#999; font-family: Candara;}
@@ -425,7 +425,21 @@ white-space:nowrap; overflow:hidden; color:#fff}
 .app-list-xl dd{padding-left:100px}
 .app-list-xl .btn-s{margin-top:-32px; position:absolute; width:60%}
 
-
+/*列表筛选*/
+.app-list-page .right-list{padding:20px 0 20px 20px !important}
+.screening{clear:both; border-bottom:1px solid #ddd; margin-bottom:20px; margin-top:-20px}
+.screening{position:relative}
+.screening dl{clear:both; padding-top:10px; border-top:1px dotted #ccc}
+.screening dl:hover{background:#f8f8f8}
+.screening dt{display:inline-block; padding:3px 5px 3px 15px; position:absolute}
+.screening dd{padding-left:80px}
+.screening dd a,.slideGroup .slideBox a{display:inline-block; padding:3px 5px; margin:0 10px 10px 0; color:#666}
+.screening dd a:hover,.screening dd a.on,.slideGroup .slideBox a:hover,.slideGroup .slideBox a.on{background:#e53333; color:#fff; text-decoration:none}
+dl.language{border:none}
+.screening-other dd a {padding:0 5px 3px 5px}
+.screening-other a span{font-size:18px; display:inline-block; margin-right:5px; color:#ccc}
+.screening-other dd a.on,.screening-other dd a:hover{color:#e53333; background:none}
+.screening-other a.on span,.screening-other dd a:hover span{color:#e53333}
 
 
 /*翻页*/
@@ -436,13 +450,16 @@ white-space:nowrap; overflow:hidden; color:#fff}
 
 
 /*详细页*/
+.page-location{background:#eee}
 .location em{font-family:宋体; color:#999}
 .title{height:35px; border-bottom:2px solid #ccc}
 .title h1{padding:15px}
-.app-dis-page .left{width:240px; border-top:2px solid #e53333; margin-top:-2px; z-index:2; padding-bottom:99999px; margin-bottom:-99999px}
+.app-dis-page .left{width:240px; z-index:2; padding-bottom:99999px; margin-bottom:-99999px}
 .app-dis-page .right,.user-page .right{width:1019px}
 .app-dis-page .pic{width:177px; height:177px}
 .cover{background:url(http://static.ccplay.com.cn/static/common/img/app_bg.png) no-repeat; width:177px; height:177px; top:0}
+
+
 
 .instr{border-top:1px solid #e8e8e8; padding-top:3px !important; margin-top:20px}
 .instr li{border-bottom:1px solid #e8e8e8; padding:3px 10px; vertical-align:top}
@@ -467,7 +484,6 @@ white-space:nowrap; overflow:hidden; color:#fff}
 
 .app-dis-page .up_pic{background:url(http://static.ccplay.com.cn/static/common/img/up_pic_img_bg.png); height:370px; overflow:hidden}
 .app-dis-page .right .up,.app-dis-page .right .up .up_box{ margin-bottom:10px; overflow:hidden; position:relative; padding:10px}
-.app-dis-page .right .up_pic ul{padding:10px}
 .app-dis-page .right .up_pic li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
 .app-dis-page .right .up_pic img{height:370px}
 
@@ -812,7 +828,7 @@ clear: both; line-height: 1.8em;}
 #cc-m .app-list-page .left-list,#cc-m .app-list-page .pin-box{width:150px}
 #cc-m .app-list-page .t-title ul{padding-left:0; text-align:center; width:100%}
 #cc-m .app-list-page .left-nav li a{padding:0 10px}
-#cc-m .app-list-page .right-list{width:800px}
+#cc-m .app-list-page .right-list{width:820px}
 #cc-m .app-list-page .app-list-xl{width:31%}
 #cc-m .app-dis-page .left,#cc-m .user-page .left{width:220px}
 #cc-m .app-dis-page .right,#cc-m .user-page .right{width:779px}
@@ -876,7 +892,7 @@ clear: both; line-height: 1.8em;}
 #cc-s .app-list-page .left-nav li a span{display:none}
 #cc-s .app-list-page .t-title ul{padding-left:0; text-align:center; width:100%}
 #cc-s .app-list-page .t-title li{padding:0 20px}
-#cc-s .app-list-page .right-list{width:610px}
+#cc-s .app-list-page .right-list{width:630px}
 #cc-s .app-list-page .app-list-xl{width:47%}
 #cc-s .app-dis-page .left,#cc-s .user-page .left{width:220px}
 #cc-s .app-dis-page .right,#cc-s .user-page .right{width:529px}
