@@ -297,7 +297,7 @@ class AllPackageManager(cachemixin.PackageCacheManagerMixin,
     pass
 
 
-package_name_pattern = '[\w\d_.]+'
+package_name_pattern = '[\w\d_.-]+'
 
 
 class Package(PlatformBase,
