@@ -438,9 +438,10 @@ white-space:nowrap; overflow:hidden; color:#fff}
 dl.language{border:none}
 .screening-other dd a {}
 .screening-other a span{display:inline-block; margin-right:5px; background:url(http://static.ccplay.com.cn/static/android_web/img/screening.png) no-repeat; width:13px; height:13px; position:relative; top:1px}
-.screening-other dd a.on,.screening-other dd a:hover{color:#e53333; background:none}
+.screening-other dd a.on{color:#e53333; background:none}
+.screening-other dd a:hover{background:none; color:#000}
 .screening-other dd a:hover span{background-position:-14px 0}
-.screening-other dd a:active span,.screening-other dd a.on span{background-position:-28px -14px}
+.screening-other dd a:active span,.screening-other dd a.on span,.screening-other dd a:active{background-position:-28px -14px; color:#e53333}
 
 
 
@@ -463,6 +464,21 @@ dl.language{border:none}
 .app-dis-page .right,.user-page .right{width:1019px}
 .app-dis-page .pic{width:177px; height:177px}
 .cover{background:url(http://static.ccplay.com.cn/static/common/img/app_bg.png) no-repeat; width:177px; height:177px; top:0}
+
+
+.app-dis-page h1{width:67%; height:35px; text-align:left; display:inline-block; white-space: nowrap;text-overflow: ellipsis;-o-text-overflow: ellipsis;overflow: hidden;}
+.app-dis-page .t-title{border-bottom:1px solid #eee; background: #f8f8f8}
+.app-dis-page .t-title h1{padding:20px 0 20px 25px}
+.page-tab-a{position:absolute; right:0; bottom:-1px}
+.page-tab-a a{display:inline-block; height:51px; line-height:51px; padding:0 25px; border-right:1px solid #eee; border-top:1px solid #eee; background:#eee; float:left}
+.page-tab-a a.on{background:#fff; border-top:2px solid #e53333; line-height:49px}
+
+
+.detection{padding:10px 10px 2px 10px}
+.detection li{float:left; margin-right:20px}
+.detection span{ width:16px; height:16px; display:inline-block; background:url(http://static.ccplay.com.cn/static/android_web/img/screening.png) no-repeat -42px 0; position:relative; top:3px; margin-right:5px}
+.detection .no{color:#ff9933}
+.detection .no span{background-position:-42px -17px}
 
 
 
@@ -489,7 +505,7 @@ dl.language{border:none}
 
 .app-dis-page .up_pic{background:url(http://static.ccplay.com.cn/static/common/img/up_pic_img_bg.png); height:370px; overflow:hidden}
 .app-dis-page .right .up,.app-dis-page .right .up .up_box{ margin-bottom:10px; overflow:hidden; position:relative; padding:10px}
-.app-dis-page .right .up_pic li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
+.app-dis-page .right .up_pic li{float:left; margin-right:12px}
 .app-dis-page .right .up_pic img{height:370px}
 
 .app-dis-page .right .up .ios-web-icon{top:-210px; display:inline-block; z-index:99999}
