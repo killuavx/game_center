@@ -24,48 +24,6 @@
             -else
               %li.dib.pl10.pr10.tab.ios-web-icon
                 %a{:href => "javascript:;"}= select.name
-        //
-          .r.f12.rel.dib.p10.white.poi.sort
-            %span 默认排序
-            %b.ios-web-icon
-            .abs.lh20.sort-menu{:style => "display: none;"}
-              %a{:href => "#"} 周榜
-              %a{:href => "#"} 月榜
-              %a{:href => "#"} 总榜
-
-        .r.f12.rel.dib.p10.white.poi.mr10.sort
-          %span<
-            - if c_size == 'all'
-              全部大小
-            - else
-              大小{{ c_size }}
-          %b.ios-web-icon
-          .abs.lh20.sort-menu{:style => "display: none;"}
-            %a{:href => "{% qurl current_url size='0-10m' %}"} 0-10M
-            %a{:href => "{% qurl current_url size='10-50m' %}"} 10-50M
-            %a{:href => "{% qurl current_url size='50-100m' %}"} 50-100M
-            %a{:href => "{% qurl current_url size='100-300m' %}"} 100-300M
-            %a{:href => "{% qurl current_url size='300-500m' %}"} 300-500M
-            %a{:href => "{% qurl current_url size='500m' %}"} 500M以上
-            %a{:href => "{% qurl current_url size=None %}"} 全部
-
-        .r.f12.rel.dib.p10.white.poi.mr10.sort
-          %span<
-            - if c_lang == 'all'
-              全部语言
-            - else
-              - if c_lang == 'ZH'
-                中文
-              - elif c_lang = 'EN'
-                英文
-              - else
-                其他
-          %b.ios-web-icon
-          .abs.lh20.sort-menu{:style => "display: none;"}
-            %a{:href => "{% qurl current_url lang='zh' %}"} 中文
-            %a{:href => "{% qurl current_url lang='en' %}"} 英文
-            %a{:href => "{% qurl current_url lang=None %}"} 全部
-
       / t-title
     / cell
 
@@ -82,7 +40,7 @@
                     = cat.name
                   %span.r
               -else
-                {% qurl request.get_full_path category=cat.pk topic=None lang=None page=None as second_url %}
+                {% qurl request.get_full_path category=cat.pk topic=None lang=None size=None reps=None page=None as second_url %}
                 -if cat.is_root_node
                   %a{:href => "{% qurl second_url category=None %}"}
                     全部
@@ -94,6 +52,7 @@
 
       {% widget WebCategoryComplexPackageBySearchList category=category topic=topic size=c_size lang=c_lang per_page=27 page=request.GET.page %}
       .l.btn-s-box.tj.p20.right-list
+        {% include_widget WebPackageFiltersWidget current_url=current_url c_lang=c_lang c_size=c_size c_reps=c_reps %}
         -for package in items
           -with pkg_tags=package.get_all_cache_identifier_tags
             {% cache_location_register tags=pkg_tags %} {% cache_add_tags pkg_tags %}
