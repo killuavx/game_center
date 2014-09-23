@@ -94,18 +94,23 @@ class PackageByCategorySearcherFilter(base.BaseWidgetFilterBackend):
 
 class SearchByLanguageFilterBackend(base.BaseWidgetFilterBackend):
 
-    LANGS = [
-        'ZH',
-        'EN'
+    language_param = 'lang'
+
+    choices = [
+        {'code': 'ZH', 'name': '中文'},
+        {'code': 'EN', 'name': '英文'},
     ]
 
-    language_param = 'lang'
+    lang_choices = {}
+    for c in choices:
+        lang_choices[c['code']] = c['code']
 
     def filter_queryset(self, request, queryset, widget):
         lang = getattr(widget, self.language_param, None)
         if lang is None:
             return queryset
-        if lang not in self.LANGS:
+        lang = lang.upper()
+        if lang not in self.lang_choices:
             return queryset
         return queryset.filter(support_language_codes__in=[lang])
 
@@ -114,21 +119,30 @@ class SearchByPkgSizeFilterBackend(base.BaseWidgetFilterBackend):
 
     M = 1024 * 1024
 
+    G = M * 1024
+
     size_param = 'size'
 
-    size_choices = {
-        '0-10M': (None, 10*M),
-        '10-50M': (10*M, 50*M),
-        '50-100M': (50*M, 100*M),
-        '100-300M': (100*M, 300*M),
-        '300-500M': (300*M, 500*M),
-        '500M': (500*M, None),
-    }
+    choices = [
+        {'code': '0-10m', 'name': '10M以内', 'value': (None, 10*M)},
+        {'code': '10-50m', 'name': '10-50M', 'value': (10*M, 50*M)},
+        {'code': '50-100m', 'name': '50-100M', 'value': (50*M, 100*M)},
+        {'code': '100-300m', 'name': '100-300M', 'value': (100*M, 300*M)},
+        {'code': '300-500m', 'name': '300-500M', 'value': (300*M, 500*M)},
+        {'code': '500-800m', 'name': '500-800M', 'value': (500*M, 800*M)},
+        {'code': '800m-1g', 'name': '800M-1G', 'value': (800*M, 1*G)},
+        {'code': '1g', 'name': '1G以上', 'value': (1*G, None)},
+    ]
+
+    size_choices = {}
+    for c in choices:
+        size_choices[c['code']] = c['value']
 
     def filter_queryset(self, request, queryset, widget):
         size = getattr(widget, self.size_param, None)
         if size is None:
             return queryset
+        size = size.lower()
         if size not in self.size_choices:
             return queryset
         min_size, max_size = self.size_choices[size]
@@ -136,6 +150,32 @@ class SearchByPkgSizeFilterBackend(base.BaseWidgetFilterBackend):
             queryset = queryset.filter(download_size__gte=min_size)
         if max_size:
             queryset = queryset.filter(download_size__lt=max_size)
+        return queryset
+
+
+class SearchByPkgReportsFilterBackend(base.BaseWidgetFilterBackend):
+
+    reports_param = 'reps'
+
+    choices = [
+        {'code': 'no-network', 'name': '无需网络'},
+        {'code': 'no-adv', 'name': '无需广告'},
+        {'code': 'no-google', 'name': '无需谷歌市场'},
+    ]
+
+    report_choices = {}
+    for c in choices:
+        report_choices[c['code']] = c['code']
+
+    def filter_queryset(self, request, queryset, widget):
+        reps = getattr(widget, self.reports_param, [])
+        if not reps:
+            return queryset
+
+        for r in reps:
+            r = r.lower()
+            if r in self.report_choices:
+                queryset = queryset.filter(reports__in=[r['code']])
         return queryset
 
 

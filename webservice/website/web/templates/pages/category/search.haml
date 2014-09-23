@@ -2,9 +2,9 @@
 -load widgets url_tags templatehelper_tags web_tags cache_tagging_tags
 {% block meta_title %}{{ request.GET.q }}{% endblock %}
 -block main
-  {% with c_cat=category.slug c_q=request.GET.q|lower c_lang=request.GET.lang|upper|default:'all' c_size=request.GET.size|upper|default:'all' c_page=request.GET.page|default:1 %}{% get_site_name as site_name %}
+  {% with c_cat=category.slug c_q=request.GET.q|lower c_lang=request.GET.lang|upper|default:'all' c_size=request.GET.size|upper|default:'all' c_reps=request.GET.reps c_page=request.GET.page|default:1 %}{% get_site_name as site_name %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
-  {% cache_tagging 'product_web_search'|add_param:site_name|add_param:c_cat|add_param:c_q|add_param:c_lang|add_param:c_size|add_param:c_page timeout=CACHE_TIMEOUT_HOURS %}{% spaceless %}
+  {% cache_tagging 'product_web_search'|add_param:site_name|add_param:c_cat|add_param:c_q|add_param:c_lang|add_param:c_size|add_param:c_reps|add_param:c_page timeout=CACHE_TIMEOUT_HOURS %}{% spaceless %}
   {% cache_add_tags request.get_host|add:request.path_info request.build_absolute_uri %}
   {% cache_add_tags 'search_word'|add_param:c_q 'search_category'|add_param:c_cat %}
   {% cache_location_register 'product_web_search' 'search_word'|add_param:c_q 'search_category'|add_param:c_cat %}
@@ -17,48 +17,6 @@
       .f18.cell.rel.t-title
         %h3.l.n.mr30
           搜索相关结果约{{ paginator.count|default:0 }}个与<span class="ml5 mr5 red">“{{ request.GET.q }}”</span>相关的{{ root_category.name }}
-        //
-          .r.f12.rel.dib.p10.white.poi.sort
-            %span 默认排序
-            %b.ios-web-icon
-            .abs.lh20.sort-menu{:style => "display: none;"}
-              %a{:href => "#"} 周榜
-              %a{:href => "#"} 月榜
-              %a{:href => "#"} 总榜
-
-        .r.f12.rel.dib.p10.white.poi.mr10.sort
-          %span<
-            - if c_size == 'all'
-              全部大小
-            - else
-              大小{{ c_size }}
-          %b.ios-web-icon
-          .abs.lh20.sort-menu{:style => "display: none;"}
-            %a{:href => "{% qurl current_url size='0-10m' %}"} 0-10M
-            %a{:href => "{% qurl current_url size='10-50m' %}"} 10-50M
-            %a{:href => "{% qurl current_url size='50-100m' %}"} 50-100M
-            %a{:href => "{% qurl current_url size='100-300m' %}"} 100-300M
-            %a{:href => "{% qurl current_url size='300-500m' %}"} 300-500M
-            %a{:href => "{% qurl current_url size='500m' %}"} 500M以上
-            %a{:href => "{% qurl current_url size=None %}"} 全部
-
-        .r.f12.rel.dib.p10.white.poi.mr10.sort
-          %span<
-            - if c_lang == 'all'
-              全部语言
-            - else
-              - if c_lang == 'ZH'
-                中文
-              - elif c_lang = 'EN'
-                英文
-              - else
-                其他
-          %b.ios-web-icon
-          .abs.lh20.sort-menu{:style => "display: none;"}
-            %a{:href => "{% qurl current_url lang='zh' %}"} 中文
-            %a{:href => "{% qurl current_url lang='en' %}"} 英文
-            %a{:href => "{% qurl current_url lang=None %}"} 全部
-
       / t-title
     / cell
 
@@ -89,6 +47,7 @@
       {% end_cache_tagging %}
 
       .l.btn-s-box.tj.p20.right-list
+        {% include_widget WebPackageFiltersWidget current_url=current_url c_lang=c_lang c_size=c_size c_reps=c_reps %}
         -for package in items
           -with pkg_tags=package.get_all_cache_identifier_tags
             {% cache_location_register tags=pkg_tags %} {% cache_add_tags pkg_tags %}

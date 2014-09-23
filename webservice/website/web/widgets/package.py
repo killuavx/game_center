@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 from django_widgets import Widget
 from website.widgets.common.filters import BaseWidgetFilterBackend, PackageByCategorySearcherFilter
 from website.widgets.common import package as pkgwidget
@@ -6,7 +7,7 @@ from .base import ProductPropertyWidgetMixin
 from haystack.utils import get_identifier
 from haystack.constants import ID
 
-__all__ = ['WebPackageRelatedBySearchListWidget']
+__all__ = ['WebPackageRelatedBySearchListWidget', 'WebPackageFiltersWidget']
 
 class ExcludePackageSearcherFilterBackend(BaseWidgetFilterBackend):
 
@@ -67,3 +68,32 @@ class WebPackageRelatedBySearchListWidget(pkgwidget.BasePackageRelatedBySearchLi
                                           ProductPropertyWidgetMixin,
                                           Widget):
     pass
+
+
+from website.widgets.common.filters import SearchByLanguageFilterBackend, SearchByPkgSizeFilterBackend, SearchByPkgReportsFilterBackend
+
+
+class WebPackageFiltersWidget(ProductPropertyWidgetMixin, Widget):
+
+    template = 'pages/widgets/category/filters.haml'
+
+    def get_context(self, value, options):
+        data = deepcopy(options)
+        data.update(
+            c_lang=options.get('c_lang', 'all'),
+            c_reps=options.get('c_reps', []),
+            c_size=options.get('c_size', 'all'),
+            langs=self.get_langs(),
+            reports=self.get_reports(),
+            sizes=self.get_sizes(),
+        )
+        return data
+
+    def get_langs(self):
+        return deepcopy(SearchByLanguageFilterBackend.choices)
+
+    def get_reports(self):
+        return deepcopy(SearchByPkgReportsFilterBackend.choices)
+
+    def get_sizes(self):
+        return deepcopy(SearchByPkgSizeFilterBackend.choices)
