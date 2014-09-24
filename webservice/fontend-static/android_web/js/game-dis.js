@@ -17,17 +17,17 @@ function bindAppDetailCoverEv(vis_count){
 		});
 		
 		if(imgloadCount == imageCount){
-			jQuery(".up_box").slide({ mainCell:"ul",vis:1,scroll:1,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+			jQuery(".up_box").slide({ mainCell:"ul",vis:4,prevCell:".prev",nextCell:".next",effect:"leftLoop",autoPage:true,easing:"easeOutCubic"});
 		}else{
 			e.load(function(){
 				imgloadCount++;
 				if(imgloadCount == imageCount){
-					jQuery(".up_box").slide({ mainCell:"ul",vis:1,scroll:1,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+					jQuery(".up_box").slide({ mainCell:"ul",vis:4,prevCell:".prev",nextCell:".next",effect:"leftLoop",autoPage:true,easing:"easeOutCubic"});
 				}
 			});
 		}
 	}else{
-		jQuery(".up_box").slide({ mainCell:"ul",vis:1,scroll:1,prevCell:".prev",nextCell:".next",effect:"left",pnLoop:false,autoPage:true,easing:"easeOutCubic"});
+		jQuery(".up_box").slide({ mainCell:"ul",vis:4,prevCell:".prev",nextCell:".next",effect:"leftLoop",autoPage:true,easing:"easeOutCubic"});
 		
 	}	
 }
@@ -121,6 +121,8 @@ $(document).ready(function(){
 		$('#rating').text($rating+'分');
 		$('#rating_output').val($rating);
 	});	
+
+	
 	function rateWidth($rating){		
 		$rating = parseFloat($rating);
 		switch ($rating){
