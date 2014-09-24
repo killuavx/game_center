@@ -29,17 +29,18 @@
         %a{:href => "{% qurl current_url size=size.code|lower %}"}= size.name
         {% endifequal %}
     .fix
+
 //
   %dl.screening-other
     %dt 其他：
     %dd
       - for rep in reports
         {% if rep.code in c_reps %}
-        %a{:class => "on", :href => "{% qurl current_url reps+=rep.code|lower as rep_url %}" }><
+        %a{:class => "on", :href => "{% qurl current_url reps-=rep.code|lower %}" }><
           %span> ☑
           = rep.name
         {% else %}
-        %a{:href => "{% qurl current_url reps-=rep.code|lower %}" }><
+        %a{:href => "{% qurl current_url reps+=rep.code|lower %}" }><
           %span> ☑
           = rep.name
         {% endif %}

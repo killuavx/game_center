@@ -2,7 +2,7 @@
 -load widgets url_tags templatehelper_tags web_tags cache_tagging_tags
 {% block meta_title %}{{ request.GET.q }}{% endblock %}
 -block main
-  {% with c_cat=category.slug c_q=request.GET.q|lower c_lang=request.GET.lang|upper|default:'all' c_size=request.GET.size|upper|default:'all' c_reps=request.GET.reps c_page=request.GET.page|default:1 %}{% get_site_name as site_name %}
+  {% with c_cat=category.slug c_q=request.GET.q|lower c_lang=request.GET.lang|upper|default:'all' c_size=request.GET.size|upper|default:'all' c_reps=request.GET|query_getlist:'reps' c_page=request.GET.page|default:1 %}{% get_site_name as site_name %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
   {% cache_tagging 'product_web_search'|add_param:site_name|add_param:c_cat|add_param:c_q|add_param:c_lang|add_param:c_size|add_param:c_reps|add_param:c_page timeout=CACHE_TIMEOUT_HOURS %}{% spaceless %}
   {% cache_add_tags request.get_host|add:request.path_info request.build_absolute_uri %}
@@ -12,7 +12,7 @@
   / START 应用列表 app-list-page
   .auto.mt30.width.app-list-page
     {% qurl request.build_absolute_uri page=None as current_url %}
-    {% widget WebSearchPackageListWidget q=request.GET.q cat=root_category.slug lang=c_lang size=c_size per_page=27 page=request.GET.page %}
+    {% widget WebSearchPackageListWidget q=request.GET.q cat=root_category.slug lang=c_lang size=c_size reps=c_reps per_page=27 page=request.GET.page %}
     .cell
       .f18.cell.rel.t-title
         %h3.l.n.mr30

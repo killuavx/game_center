@@ -159,8 +159,9 @@ class SearchByPkgReportsFilterBackend(base.BaseWidgetFilterBackend):
 
     choices = [
         {'code': 'no-network', 'name': '无需网络'},
-        {'code': 'no-adv', 'name': '无需广告'},
-        {'code': 'no-google', 'name': '无需谷歌市场'},
+        {'code': 'no-adv', 'name': '无广告'},
+        {'code': 'no-gplay', 'name': '无需谷歌市场'},
+        {'code': 'no-root', 'name': '无需root权限'},
     ]
 
     report_choices = {}
@@ -168,14 +169,18 @@ class SearchByPkgReportsFilterBackend(base.BaseWidgetFilterBackend):
         report_choices[c['code']] = c['code']
 
     def filter_queryset(self, request, queryset, widget):
-        reps = getattr(widget, self.reports_param, [])
+        reps = list(getattr(widget, self.reports_param, []))
         if not reps:
             return queryset
 
+        lookups = {}
         for r in reps:
             r = r.lower()
             if r in self.report_choices:
-                queryset = queryset.filter(reports__in=[r['code']])
+                name = r.lstrip('no-')
+                lookups['reported_%s' % name] = False
+        if lookups:
+            queryset = queryset.filter(reported=True).filter(**lookups)
         return queryset
 
 

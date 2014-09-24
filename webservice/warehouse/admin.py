@@ -128,12 +128,21 @@ class PackageVersionAdmin(MainAdmin):
             'classes': ('suit-tab suit-tab-general',
                         'grp-collapse collapse-closed'),
             'fields': (
+
                 'subtitle',
                 ('version_code', 'version_name',),
                 'summary',
                 'tags_text',
                 'whatsnew',
                 'description',
+            )
+        }),
+        (_('Report'), {
+            'classes': ('suit-tab suit-tab-report',
+                        'grp-collapse collapse-closed'),
+            'fields': (
+                'reported',
+                ('reported_network', 'reported_adv', 'reported_gplay', 'reported_root'),
             )
         }),
         (_('File'), {
@@ -355,6 +364,8 @@ class PackageVersionInlines(admin.StackedInline):
                 ('version_code', 'version_name',),
                 ('subtitle', 'summary', 'tags_text',),
                 ('description', 'whatsnew', ),
+                'reported',
+                ('reported_network', 'reported_adv', 'reported_gplay', 'reported_root'),
             )
         }),
         (_('Status'), {

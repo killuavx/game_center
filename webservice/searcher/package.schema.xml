@@ -226,6 +226,12 @@
     <field name="support_device_types" type="string" indexed="false" stored="true" multiValued="true" />
     <field name="support_language_codes" type="string" indexed="true" stored="true" multiValued="true" />
 
+    <field name="reported" type="boolean" indexed="true" stored="true" multiValued="false" />
+    <field name="reported_adv" type="boolean" indexed="true" stored="true" multiValued="false" />
+    <field name="reported_root" type="boolean" indexed="true" stored="true" multiValued="false" />
+    <field name="reported_gplay" type="boolean" indexed="true" stored="true" multiValued="false" />
+    <field name="reported_network" type="boolean" indexed="true" stored="true" multiValued="false" />
+
   </fields>
 
   <!-- field to use to determine and enforce document uniqueness. -->

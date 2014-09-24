@@ -3,9 +3,9 @@
 -load web_tags
 
 -block main
-  {% with c_cat=category.slug c_topic=request.GET.topic|default:'0' c_lang=request.GET.lang|upper|default:'all' c_size=request.GET.size|upper|default:'all' c_page=request.GET.page|default:'1' %} {% get_site_name as site_name %}
+  {% with c_cat=category.slug c_topic=request.GET.topic|default:'0' c_lang=request.GET.lang|upper|default:'all' c_size=request.GET.size|upper|default:'all' c_reps=request.GET|query_getlist:'reps' c_page=request.GET.page|default:'1' %} {% get_site_name as site_name %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
-  {% cache_tagging 'product_web_category'|add_param:site_name|add_param:c_cat|add_param:c_topic|add_param:c_lang|add_param:c_size|add_param:c_page timeout=CACHE_TIMEOUT_HOURS %}{% spaceless %}
+  {% cache_tagging 'product_web_category'|add_param:site_name|add_param:c_cat|add_param:c_topic|add_param:c_lang|add_param:c_size|add_param:c_reps|add_param:c_page timeout=CACHE_TIMEOUT_HOURS %}{% spaceless %}
   -with cat_tags=category.get_all_cache_identifier_tags
     {% cache_add_tags 'product_web_category'|add_param:site_name request.get_host|add:request.path_info request.build_absolute_uri %}
     {% cache_location_register 'product_web_category' tags=cat_tags %}
@@ -50,7 +50,7 @@
                     = cat.name
                     %span.r
 
-      {% widget WebCategoryComplexPackageBySearchList category=category topic=topic size=c_size lang=c_lang per_page=27 page=request.GET.page %}
+      {% widget WebCategoryComplexPackageBySearchList category=category topic=topic size=c_size lang=c_lang reps=c_reps per_page=27 page=request.GET.page %}
       .l.btn-s-box.tj.p20.right-list
         {% include_widget WebPackageFiltersWidget current_url=current_url c_lang=c_lang c_size=c_size c_reps=c_reps %}
         -for package in items

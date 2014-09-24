@@ -35,11 +35,14 @@ class BasePackageSearchListWidget(base.FilterWidgetMixin, base.BaseListWidget):
     filter_backends = (filters.PackageByCategorySearcherFilter,
                        filters.SearchByLanguageFilterBackend,
                        filters.SearchByPkgSizeFilterBackend,
+                       filters.SearchByPkgReportsFilterBackend,
     )
 
     lang = None
 
     size = None
+
+    reps = None
 
     def get_search_terms(self, options):
         querystr = options.get(self.search_param, '')
@@ -64,6 +67,7 @@ class BasePackageSearchListWidget(base.FilterWidgetMixin, base.BaseListWidget):
         self.search_terms = self.get_search_terms(options)
         self.lang = options.get('lang')
         self.size = options.get('size')
+        self.reps = options.get('reps', [])
         return super(BasePackageSearchListWidget, self)\
             .get_context(value=value,
                          options=options,
@@ -399,6 +403,7 @@ class BaseCategoryComplexPackageBySearchListWidget(BasePackageBySearchListWidget
         filters.SearchByTopicFilterBackend,
         filters.SearchByLanguageFilterBackend,
         filters.SearchByPkgSizeFilterBackend,
+        filters.SearchByPkgReportsFilterBackend,
         filters.SearchOrderByFilterBackend,
     )
 
@@ -416,6 +421,10 @@ class BaseCategoryComplexPackageBySearchListWidget(BasePackageBySearchListWidget
 
     lang = None
 
+    reps = None
+
+    size = None
+
     def setup_category(self, category=None, category_id=None, category_slug=None, **kwargs):
         self.category = category
         self.category_id = category_id
@@ -431,6 +440,7 @@ class BaseCategoryComplexPackageBySearchListWidget(BasePackageBySearchListWidget
         self.setup_topic(**options)
         self.lang = options.get('lang', None)
         self.size = options.get('size', None)
+        self.reps = options.get('reps', [])
         data = super(BaseCategoryComplexPackageBySearchListWidget, self).get_context(value=value,
                                                                                options=options,
                                                                                context=context,
