@@ -80,6 +80,9 @@ opacity: 0;}
 .logo {height:50px}
 .home{background:url(http://static.ccplay.com.cn/static/common/img/home.png) no-repeat; width:50px; height:50px; position:absolute; left:0; display:none}
 /*搜索*/
+.no-content{margin-left:10%}
+#cc-s .no-content{margin-left:0}
+.no-content img{width:123px; height:123px}
 .search{padding-top:7px}
 .search .box{border:1px solid #b8b8b8; height:33px}
 .search .key{border:none; padding-left:5px; height:33px; line-height:33px; background:none; left:0; width:73%}
@@ -520,11 +523,13 @@ dl.language{border:none}
 .relevant-app .cell-bk{border-top:1px solid #eee}
 
 /*虫虫下载提示*/
-.game-dis-cc-down{background:#e53333 url(http://static.ccplay.com.cn/static/common/img/cc-down-tip-2.png) no-repeat right; margin-top:10px; height:100px; position:relative}
-.game-dis-cc-down .l{position:absolute}
-.game-dis-cc-down a:hover{color:#333; text-decoration:none}
-#cc-m .game-dis-cc-down .l,#cc-s .game-dis-cc-down{display:none}
-#cc-m .cc-down-pic{width:759px; background-color:#e53333; background-position:15px 0}
+.game-dis-cc-down{margin:30px 0}
+.cc-down-bg{background:url(http://static.ccplay.com.cn/static/common/img/up_pic_img_bg.png); height:90px; text-align:center}
+.cc-down-bg object{margin:0 auto; width:500px}
+.cc-down-bg p{right:0; top:-10px}
+.cc-down-bg p img{border:1px solid #ccc}
+.cc-down-bg a{display:block; width:100%; height:90px; top:0; left:0}
+#cc-s .cc-down-bg p{display:none}
 
 .report-box h5{margin-bottom:10px}
 .report-box li{display:inline-block; margin:0 10px 20px 0}
