@@ -8,7 +8,7 @@
   {% is_site_android as is_android %}{% is_site_ios as is_ios %}{% get_site_name as site_name %}
   {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
   {% with title=package.title icon_url=package.icon_large_url|default:package.icon_default_url pkg_cache_tags=package.get_all_cache_identifier_tags id_cache_tag=package.get_cache_identifier root_category=package.root_category main_category=package.primary_category %}
-  .auto.mt30.width.app-dis-page
+  .auto.pt10.width.app-dis-page
     .cell-bk.ovh
       {% cache_tagging 'product_web_package_tl'|add_param:site_name|add_param:id_cache_tag tags=pkg_cache_tags timeout=CACHE_TIMEOUT_HOURS %}{% spaceless %}
       {% cache_add_tags 'product_web_package_tl' 'product_web_package_tl'|add_param:site_name request.build_absolute_uri|add_param:'#product_web_package_tl' %}
@@ -17,7 +17,7 @@
         {% qurl package.static_download_url as dw_url %}
       - else
         {% qurl package.download_url entrytype=product as dw_url %}
-      .pb10.location><
+      .p10.location.page-location><
         当前位置：
         %a{:href => "/"} 首页
         %em &gt;
@@ -27,8 +27,12 @@
         %em &gt;
         %a{:href => "javascript:;"}><= title
 
-      .cell-bk.title
-        %h1.l.n.dib.tc= title
+      .rel.cell-bk.t-title.page-tab
+        %h1.l.n= title
+        .r.f16.page-tab-a
+          %a.on{:href => "javascript:;", } 游戏详情
+          %a{:href => "{% absolute_url package product='web' template='gifbag' %}", } 游戏礼包
+
       .l.rel.left
         .auto.rel.pic
           %img.db.auto.pt1.mt20{:height => "175px", :src => "={icon_url}", :width => "175px"}
@@ -68,7 +72,10 @@
             %span><= package.download_size|filesizeformat
           %li<
             类别
-            %span><= package.main_categories|join:", "
+            %span><
+              -for cat in package.main_category_objects
+                %a.tdl{:href => "{% absolute_url cat product='web' %}"}= cat.name
+                &nbsp;
           %li<
             语言
             %span><= package.language_names|join:", "
@@ -159,6 +166,10 @@
 -block extra_js_footer
   %script{:src => "{% static 'android_web/js/game-dis.js' %}" }
   :javascript
+    //百度分享
+    window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"0","bdPos":"right","bdTop":"100"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+  :javascript
+    //百度分享
     $(function(){
       $.ajax({
         url: '{% comment_star_form_url_for package.latest_version_id "warehouse.packageversion" %}',
