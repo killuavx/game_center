@@ -81,6 +81,14 @@ class RecommendSerializer(HyperlinkedModelSerializer):
             except:
                 return None
 
+    package_name = serializers.SerializerMethodField('get_package_name')
+
+    def get_package_name(self, obj):
+        try:
+            return obj.content.package_name
+        except:
+            return None
+
     class Meta:
         model = Recommend
         fields = ('title',
@@ -90,4 +98,5 @@ class RecommendSerializer(HyperlinkedModelSerializer):
                   'summary',
                   'content_url',
                   'content_type',
+                  'package_name',
         )
