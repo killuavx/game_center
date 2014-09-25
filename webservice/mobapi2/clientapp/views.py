@@ -102,3 +102,76 @@ class LoadingCoverView(views.APIView):
                         headers=dict(Location=cover.image.url),
                         status=status.HTTP_302_FOUND)
 
+
+from rest_framework import viewsets
+from mobapi2.rest_clients import android_home_api
+
+
+class HomePageViewSet(viewsets.ViewSet):
+    """ 主页符合接口
+
+    ### 虫虫精选页面
+
+    #### 访问方式
+
+        GET /api/v2/home/recommend/
+
+        {
+            advertisements: {
+                next: null,
+                results: [...],
+                count: 5,
+                previous: null
+            },
+            packages: {
+                next: "http://android.ccplay.com.cn/api/v2/packages/?ordering=topical&topic_slug=home-recommend-game&page=2",
+                results: [...],
+                count: 20,
+                previous: null
+            }
+        }
+
+    ### 网络专区页面
+
+    #### 访问方式
+
+        GET /api/v2/home/network/
+
+        {
+            advertisements: {
+                next: null,
+                results: [...],
+                count: 5,
+                previous: null
+            },
+            packages: {
+                next: "http://android.ccplay.com.cn/api/v2/packages/?ordering=topical&topic_slug=home-network-game&page=2",
+                results: [...],
+                count: 20,
+                previous: null
+            }
+        }
+
+
+    ### 响应数据
+
+    * `advertisements`: 广告列表结构，见: [/api/v2/advertisements/](/api/v2/advertisements/)
+    * `packages`: 软件列表结构，见: [/api/v2/packages/](/api/v2/packages/)
+
+
+    """
+
+    permission_classes = ()
+    authentication_classes = ()
+
+    def recommend(self, request, *args, **kwargs):
+        return Response(dict(
+            packages=android_home_api.recommend_list.data,
+            advertisements=android_home_api.recommend_advs.data
+        ))
+
+    def network(self, request, *args, **kwargs):
+        return Response(dict(
+            packages=android_home_api.netgame_list.data,
+            advertisements=android_home_api.netgame_advs.data
+        ))

@@ -95,10 +95,22 @@ task_urlpatterns = patterns('',
         name=rest_router.get_base_name('task-signin')),
 )
 
+from mobapi2.clientapp.views import HomePageViewSet
+
+home_urlpatterns = patterns('',
+    url(r'^recommend/(.(?P<format>[\w_-]+))?',
+        HomePageViewSet.as_view({'get':'network'}),
+        name=rest_router.get_base_name('home-network')),
+    url(r'^network/(.(?P<format>[\w_-]+))?',
+        HomePageViewSet.as_view({'get':'recommend'}),
+        name=rest_router.get_base_name('home-recommend')),
+)
+
 slug_pattern = '[\w_.-]+'
 
 urlpatterns = rest_router.urls
 urlpatterns += patterns('',
+    url(r'^home/', include(home_urlpatterns)),
     url(r'^tasks/', include(task_urlpatterns)),
     url(r'^recommends/(?P<date>[\d-]+)/(.(?P<format>[\w_-]+))?$', promotion_views.RecommendView.as_view(),
         name=rest_router.get_base_name('recommend-detail')),
