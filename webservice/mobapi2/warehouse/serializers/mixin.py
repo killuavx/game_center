@@ -216,6 +216,13 @@ class PackageRelatedLatestVersinoMixin(object):
         except:
             return 'apk'
 
+    def get_latest_version_flags(self, obj):
+        latest_version = self._latest_version(obj)
+        try:
+            return latest_version.flags
+        except:
+            return []
+
 
 class PackageRelatedPackageUrlMixin(object):
 
