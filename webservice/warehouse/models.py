@@ -859,6 +859,16 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
             self._language_names = self._get_languages()
         return self._language_names
 
+    FLAGS = ['首发', '热门', '活动', '礼包']
+
+    @property
+    def flags(self):
+        _flags = []
+        for f in self.FLAGS:
+            if f in self.tags_text:
+                _flags.append(f)
+        return _flags
+
 
 tagging.register(PackageVersion)
 
