@@ -47,6 +47,9 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
     versions_url = serializers.SerializerMethodField('get_versions_url')
     flags = serializers.SerializerMethodField('get_latest_version_flags')
 
+    has_award = serializers.SerializerMethodField('get_latest_version_has_award')
+    award_coin = serializers.SerializerMethodField('get_latest_version_award_coin')
+
     class Meta:
         model = Package
         fields = ('url',
@@ -54,6 +57,8 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'cover',
                   'package_name',
                   'title',
+                  'has_award',
+                  'award_coin',
                   'flags',
                   'tags',
                   'star',
@@ -251,6 +256,10 @@ class PackageSummaryWithMyCommentSerializer(PackageSummarySerializer):
 
     flags = serializers.SerializerMethodField('get_latest_version_flags')
 
+    has_award = serializers.SerializerMethodField('get_latest_version_has_award')
+
+    award_coin = serializers.SerializerMethodField('get_latest_version_award_coin')
+
     class Meta:
         model = Package
         fields = ('url',
@@ -277,6 +286,8 @@ class PackageSummaryWithMyCommentSerializer(PackageSummarySerializer):
                   'versions_url',
                   'comment',
                   'submit_date',
+                  'has_award',
+                  'award_coin',
         )
 
 
