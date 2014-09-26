@@ -36,3 +36,30 @@ def api_factory(platform, version=2):
 ios_api = api_factory('ios')
 android_api = api_factory('android')
 
+
+class AndroidHomeApi(object):
+    _api = android_api
+    # 精选应用列表
+    _get_recommend_list = lambda self: self._api.packages.get(params=dict(
+        topic_slug='home-recommend-game',
+        ordering='topical'
+    ))
+    recommend_list = property(_get_recommend_list)
+    # 精选广告
+    _get_recommend_advs = lambda self: self._api.advertisements.get(params=dict(
+        place='home-recommend-game'
+    ))
+    recommend_advs = property(_get_recommend_advs)
+    # 网络游戏列表
+    _get_netgame_list = lambda self: self._api.packages.get(params=dict(
+        topic_slug='home-network-game',
+        ordering='topical'
+    ))
+    netgame_list = property(_get_netgame_list)
+    # 网络游戏广告
+    _get_netgame_advs = lambda self: self._api.advertisements.get(params=dict(
+        place='home-network-game'
+    ))
+    netgame_advs = property(_get_netgame_advs)
+
+android_home_api = AndroidHomeApi()
