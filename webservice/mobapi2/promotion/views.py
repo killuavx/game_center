@@ -111,7 +111,7 @@ class RecommendView(generics.RetrieveAPIView):
     def get_queryset(self):
         if not self.queryset:
             self.queryset = self.model.objects.all()
-        return self.queryset.published()
+        return self.queryset.filter(status=Recommend.STATUS.published)
 
     def get_object(self, queryset=None):
         try:
@@ -126,13 +126,16 @@ class RecommendView(generics.RetrieveAPIView):
     @default_cache_control(max_age=3600*6)
     def get(self, request, *args, **kwargs):
         try:
-            self.get_queryset()
-            queryset = self.filter_queryset(self.queryset)
+            queryset = self.filter_queryset(self.get_queryset())
             #queryset = self.filter_date(queryset, *args, **kwargs)
         except ValueError:
             return Response(dict(detail='bad request'), status=status.HTTP_400_BAD_REQUEST)
 
+        dt = now().astimezone()
         self.object = self.get_object(queryset)
+        if not self.object.allow_show(dt):
+            raise Response(status=status.HTTP_404_NOT_FOUND)
+
         serializer = self.get_serializer(self.object)
         return Response(serializer.data)
 
@@ -177,7 +180,7 @@ class RecommendListView(generics.ListAPIView):
     def get_queryset(self):
         if not self.queryset:
             self.queryset = self.model.objects.all()
-        return self.queryset.published()
+        return self.queryset.filter(status=Recommend.STATUS.published)
 
     def filter_allow_show(self, queryset, dt):
         showed = []
@@ -188,6 +191,7 @@ class RecommendListView(generics.ListAPIView):
 
     @default_cache_control(max_age=3600)
     def list(self, request, *args, **kwargs):
+        self.get_queryset()
         self.object_list = self.filter_queryset(self.get_queryset())
         self.object_list = self.filter_allow_show(self.object_list, now())
         serializer = self.get_serializer(self.object_list, many=True)
