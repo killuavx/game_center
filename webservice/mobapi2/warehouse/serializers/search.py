@@ -97,7 +97,7 @@ class PackageSummarySerializer(PackageActionsMixin,
     flags = serializers.SerializerMethodField('get_flags')
 
     def get_flags(self, obj):
-        return obj.flags
+        return mods.get_flags_from(obj.tags_text)
 
     download = serializers.SerializerMethodField('get_download')
 
