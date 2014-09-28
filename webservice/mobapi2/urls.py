@@ -98,10 +98,10 @@ task_urlpatterns = patterns('',
 from mobapi2.clientapp.views import HomePageViewSet
 
 home_urlpatterns = patterns('',
-    url(r'^recommend/(.(?P<format>[\w_-]+))?',
+    url(r'^network/(.(?P<format>[\w_-]+))?',
         HomePageViewSet.as_view({'get':'network'}),
         name=rest_router.get_base_name('home-network')),
-    url(r'^network/(.(?P<format>[\w_-]+))?',
+    url(r'^recommend/(.(?P<format>[\w_-]+))?',
         HomePageViewSet.as_view({'get':'recommend'}),
         name=rest_router.get_base_name('home-recommend')),
 )
