@@ -344,7 +344,7 @@ class Recommend(urlmixin.RecommendAbsoluteUrlMixin,
         dt = released_hourly_datetime(now(), released_hourly)
         return self.status == self.STATUS.published \
             and self.released_datetime <= dt \
-            and self.expiry_datetime > dt
+            and (self.expiry_datetime is None or self.expiry_datetime > dt)
     is_published.boolean = True
     is_published.short_description = _('is published?')
 

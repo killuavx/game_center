@@ -52,7 +52,8 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
     * `cover`: 封面图片url
     * `category_name`: 分类名
     * `categories_names`: 多分类列表名称
-    * `tags`: 标签名称列表（如`新作`、`首发`、`礼包`）
+    * `flags`: 列表标记列表[`首发`、`礼包`、`活动`、`热门`]
+    * `tags`: 标签名称列表（如`新作`、`休闲`、`消除`）
     * `version_count`: 版本个数
     * `download_count`:下载量
     * `comments_url`: 评论列表接口(可用于发表评论)
