@@ -4,6 +4,8 @@ from toolkit.helpers import language_codes_to_names
 from toolkit.model_url_mixin import PackageAbsoluteUrlMixin
 from toolkit.cache_tagging_mixin import PackageTaggingMixin, PackageWithLatestVersionTaggingMixin
 
+PACKAGE_FLAGS = ['首发', '热门', '活动', '礼包']
+
 
 class PackageSearchResult(SearchResult,
                           PackageWithLatestVersionTaggingMixin,
@@ -54,6 +56,14 @@ class PackageSearchResult(SearchResult,
         if self.support_language_codes:
             return language_codes_to_names(self.support_language_codes)
         return []
+
+    @property
+    def flags(self):
+        _flags = []
+        for f in PACKAGE_FLAGS:
+            if f in self.tags_text:
+                _flags.append(f)
+        return _flags
 
 
 class PackageDetailSearchResult(PackageSearchResult):
