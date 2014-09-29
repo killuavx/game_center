@@ -1,5 +1,5 @@
 -extends "pages/page_web.html"
--load widgets url_tags templatehelper_tags web_tags cache_tagging_tags
+-load widgets url_tags util_tags templatehelper_tags web_tags cache_tagging_tags
 {% block meta_title %}{{ request.GET.q }}{% endblock %}
 -block main
   {% with c_cat=category.slug c_q=request.GET.q|lower c_lang=request.GET.lang|upper|default:'all' c_size=request.GET.size|upper|default:'all' c_reps=request.GET|query_getlist:'reps' c_page=request.GET.page|default:1 %}{% get_site_name as site_name %}
