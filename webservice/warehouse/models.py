@@ -297,6 +297,20 @@ class AllPackageManager(cachemixin.PackageCacheManagerMixin,
     pass
 
 
+PACKAGE_FLAGS = ['首发', '热门', '活动', '礼包']
+
+
+def get_flags_from(tags_text):
+    tags_text = tags_text.strip() if tags_text else None
+    if not tags_text:
+        return []
+    _flags = []
+    for f in PACKAGE_FLAGS:
+        if f in tags_text:
+            _flags.append(f)
+    return _flags
+
+
 package_name_pattern = '[\w\d_.-]+'
 
 
@@ -506,6 +520,10 @@ class Package(PlatformBase,
             return '/package/?name=%s' % self.package_name
         else:
             return '/package/?id=%s' % self.pk
+
+    @property
+    def flags(self):
+        return get_flags_from(self.tags_text)
 
 
 tagging.register(Package)
@@ -858,6 +876,11 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
         if not hasattr(self, '_language_names'):
             self._language_names = self._get_languages()
         return self._language_names
+
+    @property
+    def flags(self):
+        return get_flags_from(self.tags_text)
+
 
 
 tagging.register(PackageVersion)

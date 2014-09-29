@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import models, transaction, IntegrityError
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
-from mezzanine.core.models import TimeStamped
+from mezzanine.core.models import TimeStamped, CONTENT_STATUS_PUBLISHED, CONTENT_STATUS_DRAFT
 from mezzanine.utils.models import get_user_model_name
 
 from activity.managers import GiftBagManager, GiftCardManager
@@ -51,6 +51,8 @@ class GiftBag(PublishDisplayable,
     publisher = models.ForeignKey(user_model_name,
                                   on_delete=models.DO_NOTHING)
 
+    tracker = FieldTracker()
+
     def clean(self):
         super(GiftBag, self).clean()
         if self.for_version_id is not None:
@@ -61,6 +63,8 @@ class GiftBag(PublishDisplayable,
     def save(self, *args, **kwargs):
         if self.publisher_id is None:
             self.publisher = current_request().user
+        if self.cards_remaining_count == 0:
+            self.status = CONTENT_STATUS_DRAFT
         return super(GiftBag, self).save(*args, **kwargs)
 
     class Meta:
@@ -101,6 +105,9 @@ class GiftBag(PublishDisplayable,
 
     def __str__(self):
         return self.title
+
+    def is_status_published(self):
+        return self.status==CONTENT_STATUS_PUBLISHED
 
 
 class GiftCardQuerySet(QuerySet):
@@ -199,7 +206,7 @@ class GiftCardResource(resources.ModelResource):
 
 
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, post_save, post_delete
+from django.db.models.signals import pre_save, post_save, post_delete, pre_delete
 
 
 @receiver(pre_save, sender=GiftCard)
@@ -235,6 +242,95 @@ def giftcard_delete(sender, instance, **kwargs):
         giftbag.save()
     except GiftBag.DoesNotExist:
         pass
+
+
+from warehouse.tasks import sync_package
+
+
+FLAG_GIFTBAG = '礼包'
+
+
+def remove_giftbag_flag(giftbag):
+    package = giftbag.for_package
+    version = giftbag.for_version
+    def _remove_tag(inst, tag):
+        inst.tags_text = inst.tags_text.replace(tag, '').replace('  ', ' ')
+        inst.save()
+        return inst
+
+    if version:
+        _remove_tag(version, FLAG_GIFTBAG)
+
+    version_flag = False
+    for v in package.versions.published():
+        if FLAG_GIFTBAG in v.tags_text:
+            version_flag = True
+            break
+    if not version_flag:
+        _remove_tag(package, FLAG_GIFTBAG)
+
+    sync_package.apply_async((package.pk,), countdown=10)
+
+
+def add_giftbag_flag(giftbag):
+    version = giftbag.for_version
+    package = giftbag.for_package
+    version_changed = False
+    if version and FLAG_GIFTBAG not in version.tags_text:
+        version.tags_text = FLAG_GIFTBAG + " " + version.tags_text
+        version.save()
+        version_changed = True
+
+
+    package_changed = False
+    if FLAG_GIFTBAG not in package.tags_text:
+        package.tags_text = FLAG_GIFTBAG + ' ' + package.tags_text
+        package.save()
+        package_changed = True
+
+    if package_changed or (version_changed and package.latest_version_id == version.pk):
+        sync_package.apply_async((package.pk,), countdown=10)
+
+
+giftbag_sync_flag = '_sync_package_flag_type'
+
+
+@receiver(pre_save, sender=GiftBag)
+def change_giftbag_cards_count(sender, instance, **kwargs):
+    if instance.tracker.has_changed('status') and instance.is_status_published():
+        setattr(instance, giftbag_sync_flag, 'add')
+        return
+
+    if not instance.pk and instance.tracker.has_changed('status') and not instance.is_status_published():
+        setattr(instance, giftbag_sync_flag, 'remove')
+        return
+
+    if not instance.is_status_published():
+        return
+
+    total_grow = False
+    if instance.cards_total_count > instance.tracker.previous('cards_total_count'):
+        total_grow = True
+
+    if instance.tracker.previous('cards_total_count') == 0 and total_grow:
+        setattr(instance, giftbag_sync_flag, 'add')
+    elif instance.cards_remaining_count == 0:
+        setattr(instance, giftbag_sync_flag, 'remove')
+
+
+@receiver(post_save, sender=GiftBag)
+def sync_giftbag_package_flag(sender, instance, **kwargs):
+    sync_type = getattr(instance, giftbag_sync_flag, None)
+    if sync_type == 'remove':
+        remove_giftbag_flag(instance)
+    elif sync_type == 'add':
+        add_giftbag_flag(instance)
+
+
+@receiver(post_delete, sender=GiftBag)
+def delete_package_giftbag_flag(sender, instance, **kwargs):
+    remove_giftbag_flag(instance)
+
 
 from django.utils.timezone import utc
 #from activity import documents as docs

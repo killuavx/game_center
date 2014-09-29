@@ -37,7 +37,7 @@ class GiftBagAdmin(ImportMixin, admin.ModelAdmin):
             ),
         }),
     )
-    list_editable = ('status', )
+    #list_editable = ('status', )
     raw_id_fields = ('for_package', 'for_version', )
     readonly_fields = ('created', 'updated', 'cards_total_count', 'cards_remaining_count',)
     ordering = ('-publish_date', )
@@ -54,13 +54,15 @@ class GiftBagAdmin(ImportMixin, admin.ModelAdmin):
 
     def total_remaining(self, obj):
         return "%s/%s" % (obj.cards_total_count, obj.cards_remaining_count)
-        pass
     total_remaining.short_description = '总/剩余'
 
     def get_readonly_fields(self, request, obj=None):
+        fields = list(self.readonly_fields)
         if obj and obj.pk:
-            return list(self.readonly_fields) + ['for_package', 'for_version']
-        return self.readonly_fields
+            fields = fields + ['for_package', 'for_version']
+        if not obj or (obj and not obj.cards_total_count):
+            fields += ['status']
+        return fields
 
 
 admin.site.register(GiftBag, GiftBagAdmin)

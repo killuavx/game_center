@@ -128,11 +128,13 @@ class RecommendAdmin(VersionAdmin):
                     'is_published',
                     'weekdays',
                     'can_show_today',
+                    'released_datetime',
                     'sync_file_status',
     )
     list_display_links = ('pk', 'show_cover', 'title')
     readonly_fields = ('updated_datetime', 'created_datetime',)
     search_fields = ('title',)
+    ordering = ('-released_datetime', )
     list_filter = ('released_datetime',
                    'status')
 

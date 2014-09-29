@@ -45,6 +45,10 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
     version_name = serializers.SerializerMethodField('get_latest_version_name')
     version_code = serializers.SerializerMethodField('get_latest_version_code')
     versions_url = serializers.SerializerMethodField('get_versions_url')
+    flags = serializers.SerializerMethodField('get_latest_version_flags')
+
+    has_award = serializers.SerializerMethodField('get_latest_version_has_award')
+    award_coin = serializers.SerializerMethodField('get_latest_version_award_coin')
 
     class Meta:
         model = Package
@@ -53,6 +57,9 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'cover',
                   'package_name',
                   'title',
+                  'has_award',
+                  'award_coin',
+                  'flags',
                   'tags',
                   'star',
                   'category_name',
@@ -126,6 +133,8 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
 
     award_coin = serializers.SerializerMethodField('get_latest_version_award_coin')
 
+    flags = serializers.SerializerMethodField('get_latest_version_flags')
+
     class Meta:
         model = Package
         fields = ('url',
@@ -145,6 +154,7 @@ class PackageDetailSerializer(PackageRelatedLatestVersinoMixin,
                   'stars_good_rate',
                   'stars_medium_rate',
                   'stars_low_rate',
+                  'flags',
                   'tags',
                   'category_name',
                   'categories_names',
@@ -244,6 +254,12 @@ class PackageSummaryWithMyCommentSerializer(PackageSummarySerializer):
         except (AttributeError, ObjectDoesNotExist) as e:
             return None
 
+    flags = serializers.SerializerMethodField('get_latest_version_flags')
+
+    has_award = serializers.SerializerMethodField('get_latest_version_has_award')
+
+    award_coin = serializers.SerializerMethodField('get_latest_version_award_coin')
+
     class Meta:
         model = Package
         fields = ('url',
@@ -251,6 +267,7 @@ class PackageSummaryWithMyCommentSerializer(PackageSummarySerializer):
                   'cover',
                   'package_name',
                   'title',
+                  'flags',
                   'tags',
                   'star',
                   'category_name',
@@ -269,6 +286,8 @@ class PackageSummaryWithMyCommentSerializer(PackageSummarySerializer):
                   'versions_url',
                   'comment',
                   'submit_date',
+                  'has_award',
+                  'award_coin',
         )
 
 
