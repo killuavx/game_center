@@ -100,6 +100,7 @@ class PackageVersionAdmin(MainAdmin):
     )
     list_per_page = 15
     search_fields = ('version_name',
+                     'whatsnew',
                      'package__package_name',
                      'package__title')
     list_display = ('show_icon',
@@ -115,8 +116,19 @@ class PackageVersionAdmin(MainAdmin):
                     'download_count',
                     'award_coin',
                     'sync_file_action',
+                    'reported',
+                    'reported_adv',
+                    'reported_root',
+                    'reported_gplay',
+                    'reported_network',
     )
-    list_editable = ('award_coin', )
+    list_editable = ('award_coin',
+                     'reported',
+                     'reported_adv',
+                     'reported_root',
+                     'reported_gplay',
+                     'reported_network',
+    )
     list_display_links = ('show_icon', 'version_name')
     actions = ['make_published']
     raw_id_fields = ('package', )
@@ -197,7 +209,7 @@ class PackageVersionAdmin(MainAdmin):
     filter_horizontal = ("supported_languages",
                          "supported_devices",
                          "supported_features")
-    list_filter = ('status', 'has_award', )
+    list_filter = ('status', 'has_award', 'reported')
     date_hierarchy = 'released_datetime'
     ordering = ('-released_datetime',)
     formfield_overrides = {

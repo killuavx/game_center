@@ -661,6 +661,8 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
             ('has_award', ),
             ('site', 'has_award', ),
             ('site', 'award_coin', ),
+            ('site', 'reported', ),
+            ('site', 'reported', 'status', ),
         )
 
     icon = QiniuThumbnailerImageField(
