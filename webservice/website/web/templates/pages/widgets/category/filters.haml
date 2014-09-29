@@ -1,4 +1,5 @@
--load url_tags
+-load url_tags templatehelper_tags
+{% get_site_name as site_name %}
 / 列表筛选
 .f14.screening
   %dl.language
@@ -33,16 +34,18 @@
 //
   %dl.screening-other
     %dt 其他：
-    %dd
+    %dd><
       - for rep in reports
+        {% if site_name != 'ios' or rep.code not in 'no-gplay no-root' %}
         {% if rep.code in c_reps %}
         %a{:class => "on", :href => "{% qurl current_url reps-=rep.code|lower %}" }><
-          %span> ☑
+          %span
           = rep.name
         {% else %}
         %a{:href => "{% qurl current_url reps+=rep.code|lower %}" }><
-          %span> ☑
+          %span
           = rep.name
+        {% endif %}
         {% endif %}
     .fix
   .fix
