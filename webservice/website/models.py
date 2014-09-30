@@ -61,7 +61,7 @@ class TaxonomyProxyMixin(object):
 
     def get_root(self):
         if not hasattr(self, '_root'):
-            self._root = self.get_root()
+            self._root = super(TaxonomyProxyMixin, self).get_root()
         return self._root
 
     def prepare_root(self, root):

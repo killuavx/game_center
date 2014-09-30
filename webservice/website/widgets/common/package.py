@@ -32,7 +32,17 @@ class BasePackageSearchListWidget(base.FilterWidgetMixin, base.BaseListWidget):
 
     ordering = ()
 
-    filter_backends = (filters.PackageByCategorySearcherFilter, )
+    filter_backends = (filters.PackageByCategorySearcherFilter,
+                       filters.SearchByLanguageFilterBackend,
+                       filters.SearchByPkgSizeFilterBackend,
+                       filters.SearchByPkgReportsFilterBackend,
+    )
+
+    lang = None
+
+    size = None
+
+    reps = None
 
     def get_search_terms(self, options):
         querystr = options.get(self.search_param, '')
@@ -55,6 +65,9 @@ class BasePackageSearchListWidget(base.FilterWidgetMixin, base.BaseListWidget):
 
     def get_context(self, value=None, options=dict(), context=None, pagination=True):
         self.search_terms = self.get_search_terms(options)
+        self.lang = options.get('lang')
+        self.size = options.get('size')
+        self.reps = options.get('reps', [])
         return super(BasePackageSearchListWidget, self)\
             .get_context(value=value,
                          options=options,
@@ -388,6 +401,9 @@ class BaseCategoryComplexPackageBySearchListWidget(BasePackageBySearchListWidget
     filter_backends = (
         filters.SearchByCategoryFilterBackend,
         filters.SearchByTopicFilterBackend,
+        filters.SearchByLanguageFilterBackend,
+        filters.SearchByPkgSizeFilterBackend,
+        filters.SearchByPkgReportsFilterBackend,
         filters.SearchOrderByFilterBackend,
     )
 
@@ -405,6 +421,10 @@ class BaseCategoryComplexPackageBySearchListWidget(BasePackageBySearchListWidget
 
     lang = None
 
+    reps = None
+
+    size = None
+
     def setup_category(self, category=None, category_id=None, category_slug=None, **kwargs):
         self.category = category
         self.category_id = category_id
@@ -418,6 +438,9 @@ class BaseCategoryComplexPackageBySearchListWidget(BasePackageBySearchListWidget
     def get_context(self, value=None, options=None, context=None, pagination=True):
         self.setup_category(**options)
         self.setup_topic(**options)
+        self.lang = options.get('lang', None)
+        self.size = options.get('size', None)
+        self.reps = options.get('reps', [])
         data = super(BaseCategoryComplexPackageBySearchListWidget, self).get_context(value=value,
                                                                                options=options,
                                                                                context=context,
