@@ -63,6 +63,16 @@ class PackageAbsoluteUrlMixin(ModelAbsoluteUrlMixin):
                                            request=current_request(),
                                            router=rest_router)
             return pec.get_url()
+        elif product == ETS.web:
+            name = self._get_module_name()
+            view_name = 'website.%s.views.%s_detail' % (product, name)
+            if kwargs.get('template', None):
+                return reverse(view_name, kwargs=dict(pk=self.pk,
+                                                      package_name=self.package_name,
+                                                      template=kwargs.get('template')
+                                                      ))
+            return reverse(view_name, kwargs=dict(pk=self.pk,
+                                                  package_name=self.package_name))
         else:
             return super(PackageAbsoluteUrlMixin, self).get_absolute_url_as(product=product, **kwargs)
 

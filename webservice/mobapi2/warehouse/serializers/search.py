@@ -94,6 +94,11 @@ class PackageSummarySerializer(PackageActionsMixin,
     def get_tags(self, obj):
         return obj.tags_text.split()
 
+    flags = serializers.SerializerMethodField('get_flags')
+
+    def get_flags(self, obj):
+        return mods.get_flags_from(obj.tags_text)
+
     download = serializers.SerializerMethodField('get_download')
 
     def get_download(self, obj):
@@ -136,6 +141,7 @@ class PackageSummarySerializer(PackageActionsMixin,
                   'cover',
                   'package_name',
                   'title',
+                  'flags',
                   'tags',
                   'star',
                   'category_name',
@@ -226,6 +232,7 @@ class PackageDetailSerializer(PackageSummarySerializer):
                   'cover',
                   'package_name',
                   'title',
+                  'flags',
                   'tags',
                   'star',
                   'category_name',

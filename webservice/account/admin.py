@@ -34,14 +34,18 @@ class ProfileAdmin(VersionAdmin, GuardedModelAdmin):
     raw_id_fields = ('user',)
     fields = (
         'user',
-        'mugshot',
-        'cover',
-        'email',
-        'phone',
+        ('mugshot', 'cover',),
+        ('email', 'phone',),
         'privacy',
+        ('sex', 'birthday',),
+        'coin',
+        ('experience', 'level', ),
     )
-    list_display = ('user', 'signup_date', )
+    list_display = ('user', 'signup_date', 'coin', 'experience', 'level', )
     search_fields = ('user__username',)
+    readonly_fields = ('coin', 'experience', 'level')
+    #ordering = ('coin', 'experience', 'level', )
+
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.pk:

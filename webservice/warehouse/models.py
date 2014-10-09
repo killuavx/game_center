@@ -2,6 +2,8 @@
 import datetime
 from os.path import join, splitext
 from django.core.exceptions import ObjectDoesNotExist
+import re
+from django.core import validators
 from django.conf import settings
 from django.core import exceptions
 from django.core.urlresolvers import reverse, get_callable
@@ -295,6 +297,23 @@ class AllPackageManager(cachemixin.PackageCacheManagerMixin,
     pass
 
 
+PACKAGE_FLAGS = ['首发', '热门', '活动', '礼包']
+
+
+def get_flags_from(tags_text):
+    tags_text = tags_text.strip() if tags_text else None
+    if not tags_text:
+        return []
+    _flags = []
+    for f in PACKAGE_FLAGS:
+        if f in tags_text:
+            _flags.append(f)
+    return _flags
+
+
+package_name_pattern = '[\w\d_.-]+'
+
+
 class Package(PlatformBase,
               urlmixin.PackageAbsoluteUrlMixin,
               cachemixin.PackageTaggingMixin,
@@ -326,6 +345,11 @@ class Package(PlatformBase,
         max_length=255)
 
     package_name = models.CharField(
+        validators=[
+            validators.RegexValidator(
+                re.compile('^%s$' % package_name_pattern),
+                '包名无效，只能由[A-Za-z0-9_.]字符组合而成', 'invalid')
+        ],
         verbose_name=_('package name'),
         db_index=True,
         max_length=255)
@@ -497,6 +521,10 @@ class Package(PlatformBase,
         else:
             return '/package/?id=%s' % self.pk
 
+    @property
+    def flags(self):
+        return get_flags_from(self.tags_text)
+
 
 tagging.register(Package)
 
@@ -567,6 +595,35 @@ def version_upload_path(instance, filename):
     return join(prefix, filename)
 
 
+class PkgReportField(models.BooleanField):
+
+    def __init__(self, *args, **kwargs):
+        super(PkgReportField, self).__init__(*args, **kwargs)
+        self.added_fields = self._get_added_fields()
+
+    def _get_added_fields(self):
+        return {
+            "network": ('%s_network', models.BooleanField(verbose_name='网络',
+                                                          default=False, blank=True)),
+            "gplay": ('%s_gplay', models.BooleanField(verbose_name='谷歌服务',
+                                                      default=False, blank=True)),
+            "root": ('%s_root', models.BooleanField(verbose_name='root权限',
+                                                    default=False, blank=True)),
+            "adv": ('%s_adv', models.BooleanField(verbose_name='广告',
+                                                  default=False, blank=True)),
+            }
+
+    def _field_name(self, attrname, name):
+        return self.added_fields[name][0] % attrname
+
+    def _field_type(self, name):
+        return self.added_fields[name][1]
+
+    def contribute_to_class(self, cls, name):
+        if not cls._meta.abstract:
+            for idx in self.added_fields.keys():
+                cls.add_to_class(self._field_name(name, idx), self._field_type(idx))
+        super(PkgReportField, self).contribute_to_class(cls, name)
 
 
 class PackageVersionManager(cachemixin.PackageVersionCacheManagerMixin,
@@ -604,6 +661,8 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
             ('has_award', ),
             ('site', 'has_award', ),
             ('site', 'award_coin', ),
+            ('site', 'reported', ),
+            ('site', 'reported', 'status', ),
         )
 
     icon = QiniuThumbnailerImageField(
@@ -732,6 +791,9 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
 
     award_coin = models.IntegerField(default=0)
 
+    # report
+    reported = PkgReportField(verbose_name='已检查', default=False, blank=True)
+
     def clean(self):
         super(PackageVersion, self).clean()
         self.updated_datetime = now()
@@ -848,6 +910,11 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
         if not hasattr(self, '_language_names'):
             self._language_names = self._get_languages()
         return self._language_names
+
+    @property
+    def flags(self):
+        return get_flags_from(self.tags_text)
+
 
 
 tagging.register(PackageVersion)
@@ -1384,3 +1451,13 @@ class IOSPackageVersion(IOSPlatform, PackageVersion):
     def support_alldevices(self):
         return self.support_ipad and self.support_iphone
 
+
+if "south" in settings.INSTALLED_APPS:
+    try:
+        from south.modelsinspector import add_introspection_rules
+        add_introspection_rules(rules=[
+            ((PkgReportField,), [], {}),
+            ],
+                                patterns=["warehouse\.models\."])
+    except ImportError:
+        pass

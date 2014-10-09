@@ -218,8 +218,20 @@ class PackageSearchIndex(indexes.SearchIndex,
     support_device_types = indexes.MultiValueField(indexed=False)
     support_language_codes = indexes.MultiValueField(indexed=False)
 
+    reported = indexes.BooleanField(indexed=True, default=False)
+    reported_adv = indexes.BooleanField(indexed=True, default=False)
+    reported_root = indexes.BooleanField(indexed=True, default=False)
+    reported_gplay = indexes.BooleanField(indexed=True, default=False)
+    reported_network = indexes.BooleanField(indexed=True, default=False)
+
     def _prepare_version_detail(self, prepare_data, obj):
         latest_version = self._latest_version(obj)
+        prepare_data['reported'] = latest_version.reported
+        prepare_data['reported_adv'] = latest_version.reported_adv
+        prepare_data['reported_root'] = latest_version.reported_root
+        prepare_data['reported_gplay'] = latest_version.reported_gplay
+        prepare_data['reported_network'] = latest_version.reported_network
+
         if obj.is_ios:
             iversion = latest_version.as_ios
             prepare_data['is_free_b'] = iversion.is_free()

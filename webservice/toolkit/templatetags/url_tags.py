@@ -47,7 +47,7 @@ def qurl(parser, token):
 
     qs = []
     if len(bits):
-        kwarg_re = re.compile(r"(\w+)(\-=|\+=|=)(.*)")
+        kwarg_re = re.compile(r"([\w\[\]]+)(\-=|\+=|=)(.*)")
         for bit in bits:
             match = kwarg_re.match(bit)
             if not match:
@@ -56,6 +56,14 @@ def qurl(parser, token):
             qs.append((name, op, parser.compile_filter(value),))
 
     return QURLNode(url, qs, asvar)
+
+
+@register.filter_function
+def query_getlist(qdict, name):
+    try:
+        return qdict.getlist(name)
+    except:
+        return []
 
 
 class QURLNode(Node):

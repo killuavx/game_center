@@ -3,6 +3,9 @@ from haystack.models import SearchResult
 from toolkit.helpers import language_codes_to_names
 from toolkit.model_url_mixin import PackageAbsoluteUrlMixin
 from toolkit.cache_tagging_mixin import PackageTaggingMixin, PackageWithLatestVersionTaggingMixin
+from taxonomy.models import Category
+
+PACKAGE_FLAGS = ['首发', '热门', '活动', '礼包']
 
 
 class PackageSearchResult(SearchResult,
@@ -55,6 +58,14 @@ class PackageSearchResult(SearchResult,
             return language_codes_to_names(self.support_language_codes)
         return []
 
+    @property
+    def flags(self):
+        _flags = []
+        for f in PACKAGE_FLAGS:
+            if f in self.tags_text:
+                _flags.append(f)
+        return _flags
+
 
 class PackageDetailSearchResult(PackageSearchResult):
 
@@ -72,5 +83,11 @@ class PackageDetailSearchResult(PackageSearchResult):
     @property
     def screenshots_ipad(self):
         return self.screenshots.filter(kind='ipad')
+
+    @property
+    def main_category_objects(self):
+        for cid in self.main_category_ids:
+            yield Category.all_objects.get_cache_by(int(cid))
+
 
 
