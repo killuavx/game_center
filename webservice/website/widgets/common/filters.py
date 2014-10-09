@@ -177,7 +177,7 @@ class SearchByPkgReportsFilterBackend(base.BaseWidgetFilterBackend):
         for r in reps:
             r = r.lower()
             if r in self.report_choices:
-                name = r.lstrip('no-')
+                name = r.replace('no-', '')
                 lookups['reported_%s' % name] = False
         if lookups:
             queryset = queryset.filter(reported=True).filter(**lookups)
