@@ -68,9 +68,8 @@
               %ul<
                 -if is_ios
                   -for screenshot in version.screenshots.default
-                    -with image=screenshot.image
-                      %li<
-                        %img{:src => "={image.url}"}/
+                    %li<
+                      %img{:src => "={screenshot.image_url}"}/
                 -if is_android
                   -for screenshot in version.screenshots.default
                     -with image=screenshot.image

@@ -955,6 +955,11 @@ class PackageVersionScreenshot(models.Model):
         storage=screenshot_thumbnail_storage,
     )
 
+    def image_url(self, size=None):
+        if size:
+            return self.image[size].url
+        return self.image.url
+
     KIND = Choices(
         ('default', 'default', 'Default'),
         ('ipad', 'ipad', 'iPad'),
