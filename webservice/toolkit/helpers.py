@@ -328,3 +328,31 @@ def captcha(img_width=90, img_height=37, font_size=25):
     verify = ''.join(code).upper()
 
     return im, verify
+
+
+from mezzanine.conf import registry, register_setting as mz_register_setting
+
+
+def register_setting(name="", label="", editable=False, description="",
+                     default=None, choices=None, append=False, **kwargs):
+    mz_register_setting(name=name, label=label,
+                        editable=editable, description=description,
+                        default=default, choices=choices, append=append)
+    if 'widget' in kwargs:
+        registry[name]['widget'] = kwargs.get('widget')
+
+
+
+from django.utils.functional import SimpleLazyObject, empty
+
+
+class LazyIter(SimpleLazyObject):
+
+    def __iter__(self):
+        if self._wrapped is empty:
+            return iter(self._setup())
+        rtn = iter(self._wrapped)
+        self._wrapped = empty
+        return rtn
+
+

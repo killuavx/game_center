@@ -18,6 +18,7 @@ from mobapi2.utils import comment_list_cache_key_func
 from comment import get_model as get_comment_model
 from activity.documents.actions.base import TaskAlreadyDone, TaskConditionDoesNotMeet
 from activity.documents.actions.comment import CommentTask
+from django.core.exceptions import ValidationError
 
 
 class CommentViewSet(mixins.CreateModelMixin,

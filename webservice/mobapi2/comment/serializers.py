@@ -3,6 +3,8 @@ from rest_framework import serializers
 from comment.models import Comment, Feedback
 from toolkit.models import Star
 from mobapi2.serializers import ModelSerializer
+from comment.helpers import comment_forbidden_words
+from comment.forms import ForbiddenWordValidator
 
 
 class CommentStarSerializerMixin(object):
@@ -39,6 +41,14 @@ class CommentSerializer(CommentStarSerializerMixin, ModelSerializer):
 
 
 class CommentCreateSerializer(ModelSerializer):
+
+    comment = serializers.CharField(
+        required=True,
+        max_length=200,
+        min_length=3,
+        validators=[
+            ForbiddenWordValidator(words=comment_forbidden_words)
+        ])
 
     def save_object(self, obj, **kwargs):
         super(CommentCreateSerializer, self).save_object(obj=obj, **kwargs)
