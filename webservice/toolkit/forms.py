@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from mezzanine.generic.forms import ThreadedCommentForm
 from django import forms
+from comment.helpers import comment_forbidden_words
+from comment.forms import ForbiddenWordValidator
 from toolkit.models import Star
 from comment.models import Comment
 from django.utils.translation import ugettext as _
@@ -20,7 +22,11 @@ class CommentWithStarForm(ThreadedCommentForm):
     star = forms.IntegerField(label="评星",
                               widget=forms.HiddenInput(attrs={'id': 'rating_output', 'value': 3}))
     comment = forms.CharField(label=_('Comment'), widget=forms.Textarea,
-                              max_length=COMMENT_MAX_LENGTH)
+                              min_length=3,
+                              max_length=COMMENT_MAX_LENGTH,
+                              validators=[
+                                  ForbiddenWordValidator(words=comment_forbidden_words, message='您的评论含有敏感词汇')
+                              ])
 
     def __init__(self, request, *args, **kwargs):
         super(CommentWithStarForm, self).__init__(request, *args, **kwargs)

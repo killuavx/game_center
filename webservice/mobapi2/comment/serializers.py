@@ -47,7 +47,8 @@ class CommentCreateSerializer(ModelSerializer):
         max_length=200,
         min_length=3,
         validators=[
-            ForbiddenWordValidator(words=comment_forbidden_words)
+            ForbiddenWordValidator(words=comment_forbidden_words,
+                                   message='您的评论含有敏感词汇')
         ])
 
     def save_object(self, obj, **kwargs):
