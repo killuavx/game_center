@@ -60,7 +60,7 @@ class SignupForm(forms.Form):
         return self.cleaned_data['username']
 
     def clean(self):
-        if not self.cleaned_data['email']:
+        if 'email' in self.cleaned_data and not self.cleaned_data['email']:
             self.cleaned_data['email'] = generate_random_email()
         self.cleaned_data['phone'] = self._random_phone()
         return self.cleaned_data
