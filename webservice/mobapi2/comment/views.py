@@ -5,6 +5,7 @@ from django.core import exceptions
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.http import Http404
+from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from rest_framework import mixins, viewsets, status
 from rest_framework.permissions import IsAuthenticated
@@ -19,10 +20,31 @@ from comment import get_model as get_comment_model
 from activity.documents.actions.base import TaskAlreadyDone, TaskConditionDoesNotMeet
 from activity.documents.actions.comment import CommentTask
 from django.core.exceptions import ValidationError
+from mobapi2.rest_views import (
+    CustomMethodThrottleViewSetMixin,
+    CustomMethodPermissionsViewSetMixin)
+from rest_framework.throttling import UserRateThrottle
+from rest_framework.decorators import (
+    throttle_classes as rf_throttle_classes,
+    permission_classes as rf_permission_classes,
+    authentication_classes as rf_authentication_classes
+)
+
+
+class CommentThrottle(UserRateThrottle):
+
+    scope = 'comment'
+
+    rate = '1/5s'
+
+    def parse_rate(self, rate):
+        return 1, 5
 
 
 class CommentViewSet(mixins.CreateModelMixin,
                      mixins.ListModelMixin,
+                     CustomMethodThrottleViewSetMixin,
+                     CustomMethodPermissionsViewSetMixin,
                      viewsets.GenericViewSet):
     """ 评论接口
 
@@ -99,11 +121,8 @@ class CommentViewSet(mixins.CreateModelMixin,
     model = get_comment_model()
     content_object = None
 
-    def get_authenticators(self):
-        return []
-
-    def get_permissions(self):
-        return []
+    authentication_classes = (PlayerTokenAuthentication,)
+    permission_classes = ()
 
     def get_queryset(self):
         if self.queryset is None:
@@ -145,26 +164,9 @@ class CommentViewSet(mixins.CreateModelMixin,
 
         return super(CommentViewSet, self).list(request, *args, **kwargs)
 
-    def _retry_initial_for_check_creation_authentication(self, request):
-        if hasattr(request, '_authenticator'):
-            del request._authenticator
-        if hasattr(request, '_user'):
-            del request._user
-        if hasattr(request, '_auth'):
-            del request._auth
-
-        request.authenticators = [PlayerTokenAuthentication()]
-        self.perform_authentication(request)
-        self.permission_classes = (IsAuthenticated, )
-        self.check_permissions(request=request)
-        self.permission_classes = ()
-
-        # Perform content negotiation and store the accepted info on the request
-        neg = self.perform_content_negotiation(request)
-        request.accepted_renderer, request.accepted_media_type = neg
-
+    @method_decorator(rf_permission_classes((IsAuthenticated, )))
+    @method_decorator(rf_throttle_classes((CommentThrottle,)))
     def create(self, request, *args, **kwargs):
-        self._retry_initial_for_check_creation_authentication(request)
         params = self.check_paramters(copy.deepcopy(request.GET))
         bad = Response({'detail': 'Bad Request'},
                        status=status.HTTP_400_BAD_REQUEST)
