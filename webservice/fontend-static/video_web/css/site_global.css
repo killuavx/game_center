@@ -81,29 +81,7 @@ body
 	body { text-rendering:auto; }
 }
 
-a:link
-{
-	color: #0000FF;
-	text-decoration: underline;
-}
 
-a:visited
-{
-	color: #800080;
-	text-decoration: underline;
-}
-
-a:hover
-{
-	color: #0000FF;
-	text-decoration: underline;
-}
-
-a:active
-{
-	color: #EE0000;
-	text-decoration: underline;
-}
 
 a.nontext /* used to override default properties of 'a' tag */
 {
