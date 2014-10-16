@@ -1,0 +1,31 @@
+<manifest alg="2" build="569" opt="false" iceEnabled="true" iceMarkupVersion="2" exportTarget="other" resolutions="1x" timestamp="1413187297539">
+  <folder name="css">
+    <file name="site_global.css" crc="365011649"/>
+    <file name="index.css" crc="3790950888" ref="index"/>
+  </folder>
+  <folder name="scripts">
+    <file name="jquery-1.8.3.min.js" crc="3769949617" ref="index"/>
+    <file name="museutils.js" crc="4050293121" ref="index"/>
+  </folder>
+  <folder name="images">
+    <file name="虫虫游戏视频-favicon.ico" crc="225455000" ref="index"/>
+    <file name="topbar.jpg" crc="432357174" ref="index"/>
+    <file name="btn-home.png" crc="398520313" ref="index"/>
+    <file name="logo.png" crc="4200184738" ref="index"/>
+    <file name="video.swf" crc="4185574845" ref="index"/>
+    <file name="btn-download.png" crc="3790204227" ref="index"/>
+    <file name="code.png" crc="334026723" ref="index"/>
+    <file name="function1.png" crc="3886005649" ref="index"/>
+    <file name="function2.png" crc="3886005649" ref="index"/>
+    <file name="function3.png" crc="3886005649" ref="index"/>
+    <file name="function4.png" crc="3886005649" ref="index"/>
+    <file name="engine.png" crc="447374670" ref="index"/>
+    <file name="feature1.png" crc="300556978" ref="index"/>
+    <file name="feature2.png" crc="300556978" ref="index"/>
+    <file name="feature3.png" crc="300556978" ref="index"/>
+    <file name="feature4.png" crc="300556978" ref="index"/>
+    <file name="bg-bottom.png" crc="238278726" ref="index"/>
+    <file name="contactus.png" crc="4062797512" ref="index"/>
+  </folder>
+  <file name="index.html" crc="75118370" mt="1413183539299" redirect="true"/>
+</manifest>
