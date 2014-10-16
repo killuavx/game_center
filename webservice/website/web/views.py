@@ -493,8 +493,8 @@ def comment_remove(request, pk, *args, **kwargs):
         _json_data = json.dumps(data)
         return HttpResponse(_json_data, 'application/json')
     else:
-        error(request, data['msg'])
-        return redirect(initial['redirect_url'])
+        referer = request.META.get('HTTP_REFERER', None)
+        return redirect(referer)
 
 
 from django.views.generic import View
