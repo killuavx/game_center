@@ -5,7 +5,7 @@ from webservice.module_settings.logging_prd import *
 from webservice.module_settings.db_env import *
 from webservice.module_settings.mongo_env import *
 
-DEBUG = TEMPLATE_DEBUG = True
+DEBUG = TEMPLATE_DEBUG = False
 
 HOST_URL = os.getenv('GC_HOST_URL', '')
 
@@ -19,8 +19,6 @@ NEVERCACHE_KEY = "%(NEVERCACHE_KEY)s"
 CACHE_MIDDLEWARE_KEY_PREFIX = PROJECT_DIRNAME
 
 ROOT_URLCONF = "%s.urls" % PROJECT_DIRNAME
-
-DEBUG = TEMPLATE_DEBUG = False
 
 SEND_BROKEN_LINK_EMAILS = False
 
@@ -70,6 +68,7 @@ COMMENTS_DEFAULT_APPROVED = True
 COMMENTS_NOTIFICATION_EMAILS = ''
 COMMENT_FILTER = None
 
+
 COMMENTS_ACCOUNT_REQUIRED = True
 
 
@@ -81,7 +80,7 @@ COMMENTS_ACCOUNT_REQUIRED = True
 OPTIONAL_APPS = (
     "debug_toolbar",
     "django_extensions",
-    "compressor",
+    #"compressor",
     PACKAGE_NAME_FILEBROWSER,
     PACKAGE_NAME_GRAPPELLI,
 )
@@ -124,6 +123,7 @@ REST_FRAMEWORK.update(dict(
 
 # Whether to use cache for inline compilation
 STATIC_PRECOMPILER_USE_CACHE = False
+STATIC_PRECOMPILER_DISABLE_AUTO_COMPILE = True
 
 COMMENTS_NUM_LATEST = 5
 COMMENTS_UNAPPROVED_VISIBLE = False
@@ -140,6 +140,28 @@ RICHTEXT_ALLOWED_TAGS = [
         "s", "samp", "select", "small", "span", "strike", "strong", "sub",
         "sup", "table", "tbody", "td", "textarea", "tfoot", "th", "thead",
         "tr", "tt", "u", "ul", "var", "wbr",
+]
+
+RICHTEXT_ALLOWED_STYLES = [
+    'color', 'text-align',
+] + [
+    "margin-top", "margin-bottom", "margin-left", "margin-right",
+    "float", "vertical-align", "border", "margin"
+]
+
+RICHTEXT_ALLOWED_ATTRIBUTES = [
+  'style'
+] + ["abbr", "accept", "accept-charset", "accesskey", "action",
+    "align", "alt", "axis", "border", "cellpadding", "cellspacing",
+    "char", "charoff", "charset", "checked", "cite", "class", "clear",
+    "cols", "colspan", "color", "compact", "coords", "datetime", "dir",
+    "disabled", "enctype", "for", "frame", "headers", "height", "href",
+    "hreflang", "hspace", "id", "ismap", "label", "lang", "longdesc",
+    "maxlength", "media", "method", "multiple", "name", "nohref",
+    "noshade", "nowrap", "prompt", "readonly", "rel", "rev", "rows",
+    "rowspan", "rules", "scope", "selected", "shape", "size", "span",
+    "src", "start", "style", "summary", "tabindex", "target", "title",
+    "type", "usemap", "valign", "value", "vspace", "width", "xml:lang"
 ]
 
 _ = gettext
