@@ -11,6 +11,11 @@ class GiftCardManager(CurrentSitePassThroughManager):
     pass
 
 
+class ActivityManager(CurrentSitePassThroughManager,
+                      PublishedManager):
+    pass
+
+
 class BulletinManager(CurrentSitePassThroughManager,
                       PublishedManager):
     pass

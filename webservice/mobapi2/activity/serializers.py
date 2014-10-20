@@ -6,7 +6,7 @@ from toolkit.helpers import qurl_to
 from rest_framework import serializers
 from mobapi2.serializers import HyperlinkedModelSerializer, ModelSerializer, Serializer
 from mobapi2.helpers import PackageDetailApiUrlEncode, PackageVersionDetailApiUrlEncode
-from mobapi2.settings import IMAGE_ICON_SIZE
+from mobapi2.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
 
 
 def giftbag_icon(giftbag):
@@ -356,7 +356,7 @@ class MyTasksStatusSerializer(Serializer):
         return cls(data)
 
 
-from activity.models import Bulletin
+from activity.models import Bulletin, Activity
 
 
 class BulletinSummarySerializer(ModelSerializer):
@@ -378,3 +378,30 @@ class BulletinSummarySerializer(ModelSerializer):
             'publish_date',
         )
 
+
+class ActivitySummarySerializer(ModelSerializer):
+
+    page_url = serializers.SerializerMethodField('get_page_url')
+    def get_page_url(self, obj):
+        request = self.context.get('request')
+        url =  reverse('apiv2-activity-richpage', kwargs=dict(pk=obj.pk))
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    cover = serializers.SerializerMethodField('get_cover_url')
+    def get_cover_url(self, obj):
+        try:
+            return obj.cover[IMAGE_COVER_SIZE].url
+        except:
+            return None
+
+    class Meta:
+        model = Activity
+        fields = (
+            'page_url',
+            'title',
+            'cover',
+            'is_active',
+            'publish_date',
+        )

@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 from toolkit.admin import admin_edit_linktag
-from activity.models import GiftBag, GiftCardResource, Note, Bulletin
+from activity.models import GiftBag, GiftCardResource, Note, Bulletin, Activity
 from import_export.admin import ImportMixin
 from reversion.admin import VersionAdmin
+
+
+def _(s):
+    return s
 
 
 class GiftBagAdmin(ImportMixin, admin.ModelAdmin):
@@ -115,3 +119,44 @@ class BulletinAdmin(VersionAdmin):
         obj.save()
 
 admin.site.register(Bulletin, BulletinAdmin)
+
+
+from mezzanine.core.admin import DisplayableAdmin, OwnableAdmin
+
+
+class ActivityAdmin(VersionAdmin,
+                    DisplayableAdmin,
+                    OwnableAdmin):
+
+    search_fields = ('title', )
+    list_filter = ('status', )
+    date_hierarchy = 'publish_date'
+    radio_fields = {"status": admin.HORIZONTAL}
+    fieldsets = (
+        (None, {
+            "fields": ["title",
+                       "slug",
+                       "cover",
+                       "content",
+                       ]
+            }),
+        (_("Status"), {
+            "fields": [
+                'user',
+                ("status", 'is_active'),
+                ("publish_date", "expiry_date"),
+                ("created", "updated"),
+            ],
+        }),
+        (_("Meta data"), {
+            "fields": ["_meta_title",
+                       ("description", "gen_description"),
+                       "keywords", "in_sitemap"],
+            "classes": ("collapse-closed",)
+        }),
+    )
+    list_display = ('pk', 'title', 'slug', 'status', 'is_active', 'publish_date', )
+    readonly_fields = ('created', 'updated', 'user',)
+
+
+admin.site.register(Activity, ActivityAdmin)

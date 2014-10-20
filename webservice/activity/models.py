@@ -7,7 +7,7 @@ from django.utils.timezone import now
 from mezzanine.core.models import TimeStamped, CONTENT_STATUS_PUBLISHED, CONTENT_STATUS_DRAFT
 from mezzanine.utils.models import get_user_model_name
 
-from activity.managers import GiftBagManager, GiftCardManager, BulletinManager
+from activity.managers import GiftBagManager, GiftCardManager, BulletinManager, ActivityManager
 from toolkit.models import PublishDisplayable, SiteRelated
 from toolkit.helpers import current_request, get_global_site
 
@@ -383,8 +383,61 @@ class Note(SiteRelated,
         )
 
 
+import os
 from mezzanine.core.fields import RichTextField
-from mezzanine.core.models import Ownable
+from mezzanine.core.models import Ownable, MetaData
+from easy_thumbnails.fields import ThumbnailerImageField
+
+ACTIVITY_DIRECTORY_DTFORMAT = 'activity/%Y/%m/%d/%H%M-%S-%f'
+
+
+def activity_profile_upload_to(instance, filename):
+    if not instance.created:
+        instance.created = now().astimezone()
+    else:
+        instance.created = instance.created.astimezone()
+    sd = instance.created
+    basename = os.path.basename(filename)
+    return "%s/%s" % (sd.strftime(ACTIVITY_DIRECTORY_DTFORMAT), basename)
+
+
+class Activity(SiteRelated,
+               MetaData,
+               PublishDisplayable,
+               TimeStamped,
+               Ownable,
+               models.Model):
+
+    title = models.CharField(max_length=500)
+    slug = models.CharField(max_length=2000,
+                            blank=True, null=True)
+
+    cover = ThumbnailerImageField(
+        default='',
+        upload_to=activity_profile_upload_to,
+        blank=True,
+        max_length=500,
+    )
+
+    objects = ActivityManager()
+
+    content = RichTextField()
+
+    is_active = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = '活动'
+        verbose_name_plural = '活动'
+        unique_together = (
+            ('site', 'slug',),
+        )
+        index_together = (
+            ('site', 'status', ),
+            ('site', 'status', 'publish_date', 'expiry_date'),
+        )
+
+    def get_absolute_url(self):
+        return None
 
 
 class Bulletin(SiteRelated,
@@ -409,3 +462,6 @@ class Bulletin(SiteRelated,
             ('site', 'status', 'publish_date', 'expiry_date'),
         )
         ordering = ('-publish_date', )
+
+    def get_absolute_url(self):
+        return None
