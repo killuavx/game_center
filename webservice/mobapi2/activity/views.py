@@ -8,7 +8,7 @@ from rest_framework.decorators import link, action
 from rest_framework.exceptions import Throttled
 from rest_framework.throttling import UserRateThrottle
 from rest_framework_extensions.mixins import DetailSerializerMixin
-from activity.models import GiftBag, GiftCard
+from activity.models import GiftBag, GiftCard, EmptyRemainingGiftCard
 from mobapi2.authentications import PlayerTokenAuthentication
 from mobapi2.activity.serializers import GiftBagSummarySerializer, GiftBagDetailSerializer, GiftCardSerializer
 from mobapi2 import cache_keyconstructors as ckc
@@ -215,15 +215,27 @@ class GiftBagViewSet(DetailSerializerMixin,
     @link()
     @method_decorator(never_cache)
     def take(self, request, *args, **kwargs):
+        """
+        * 200 HTTP_200_OK
+            * 获取礼包，返回礼包结构
+        * 404 HTTP_404_NOT_FOUND
+            * 无礼包/礼包已经获取完毕
+        * 401 HTTP_401_UNAUTHORIZED
+            * 未登陆
+            * 无效的HTTP Header: Authorization
+        """
         giftbag = self.get_object()
         cards = list(giftbag.get_took_cards_by(request.user))
         if cards:
             card = cards[0]
         else:
-            card = giftbag.take_by(request.user)
-            self.cache_data_list_key_func.updated_at.pk = request.user.pk
-            self.cache_data_list_key_func.updated_at.flush()
-            self.cache_data_list_key_func.updated_at.pk = None
+            try:
+                card = giftbag.take_by(request.user)
+                self.cache_data_list_key_func.updated_at.pk = request.user.pk
+                self.cache_data_list_key_func.updated_at.flush()
+                self.cache_data_list_key_func.updated_at.pk = None
+            except EmptyRemainingGiftCard:
+                return Response(dict(detail=''), status=status.HTTP_404_NOT_FOUND)
 
         serializer = GiftCardSerializer(card)
         return Response(serializer.data)
@@ -371,7 +383,7 @@ class ScratchCardPlayDailyThrottle(UserRateThrottle):
 
     def throttle_success(self):
         flag = super(ScratchCardPlayDailyThrottle, self).throttle_success()
-        self._cache.set("%s_previous" % self.key, self.now, self.interval_seconds)
+        self._cache.set("%s_previous" % self.key, self.now, self.duration)
         return flag
 
     def allow_next_interval(self):
@@ -796,3 +808,36 @@ class TaskViewSet(viewsets.GenericViewSet):
 
         serializer = TaskStatusSerializer(task, many=False)
         return Response(serializer.data)
+
+
+from django.template.response import TemplateResponse
+from activity.models import Bulletin
+from mobapi2.activity.serializers import (
+    BulletinSummarySerializer,
+)
+
+
+class BulletinViewSet(viewsets.ReadOnlyModelViewSet):
+    model = Bulletin
+    serializer_class = BulletinSummarySerializer
+    permission_classes = ()
+    authentication_classes = (PlayerTokenAuthentication,)
+    filter_backend = (OrderingFilter,)
+    ordering = ('-publish_date', )
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = Bulletin.objects.published()
+        return self.queryset
+
+    @link()
+    def richpage(self, request, *args, **kwargs):
+        obj = self.get_object()
+        return TemplateResponse(request=request,
+                                template='mobapi2/activity/bulletin.html',
+                                context=dict(object=obj),
+                                content_type='text/html')
+
+
+
+

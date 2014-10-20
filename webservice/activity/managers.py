@@ -10,3 +10,7 @@ class GiftBagManager(CurrentSitePassThroughManager,
 class GiftCardManager(CurrentSitePassThroughManager):
     pass
 
+
+class BulletinManager(CurrentSitePassThroughManager,
+                      PublishedManager):
+    pass
