@@ -7,7 +7,7 @@ from django.utils.timezone import now
 from mezzanine.core.models import TimeStamped, CONTENT_STATUS_PUBLISHED, CONTENT_STATUS_DRAFT
 from mezzanine.utils.models import get_user_model_name
 
-from activity.managers import GiftBagManager, GiftCardManager
+from activity.managers import GiftBagManager, GiftCardManager, BulletinManager
 from toolkit.models import PublishDisplayable, SiteRelated
 from toolkit.helpers import current_request, get_global_site
 
@@ -382,3 +382,30 @@ class Note(SiteRelated,
             ('site', 'slug'),
         )
 
+
+from mezzanine.core.fields import RichTextField
+from mezzanine.core.models import Ownable
+
+
+class Bulletin(SiteRelated,
+               PublishDisplayable,
+               TimeStamped,
+               Ownable,
+               models.Model):
+
+    objects = BulletinManager()
+
+    title = models.CharField(max_length=500)
+
+    summary = models.CharField(max_length=500)
+
+    content = RichTextField()
+
+    class Meta:
+        verbose_name = '公告'
+        verbose_name_plural = '公告'
+        index_together = (
+            ('site', 'status', ),
+            ('site', 'status', 'publish_date', 'expiry_date'),
+        )
+        ordering = ('-publish_date', )

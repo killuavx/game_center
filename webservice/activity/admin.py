@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 from toolkit.admin import admin_edit_linktag
-from activity.models import GiftBag, GiftCardResource, Note
+from activity.models import GiftBag, GiftCardResource, Note, Bulletin
 from import_export.admin import ImportMixin
 from reversion.admin import VersionAdmin
 
@@ -79,3 +79,39 @@ class NoteAdmin(VersionAdmin):
 
 
 admin.site.register(Note, NoteAdmin)
+
+
+class BulletinAdmin(VersionAdmin):
+
+    search_fields = ('title', )
+
+    list_filter = ('status', )
+
+    date_hierarchy = 'publish_date'
+
+    list_display = ('pk', 'title', 'status', 'publish_date', )
+
+    fieldsets = (
+        (None, {
+            'fields': (
+                'title',
+                'content',
+            ),
+            }),
+        ('Status', {
+            'fields': (
+                'user',
+                'status',
+                ('publish_date', 'expiry_date',),
+                ('created', 'updated', ),
+            ),
+        }),
+    )
+
+    readonly_fields = ('created', 'updated', 'user',)
+
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        obj.save()
+
+admin.site.register(Bulletin, BulletinAdmin)

@@ -355,3 +355,26 @@ class MyTasksStatusSerializer(Serializer):
         )
         return cls(data)
 
+
+from activity.models import Bulletin
+
+
+class BulletinSummarySerializer(ModelSerializer):
+
+    page_url = serializers.SerializerMethodField('get_page_url')
+    def get_page_url(self, obj):
+        request = self.context.get('request')
+        url =  reverse('apiv2-bulletin-richpage', kwargs=dict(pk=obj.pk))
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    class Meta:
+        model = Bulletin
+        fields = (
+            'page_url',
+            'title',
+            'summary',
+            'publish_date',
+        )
+
