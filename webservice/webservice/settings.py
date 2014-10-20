@@ -421,6 +421,10 @@ CELERY_QUEUES = [
     Queue('record_event', Exchange('analysis'), routing_key='analysis.record_event'),
 ]
 
+SOUTH_MIGRATION_MODULES = {
+    'easy_thumbnails': 'easy_thumbnails.south_migrations',
+}
+
 from webservice.module_settings.thumbnail import *
 
 try:
