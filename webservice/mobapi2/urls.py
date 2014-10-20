@@ -42,6 +42,7 @@ rest_router.register('feedbacks', FeedbackViewSet)
 rest_router.register('coin_packages', package_views.PackageCoinViewSet, base_name='coin_package')
 rest_router.register('notes', activity_views.NoteViewSet)
 rest_router.register('bulletins', activity_views.BulletinViewSet)
+rest_router.register('activities', activity_views.ActivityViewSet)
 
 rest_router.register('giftbags', activity_views.GiftBagViewSet)
 scratchcard_play = activity_views.ScratchCardViewSet.as_view({'get': 'play'})

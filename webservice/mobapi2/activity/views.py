@@ -811,13 +811,28 @@ class TaskViewSet(viewsets.GenericViewSet):
 
 
 from django.template.response import TemplateResponse
-from activity.models import Bulletin
+from activity.models import Bulletin, Activity
 from mobapi2.activity.serializers import (
     BulletinSummarySerializer,
+    ActivitySummarySerializer,
 )
 
 
-class BulletinViewSet(viewsets.ReadOnlyModelViewSet):
+class RichPageViewSetMixin(object):
+
+    richpage_template = None
+
+    @link()
+    def richpage(self, request, *args, **kwargs):
+        obj = self.get_object()
+        return TemplateResponse(request=request,
+                                template=self.richpage_template,
+                                context=dict(object=obj),
+                                content_type='text/html')
+
+
+class BulletinViewSet(RichPageViewSetMixin,
+                      viewsets.ReadOnlyModelViewSet):
     model = Bulletin
     serializer_class = BulletinSummarySerializer
     permission_classes = ()
@@ -825,18 +840,29 @@ class BulletinViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backend = (OrderingFilter,)
     ordering = ('-publish_date', )
 
+    template='mobapi2/activity/bulletin.html',
+
     def get_queryset(self):
         if not self.queryset:
-            self.queryset = Bulletin.objects.published()
+            self.queryset = self.model.objects.published()
         return self.queryset
 
-    @link()
-    def richpage(self, request, *args, **kwargs):
-        obj = self.get_object()
-        return TemplateResponse(request=request,
-                                template='mobapi2/activity/bulletin.html',
-                                context=dict(object=obj),
-                                content_type='text/html')
+
+class ActivityViewSet(RichPageViewSetMixin,
+                      viewsets.ReadOnlyModelViewSet):
+    model = Activity
+    serializer_class = ActivitySummarySerializer
+    permission_classes = ()
+    authentication_classes = (PlayerTokenAuthentication,)
+    filter_backend = (OrderingFilter,)
+    ordering = ('-publish_date', )
+
+    richpage_template = 'mobapi2/activity/activity.html',
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = self.model.objects.published()
+        return self.queryset
 
 
 
