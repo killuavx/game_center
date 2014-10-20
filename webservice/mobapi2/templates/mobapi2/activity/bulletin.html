@@ -1,0 +1,16 @@
+{% load mezzanine_tags staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ object.title }}</title>
+</head>
+<body>
+<h1>{{ object.title }}</h1>
+<small>{{ object.publish_date|date }} {{ object.publish_date|time }}</small> <a href="#">{{ object.user.username }}</a>
+<div class="content">
+{% editable object.content %}
+{{ object.content|richtext_filters|safe }}
+{% endeditable %}
+</div>
+</body>
+</html>
