@@ -409,8 +409,7 @@ class Activity(SiteRelated,
                models.Model):
 
     title = models.CharField(max_length=500)
-    slug = models.CharField(max_length=2000,
-                            blank=True, null=True)
+    slug = models.CharField(max_length=2000, null=True)
 
     cover = ThumbnailerImageField(
         default='',
@@ -439,6 +438,9 @@ class Activity(SiteRelated,
     def get_absolute_url(self):
         return None
 
+    def __str__(self):
+        return self.title
+
 
 class Bulletin(SiteRelated,
                PublishDisplayable,
@@ -465,3 +467,6 @@ class Bulletin(SiteRelated,
 
     def get_absolute_url(self):
         return None
+
+    def __str__(self):
+        return self.title
