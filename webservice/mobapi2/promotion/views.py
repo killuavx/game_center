@@ -123,7 +123,7 @@ class RecommendView(generics.RetrieveAPIView):
         d = dateparser.parse(kwargs.get('date'))
         return queryset.published_with_date(d)
 
-    @default_cache_control(max_age=3600*6)
+    @default_cache_control(max_age=3600)
     def get(self, request, *args, **kwargs):
         try:
             queryset = self.filter_queryset(self.get_queryset())
