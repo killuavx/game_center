@@ -4,6 +4,7 @@ from toolkit.admin import admin_edit_linktag
 from activity.models import GiftBag, GiftCardResource, Note, Bulletin, Activity
 from import_export.admin import ImportMixin
 from reversion.admin import VersionAdmin
+from toolkit.helpers import sync_status_summary, sync_status_actions
 
 
 def _(s):
@@ -136,6 +137,7 @@ class ActivityAdmin(VersionAdmin,
         (None, {
             "fields": ["title",
                        "slug",
+                       "workspace",
                        "cover",
                        "content",
                        ]
@@ -155,8 +157,19 @@ class ActivityAdmin(VersionAdmin,
             "classes": ("collapse-closed",)
         }),
     )
-    list_display = ('pk', 'title', 'slug', 'status', 'is_active', 'publish_date', )
-    readonly_fields = ('created', 'updated', 'user',)
+    list_display = ('pk', 'title', 'slug', 'status', 'is_active', 'publish_date',
+                    'sync_file_action',
+    )
+    readonly_fields = ('created', 'updated', 'user', 'workspace',)
+
+    def sync_file_action(self, obj):
+        return sync_status_summary(obj) + " | " + sync_status_actions(obj)
+    sync_file_action.allow_tags = True
+    sync_file_action.short_description = _('Sync Status')
+
+    class Media:
+        static_url = '/static/'
+        js = [static_url+'js/syncfile.action.js', ]
 
 
 admin.site.register(Activity, ActivityAdmin)

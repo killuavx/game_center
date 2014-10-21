@@ -10,6 +10,7 @@ from mezzanine.utils.models import get_user_model_name
 from activity.managers import GiftBagManager, GiftCardManager, BulletinManager, ActivityManager
 from toolkit.models import PublishDisplayable, SiteRelated
 from toolkit.helpers import current_request, get_global_site
+from toolkit.helpers import sync_status_from
 
 
 class EmptyRemainingGiftCard(Exception):
@@ -386,19 +387,26 @@ class Note(SiteRelated,
 import os
 from mezzanine.core.fields import RichTextField
 from mezzanine.core.models import Ownable, MetaData
+from mezzanine.core.fields import FileField
 from easy_thumbnails.fields import ThumbnailerImageField
 
 ACTIVITY_DIRECTORY_DTFORMAT = 'activity/%Y/%m/%d/%H%M-%S-%f'
 
 
 def activity_profile_upload_to(instance, filename):
-    if not instance.created:
-        instance.created = now().astimezone()
-    else:
-        instance.created = instance.created.astimezone()
-    sd = instance.created
+    activity_workspace_by_created(instance)
     basename = os.path.basename(filename)
-    return "%s/%s" % (sd.strftime(ACTIVITY_DIRECTORY_DTFORMAT), basename)
+    return "%s/%s" % (instance.workspace.name, basename)
+
+
+def activity_workspace_by_created(instance):
+    if not instance.workspace:
+        if not instance.created:
+            instance.created = now().astimezone()
+        else:
+            instance.created = instance.created.astimezone()
+        sd = instance.created
+        instance.workspace = sd.strftime(ACTIVITY_DIRECTORY_DTFORMAT)
 
 
 class Activity(SiteRelated,
@@ -417,6 +425,12 @@ class Activity(SiteRelated,
         blank=True,
         max_length=500,
     )
+
+    workspace = FileField(default='',
+                          blank=True,
+                          max_length=500,
+                          help_text='!!切勿随意修改!!',
+                          format='File')
 
     objects = ActivityManager()
 
@@ -440,6 +454,13 @@ class Activity(SiteRelated,
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        activity_workspace_by_created(self)
+        return super(Activity, self).save(*args, **kwargs)
+
+    def sync_status(self):
+        return sync_status_from(self)
 
 
 class Bulletin(SiteRelated,
