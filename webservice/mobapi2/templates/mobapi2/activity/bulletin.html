@@ -1,16 +1,22 @@
-{% load mezzanine_tags staticfiles %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ object.title }}</title>
-</head>
-<body>
-<h1>{{ object.title }}</h1>
-<small>{{ object.publish_date|date }} {{ object.publish_date|time }}</small> <a href="#">{{ object.user.username }}</a>
-<div class="content">
-{% editable object.content %}
-{{ object.content|richtext_filters|safe }}
-{% endeditable %}
+{% extends "mobapi2/activity/base.html" %}
+{% load mezzanine_tags %}
+{% block main %}
+<div class="rich_media">
+    <div class="rich_media_inner">
+        <h2 class="rich_media_title" id="activity-name">{{ object.title }}</h2>
+        <div class="rich_media_meta_list">
+            <em class="rich_media_meta text">{{ object.publish_date|date }}</em>
+            <em class="rich_media_meta name">{{ object.user.username }}</em>
+        </div>
+        <div id="page-content">
+            <div id="img-content">
+                <div class="rich_media_content" id="js_content">
+                    {% editable object.content %}
+                        {{ object.content|richtext_filters|safe }}
+                    {% endeditable %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</body>
-</html>
+{% endblock %}
