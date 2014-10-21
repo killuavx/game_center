@@ -840,7 +840,7 @@ class BulletinViewSet(RichPageViewSetMixin,
     filter_backend = (OrderingFilter,)
     ordering = ('-publish_date', )
 
-    template='mobapi2/activity/bulletin.html',
+    richpage_template ='mobapi2/activity/bulletin.html',
 
     def get_queryset(self):
         if not self.queryset:
