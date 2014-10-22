@@ -12,7 +12,7 @@
 .logo-ver{width:393px; height:54px; background:url(http://static.ccplay.com.cn/static/product/img/cc-txt.png) no-repeat}
 .logo-ver em{color:#fff; display:inline-block; padding:13px 0 0 260px; font-size:20px}
 
-.SubSlogan-txt li,.qr-code{text-indent:-99999px; display:block; float:left}
+.SubSlogan-txt li{text-indent:-99999px; display:block; float:left}
 
 .SubSlogan-txt li{height:133px; background:url(http://static.ccplay.com.cn/static/product/img/SubSlogan-txt.png) no-repeat; margin-top:53px}
 #cc-l .SubSlogan-txt li{margin-right:12%}
@@ -25,9 +25,8 @@ li.st-1{width:158px}
 li.st-2{width:185px; background-position:-214px 0}
 li.st-3{width:144px; background-position:-446px 0; margin-right:0!important}
 
-.qr-code{width:401px; height:177px; background:url(http://static.ccplay.com.cn/static/product/img/qr-code.png) no-repeat; bottom:0; left:350px}
-#cc-l .qr-code{left:350px}
-#cc-m .qr-code{left:250px}
+.qr-code{width:168px; height:168px; bottom:0; right:10%; -moz-box-shadow:0px 0px 20px #333333; -webkit-box-shadow:0px 0px 20px #333333; box-shadow:0px 0px 20px #333333;}
+.qr-code img{width:168px; height:168px}
 #cc-s .qr-code{display:none}
 .down-btn{clear:both; color:#fff; padding-top:90px; z-index:9; position:relative}
 a.Download-button{color:#fff; width:149px; height:68px; padding:10px 0 0 85px; background:url(http://static.ccplay.com.cn/static/product/img/down-btn.png) no-repeat; text-decoration:none; text-shadow:1px 1px 1px #336600;}
