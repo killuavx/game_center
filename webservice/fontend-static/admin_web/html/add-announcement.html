@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="renderer" content="webkit">
+	<title>发布公告</title>
+    <link rel="stylesheet" href="http://static.ccplay.com.cn/static/bootstrap3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://static.ccplay.com.cn/static/admin_web/style/site.css">
+</head>
+
+<body>
+	
+
+<div class="main add-announcement">
+
+
+
+	<div class="main-top">    
+            <h3>发布公告</h3>    
+    </div><!--main-top-->
+    
+  
+
+
+  <div class="panel panel-info">
+    <div class="panel-heading">*认真核对信息</div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel">
+		<form id="form-table" method="post">
+      <table class="table">
+        <tbody>
+          <tr>
+            <th class="active" width="15%">公告标题</th>
+            <td width="85%"><input type="text" class="form-control"></td>
+          </tr>
+          <tr>
+            <th class="active">发布时间</th>
+            <td>
+
+<div class="row">
+  <div class="col-xs-3">
+    <input type="date" class="form-control" value="2014-10-22">
+  </div>
+</div>
+
+            </td>
+          </tr>
+          
+          
+          <tr>
+            <th class="active">详细内容</th>
+            <td><textarea class="form-control xheditor" rows="12" name="content"></textarea></td>
+          </tr>
+        </tbody>
+        
+        
+      </table>
+      
+      </form>
+    </div>
+  </div>
+  
+  
+    
+
+<div class="submit">
+      <button type="submit" class="btn btn-success loading-btn" data-loading-text="Loading..." autocomplete="off"><span class="glyphicon glyphicon-ok"></span> 确认提交</button>
+</div>
+
+
+
+
+</div><!--main end-->
+    
+    
+
+<!--编辑器-->
+<script type="text/javascript" src="http://static.ccplay.com.cn/static/admin_web/xheditor-1.2.1/jquery/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="http://static.ccplay.com.cn/static/admin_web/xheditor-1.2.1/xheditor-1.2.1.min.js"></script>
+<script type="text/javascript" src="http://static.ccplay.com.cn/static/admin_web/xheditor-1.2.1/xheditor_lang/zh-cn.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('.xheditor').xheditor({localUrlTest:/^https?:\/\/[^\/]*?(xheditor\.com)\//i,remoteImgSaveUrl:'saveremoteimg.php',shortcuts:{'ctrl+enter':submitForm}});
+});
+	$('.xheditor').xheditor({upLinkUrl:"upload.php",upLinkExt:"zip,rar,txt",upImgUrl:"upload.php",upImgExt:"jpg,jpeg,gif,png",upFlashUrl:"upload.php",upFlashExt:"swf",upMediaUrl:"upload.php",upMediaExt:"avi"});
+	
+function submitForm(){$('#form-table').submit();}
+</script>
+
+<!--编辑器-->
+
+
+<script src="http://static.ccplay.com.cn/static/bootstrap3.2.0/js/bootstrap.min.js"></script>
+
+
+
+<script>
+$(function(){
+	
+	/*加载按钮*/
+	$('.loading-btn').on('click', function () {
+    	var $btn = $(this).button('loading')
+    	// business logic...		
+		setTimeout(function(){$btn.button('reset')},2000)
+  	});
+
+
+});
+
+
+
+
+</script>
+
+</body>
+</html>

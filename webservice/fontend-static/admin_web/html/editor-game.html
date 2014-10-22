@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="renderer" content="webkit">
+	<title>发布游戏</title>
+    <link rel="stylesheet" href="http://static.ccplay.com.cn/static/bootstrap3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://static.ccplay.com.cn/static/admin_web/style/site.css">
+</head>
+
+<body>
+	
+
+<div class="main add-game editor-game">
+
+
+
+	<div class="main-top">    
+            <h3>编辑游戏</h3>    
+    </div><!--main-top-->
+    
+  
+  
+  
+  <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation"><a href="#"><span class="glyphicon glyphicon-arrow-left"></span> 返回列表</a></li>
+      <li role="presentation" class="active dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          v3.0 <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" role="menu">
+          <li><a href="#">v1.0</a></li>
+          <li><a href="#">v1.5</a></li>
+          <li><a href="#">v2.0</a></li>
+        </ul>
+      </li>
+      <li role="presentation"><a href="new-add-game.html"><span class="glyphicon glyphicon-file"></span> 发布新版本</a></li>
+    </ul>
+    
+
+
+
+
+
+
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+
+  <div class="panel panel-info">
+    <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+      <h4 class="panel-title">基本信息</h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel">
+
+      <table class="table">
+        <tbody>
+          <tr>
+            <th class="active" width="10%">名称-中文</th>
+            <td width="90%"><input type="text" class="form-control" value="地铁跑酷北京破解版"></td>
+          </tr>
+          <tr>
+            <th class="active">名称-英文</th>
+            <td><input type="text" class="form-control" value="Subway Surfers"></td>
+          </tr>
+          <tr>
+            <th class="active">应用介绍</th>
+            <td><textarea class="form-control description" id="textarea-1" onpropertychange="this.style.height = this.scrollHeight + 'px';" oninput="this.style.height = this.scrollHeight + 'px';">《地铁跑酷》世界之旅到达中国的北京，与调皮的老孙一起在宏伟的长城旁快速奔跑，穿过挂满灯笼的地铁轨道，收集喜庆的吉祥龙，体验满满的中国风。加入国庆特有角色欢欢，可爱的熊猫滑板，升级的滑板技能，全新的成就，更有国庆收集和龙滑板回归活动，等你来体验和挑战。小伙伴们，还在等什么，赶紧下载更新地铁跑酷与全球2亿玩家一起去北京旅行吧！
+
+【更新内容】
+1.《地铁跑酷》世界之旅到达中国北京，在北京长城旁尽情奔跑
+2. 新增收集造型可爱的吉祥龙，获得满满的奖励
+3. 新增国庆特有角色漂亮的欢欢，与欢欢共度国庆
+4. 新增老孙行者装扮，一起体验中国风
+5. 新增可爱的熊猫滑板，骑着熊猫滑板在北京地铁上跑动
+6. 新增滑板升级，星星滑板加入技能星星轨迹，超级英雄滑板加入技能瞬间移动
+7. 新增国庆特有活动长城收集大赛，收集长城获得有丰厚的道具和实物大奖</textarea></td>
+          </tr>
+          <tr>
+            <th class="active">新版特性</th>
+            <td><textarea class="form-control description" id="textarea-2" onpropertychange="this.style.height = this.scrollHeight + 'px';" oninput="this.style.height = this.scrollHeight + 'px';">破解内购。
+Allen大神提醒：
+1.进入游戏商店，点击需要购买的物品，弹出运营商支付界面，选择放弃购买，即可获得对应物品。
+2.无SIM卡用户请购买时联网，弹出支付宝界面，放弃购买，即可获得。</textarea></td>
+          </tr>
+          <tr>
+            <th class="active">小编推荐</th>
+            <td><textarea class="form-control description" id="textarea-3" onpropertychange="this.style.height = this.scrollHeight + 'px';" oninput="this.style.height = this.scrollHeight + 'px';">小伙伴们，还在等什么，赶紧下载更新地铁跑酷与全球2亿玩家一起去北京旅行吧！</textarea></td>
+          </tr>
+        </tbody>
+      </table>
+      
+      
+    </div>
+  </div>
+  
+  
+  
+  <div class="panel panel-info">
+    <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+      <h4 class="panel-title">参数设置</h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel">
+      <table class="table">
+        <tbody>
+          <tr>
+            <th class="active" width="10%">评分</th>
+            <td width="40%">
+                    <select multiple class="demo-default select-state" placeholder="选择">
+                        <option value="0">☆☆☆☆☆</option>
+                        <option value="1">★</option>
+                        <option value="2">★★</option>
+                        <option value="3">★★★</option>
+                        <option value="4">★★★★</option>
+                        <option value="5">★★★★★</option>
+                    </select>
+            </td>
+            
+            <th class="active" width="10%">检测<p class="text-muted"><code>需要</code>或<code>有</code>就加入</p></th>
+            <td width="40%">
+                  <select multiple class="demo-default select-2" placeholder="选择/搜索">
+                    <option value="1" selected>需要网络</option>
+                    <option value="2">需要谷歌市场</option>
+                    <option value="3" selected>需要ROOT权限</option>
+                    <option value="4">有广告</option>
+                  </select>
+            </td>          
+            
+          </tr>
+          <tr>
+            <th class="active">版本<p class="text-muted">如:<code>2.0.5</code></p></th>
+            <td><input type="text" class="form-control"></td>            
+            <th class="active">下载<p class="text-muted">如1万+:<code>19870</code></p></th>
+            <td>
+            		<select multiple class="demo-default select-1" placeholder="选择/搜索/创建">
+                        <option value="10">1万+</option>
+                        <option value="20">2万+</option>
+                        <option value="30">3万+</option>
+                        <option value="40">4万+</option>
+                        <option value="50">5万+</option>
+                        <option value="60">6万+</option>
+                        <option value="70">7万+</option>
+                        <option value="80">8万+</option>
+                        <option value="90">9万+</option>
+                    </select>
+            </td>            
+          </tr>
+          <tr>
+            <th class="active">金币</th>
+            <td>
+                    <select multiple class="demo-default select-1" placeholder="选择/搜索/创建">
+                        <option value="10">10金币</option>
+                        <option value="20">20金币</option>
+                        <option value="30">30金币</option>
+                        <option value="40">40金币</option>
+                        <option value="50">50金币</option>
+                    </select>
+            </td>            
+            <th class="active">发布</th>
+            <td><input class="form-control" type="date"></td>  
+          </tr>
+          <tr>
+            <th class="active">语言</th>
+            <td>
+                    <select multiple class="demo-default select-state" placeholder="选择/搜索">
+                        <option value="zh">中文</option>
+                        <option value="en">英文</option>
+                    </select>
+          </td>          
+          <th class="active">厂商</th>
+            <td>
+                    <select multiple class="demo-default select-1" placeholder="选择/搜索/创建">
+                        <option value="1">King</option>
+                        <option value="2">Game loft</option>
+                        <option value="3">MINICLIP</Option>
+                    </select>
+            </td>          
+            
+          </tr>
+          <tr>
+            <th class="active">分类</th>
+            <td>
+                  <select multiple class="demo-default select-2" placeholder="选择/搜索">
+                    <option value="1" selected>破解游戏</option>
+                    <option value="2">大型游戏</option>
+                    <option value="3" selected>中文游戏</option>
+                    <option value="4">休闲益智</option>
+                    <option value="5">动作射击</option>
+                    <option value="6">体育竞技</option>
+                    <option value="7">角色扮演</option>
+                    <option value="8">棋牌游戏</option>
+                    <option value="9">赛车竞速</option>
+                    <option value="10">策略塔防</option>
+                    <option value="11">模拟经营</option>
+                    <option value="12">卡牌策略</option>
+                    <option value="13">回合战斗</option>
+                    <option value="14">即时动作</option>
+                    <option value="15">热门游戏</option>
+                    <option value="16">精选游戏</option>
+                    <option value="17">休闲娱乐</option>
+                    <option value="18">最新游戏</option>
+                  </select>
+          </td>
+            <th class="active">标签<p class="text-muted">可自由创建标签</p></th>
+            <td>
+                  <select multiple class="demo-default select-3" placeholder="选择/搜索/创建">
+                       <optgroup label="热门标签">
+                              <option value="1" selected>破解</option>
+                              <option value="2">冒险</option>
+                              <option value="3">最新</option>
+                              <option value="4">网络游戏</option>
+                              <option value="5">虫虫游戏</option>
+                         </optgroup>
+                  </select>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  
+  
+  
+  <div class="panel panel-info">
+    <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+      <h4 class="panel-title">上传文件</h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse in" role="tabpanel">
+
+<form id="uploadForm" action="" method="post" enctype="multipart/form-data">
+    <div class="upload_box">
+        <div class="upload_main">
+            <div class="upload_choose">
+            	<div class="fileImage-box">
+                	<span class="btn btn-info"><span class="glyphicon glyphicon-plus"></span> 选择文件</span>
+                	<input id="fileImage" type="file" name="fileselect[]" multiple />
+                </div>                
+                <span id="fileDragArea" class="upload_drag_area">将文件拖到这里</span>
+            </div>
+            <div id="preview" class="upload_preview"></div>
+        </div>
+        <div class="upload_submit">
+            <button type="button" id="fileSubmit" class="btn btn-default"><span class="glyphicon glyphicon-circle-arrow-up"></span> 上传全部文件</button>
+        </div>
+        <div id="uploadInf" class="upload_inf"></div>
+    </div>
+</form>
+
+    </div>
+  </div>
+  
+  
+  
+  
+</div>
+
+
+    
+
+<div class="submit">
+      <button type="button" class="btn btn-success loading-btn" data-loading-text="Loading..." autocomplete="off"><span class="glyphicon glyphicon-ok"></span> 确认提交</button>
+</div>
+
+
+
+
+</div><!--main end-->
+    
+    
+
+
+
+
+<script src="http://static.ccplay.com.cn/static/admin_web/style/jquery.min.js" type="text/javascript"></script>
+<script src="http://static.ccplay.com.cn/static/common/js/jquery.pin.js" type="text/javascript"></script>
+<script src="http://static.ccplay.com.cn/static/bootstrap3.2.0/js/bootstrap.min.js"></script>
+
+<!--标签搜索JS-->
+<script src="http://static.ccplay.com.cn/static/admin_web/style/jquery-ui.min.js"></script>
+<script src="http://static.ccplay.com.cn/static/admin_web/style/highlight.min.js"></script>
+<script src="http://static.ccplay.com.cn/static/admin_web/style/selectize.js"></script>
+<!--标签搜索JS-->
+
+
+
+
+<script>
+
+$(function(){	
+	/*textarea高度自适应*/
+	$('.description').each(function(){
+   		$(this).height($(this)[0].scrollHeight);
+	});
+	/*加载按钮*/
+	$('.loading-btn').on('click', function () {
+    	var $btn = $(this).button('loading')
+    	// business logic...		
+		setTimeout(function(){$btn.button('reset')},2000)
+  	});
+
+});
+
+
+
+
+
+/*自动搜索*/
+$('.select-state').selectize({
+	maxItems: 1,sortField: 'text'
+});
+$('.select-1').selectize({
+	maxItems: 1,sortField: 'text',create: true
+});
+$('.select-2').selectize({
+	plugins: ['remove_button'],sortField: 'text'
+});
+$('.select-3').selectize({
+	plugins: ['remove_button'],sortField: 'text',create: true
+});
+/*自动搜索 传值
+$('select.selectized,input.selectized').each(function() {
+	var $container = $('<div>').addClass('value').html('Current Value: ');
+	var $value = $('<span>').appendTo($container);
+	var $input = $(this);
+	var update = function(e) { $value.text(JSON.stringify($input.val())); }
+
+	$(this).on('change', update);
+	update();
+
+	$container.insertAfter($input.next());
+});
+*/
+
+
+
+
+/*上传文件*/
+var ZXXFILE = {
+	fileInput: null,				//html file控件
+	dragDrop: null,					//拖拽敏感区域
+	upButton: null,					//提交按钮
+	url: "",						//ajax地址
+	fileFilter: [],					//过滤后的文件数组
+	filter: function(files) {		//选择文件组的过滤方法
+		return files;	
+	},
+	onSelect: function() {},		//文件选择后
+	onDelete: function() {},		//文件删除后
+	onDragOver: function() {},		//文件拖拽到敏感区域时
+	onDragLeave: function() {},	//文件离开到敏感区域时
+	onProgress: function() {},		//文件上传进度
+	onSuccess: function() {},		//文件上传成功时
+	onFailure: function() {},		//文件上传失败时,
+	onComplete: function() {},		//文件全部上传完毕时
+	
+	/* 开发参数和内置方法分界线 */
+	
+	//文件拖放
+	funDragHover: function(e) {
+		e.stopPropagation();
+		e.preventDefault();
+		this[e.type === "dragover"? "onDragOver": "onDragLeave"].call(e.target);
+		return this;
+	},
+	//获取选择文件，file控件或拖放
+	funGetFiles: function(e) {
+		// 取消鼠标经过样式
+		this.funDragHover(e);
+				
+		// 获取文件列表对象
+		var files = e.target.files || e.dataTransfer.files;
+		//继续添加文件
+		this.fileFilter = this.fileFilter.concat(this.filter(files));
+		this.funDealFiles();
+		return this;
+	},
+	
+	//选中文件的处理与回调
+	funDealFiles: function() {
+		for (var i = 0, file; file = this.fileFilter[i]; i++) {
+			//增加唯一索引值
+			file.index = i;
+		}
+		//执行选择回调
+		this.onSelect(this.fileFilter);
+		return this;
+	},
+	
+	//删除对应的文件
+	funDeleteFile: function(fileDelete) {
+		var arrFile = [];
+		for (var i = 0, file; file = this.fileFilter[i]; i++) {
+			if (file != fileDelete) {
+				arrFile.push(file);
+			} else {
+				this.onDelete(fileDelete);	
+			}
+		}
+		this.fileFilter = arrFile;
+		return this;
+	},
+	
+	//文件上传
+	funUploadFile: function() {
+		var self = this;	
+		if (location.host.indexOf("sitepointstatic") >= 0) {
+			//非站点服务器上运行
+			return;	
+		}
+		for (var i = 0, file; file = this.fileFilter[i]; i++) {
+			(function(file) {
+				var xhr = new XMLHttpRequest();
+				if (xhr.upload) {
+					// 上传中
+					xhr.upload.addEventListener("progress", function(e) {
+						self.onProgress(file, e.loaded, e.total);
+					}, false);
+		
+					// 文件上传成功或是失败
+					xhr.onreadystatechange = function(e) {
+						if (xhr.readyState == 4) {
+							if (xhr.status == 200) {
+								self.onSuccess(file, xhr.responseText);
+								self.funDeleteFile(file);
+								if (!self.fileFilter.length) {
+									//全部完毕
+									self.onComplete();	
+								}
+							} else {
+								self.onFailure(file, xhr.responseText);		
+							}
+						}
+					};
+		
+					// 开始上传
+					xhr.open("POST", self.url, true);
+					xhr.setRequestHeader("X_FILENAME", file.name);
+					xhr.send(file);
+				}	
+			})(file);	
+		}	
+			
+	},
+	
+	init: function() {
+		var self = this;
+		
+		if (this.dragDrop) {
+			this.dragDrop.addEventListener("dragover", function(e) { self.funDragHover(e); }, false);
+			this.dragDrop.addEventListener("dragleave", function(e) { self.funDragHover(e); }, false);
+			this.dragDrop.addEventListener("drop", function(e) { self.funGetFiles(e); }, false);
+		}
+		
+		//文件选择控件选择
+		if (this.fileInput) {
+			this.fileInput.addEventListener("change", function(e) { self.funGetFiles(e); }, false);	
+		}
+		
+		//上传按钮提交
+		if (this.upButton) {
+			this.upButton.addEventListener("click", function(e) { self.funUploadFile(e); }, false);	
+		} 
+	}
+};
+
+var params = {
+	fileInput: $("#fileImage").get(0),
+	dragDrop: $("#fileDragArea").get(0),
+	upButton: $("#fileSubmit").get(0),
+	url: $("#uploadForm").attr("action"),
+	filter: function(files) {
+		var arrFiles = [];
+		for (var i = 0, file; file = files[i]; i++) {
+			if (file.type.indexOf("") == 0) {//image
+				if (file.size >= 1024000) {
+					alert('文件"'+ file.name +'"大小过大，应小于1M');	
+				} else {
+					arrFiles.push(file);	
+				}			
+			} else {
+				alert('文件"' + file.name + '"不是图片。');	
+			}
+		}
+		return arrFiles;
+	},
+	onSelect: function(files) {
+		var html = '', i = 0;
+		$("#preview").html('<div class="upload_loading"></div>');
+		var funAppendImage = function() {
+			file = files[i];
+			if (file) {
+				var reader = new FileReader()
+				reader.onload = function(e) {
+					html = html + '<div id="uploadList_'+ i +'" class="upload_append_list"><p><strong>' + file.name + '</strong>'+ 
+						'<a href="javascript:" class="upload_delete" title="删除" data-index="'+ i +'"><span class="glyphicon glyphicon-trash"></span></a><br />' +
+						'<img id="uploadImage_' + i + '" src="' + e.target.result + '" class="upload_image" /></p>'+ 
+						'<span id="uploadProgress_' + i + '" class="upload_progress"></span>' +
+					'</div>';
+					
+					i++;
+					funAppendImage();
+				}
+				reader.readAsDataURL(file);
+			} else {
+				$("#preview").html(html);
+				if (html) {
+					//删除方法
+					$(".upload_delete").click(function() {
+						ZXXFILE.funDeleteFile(files[parseInt($(this).attr("data-index"))]);
+						return false;	
+					});
+					//提交按钮显示
+					$(".upload_submit,#preview").show();	
+				} else {
+					//提交按钮隐藏
+					$(".upload_submit,#preview").hide();	
+				}
+			}
+		};
+		funAppendImage();		
+	},
+	onDelete: function(file) {
+		$("#uploadList_" + file.index).fadeOut();
+	},
+	onDragOver: function() {
+		$(this).addClass("upload_drag_hover");
+	},
+	onDragLeave: function() {
+		$(this).removeClass("upload_drag_hover");
+	},
+	onProgress: function(file, loaded, total) {
+		var eleProgress = $("#uploadProgress_" + file.index), percent = (loaded / total * 100).toFixed(2) + '%';
+		eleProgress.show().html(percent);
+	},
+	onSuccess: function(file, response) {
+		$("#uploadInf").show();
+		$("#uploadInf").append("<p>上传成功，文件地址是：" + response + "</p>");
+	},
+	onFailure: function(file) {
+		$("#uploadProgress_" + file.index).html("上传失败");
+		$("#uploadInf").show();
+		$("#uploadInf").append("文件" + file.name + "上传失败！<br/>");	
+		$("#uploadImage_" + file.index).css("opacity", 0.2);
+	},
+	onComplete: function() {
+		//提交按钮隐藏
+		$("#fileSubmit").hide();
+		//file控件value置空
+		$("#fileImage").val("");
+		$("#uploadInf").show();
+		$("#uploadInf").append("<p>当前文件全部上传完毕，可继续添加上传。</p>");
+	}
+};
+ZXXFILE = $.extend(ZXXFILE, params);
+ZXXFILE.init();
+</script>
+
+</body>
+</html>
