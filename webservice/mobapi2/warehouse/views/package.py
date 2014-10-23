@@ -334,13 +334,14 @@ class PackageUpdateView(generics.CreateAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         pkg_names = sorted_pkg_idx.keys()
-        pkgs = self.get_queryset().filter(package_name__in=pkg_names).all()
+        #pkgs = self.get_queryset().filter(package_name__in=pkg_names).all()
+        pkgs = self.query_packages(pkg_names)
 
         def _sorted_key(p):
             idx = sorted_pkg_idx[p.package_name]['order_idx']
             return idx
 
-        sorted_pkgs = sorted(pkgs, key=_sorted_key)
+        sorted_pkgs = list(sorted(pkgs, key=_sorted_key))
 
         def _fill_update_info(p):
             p.update_info = sorted_pkg_idx[p.package_name]
@@ -356,6 +357,14 @@ class PackageUpdateView(generics.CreateAPIView):
 
     def _filter_ignore_disupdatable(self, datalist):
         return list(filter(lambda e: e['is_updatable'], datalist))
+
+    def query_packages(self, package_names):
+        for pkg_name in package_names:
+            pkg = self.model.objects\
+                .get_cache_by_alias(site_id=get_global_site().pk,
+                                    package_name=pkg_name)
+            if pkg and pkg.is_published():
+                yield pkg
 
 
 class IdsKeyBit(bits.QueryParamsKeyBit):

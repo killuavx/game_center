@@ -80,7 +80,12 @@ def product_clientapp_fill(request, page):
     package_name = 'com.lion.market'
     clients = ClientPackageVersion.objects.filter(package_name=package_name)\
         .published().order_by('-version_code')
+    try:
+        latest = clients[0]
+    except:
+        latest = None
     return dict(
-        clients=clients
+        latest=latest,
+        clients=clients,
     )
 
