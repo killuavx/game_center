@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from reversion.admin import VersionAdmin
 from easy_thumbnails.widgets import ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
-from clientapp.models import ClientPackageVersion, LoadingCover
+from clientapp.models import ClientPackageVersion, LoadingCover, CLIENT_PACKAGEVERSION_DIRECTORY_PREFIX
 from toolkit.helpers import sync_status_summary, sync_status_actions
 from toolkit.admin import admin_edit_linktag, ResourceInlines as BaseResourceInlines
 from django import forms
@@ -24,6 +24,8 @@ class ResourceInlines(BaseResourceInlines):
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == 'alias' and self.parent_model is ClientPackageVersion:
             return super(BaseResourceInlines, self).formfield_for_dbfield(db_field, **kwargs)
+        if db_field.name == 'file':
+            db_field.directory = CLIENT_PACKAGEVERSION_DIRECTORY_PREFIX
         return super(ResourceInlines, self).formfield_for_dbfield(db_field, **kwargs)
 
 

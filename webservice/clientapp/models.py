@@ -39,7 +39,11 @@ def factory_version_upload_to_path(basename):
                                                         }
     return upload_to
 
-CLIENT_PACKAGEVERSION_DIRECTORY_DTFORMAT = 'clientapp/%Y/%m/%d/%H%M-%S-%f'
+
+CLIENT_PACKAGEVERSION_DIRECTORY_PREFIX  = 'clientapp'
+
+CLIENT_PACKAGEVERSION_DIRECTORY_DTFORMAT = "%s/%s" %(CLIENT_PACKAGEVERSION_DIRECTORY_PREFIX,
+                                                     '%Y/%m/%d/%H%M-%S-%f')
 
 
 def clientpackageversion_upload_to(instance, filename):
