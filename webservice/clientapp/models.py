@@ -13,6 +13,9 @@ from toolkit.helpers import sync_status_from, released_hourly_datetime, qurl_to
 from toolkit.managers import CurrentSitePassThroughManager, PublishedManager
 from toolkit.models import SiteRelated, PublishDisplayable
 from mezzanine.core.models import TimeStamped, Orderable
+from toolkit.fields import MultiResourceField
+from mezzanine.core.fields import FileField
+import os
 
 
 class ClientPackageVersionQuerySet(QuerySet):
@@ -36,6 +39,22 @@ def factory_version_upload_to_path(basename):
                                                         }
     return upload_to
 
+CLIENT_PACKAGEVERSION_DIRECTORY_DTFORMAT = 'clientapp/%Y/%m/%d/%H%M-%S-%f'
+
+
+def clientpackageversion_upload_to(instance, filename):
+    clientpackageversion_workspace_by_created(instance)
+    basename = os.path.basename(filename)
+    return "%s/%s" % (instance.workspace.name, basename)
+
+
+def clientpackageversion_workspace_by_created(instance):
+    if not instance.workspace:
+        if not instance.created_datetime:
+            instance.created_datetime = now().astimezone()
+        sd = instance.created_datetime.astimezone()
+        instance.workspace = sd.strftime(CLIENT_PACKAGEVERSION_DIRECTORY_DTFORMAT)
+
 
 class ClientPackageVersion(SiteRelated, models.Model):
 
@@ -51,13 +70,13 @@ class ClientPackageVersion(SiteRelated, models.Model):
         .for_queryset_class(ClientPackageVersionQuerySet)()
 
     icon = ThumbnailerImageField(
-        upload_to=factory_version_upload_to_path('icon'),
+        upload_to=clientpackageversion_upload_to,
         default='',
         blank=True,
     )
 
     cover = ThumbnailerImageField(
-        upload_to=factory_version_upload_to_path('cover'),
+        upload_to=clientpackageversion_upload_to,
         default='',
         blank=True,
     )
@@ -70,7 +89,7 @@ class ClientPackageVersion(SiteRelated, models.Model):
 
     download = models.FileField(
         verbose_name=_('version file'),
-        upload_to=factory_version_upload_to_path('application'),
+        upload_to=clientpackageversion_upload_to,
         default='',
         blank=True
     )
@@ -147,6 +166,12 @@ class ClientPackageVersion(SiteRelated, models.Model):
 
     tracker = FieldTracker()
 
+    resources = MultiResourceField()
+
+    workspace = FileField(default='',
+                          blank=True,
+                          max_length=500)
+
     def sync_status(self):
         return sync_status_from(self)
 
@@ -163,10 +188,17 @@ def client_download_url(package_name, **kwargs):
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from os.path import getsize
+from django.conf import settings
 
 @receiver(pre_save, sender=ClientPackageVersion)
 def client_packageversion_pre_save(sender, instance, **kwargs):
-
+    clientpackageversion_workspace_by_created(instance)
+    try:
+        path = os.path.join(settings.MEDIA_ROOT, str(instance.workspace))
+        if not os.path.exists(path):
+            os.makedirs(path, exist_ok=True)
+    except:
+        pass
     if instance.tracker.has_changed('download') and instance.download:
         try:
             file_size = instance.download.file.size

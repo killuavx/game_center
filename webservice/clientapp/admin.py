@@ -7,7 +7,24 @@ from easy_thumbnails.widgets import ImageClearableFileInput
 from easy_thumbnails.fields import ThumbnailerImageField
 from clientapp.models import ClientPackageVersion, LoadingCover
 from toolkit.helpers import sync_status_summary, sync_status_actions
-from toolkit.admin import admin_edit_linktag
+from toolkit.admin import admin_edit_linktag, ResourceInlines as BaseResourceInlines
+from django import forms
+
+
+class ResourceForm(forms.ModelForm):
+
+    class Meta:
+        model = BaseResourceInlines.model
+
+
+class ResourceInlines(BaseResourceInlines):
+
+    form = ResourceForm
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'alias' and self.parent_model is ClientPackageVersion:
+            return super(BaseResourceInlines, self).formfield_for_dbfield(db_field, **kwargs)
+        return super(ResourceInlines, self).formfield_for_dbfield(db_field, **kwargs)
 
 
 class ClientPackageVersionAdmin(VersionAdmin):
@@ -21,6 +38,7 @@ class ClientPackageVersionAdmin(VersionAdmin):
         }),
         (_('Files'), {
             'fields': (
+                'workspace',
                 'icon',
                 'cover',
                 'download',
@@ -95,6 +113,16 @@ class ClientPackageVersionAdmin(VersionAdmin):
     class Media:
         static_url = '/static/'
         js = [static_url+'js/syncfile.action.js', ]
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = list(self.readonly_fields)
+        if not str(obj.workspace):
+            return readonly_fields
+        if obj and obj.pk:
+            return readonly_fields + ['workspace', ]
+        return readonly_fields
+
+    inlines = (ResourceInlines, )
 
 
 class LoadingCoverAdmin(VersionAdmin):
