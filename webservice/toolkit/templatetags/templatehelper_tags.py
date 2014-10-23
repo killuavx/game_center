@@ -106,3 +106,28 @@ def mz_page_get(slug):
         return None
 
 
+from django.conf import settings
+from django.template.loader import get_template_from_string
+
+@register.simple_tag(takes_context=True)
+def template_string(context, text):
+    template = get_template_from_string(text)
+    try:
+        output = template.render(context)
+    except Exception as e:
+        if settings.DEBUG:
+            raise
+        output = ''
+    return output
+
+
+def resource_field(inst, kind, field, alias='default'):
+    try:
+        res = getattr(inst.resources, kind)[alias]
+        return getattr(res, field)
+    except:
+        pass
+    return ""
+
+register.assignment_tag(resource_field, name='resource_field_as')
+register.simple_tag(resource_field)
