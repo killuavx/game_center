@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from mezzanine.accounts.forms import username_label
 from mezzanine.utils.models import get_user_model
 from account import settings as account_settings
+from account.validators import AccountUsernameForbiddenValidator
 from mezzanine.conf import settings
 from mezzanine.accounts import get_profile_model, get_profile_user_fieldname
 from account import authenticate
@@ -65,7 +66,10 @@ Profile = get_profile_model()
 
 class SignupForm(CaptchaVerifyForm):
 
-    username = forms.CharField(label='用户名')
+    username = forms.CharField(label='用户名',
+                               validators=[
+                                   AccountUsernameForbiddenValidator()
+                               ])
 
     email = forms.EmailField(label='电子邮箱',
                              error_messages={'required': '请填写电子邮箱',

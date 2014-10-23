@@ -5,6 +5,7 @@ from kombu import uuid
 from account.utils import *
 from account import settings as account_settings
 from account.models import Profile
+from account.validators import AccountUsernameForbiddenValidator
 
 from django.contrib.auth import authenticate
 
@@ -21,6 +22,9 @@ class SignupForm(forms.Form):
                                 max_length=30,
                                 widget=forms.TextInput(attrs=attrs_dict),
                                 label=_("Username"),
+                                validators=[
+                                    AccountUsernameForbiddenValidator()
+                                ],
                                 error_messages={
                                                 #'invalid': _('Username must '
                                                 #'contain only letters, numbers,'
