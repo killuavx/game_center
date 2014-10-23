@@ -1,6 +1,6 @@
 {% extends "pages/main_richtextpage.html" %}
 {% load staticfiles mezzanine_tags templatehelper_tags url_tags pages_tags %}
-{% block platform_css %}<link href="{% static 'product/css/site.css' %}" media="all" rel="stylesheet" type="text/css"/>{% endblock %}
+{% block platform_css %}<link href="{% static 'product/css/site.css' %}?1414044679081" media="all" rel="stylesheet" type="text/css"/>{% endblock %}
 {% block extra_meta %}
     {{ block.super }}
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
@@ -43,7 +43,7 @@
                     <li class="st-2">独家首发</li>
                     <li class="st-3">网游礼包</li>
                 </ul>
-                {% qurl "http://qr.liantu.com/api.php" w=168 el='h' logo="http://static.ccplay.com.cn/static/common/img/favicon.png" as qr_url %}
+                {% qurl "http://qr.liantu.com/api.php" m=10 w=168 el='h' logo="http://static.ccplay.com.cn/static/common/img/favicon.png" as qr_url %}
                 {% with dw_url="http://android.ccplay.com.cn/download/client/" %}
                 {% if request.GET.channel %}{% qurl dw_url channel=request.GET.channel as dw_url %}{% endif %}
                 <div class="abs qr-code"><img src="{% qurl qr_url text=dw_url %}" alt="虫虫助手二维码" /></div>
