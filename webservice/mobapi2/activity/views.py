@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
 import warnings
-from django.core.cache import cache
+import json
+
 from django.http import Http404
 from rest_framework import viewsets, status
 from rest_framework.decorators import link, action
-from rest_framework.exceptions import Throttled
-from rest_framework.throttling import UserRateThrottle
 from rest_framework_extensions.mixins import DetailSerializerMixin
-from activity.models import GiftBag, GiftCard, EmptyRemainingGiftCard
-from mobapi2.authentications import PlayerTokenAuthentication
-from mobapi2.activity.serializers import GiftBagSummarySerializer, GiftBagDetailSerializer, GiftCardSerializer
-from mobapi2 import cache_keyconstructors as ckc
 from rest_framework_extensions.cache.decorators import CacheResponse
 from rest_framework_extensions.key_constructor import bits
 from rest_framework_extensions.key_constructor.constructors import KeyConstructor
@@ -22,8 +17,13 @@ from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, BaseFilterBackend
 from django.utils.decorators import method_decorator, available_attrs
 from django.views.decorators.cache import never_cache
-import json
-from django.utils.timezone import now, get_default_timezone
+from django.utils.timezone import now
+
+from activity.models import GiftBag, GiftCard, EmptyRemainingGiftCard
+from mobapi2.activity.throttling import ScratchCardPlayDailyThrottle, ScratchCardPlayThrottled
+from mobapi2.authentications import PlayerTokenAuthentication
+from mobapi2.activity.serializers import GiftBagSummarySerializer, GiftBagDetailSerializer, GiftCardSerializer
+from mobapi2 import cache_keyconstructors as ckc
 
 
 class DataKeyConstructor(KeyConstructor):
@@ -302,119 +302,6 @@ from mobapi2.activity.serializers import WinnerScratchCardSerializer, GenerateSc
 from mongoengine import DoesNotExist
 from mobapi2.helpers import get_note_url
 from mobapi2.rest_views import CustomMethodPermissionsViewSetMixin, CustomMethodThrottleViewSetMixin
-from datetime import timedelta, datetime
-
-
-class ScratchCardPlayDailyThrottle(UserRateThrottle):
-
-    scope = 'scratch_card_play_daily'
-
-    # 每天最多次数
-    daily_max_times = 15
-
-    # 5分钟间隔
-    interval_seconds = 60 * 5
-
-    # 间隔5次，等候间隔时间
-    interval_times = 5
-
-    def __init__(self, *args, **kwargs):
-        super(ScratchCardPlayDailyThrottle, self).__init__(*args, **kwargs)
-        self.previous_time = None
-        self._cache = cache
-
-    def get_rate(self):
-        return "%d/day" % self.daily_max_times
-
-    def parse_rate(self, rate):
-        num, period = rate.split('/')
-        num_requests = int(num)
-        timenow = now().astimezone()
-        next_datetime = (timenow + timedelta(days=1))\
-            .replace(hour=0, minute=0, second=0, microsecond=0)
-        duration = (next_datetime - timenow).seconds
-        return (num_requests, duration)
-
-    def wait(self):
-        if self.daily_max_times == len(self.history):
-            return None
-
-        if self.history:
-            remaining_duration = self.duration - (self.now - self.history[-1])
-        else:
-            remaining_duration = self.duration
-
-        allow, wait_seconds = self.allow_next_interval()
-        if not allow:
-            return wait_seconds
-
-        available_requests = self.num_requests - len(self.history) + 1
-
-        return remaining_duration / float(available_requests)
-
-    def allow_request(self, request, view):
-        """
-        Implement the check to see if the request should be throttled.
-
-        On success calls `throttle_success`.
-        On failure calls `throttle_failure`.
-        """
-        if self.rate is None:
-            return True
-
-        self.key = self.get_cache_key(request, view)
-        if self.key is None:
-            return True
-
-        self.history = self._cache.get(self.key, [])
-        self.now = self.timer()
-        self.previous_time = self._cache.get("%s_previous" % self.key)
-        allow, wait_seconds = self.allow_next_interval()
-        if not allow:
-            return False
-
-        # Drop any requests from the history which have now passed the
-        # throttle duration
-        while self.history and self.history[-1] <= self.now - self.duration:
-            self.history.pop()
-        if len(self.history) >= self.num_requests:
-            return self.throttle_failure()
-        return self.throttle_success()
-
-    def throttle_success(self):
-        flag = super(ScratchCardPlayDailyThrottle, self).throttle_success()
-        self._cache.set("%s_previous" % self.key, self.now, self.duration)
-        return flag
-
-    def allow_next_interval(self):
-        if len(self.history) == 0 or not self.previous_time:
-            return True, None
-
-        if len(self.history) % self.interval_times == 0:
-            wait_seconds = (self.previous_time + self.interval_seconds) - self.now
-            if wait_seconds <= 0:
-                return True, None
-            else:
-                return False, wait_seconds
-        else:
-            return True, None
-
-
-import math
-
-
-class ScratchCardPlayThrottled(Throttled):
-
-    def __init__(self, wait=None, detail=None):
-        self.wait = wait
-        if wait is None:
-            self.detail = "今天已经刮完了,明天再来吧~"
-        else:
-            #minutes = int(self.wait/60.0)
-            #secoinds = int(self.wait)
-            #self.detail = "%s%s后，又可以刮奖哦~" % (minutes or secoinds, '分钟' if minutes else '秒')
-            minutes = math.ceil(self.wait/60.0)
-            self.detail = "%s%s后，又可以刮奖哦~" % (minutes, '分钟')
 
 
 class ScratchCardViewSet(CustomMethodPermissionsViewSetMixin,
@@ -865,5 +752,17 @@ class ActivityViewSet(RichPageViewSetMixin,
         return self.queryset
 
 
+from mobapi2.activity.serializers import NotificationSerializer
 
+
+class NotificationViewSet(viewsets.ViewSet):
+
+    permission_classes = ()
+    authentication_classes = (PlayerTokenAuthentication,)
+    serializer_class = NotificationSerializer
+
+    @method_decorator(never_cache)
+    def retrieve_all(self, request, *args, **kwargs):
+        serializer = self.serializer_class(view=self, request=request)
+        return Response(serializer.data)
 

@@ -405,3 +405,72 @@ class ActivitySummarySerializer(ModelSerializer):
             'is_active',
             'publish_date',
         )
+
+
+from datetime import datetime
+from mobapi2.rest_clients import android_api
+from mobapi2.activity.throttling import *
+
+
+class NotificationSerializer(Serializer):
+
+    permission_classes = ()
+    authentication_classes = ()
+
+    def __init__(self, view, request, *args, **kwargs):
+        assert request
+        super(NotificationSerializer, self).__init__(*args, **kwargs)
+        self.context['request'] = request
+        self.context['view'] = view
+
+    activity = serializers.SerializerMethodField('get_activity')
+
+    def get_activity(self, obj):
+        #request = self.context.get('request')
+        response = android_api.activities.get()
+        try:
+            latest = response.data['results'][0]
+            result = dict(
+                new_count=1 if latest['is_active'] else 0,
+                latest=latest,
+                active=latest['is_active']
+            )
+        except Exception as e:
+            result = dict(new_count=0, latest=None, active=False)
+        return result
+
+    bulletin = serializers.SerializerMethodField('get_bulletin')
+
+    def get_bulletin(self, obj):
+        request = self.context.get('request')
+        response = android_api.bulletins.get()
+        data = response.data
+        result = dict(active=False, new_count=0, latest=None)
+        if data['count']:
+            result['new_count'] = self._bulletin_newcount(request, data)
+            result['active'] = result['new_count'] > 0
+            result['latest'] = data['results'][0]
+        return result
+
+    def _bulletin_newcount(self, request, data):
+        new_count = 0
+        n = now().astimezone()
+        for item in data['results']:
+            cur_dt = datetime.fromtimestamp(int(item['publish_date']),
+                                            tz=n.tzinfo)
+            if (n - cur_dt) < timedelta(days=3):
+                new_count += 1
+        return new_count
+
+    scratchcard = serializers.SerializerMethodField('get_scratchcard')
+
+    def get_scratchcard(self, obj):
+        throttle = ScratchCardPlayDailyThrottle()
+        active = throttle.check_allowed(request=self.context.get('request'),
+                                        view=self.context.get('view'))
+        return dict(active=active)
+
+    lottery = serializers.SerializerMethodField('get_lottery')
+
+    def get_lottery(self, obj):
+        return dict(active=True)
