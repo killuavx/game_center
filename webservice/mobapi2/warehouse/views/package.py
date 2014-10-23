@@ -353,7 +353,6 @@ class PackageUpdateView(generics.CreateAPIView):
                                                     context=dict(
                                                         request=request))
         data = self._filter_ignore_disupdatable(serializer.data)
-        print(data)
         return Response(data, status.HTTP_200_OK)
 
     def _filter_ignore_disupdatable(self, datalist):
