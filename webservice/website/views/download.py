@@ -182,13 +182,14 @@ def clientapp_latest_download(request, package_name=None,
         raise Http404
 
     channel = request.GET.get('channel')
+    response = None
     if channel:
         try:
             res = getattr(app.resources, 'pkg')[channel]
             response = redirect(res.file.url)
         except:
             pass
-    else:
+    if not response:
         response = redirect(app.download.url)
 
     try:
