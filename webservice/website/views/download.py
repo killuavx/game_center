@@ -181,7 +181,16 @@ def clientapp_latest_download(request, package_name=None,
     except ClientPackageVersion.DoesNotExist:
         raise Http404
 
-    response = redirect(app.download.url)
+    channel = request.GET.get('channel')
+    if channel:
+        try:
+            res = getattr(app.resources, 'pkg')[channel]
+            response = redirect(res.file.url)
+        except:
+            pass
+    else:
+        response = redirect(app.download.url)
+
     try:
         #event = _download_make_event(request, response,
         #                             download_package_name=app.package_name,
