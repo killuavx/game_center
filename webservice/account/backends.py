@@ -190,6 +190,9 @@ class GameCenterModelBackend(UserSyncAPI,
         except (User.DoesNotExist, ValueError):
             return None
 
+        if not user.is_active:
+            return None
+
         if not check_password:
             self.sync_user(user, password=password)
             return user
@@ -237,9 +240,12 @@ class UCenterModelBackend(UserSyncAPI,
 
     def sync_user(self, uc_userdata):
         try:
-            return self.sync_user_from_ucenter(uc_userdata)
+            user = self.sync_user_from_ucenter(uc_userdata)
+            if user and user.is_active:
+                return user
         except:
-            return None
+            pass
+        return None
 
 
 class GameCenterProfileBackend(GetUserMixin):
@@ -259,6 +265,9 @@ class GameCenterProfileBackend(GetUserMixin):
                 user = Profile.objects.get(email__iexact=username).user
             except (ObjectDoesNotExist, ValueError):
                 return None
+
+        if not user.is_active:
+            return None
 
         if user.check_password(password):
             return user

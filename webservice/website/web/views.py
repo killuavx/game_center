@@ -467,6 +467,36 @@ def comment_form(request, template='generic/web/includes/comments.html'):
         raise Http404
 
 
+from comment.models import Comment
+
+
+def comment_remove(request, pk, *args, **kwargs):
+    data = dict()
+    if not request.user.is_authenticated():
+        data['code'] = 2
+        data['msg'] = '请先登陆'
+        data['errors'] = []
+    elif not request.user.is_staff:
+        data['code'] = 2
+        data['msg'] = '非法操作'
+        data['errors'] = []
+    else:
+        try:
+            comment = Comment.objects.get(pk=pk)
+            data['code'], data['msg'] = 0, '成功删除'
+            comment.is_removed = True
+            comment.save()
+        except ObjectDoesNotExist:
+            data['code'], data['msg'] = 1, '没有评论内容'
+
+    if is_ajax_request(request):
+        _json_data = json.dumps(data)
+        return HttpResponse(_json_data, 'application/json')
+    else:
+        referer = request.META.get('HTTP_REFERER', None)
+        return redirect(referer)
+
+
 from django.views.generic import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import patch_cache_control

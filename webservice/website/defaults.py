@@ -247,12 +247,12 @@ register_setting(
     name="GC_TEMPLATE_CACHE_TIMEOUT_HOURS",
     description=_("模板缓存过期时间,默认3小时" ),
     editable=True,
-    default=3600*3,
+    default=3600,
 )
 
 register_setting(
     name="GC_TEMPLATE_CACHE_TIMEOUT_DAYS",
     description=_("模板缓存过期时间,默认1天" ),
     editable=True,
-    default=86400,
+    default=3600+1800,
 )

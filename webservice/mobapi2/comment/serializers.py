@@ -3,6 +3,8 @@ from rest_framework import serializers
 from comment.models import Comment, Feedback
 from toolkit.models import Star
 from mobapi2.serializers import ModelSerializer
+from comment.helpers import comment_forbidden_words
+from comment.forms import ForbiddenWordValidator
 
 
 class CommentStarSerializerMixin(object):
@@ -25,7 +27,10 @@ class CommentSerializer(CommentStarSerializerMixin, ModelSerializer):
             return obj.user.profile.icon.url
         except:
             from mezzanine.core.templatetags.mezzanine_tags import gravatar_url
-            return "http:%s" % gravatar_url(obj.user.profile.email, size=120)
+            try:
+                return "http:%s" % gravatar_url(obj.user.profile.email, size=120)
+            except:
+                return None
 
     class Meta:
         model = Comment
@@ -39,6 +44,15 @@ class CommentSerializer(CommentStarSerializerMixin, ModelSerializer):
 
 
 class CommentCreateSerializer(ModelSerializer):
+
+    comment = serializers.CharField(
+        required=True,
+        max_length=200,
+        min_length=3,
+        validators=[
+            ForbiddenWordValidator(words=comment_forbidden_words,
+                                   message='您的评论含有敏感词汇')
+        ])
 
     def save_object(self, obj, **kwargs):
         super(CommentCreateSerializer, self).save_object(obj=obj, **kwargs)

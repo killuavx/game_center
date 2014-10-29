@@ -24,5 +24,6 @@ urlpatterns = patterns('website.web.views',
                        url(r'^comments/$', 'comment_list', name='comment_list'),
                        url(r'^form_comment/$', 'comment_form', name='comment_form'),
                        url(r'^comment/$', 'comment', name='comment'),
+                       url(r'^comment/remove/(?P<pk>\d+)/?$', 'comment_remove', name='comment_remove'),
                        )
 

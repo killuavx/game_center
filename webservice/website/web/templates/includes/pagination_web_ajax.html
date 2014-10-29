@@ -1,5 +1,5 @@
 {% load url_tags %}
-<div class="cl f14 page" data-url="{{ paginator_url }}">{% if current_page.has_previous or current_page.has_next %}
+<div class="cl f14 page" data-page="{{ current_page.number|default:1 }}" data-url="{{ paginator_url }}">{% if current_page.has_previous or current_page.has_next %}
     {% if current_page.has_previous %}
         <a href="javascript:;" onclick="page_load('{{ load_selector }}', $(this).parent(), {{ current_page.previous_page_number|default:1 }});">上一页</a>
     {% endif %}

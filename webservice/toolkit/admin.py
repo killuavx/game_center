@@ -81,3 +81,59 @@ class ResourceInlines(GenericStackedInline):
         if db_field.name == 'alias':
             kwargs['widget'].choices = get_resource_choices()
         return super(ResourceInlines, self).formfield_for_dbfield(db_field, **kwargs)
+
+
+
+from mezzanine.conf import registry
+from mezzanine.conf.forms import SettingsForm as MZSettingsForm
+
+
+FIELD_WIDGETS = {}
+FIELD_WIDGETS['text'] = forms.Textarea
+
+
+class SettingsForm(MZSettingsForm):
+
+    def __init__(self, *args, **kwargs):
+        super(SettingsForm, self).__init__(*args, **kwargs)
+        for name in registry.keys():
+            if 'widget' in registry[name]:
+                widget_cls = registry[name].get('widget', forms.TextInput)
+                self.fields[name].widget = widget_cls()
+                css_class = self.fields[name].__class__.__name__.lower()
+                self.fields[name].widget.attrs["class"] = css_class
+
+
+from mezzanine.conf.models import Setting
+from mezzanine.conf.admin import SettingsAdmin as MZSettingsAdmin
+from django.contrib.messages import info
+try:
+    from django.utils.encoding import force_text
+except ImportError:
+    # Backward compatibility for Py2 and Django < 1.5
+    from django.utils.encoding import force_unicode as force_text
+
+
+class SettingsAdmin(MZSettingsAdmin):
+
+    def changelist_view(self, request, extra_context=None):
+        if extra_context is None:
+            extra_context = {}
+        settings_form = SettingsForm(request.POST or None)
+        if settings_form.is_valid():
+            settings_form.save()
+            info(request, _("Settings were successfully updated."))
+            return self.changelist_redirect()
+        extra_context["settings_form"] = settings_form
+        extra_context["title"] = u"%s %s" % (
+            _("Change"), force_text(Setting._meta.verbose_name_plural))
+        return super(MZSettingsAdmin, self).changelist_view(request, extra_context)
+
+
+from django.contrib.admin.sites import NotRegistered
+
+try:
+    admin.site.unregister(Setting)
+    admin.site.register(Setting, SettingsAdmin)
+except NotRegistered:
+    admin.site.register(Setting, SettingsAdmin)

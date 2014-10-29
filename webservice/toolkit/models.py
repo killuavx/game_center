@@ -8,6 +8,7 @@ from django.db import models
 from mezzanine.utils.models import get_user_model_name, base_concrete_model
 from django.utils.translation import ugettext_lazy as _
 from django.core.files.images import ImageFile
+from model_utils import FieldTracker
 from model_utils.choices import Choices
 
 from django.conf import settings as df_settings
@@ -208,6 +209,7 @@ class Resource(SiteRelated, models.Model):
         ('screenshot', 'screenshot', 'Screenshot'),
         ('ipadscreenshot', 'ipadscreenshot', 'iPadScreenshot'),
         ('other', 'other', 'Other'),
+        ('pkg', 'pkg', 'PackageFile'),
     )
 
     kind = models.CharField(choices=KIND, max_length=15)
@@ -229,6 +231,8 @@ class Resource(SiteRelated, models.Model):
     width = models.CharField(max_length=6, default=0, blank=True)
 
     height = models.CharField(max_length=6, default=0, blank=True)
+
+    tracker = FieldTracker()
 
     class Meta:
         db_table = 'common_resource'
@@ -256,7 +260,7 @@ class Resource(SiteRelated, models.Model):
 
     def save(self, update_meta=False, *args, **kwargs):
         self.mime_type, _ext = mimetypes.guess_type(self.file.name)
-        if update_meta:
+        if update_meta or (self.kind == self.KIND.pkg and self.tracker.has_changed('file')):
             self.check_file_meta()
         return super(Resource, self).save(*args, **kwargs)
 
