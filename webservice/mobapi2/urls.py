@@ -43,6 +43,12 @@ rest_router.register('coin_packages', package_views.PackageCoinViewSet, base_nam
 rest_router.register('notes', activity_views.NoteViewSet)
 rest_router.register('bulletins', activity_views.BulletinViewSet)
 rest_router.register('activities', activity_views.ActivityViewSet)
+rest_router.register('lotteries', activity_views.LotteryViewSet)
+lottery_active_view = activity_views.LotteryViewSet.as_view({'get': 'active'})
+lottery_viewname = rest_router.get_default_base_name(activity_views.LotteryViewSet)
+lottery_urlpatterns = patterns('',
+   url('^active/?$', lottery_active_view, name="%s-active" %lottery_viewname),
+)
 
 rest_router.register('giftbags', activity_views.GiftBagViewSet)
 scratchcard_play = activity_views.ScratchCardViewSet.as_view({'get': 'play'})
@@ -110,7 +116,10 @@ home_urlpatterns = patterns('',
 
 slug_pattern = '[\w_.-]+'
 
-urlpatterns = rest_router.urls
+urlpatterns = patterns('',
+                       url(r'^lotteries/', include(lottery_urlpatterns)),
+                       )
+urlpatterns += rest_router.urls
 urlpatterns += patterns('',
     url(r'^home/', include(home_urlpatterns)),
     url(r'^tasks/', include(task_urlpatterns)),

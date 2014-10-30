@@ -1,0 +1,19 @@
+{% extends "mobapi2/activity/base.html" %}
+{% load staticfiles %}
+{% block main %}
+<div class="rich_media">
+    <div class="rich_media_inner winners">
+        <img src="{% static 'android_cc/img/wheel_winners.jpg' %}" class="banner">
+        <div class="list">
+            <table>
+                <tbody>
+                {% for winning in winnings %}
+                <tr>
+                    <th{% if winning.prize.group == 1 %} class="top"{% endif %}>恭喜</th><td>{{ winning.user.username }}</td><th>抽中</th><td>{{ winning.prize.level_name }}({{ winning.prize.title }})</td>
+                </tr>
+                {% endfor %}
+                </tbody></table>
+        </div>
+    </div>
+</div>
+{% endblock %}

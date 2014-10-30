@@ -491,3 +491,203 @@ class Bulletin(SiteRelated,
 
     def __str__(self):
         return self.title
+
+
+# 抽奖
+
+from activity.managers import LotteryManager
+from model_utils import Choices
+
+
+LOTTERY_PRIZE_GROUP = Choices(
+    (1, 'real', '实物奖'),
+    (0, 'virtual', '虚拟奖'),
+)
+
+LOTTERY_PRIZE_LEVEL = Choices(
+    (100, 'top', '我是传奇'),
+    (70, 'lucky', '一等幸运'),
+    (40, 'well', '喜大普奔'),
+    (10, 'good', '你是好人'),
+    (1, 'again', '再来一次'),
+)
+
+
+class RealPrizeDuplicateAward(Exception):
+    pass
+
+
+class Lottery(PublishDisplayable,
+              TimeStamped,
+              models.Model):
+
+    objects = LotteryManager()
+
+    title = models.CharField(max_length=500)
+
+    description = models.TextField(verbose_name='抽奖规则')
+
+    cost_coin = models.IntegerField(default=100, verbose_name='消费金币数')
+
+    takepartin_times = models.IntegerField(default=0, editable=False, verbose_name='参与人次')
+
+    takepartin_count = models.IntegerField(default=0, editable=False,verbose_name='参与人数')
+
+    @property
+    def active_summary(self):
+        return "%s - %s" % (self.publish_date.strftime('%Y-%m-%d'),
+                            self.expiry_date.strftime('%Y-%m-%d') if self.expiry_date else "")
+
+    class Meta:
+        verbose_name = '抽奖'
+        verbose_name_plural = '抽奖'
+        index_together = (
+            ('status',),
+            ('status', 'publish_date', ),
+            ('status', 'publish_date', 'expiry_date'),
+        )
+
+    def __str__(self):
+        return self.title
+
+
+class LotteryPrize(TimeStamped,
+                   models.Model):
+
+    lottery = models.ForeignKey(Lottery, related_name='prizes',
+                                verbose_name='抽奖')
+
+    GROUP = LOTTERY_PRIZE_GROUP
+
+    group = models.IntegerField(choices=LOTTERY_PRIZE_GROUP, verbose_name='奖项组别')
+
+    LEVEL = LOTTERY_PRIZE_LEVEL
+
+    level = models.IntegerField(choices=LOTTERY_PRIZE_LEVEL,
+                                verbose_name='奖项等级')
+
+    @property
+    def level_name(self):
+        return self.LEVEL[self.level]
+
+    title = models.CharField(max_length=500, verbose_name='奖项标题')
+
+    total_count = models.IntegerField(default=0, verbose_name='总发放数量')
+
+    win_count = models.IntegerField(default=0, editable=False,
+                                    verbose_name='已经中奖人数',
+                                    help_text='正常途径中奖者(不包括内定)')
+
+    award_coin = models.IntegerField(default=0, verbose_name='虚拟金币奖励')
+
+    win_prompt = models.CharField(max_length=500, verbose_name='中奖提示')
+
+    STATUS = Choices(
+        (0, 'notover', '未结束'),
+        (1, 'over', '结束'),
+    )
+
+    status = models.IntegerField(verbose_name='领取状态',
+                                 choices=STATUS,
+                                 default=STATUS.notover,
+                                 db_index=True,
+                                 help_text='内定奖励数不变更领奖状态',
+                                 )
+
+    class Meta:
+        verbose_name = verbose_name_plural = '奖品'
+        index_together = (
+            ('lottery', 'status', ),
+            ('lottery', 'group', 'level'),
+        )
+        unique_together = (
+            ('lottery', 'group', 'level'),
+        )
+
+    def as_group_cls(self):
+        if self.group == self.GROUP.real:
+            self.__class__ = RealPrize
+            return self
+        elif self.group == self.GROUP.virtual:
+            self.__class__ = VirtualPrize
+            return self
+        raise TypeError
+
+    def __str__(self):
+        return "%s: %s" %(self.level_name, self.title)
+
+
+class VirtualPrize(LotteryPrize):
+
+    class Meta:
+        proxy = True
+
+
+class RealPrize(LotteryPrize):
+
+    class Meta:
+        proxy = True
+
+
+class LotteryWinningQuerySet(QuerySet):
+
+    def won(self):
+        return self.filter(status__gt=self.model.STATUS.unofficial)
+
+from model_utils.managers import PassThroughManager
+
+
+class LotteryWinning(TimeStamped,
+                     Ownable,
+                     models.Model):
+
+    objects = PassThroughManager\
+        .for_queryset_class(LotteryWinningQuerySet)()
+
+    lottery = models.ForeignKey(Lottery, related_name='winnings')
+
+    prize = models.ForeignKey(LotteryPrize, related_name='winnings')
+
+    STATUS = Choices(
+        (0, 'unofficial', '内定获奖'),
+        (1, 'win', '获奖'),
+        (2, 'accept', '已领奖'),
+    )
+
+    summary = models.CharField(max_length=500, default='')
+
+    status = models.IntegerField(choices=STATUS,
+                                 default=STATUS.win,
+                                 db_index=True)
+
+    win_date = models.DateTimeField(null=True, verbose_name='获奖时间')
+
+    accept_date = models.DateTimeField(null=True,
+                                       blank=True,
+                                       verbose_name='领奖时间')
+
+    tracker = FieldTracker()
+
+    class Meta:
+        verbose_name = '中奖名单'
+        verbose_name_plural = '中奖名单'
+        index_together = (
+            ('lottery', 'status',),
+            ('lottery', 'prize',),
+            ('prize', 'status',),
+            ('prize', 'status', 'win_date',),
+        )
+
+    def save(self, *args, **kwargs):
+        if self.tracker.has_changed('status') \
+            and not self.summary \
+            and self.status > self.STATUS.unofficial:
+            self.summary = "%s:%s:%s" % (self.user.username,
+                                         self.prize.level_name,
+                                         self.prize.title)
+        if not self.lottery_id:
+            self.lottery_id = self.prize.lottery_id
+        return super(LotteryWinning, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.summary

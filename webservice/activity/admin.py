@@ -173,3 +173,82 @@ class ActivityAdmin(VersionAdmin,
 
 
 admin.site.register(Activity, ActivityAdmin)
+
+from toolkit.models import CONTENT_STATUS_PUBLISHED
+from activity.models import Lottery, LotteryPrize, LotteryWinning
+from mezzanine.core.admin import TabularDynamicInlineAdmin as TabularInline
+
+
+class LotteryPrizeInline(TabularInline):
+    model = LotteryPrize
+    fields = ('group', 'level',
+              'title', 'win_prompt',
+              'total_count', 'award_coin',
+              'win_count',
+              'status',
+    )
+    readonly_fields = ('win_count', 'status')
+    ordering = ('-level',)
+    extra = 5
+    max_num = 5
+
+    def get_readonly_fields(self, request, obj=None):
+        #if obj and obj.status == CONTENT_STATUS_PUBLISHED:
+        #    return self.fields
+        return self.readonly_fields
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class LotteryWinningInline(TabularInline):
+    model = LotteryWinning
+    fields = ('user', 'prize', 'status', 'win_date', 'accept_date')
+    raw_id_fields = ('user', )
+    ordering = ('-win_date',)
+    max_num = 100
+
+    def has_delete_permission(self, request, obj=None):
+        if obj and obj.status == CONTENT_STATUS_PUBLISHED:
+            return False
+        return True
+
+
+class LotteryAdmin(VersionAdmin):
+    search_fields = ('title', )
+    list_filter = ('status', )
+    #date_hierarchy = 'publish_date',
+    #radio_fields = {'status', admin.HORIZONTAL}
+    fieldsets = (
+        (None, {
+            "fields": ["title",
+                       "description",
+                       "cost_coin",
+                       ]
+        }),
+        (_("Status"), {
+            "fields": [
+                "status",
+                ("publish_date", "expiry_date"),
+                ("created", "updated"),
+                ("takepartin_times", "takepartin_count"),
+                ],
+        }),
+    )
+    list_display = ('pk', 'title', 'status', 'publish_date', 'expiry_date')
+    list_display_links = ('title', )
+    ordering = ('status', '-publish_date', )
+    readonly_fields = ('created', 'updated',
+                       'takepartin_times', 'takepartin_count',
+    )
+
+    def get_inline_instances(self, request, obj=None):
+        if obj and obj.pk and obj.prizes.count():
+            inlines = (LotteryPrizeInline, LotteryWinningInline)
+        else:
+            inlines = (LotteryPrizeInline, )
+        self.inlines = inlines
+        return super(LotteryAdmin, self).get_inline_instances(request=request,
+                                                              obj=obj)
+
+admin.site.register(Lottery, LotteryAdmin)

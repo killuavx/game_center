@@ -414,9 +414,6 @@ from mobapi2.activity.throttling import *
 
 class NotificationSerializer(Serializer):
 
-    permission_classes = ()
-    authentication_classes = ()
-
     def __init__(self, view, request, *args, **kwargs):
         assert request
         super(NotificationSerializer, self).__init__(*args, **kwargs)
@@ -474,3 +471,134 @@ class NotificationSerializer(Serializer):
 
     def get_lottery(self, obj):
         return dict(active=True)
+
+
+from model_utils.choices import Choices
+from activity.models import Lottery, LotteryPrize, LotteryWinning
+from django.utils import timezone
+from toolkit.models import CONTENT_STATUS_PUBLISHED
+
+
+class LotterySerializer(HyperlinkedModelSerializer):
+
+    STATUS = Choices(
+        ('comingsoon', 'comingsoon', '即将开始'),
+        ('inprogress', 'inprogress', '进行中'),
+        ('finish', 'finish', '活动结束'),
+        ('expired', 'expired', '活动截止'),
+    )
+
+    def __init__(self, instance=None, now=None, *args, **kwargs):
+        self.now = now if now else timezone.now().astimezone()
+        super(LotterySerializer, self).__init__(instance=instance, *args, **kwargs)
+
+    status = serializers.SerializerMethodField('get_status')
+
+    def get_status(self, obj):
+        if obj.status != CONTENT_STATUS_PUBLISHED:
+            return self.STATUS.comingsoon
+
+        if obj.publish_date.astimezone() >= self.now and self.now < obj.expiry_date.astimezone():
+            return self.STATUS.comingsoon
+
+        if self.now > obj.expiry_date.astimezone():
+            return self.STATUS.expired
+
+        return self.STATUS.inprogress
+
+    play = serializers.SerializerMethodField('get_play_url')
+
+    def get_play_url(self, obj):
+        request = self.context.get('request')
+        base_name = self.opts.router.get_base_name('lottery-play')
+        url = reverse(base_name, kwargs=dict(pk=obj.pk))
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    winning_url = serializers.SerializerMethodField('get_winning_url')
+
+    def get_winning_url(self, obj):
+        request = self.context.get('request')
+        base_name = self.opts.router.get_base_name('lottery-winning-richpage')
+        url = reverse(base_name, kwargs=dict(pk=obj.pk))
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    class Meta:
+        model = Lottery
+        fields = (
+            'url',
+            'title',
+            'cost_coin',
+            'status',
+            'publish_date',
+            'expiry_date',
+        )
+
+
+class LotterySummarySerializer(LotterySerializer):
+
+    class Meta:
+        model = Lottery
+        fields = (
+            'url',
+            'title',
+            'cost_coin',
+            'status',
+            'publish_date',
+            'expiry_date',
+        )
+
+
+class LotteryDetailSerializer(LotterySerializer):
+
+    prizes = serializers.SerializerMethodField('get_prizes')
+
+    def get_prizes(self, obj):
+        prizes = list()
+        for p in sorted(obj.prizes.all(),
+                        key=lambda item:item.level,
+                        reverse=True): #obj.prizes.all():
+            prizes.append(str(p))
+        return prizes
+
+    winnings = serializers.SerializerMethodField('get_winnings')
+
+    def get_winnings(self, obj):
+        winners = list()
+        for winning in sorted(obj.winnings.won(),
+                              key=lambda item: (item.prize.level, item.win_date),
+                              reverse=True):
+
+            try:
+                username, level_name, title = winning.summary.split(":")
+                winners.append(dict(username=username,
+                                    level_name=level_name,
+                                    group=winning.prize.group,
+                                    title=title))
+            except:
+                pass
+        return winners
+
+    class Meta:
+        model = Lottery
+        fields = (
+            'url',
+            'title',
+            'play',
+            'prizes',
+            'cost_coin',
+            'description',
+            'status',
+            'publish_date',
+            'expiry_date',
+            'takepartin_count',
+            'winnings',
+            'winning_url',
+        )
+
+
+class LotteryWinningSerialzier(Serializer):
+    pass

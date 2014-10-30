@@ -19,8 +19,8 @@ from django.utils.decorators import method_decorator, available_attrs
 from django.views.decorators.cache import never_cache
 from django.utils.timezone import now
 
-from activity.models import GiftBag, GiftCard, EmptyRemainingGiftCard
-from mobapi2.activity.throttling import ScratchCardPlayDailyThrottle, ScratchCardPlayThrottled
+from activity.models import GiftBag, GiftCard, EmptyRemainingGiftCard, LotteryWinning
+from mobapi2.activity.throttling import ScratchCardPlayDailyThrottle, ScratchCardPlayThrottled, LotteryPlayDailyThrottle, LotteryPlayThrottled
 from mobapi2.authentications import PlayerTokenAuthentication
 from mobapi2.activity.serializers import GiftBagSummarySerializer, GiftBagDetailSerializer, GiftCardSerializer
 from mobapi2 import cache_keyconstructors as ckc
@@ -765,4 +765,69 @@ class NotificationViewSet(viewsets.ViewSet):
     def retrieve_all(self, request, *args, **kwargs):
         serializer = self.serializer_class(view=self, request=request)
         return Response(serializer.data)
+
+
+from activity.models import Lottery
+from mobapi2.activity.serializers import LotteryDetailSerializer, LotterySummarySerializer
+
+
+class LotteryViewSet(DetailSerializerMixin,
+                     CustomMethodThrottleViewSetMixin,
+                     CustomMethodPermissionsViewSetMixin,
+                     viewsets.ReadOnlyModelViewSet):
+
+    model = Lottery
+    permission_classes = ()
+    authentication_classes = (PlayerTokenAuthentication,)
+    serializer_class = LotterySummarySerializer
+    serializer_detail_class = LotteryDetailSerializer
+
+    def get_queryset(self, is_for_detail=False):
+        if not self.queryset:
+            self.queryset_detail = self.queryset = self.model.objects.published(released_hourly=False)
+        return super(LotteryViewSet, self).get_queryset(is_for_detail=is_for_detail)
+
+    @method_decorator(never_cache)
+    def active(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(
+            self.get_queryset(is_for_detail=True)
+            .order_by('-pk'))
+        try:
+            self.object = queryset[0]
+        except IndexError:
+            return Response(dict(detail='活动还没开始'),
+                            status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(instance=self.object)
+        serializer.now = now().astimezone()
+        return Response(data=serializer.data)
+
+    @method_decorator(rf_permission_classes((IsAuthenticated, )))
+    @method_decorator(rf_throttle_classes((LotteryPlayDailyThrottle, )))
+    @method_decorator(never_cache)
+    @action()
+    def play(self, request, *args, **kwargs):
+        obj = self.get_object()
+        return Response(now().astimezone().strftime('%Y-%m-%d %H:%M:%S'))
+
+    def throttled(self, request, wait):
+        handler = getattr(self, self.request.method.lower(), None)
+        if handler.__wrapped__.__name__ == 'play':
+            raise LotteryPlayThrottled(wait=wait)
+        super(LotteryViewSet, self).throttled(request=request, wait=wait)
+
+    winner_richpage_template ='mobapi2/activity/lottery_winnings.html',
+
+    @method_decorator(never_cache)
+    @link()
+    def winning_richpage(self, request, *args, **kwargs):
+        obj = self.get_object()
+        winings = sorted(obj.winnings.won(),
+                         key=lambda w:(w.prize.level, w.win_date),
+                         reverse=True)
+        return TemplateResponse(request=request,
+                                template=self.winner_richpage_template,
+                                context=dict(object=obj,
+                                             winnings=winings),
+                                content_type='text/html')
+
 
