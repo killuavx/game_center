@@ -821,7 +821,8 @@ class LotteryViewSet(DetailSerializerMixin,
     @link()
     def winning_richpage(self, request, *args, **kwargs):
         obj = self.get_object()
-        winings = sorted(obj.winnings.won(),
+        # FIXME slow query
+        winings = sorted(obj.winnings.won().order_by('-prize__level')[:100],
                          key=lambda w:(w.prize.level, w.win_date),
                          reverse=True)
         return TemplateResponse(request=request,

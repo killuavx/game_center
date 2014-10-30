@@ -560,15 +560,21 @@ class LotteryDetailSerializer(LotterySerializer):
         prizes = list()
         for p in sorted(obj.prizes.all(),
                         key=lambda item:item.level,
-                        reverse=True): #obj.prizes.all():
-            prizes.append(str(p))
+                        reverse=True):
+            prizes.append(dict(
+                level=p.level,
+                group=p.group,
+                title=p.title,
+                level_name=p.level_name,
+            ))
         return prizes
 
     winnings = serializers.SerializerMethodField('get_winnings')
 
     def get_winnings(self, obj):
         winners = list()
-        for winning in sorted(obj.winnings.won(),
+        # FIXME slow query
+        for winning in sorted(obj.winnings.won().order_by('-prize__level')[:5],
                               key=lambda item: (item.prize.level, item.win_date),
                               reverse=True):
 
