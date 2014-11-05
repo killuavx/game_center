@@ -739,13 +739,14 @@ def lottery_winning_previous_status_to_change_prize_win_count(sender, instance, 
 def lottery_winning_change_prize_win_count(sender, instance, created, *args, **kwargs):
     if created and instance.status in (LotteryWinning.STATUS.win,
                                        LotteryWinning.STATUS.accept):
-        instance.prize.win_count += 1
+        prize = instance.prize
+        prize.win_count += 1
+        prize.save()
     elif created is False:
         flag = getattr(instance, _has_changed_winning_status_flag, 0)
-        if flag > 0:
-            instance.prize.win_count += flag
-        elif flag < 0:
-            instance.prize.win_count += flag
+        prize = instance.prize
+        prize.win_count += flag
+        prize.save()
 
 
 @receiver(pre_save, sender=LotteryPrize)
