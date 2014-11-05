@@ -818,7 +818,7 @@ class LotteryViewSet(DetailSerializerMixin,
         except BaseLotteryException as e:
             return Response(data=dict(
                 code=e.code,
-                detail=str(e)
+                detail=e.messages[0],
             ), status=status.HTTP_403_FORBIDDEN)
 
         rt = luckydraw.draw(user=request.user)
