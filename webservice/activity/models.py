@@ -790,20 +790,41 @@ class LotteryLuckyDraw(object):
         prizes_to_rand = self.allowed_prizes(user=user)
         prize = self._rand_prize(prizes_to_rand)
         if prize:
-            try:
-                sid = transaction.savepoint()
+            if hasattr(transaction, 'atomic'):
+                _transtaction_draw = self._transaction_draw_with_atomic
+            else:
+                _transtaction_draw = self._transaction_draw
+            return _transtaction_draw(prize=prize, user=user, win_date=win_date)
+        return None
+
+    def _transtaction_draw(self, prize, user, win_date):
+        try:
+            sid = transaction.savepoint()
+            p = LotteryPrize.objects.select_for_update().get(pk=prize.pk)
+            if p.status == LotteryPrize.STATUS.finish:
+                transaction.savepoint_rollback(sid)
+                return None
+            else:
+                winning = self.create_winning(prize=p, user=user, win_date=win_date)
+                transaction.savepoint_commit(sid)
+                self.log_play_credit(user=user, prize=prize, win_date=win_date)
+                return prize, winning
+        except IntegrityError:
+            transaction.savepoint_rollback(sid)
+        return None
+
+    def _transaction_draw_with_atomic(self, prize, user, win_date):
+        try:
+            with transaction.atomic():
                 p = LotteryPrize.objects.select_for_update().get(pk=prize.pk)
                 if p.status == LotteryPrize.STATUS.finish:
-                    transaction.savepoint_rollback(sid)
                     return None
                 else:
                     winning = self.create_winning(prize=p, user=user, win_date=win_date)
-                    transaction.savepoint_commit(sid)
                     self.log_play_credit(user=user, prize=prize, win_date=win_date)
                     return prize, winning
-            except IntegrityError:
-                transaction.savepoint_rollback(sid)
-        return None
+        except IntegrityError:
+            return None
 
     def allowed_prizes(self, user):
         # filter real prizes

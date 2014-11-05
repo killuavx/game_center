@@ -811,7 +811,6 @@ class LotteryViewSet(DetailSerializerMixin,
         obj = self.get_object()
         luckydraw = LotteryLuckyDraw(lottery=obj)
         rt = luckydraw.draw(user=request.user)
-        print(rt)
         #if not rt:
         serializer = LotteryPrizeWinningSerializer(rt, many=False)
         serializer.save()
