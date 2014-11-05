@@ -45,9 +45,11 @@ rest_router.register('bulletins', activity_views.BulletinViewSet)
 rest_router.register('activities', activity_views.ActivityViewSet)
 rest_router.register('lotteries', activity_views.LotteryViewSet)
 lottery_active_view = activity_views.LotteryViewSet.as_view({'get': 'active'})
+lottery_winning_view = activity_views.LotteryViewSet.as_view({'get': 'winning_detail_richpage'})
 lottery_viewname = rest_router.get_default_base_name(activity_views.LotteryViewSet)
 lottery_urlpatterns = patterns('',
    url('^active/?$', lottery_active_view, name="%s-active" %lottery_viewname),
+   url('^winning/(?P<winning_id>\d+)/?$', lottery_winning_view, name="%s-winning-detail-richpage" %lottery_viewname),
 )
 
 rest_router.register('giftbags', activity_views.GiftBagViewSet)

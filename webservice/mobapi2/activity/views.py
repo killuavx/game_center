@@ -4,6 +4,7 @@ import warnings
 import json
 
 from django.http import Http404
+from django.shortcuts import redirect
 from rest_framework import viewsets, status
 from rest_framework.decorators import link, action
 from rest_framework_extensions.mixins import DetailSerializerMixin
@@ -19,10 +20,10 @@ from django.utils.decorators import method_decorator, available_attrs
 from django.views.decorators.cache import never_cache
 from django.utils.timezone import now
 
-from activity.models import GiftBag, GiftCard, EmptyRemainingGiftCard, LotteryWinning
+from activity.models import GiftBag, GiftCard, EmptyRemainingGiftCard, LotteryWinning, LotteryLuckyDraw
 from mobapi2.activity.throttling import ScratchCardPlayDailyThrottle, ScratchCardPlayThrottled, LotteryPlayDailyThrottle, LotteryPlayThrottled
 from mobapi2.authentications import PlayerTokenAuthentication
-from mobapi2.activity.serializers import GiftBagSummarySerializer, GiftBagDetailSerializer, GiftCardSerializer
+from mobapi2.activity.serializers import GiftBagSummarySerializer, GiftBagDetailSerializer, GiftCardSerializer, LotteryPrizeWinningSerializer
 from mobapi2 import cache_keyconstructors as ckc
 
 
@@ -784,14 +785,14 @@ class LotteryViewSet(DetailSerializerMixin,
 
     def get_queryset(self, is_for_detail=False):
         if not self.queryset:
-            self.queryset_detail = self.queryset = self.model.objects.published(released_hourly=False)
+            self.queryset_detail = self.queryset = self.model.objects.status_published()
         return super(LotteryViewSet, self).get_queryset(is_for_detail=is_for_detail)
 
     @method_decorator(never_cache)
     def active(self, request, *args, **kwargs):
         queryset = self.filter_queryset(
             self.get_queryset(is_for_detail=True)
-            .order_by('-pk'))
+            .order_by('-publish_date'))
         try:
             self.object = queryset[0]
         except IndexError:
@@ -804,10 +805,19 @@ class LotteryViewSet(DetailSerializerMixin,
     @method_decorator(rf_permission_classes((IsAuthenticated, )))
     @method_decorator(rf_throttle_classes((LotteryPlayDailyThrottle, )))
     @method_decorator(never_cache)
+    @link()
     @action()
     def play(self, request, *args, **kwargs):
         obj = self.get_object()
-        return Response(now().astimezone().strftime('%Y-%m-%d %H:%M:%S'))
+        luckydraw = LotteryLuckyDraw(lottery=obj)
+        rt = luckydraw.draw(user=request.user)
+        print(rt)
+        #if not rt:
+        serializer = LotteryPrizeWinningSerializer(rt, many=False)
+        serializer.save()
+        return Response(data=serializer.data)
+        #else:
+        #    return redirect('apiv2-lottery-play', pk=obj.pk)
 
     def throttled(self, request, wait):
         handler = getattr(self, self.request.method.lower(), None)
@@ -819,7 +829,7 @@ class LotteryViewSet(DetailSerializerMixin,
 
     @method_decorator(never_cache)
     @link()
-    def winning_richpage(self, request, *args, **kwargs):
+    def winnings_richpage(self, request, *args, **kwargs):
         obj = self.get_object()
         # FIXME slow query
         winings = sorted(obj.winnings.won().order_by('-prize__level')[:100],
@@ -831,4 +841,18 @@ class LotteryViewSet(DetailSerializerMixin,
                                              winnings=winings),
                                 content_type='text/html')
 
+    winning_detail_richpage_template ='mobapi2/activity/lottery_winning_detail.html',
 
+    @link()
+    def winning_detail_richpage(self, request, winning_id, *args, **kwargs):
+        try:
+            winning = LotteryWinning.objects.get(pk=winning_id)
+        except LotteryWinning.DoesNotExist:
+            return TemplateResponse(request=request,
+                                    template='404',
+                                    status=404)
+        return TemplateResponse(request=request,
+                                template=self.winning_detail_richpage_template,
+                                context=dict(object=winning,
+                                             winning=winning),
+                                content_type='text/html')

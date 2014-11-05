@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from kombu import uuid
 from model_utils import FieldTracker
 from django.core.exceptions import ValidationError
 from django.db import models, transaction, IntegrityError
@@ -550,9 +551,33 @@ class Lottery(PublishDisplayable,
     def __str__(self):
         return self.title
 
+    def is_expired(self, nowdt=None):
+        if not self.expiry_date:
+            return False
+        nowdt = nowdt.astimezone() if nowdt else now().astimezone()
+        return nowdt > self.expiry_date.astimezone()
+
+    def is_published(self, nowdt=None):
+        if self.status != CONTENT_STATUS_PUBLISHED:
+            return False
+
+        nowdt = nowdt.astimezone() if nowdt else now().astimezone()
+        return self.publish_date.astimezone() >= nowdt
+
+
+from model_utils.managers import PassThroughManager
+
+
+class LotteryPrizeManager(PassThroughManager):
+
+    def drawable(self):
+        return self.filter(status=self.model.STATUS.notover)
+
 
 class LotteryPrize(TimeStamped,
                    models.Model):
+
+    objects = LotteryPrizeManager()
 
     lottery = models.ForeignKey(Lottery, related_name='prizes',
                                 verbose_name='抽奖')
@@ -585,14 +610,19 @@ class LotteryPrize(TimeStamped,
     STATUS = Choices(
         (0, 'notover', '未结束'),
         (1, 'over', '结束'),
+        (2, 'finish', '完成'),
     )
 
     status = models.IntegerField(verbose_name='领取状态',
                                  choices=STATUS,
                                  default=STATUS.notover,
                                  db_index=True,
-                                 help_text='内定奖励数不变更领奖状态',
+                                 help_text="1. notover 未领奖状态; \n"
+                                           "2. over 内定和正常途径中奖数获奖结束; total_count 不一\n"
+                                           "3. finish 所有奖品发放完成(内定), total_count必定与win_count相等且不为0;"
                                  )
+
+    tracker = FieldTracker()
 
     class Meta:
         verbose_name = verbose_name_plural = '奖品'
@@ -603,6 +633,7 @@ class LotteryPrize(TimeStamped,
         unique_together = (
             ('lottery', 'group', 'level'),
         )
+        ordering = ('lottery', '-level',)
 
     def as_group_cls(self):
         if self.group == self.GROUP.real:
@@ -633,8 +664,6 @@ class LotteryWinningQuerySet(QuerySet):
 
     def won(self):
         return self.filter(status__gt=self.model.STATUS.unofficial)
-
-from model_utils.managers import PassThroughManager
 
 
 class LotteryWinning(TimeStamped,
@@ -691,3 +720,143 @@ class LotteryWinning(TimeStamped,
 
     def __str__(self):
         return self.summary
+
+
+_has_changed_winning_status_flag = '_has_changed_winning_status'
+
+@receiver(pre_save, sender=LotteryWinning)
+def lottery_winning_previous_status_to_change_prize_win_count(sender, instance, *args, **kwargs):
+    flag = 0
+    if instance.pk and instance.tracker.has_changed('status'):
+        if instance.tracker.previous('status') == LotteryWinning.STATUS.unofficial:
+            flag = 1
+        else:
+            flag = -1
+    setattr(instance, _has_changed_winning_status_flag, flag)
+
+
+@receiver(post_save, sender=LotteryWinning)
+def lottery_winning_change_prize_win_count(sender, instance, created, *args, **kwargs):
+    if created and instance.status in (LotteryWinning.STATUS.win,
+                                       LotteryWinning.STATUS.accept):
+        instance.prize.win_count += 1
+    elif created is False:
+        flag = getattr(instance, _has_changed_winning_status_flag, 0)
+        if flag > 0:
+            instance.prize.win_count += flag
+        elif flag < 0:
+            instance.prize.win_count += flag
+
+
+@receiver(pre_save, sender=LotteryPrize)
+def lottery_prize_check_status(sender, instance, *args, **kwargs):
+    if instance.tracker.has_changed('win_count') \
+        and instance.total_count == instance.win_count \
+        and instance.total_count > 0:
+        instance.status = LotteryPrize.STATUS.finish
+
+
+from random import randint
+
+
+class LotteryLuckyDraw(object):
+
+    def __init__(self, lottery, request=None):
+        self.lottery = lottery
+        self.request = request
+
+    def _rand_prize(self, prizes):
+        reverse_max = max((p.level for p in prizes)) + 1
+        pro_sum = sum((reverse_max - p.level for p in prizes))
+
+        for i, p in enumerate(prizes):
+            rand_num = randint(1, pro_sum)
+            cur_num = reverse_max-p.level
+            if rand_num <= cur_num:
+                return p
+            else:
+                pro_sum -= cur_num
+        return None
+
+    def get_prizes(self):
+        return self.lottery.prizes.filter(status=LotteryPrize.STATUS.notover)
+
+    def filter_real_prize_winned(self, user):
+        return self.lottery.winnings.filter(user=user, prize__group=LotteryPrize.GROUP.real)
+
+    def draw(self, user, win_date=None):
+        win_date = win_date.astimezone() if win_date else now().astimezone()
+
+        prizes_to_rand = self.allowed_prizes(user=user)
+        prize = self._rand_prize(prizes_to_rand)
+        if prize:
+            try:
+                sid = transaction.savepoint()
+                p = LotteryPrize.objects.select_for_update().get(pk=prize.pk)
+                if p.status == LotteryPrize.STATUS.finish:
+                    transaction.savepoint_rollback(sid)
+                    return None
+                else:
+                    winning = self.create_winning(prize=p, user=user, win_date=win_date)
+                    transaction.savepoint_commit(sid)
+                    self.log_play_credit(user=user, prize=prize, win_date=win_date)
+                    return prize, winning
+            except IntegrityError:
+                transaction.savepoint_rollback(sid)
+        return None
+
+    def allowed_prizes(self, user):
+        # filter real prizes
+        real_prizes = self.filter_real_prize_winned(user)
+        prizes = self.get_prizes()
+        if real_prizes.exists():
+            prizes_to_rand = list(filter(lambda i:i.group != LotteryPrize.GROUP.real, prizes))
+        else:
+            prizes_to_rand = prizes
+        return prizes_to_rand
+
+    def create_winning(self, prize, user, win_date):
+        #if prize.group == LotteryPrize.GROUP.real:
+        winning = LotteryWinning.objects.create(prize=prize,
+                                                lottery=self.lottery,
+                                                user=user,
+                                                status=LotteryWinning.STATUS.win,
+                                                win_date=win_date)
+        return winning
+        #else:
+        #    rt = None
+
+    def log_play_credit(self, user, prize, win_date, *args, **kwargs):
+        from account.documents.credit import CreditLog
+        from activity.documents.actions.lottery import LotteryPlayAction, LotteryWinningAction
+
+        action_uuid = uuid()
+
+        ip_address = self.request.client_ip() if self.request and hasattr(self.request, 'client_ip') else None
+        play_action = LotteryPlayAction(user=user,
+                                        lottery=self.lottery,
+                                        credit_exchange_coin=-abs(self.lottery.cost_coin),
+                                        action_uuid=action_uuid,
+                                        ip_address=ip_address,
+                                        )
+        play_action.save()
+        CreditLog.factory(exchangable=play_action, user=user,
+                          credit_datetime=win_date,
+                          ).process()
+
+        winning_action = LotteryWinningAction(user=user,
+                                              prize=prize,
+                                              lottery=self.lottery,
+                                              play_action=play_action,
+                                              credit_exchange_coin=prize.award_coin,
+                                              action_uuid=action_uuid,
+                                              ip_address=ip_address,
+                                              )
+        winning_action.save()
+        CreditLog.factory(exchangable=winning_action, user=user,
+                          credit_datetime=win_date,
+                          ).process()
+
+        play_action.winning_action = winning_action
+        play_action.save()
+

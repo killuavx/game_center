@@ -520,7 +520,7 @@ class LotterySerializer(HyperlinkedModelSerializer):
 
     def get_winning_url(self, obj):
         request = self.context.get('request')
-        base_name = self.opts.router.get_base_name('lottery-winning-richpage')
+        base_name = self.opts.router.get_base_name('lottery-winnings-richpage')
         url = reverse(base_name, kwargs=dict(pk=obj.pk))
         if request:
             return request.build_absolute_uri(url)
@@ -606,5 +606,48 @@ class LotteryDetailSerializer(LotterySerializer):
         )
 
 
-class LotteryWinningSerialzier(Serializer):
-    pass
+class LotteryPrizeWinningSerializer(Serializer):
+
+    prize_group = serializers.SerializerMethodField('get_group')
+
+    prize_title = serializers.SerializerMethodField('get_title')
+
+    prize_prompt = serializers.SerializerMethodField('get_prompt')
+
+    def get_prompt(self, obj):
+        prize, _ = obj
+        return prize.win_prompt
+
+    def get_title(self, obj):
+        prize, _ = obj
+        return "%s: %s" % (prize.level_name, prize.title)
+
+    def get_group(self, obj):
+        prize, _ = obj
+        return prize.group
+
+    winning_detail_url = serializers.SerializerMethodField('get_winning_detail_url')
+
+    def get_winning_detail_url(self, obj):
+        prize, winning = obj
+        request = self.context.get('request')
+        view_name = self.opts.router.get_base_name('lottery-winning-detail-richpage')
+        url = reverse(view_name, kwargs=dict(winning_id=winning.pk))
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    def save_object(self, obj, **kwargs):
+        pass
+
+    def delete_object(self, obj):
+        pass
+
+    class Meta:
+        fields = (
+            'prize_group',
+            'prize_title',
+            'prize_prompt',
+            'winning_detail_url',
+        )
+
