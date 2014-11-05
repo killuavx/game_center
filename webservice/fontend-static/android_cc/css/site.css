@@ -139,9 +139,11 @@ body { background-color: #e7e8eb; font-family: "Helvetica Neue", Helvetica, "Hir
 .preview_group.preview_card .card_inner .preview_group_info { padding-left: 70px }
 .preview_group.preview_card .card_inner .preview_group_info .preview_group_desc, .preview_group.preview_card .card_inner .preview_group_info .preview_group_title2 { width: 200px; padding-right: 0 }
 .preview_group.preview_card .card_inner .preview_group_info.append_btn .preview_group_desc, .preview_group.preview_card .card_inner .preview_group_info.append_btn .preview_group_title { padding-right: 63px; width: auto }
-.winners { border: none; background: #f6ab00; padding: 0 }
+.winners ,.winners .rich_media_inner{ border: none; background: #f6ab00; padding: 0 }
+
 .winners .banner { width: 100% }
 .winners .list { padding: 5px }
-.winners th, .winners td { border: none; background: none; color: #996633; padding: 5px 0 5px 5px }
+.winners th, .winners td,.winners td.hints { border: none; background: none; color: #996633; padding: 5px 0 5px 5px }
 .winners th.top { color: #e53333 }
 .winners td { color: #fff }
+.winners td.hints{padding-top:20px}
