@@ -768,7 +768,7 @@ class NotificationViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
-from activity.models import Lottery
+from activity.models import Lottery, BaseLotteryException
 from mobapi2.activity.serializers import LotteryDetailSerializer, LotterySummarySerializer
 
 
@@ -809,10 +809,24 @@ class LotteryViewSet(DetailSerializerMixin,
     @action()
     def play(self, request, *args, **kwargs):
         obj = self.get_object()
-        luckydraw = LotteryLuckyDraw(lottery=obj)
+        luckydraw = LotteryLuckyDraw(lottery=obj,
+                                     win_date=now().astimezone(),
+                                     request=request,
+                                     )
+        try:
+            luckydraw.check_drawable(user=request.user)
+        except BaseLotteryException as e:
+            return Response(data=dict(
+                code=e.code,
+                detail=str(e)
+            ), status=status.HTTP_403_FORBIDDEN)
+
         rt = luckydraw.draw(user=request.user)
         #if not rt:
-        serializer = LotteryPrizeWinningSerializer(rt, many=False)
+        context = self.get_serializer_context()
+        serializer = LotteryPrizeWinningSerializer(rt,
+                                                   many=False,
+                                                   context=context)
         serializer.save()
         return Response(data=serializer.data)
         #else:

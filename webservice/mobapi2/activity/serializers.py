@@ -614,6 +614,12 @@ class LotteryPrizeWinningSerializer(Serializer):
 
     prize_prompt = serializers.SerializerMethodField('get_prompt')
 
+    level = serializers.SerializerMethodField('get_level')
+
+    def get_level(self, obj):
+        prize, _ = obj
+        return prize.level
+
     def get_prompt(self, obj):
         prize, _ = obj
         return prize.win_prompt
@@ -645,6 +651,7 @@ class LotteryPrizeWinningSerializer(Serializer):
 
     class Meta:
         fields = (
+            'level',
             'prize_group',
             'prize_title',
             'prize_prompt',

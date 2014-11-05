@@ -757,13 +757,36 @@ def lottery_prize_check_status(sender, instance, *args, **kwargs):
 
 
 from random import randint
+from django.forms import validators
+
+
+class BaseLotteryException(validators.ValidationError):
+
+    def __init__(self, code=None, *args, **kwargs):
+        self.code = code if code else self.code
+        super(BaseLotteryException, self).__init__(code=code, *args, **kwargs)
+
+
+class LotteryNotPublished(BaseLotteryException):
+
+    code = 1
+
+
+class LotteryExpired(BaseLotteryException):
+
+    code = 2
+
+class LotteryMoreCoinRequired(BaseLotteryException):
+
+    code = 3
 
 
 class LotteryLuckyDraw(object):
 
-    def __init__(self, lottery, request=None):
+    def __init__(self, lottery, request=None, win_date=None):
         self.lottery = lottery
         self.request = request
+        self.win_date = win_date.astimezone() if win_date else now().astimezone()
 
     def _rand_prize(self, prizes):
         reverse_max = max((p.level for p in prizes)) + 1
@@ -784,8 +807,22 @@ class LotteryLuckyDraw(object):
     def filter_real_prize_winned(self, user):
         return self.lottery.winnings.filter(user=user, prize__group=LotteryPrize.GROUP.real)
 
-    def draw(self, user, win_date=None):
-        win_date = win_date.astimezone() if win_date else now().astimezone()
+    def check_drawable(self, user):
+        if not self.lottery.is_published(self.win_date):
+            raise LotteryNotPublished(message='未开始')
+
+        if self.lottery.is_expired(self.win_date):
+            raise LotteryExpired(message='已经截止')
+
+        if self.is_user_enough_coin(user):
+            raise LotteryMoreCoinRequired(message='金币不足')
+
+
+    def is_user_enough_coin(self, user):
+        return user.profile.coin >= self.lottery.cost_coin
+
+    def draw(self, user):
+        win_date = self.win_date
 
         prizes_to_rand = self.allowed_prizes(user=user)
         prize = self._rand_prize(prizes_to_rand)
