@@ -776,6 +776,7 @@ class LotteryExpired(BaseLotteryException):
 
     code = 2
 
+
 class LotteryMoreCoinRequired(BaseLotteryException):
 
     code = 3
@@ -844,6 +845,7 @@ class LotteryLuckyDraw(object):
                 winning = self.create_winning(prize=p, user=user, win_date=win_date)
                 transaction.savepoint_commit(sid)
                 self.log_play_credit(user=user, prize=prize, win_date=win_date)
+                self.update_lottery_play_takepartin()
                 return prize, winning
         except IntegrityError:
             transaction.savepoint_rollback(sid)
@@ -858,11 +860,13 @@ class LotteryLuckyDraw(object):
                 else:
                     winning = self.create_winning(prize=p, user=user, win_date=win_date)
                     self.log_play_credit(user=user, prize=prize, win_date=win_date)
+                    self.update_lottery_play_takepartin()
                     return prize, winning
         except IntegrityError:
             return None
 
     def allowed_prizes(self, user):
+        # 已经抽中实物奖的用户，排除本次抽中实物奖机会
         # filter real prizes
         real_prizes = self.filter_real_prize_winned(user)
         prizes = self.get_prizes()
@@ -917,3 +921,7 @@ class LotteryLuckyDraw(object):
         play_action.winning_action = winning_action
         play_action.save()
 
+    def update_lottery_play_takepartin(self):
+        from activity.documents.actions.lottery import lottery_sum_play_takepartin
+        self.lottery.takepartin_count, self.lottery.takepartin_times = lottery_sum_play_takepartin(self.lottery.pk)
+        self.lottery.save()

@@ -288,26 +288,6 @@ class LotteryTask(Task):
 
     takepartin_count = fields.IntField(default=0)
 
-    def _sum_takepartin(self):
-        cls = self.__class__
-        collection, cls_name = cls._meta['collection'], cls._types[0]
-        result = cls.objects.exec_js("""function(){
-            var result = db.runCommand({
-                group: {
-                    ns:'%(collection)s',
-                    key: { _cls:1, lottery_id:1, user_id:1 },
-                    cond: { _cls:"%(cls_name)s", lottery_id:%(lottery_id)d },
-                    $reduce: function(cur, result){},
-                    initial: {}
-                }
-            });
-            delete result['retval'];
-            return result;
-        }""" % dict(cls_name=cls_name,
-                    collection=collection,
-                    lottery_id=self.lottery_id))
-        self.takepartin_count = result.keys
-        self.takepartin_times = result.count
 
     prizes = fields.SortedListField(fields.EmbeddedDocumentField(LotteryPrize),
                                     ordering='level',
@@ -472,3 +452,26 @@ class LotteryRule(TaskRule):
         else:
             return self.STATUS.posted
 
+
+def lottery_sum_play_takepartin(lottery_id):
+    cls = LotteryPlayAction
+    code = LotteryPlayAction.CODE
+    collection, cls_name = cls._meta['collection'], cls._types[0]
+    result = cls.objects.exec_js("""function(){
+        var result = db.runCommand({
+            group: {
+                ns:'%(collection)s',
+                key: { _cls:1, lottery_id:1, user_id:1 },
+                cond: { code:"%(code)s", lottery_id:%(lottery_id)d },
+                $reduce: function(cur, result){},
+                initial: {}
+            }
+        });
+        delete result['retval'];
+        return result;
+    }""" % dict(code=code,
+                collection=collection,
+                lottery_id=lottery_id))
+    takepartin_count = result.get('keys')
+    takepartin_times = result.get('count')
+    return takepartin_count, takepartin_times

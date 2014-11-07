@@ -43,7 +43,9 @@ class ProfileAdmin(VersionAdmin, GuardedModelAdmin):
     )
     list_display = ('user', 'signup_date', 'coin', 'experience', 'level', )
     search_fields = ('user__username',)
-    readonly_fields = ('coin', 'experience', 'level')
+    readonly_fields = (#'coin',
+                       'experience',
+                       'level')
     #ordering = ('coin', 'experience', 'level', )
 
 
