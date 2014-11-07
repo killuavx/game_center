@@ -13,11 +13,11 @@
 </head>
 
 <body class="wap-play">
-
+  <a href="wap-list.html" class="close" title="关闭播放"></a>
   <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="100%"
 		poster="http://video-js.zencoder.com/oceans-clip.png"
 		data-setup="{}">
-    	<source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4' />
+    	<source src="http://video-js.zencoder.com/oceans-clip.mp4" type="video/mp4"/>
   </video>
 
 </body>
@@ -25,12 +25,4 @@
 
 <script src="http://static.ccplay.com.cn/static/common/js/jquery.min.js"></script>
 <script src="http://static.ccplay.com.cn/static/video_web/video-js/video.js"></script>
-<script>
-$(function(){	
-	/*iframe自适应高度*/
-	$("#example_video_1").load(function(){         
-         $(this).height($(window).height());  
-     }); 
-});
-</script>
 </html>
