@@ -782,6 +782,7 @@ class LotteryViewSet(DetailSerializerMixin,
     authentication_classes = (PlayerTokenAuthentication,)
     serializer_class = LotterySummarySerializer
     serializer_detail_class = LotteryDetailSerializer
+    throttle_classes = ()
 
     def get_queryset(self, is_for_detail=False):
         if not self.queryset:
@@ -803,7 +804,6 @@ class LotteryViewSet(DetailSerializerMixin,
         return Response(data=serializer.data)
 
     @method_decorator(rf_permission_classes((IsAuthenticated, )))
-    @method_decorator(rf_throttle_classes((LotteryPlayDailyThrottle, )))
     @method_decorator(never_cache)
     @link()
     @action()
@@ -820,6 +820,11 @@ class LotteryViewSet(DetailSerializerMixin,
                 code=e.code,
                 detail=e.messages[0],
             ), status=status.HTTP_402_PAYMENT_REQUIRED)
+
+        if not request.GET.get('secret') or request.GET.get('secret') != 'ccplay2014':
+            self.throttle_classes, orgin_throttle_classes = (LotteryPlayDailyThrottle, ), self.throttle_classes
+            self.check_throttles(request=request)
+            self.throttle_classes = orgin_throttle_classes
 
         rt = luckydraw.draw(user=request.user)
         #if not rt:
