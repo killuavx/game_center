@@ -819,7 +819,7 @@ class LotteryViewSet(DetailSerializerMixin,
             return Response(data=dict(
                 code=e.code,
                 detail=e.messages[0],
-            ), status=status.HTTP_403_FORBIDDEN)
+            ), status=status.HTTP_402_PAYMENT_REQUIRED)
 
         rt = luckydraw.draw(user=request.user)
         #if not rt:
