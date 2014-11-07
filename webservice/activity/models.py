@@ -814,7 +814,7 @@ class LotteryLuckyDraw(object):
         if self.lottery.is_expired(self.win_date):
             raise LotteryExpired(message='本次抽奖已经截止')
 
-        if self.is_user_enough_coin(user):
+        if not self.is_user_enough_coin(user):
             raise LotteryMoreCoinRequired(message='少侠，先去赚点金币，再来抽大奖！')
 
     def is_user_enough_coin(self, user):
