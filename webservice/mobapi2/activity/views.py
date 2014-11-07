@@ -770,6 +770,7 @@ class NotificationViewSet(viewsets.ViewSet):
 
 from activity.models import Lottery, BaseLotteryException
 from mobapi2.activity.serializers import LotteryDetailSerializer, LotterySummarySerializer
+from activity.documents.actions import lottery as lottery_doc
 
 
 class LotteryViewSet(DetailSerializerMixin,
@@ -843,28 +844,36 @@ class LotteryViewSet(DetailSerializerMixin,
             raise LotteryPlayThrottled(wait=wait)
         super(LotteryViewSet, self).throttled(request=request, wait=wait)
 
-    winner_richpage_template ='mobapi2/activity/lottery_winnings.html',
+    #winner_richpage_template ='mobapi2/activity/lottery_winnings.html',
+    winner_richpage_template ='mobapi2/activity/lottery_winnings2.html',
 
     @method_decorator(never_cache)
     @link()
     def winnings_richpage(self, request, *args, **kwargs):
         obj = self.get_object()
-        # FIXME slow query
-        winings = sorted(obj.winnings.won().order_by('-prize__level')[:100],
-                         key=lambda w:(w.prize.level, w.win_date),
-                         reverse=True)
+
+        lookup = self.kwargs.get(self.lookup_field, None)
+        winnings = lottery_doc.LotteryWinningAction.objects.lottery_winning_list(lottery_id=lookup)
+
+        # FIXME orm slow query
+        # winnings = sorted(obj.winnings.won().order_by('-prize__level')[:100],
+        #                 key=lambda w:(w.prize.level, w.win_date),
+        #                 reverse=True)
+
         return TemplateResponse(request=request,
                                 template=self.winner_richpage_template,
                                 context=dict(object=obj,
-                                             winnings=winings),
+                                             winnings=winnings),
                                 content_type='text/html')
 
-    winning_detail_richpage_template ='mobapi2/activity/lottery_winning_detail.html',
+    #winning_detail_richpage_template ='mobapi2/activity/lottery_winning_detail.html',
+    winning_detail_richpage_template ='mobapi2/activity/lottery_winning_detail2.html',
 
     @link()
     def winning_detail_richpage(self, request, winning_id, *args, **kwargs):
         try:
-            winning = LotteryWinning.objects.get(pk=winning_id)
+            #winning = LotteryWinning.objects.get(pk=winning_id)
+            winning = lottery_doc.LotteryWinningAction.objects.get(winning_id=winning_id)
         except LotteryWinning.DoesNotExist:
             return TemplateResponse(request=request,
                                     template='404',

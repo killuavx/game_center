@@ -189,7 +189,6 @@ class LotteryWinningAction(ActionExcutable, ActionBindLotteryWinning, Action):
 
     meta = {
         'db_alias': db_alias,
-        'collection': 'activity_lotterywinning',
         'indexes': [
             ['lottery_id', ],
             ['lottery_id', 'user'],

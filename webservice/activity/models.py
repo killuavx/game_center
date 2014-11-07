@@ -844,7 +844,10 @@ class LotteryLuckyDraw(object):
             else:
                 winning = self.create_winning(prize=p, user=user, win_date=win_date)
                 transaction.savepoint_commit(sid)
-                self.log_play_credit(user=user, prize=prize, win_date=win_date)
+                self.log_play_credit(user=user,
+                                     prize=prize,
+                                     win_date=win_date,
+                                     winning=winning)
                 self.update_lottery_play_takepartin()
                 return prize, winning
         except IntegrityError:
@@ -859,7 +862,10 @@ class LotteryLuckyDraw(object):
                     return None
                 else:
                     winning = self.create_winning(prize=p, user=user, win_date=win_date)
-                    self.log_play_credit(user=user, prize=prize, win_date=win_date)
+                    self.log_play_credit(user=user,
+                                         prize=prize,
+                                         win_date=win_date,
+                                         winning=winning)
                     self.update_lottery_play_takepartin()
                     return prize, winning
         except IntegrityError:
@@ -887,7 +893,7 @@ class LotteryLuckyDraw(object):
         #else:
         #    rt = None
 
-    def log_play_credit(self, user, prize, win_date, *args, **kwargs):
+    def log_play_credit(self, user, prize, win_date, winning=None, *args, **kwargs):
         from account.documents.credit import CreditLog
         from activity.documents.actions.lottery import LotteryPlayAction, LotteryWinningAction
 
@@ -913,6 +919,9 @@ class LotteryLuckyDraw(object):
                                               action_uuid=action_uuid,
                                               ip_address=ip_address,
                                               )
+        if winning:
+            winning_action.winning = winning
+
         winning_action.save()
         CreditLog.factory(exchangable=winning_action, user=user,
                           credit_datetime=win_date,
