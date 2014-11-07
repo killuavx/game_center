@@ -78,3 +78,5 @@ django-user-agents
 https://github.com/killuavx/cache-tagging/archive/support/py3.zip
 
 jieba3k
+
+https://github.com/senko/python-video-converter/archive/master.zip#egg=python-video-coverter

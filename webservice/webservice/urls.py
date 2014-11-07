@@ -11,6 +11,7 @@ admin.autodiscover()
 
 rest_framework_swagger_url = url(r'^api-docs/', include('rest_framework_swagger.urls'))
 urlpatterns = patterns("",
+                       url(r'video/', include('video.urls')),
                        url(r'^mob/', include('webmob.urls')),
                        url("^admin/", include(admin.site.urls)),
                        url("^admin/analysis/", include('analysis.data_urls')),

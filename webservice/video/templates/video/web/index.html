@@ -1,0 +1,119 @@
+{% extends "pages/page_web.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <link href="{% static 'video_web/css/site.css' %}" media="all" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block extra_js_footer %}
+    <script src="{% static 'video_web/scripts/html5media.min.js' %}"></script>
+    <script>
+        jQuery(".Video-list").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",vis:6,scroll:6});
+        function video_play(title, src){
+            $('#video_title').text(title);
+            $('#video').attr('src', src)[0].play();
+            return false;
+        }
+    </script>
+{% endblock %}
+{% block main %}
+<div class="auto mt30 width minheight-page video-page">
+    <div class="pb30 cell-bk">
+        <!--logo 开始-->
+        <div class="tc pb15"><img src="{% static 'video_web/images/logo.png' %}" /></div>
+        <!--logo 结束-->
+
+        <!--播放器 开始-->
+        <div class="bg-black rel ovh player">
+            <h1 id="video_title" class="p10 pl20 white n">{{ title }}</h1>
+            <video id="video" src="{{ video_url }}" controls preload></video>
+        </div>
+        <!--播放器 结束-->
+
+        <!--视频列表 开始-->
+        <div class="Video-list">
+            <div class="bd">
+                <ul class="inline-box">
+                {% for v in data.results %}
+                    <li class="inline-six">
+                        <div class="p10 pic">
+                            <a href="javascript:void(0);" onclick="video_play('{{ v.title }}', '{{ v.play_src }}');" data-src="{{ v.play_src }}" class="pic-a"><img src="{% if v.preview_url %}{{ v.preview_url }}{% endif %}" class="pic-img"/></a>
+                        </div>
+                        <div class="pl10 pr10 pb10 fw text">
+                            <h6><a href="#" class="bd-none title">{{ v.title }}</a></h6>
+                            <dl>
+                                <dd class="name">{{ v.username }}</dd>
+                                <dd class="date">{{ v.created_date }}</dd>
+                                <dd class="number">{{ v.file_size|filesizeformat }}</dd>
+                            </dl>
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul><!--inline-box-->
+            </div>
+            <div class="tc hd"><ul></ul></div>
+
+        </div>
+        <!--视频列表 结束-->
+
+        <!--视频介绍 开始-->
+        <div class="fw Video-introduction">
+            <h2 class="db n tc f28 p30">虫虫游戏现已提供 国内领先的 移动游戏视频录制和分享 解决方案</h2>
+            <div class="tc"><img src="{% static 'video_web/images/engine.png' %}"/></div>
+
+            <div class="inline-box tc">
+                <div class="inline-four i-1">
+                    <h5 class="n f20 fw">边玩边录</h5>
+                    <p class="pt10 pl30 pr30 f16 fw">简单操控或自动录制流畅视频<br/>不影响游戏体验</p>
+                </div>
+                <div class="inline-four i-2">
+                    <h5 class="n f20 fw">快捷分享</h5>
+                    <p class="pt10 pl30 pr30 f16 fw">一键分享游戏视频<br/>并可轻松扩散至多个社交网络</p>
+                </div>
+                <div class="inline-four i-3">
+                    <h5 class="n f20 fw">助推下载</h5>
+                    <p class="pt10 pl30 pr30 f16 fw">游戏下载链接和视频同时呈现<br/>拥有高点击率</p>
+                </div>
+                <div class="inline-four i-4">
+                    <h5 class="n f20 fw">助力联运</h5>
+                    <p class="pt10 pl30 pr30 f16 fw">基于视频的生动性和感染力<br/>形成社区 带更多可能</p>
+                </div>
+            </div>
+
+        </div>
+        <!--视频介绍 结束-->
+
+        <!--视频优势 开始-->
+        <div class="Video-advantage">
+            <div class="cell-bk pt30">
+                <img class="l mr30" src="{% static 'video_web/images/feature1.png' %}"/>
+                <h5 class="n f24">技术领先，适配无忧</h5>
+                <p class="f18 pt20">一个 SDK，支持多种游戏引擎，可接入所有游戏</p>
+            </div>
+            <div class="cell-bk pt30">
+                <img class="l mr30" src="{% static 'video_web/images/feature2.png' %}"/>
+                <h5 class="n f24">技术领先，适配无忧</h5>
+                <p class="f18 pt20">一个 SDK，支持多种游戏引擎，可接入所有游戏</p>
+            </div>
+            <div class="cell-bk pt30">
+                <img class="l mr30" src="{% static 'video_web/images/feature3.png' %}"/>
+                <h5 class="n f24">技术领先，适配无忧</h5>
+                <p class="f18 pt20">一个 SDK，支持多种游戏引擎，可接入所有游戏</p>
+            </div>
+            <div class="cell-bk pt30">
+                <img class="l mr30" src="{% static 'video_web/images/feature4.png' %}"/>
+                <h5 class="n f24">技术领先，适配无忧</h5>
+                <p class="f18 pt20">一个 SDK，支持多种游戏引擎，可接入所有游戏</p>
+            </div>
+
+        </div>
+        <!--视频介绍 结束-->
+
+        <!--联系 开始-->
+        <div class="tc pt30 pb30 mt30 Video-contact">
+            <a class="mt30" href="mailto:support@ccplay.com.cn"><img src="{% static 'video_web/images/contactus.png' %}" alt="support@ccplay.com.cn" width="510" height="126"></a>
+        </div>
+        <!--联系 结束-->
+
+
+    </div><!--cell-bk-->
+</div>
+{% endblock %}
