@@ -134,12 +134,12 @@ class ActionBindLotteryWinning(ActionBindLottery):
             self.prize_id = None
             self.prize_level = None
             self.prize_level_name = None
-            self.prize_gorup = None
+            self.prize_group = None
             self.prize_title = None
         else:
             self.prize_id = obj.pk
             self._prize = obj
-            self.prize_gorup = obj.group
+            self.prize_group = obj.group
             self.prize_level = obj.level
             self.prize_level_name = obj.level_name
             self.prize_title = obj.title
