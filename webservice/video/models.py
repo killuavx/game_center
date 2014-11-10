@@ -50,7 +50,6 @@ class Video(TimeStamped,
     title = models.CharField(max_length=50)
 
     workspace = FileField(default='',
-                          upload_to=video_upload_to,
                           blank=True,
                           max_length=500,
                           format='File')
