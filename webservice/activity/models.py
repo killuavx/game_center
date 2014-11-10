@@ -435,7 +435,9 @@ class Activity(SiteRelated,
 
     objects = ActivityManager()
 
-    content = RichTextField()
+    content = RichTextField(help_text="""1.添加标签class属性:event-open-activity,客户端即可点击跳转至抽奖活动UI\n"""
+        """2.添加标签class属性:lottery-{id}, {id}代表抽奖ID即可在活动结束后, 点击活动页面进入获奖列表页面"""
+    )
 
     is_active = models.BooleanField(default=False)
 
