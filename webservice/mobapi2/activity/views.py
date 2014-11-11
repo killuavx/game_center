@@ -827,16 +827,20 @@ class LotteryViewSet(DetailSerializerMixin,
             self.check_throttles(request=request)
             self.throttle_classes = orgin_throttle_classes
 
-        rt = luckydraw.draw(user=request.user)
-        #if not rt:
+        try:
+            rt = luckydraw.draw(user=request.user, check_drawable=True)
+        except BaseLotteryException as e:
+            return Response(data=dict(
+                code=e.code,
+                detail=e.messages[0],
+            ), status=status.HTTP_402_PAYMENT_REQUIRED)
+
         context = self.get_serializer_context()
         serializer = LotteryPrizeWinningSerializer(rt,
                                                    many=False,
                                                    context=context)
         serializer.save()
         return Response(data=serializer.data)
-        #else:
-        #    return redirect('apiv2-lottery-play', pk=obj.pk)
 
     def throttled(self, request, wait):
         handler = getattr(self, self.request.method.lower(), None)

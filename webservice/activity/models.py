@@ -784,6 +784,9 @@ class LotteryMoreCoinRequired(BaseLotteryException):
     code = 3
 
 
+from account.models import Profile
+
+
 class LotteryLuckyDraw(object):
 
     def __init__(self, lottery, request=None, win_date=None):
@@ -821,9 +824,13 @@ class LotteryLuckyDraw(object):
             raise LotteryMoreCoinRequired(message='少侠，先去赚点金币，再来抽大奖！')
 
     def is_user_enough_coin(self, user):
-        return user.profile.coin >= self.lottery.cost_coin
+        p = Profile.objects.get(user_id=user.pk)
+        return p.coin >= self.lottery.cost_coin
 
-    def draw(self, user):
+    def draw(self, user, check_drawable=False):
+        if check_drawable:
+            self.check_drawable(user)
+
         win_date = self.win_date
 
         prizes_to_rand = self.allowed_prizes(user=user)
