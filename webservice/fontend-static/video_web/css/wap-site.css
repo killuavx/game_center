@@ -1,0 +1,17 @@
+body{padding:0; margin:0}
+.wap-play{background:#000}
+.vjs-default-skin{min-height:400px}
+
+.close{width:30px; height:30px; display:inline-block; background:#fff url(http://static.ccplay.com.cn/static/android_mobile/img/browsers_ad_close_gray.png) no-repeat;-webkit-background-size: cover; background-size: cover; position:absolute; top:10px; right:10px; z-index:10;-moz-border-radius: 50%;-webkit-border-radius: 50%;border-radius: 50%;}
+
+.flex_video{font-size: 1em; letter-spacing: -0.3em; padding:0 }
+.flex_video li{display: inline-block; letter-spacing: 0; vertical-align: top; width: 49%; padding-left: 8px; -webkit-box-sizing: border-box; box-sizing: border-box}
+.flex_video_thumb{position: relative }
+.flex_video_thumb:before{content: ""; display: block; padding-top: 56.66666667% }
+.flex_video_link,.flex_video_link:before,.flex_video_link:after{position: absolute; top: 0; left: 0; bottom: 0; right: 0}
+.flex_video_link {-webkit-background-size: cover; background-size: cover }
+.flex_video_link:before {content: ''; z-index: -1;  background-size: 40px auto }
+.flex_video_link:after {content: ''; z-index: 1; background-image: -webkit-linear-gradient(top, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6)); background-image: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.6)) }
+.picList_info{position: absolute; bottom:-10px; left:5px; right: 0; padding: 0 3px; overflow: hidden; white-space: normal; word-break: break-all; height: 20px; color: #fff; z-index: 2; font-size: 12px }
+.picList_info-right{text-align: right; right:5px}
+.flex_video_title{padding: 5px 0 18px }

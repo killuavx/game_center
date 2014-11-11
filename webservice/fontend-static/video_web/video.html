@@ -108,6 +108,14 @@
 
 <!--视频 开始 video-page-->
 <link href="http://static.ccplay.com.cn/static/video_web/css/site.css" media="all" rel="stylesheet" type="text/css" />
+<script>
+function video_play(video, src, play){
+	var cur = $(video).attr('src', src)[0];
+	if(play){
+		cur.play()
+	}
+}
+</script>
 <div class="auto mt30 width minheight-page video-page">
 		<div class="pb30 cell-bk">
         		<!--logo 开始-->
@@ -117,7 +125,7 @@
         		<!--播放器 开始-->
                 <div class="bg-black rel ovh player">
                 	<h1 class="p10 pl20 white n">视频标题视频标题视频标题视频标题</h1>
-                	<video src="" controls preload></video>
+                	<video id="video" src="Video_20140309123719VI96.MOV" controls preload></video>
                 </div>
                 <!--播放器 结束-->
                 
@@ -127,10 +135,10 @@
                             <ul class="inline-box">
                                     <li class="inline-six">
                                         <div class="p10 pic">
-                                            <a href="#" class="pic-a"><img src="http://media.ccplay.com.cn/media/topic/topic-ccgwminecraft/cover.jpg" class="pic-img"/></a>
+                                            <a href="javascript:;" rel="Video_20140309162033GB14.mp4" class="pic-a"><img src="http://media.ccplay.com.cn/media/topic/topic-ccgwminecraft/cover.jpg" class="pic-img"/></a>
                                         </div>
                                         <div class="pl10 pr10 pb10 fw text">
-                                            <h6><a href="#" class="bd-none title">标题名称标题名称</a></h6>
+                                            <h6><a href="javascript:;" rel="Video_20140309162033GB14.mp4" class="bd-none title">标题名称标题名称</a></h6>
                                             <dl>
                                                 <dd class="name">长安街</dd>
                                                 <dd class="date">2014-10-30</dd>
@@ -140,10 +148,10 @@
                                     </li>
                                     <li class="inline-six on">
                                         <div class="p10 pic">
-                                            <a href="#" class="pic-a"><img src="http://media.ccplay.com.cn/media/topic/topic-ccgwminecraft/cover.jpg" class="pic-img"/></a>
+                                            <a href="javascript:;" rel="Video_20140309123719VI96.MOV" class="pic-a"><img src="http://media.ccplay.com.cn/media/topic/topic-ccgwminecraft/cover.jpg" class="pic-img"/></a>
                                         </div>
                                         <div class="pl10 pr10 pb10 fw text">
-                                            <h6><a href="#" class="bd-none title">标题名称标题名称</a></h6>
+                                            <h6><a href="javascript:;" rel="Video_20140309123719VI96.MOV" class="bd-none title">标题名称标题名称</a></h6>
                                             <dl>
                                                 <dd class="name">长安街</dd>
                                                 <dd class="date">2014-10-30</dd>
@@ -292,6 +300,15 @@
 <script src="http://static.ccplay.com.cn/static/common/js/jquery.SuperSlide.2.1.1.source.js"></script>
 <script>
 jQuery(".Video-list").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",vis:6,scroll:6});
+$(function(){
+	   $(".Video-list li.inline-six a").click(function(){
+		   video_play('#video', this.rel, 1)
+	   });
+	   $(".Video-list li.inline-six").click(function(){
+		   $(".Video-list li.inline-six").removeClass("on");
+		   $(this).addClass("on");
+	   });
+	});
 </script>
 
 
