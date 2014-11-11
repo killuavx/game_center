@@ -430,7 +430,7 @@ class NotificationSerializer(Serializer):
             result = dict(
                 new_count=1 if latest['is_active'] else 0,
                 latest=latest,
-                active=latest['is_active']
+                #active=latest['is_active']
             )
         except Exception as e:
             result = dict(new_count=0, latest=None, active=False)
@@ -442,10 +442,10 @@ class NotificationSerializer(Serializer):
         request = self.context.get('request')
         response = android_api.bulletins.get()
         data = response.data
-        result = dict(active=False, new_count=0, latest=None)
+        result = dict(new_count=0, latest=None)
         if data['count']:
             result['new_count'] = self._bulletin_newcount(request, data)
-            result['active'] = result['new_count'] > 0
+            #result['active'] = result['new_count'] > 0
             result['latest'] = data['results'][0]
         return result
 
@@ -470,7 +470,16 @@ class NotificationSerializer(Serializer):
     lottery = serializers.SerializerMethodField('get_lottery')
 
     def get_lottery(self, obj):
-        return dict(active=True)
+        throttle = LotteryPlayDailyThrottle()
+        active = throttle.check_allowed(request=self.context.get('request'),
+                                        view=self.context.get('view'))
+
+        res = android_api.lotteries.get('active')
+        if res.status == 200:
+            active = active and res.data['status'] == LotterySerializer.STATUS.inprogress
+        else:
+            active = False
+        return dict(active=active)
 
 
 from model_utils.choices import Choices
