@@ -725,7 +725,7 @@ class BulletinViewSet(RichPageViewSetMixin,
     serializer_class = BulletinSummarySerializer
     permission_classes = ()
     authentication_classes = (PlayerTokenAuthentication,)
-    filter_backend = (OrderingFilter,)
+    filter_backends = (OrderingFilter,)
     ordering = ('-publish_date', )
 
     richpage_template ='mobapi2/activity/bulletin.html',
@@ -742,7 +742,7 @@ class ActivityViewSet(RichPageViewSetMixin,
     serializer_class = ActivitySummarySerializer
     permission_classes = ()
     authentication_classes = (PlayerTokenAuthentication,)
-    filter_backend = (OrderingFilter,)
+    filter_backends = (OrderingFilter, )
     ordering = ('-publish_date', )
 
     richpage_template = 'mobapi2/activity/activity.html',
