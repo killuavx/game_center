@@ -916,9 +916,11 @@ class LotteryLuckyDraw(object):
                                         ip_address=ip_address,
                                         )
         play_action.save()
-        CreditLog.factory(exchangable=play_action, user=user,
+        log = CreditLog.factory(exchangable=play_action, user=user,
                           credit_datetime=win_date,
-                          ).process()
+                          )
+        if not log.pk:
+            log.save()
 
         winning_action = LotteryWinningAction(user=user,
                                               prize=prize,
@@ -932,9 +934,11 @@ class LotteryLuckyDraw(object):
             winning_action.winning = winning
 
         winning_action.save()
-        CreditLog.factory(exchangable=winning_action, user=user,
+        log = CreditLog.factory(exchangable=winning_action, user=user,
                           credit_datetime=win_date,
-                          ).process()
+                          )
+        if not log.pk:
+            log.save()
 
         play_action.winning_action = winning_action
         play_action.save()
