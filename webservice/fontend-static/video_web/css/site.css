@@ -1,5 +1,5 @@
-.player{max-height:600px}
-.player video{width:100%; max-height:600px}
+.player{max-height:750px}
+.player video{width:100%}
 .Video-list .pic{max-height:95px; max-width:190px;}
 .Video-list .pic-img{width:100%; max-height:95px; max-width:190px}
 .Video-list .pic a{display:block; background:url(../images/play_icon.png) no-repeat center #000;}
