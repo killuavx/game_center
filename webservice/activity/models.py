@@ -593,6 +593,8 @@ class LotteryPrize(TimeStamped,
     level = models.IntegerField(choices=LOTTERY_PRIZE_LEVEL,
                                 verbose_name='奖项等级')
 
+    rate = models.IntegerField(default=0, verbose_name='中奖概率')
+
     @property
     def level_name(self):
         return self.LEVEL[self.level]
@@ -794,7 +796,7 @@ class LotteryLuckyDraw(object):
         self.request = request
         self.win_date = win_date.astimezone() if win_date else now().astimezone()
 
-    def _rand_prize(self, prizes):
+    def __rand_prize(self, prizes):
         reverse_max = max((p.level for p in prizes)) + 1
         pro_sum = sum((reverse_max - p.level for p in prizes))
 
@@ -805,6 +807,17 @@ class LotteryLuckyDraw(object):
                 return p
             else:
                 pro_sum -= cur_num
+        return None
+
+    def _rand_prize(self, prizes):
+        pro_sum = sum((p.rate for p in prizes))
+
+        for i, p in enumerate(prizes):
+            rand_num = randint(1, pro_sum)
+            if rand_num <= p.rate:
+                return p
+            else:
+                pro_sum -= p.rate
         return None
 
     def get_prizes(self):

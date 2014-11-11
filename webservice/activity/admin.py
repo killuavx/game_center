@@ -182,7 +182,7 @@ from mezzanine.core.admin import TabularDynamicInlineAdmin as TabularInline
 
 class LotteryPrizeInline(TabularInline):
     model = LotteryPrize
-    fields = ('group', 'level',
+    fields = ('group', 'level', 'rate',
               'title', 'win_prompt',
               'total_count', 'award_coin',
               'win_count',
