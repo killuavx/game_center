@@ -118,7 +118,7 @@ class ClientPackageVersionAdmin(VersionAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = list(self.readonly_fields)
-        if not str(obj.workspace):
+        if obj and not str(obj.workspace):
             return readonly_fields
         if obj and obj.pk:
             return readonly_fields + ['workspace', ]
