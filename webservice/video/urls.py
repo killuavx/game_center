@@ -8,6 +8,7 @@ video_index = VideoViewSet.as_view({'get': 'list'})
 
 urlpatterns = patterns('',
    #url('^$', video_index, name="video-index"),
+   url('^list/?$', video_index, name="video-list"),
    url('^upload/?$', video_upload, name="video-upload"),
    url('^play/(?P<pk>\d+)/?$', video_play, name="video-play"),
 )

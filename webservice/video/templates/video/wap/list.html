@@ -8,19 +8,28 @@
     <meta name="format-detection" content="address=no;email=no;telphone=no" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-    <title>播放 {{ video.title }}</title>
+    <title>视频列表</title>
     <link href="{% static 'video_web/css/wap-site.css' %}?1415675815627" media="all" rel="stylesheet" type="text/css" />
     <link href="{% static 'video_web/video-js/video-js.css' %}?1415675815627" rel="stylesheet" type="text/css">
 </head>
 
-<body class="wap-play">
-<a href="{% url 'video-list' %}?src=wap" class="close" title="关闭播放"></a>
-<video id="video" class="video-js vjs-default-skin" autoplay controls preload="none" width="100%"
-       poster="#"
-       data-setup="{}">
-    <source src="{{ video.file.url }}" type='video/mp4' />
-</video>
+<body>
+
+<div class="mod-flex_video">
+    <ul class="flex_video">
+        {% for v in video_list %}
+        <li>
+            <div class="flex_video_thumb">
+                <a class="flex_video_link" href="{% url 'video-play' pk=v.pk %}" {% if v.preview %} style="background-image: url('{{ v.preview.url }}')" {% endif %}>
+                    <p class="picList_info">{{ v.user.username }}</p>
+                    <!-- <p class="picList_info picList_info-right">01:35</p> -->
+                </a>
+            </div>
+            <div class="flex_video_title">{{ v.title }}</div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
 </body>
-<script src="{% static 'common/js/jquery.min.js' %}"></script>
-<script src="{% static 'video_web/video-js/video.js' %}"></script>
 </html>

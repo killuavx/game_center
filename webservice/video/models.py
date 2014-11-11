@@ -70,24 +70,35 @@ class Video(TimeStamped,
         workspace_by_created(self)
         return super(Video, self).save(*args, **kwargs)
 
+    def media_info(self, check_again=False):
+        if not self.file:
+            return None
+
+        if not hasattr(self, '_c'):
+            from converter import Converter
+            self._c = Converter(ffmpeg_path=settings.FFMPEG_EXECUTABLE,
+                                ffprobe_path=settings.FFPROBE_EXECUTABLE)
+
+        if not hasattr(self, '_media_info') or check_again:
+            self._media_info = self._c.probe(self.file.path)
+
+        return self._media_info
 
 
-#@receiver(pre_save, sender=Video)
+
+@receiver(pre_save, sender=Video)
 def video_file_thumbnail(sender, instance, *args, **kwargs):
-    from converter import Converter
-    if not instance.pk and instance.file:
-        c = Converter()
-        shotname = "%s/shot.png" % instance.workspace.name
-        c.thumbnail(instance.file.path, 1,
-                    os.path.join(settings.MEDIA_ROOT, shotname))
-        instance.preview = shotname
-
-
-@receiver(post_save, sender=Video)
-def video_make_workspace(sender, instance, created, *args, **kwargs):
-    if created:
+    if not instance.pk:
         path = os.path.join(settings.MEDIA_ROOT, str(instance.workspace))
         if not os.path.exists(path):
             os.makedirs(path, exist_ok=True)
 
+    if not instance.pk and instance.file:
+        from converter import Converter
+        c = Converter(ffmpeg_path=settings.FFMPEG_EXECUTABLE,
+                      ffprobe_path=settings.FFPROBE_EXECUTABLE)
+        shotname = "%s/shot.png" % instance.workspace.name
+        c.thumbnail(instance.file.path, 1,
+                    os.path.join(settings.MEDIA_ROOT, shotname))
+        instance.preview = shotname
 

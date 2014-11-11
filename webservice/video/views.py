@@ -49,6 +49,8 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     play_web_template = 'video/web/play.html'
 
+    list_wap_template = 'video/wap/list.html'
+
     index_template = 'video/web/index.html'
 
     @link()
@@ -76,8 +78,13 @@ class VideoViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(self.object_list, many=True)
         self.serializer_class = VideoUploadSerializer
         data = serializer.data
+
+        template_name = self.index_template
+        if request.GET.get('src') == 'wap':
+            template_name = self.list_wap_template
+
         return TemplateResponse(request=request,
-                                template=self.index_template,
+                                template=template_name,
                                 context=dict(
                                     title='',
                                     video_url='',

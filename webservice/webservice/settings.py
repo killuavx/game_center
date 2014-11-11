@@ -532,3 +532,9 @@ try:
 except:
     pass
 
+
+
+# for python-video-converter
+FFMPEG_EXECUTABLE = '/usr/local/bin/ffmpeg'
+
+FFPROBE_EXECUTABLE = '/usr/local/bin/ffprobe'

@@ -6,7 +6,10 @@ from video.models import Video
 class VideoAdmin(admin.ModelAdmin):
 
     list_display = ('pk', 'title', 'user', 'created',)
-    readonly_fields = ('created', 'updated', 'file_size', 'file_md5', )
+    readonly_fields = ('created', 'updated',
+                       'file_size', 'file_duration', 'file_md5',
+                       'file_width', 'file_height',
+    )
     fieldsets = (
         (None, {
             'fields': (
@@ -17,8 +20,9 @@ class VideoAdmin(admin.ModelAdmin):
         ('File', {
             'fields': (
                 'workspace',
-                'file',
-                ('file_size', 'file_md5'),
+                ('preview', 'file',),
+                ('file_size', 'file_duration', 'file_md5'),
+                ('file_width', 'file_height'),
             ),
         }),
         ('Status', {
