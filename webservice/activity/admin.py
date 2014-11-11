@@ -100,6 +100,7 @@ class BulletinAdmin(VersionAdmin):
         (None, {
             'fields': (
                 'title',
+                'summary',
                 'content',
             ),
             }),
