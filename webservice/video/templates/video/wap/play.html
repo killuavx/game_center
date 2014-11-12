@@ -1,26 +1,15 @@
+{% extends "video/wap/base.html" %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="white" />
-    <meta name="format-detection" content="address=no;email=no;telphone=no" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-    <title>播放 {{ video.title }}</title>
-    <link href="{% static 'video_web/css/wap-site.css' %}?1415675815627" media="all" rel="stylesheet" type="text/css" />
-    <link href="{% static 'video_web/video-js/video-js.css' %}?1415675815627" rel="stylesheet" type="text/css">
-</head>
-
-<body class="wap-play">
-<a href="{% url 'video-list' %}?src=wap" class="close" title="关闭播放"></a>
+{% block meta_title %}播放 {{ video.title }}{% endblock %}
+{% block main %}
+<div class="wap-play">
+<a href="{% url 'video-list' %}?src=wap" onclick="window.location='{% url 'video-list' %}?src=wap';return false;" class="close" title="关闭播放"></a>
 <video id="video" class="video-js vjs-default-skin" autoplay controls preload="none" width="100%"
        poster="#"
        data-setup="{}">
     <source src="{{ video.file.url }}" type='video/mp4' />
 </video>
-</body>
 <script src="{% static 'common/js/jquery.min.js' %}"></script>
 <script src="{% static 'video_web/video-js/video.js' %}"></script>
-</html>
+</div>
+{% endblock %}

@@ -238,13 +238,13 @@ LANGUAGES = (
 )
 
 FILE_UPLOAD_HANDLERS = (
-    'django.core.files.uploadhandler.MemoryFileUploadHandler',
+    'toolkit.uploadhandler.MemoryFileUploadExceptVideoHandler',
     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
 )
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440 * 4
 FILE_UPLOAD_PERMISSIONS = None
-FILE_UPLOAD_TEMP_DIR = None
+FILE_UPLOAD_TEMP_DIR = '/tmp'
 
 # EasyThumbnail Settings
 THUMBNAIL_ALIASES_ICON = {

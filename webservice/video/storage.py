@@ -5,12 +5,17 @@ from django.core.files.storage import FileSystemStorage
 from urllib.parse import urljoin
 from django.utils.encoding import filepath_to_uri
 from django.core.files.storage import get_storage_class
+from toolkit.helpers import current_request
 
 
 class LocalFileStorageMixin(object):
 
     def get_host_url(self, name):
-        return 'http://192.168.5.6:8080/media/'
+        request = current_request()
+        if request:
+            return request.build_absolute_uri("/media/")
+        else:
+            return 'http://android.ccplay.com.cn/media/'
 
     def url(self, name):
         if self.base_url is None:

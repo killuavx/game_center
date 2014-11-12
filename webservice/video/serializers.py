@@ -65,6 +65,6 @@ class VideoUploadSerializer(serializers.ModelSerializer):
             'title',
             'video',
             'play_url',
-            'user',
+            #'user',
         )
 

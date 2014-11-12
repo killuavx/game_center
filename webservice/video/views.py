@@ -2,6 +2,7 @@
 from django.template.response import TemplateResponse
 from rest_framework import generics, permissions, viewsets, status
 from rest_framework.decorators import link
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from video.serializers import VideoUploadSerializer, VideoSerializer
@@ -69,7 +70,7 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         self.serializer_class = VideoSerializer
-        self.object_list = self.filter_queryset(self.get_queryset())
+        self.object_list = self.filter_queryset(self.get_queryset()).order_by('-created')
 
         page = self.paginate_queryset(self.object_list)
         if page is not None:

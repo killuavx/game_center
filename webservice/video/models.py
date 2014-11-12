@@ -8,8 +8,9 @@ from model_utils.tracker import FieldTracker
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save, post_delete, pre_delete
 from django.conf import settings
-from video.fields import VideoFileField
+from video.fields import VideoFileField, media_file_info
 from video.storage import default_storage
+from datetime import timedelta
 
 VIDEO_DIRECTORY_DTFORMAT = 'videos/%Y/%m/%d/%H%M-%S-%f'
 
@@ -17,7 +18,9 @@ VIDEO_DIRECTORY_DTFORMAT = 'videos/%Y/%m/%d/%H%M-%S-%f'
 def video_upload_to(instance, filename):
     workspace_by_created(instance)
     basename = os.path.basename(filename)
-    return "%s/%s" % (instance.workspace.name, basename)
+    new_filename = "%s/%s" % (instance.workspace.name, basename)
+    print(new_filename)
+    return new_filename
 
 
 def workspace_by_created(instance):
@@ -58,6 +61,10 @@ class Video(TimeStamped,
                           upload_to=video_upload_to,
                           max_length=500)
 
+    @property
+    def file_time(self):
+        return timedelta(seconds=int(self.file_duration))
+
     tracker = FieldTracker()
 
     def __str__(self):
@@ -72,33 +79,41 @@ class Video(TimeStamped,
 
     def media_info(self, check_again=False):
         if not self.file:
-            return None
+            return False
 
-        if not hasattr(self, '_c'):
-            from converter import Converter
-            self._c = Converter(ffmpeg_path=settings.FFMPEG_EXECUTABLE,
-                                ffprobe_path=settings.FFPROBE_EXECUTABLE)
-
-        if not hasattr(self, '_media_info') or check_again:
-            self._media_info = self._c.probe(self.file.path)
-
+        if not getattr(self, '_media_info', None) or check_again:
+            self._media_info = media_file_info(self.file.path)
         return self._media_info
 
 
+_video_file_changed_flag = '_video_changed'
+
 
 @receiver(pre_save, sender=Video)
-def video_file_thumbnail(sender, instance, *args, **kwargs):
+def video_make_dir(sender, instance, *args, **kwargs):
     if not instance.pk:
         path = os.path.join(settings.MEDIA_ROOT, str(instance.workspace))
         if not os.path.exists(path):
             os.makedirs(path, exist_ok=True)
 
+    setattr(instance, _video_file_changed_flag, instance.tracker.has_changed('file'))
     if not instance.pk and instance.file:
+        shotname = "%s/shot.png" % instance.workspace.name
+        instance.preview = shotname
+
+
+@receiver(post_save, sender=Video)
+def after_video_file_thumbnail(sender, instance, *args, **kwargs):
+    if getattr(instance, _video_file_changed_flag, False):
         from converter import Converter
+        try:
+            os.remove(instance.preview.path)
+        except (IOError, FileNotFoundError) as e:
+            pass
         c = Converter(ffmpeg_path=settings.FFMPEG_EXECUTABLE,
                       ffprobe_path=settings.FFPROBE_EXECUTABLE)
-        shotname = "%s/shot.png" % instance.workspace.name
-        c.thumbnail(instance.file.path, 1,
-                    os.path.join(settings.MEDIA_ROOT, shotname))
-        instance.preview = shotname
+        c.thumbnail(instance.file.path, 1, instance.preview.path)
+    delattr(instance, _video_file_changed_flag)
+
+
 
