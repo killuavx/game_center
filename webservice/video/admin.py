@@ -23,6 +23,7 @@ class VideoAdmin(admin.ModelAdmin):
                 ('preview', 'file',),
                 ('file_size', 'file_duration', 'file_md5'),
                 ('file_width', 'file_height'),
+                ('flip', ),
             ),
         }),
         ('Status', {

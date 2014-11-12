@@ -3,6 +3,7 @@ from mezzanine.core.fields import FileField
 from django.utils.timezone import now
 import os
 from mezzanine.core.models import TimeStamped, Ownable
+from model_utils import Choices
 from toolkit.helpers import sync_status_from
 from model_utils.tracker import FieldTracker
 from django.dispatch import receiver
@@ -60,6 +61,14 @@ class Video(TimeStamped,
     file = VideoFileField(storage=default_storage,
                           upload_to=video_upload_to,
                           max_length=500)
+
+    FLIP = Choices(
+        ('n', 'notset', '未设置'),
+        ('x', 'x', '水平翻转'),
+        ('y', 'y', '垂直翻转'),
+    )
+
+    flip = models.CharField(choices=FLIP, default=FLIP.notset, max_length=3)
 
     @property
     def file_time(self):

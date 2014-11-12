@@ -144,6 +144,7 @@ MIDDLEWARE_CLASSES = (
     'webservice.middlewares.RequestFillLanguageCodeMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'toolkit.middleware.TokenAuthenticationMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 )
 
 ROOT_URLCONF = 'webservice.urls'

@@ -5,11 +5,22 @@
 <div class="wap-play">
 <a href="{% url 'video-list' %}?src=wap" onclick="window.location='{% url 'video-list' %}?src=wap';return false;" class="close" title="关闭播放"></a>
 <video id="video" class="video-js vjs-default-skin" autoplay controls preload="none" width="100%"
-       poster="#"
-       data-setup="{}">
-    <source src="{{ video.file.url }}" type='video/mp4' />
+       poster="#" >
+    <source src="{{ video.file.url }}" type="video/mp4" />
 </video>
 <script src="{% static 'common/js/jquery.min.js' %}"></script>
 <script src="{% static 'video_web/video-js/video.js' %}"></script>
+<script type="text/javascript">
+    videojs('video').ready(function(){
+    {% if request.user_agent.os.family != 'iOS' %}
+        var v = this;
+        {% if video.flip == 'y' %}
+        $(v.I).addClass('flipy');
+        {% elif video.flip == 'x' %}
+        $(v.I).addClass('flipx');
+        {% endif %}
+    {% endif %}
+    })
+</script>
 </div>
 {% endblock %}
