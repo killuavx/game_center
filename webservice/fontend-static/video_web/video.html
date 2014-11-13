@@ -108,6 +108,7 @@
 
 <!--视频 开始 video-page-->
 <link href="http://static.ccplay.com.cn/static/video_web/css/site.css" media="all" rel="stylesheet" type="text/css" />
+<link href="http://static.ccplay.com.cn/static/video_web/video-js/video-js.css" rel="stylesheet" type="text/css">
 <script>
 function video_play(video, src, play){
 	var cur = $(video).attr('src', src)[0];
@@ -123,9 +124,13 @@ function video_play(video, src, play){
                 <!--logo 结束-->              
                 
         		<!--播放器 开始-->
-                <div class="bg-black rel ovh player">
+                <div class="bg-black rel player">
                 	<h1 class="p10 pl20 white n">视频标题视频标题视频标题视频标题</h1>
-                	<video id="video" src="Video_20140309123719VI96.MOV" controls preload></video>
+                    <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none" width="100%" height="650"
+                          poster="http://video-js.zencoder.com/oceans-clip.png"
+                          data-setup="{}">
+                          <source src="http://video-js.zencoder.com/oceans-clip.mp4" type="video/mp4"/>
+                    </video>
                 </div>
                 <!--播放器 结束-->
                 
@@ -296,7 +301,8 @@ function video_play(video, src, play){
 </div>
 <!--视频 结束 video-page-->
 <script src="http://static.ccplay.com.cn/static/common/js/jquery.min.js"></script>
-<script src="http://static.ccplay.com.cn/static/video_web/scripts/html5media.min.js"></script>
+<script src='http://static.ccplay.com.cn/static/common/js/site-v1.js'></script>
+<script src="http://static.ccplay.com.cn/static/video_web/video-js/video.js"></script>
 <script src="http://static.ccplay.com.cn/static/common/js/jquery.SuperSlide.2.1.1.source.js"></script>
 <script>
 jQuery(".Video-list").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",vis:6,scroll:6});
