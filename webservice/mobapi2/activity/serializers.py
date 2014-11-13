@@ -486,6 +486,7 @@ from model_utils.choices import Choices
 from activity.models import Lottery, LotteryPrize, LotteryWinning
 from django.utils import timezone
 from toolkit.models import CONTENT_STATUS_PUBLISHED
+from activity.documents.actions import lottery as lottery_doc
 
 
 class LotterySerializer(HyperlinkedModelSerializer):
@@ -582,20 +583,17 @@ class LotteryDetailSerializer(LotterySerializer):
 
     def get_winnings(self, obj):
         winners = list()
-        # FIXME slow query
-        for winning in sorted(obj.winnings.won().order_by('-prize__level')[:5],
-                              key=lambda item: (item.prize.level, item.win_date),
-                              reverse=True):
-
+        for winning in lottery_doc.LotteryWinningAction\
+                        .objects.lottery_winning_list(obj.pk):
             try:
-                username, level_name, title = winning.summary.split(":")
-                winners.append(dict(username=username,
-                                    level_name=level_name,
-                                    group=winning.prize.group,
-                                    title=title))
+                winners.append(dict(username=winning.username,
+                                    level_name=winning.prize_level_name,
+                                    group=winning.prize_group,
+                                    title=winning.prize_title))
             except:
                 pass
         return winners
+
 
     class Meta:
         model = Lottery
