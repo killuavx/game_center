@@ -63,8 +63,8 @@ class Video(TimeStamped,
 
     FLIP = Choices(
         ('n', 'notset', '未设置'),
-        ('x', 'x', '水平翻转'),
-        ('y', 'y', '垂直翻转'),
+        ('x', 'x', '水平翻转'), # H
+        ('y', 'y', '垂直翻转'), # V
     )
 
     flip = models.CharField(choices=FLIP, default=FLIP.notset, max_length=3)
@@ -133,10 +133,10 @@ def _make_video_preview_flip(instance, flip):
     try:
         im = Image.open(instance.preview.path)
         out = None
-        if flip == Video.FLIP.y:
-            out = im.transpose(Image.FLIP_LEFT_RIGHT)
-        elif flip == Video.FLIP.x:
+        if flip == Video.FLIP.x:
             out = im.transpose(Image.FLIP_TOP_BOTTOM)
+        elif flip == Video.FLIP.y:
+            out = im.transpose(Image.FLIP_LEFT_RIGHT)
         if out:
             out.save(instance.preview.path)
     except IOError as e:

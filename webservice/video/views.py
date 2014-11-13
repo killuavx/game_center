@@ -58,6 +58,8 @@ class VideoViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def pre_save(self, obj):
+        if obj.flip == 'y':
+            obj.flip = 'x'
         obj.user = self.request.user
 
     play_wap_template = 'video/wap/play.html'

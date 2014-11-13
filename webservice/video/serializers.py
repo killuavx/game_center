@@ -60,6 +60,14 @@ class VideoUploadSerializer(serializers.ModelSerializer):
                        kwargs=dict(pk=obj.pk),
                        request=self.context.get('request')) + "?src=wap"
 
+
+    preview_url = serializers.SerializerMethodField('get_preview_url')
+
+    def get_preview_url(self, obj):
+        if obj.preview:
+            return obj.preview.url
+        return None
+
     class Meta:
         model = Video
         fields = (
@@ -67,5 +75,6 @@ class VideoUploadSerializer(serializers.ModelSerializer):
             'video',
             'play_url',
             'flip',
+            'preview_url',
         )
 

@@ -8,7 +8,7 @@
         <a href="{% url 'video-list' %}?src=wap" class="close" title="关闭播放"></a>
     </div>
 
-<video id="video" class="video-js vjs-default-skin" autoplay controls preload="none" width="100%"
+<video id="video" data-flip="{{ video.flip }}" class="video-js vjs-default-skin" autoplay controls preload="none" width="100%"
        poster="{% static 'video_web/images/play-cover.png' %}">
     <source src="{{ video.file.url }}" type="video/mp4" />
 </video>
@@ -16,15 +16,17 @@
 <script src="{% static 'common/js/jquery.min.js' %}"></script>
 <script src="{% static 'video_web/video-js/video.js' %}"></script>
 <script type="text/javascript">
+    navigator.os = {family: false};
+    if(navigator.userAgent.match(/iPod|iPad|iPhone/)){
+        navigator.os.family = 'iOS';
+    }
     videojs('video').ready(function(){
-    {% if request.user_agent.os.family != 'iOS' %}
-        var v = this;
-        {% if video.flip == 'y' %}
-        $(v.I).addClass('flipy');
-        {% elif video.flip == 'x' %}
-        $(v.I).addClass('flipx');
-        {% endif %}
-    {% endif %}
+        if(navigator.os.family != 'iOS')
+        {
+            var v = this;
+            var flip = $(v.I).attr('data-flip');
+            $(v.I).addClass('flip' + flip);
+        }
     })
 </script>
 </div>

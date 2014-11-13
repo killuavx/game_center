@@ -4,58 +4,43 @@
     <link href="{% static 'video_web/css/site.css' %}" media="all" rel="stylesheet" type="text/css" />
     <style type="text/css">
             /*水平翻转*/
-        .flipx {
+        .flipy {
             -moz-transform:scaleX(-1);
             -webkit-transform:scaleX(-1);
             -o-transform:scaleX(-1);
             transform:scaleX(-1);
+            /*IE*/
             filter:FlipH();
         }
+
             /*垂直翻转*/
-        .flipy {
+        .flipx {
             -moz-transform:scaleY(-1);
             -webkit-transform:scaleY(-1);
             -o-transform:scaleY(-1);
             transform:scaleY(-1);
+            /*IE*/
             filter:FlipV();
         }
-            /*顺时针旋转90度*/
-        .rotate90 {
-            filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
-            -moz-transform: rotate(90deg);
-            -o-transform: rotate(90deg);
-            -webkit-transform: rotate(90deg);
-            transform: rotate(90deg);
-        }
-            /*顺时针旋转180度*/
-        .rotate180 {
-            filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
-            -moz-transform: rotate(180deg);
-            -o-transform: rotate(180deg);
-            -webkit-transform: rotate(180deg);
-            transform: rotate(180deg);
-        }
-            /*顺时针旋转270度*/
-        .rotate270 {
-            filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-            -moz-transform: rotate(270deg);
-            -o-transform: rotate(270deg);
-            -webkit-transform: rotate(270deg);
-            transform: rotate(270deg);
-        }
-
     </style>
 {% endblock %}
 {% block extra_js_footer %}
     <script src="{% static 'video_web/scripts/html5media.min.js' %}"></script>
     <script>
+        navigator.os = {family: false};
+        if(navigator.userAgent.match(/iPod|iPad|iPhone/)){
+            navigator.os.family = 'iOS';
+        }
         jQuery(".Video-list").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",vis:6,scroll:6});
         function video_play(title, src, flip){
             $('#video_title').text(title);
             var v = $('#video');
             v.removeClass('flipy').removeClass('flipx');
             if(flip != 'n'){
-                v.addClass('flip' + flip);
+                if(navigator.os.family != 'iOS')
+                {
+                    v.addClass('flip' + flip);
+                }
             }
             v.attr('src', src)[0].play();
             return false;
