@@ -741,24 +741,45 @@ def lottery_winning_previous_status_to_change_prize_win_count(sender, instance, 
 
 @receiver(post_save, sender=LotteryWinning)
 def lottery_winning_change_prize_win_count(sender, instance, created, *args, **kwargs):
+    prize = None
     if created and instance.status in (LotteryWinning.STATUS.win,
                                        LotteryWinning.STATUS.accept):
         prize = instance.prize
         prize.win_count += 1
-        prize.save()
     elif created is False:
         flag = getattr(instance, _has_changed_winning_status_flag, 0)
         prize = instance.prize
         prize.win_count += flag
+
+    if prize and prize.tracker.has_changed('win_count'):
+        print('prize changed win_count')
         prize.save()
+
+    delattr(instance, _has_changed_winning_status_flag)
 
 
 @receiver(pre_save, sender=LotteryPrize)
 def lottery_prize_check_status(sender, instance, *args, **kwargs):
-    if instance.tracker.has_changed('win_count') \
-        and instance.total_count == instance.win_count \
-        and instance.total_count > 0:
-        instance.status = LotteryPrize.STATUS.finish
+    print('pre_save prize')
+    print(instance.tracker.has_changed('win_count') and instance.group == LotteryPrize.GROUP.real)
+    print(instance.tracker.has_changed('win_count'), instance.group == LotteryPrize.GROUP.real)
+    if instance.tracker.has_changed('win_count') and instance.group == LotteryPrize.GROUP.real:
+
+        print("total count: ", instance.total_count)
+        print("win count: ", instance.win_count)
+        print("true win count: ", instance.winnings.count())
+        # 中奖后 总分发奖项与中奖人数相同，奖项发放完成
+        if instance.total_count == instance.win_count:
+            instance.status = LotteryPrize.STATUS.finish
+            print(1)
+        # 中奖/内定 发放奖项与实际+内定数相同，奖项关闭发放（内定+中奖完毕）
+        elif instance.total_count == instance.winnings.count():
+            instance.status = LotteryPrize.STATUS.over
+            print(2)
+        # 奖项未结束
+        else:
+            print(3)
+            instance.status = LotteryPrize.STATUS.notover
 
 
 from random import randint
@@ -821,7 +842,8 @@ class LotteryLuckyDraw(object):
         return None
 
     def get_prizes(self):
-        return self.lottery.prizes.filter(status=LotteryPrize.STATUS.notover)
+        return self.lottery.prizes\
+            .filter(status=LotteryPrize.STATUS.notover)
 
     def filter_real_prize_winned(self, user):
         return self.lottery.winnings.filter(user=user, prize__group=LotteryPrize.GROUP.real)
@@ -955,6 +977,9 @@ class LotteryLuckyDraw(object):
 
         play_action.winning_action = winning_action
         play_action.save()
+
+    def unlog_play_credit(self, user, prize, win_date, winning=None, *args, **kwargs):
+        pass
 
     def update_lottery_play_takepartin(self):
         from activity.documents.actions.lottery import lottery_sum_play_takepartin
