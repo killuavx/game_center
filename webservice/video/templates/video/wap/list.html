@@ -10,12 +10,11 @@
 </style>
 <div class="mod-flex_video">
     <ul class="flex_video">
-    {% with os_family=request.user_agent.os.family %}
         {% for v in video_list %}
         <li>
             <div class="flex_video_thumb">
                 <a class="flex_video_link" href="{% url 'video-play' pk=v.pk %}?src=wap" >
-                <img {% if os_family != 'iOS' %} class="flip{{ v.flip }}"{% endif %} {% if v.preview %} src="{{ v.preview.url }}" {% endif %}>
+                <img {% if v.preview %} src="{{ v.preview.url }}" {% endif %}>
                     <p class="picList_info">{{ v.user.username }}</p>
                     <p class="picList_info picList_info-right">{{ v.file_time }}</p>
                 </a>
@@ -23,7 +22,6 @@
             <div class="flex_video_title">{{ v.title }}</div>
         </li>
         {% endfor %}
-    {% endwith %}
     </ul>
 </div>
 {% endblock %}

@@ -2,14 +2,62 @@
 {% load staticfiles %}
 {% block extra_css %}
     <link href="{% static 'video_web/css/site.css' %}" media="all" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+            /*水平翻转*/
+        .flipx {
+            -moz-transform:scaleX(-1);
+            -webkit-transform:scaleX(-1);
+            -o-transform:scaleX(-1);
+            transform:scaleX(-1);
+            filter:FlipH();
+        }
+            /*垂直翻转*/
+        .flipy {
+            -moz-transform:scaleY(-1);
+            -webkit-transform:scaleY(-1);
+            -o-transform:scaleY(-1);
+            transform:scaleY(-1);
+            filter:FlipV();
+        }
+            /*顺时针旋转90度*/
+        .rotate90 {
+            filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+            -moz-transform: rotate(90deg);
+            -o-transform: rotate(90deg);
+            -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
+        }
+            /*顺时针旋转180度*/
+        .rotate180 {
+            filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+            -moz-transform: rotate(180deg);
+            -o-transform: rotate(180deg);
+            -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+        }
+            /*顺时针旋转270度*/
+        .rotate270 {
+            filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+            -moz-transform: rotate(270deg);
+            -o-transform: rotate(270deg);
+            -webkit-transform: rotate(270deg);
+            transform: rotate(270deg);
+        }
+
+    </style>
 {% endblock %}
 {% block extra_js_footer %}
     <script src="{% static 'video_web/scripts/html5media.min.js' %}"></script>
     <script>
         jQuery(".Video-list").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",vis:6,scroll:6});
-        function video_play(title, src){
+        function video_play(title, src, flip){
             $('#video_title').text(title);
-            $('#video').attr('src', src)[0].play();
+            var v = $('#video');
+            v.removeClass('flipy').removeClass('flipx');
+            if(flip != 'n'){
+                v.addClass('flip' + flip);
+            }
+            v.attr('src', src)[0].play();
             return false;
         }
     </script>
@@ -24,7 +72,7 @@
         <!--播放器 开始-->
         <div class="bg-black rel ovh player">
             <h1 id="video_title" class="p10 pl20 white n">{{ title }}</h1>
-            <video id="video" src="{{ video_url }}" controls preload></video>
+            <video id="video" src="{% static 'video_web/v2.mp4' %}" autoplay controls preload></video>
         </div>
         <!--播放器 结束-->
 
@@ -35,14 +83,16 @@
                 {% for v in data.results %}
                     <li class="inline-six">
                         <div class="p10 pic">
-                            <a href="javascript:void(0);" onclick="video_play('{{ v.title }}', '{{ v.play_src }}');" data-src="{{ v.play_src }}" class="pic-a"><img src="{% if v.preview_url %}{{ v.preview_url }}{% endif %}" class="pic-img"/></a>
+                            <a href="javascript:void(0);" onclick="video_play('{{ v.title }}', '{{ v.play_src }}', '{{ v.flip }}');" data-src="{{ v.play_src }}" class="pic-a">
+                                <img src="{% if v.preview_url %}{{ v.preview_url }}{% endif %}" class="pic-img"/>
+                            </a>
                         </div>
                         <div class="pl10 pr10 pb10 fw text">
                             <h6><a href="#" class="bd-none title">{{ v.title }}</a></h6>
                             <dl>
                                 <dd class="name">{{ v.username }}</dd>
                                 <dd class="date">{{ v.created_date }}</dd>
-                                <dd class="number">{{ v.file_size|filesizeformat }}</dd>
+                                <dd class="number">{{ v.file_time }}</dd>
                             </dl>
                         </div>
                     </li>
@@ -113,7 +163,24 @@
         </div>
         <!--联系 结束-->
 
-
     </div><!--cell-bk-->
 </div>
 {% endblock %}
+{% comment %}
+{% block extra_js_footer %}
+    <script src="{% static 'video_web/video-js/video.js' %}"></script>
+    <script type="text/javascript">
+        var video = videojs('video');
+        function video_play(title, src, flip){
+            $('#video_title').text(title);
+            var v = $(video.I);
+            v.removeClass('flipy').removeClass('flipx');
+            if(flip != 'n'){ v.addClass('flip' + flip); }
+            v.attr('src', src);
+            video.play();
+            return false;
+        }
+        jQuery(".Video-list").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",vis:6,scroll:6});
+    </script>
+{% endblock %}
+{% endcomment %}

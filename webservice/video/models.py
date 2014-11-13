@@ -20,7 +20,6 @@ def video_upload_to(instance, filename):
     workspace_by_created(instance)
     basename = os.path.basename(filename)
     new_filename = "%s/%s" % (instance.workspace.name, basename)
-    print(new_filename)
     return new_filename
 
 
@@ -122,7 +121,23 @@ def after_video_file_thumbnail(sender, instance, *args, **kwargs):
         c = Converter(ffmpeg_path=settings.FFMPEG_EXECUTABLE,
                       ffprobe_path=settings.FFPROBE_EXECUTABLE)
         c.thumbnail(instance.file.path, 1, instance.preview.path)
+        if instance.flip != Video.FLIP.notset:
+            _make_video_preview_flip(instance, instance.flip)
+
     delattr(instance, _video_file_changed_flag)
 
 
-
+def _make_video_preview_flip(instance, flip):
+    from PIL import Image
+    im = None
+    try:
+        im = Image.open(instance.preview.path)
+        out = None
+        if flip == Video.FLIP.y:
+            out = im.transpose(Image.FLIP_LEFT_RIGHT)
+        elif flip == Video.FLIP.x:
+            out = im.transpose(Image.FLIP_TOP_BOTTOM)
+        if out:
+            out.save(instance.preview.path)
+    except IOError as e:
+        print(e)

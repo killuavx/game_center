@@ -42,6 +42,7 @@ class VideoSerializer(serializers.ModelSerializer):
             'preview_url',
             'play_url',
             'play_src',
+            'flip',
             'username',
             'file_size',
             'created_date',

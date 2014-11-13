@@ -9,13 +9,27 @@ from video.serializers import VideoUploadSerializer, VideoSerializer
 from video.models import Video
 from account.forms import mob as account_forms
 from account.models import User
+from django import forms
+
+class SignupForm(account_forms.SignupForm):
+
+    username = forms.RegexField(account_forms.USERNAME_RE,
+                                max_length=30,
+                                label="Username",
+                                widget=forms.TextInput(attrs=account_forms.attrs_dict),
+                                error_messages={
+                                    'invalid': '用户名只能由数字字母组合',
+                                    'required': '用户名不能为空',
+                                })
 
 
 def video_default_authenticate(request):
+    default_username = '虫虫视频玩家'
     try:
-        user = User.objects.get(username='video')
+        user = User.objects.get(username=default_username)
     except User.DoesNotExist:
-        form = account_forms.SignupForm(dict(username='video', password='asdfg'))
+        form = SignupForm(dict(username=default_username,
+                               password='sfnvksdjqwe'))
         form.is_valid()
         user = form.save()
     token = Token.objects.get_or_create(user=user)
@@ -88,7 +102,6 @@ class VideoViewSet(viewsets.ModelViewSet):
                                 template=template_name,
                                 context=dict(
                                     title='',
-                                    video_url='',
                                     data=data,
                                     video_list=self.object_list
                                 ),

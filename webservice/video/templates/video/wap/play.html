@@ -3,11 +3,16 @@
 {% block meta_title %}播放 {{ video.title }}{% endblock %}
 {% block main %}
 <div class="wap-play">
-<a href="{% url 'video-list' %}?src=wap" onclick="window.location='{% url 'video-list' %}?src=wap';return false;" class="close" title="关闭播放"></a>
+    <div class="title">
+        <h1>{{ video.title }}</h1>
+        <a href="{% url 'video-list' %}?src=wap" class="close" title="关闭播放"></a>
+    </div>
+
 <video id="video" class="video-js vjs-default-skin" autoplay controls preload="none" width="100%"
-       poster="#" >
+       poster="{% static 'video_web/images/play-cover.png' %}">
     <source src="{{ video.file.url }}" type="video/mp4" />
 </video>
+
 <script src="{% static 'common/js/jquery.min.js' %}"></script>
 <script src="{% static 'video_web/video-js/video.js' %}"></script>
 <script type="text/javascript">
