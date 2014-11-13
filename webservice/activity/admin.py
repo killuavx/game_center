@@ -209,7 +209,12 @@ class LotteryWinningInline(TabularInline):
     ordering = ('-win_date',)
     max_num = 100
 
+    def queryset(self, request):
+        queryset = super(LotteryWinningInline, self).queryset(request=request)
+        return queryset.filter(prize__group=LotteryPrize.GROUP.real)
+
     def has_delete_permission(self, request, obj=None):
+        return True
         if obj and obj.status == CONTENT_STATUS_PUBLISHED:
             return False
         return True
