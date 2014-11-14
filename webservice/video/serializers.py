@@ -35,6 +35,8 @@ class VideoSerializer(serializers.ModelSerializer):
             return obj.file.url
         return None
 
+    file_time = serializers.CharField(source='file_time')
+
     class Meta:
         model = Video
         fields = (
@@ -46,6 +48,7 @@ class VideoSerializer(serializers.ModelSerializer):
             'username',
             'file_size',
             'created_date',
+            'file_time',
         )
 
 

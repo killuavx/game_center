@@ -163,21 +163,3 @@
     </div><!--cell-bk-->
 </div>
 {% endblock %}
-{% comment %}
-{% block extra_js_footer %}
-    <script src="{% static 'video_web/video-js/video.js' %}"></script>
-    <script type="text/javascript">
-        var video = videojs('video');
-        function video_play(title, src, flip){
-            $('#video_title').text(title);
-            var v = $(video.I);
-            v.removeClass('flipy').removeClass('flipx');
-            if(flip != 'n'){ v.addClass('flip' + flip); }
-            v.attr('src', src);
-            video.play();
-            return false;
-        }
-        jQuery(".Video-list").slide({titCell:".hd ul",mainCell:".bd ul",autoPage:true,effect:"left",vis:6,scroll:6});
-    </script>
-{% endblock %}
-{% endcomment %}
