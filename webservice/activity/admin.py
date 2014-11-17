@@ -206,7 +206,7 @@ class LotteryWinningInline(TabularInline):
     model = LotteryWinning
     fields = ('user', 'prize', 'status', 'win_date', 'accept_date')
     raw_id_fields = ('user', )
-    ordering = ('-win_date',)
+    ordering = ('prize', '-win_date',)
     max_num = 100
 
     def queryset(self, request):
