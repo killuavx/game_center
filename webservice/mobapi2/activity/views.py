@@ -749,7 +749,7 @@ class ActivityViewSet(RichPageViewSetMixin,
 
     def get_queryset(self):
         if not self.queryset:
-            self.queryset = self.model.objects.published()
+            self.queryset = self.model.objects.status_published()
         return self.queryset
 
 

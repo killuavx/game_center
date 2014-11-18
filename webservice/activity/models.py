@@ -417,6 +417,8 @@ class Activity(SiteRelated,
                Ownable,
                models.Model):
 
+    objects = ActivityManager()
+
     title = models.CharField(max_length=500)
     slug = models.CharField(max_length=2000, null=True)
 
