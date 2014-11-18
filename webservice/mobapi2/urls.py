@@ -21,7 +21,7 @@ from mobapi2.account.views import (AccountCreateView,
                                    AccountAuthTokenView,
                                    AccountCommentPackageView)
 from analysis.views.rest_views import EventCreateView
-from mobapi2.clientapp.views import SelfUpdateView, LoadingCoverView
+from mobapi2.clientapp import views as clientapp_views
 from mobapi2.rest_router import rest_router
 from mobapi2.ranking.views import PackageRankingViewSet
 from mobapi2.activity import views as activity_views
@@ -130,7 +130,7 @@ urlpatterns += patterns('',
     url(r'^recommends/(?P<date>[\d-]+)/(.(?P<format>[\w_-]+))?$', promotion_views.RecommendView.as_view(),
         name=rest_router.get_base_name('recommend-detail')),
     url(r'^scratchcards/', include(scratchcard_urlpatterns)),
-    url(r'^selfupdate/?$', SelfUpdateView.as_view(),
+    url(r'^selfupdate/?$', clientapp_views.SelfUpdateView.as_view(),
         name=rest_router.get_base_name('selfupdate')),
     url(r'^push/packages/?$', PackagePushView.as_view(),
         name=rest_router.get_base_name('push-packages')),
@@ -140,9 +140,8 @@ urlpatterns += patterns('',
     url(r'^notification/?$',
         activity_views.NotificationViewSet.as_view({'get':'retrieve_all'}),
         name=rest_router.get_base_name('notification-all')),
-    url(r'^loadingcovers/(?P<package_name>%s)(/(?P<version_name>%s))?/?' %(slug_pattern,
-                                                                         slug_pattern),
-        LoadingCoverView.as_view(),
-        name=rest_router.get_base_name('loadingcover')),
+    url(r'^loadingcovers/active/?$',
+        clientapp_views.LoadingCoverViewSet.as_view({'get':'active'}),
+        name=rest_router.get_base_name('loadingcover-active')),
     url(r'^events/?$', EventCreateView.as_view(), name=rest_router.get_base_name('event'))
 )

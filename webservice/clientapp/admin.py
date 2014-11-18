@@ -134,6 +134,7 @@ class LoadingCoverAdmin(VersionAdmin):
             'fields': (
                 'title',
                 'image',
+                ('content_type', 'object_id', 'link'),
                 ('package_name', 'version',),
                 ('publish_date', 'expiry_date'),
                 'status',
