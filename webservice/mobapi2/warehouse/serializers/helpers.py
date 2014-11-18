@@ -41,3 +41,12 @@ def get_versions_url(request, package, router=None):
 def get_packageversion_supported_languages(version):
     desc_langs = version.language_names
     return ",".join(desc_langs)
+
+
+def get_packageversion_reported(version):
+    try:
+        pkgreport_field = version._meta._name_map['reported'][0]
+        return {key: getattr(version, val[0] % 'reported')
+                for key, val in pkgreport_field.added_fields.items()}
+    except:
+        return {}

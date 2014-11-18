@@ -1,17 +1,13 @@
 # -*- coding: utf-8 -*-
 from functools import wraps
 import warnings
-from django.core.cache import cache
+import json
+
 from django.http import Http404
+from django.shortcuts import redirect
 from rest_framework import viewsets, status
 from rest_framework.decorators import link, action
-from rest_framework.exceptions import Throttled
-from rest_framework.throttling import UserRateThrottle
 from rest_framework_extensions.mixins import DetailSerializerMixin
-from activity.models import GiftBag, GiftCard
-from mobapi2.authentications import PlayerTokenAuthentication
-from mobapi2.activity.serializers import GiftBagSummarySerializer, GiftBagDetailSerializer, GiftCardSerializer
-from mobapi2 import cache_keyconstructors as ckc
 from rest_framework_extensions.cache.decorators import CacheResponse
 from rest_framework_extensions.key_constructor import bits
 from rest_framework_extensions.key_constructor.constructors import KeyConstructor
@@ -22,8 +18,13 @@ from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter, BaseFilterBackend
 from django.utils.decorators import method_decorator, available_attrs
 from django.views.decorators.cache import never_cache
-import json
-from django.utils.timezone import now, get_default_timezone
+from django.utils.timezone import now
+
+from activity.models import GiftBag, GiftCard, EmptyRemainingGiftCard, LotteryWinning, LotteryLuckyDraw
+from mobapi2.activity.throttling import ScratchCardPlayDailyThrottle, ScratchCardPlayThrottled, LotteryPlayDailyThrottle, LotteryPlayThrottled
+from mobapi2.authentications import PlayerTokenAuthentication
+from mobapi2.activity.serializers import GiftBagSummarySerializer, GiftBagDetailSerializer, GiftCardSerializer, LotteryPrizeWinningSerializer
+from mobapi2 import cache_keyconstructors as ckc
 
 
 class DataKeyConstructor(KeyConstructor):
@@ -215,15 +216,27 @@ class GiftBagViewSet(DetailSerializerMixin,
     @link()
     @method_decorator(never_cache)
     def take(self, request, *args, **kwargs):
+        """
+        * 200 HTTP_200_OK
+            * 获取礼包，返回礼包结构
+        * 404 HTTP_404_NOT_FOUND
+            * 无礼包/礼包已经获取完毕
+        * 401 HTTP_401_UNAUTHORIZED
+            * 未登陆
+            * 无效的HTTP Header: Authorization
+        """
         giftbag = self.get_object()
         cards = list(giftbag.get_took_cards_by(request.user))
         if cards:
             card = cards[0]
         else:
-            card = giftbag.take_by(request.user)
-            self.cache_data_list_key_func.updated_at.pk = request.user.pk
-            self.cache_data_list_key_func.updated_at.flush()
-            self.cache_data_list_key_func.updated_at.pk = None
+            try:
+                card = giftbag.take_by(request.user)
+                self.cache_data_list_key_func.updated_at.pk = request.user.pk
+                self.cache_data_list_key_func.updated_at.flush()
+                self.cache_data_list_key_func.updated_at.pk = None
+            except EmptyRemainingGiftCard:
+                return Response(dict(detail=''), status=status.HTTP_404_NOT_FOUND)
 
         serializer = GiftCardSerializer(card)
         return Response(serializer.data)
@@ -290,119 +303,6 @@ from mobapi2.activity.serializers import WinnerScratchCardSerializer, GenerateSc
 from mongoengine import DoesNotExist
 from mobapi2.helpers import get_note_url
 from mobapi2.rest_views import CustomMethodPermissionsViewSetMixin, CustomMethodThrottleViewSetMixin
-from datetime import timedelta, datetime
-
-
-class ScratchCardPlayDailyThrottle(UserRateThrottle):
-
-    scope = 'scratch_card_play_daily'
-
-    # 每天最多次数
-    daily_max_times = 15
-
-    # 5分钟间隔
-    interval_seconds = 60 * 5
-
-    # 间隔5次，等候间隔时间
-    interval_times = 5
-
-    def __init__(self, *args, **kwargs):
-        super(ScratchCardPlayDailyThrottle, self).__init__(*args, **kwargs)
-        self.previous_time = None
-        self._cache = cache
-
-    def get_rate(self):
-        return "%d/day" % self.daily_max_times
-
-    def parse_rate(self, rate):
-        num, period = rate.split('/')
-        num_requests = int(num)
-        timenow = now().astimezone()
-        next_datetime = (timenow + timedelta(days=1))\
-            .replace(hour=0, minute=0, second=0, microsecond=0)
-        duration = (next_datetime - timenow).seconds
-        return (num_requests, duration)
-
-    def wait(self):
-        if self.daily_max_times == len(self.history):
-            return None
-
-        if self.history:
-            remaining_duration = self.duration - (self.now - self.history[-1])
-        else:
-            remaining_duration = self.duration
-
-        allow, wait_seconds = self.allow_next_interval()
-        if not allow:
-            return wait_seconds
-
-        available_requests = self.num_requests - len(self.history) + 1
-
-        return remaining_duration / float(available_requests)
-
-    def allow_request(self, request, view):
-        """
-        Implement the check to see if the request should be throttled.
-
-        On success calls `throttle_success`.
-        On failure calls `throttle_failure`.
-        """
-        if self.rate is None:
-            return True
-
-        self.key = self.get_cache_key(request, view)
-        if self.key is None:
-            return True
-
-        self.history = self._cache.get(self.key, [])
-        self.now = self.timer()
-        self.previous_time = self._cache.get("%s_previous" % self.key)
-        allow, wait_seconds = self.allow_next_interval()
-        if not allow:
-            return False
-
-        # Drop any requests from the history which have now passed the
-        # throttle duration
-        while self.history and self.history[-1] <= self.now - self.duration:
-            self.history.pop()
-        if len(self.history) >= self.num_requests:
-            return self.throttle_failure()
-        return self.throttle_success()
-
-    def throttle_success(self):
-        flag = super(ScratchCardPlayDailyThrottle, self).throttle_success()
-        self._cache.set("%s_previous" % self.key, self.now, self.interval_seconds)
-        return flag
-
-    def allow_next_interval(self):
-        if len(self.history) == 0 or not self.previous_time:
-            return True, None
-
-        if len(self.history) % self.interval_times == 0:
-            wait_seconds = (self.previous_time + self.interval_seconds) - self.now
-            if wait_seconds <= 0:
-                return True, None
-            else:
-                return False, wait_seconds
-        else:
-            return True, None
-
-
-import math
-
-
-class ScratchCardPlayThrottled(Throttled):
-
-    def __init__(self, wait=None, detail=None):
-        self.wait = wait
-        if wait is None:
-            self.detail = "今天已经刮完了,明天再来吧~"
-        else:
-            #minutes = int(self.wait/60.0)
-            #secoinds = int(self.wait)
-            #self.detail = "%s%s后，又可以刮奖哦~" % (minutes or secoinds, '分钟' if minutes else '秒')
-            minutes = math.ceil(self.wait/60.0)
-            self.detail = "%s%s后，又可以刮奖哦~" % (minutes, '分钟')
 
 
 class ScratchCardViewSet(CustomMethodPermissionsViewSetMixin,
@@ -796,3 +696,194 @@ class TaskViewSet(viewsets.GenericViewSet):
 
         serializer = TaskStatusSerializer(task, many=False)
         return Response(serializer.data)
+
+
+from django.template.response import TemplateResponse
+from activity.models import Bulletin, Activity
+from mobapi2.activity.serializers import (
+    BulletinSummarySerializer,
+    ActivitySummarySerializer,
+)
+
+
+class RichPageViewSetMixin(object):
+
+    richpage_template = None
+
+    @link()
+    def richpage(self, request, *args, **kwargs):
+        obj = self.get_object()
+        return TemplateResponse(request=request,
+                                template=self.richpage_template,
+                                context=dict(object=obj),
+                                content_type='text/html')
+
+
+class BulletinViewSet(RichPageViewSetMixin,
+                      viewsets.ReadOnlyModelViewSet):
+    model = Bulletin
+    serializer_class = BulletinSummarySerializer
+    permission_classes = ()
+    authentication_classes = (PlayerTokenAuthentication,)
+    filter_backends = (OrderingFilter,)
+    ordering = ('-publish_date', )
+
+    richpage_template ='mobapi2/activity/bulletin.html',
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = self.model.objects.published()
+        return self.queryset
+
+
+class ActivityViewSet(RichPageViewSetMixin,
+                      viewsets.ReadOnlyModelViewSet):
+    model = Activity
+    serializer_class = ActivitySummarySerializer
+    permission_classes = ()
+    authentication_classes = (PlayerTokenAuthentication,)
+    filter_backends = (OrderingFilter, )
+    ordering = ('-publish_date', )
+
+    richpage_template = 'mobapi2/activity/activity.html',
+
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = self.model.objects.status_published()
+        return self.queryset
+
+
+from mobapi2.activity.serializers import NotificationSerializer
+
+
+class NotificationViewSet(viewsets.ViewSet):
+
+    permission_classes = ()
+    authentication_classes = (PlayerTokenAuthentication,)
+    serializer_class = NotificationSerializer
+
+    @method_decorator(never_cache)
+    def retrieve_all(self, request, *args, **kwargs):
+        serializer = self.serializer_class(view=self, request=request)
+        return Response(serializer.data)
+
+
+from activity.models import Lottery, BaseLotteryException
+from mobapi2.activity.serializers import LotteryDetailSerializer, LotterySummarySerializer
+from activity.documents.actions import lottery as lottery_doc
+
+
+class LotteryViewSet(DetailSerializerMixin,
+                     CustomMethodThrottleViewSetMixin,
+                     CustomMethodPermissionsViewSetMixin,
+                     viewsets.ReadOnlyModelViewSet):
+
+    model = Lottery
+    permission_classes = ()
+    authentication_classes = (PlayerTokenAuthentication,)
+    serializer_class = LotterySummarySerializer
+    serializer_detail_class = LotteryDetailSerializer
+    throttle_classes = ()
+
+    def get_queryset(self, is_for_detail=False):
+        if not self.queryset:
+            self.queryset_detail = self.queryset = self.model.objects.status_published()
+        return super(LotteryViewSet, self).get_queryset(is_for_detail=is_for_detail)
+
+    @method_decorator(never_cache)
+    def active(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(
+            self.get_queryset(is_for_detail=True)
+            .order_by('-publish_date'))
+        try:
+            self.object = queryset[0]
+        except IndexError:
+            return Response(dict(detail='活动还没开始'),
+                            status=status.HTTP_404_NOT_FOUND)
+        serializer = self.get_serializer(instance=self.object)
+        serializer.now = now().astimezone()
+        return Response(data=serializer.data)
+
+    @method_decorator(rf_permission_classes((IsAuthenticated, )))
+    @method_decorator(never_cache)
+    @link()
+    @action()
+    def play(self, request, *args, **kwargs):
+        obj = self.get_object()
+        luckydraw = LotteryLuckyDraw(lottery=obj,
+                                     win_date=now().astimezone(),
+                                     request=request,
+                                     )
+        try:
+            luckydraw.check_drawable(user=request.user)
+        except BaseLotteryException as e:
+            return Response(data=dict(
+                code=e.code,
+                detail=e.messages[0],
+            ), status=status.HTTP_402_PAYMENT_REQUIRED)
+
+        if not request.GET.get('secret') or request.GET.get('secret') != 'ccplay2014':
+            self.throttle_classes, orgin_throttle_classes = (LotteryPlayDailyThrottle, ), self.throttle_classes
+            self.check_throttles(request=request)
+            self.throttle_classes = orgin_throttle_classes
+
+        try:
+            rt = luckydraw.draw(user=request.user, check_drawable=True)
+        except BaseLotteryException as e:
+            return Response(data=dict(
+                code=e.code,
+                detail=e.messages[0],
+            ), status=status.HTTP_402_PAYMENT_REQUIRED)
+
+        context = self.get_serializer_context()
+        serializer = LotteryPrizeWinningSerializer(rt,
+                                                   many=False,
+                                                   context=context)
+        serializer.save()
+        return Response(data=serializer.data)
+
+    def throttled(self, request, wait):
+        handler = getattr(self, self.request.method.lower(), None)
+        if handler.__wrapped__.__name__ == 'play':
+            raise LotteryPlayThrottled(wait=wait)
+        super(LotteryViewSet, self).throttled(request=request, wait=wait)
+
+    #winner_richpage_template ='mobapi2/activity/lottery_winnings.html',
+    winner_richpage_template ='mobapi2/activity/lottery_winnings2.html',
+
+    @method_decorator(never_cache)
+    @link()
+    def winnings_richpage(self, request, *args, **kwargs):
+        obj = self.get_object()
+
+        lookup = self.kwargs.get(self.lookup_field, None)
+        winnings = lottery_doc.LotteryWinningAction.objects.lottery_winning_list(lottery_id=lookup)
+
+        # FIXME orm slow query
+        # winnings = sorted(obj.winnings.won().order_by('-prize__level')[:100],
+        #                 key=lambda w:(w.prize.level, w.win_date),
+        #                 reverse=True)
+
+        return TemplateResponse(request=request,
+                                template=self.winner_richpage_template,
+                                context=dict(object=obj,
+                                             winnings=winnings),
+                                content_type='text/html')
+
+    #winning_detail_richpage_template ='mobapi2/activity/lottery_winning_detail.html',
+    winning_detail_richpage_template ='mobapi2/activity/lottery_winning_detail2.html',
+
+    @link()
+    def winning_detail_richpage(self, request, winning_id, *args, **kwargs):
+        try:
+            #winning = LotteryWinning.objects.get(pk=winning_id)
+            winning = lottery_doc.LotteryWinningAction.objects.get(winning_id=winning_id)
+        except LotteryWinning.DoesNotExist:
+            return TemplateResponse(request=request,
+                                    template='404',
+                                    status=404)
+        return TemplateResponse(request=request,
+                                template=self.winning_detail_richpage_template,
+                                context=dict(object=winning,
+                                             winning=winning),
+                                content_type='text/html')

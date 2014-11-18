@@ -1,0 +1,31 @@
+{% extends "mobapi2/activity/base.html" %}
+{% load staticfiles %}
+{% block extra_css %}
+    <style type="text/css">
+        body{ background: #f6ab00; }
+    </style>
+{% endblock %}
+{% block main %}
+<div class="rich_media">
+    <div class="rich_media_inner winners">
+        <img src="{% static 'android_cc/img/wheel_winners.jpg' %}" class="banner">
+        <div class="list">
+            <table>
+                <tbody>
+                {% for winning in winnings %}
+                <tr>
+                    <th{% if winning.prize_group == 1 %} class="top"{% endif %}>恭喜</th>
+                    <td>{% if winning.prize_group == 1 %}<a href="{% url 'apiv2-lottery-winning-detail-richpage' winning_id=winning.winning_id %}">{% endif %}
+                        {{ winning.username }}
+                        {% if winning.prize_group == 1 %}</a>{% endif %}
+                    </td>
+                    <th>抽中</th>
+                    <td>{{ winning.prize_title }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

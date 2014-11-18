@@ -7,11 +7,13 @@ from .processors.taxonomy import TopicProcessor, CategoryProcessor
 from .processors.promotion import AdvertisementProcessor, RecommendProcessor
 from .processors.clientapp import ClientPackageVersionProcessor, LoadingCoverProcessor
 from .processors.account import ProfileProcessor
+from .processors.activity import ActivityProcessor
 from warehouse.models import PackageVersion, Author
 from promotion.models import Advertisement, Recommend
 from taxonomy.models import Category, Topic
 from clientapp.models import ClientPackageVersion, LoadingCover
 from account.models import Profile
+from activity.models import Activity
 from . import feedback_signals as fb_signals
 
 Author.sync_processor_class = AuthorProcessor
@@ -31,6 +33,8 @@ ClientPackageVersion.sync_processor_class = ClientPackageVersionProcessor
 LoadingCover.sync_processor_class = LoadingCoverProcessor
 
 Profile.sync_processor_class = ProfileProcessor
+
+Activity.sync_processor_class = ActivityProcessor
 
 
 def feedback_start_action(sender, instance, operation, queue, **kwargs):

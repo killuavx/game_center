@@ -17,6 +17,10 @@ class Ownerable(object):
         return self._user
 
     @user.setter
-    def user(self, user):
-        self._user = user
-        self.user_id = user.pk
+    def user(self, user=None):
+        if user is None:
+            self._user = None
+            self.user_id = None
+        else:
+            self._user = user
+            self.user_id = user.pk
