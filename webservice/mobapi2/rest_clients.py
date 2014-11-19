@@ -49,6 +49,7 @@ def api_factory(platform, version=2):
 ios_api = api_factory('ios')
 android_api = api_factory('android')
 android_api.add_resource('lotteries')
+android_api.add_resource('giftbags')
 
 
 class AndroidHomeApi(object):

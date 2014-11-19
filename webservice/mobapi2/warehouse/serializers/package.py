@@ -98,6 +98,8 @@ PACKAGE_DETAIL_FIELDS = PACKAGE_SUMMARY_FIELDS + (
     'reported',
 )
 
+from mobapi2.rest_clients import android_api
+
 
 class PackageDetailSerializer(PackageRelatedPackageUrlMixin,
                               PackageSummarySerializer):
@@ -122,9 +124,23 @@ class PackageDetailSerializer(PackageRelatedPackageUrlMixin,
 
     reported = serializers.SerializerMethodField('get_latest_version_reported')
 
+    giftbag = serializers.SerializerMethodField('get_package_giftbag')
+
+    def get_package_giftbag(self, obj):
+        pkg_id = obj.pk
+        data = dict(count=0, url=None)
+        if '礼包' not in obj.tags_text:
+            return data
+
+        res = android_api.giftbags.get(params=dict(for_package=pkg_id))
+        if res and res.status == 200:
+            data['count'] = res.data['count']
+            data['url'] = res.headers['content-location']
+        return data
+
     class Meta:
         model = Package
-        fields = PACKAGE_DETAIL_FIELDS
+        fields = list(PACKAGE_DETAIL_FIELDS) + ['giftbag']
 
 
 class PackageUpdateSummarySerializer(PackageSummarySerializer):
