@@ -1,0 +1,40 @@
+{% extends "mobapi2/activity/base.html" %}
+{% load staticfiles %}
+{% block meta_title %}中奖信息{% endblock %}
+{% block extra_css %}
+    <style type="text/css">
+        body{ background: #f6ab00; }
+    </style>
+{% endblock %}
+{% block main %}
+<div class="winners">
+<div class="rich_media">
+    <div class="rich_media_inner">
+        <img src="{% static 'android_cc/img/wheel_award.jpg' %}" class="banner">
+        <div class="list">
+            <table>
+                <tbody>
+                <tr>
+                    <th>抽奖账号</th>
+                    <td>{{ winning.username }}</td>
+                </tr>
+                <tr>
+                    <th>抽中奖品</th>
+                    <td>{{ winning.prize_level_name }} {{ winning.prize_title }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        友情提示：<br/>
+                        获得实物奖品后请务必填写详细的
+                        联系方式，否则视为放弃领取奖品；<br/>
+                        QQ：2802586192<br/>
+                        邮箱：service@ccplay.com.cn
+                    </td>
+                </tr>
+
+                </tbody></table>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

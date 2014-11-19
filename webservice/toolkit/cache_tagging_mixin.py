@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from toolkit.helpers import get_global_site
+from toolkit.helpers import get_global_site, SITE_ANDROID, SITE_IOS
 from toolkit.memoizes import orms_memoize
 from cache_tagging.django_cache_tagging import cache, caches
 import logging
@@ -205,7 +205,6 @@ class TaxonomyCacheManagerMixin(CacheManagerMixin):
 
 from datetime import timedelta
 from django.utils.encoding import force_str
-from toolkit import helpers
 from cache_tagging.tagging import tag_prepare_name
 from itertools import chain
 
@@ -221,12 +220,12 @@ class CacheLocationHandler(object):
         self.key_mark = 'tag_location:%s:%s'
 
     def get_site_name(self):
-        site = helpers.get_global_site()
+        site = get_global_site()
         if not site:
             return None
-        if site.pk == helpers.SITE_IOS:
+        if site.pk == SITE_IOS:
             return 'ios'
-        elif site.pk == helpers.SITE_ANDROID:
+        elif site.pk == SITE_ANDROID:
             return 'android'
         else:
             return 'unknown'

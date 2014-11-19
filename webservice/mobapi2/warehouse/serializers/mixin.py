@@ -8,7 +8,7 @@ from mobapi2.warehouse.serializers.helpers import (
     get_versions_url,
     get_packageversion_download_url,
     get_packageversion_download_size,
-    get_packageversion_supported_languages)
+    get_packageversion_supported_languages, get_packageversion_reported)
 from django.core.cache import cache
 
 
@@ -222,6 +222,10 @@ class PackageRelatedLatestVersinoMixin(object):
             return list(set(latest_version.flags + obj.flags))
         except:
             return []
+
+    def get_latest_version_reported(self, obj):
+        latest_version = self._latest_version(obj)
+        return get_packageversion_reported(latest_version)
 
 
 class PackageRelatedPackageUrlMixin(object):

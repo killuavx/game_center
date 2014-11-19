@@ -41,6 +41,16 @@ rest_router.register('comments', CommentViewSet)
 rest_router.register('feedbacks', FeedbackViewSet)
 rest_router.register('coin_packages', package_views.PackageCoinViewSet, base_name='coin_package')
 rest_router.register('notes', activity_views.NoteViewSet)
+rest_router.register('bulletins', activity_views.BulletinViewSet)
+rest_router.register('activities', activity_views.ActivityViewSet)
+rest_router.register('lotteries', activity_views.LotteryViewSet)
+lottery_active_view = activity_views.LotteryViewSet.as_view({'get': 'active'})
+lottery_winning_view = activity_views.LotteryViewSet.as_view({'get': 'winning_detail_richpage'})
+lottery_viewname = rest_router.get_default_base_name(activity_views.LotteryViewSet)
+lottery_urlpatterns = patterns('',
+   url('^active/?$', lottery_active_view, name="%s-active" %lottery_viewname),
+   url('^winning/(?P<winning_id>\d+)/?$', lottery_winning_view, name="%s-winning-detail-richpage" %lottery_viewname),
+)
 
 rest_router.register('giftbags', activity_views.GiftBagViewSet)
 scratchcard_play = activity_views.ScratchCardViewSet.as_view({'get': 'play'})
@@ -108,7 +118,10 @@ home_urlpatterns = patterns('',
 
 slug_pattern = '[\w_.-]+'
 
-urlpatterns = rest_router.urls
+urlpatterns = patterns('',
+                       url(r'^lotteries/', include(lottery_urlpatterns)),
+                       )
+urlpatterns += rest_router.urls
 urlpatterns += patterns('',
     url(r'^home/', include(home_urlpatterns)),
     url(r'^tasks/', include(task_urlpatterns)),
@@ -124,6 +137,9 @@ urlpatterns += patterns('',
     url(r'^updates/?$', PackageUpdateView.as_view(),
         name=rest_router.get_base_name('update-create')),
     url(r'^accounts/', include(account_urlpatterns)),
+    url(r'^notification/?$',
+        activity_views.NotificationViewSet.as_view({'get':'retrieve_all'}),
+        name=rest_router.get_base_name('notification-all')),
     url(r'^loadingcovers/(?P<package_name>%s)(/(?P<version_name>%s))?/?' %(slug_pattern,
                                                                          slug_pattern),
         LoadingCoverView.as_view(),

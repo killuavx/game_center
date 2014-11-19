@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from kombu import uuid
 from model_utils import FieldTracker
 from django.core.exceptions import ValidationError
 from django.db import models, transaction, IntegrityError
@@ -7,9 +8,10 @@ from django.utils.timezone import now
 from mezzanine.core.models import TimeStamped, CONTENT_STATUS_PUBLISHED, CONTENT_STATUS_DRAFT
 from mezzanine.utils.models import get_user_model_name
 
-from activity.managers import GiftBagManager, GiftCardManager
+from activity.managers import GiftBagManager, GiftCardManager, BulletinManager, ActivityManager
 from toolkit.models import PublishDisplayable, SiteRelated
 from toolkit.helpers import current_request, get_global_site
+from toolkit.helpers import sync_status_from
 
 
 class EmptyRemainingGiftCard(Exception):
@@ -382,3 +384,627 @@ class Note(SiteRelated,
             ('site', 'slug'),
         )
 
+
+import os
+from mezzanine.core.fields import RichTextField
+from mezzanine.core.models import Ownable, MetaData
+from mezzanine.core.fields import FileField
+from easy_thumbnails.fields import ThumbnailerImageField
+
+ACTIVITY_DIRECTORY_DTFORMAT = 'activity/%Y/%m/%d/%H%M-%S-%f'
+
+
+def activity_profile_upload_to(instance, filename):
+    activity_workspace_by_created(instance)
+    basename = os.path.basename(filename)
+    return "%s/%s" % (instance.workspace.name, basename)
+
+
+def activity_workspace_by_created(instance):
+    if not instance.workspace:
+        if not instance.created:
+            instance.created = now().astimezone()
+        else:
+            instance.created = instance.created.astimezone()
+        sd = instance.created
+        instance.workspace = sd.strftime(ACTIVITY_DIRECTORY_DTFORMAT)
+
+
+class Activity(SiteRelated,
+               MetaData,
+               PublishDisplayable,
+               TimeStamped,
+               Ownable,
+               models.Model):
+
+    objects = ActivityManager()
+
+    title = models.CharField(max_length=500)
+    slug = models.CharField(max_length=2000, null=True)
+
+    cover = ThumbnailerImageField(
+        default='',
+        upload_to=activity_profile_upload_to,
+        blank=True,
+        max_length=500,
+    )
+
+    workspace = FileField(default='',
+                          blank=True,
+                          max_length=500,
+                          help_text='!!切勿随意修改!!',
+                          format='File')
+
+    objects = ActivityManager()
+
+    content = RichTextField(help_text="""1.添加标签class属性:event-open-activity,客户端即可点击跳转至抽奖活动UI\n"""
+        """2.添加标签class属性:lottery-{id}, {id}代表抽奖ID即可在活动结束后, 点击活动页面进入获奖列表页面"""
+    )
+
+    is_active = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = '活动'
+        verbose_name_plural = '活动'
+        unique_together = (
+            ('site', 'slug',),
+        )
+        index_together = (
+            ('site', 'status', ),
+            ('site', 'status', 'publish_date', 'expiry_date'),
+        )
+
+    def get_absolute_url(self):
+        return None
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        activity_workspace_by_created(self)
+        return super(Activity, self).save(*args, **kwargs)
+
+    def sync_status(self):
+        return sync_status_from(self)
+
+
+class Bulletin(SiteRelated,
+               PublishDisplayable,
+               TimeStamped,
+               Ownable,
+               models.Model):
+
+    objects = BulletinManager()
+
+    title = models.CharField(max_length=500)
+
+    summary = models.CharField(max_length=500)
+
+    content = RichTextField()
+
+    class Meta:
+        verbose_name = '公告'
+        verbose_name_plural = '公告'
+        index_together = (
+            ('site', 'status', ),
+            ('site', 'status', 'publish_date', 'expiry_date'),
+        )
+        ordering = ('-publish_date', )
+
+    def get_absolute_url(self):
+        return None
+
+    def __str__(self):
+        return self.title
+
+
+# 抽奖
+
+from activity.managers import LotteryManager
+from model_utils import Choices
+
+
+LOTTERY_PRIZE_GROUP = Choices(
+    (1, 'real', '实物奖'),
+    (0, 'virtual', '虚拟奖'),
+)
+
+LOTTERY_PRIZE_LEVEL = Choices(
+    (100, 'top', '我是传奇'),
+    (70, 'lucky', '一等幸运'),
+    (40, 'well', '喜大普奔'),
+    (10, 'good', '你是好人'),
+    (1, 'again', '再来一次'),
+)
+
+
+class RealPrizeDuplicateAward(Exception):
+    pass
+
+
+class Lottery(PublishDisplayable,
+              TimeStamped,
+              models.Model):
+
+    objects = LotteryManager()
+
+    title = models.CharField(max_length=500)
+
+    description = models.TextField(verbose_name='抽奖规则')
+
+    cost_coin = models.IntegerField(default=100, verbose_name='消费金币数')
+
+    takepartin_times = models.IntegerField(default=0, editable=False, verbose_name='参与人次')
+
+    takepartin_count = models.IntegerField(default=0, editable=False,verbose_name='参与人数')
+
+    @property
+    def active_summary(self):
+        return "%s - %s" % (self.publish_date.strftime('%Y-%m-%d'),
+                            self.expiry_date.strftime('%Y-%m-%d') if self.expiry_date else "")
+
+    class Meta:
+        verbose_name = '抽奖'
+        verbose_name_plural = '抽奖'
+        index_together = (
+            ('status',),
+            ('status', 'publish_date', ),
+            ('status', 'publish_date', 'expiry_date'),
+        )
+
+    def __str__(self):
+        return self.title
+
+    def is_expired(self, nowdt=None):
+        if not self.expiry_date:
+            return False
+        nowdt = nowdt.astimezone() if nowdt else now().astimezone()
+        return nowdt > self.expiry_date.astimezone()
+
+    def is_published(self, nowdt=None):
+        if self.status != CONTENT_STATUS_PUBLISHED:
+            return False
+
+        nowdt = nowdt.astimezone() if nowdt else now().astimezone()
+        return self.publish_date.astimezone() <= nowdt
+
+
+from model_utils.managers import PassThroughManager
+
+
+class LotteryPrizeManager(PassThroughManager):
+
+    def drawable(self):
+        return self.filter(status=self.model.STATUS.notover)
+
+
+class LotteryPrize(TimeStamped,
+                   models.Model):
+
+    objects = LotteryPrizeManager()
+
+    lottery = models.ForeignKey(Lottery, related_name='prizes',
+                                verbose_name='抽奖')
+
+    GROUP = LOTTERY_PRIZE_GROUP
+
+    group = models.IntegerField(choices=LOTTERY_PRIZE_GROUP, verbose_name='奖项组别')
+
+    LEVEL = LOTTERY_PRIZE_LEVEL
+
+    level = models.IntegerField(choices=LOTTERY_PRIZE_LEVEL,
+                                verbose_name='奖项等级')
+
+    rate = models.IntegerField(default=0, verbose_name='中奖概率')
+
+    @property
+    def level_name(self):
+        return self.LEVEL[self.level]
+
+    title = models.CharField(max_length=500, verbose_name='奖项标题')
+
+    total_count = models.IntegerField(default=0, verbose_name='总发放数量')
+
+    win_count = models.IntegerField(default=0, editable=False,
+                                    verbose_name='已经中奖人数',
+                                    help_text='正常途径中奖者(不包括内定)')
+
+    award_coin = models.IntegerField(default=0, verbose_name='虚拟金币奖励')
+
+    win_prompt = models.CharField(max_length=500, verbose_name='中奖提示')
+
+    STATUS = Choices(
+        (0, 'notover', '未结束'),
+        (1, 'over', '结束'),
+        (2, 'finish', '完成'),
+    )
+
+    status = models.IntegerField(verbose_name='领取状态',
+                                 choices=STATUS,
+                                 default=STATUS.notover,
+                                 db_index=True,
+                                 help_text="1. notover 未领奖状态; \n"
+                                           "2. over 内定和正常途径中奖数获奖结束; total_count 不一\n"
+                                           "3. finish 所有奖品发放完成(内定), total_count必定与win_count相等且不为0;"
+                                 )
+
+    tracker = FieldTracker()
+
+    class Meta:
+        verbose_name = verbose_name_plural = '奖品'
+        index_together = (
+            ('lottery', 'status', ),
+            ('lottery', 'group', 'level'),
+        )
+        unique_together = (
+            ('lottery', 'group', 'level'),
+        )
+        ordering = ('lottery', '-level',)
+
+    def as_group_cls(self):
+        if self.group == self.GROUP.real:
+            self.__class__ = RealPrize
+            return self
+        elif self.group == self.GROUP.virtual:
+            self.__class__ = VirtualPrize
+            return self
+        raise TypeError
+
+    def __str__(self):
+        return "%s: %s" %(self.level_name, self.title)
+
+    def sync_win_status(self):
+        # 同步奖项获奖状态
+        # notover: 内定+中奖 < 预计发放数
+        # over: 内定+中奖 == 预计发放数
+        # finish: 中奖 == 预计发放数
+        if self.pk and self.total_count:
+            self.win_count = self.winnings.won().count()
+            if self.total_count != self.win_count:
+                all_winnings = self.winnings.all()
+                if all_winnings.count() >= self.total_count:
+                    self.status = self.STATUS.over
+                else:
+                    self.status = self.STATUS.notover
+            else:
+                self.status = self.STATUS.finish
+
+
+class VirtualPrize(LotteryPrize):
+
+    class Meta:
+        proxy = True
+
+
+class RealPrize(LotteryPrize):
+
+    class Meta:
+        proxy = True
+
+
+class LotteryWinningQuerySet(QuerySet):
+
+    def won(self):
+        return self.filter(status__gt=self.model.STATUS.unofficial)
+
+
+class LotteryWinning(TimeStamped,
+                     Ownable,
+                     models.Model):
+
+    objects = PassThroughManager\
+        .for_queryset_class(LotteryWinningQuerySet)()
+
+    lottery = models.ForeignKey(Lottery, related_name='winnings')
+
+    prize = models.ForeignKey(LotteryPrize, related_name='winnings')
+
+    STATUS = Choices(
+        (0, 'unofficial', '内定获奖'),
+        (1, 'win', '获奖'),
+        (2, 'accept', '已领奖'),
+    )
+
+    summary = models.CharField(max_length=500, default='')
+
+    status = models.IntegerField(choices=STATUS,
+                                 default=STATUS.win,
+                                 db_index=True)
+
+    win_date = models.DateTimeField(null=True, verbose_name='获奖时间')
+
+    accept_date = models.DateTimeField(null=True,
+                                       blank=True,
+                                       verbose_name='领奖时间')
+
+    tracker = FieldTracker()
+
+    class Meta:
+        verbose_name = '中奖名单'
+        verbose_name_plural = '中奖名单'
+        index_together = (
+            ('lottery', 'status',),
+            ('lottery', 'prize',),
+            ('prize', 'status',),
+            ('prize', 'status', 'win_date',),
+        )
+
+    def save(self, *args, **kwargs):
+        if self.tracker.has_changed('status') \
+            and not self.summary \
+            and self.status > self.STATUS.unofficial:
+            self.summary = "%s:%s:%s" % (self.user.username,
+                                         self.prize.level_name,
+                                         self.prize.title)
+        if not self.lottery_id:
+            self.lottery_id = self.prize.lottery_id
+        return super(LotteryWinning, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.summary
+
+
+_has_changed_winning_status_flag = '_has_changed_winning_status'
+
+@receiver(pre_save, sender=LotteryWinning)
+def lottery_winning_previous_status_to_change_prize_win_count(sender, instance, *args, **kwargs):
+    flag = False
+    if instance.pk and instance.tracker.has_changed('status'):
+        flag = True
+    setattr(instance, _has_changed_winning_status_flag, flag)
+
+
+@receiver(post_save, sender=LotteryWinning)
+def lottery_winning_change_prize_win_count(sender, instance, created, *args, **kwargs):
+    prize = None
+    if created:
+        prize = instance.prize
+    elif getattr(instance, _has_changed_winning_status_flag, False):
+        prize = instance.prize
+
+    if prize:
+        prize.sync_win_status()
+        prize.save()
+
+    delattr(instance, _has_changed_winning_status_flag)
+
+
+@receiver(post_delete, sender=LotteryWinning)
+def lottery_winning_post_delete_change_prize_status(sender, instance, *args, **kwargs):
+    if instance.prize:
+        instance.prize.sync_win_status()
+        instance.prize.save()
+
+
+@receiver(pre_save, sender=LotteryPrize)
+def lottery_prize_pre_change_total_count(sender, instance, *args, **kwargs):
+    if instance.pk and instance.tracker.has_changed('total_count'):
+        instance.sync_win_status()
+
+
+from random import randint
+
+
+class BaseLotteryException(ValidationError):
+
+    def __init__(self, code=None, *args, **kwargs):
+        code = code if code else self.code
+        super(BaseLotteryException, self).__init__(code=code, *args, **kwargs)
+
+
+class LotteryNotPublished(BaseLotteryException):
+
+    code = 1
+
+
+class LotteryExpired(BaseLotteryException):
+
+    code = 2
+
+
+class LotteryMoreCoinRequired(BaseLotteryException):
+
+    code = 3
+
+
+from account.models import Profile
+
+
+class LotteryPrizeGiveOutCompletely(BaseLotteryException):
+    """
+    奖项发放完毕
+    """
+
+    code = 101
+
+
+class LotteryLuckyDraw(object):
+
+    def __init__(self, lottery, request=None, win_date=None):
+        self.lottery = lottery
+        self.request = request
+        self.win_date = win_date.astimezone() if win_date else now().astimezone()
+
+    def __rand_prize(self, prizes):
+        reverse_max = max((p.level for p in prizes)) + 1
+        pro_sum = sum((reverse_max - p.level for p in prizes))
+
+        for i, p in enumerate(prizes):
+            rand_num = randint(1, pro_sum)
+            cur_num = reverse_max-p.level
+            if rand_num <= cur_num:
+                return p
+            else:
+                pro_sum -= cur_num
+        return None
+
+    def _rand_prize(self, prizes):
+        pro_sum = sum((p.rate for p in prizes))
+
+        for i, p in enumerate(prizes):
+            rand_num = randint(1, pro_sum)
+            if rand_num <= p.rate:
+                return p
+            else:
+                pro_sum -= p.rate
+        return None
+
+    def get_prizes(self):
+        return self.lottery.prizes\
+            .filter(status=LotteryPrize.STATUS.notover)
+
+    def filter_real_prize_winned(self, user):
+        return self.lottery.winnings.filter(user=user, prize__group=LotteryPrize.GROUP.real)
+
+    def check_drawable(self, user):
+        if not self.lottery.is_published(self.win_date):
+            raise LotteryNotPublished(message='本次抽奖还未开始')
+
+        if self.lottery.is_expired(self.win_date):
+            raise LotteryExpired(message='本次抽奖已经截止')
+
+        if not self.is_user_enough_coin(user):
+            raise LotteryMoreCoinRequired(message='少侠，先去赚点金币，再来抽大奖！')
+
+    def is_user_enough_coin(self, user):
+        p = Profile.objects.get(user_id=user.pk)
+        return p.coin >= self.lottery.cost_coin
+
+    def draw(self, user, check_drawable=False):
+        if check_drawable:
+            self.check_drawable(user)
+
+        win_date = self.win_date
+
+        prizes_to_rand = self.allowed_prizes(user=user)
+        prize = self._rand_prize(prizes_to_rand)
+        if prize:
+            if hasattr(transaction, 'atomic'):
+                _transtaction_draw = self._transaction_draw_with_atomic
+            else:
+                _transtaction_draw = self._transaction_draw
+            return _transtaction_draw(prize=prize, user=user, win_date=win_date)
+        return None
+
+    def draw_manually(self, user, prize, check_drawable=False):
+        if check_drawable:
+            self.check_drawable(user)
+
+        assert prize.lottery_id == self.lottery.pk
+        self.check_prize_remaining(prize)
+
+        win_date = self.win_date
+        if hasattr(transaction, 'atomic'):
+            _transtaction_draw = self._transaction_draw_with_atomic
+        else:
+            _transtaction_draw = self._transaction_draw
+        return _transtaction_draw(prize=prize, user=user, win_date=win_date)
+
+    def check_prize_remaining(self, prize):
+        if prize.status != LotteryPrize.STATUS.notover:
+            raise LotteryPrizeGiveOutCompletely(message='奖品发放完毕')
+
+    def _transaction_draw(self, prize, user, win_date):
+        try:
+            sid = transaction.savepoint()
+            p = LotteryPrize.objects.select_for_update().get(pk=prize.pk)
+            if p.status != LotteryPrize.STATUS.notover:
+                transaction.savepoint_rollback(sid)
+                return None
+            else:
+                winning = self.create_winning(prize=p, user=user, win_date=win_date)
+                transaction.savepoint_commit(sid)
+                self.log_play_credit(user=user,
+                                     prize=prize,
+                                     win_date=win_date,
+                                     winning=winning)
+                self.update_lottery_play_takepartin()
+                return prize, winning
+        except IntegrityError:
+            transaction.savepoint_rollback(sid)
+        return None
+
+    def _transaction_draw_with_atomic(self, prize, user, win_date):
+        try:
+            with transaction.atomic():
+                p = LotteryPrize.objects.select_for_update().get(pk=prize.pk)
+                if p.status != LotteryPrize.STATUS.notover:
+                    return None
+                else:
+                    winning = self.create_winning(prize=p, user=user, win_date=win_date)
+                    self.log_play_credit(user=user,
+                                         prize=prize,
+                                         win_date=win_date,
+                                         winning=winning)
+                    self.update_lottery_play_takepartin()
+                    return prize, winning
+        except IntegrityError:
+            return None
+
+    def allowed_prizes(self, user):
+        # 已经抽中实物奖的用户，排除本次抽中实物奖机会
+        # filter real prizes
+        real_prizes = self.filter_real_prize_winned(user)
+        prizes = self.get_prizes()
+        if real_prizes.exists():
+            prizes_to_rand = list(filter(lambda i:i.group != LotteryPrize.GROUP.real, prizes))
+        else:
+            prizes_to_rand = prizes
+        return prizes_to_rand
+
+    def create_winning(self, prize, user, win_date):
+        #if prize.group == LotteryPrize.GROUP.real:
+        winning = LotteryWinning.objects.create(prize=prize,
+                                                lottery=self.lottery,
+                                                user=user,
+                                                status=LotteryWinning.STATUS.win,
+                                                win_date=win_date)
+        return winning
+        #else:
+        #    rt = None
+
+    def log_play_credit(self, user, prize, win_date, winning=None, *args, **kwargs):
+        from account.documents.credit import CreditLog
+        from activity.documents.actions.lottery import LotteryPlayAction, LotteryWinningAction
+
+        action_uuid = uuid()
+
+        ip_address = self.request.client_ip() if self.request and hasattr(self.request, 'client_ip') else None
+        play_action = LotteryPlayAction(user=user,
+                                        lottery=self.lottery,
+                                        credit_exchange_coin=-abs(self.lottery.cost_coin),
+                                        action_uuid=action_uuid,
+                                        ip_address=ip_address,
+                                        )
+        play_action.save()
+        log = CreditLog.factory(exchangable=play_action, user=user,
+                          credit_datetime=win_date,
+                          )
+        if not log.pk:
+            log.save()
+
+        winning_action = LotteryWinningAction(user=user,
+                                              prize=prize,
+                                              lottery=self.lottery,
+                                              play_action=play_action,
+                                              credit_exchange_coin=prize.award_coin,
+                                              action_uuid=action_uuid,
+                                              ip_address=ip_address,
+                                              )
+        if winning:
+            winning_action.winning = winning
+
+        winning_action.save()
+        log = CreditLog.factory(exchangable=winning_action, user=user,
+                          credit_datetime=win_date,
+                          )
+        if not log.pk:
+            log.save()
+
+        play_action.winning_action = winning_action
+        play_action.save()
+
+    def update_lottery_play_takepartin(self):
+        from activity.documents.actions.lottery import lottery_sum_play_takepartin
+        self.lottery.takepartin_count, self.lottery.takepartin_times = lottery_sum_play_takepartin(self.lottery.pk)
+        self.lottery.save()
