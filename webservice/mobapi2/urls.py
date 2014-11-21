@@ -14,12 +14,7 @@ from mobapi2.promotion import views as promotion_views
 from mobapi2.account.views import PackageBookmarkViewSet
 from mobapi2.comment.views import CommentViewSet, FeedbackViewSet
 from mobapi2.warehouse.views.packageversion import PackageVersionViewSet
-from mobapi2.account.views import (AccountCreateView,
-                                   AccountMyProfileView,
-                                   AccountChangePasswordView,
-                                   AccountSignoutView,
-                                   AccountAuthTokenView,
-                                   AccountCommentPackageView)
+from mobapi2.account import views as account_views
 from analysis.views.rest_views import EventCreateView
 from mobapi2.clientapp.views import SelfUpdateView, LoadingCoverView
 from mobapi2.rest_router import rest_router
@@ -73,18 +68,20 @@ def _account_basename(name):
     return rest_router.get_base_name(basename)
 
 account_urlpatterns = patterns('',
-                       url(r'^signup/?$', AccountCreateView.as_view(),
+                       url(r'^signup/?$', account_views.AccountCreateView.as_view(),
                            name=_account_basename('signup')),
-                       url(r'^signin/?$', AccountAuthTokenView.as_view(),
+                       url(r'^signin/?$', account_views.AccountAuthTokenView.as_view(),
                            name=_account_basename('signin')),
-                       url(r'^signout/?$', AccountSignoutView.as_view(),
+                       url(r'^signin/weixin/?$', account_views.AccountWXAuthTokenView.as_view(),
+                           name=_account_basename('signin-wx')),
+                       url(r'^signout/?$', account_views.AccountSignoutView.as_view(),
                            name=_account_basename('signout')),
-                       url(r'^myprofile/?$', AccountMyProfileView.as_view(),
+                       url(r'^myprofile/?$', account_views.AccountMyProfileView.as_view(),
                            name=_account_basename('myprofile')),
-                       url(r'^newpassword/?$', AccountChangePasswordView.as_view(),
+                       url(r'^newpassword/?$', account_views.AccountChangePasswordView.as_view(),
                            name=_account_basename('newpassword')),
                        url(r'^commented_packages/?$',
-                           AccountCommentPackageView.as_view(),
+                           account_views.AccountCommentPackageView.as_view(),
                            name=_account_basename('commentedpackages')),
                        url(r'^giftbags/?$', my_giftbags_list,
                            name=_account_basename('giftbags')),
