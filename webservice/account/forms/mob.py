@@ -1,19 +1,28 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from kombu import uuid
 from account.utils import *
 from account import settings as account_settings
 from account.models import Profile
-from account.validators import AccountUsernameForbiddenValidator
+from account.validators import AccountUsernameForbiddenValidator, phone_re
+from django.db import transaction, IntegrityError
 
-from django.contrib.auth import authenticate
 
 USERNAME_RE = r'^[\.\w_]+$'
 
 attrs_dict = {'class': 'required'}
 
 required_message_template = '%s should not be empty.'
+
+
+password = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict,
+                                                      render_value=False),
+                           label=_("Create password"),
+                           error_messages={
+                               'required': '密码不能为空'
+                           })
 
 
 class SignupForm(forms.Form):
@@ -34,15 +43,7 @@ class SignupForm(forms.Form):
                                                 'required': '用户名不能为空'
                                 })
 
-    password = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict,
-                                                          render_value=False),
-                               label=_("Create password"),
-                               error_messages={
-                                   #'required': _(required_message_template%"Password")
-                                   'required': '密码不能为空'
-                               })
-
-    email = forms.EmailField(required=False)
+    password = deepcopy(password)
 
     def _random_phone(self):
         now = get_datetime_now()
@@ -80,6 +81,85 @@ class SignupForm(forms.Form):
                                              email=email,
                                              phone=phone)
         return user
+
+
+class BaseSignupForm(forms.Form):
+
+    password = deepcopy(password)
+
+    def save(self):
+        username, email, phone, password =(self.cleaned_data['username'],
+                                           self.cleaned_data['email'],
+                                           self.cleaned_data['phone'],
+                                           self.cleaned_data['password'])
+        UserModel = get_user_model()
+        try:
+            sid = transaction.savepoint()
+            user = UserModel.objects.create_user(username=username,
+                                                 password=password,
+                                                 email=email,
+                                                 phone=phone)
+            transaction.savepoint_commit(sid)
+        except IntegrityError:
+            transaction.rollback(sid)
+            return None
+        return user
+
+
+def generate_random_phone():
+    return get_datetime_now().strftime('%Y%m%d%H%M%S%f')
+
+
+def generate_random_username():
+    return uuid().replace("-", "")[0:10]
+
+
+from django.core import validators
+
+
+def validate_profile_unique_for(field, value, label):
+    queryset = Profile.objects.all()
+    if queryset.filter(**{field: value}).exists():
+        raise validators.ValidationError('%s已被使用' %label, code='unique')
+
+
+def validate_email_unique(val):
+    validate_profile_unique_for(field='email', value=val, label='电子邮箱')
+
+
+def validate_phone_unique(val):
+    validate_profile_unique_for(field='phone', value=val, label='手机电话')
+
+
+class EmailSignupForm(BaseSignupForm):
+
+    email = forms.EmailField(error_messages={
+        'invalid': '请填写有效电子邮箱',
+        'required': '电子邮箱不能为空',
+        },
+        validators=[validate_email_unique],
+        )
+
+    def clean(self):
+        self.cleaned_data['phone'] = generate_random_phone()
+        self.cleaned_data['username'] = generate_random_username()
+        return self.cleaned_data
+
+
+class PhoneSignupForm(BaseSignupForm):
+
+    phone = forms.RegexField(regex=phone_re,
+                             error_messages={
+                                 'invalid': '请填写有效手机电话',
+                                 'required': '手机电话不能为空',
+                             },
+                             validators=[validate_phone_unique],
+                             )
+
+    def clean(self):
+        self.cleaned_data['email'] = generate_random_email()
+        self.cleaned_data['username'] = generate_random_username()
+        return self.cleaned_data
 
 
 class DeviceAnonymousSignupForm(forms.Form):
