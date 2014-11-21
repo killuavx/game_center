@@ -249,6 +249,9 @@ def post_delete_user(sender, instance, *args, **kwargs):
         pass
 
 
+import json
+
+
 class UserAppBind(TimeStamped, models.Model):
 
     objects = UserAppBindManager()
@@ -258,23 +261,54 @@ class UserAppBind(TimeStamped, models.Model):
 
     APPS = Choices(
         (1, 'bbs', 'BBS'),
+        (2, 'wx', '微信'),
     )
 
     app = models.IntegerField(verbose_name='应用', choices=APPS)
 
-    uid = models.IntegerField(verbose_name='app的用户id')
+    uid = models.IntegerField(verbose_name='app的用户id', default=0, blank=True)
+
+    openid = models.CharField(max_length=150,
+                              verbose_name='app的用户id', default='', blank=True)
+
+    extra_text = models.TextField(default='')
+
+    tracker = FieldTracker()
+
+    @property
+    def extra_data(self):
+        try:
+            return json.loads(self.extra_text)
+        except ValueError:
+            return None
+
+    @extra_data.setter
+    def extra_data(self, obj):
+        try:
+            self.extra_text = json.dumps(obj)
+        except TypeError:
+            pass
 
     class Meta:
         verbose_name = '用户应用绑定'
         verbose_name_plural = '用户应用绑定名单'
         unique_together = (
             ('user', 'app'),
-            ('app', 'uid', ),
+            ('app', 'uid', 'openid'),
         )
         index_together = (
             ('user', 'app'),
+            ('user', 'app', 'uid'),
+            ('user', 'app', 'openid'),
+            ('app', 'uid'),
+            ('app', 'openid'),
             ('user', 'created'),
         )
+
+    def save(self, *args, **kwargs):
+        if self.uid and not self.openid:
+            self.openid = self.uid
+        return super(UserAppBind, self).save(*args, **kwargs)
 
 
 @receiver(post_save, sender=UserAppBind)

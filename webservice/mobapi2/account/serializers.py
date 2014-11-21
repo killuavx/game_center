@@ -90,13 +90,13 @@ class MultiAppAuthTokenSerializer(AuthTokenSerializer):
             user = authenticate(username=username, password=password, app=app)
             if user:
                 if not user.is_active:
-                    raise serializers.ValidationError('User account is disabled.')
+                    raise serializers.ValidationError('用户账号被禁用')
                 attrs['user'] = user
                 return attrs
             else:
-                raise serializers.ValidationError('Unable to login with provided credentials.')
+                raise serializers.ValidationError('账号或密码错误')
         else:
-            raise serializers.ValidationError('Must include "username" and "password"')
+            raise serializers.ValidationError('请提供登陆名和密码')
 
 
 # new profile
@@ -297,4 +297,68 @@ class AccountProfileSignupSerizlizer(AccountProfileStatsSerializer):
             'coin',
             'experience',
             'token'
+        )
+
+
+from account.models import UserAppBind
+from account.backends import WXBackend
+
+
+class WeixinAuthTokenSerializer(serializers.Serializer):
+
+    access_token = serializers.CharField(required=False)
+
+    refresh_token = serializers.CharField(required=False)
+
+    openid = serializers.CharField(required=False)
+
+    def validate(self, attrs):
+        access_token = attrs.get('access_token')
+        openid = attrs.get('openid')
+        refresh_token = attrs.get('refresh_token')
+        backend = WXBackend()
+        if access_token or openid or refresh_token:
+            attrs['users'] = user = backend.authenticate_by(access_token=access_token,
+                                                            refresh_token=refresh_token,
+                                                            openid=openid)
+            if user:
+                if not user.is_active:
+                    raise serializers.ValidationError('用户账号被禁用')
+                attrs['user'] = user
+                return attrs
+            else:
+                raise serializers.ValidationError('授权登陆失败')
+        else:
+            raise serializers.ValidationError('请提供有效的授信数据(access_token/openid/refresh_token)')
+
+
+class WeixinAccountProfileSerializer(AccountProfileStatsSerializer):
+
+    icon = profile_icon
+
+    username = profile_username
+
+    token = serializers.SerializerMethodField('get_token_key')
+
+    extra = serializers.SerializerMethodField('get_extra')
+
+    def get_extra(self, obj):
+        user = obj.user
+        try:
+            bind = user.appbinds.filter(app=UserAppBind.APPS.wx).get()
+        except UserAppBind.DoesNotExist:
+            return None
+        return bind.extra_data
+
+    class Meta:
+        model = Profile
+        fields = PROFILE_BASIC_FIELDS + (
+            'comment_count',
+            'bookmark_count',
+            'giftbag_count',
+            'level',
+            'coin',
+            'experience',
+            'token',
+            'extra',
         )

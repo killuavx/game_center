@@ -309,13 +309,37 @@ class AccountAuthTokenView(ObtainAuthToken):
     serializer_class = MultiAppAuthTokenSerializer
     serializer_class_myprofile = AccountProfileSigninSerializer
 
+    def get_serializer_class_myprofile(self, type=None):
+        return self.serializer_class_myprofile
+
     def post(self, request):
         serializer = self.serializer_class(data=request.DATA)
         if serializer.is_valid():
-            myprofile_serializer = self.serializer_class_myprofile(
-                serializer.object['user'].profile)
+            cls_type = None
+            myprofile_serializer = self.get_serializer_class_myprofile(cls_type)\
+                    (serializer.object['user'].profile)
             return Response(myprofile_serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AccountWXAuthTokenView(ObtainAuthToken):
+
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+    serializer_class = WeixinAuthTokenSerializer
+    serializer_class_myprofile = WeixinAccountProfileSerializer
+
+    def get_serializer_class_myprofile(self, type=None):
+        return self.serializer_class_myprofile
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.DATA)
+        if serializer.is_valid():
+            cls_type = None
+            myprofile_serializer = self.get_serializer_class_myprofile(cls_type) \
+                    (serializer.object['user'].profile)
+            return Response(myprofile_serializer.data)
+        data = {"detail": msgs[0] for k,msgs in serializer.errors.items()}
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MyCommentedPackageVersionFilter(filters.BaseFilterBackend):
