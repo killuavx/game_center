@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
+import hashlib
+
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
+
 from account.models import Profile
 from account.models import UserAppBind
-import hashlib
+from account.utils import unique_value, unique_email_value
 from account.utils import get_datetime_now, PROFILE_EMAIL_DEFAULT_HOST
-from django.db import transaction
 from toolkit.wxapi import WXApi, WXApiException, userinfo_transaction_profile
+
 
 sha_constructor = hashlib.sha1
 
@@ -24,38 +28,6 @@ class GetUserMixin(object):
             return Player.objects.get(pk=user_id)
         except Player.DoesNotExist:
             return None
-
-
-def unique_value(queryset, field, value, segment='-'):
-    i = 0
-    while True:
-        if i > 0:
-            if i > 1:
-                value = value.rsplit(segment, 1)[0]
-            value = "%s%s%s" % (value, segment, i)
-        try:
-            queryset.get(**{field: value})
-        except ObjectDoesNotExist:
-            break
-        i += 1
-    return value
-
-
-def unique_email_value(queryset, field, email, segment='_'):
-    i = 0
-    value, host = email.split('@')
-    while True:
-        if i > 0:
-            if i > 1:
-                value = value.rsplit(segment, 1)[0]
-            value = "%s%s%s" % (value, segment, i)
-            email = "%s@%s" %(value, host)
-        try:
-            queryset.get(**{field: email})
-        except ObjectDoesNotExist:
-            break
-        i += 1
-    return email
 
 
 def uc_unique_username(api, value, segment='-'):
@@ -322,8 +294,8 @@ class WXBackend(UserSyncAPI, GetUserMixin):
 
     def oauth_by_access_token(self, access_token):
         result = self.wxapi.request_access_token(code=access_token)
-        openid = result['openid'] if result.get('errcode', self.SUCCESS) == self.SUCCESS else None
-        if openid:
+        if result.get('errcode', self.SUCCESS) == self.SUCCESS:
+            access_token, openid = result['access_token'], result['openid']
             return access_token, openid, result
         else:
             return None
@@ -339,6 +311,7 @@ class WXBackend(UserSyncAPI, GetUserMixin):
             result = None
             if access_token:
                 result = self.oauth_by_access_token(access_token)
+                print(result)
             elif refresh_token:
                 result = self.oauth_by_refresh_token(refresh_token)
 

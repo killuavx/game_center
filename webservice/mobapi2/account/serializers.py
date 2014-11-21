@@ -8,6 +8,7 @@ from rest_framework.authtoken.models import Token
 from django.core import validators
 
 from account import authenticate
+from account.utils import *
 from comment.models import Comment
 from account.models import User as Player, Profile
 from account.utils import PROFILE_EMAIL_DEFAULT_HOST, generate_random_email
@@ -159,7 +160,52 @@ class ProfileStatsSerializerMixin(object):
         return user.giftcard_set.count()
 
 
-PROFILE_BASIC_FIELDS = ('username', 'icon', 'email', 'sex', 'birthday')
+from account.validators import validate_phone
+
+
+class PhoneField(serializers.CharField):
+
+    default_validators = [
+        validate_phone,
+    ]
+    description = "Phone"
+    default_error_messages = {
+        'invalid': '请填写有效手机号码'
+    }
+
+    default = lambda x: get_datetime_now().strftime('%Y%m%d%H%M%S%f')
+
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = kwargs.get('max_length', 16)
+        kwargs['min_length'] = kwargs.get('min_length', 11)
+        super(PhoneField, self).__init__(*args, **kwargs)
+
+
+import re
+
+
+class PhoneNotSetField(PhoneField):
+
+    datetime_re = re.compile(r"^(201[3-9])((0[1-9])|1[0-2])([0-3][0-9])")
+
+    def __init__(self, *args, **kwargs):
+        if 'required' not in kwargs:
+            kwargs['required'] = False
+        super(PhoneNotSetField, self).__init__(*args, **kwargs)
+
+    #def from_native(self, value):
+    #    val = super(PhoneNotSetField, self).from_native(value)
+    #    if val and self.datetime_re.search(val):
+    #        return None
+    #    return val
+
+    def to_native(self, val):
+        if val and self.datetime_re.search(val):
+            return None
+        return val
+
+
+PROFILE_BASIC_FIELDS = ('username', 'icon', 'phone', 'email', 'sex', 'birthday')
 
 
 _account_serializer_field_mapping = deepcopy(ModelSerializer.field_mapping)
@@ -198,6 +244,8 @@ class AccountProfileSerializer(ModelSerializer):
     username = profile_username
 
     icon = profile_icon
+
+    phone = PhoneNotSetField(required=False)
 
     class Meta:
         model = Profile
@@ -286,6 +334,7 @@ class AccountProfileSignupSerizlizer(AccountProfileStatsSerializer):
     giftbag_count = serializers.SerializerMethodField('get_giftbag_count')
     def get_giftbag_count(self, obj):
         return 0
+
 
     class Meta:
         model = Profile

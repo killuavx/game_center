@@ -58,11 +58,20 @@ class AccountCreateView(generics.CreateAPIView):
     authentication_classes = ()
     permission_classes = ()
     serializer_class = AccountProfileSignupSerizlizer
+    SIGNIN_TYPE = ['phone', 'email']
 
-    form_class = account_forms.SignupForm
+    def get_form_class(self, signin_type=None):
+        if signin_type == 'phone':
+            return account_forms.PhoneSignupForm
+        elif signin_type == 'email':
+            return account_forms.EmailSignupForm
+        else:
+            return account_forms.SignupForm
 
     def create(self, request, *args, **kwargs):
-        form = self.form_class(request.DATA, files=request.FILES)
+        signin_type = request.DATA.get('signup_type', None)
+        form = self.get_form_class(signin_type)(request.DATA,
+                                                files=request.FILES)
         if form.is_valid():
             user = form.save()
             self.object = user.profile
