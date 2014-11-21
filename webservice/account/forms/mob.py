@@ -133,32 +133,36 @@ def validate_phone_unique(val):
 
 class EmailSignupForm(BaseSignupForm):
 
-    email = forms.EmailField(error_messages={
+    username = forms.EmailField(error_messages={
         'invalid': '请填写有效电子邮箱',
         'required': '电子邮箱不能为空',
         },
-        validators=[validate_email_unique],
-        )
+                                label='Email',
+                                validators=[validate_email_unique],
+                                )
 
     def clean(self):
-        self.cleaned_data['phone'] = generate_random_phone()
+        self.cleaned_data['email'] = self.cleaned_data.get('username')
         self.cleaned_data['username'] = generate_random_username()
+        self.cleaned_data['phone'] = generate_random_phone()
         return self.cleaned_data
 
 
 class PhoneSignupForm(BaseSignupForm):
 
-    phone = forms.RegexField(regex=phone_re,
-                             error_messages={
-                                 'invalid': '请填写有效手机电话',
-                                 'required': '手机电话不能为空',
-                             },
-                             validators=[validate_phone_unique],
+    username = forms.RegexField(regex=phone_re,
+                                label='Phone',
+                                error_messages={
+                                    'invalid': '请填写有效手机电话',
+                                    'required': '手机电话不能为空',
+                                    },
+                                validators=[validate_phone_unique],
                              )
 
     def clean(self):
-        self.cleaned_data['email'] = generate_random_email()
+        self.cleaned_data['phone'] = self.cleaned_data.get('username')
         self.cleaned_data['username'] = generate_random_username()
+        self.cleaned_data['email'] = generate_random_email()
         return self.cleaned_data
 
 
