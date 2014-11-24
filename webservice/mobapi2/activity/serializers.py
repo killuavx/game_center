@@ -584,7 +584,7 @@ class LotteryDetailSerializer(LotterySerializer):
     def get_winnings(self, obj):
         winners = list()
         for winning in lottery_doc.LotteryWinningAction\
-                        .objects.lottery_winning_list(obj.pk):
+                        .objects.lottery_winning_list(obj.pk)[0:5]:
             try:
                 winners.append(dict(username=winning.username,
                                     level_name=winning.prize_level_name,

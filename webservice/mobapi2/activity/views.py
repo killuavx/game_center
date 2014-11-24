@@ -857,7 +857,7 @@ class LotteryViewSet(DetailSerializerMixin,
         obj = self.get_object()
 
         lookup = self.kwargs.get(self.lookup_field, None)
-        winnings = lottery_doc.LotteryWinningAction.objects.lottery_winning_list(lottery_id=lookup)
+        winnings = lottery_doc.LotteryWinningAction.objects.lottery_winning_list(lottery_id=lookup)[0:100]
 
         # FIXME orm slow query
         # winnings = sorted(obj.winnings.won().order_by('-prize__level')[:100],
