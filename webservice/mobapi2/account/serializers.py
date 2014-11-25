@@ -411,3 +411,37 @@ class WeixinAccountProfileSerializer(AccountProfileStatsSerializer):
             'token',
             'extra',
         )
+
+
+from toolkit.CCPSDK.helpers import PhoneAuth
+from toolkit.CCPSDK.helpers import send_sms, SMS_TEMPID_SIGNUP
+
+
+class PhoneAuthSerializer(serializers.Serializer):
+
+    phone = PhoneField(required=True)
+
+    code = serializers.SerializerMethodField('get_random_code')
+
+    duration = serializers.IntegerField(default=60)
+
+    DURATION = 60
+
+    def get_random_code(self, obj):
+        phone = self.init_data.get('phone')
+        duration = self.init_data.get('duration', self.DURATION)
+        return PhoneAuth(phone=phone).make_code(duration)
+
+    def send_sms(self):
+        data = self.data
+        if not data:
+            return False
+
+        sended, res = send_sms(to=data['phone'],
+                               datas=[data['code'], int(data['duration']/60)],
+                               tempId=SMS_TEMPID_SIGNUP)
+        print(data, res)
+        return sended, data
+
+
+

@@ -148,6 +148,9 @@ class EmailSignupForm(BaseSignupForm):
         return self.cleaned_data
 
 
+from toolkit.CCPSDK.helpers import PhoneAuth
+
+
 class PhoneSignupForm(BaseSignupForm):
 
     username = forms.RegexField(regex=phone_re,
@@ -159,8 +162,21 @@ class PhoneSignupForm(BaseSignupForm):
                                 validators=[validate_phone_unique],
                              )
 
+    code = forms.CharField(required=True,
+                           label='验证码',
+                           error_messages={
+                               'invalid': '请填写有效验证码',
+                               'required': '验证码不能为空',
+                               },
+                           )
+
     def clean(self):
         self.cleaned_data['phone'] = self.cleaned_data.get('username')
+        phone_auth = PhoneAuth(phone=self.cleaned_data['phone'])
+        if self.cleaned_data['phone'] and\
+                not phone_auth.check_code(self.cleaned_data.get('code')):
+            raise forms.ValidationError('验证码无效', code='invalid')
+
         self.cleaned_data['username'] = generate_random_username()
         self.cleaned_data['email'] = generate_random_email()
         return self.cleaned_data

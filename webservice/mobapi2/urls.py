@@ -68,6 +68,8 @@ def _account_basename(name):
     return rest_router.get_base_name(basename)
 
 account_urlpatterns = patterns('',
+                       url(r'^sendsms/?$', account_views.AccountPhoneAuthViewSet.as_view({'post':'sendcode'}),
+                           name=_account_basename('sendsms')),
                        url(r'^signup/?$', account_views.AccountCreateView.as_view(),
                            name=_account_basename('signup')),
                        url(r'^signin/?$', account_views.AccountAuthTokenView.as_view(),

@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from rest_framework import generics, status, viewsets, filters, mixins
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.decorators import action, link
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -25,6 +28,65 @@ def errors_flat_to_str(errors):
     for field, _messages in errors.items():
         messages.append(", ".join(_messages))
     return ", ".join(messages)
+
+
+from mobapi2.account.serializers import PhoneAuthSerializer
+
+
+class AccountPhoneAuthViewSet(viewsets.GenericViewSet):
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = PhoneAuthSerializer
+
+    def fetch_error_message(self, errors):
+        for k, ers in errors.items():
+            return ers[0]
+
+    @link()
+    @action()
+    @method_decorator(never_cache)
+    def sendcode(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.DATA)
+        if serializer.is_valid():
+            sended, data = serializer.send_sms()
+            if sended:
+                return Response(data=data)
+            else:
+                return Response(data=dict(detail='发送失败'),
+                                status=status.HTTP_400_BAD_REQUEST)
+        else:
+            detail = self.fetch_error_message(serializer.errors)
+            return Response(data=dict(detail=detail),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class AccountChangePhoneViewSet(viewsets.GenericViewSet):
+
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = PhoneAuthSerializer
+
+    @method_decorator(never_cache)
+    def sendcode(self, request, *args, **kwargs):
+        pass
+
+    @method_decorator(never_cache)
+    def old_auth(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.DATA)
+        if serializer.is_valid():
+            return Response(data=serializer.data,
+                            status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @method_decorator(never_cache)
+    def change_auth(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.DATA)
+        if serializer.is_valid():
+            return Response(data=serializer.data,
+                            status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AccountCreateView(generics.CreateAPIView):
@@ -72,6 +134,7 @@ class AccountCreateView(generics.CreateAPIView):
         signin_type = request.DATA.get('signup_type', None)
         form = self.get_form_class(signin_type)(request.DATA,
                                                 files=request.FILES)
+        print(request.DATA)
         if form.is_valid():
             user = form.save()
             self.object = user.profile
