@@ -88,11 +88,11 @@ class REST(object):
         self.AppId = AppId
 
     def log(self, url, body, data):
-        print('这是请求的URL：')
+        print('Request URL:')
         print(url)
-        print('这是请求包体:')
+        print('Request Body:')
         print(body)
-        print('这是响应包体:')
+        print('Response Body')
         print(data)
         print('********************************')
 

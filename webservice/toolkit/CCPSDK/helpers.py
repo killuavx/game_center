@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.conf import settings
 import random
 from toolkit.CCPSDK.CCPRestSDK import REST
 
@@ -27,6 +28,7 @@ CLOOPEN_SERVER_PORT = '8883'
 CLOOPEN_SOFT_VERSION = '2013-12-26'
 
 cloopen_api = REST(CLOOPEN_SERVER_IP, CLOOPEN_SERVER_PORT, CLOOPEN_SOFT_VERSION)
+cloopen_api.Iflog = settings.DEBUG
 cloopen_api.setAccount(CLOOPEN_ACCOUNT_SID, CLOOPEN_ACCOUNT_TOKEN)
 cloopen_api.setAppId(CLOOPEN_APPID)
 
