@@ -89,10 +89,8 @@ function resize(){
 
 
 /*返回顶部*/
-document.writeln("<style>#toTop{width:44px;height:44px;position:fixed;right:20px;bottom:15px;z-index:9999;display:none;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-top.png) no-repeat}#toTop:hover{background-position:left bottom}</style>");
-document.writeln("<a href=\"javascript:;\" title=\"返回顶部\" id=\"toTop\">返回顶部</a>");
-function toTopHide(){if(document.documentElement.scrollTop+document.body.scrollTop>400){document.getElementById("toTop").style.display="block"}else{document.getElementById("toTop").style.display="none"}}$(function(){$(window).scroll(function(){toTopHide();$("#toTop").click(function(){window.scrollTo(0,0);return false})})});
-
+document.writeln("<div class=\"auto width aside-float-bar\" id=\"aside-float-bar\"><ul><li class=\"bdsharebuttonbox\"><a href=\"javascript:;\"class=\"bds_more a-share\"data-cmd=\"more\">分享游戏</a></li><li class=\"li_code\"><a href=\"#\"class=\"a-qr-code\"title=\"二维码\"></a><div class=\"qr-code-box\"><dl><dd><img src=\"http://static.ccplay.com.cn/static/android_web/img/weixin-code.png\"/></dd><dt>关注微信<br/>虫虫游戏助手</dt></dl><dl><dd><img src=\"http://static.ccplay.com.cn/static/android_web/img/weibo-code.png\"/></dd><dt><u class=\"tdl poi\"onClick=\"window.open(\'http://weibo.com/ccyxpt\')\">新浪微博</u><br/>@虫虫游戏助手</dt></dl><dl><dd><img src=\"http://static.ccplay.com.cn/static/common/img/code.png\"/></dd><dt>扫描即可下载<br/>虫虫助手</dt></dl><b class=\"s-triangle\">&diams;</b></div></li><li><a href=\"http://bbs.ccplay.com.cn/thread-59101-1-1.html\"target=\"_blank\"class=\"a-problems\"><span>常见问题</span></a></li><li><a href=\"javascript:;\"class=\"a-top\"id=\"toTop\"><span>返回顶部</span></a></li></ul></div>");
+function toTopHide(){if(document.documentElement.scrollTop+document.body.scrollTop>90){document.getElementById("toTop").style.display="block"}else{document.getElementById("toTop").style.display="none"}}$(function(){$(window).scroll(function(){toTopHide();$("#toTop").click(function(){window.scrollTo(0,0);return false})})});
 
 
 
@@ -107,6 +105,21 @@ $(function(){
             return false;
         });
     });
+	$(".li_code").hover(function(){
+       $(this).find(".qr-code-box").fadeIn(300).hover(function(){
+				$(this).find("img").css({"opacity":"0.1"});
+	 		}, function(){
+	   			$(this).find("img").css({"opacity":"1"});
+			});
+	 }, function(){
+	   $(this).find(".qr-code-box").fadeOut(300);
+	});		
+	$(".qr-code-box dl").hover(function(){
+       $(this).find("img").css({"opacity":"1"});
+	 }, function(){
+	   $(this).find("img").css({"opacity":"0.1"});
+	});	
+
 
 //一键安装提示
 	$(".browsers_ad_close_gray").on("click", function() {
@@ -435,10 +448,7 @@ $(function(){
 //            }
         });							
     });
-	
 
-	
-	
 	
 	
 });
@@ -570,3 +580,8 @@ diy_select.prototype={
 
 var TTDiy_select=new diy_select({  //参数可选
 });//如同时使用多个时请保持各class一致.
+
+
+
+/*百度分享*/
+window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPopupOffsetLeft":"-228","bdPopupOffsetTop":"-133","bdMiniList":["mshare","qzone","tsina","weixin","tqq","sqq"],"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];

@@ -78,6 +78,21 @@ background-repeat: no-repeat;}
 .slideGroup .slideBox{ overflow:hidden; zoom:1; padding:10px 10px 0 10px; position:relative;   }
 
 
+/*厂商*/
+.new-vendor-page .item{float:left; margin:0 7px 10px 7px}
+.new-vendor-page .item,.new-vendor-page .item .date,.new-vendor-page .item a{width:300px}
+#cc-m .new-vendor-page .item,#cc-m .new-vendor-page .item .date,#cc-m .new-vendor-page .item a{width:319px}
+#cc-s .new-vendor-page .item,#cc-s .new-vendor-page .item .date,#cc-s .new-vendor-page .item a{width:358px}
+.new-vendor-page .item a{height:150px; overflow:hidden}
+.new-vendor-page .item .date{bottom:20px}
+
+.vendor-logo,.vendor-name{transition: 0.5s; -moz-transition: 0.5s; -o-transition: 0.5s; -webkit-transition: 0.5s}
+.vendor-logo .vendor-name{top:150px; height:150px; opacity:0; filter:progid:DXImageTransform.Microsoft.gradient(enabled='true',startColorstr='#FF000000', endColorstr='#FF000000'); background:rgba(0,0,0,0.7); text-shadow:1px 1px 1px #000000}
+.vendor-logo:hover .vendor-name{top:0; color:#fff; opacity:1}
+.vendor-logo b{border-bottom:1px solid #ccc; margin:0 10px; line-height:30px;}
+
+
+
 
 
 /*评论*/
@@ -86,7 +101,6 @@ background-repeat: no-repeat;}
 .recent-trend-app a{display:inline-block; width:145px; margin-right:13px; height:20px; overflow: hidden;
 word-wrap: break-word;
 word-break: break-all;}
-
 
 
 
