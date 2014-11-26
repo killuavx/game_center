@@ -426,7 +426,8 @@ class AccountAuthTokenView(ObtainAuthToken):
             myprofile_serializer = self.get_serializer_class_myprofile(cls_type)\
                     (serializer.object['user'].profile)
             return Response(myprofile_serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        detail = errors_flat_to_str(serializer.errors)
+        return Response(data=dict(detail=detail), status=status.HTTP_400_BAD_REQUEST)
 
 
 class AccountWXAuthTokenView(ObtainAuthToken):
