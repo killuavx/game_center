@@ -14,12 +14,12 @@ CLOOPEN_ACCOUNT_SID = '8a48b55149d5792d0149e063bc3705e4'
 CLOOPEN_ACCOUNT_TOKEN = 'a4cab57a70374530a1c8f979f34dfb7f'
 
 #应用Id
-#CLOOPEN_APPID = '8a48b55149d5792d0149e06c3ef905f1'
-CLOOPEN_APPID = '8a48b55149d5792d0149e0640dec05e8'
+CLOOPEN_APPID = '8a48b55149d5792d0149e06c3ef905f1'
+#CLOOPEN_APPID = '8a48b55149d5792d0149e0640dec05e8'
 
 #请求地址，格式如下，不需要写http://
-CLOOPEN_SERVER_IP = 'sandboxapp.cloopen.com'
-#CLOOPEN_SERVER_IP = 'app.cloopen.com'
+#CLOOPEN_SERVER_IP = 'sandboxapp.cloopen.com'
+CLOOPEN_SERVER_IP = 'app.cloopen.com'
 
 #请求端口
 CLOOPEN_SERVER_PORT = '8883'
@@ -34,8 +34,8 @@ cloopen_api.setAppId(CLOOPEN_APPID)
 
 
 # 注册验证码模板 {1}验证码 {2}有效期
-#SMS_TEMPID_SIGNUP = 7867
-SMS_TEMPID_SIGNUP = 1
+SMS_TEMPID_SIGNUP = 7867
+#SMS_TEMPID_SIGNUP = 1
 
 # 发送模板短信
 # @param $to 手机号码
