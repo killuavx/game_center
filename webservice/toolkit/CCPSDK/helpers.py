@@ -50,12 +50,14 @@ def send_sms(to, datas, tempId=1):
 
 from toolkit.cache_tagging_mixin import default_cache
 
+MASK_PHONE_AUTH_CODE = 'phone_code_%s'
+
 
 class PhoneAuth(object):
 
     duration = 60
 
-    MASK_PHONE_AUTH_CODE = 'phone_code_%s'
+    MASK_PHONE_AUTH_CODE = MASK_PHONE_AUTH_CODE
 
     cache = default_cache
 
@@ -68,16 +70,38 @@ class PhoneAuth(object):
         return self.MASK_PHONE_AUTH_CODE % self.phone
 
     def check_code(self, code):
-        print("check phone code: ", self.code_key, self.cache.get(self.code_key))
         return self.cache.get(self.code_key) == code
 
     def make_code(self, ex=60, overwrite_exists=True):
         code = self.cache.get(self.code_key)
-        print(self.code_key, code, ex)
         if not overwrite_exists and code:
             return code
         code = randcode()
-        print(self.code_key, code, ex)
         self.cache.set(self.code_key, code, ex)
         return code
 
+
+class ChangePhoneAuth(object):
+
+    MASK_OLD_PHONE_AUTHED = 'oldphone_authed_%s'
+
+    MASK_PHONE_AUTH_CODE = MASK_PHONE_AUTH_CODE
+
+    cache = default_cache
+
+    def __init__(self, duration=60):
+        self.duration = duration
+
+    def auth_oldphone_code(self, old_phone, code):
+        if self.cache.get(self.MASK_PHONE_AUTH_CODE % old_phone) == code:
+            self.cache.set(self.MASK_OLD_PHONE_AUTHED % old_phone, 1, self.duration)
+            return True
+        else:
+            return False
+
+    def auth_newphone_code(self, old_phone, new_phone, code):
+        if self.cache.get(self.MASK_OLD_PHONE_AUTHED % old_phone) == 1 and \
+            self.cache.get(self.MASK_PHONE_AUTH_CODE % new_phone) == code:
+            return True
+        else:
+            return False

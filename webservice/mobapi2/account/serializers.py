@@ -245,7 +245,7 @@ class AccountProfileSerializer(ModelSerializer):
 
     icon = profile_icon
 
-    phone = PhoneNotSetField(required=False)
+    phone = PhoneNotSetField(required=False, read_only=True)
 
     class Meta:
         model = Profile
@@ -413,8 +413,9 @@ class WeixinAccountProfileSerializer(AccountProfileStatsSerializer):
         )
 
 
-from toolkit.CCPSDK.helpers import PhoneAuth
+from toolkit.CCPSDK.helpers import PhoneAuth, ChangePhoneAuth
 from toolkit.CCPSDK.helpers import send_sms, SMS_TEMPID_SIGNUP
+from account.forms.mob import validate_phone_unique
 
 
 class PhoneAuthSerializer(serializers.Serializer):
@@ -444,4 +445,48 @@ class PhoneAuthSerializer(serializers.Serializer):
         return sended, data
 
 
+class OldPhoneAuthSerializer(serializers.Serializer):
 
+    phone = PhoneField(required=True, label='手机电话',
+                       error_messages={
+                           'required': '请填写手机号码'
+                       })
+
+    code = serializers.CharField(required=True, label='验证码',
+                                 error_messages={
+                                     'required': '请填写手机验证码'
+                                 })
+
+    def validate(self, attrs):
+        phone, code = attrs.get('phone'), attrs.get('code')
+        if ChangePhoneAuth().auth_oldphone_code(phone, code):
+            return attrs
+        raise validators.ValidationError('验证码无效', code='invalid')
+
+
+class ChangePhoneAuthSerializer(serializers.Serializer):
+    """
+        object is instance of account.Profile
+    """
+
+    phone = PhoneField(required=True, validators=[validate_phone_unique])
+
+    code = serializers.CharField(required=True, label='验证码',
+                                 error_messages={
+                                     'required': '请填写手机验证码'
+                                 })
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        old_phone = request.user.profile.phone
+        phone, code = attrs.get('phone'), attrs.get('code')
+        if ChangePhoneAuth().auth_newphone_code(old_phone, phone, code):
+            return attrs
+        raise validators.ValidationError('验证码无效', code='invalid')
+
+    def restore_object(self, attrs, instance=None):
+        instance.phone = attrs.get('phone')
+        return instance
+
+    def save_object(self, obj, **kwargs):
+        obj.save(update_fields=['phone'])

@@ -128,7 +128,7 @@ def validate_email_unique(val):
 
 
 def validate_phone_unique(val):
-    validate_profile_unique_for(field='phone', value=val, label='手机电话')
+    validate_profile_unique_for(field='phone', value=val, label='手机号码')
 
 
 class EmailSignupForm(BaseSignupForm):
