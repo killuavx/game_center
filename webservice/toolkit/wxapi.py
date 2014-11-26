@@ -132,8 +132,12 @@ def userinfo_transaction_profile(user, userinfo):
     if headimgurl:
         res = requests.get("%s%s" %(headimgurl.rstrip('0'), WX_HEADIMG_SIZE))
         if res.status_code == 200:
-            user.profile.icon = ImageFile(io.BytesIO(res.content),
-                                          name='wxface.jpg')
+            try:
+                user.profile.icon = ImageFile(io.BytesIO(res.content),
+                                              name='wxface.jpg')
+                user.profile.save(update_fields=['mugshot'])
+            except:
+                user.profile.icon = None
 
     sex = userinfo['sex']
     if sex:
