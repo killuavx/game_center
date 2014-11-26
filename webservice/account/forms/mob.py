@@ -65,14 +65,15 @@ class SignupForm(forms.Form):
         return self.cleaned_data['username']
 
     def clean(self):
-        if 'email' in self.cleaned_data and not self.cleaned_data['email']:
+        if not self.cleaned_data.get('email'):
             self.cleaned_data['email'] = generate_random_email()
+
         self.cleaned_data['phone'] = self._random_phone()
         return self.cleaned_data
 
     def save(self):
         username, email, phone, password =(self.cleaned_data['username'],
-                                           self.cleaned_data['email'],
+                                           self.cleaned_data.get('email'),
                                            self.cleaned_data['phone'],
                                            self.cleaned_data['password'])
         UserModel = get_user_model()
