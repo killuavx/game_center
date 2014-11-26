@@ -480,8 +480,22 @@ class ChangePhoneAuthSerializer(serializers.Serializer):
         request = self.context.get('request')
         old_phone = request.user.profile.phone
         phone, code = attrs.get('phone'), attrs.get('code')
-        if ChangePhoneAuth().auth_newphone_code(old_phone, phone, code):
+
+        has_phone = True
+        if old_phone:
+            try:
+                validate_phone(old_phone)
+            except ValidationError:
+                has_phone = False
+        else:
+            has_phone = False
+
+        if has_phone:
+            if ChangePhoneAuth().auth_newphone_code(old_phone, phone, code):
+                return attrs
+        elif PhoneAuth(phone).check_code(code):
             return attrs
+
         raise validators.ValidationError('验证码无效', code='invalid')
 
     def restore_object(self, attrs, instance=None):
