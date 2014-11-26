@@ -1,0 +1,17 @@
+-load url_tags
+.f18.cell.rel.t-title
+  %h3.l.n.mr30= title
+  %a.r.f12.mt5.more{:href => '{{ more_url }}', :target => "_blank", :title => '{{ title }}'} 更多&gt;
+/ t-title
+
+.pt15.i-collections-list
+  -for topic in items
+    .dib.rel.i-c-l-box
+      %a.tdn{:href => '{% absolute_url topic product="web" %}', :target => "_blank"}
+        %span.i-c-l-main
+          %img.lazy{:alt => "={topic.name}",  "data-original" => "{% resource_url topic 'cover' %}", :alt => '', }/
+          %span.i-c-l-content
+            %b.db.pt10.pb5.n.f16= topic.name
+            %span.g9.i-c-l-describe= topic.summary
+      %p.g9.i-c-l-date<
+        更新日期: {{ topic.updated_datetime|date }} | 共 {{ topic.packages_count|default:0 }} 应用

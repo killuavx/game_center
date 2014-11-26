@@ -199,6 +199,19 @@ class WebHomeCollectionListWidget(tpwidget.BaseTopicListWidget,
     template = 'pages/widgets/home/roll-collections.haml'
 
 
+from website.web.widgets.collections import  WebCollectionTopicListWithSearchPackageWidget
+
+
+class WebHomeCollectionPanelWidget(WebCollectionTopicListWithSearchPackageWidget):
+
+    slug = 'spec-choice-topic'
+
+    template = 'pages/widgets/home/collections-panel.haml'
+
+    def get_more_url(self):
+        return '/collections/'
+
+
 class WebHomeForumHotThreadPanelWidget(BaseForumThreadPanelWdiget,
                                        base.ProductPropertyWidgetMixin,
                                        Widget):
