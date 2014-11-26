@@ -311,7 +311,6 @@ class WXBackend(UserSyncAPI, GetUserMixin):
             result = None
             if access_token:
                 result = self.oauth_by_access_token(access_token)
-                print(result)
             elif refresh_token:
                 result = self.oauth_by_refresh_token(refresh_token)
 
