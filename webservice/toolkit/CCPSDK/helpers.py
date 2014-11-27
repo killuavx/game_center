@@ -72,7 +72,10 @@ class PhoneAuth(object):
     def check_code(self, code):
         return self.cache.get(self.code_key) == code
 
-    def make_code(self, ex=60, overwrite_exists=True):
+    def make_code(self, ex=None, overwrite_exists=True):
+        if ex is None:
+            ex = self.duration
+
         code = self.cache.get(self.code_key)
         if not overwrite_exists and code:
             return code

@@ -122,7 +122,6 @@ def generate_random_username():
     return uuid().replace("-", "")[0:10]
 
 
-
 def validate_profile_unique_for(field, value, label):
     queryset = Profile.objects.all()
     if queryset.filter(**{field: value}).exists():

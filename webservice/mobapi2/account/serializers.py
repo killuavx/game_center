@@ -417,6 +417,8 @@ from toolkit.CCPSDK.helpers import PhoneAuth, ChangePhoneAuth
 from toolkit.CCPSDK.helpers import send_sms, SMS_TEMPID_SIGNUP
 from account.forms.mob import validate_phone_unique
 
+PHONE_AUTH_DURATION = 60 * 5
+
 
 class PhoneAuthSerializer(serializers.Serializer):
 
@@ -424,14 +426,14 @@ class PhoneAuthSerializer(serializers.Serializer):
 
     code = serializers.SerializerMethodField('get_random_code')
 
-    duration = serializers.IntegerField(default=60)
+    DURATION = PHONE_AUTH_DURATION
 
-    DURATION = 60
+    duration = serializers.IntegerField(default=DURATION)
 
     def get_random_code(self, obj):
         phone = self.init_data.get('phone')
         duration = self.init_data.get('duration', self.DURATION)
-        return PhoneAuth(phone=phone).make_code(duration)
+        return PhoneAuth(phone=phone, duration=duration).make_code(duration)
 
     def send_sms(self):
         data = self.data
@@ -475,6 +477,7 @@ class ChangePhoneAuthSerializer(serializers.Serializer):
                                  error_messages={
                                      'required': '请填写手机验证码'
                                  })
+    DURATION = PHONE_AUTH_DURATION
 
     def validate(self, attrs):
         request = self.context.get('request')
@@ -491,9 +494,10 @@ class ChangePhoneAuthSerializer(serializers.Serializer):
             has_phone = False
 
         if has_phone:
-            if ChangePhoneAuth().auth_newphone_code(old_phone, phone, code):
+            if ChangePhoneAuth(duration=self.DURATION)\
+                .auth_newphone_code(old_phone, phone, code):
                 return attrs
-        elif PhoneAuth(phone).check_code(code):
+        elif PhoneAuth(phone, duration=self.DURATION).check_code(code):
             return attrs
 
         raise validators.ValidationError('验证码无效', code='invalid')
