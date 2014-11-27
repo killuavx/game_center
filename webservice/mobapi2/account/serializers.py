@@ -109,7 +109,7 @@ class EmailNotSetField(serializers.EmailField):
     default_error_messages = {
         'required': '请填写电子邮件',
         'blank': '请填写电子邮件',
-        'invalid': '电子邮箱不正确'
+        'invalid': '电子邮箱不正确',
     }
 
     default = generate_random_email

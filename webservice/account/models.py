@@ -163,7 +163,10 @@ class Profile(ProfileBase):
 
     email = models.EmailField(verbose_name=_('register email'),
                               default='',
-                              error_messages={'null': _('should not be empty')},
+                              error_messages={
+                                  'null': _('should not be empty'),
+                                  'unique': '电子邮箱已被使用',
+                              },
                               unique=True)
 
     phone = models.CharField(verbose_name=_('register phone'),
@@ -173,7 +176,10 @@ class Profile(ProfileBase):
                              help_text=_(
                                  'Required. 20 characters or fewer. numbers and '
                                  '+/-/ characters'),
-                             error_messages={'null': _('should not be empty')},
+                             error_messages={
+                                 'null': _('should not be empty'),
+                                 'unique': '手机号码已被使用',
+                                 },
                              validators=[
                                  validators.RegexValidator(
                                      re.compile('^[\d.+-]+$'),
