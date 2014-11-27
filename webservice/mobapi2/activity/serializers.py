@@ -443,10 +443,13 @@ class NotificationSerializer(Serializer):
         response = android_api.bulletins.get()
         data = response.data
         result = dict(new_count=0, latest=None)
-        if data['count']:
-            result['new_count'] = self._bulletin_newcount(request, data)
-            #result['active'] = result['new_count'] > 0
-            result['latest'] = data['results'][0]
+        try:
+            if data['count']:
+                result['new_count'] = self._bulletin_newcount(request, data)
+                #result['active'] = result['new_count'] > 0
+                result['latest'] = data['results'][0]
+        except:
+            pass
         return result
 
     def _bulletin_newcount(self, request, data):
