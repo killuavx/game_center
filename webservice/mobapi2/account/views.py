@@ -296,8 +296,14 @@ class AccountMyProfileView(mixins.UpdateModelMixin, generics.RetrieveAPIView):
             self.post_save(self.object, created=created)
             response = Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            response = Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            detail = errors_flat_to_str(serializer.errors)
+            response = Response(dict(detail=detail),
+                                status=status.HTTP_400_BAD_REQUEST)
         return response
+
+    # action
+    def validate_fields(self, request, *args, **kwargs):
+        pass
 
 
 from django.contrib.auth.forms import PasswordChangeForm
