@@ -8,6 +8,7 @@ from account import settings as account_settings
 from account.models import Profile
 from account.validators import AccountUsernameForbiddenValidator, phone_re
 from django.db import transaction, IntegrityError
+from django.core import validators
 
 
 USERNAME_RE = r'^[\.\w_]+$'
@@ -20,8 +21,14 @@ required_message_template = '%s should not be empty.'
 password = forms.CharField(widget=forms.PasswordInput(attrs=attrs_dict,
                                                       render_value=False),
                            label=_("Create password"),
+                           validators=[
+                               validators.MaxLengthValidator(16),
+                               validators.MinLengthValidator(6),
+                           ],
                            error_messages={
-                               'required': '密码不能为空'
+                               'required': '密码不能为空',
+                               'max_length': '密码不能超过%(limit_value)s位',
+                               'min_length': '密码至少填写%(limit_value)s位',
                            })
 
 
@@ -114,8 +121,6 @@ def generate_random_phone():
 def generate_random_username():
     return uuid().replace("-", "")[0:10]
 
-
-from django.core import validators
 
 
 def validate_profile_unique_for(field, value, label):

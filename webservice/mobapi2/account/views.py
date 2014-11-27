@@ -306,7 +306,29 @@ class AccountMyProfileView(mixins.UpdateModelMixin, generics.RetrieveAPIView):
         pass
 
 
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm as BasePasswordChangeForm
+from django import forms
+
+
+class PasswordChangeForm(BasePasswordChangeForm):
+    error_messages = {
+        'password_mismatch': '两次密码输入错误',
+        'password_incorrect': '旧密码输入错误, 请再次输入',
+    }
+    new_password1 = forms.CharField(label='新密码',
+                                    error_messages={
+                                        'max_length': '密码不能超过%(limit_value)s位',
+                                        'min_length': '密码至少填写%(limit_value)s位',
+                                    },
+                                    validators=[
+                                        validators.MaxLengthValidator(16),
+                                        validators.MinLengthValidator(6),
+                                    ],
+                                    widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label='重复密码',
+                                    widget=forms.PasswordInput)
+    old_password = forms.CharField(label='就密码',
+                                   widget=forms.PasswordInput)
 
 
 class AccountChangePasswordView(APIView):
@@ -354,7 +376,8 @@ class AccountChangePasswordView(APIView):
             chpass.save()
             response = Response({'detail': 'ok'}, status=status.HTTP_200_OK)
         else:
-            response = Response(chpass.errors, status=status.HTTP_400_BAD_REQUEST)
+            detail = errors_flat_to_str(chpass.errors)
+            response = Response(dict(detail=detail), status=status.HTTP_400_BAD_REQUEST)
         return response
 
 
