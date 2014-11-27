@@ -301,7 +301,7 @@ class LoadingCover(SiteRelated,
     def content(self):
         if self.link:
             return self.link
-        if not self.object_id:
+        if self.object_id:
             return self.content_object
         return None
 
