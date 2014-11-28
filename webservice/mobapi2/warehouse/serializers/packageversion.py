@@ -18,7 +18,7 @@ from mobapi2.warehouse.serializers.mixin import (
 from mobapi2.warehouse.serializers.helpers import (
     get_packageversion_download_url,
     get_packageversion_download_size,
-    get_packageversion_supported_languages)
+    get_packageversion_supported_languages, get_packageversion_reported)
 from mobapi2.serializers import ModelSerializer,HyperlinkedModelSerializer
 
 
@@ -307,7 +307,6 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
     def get_stars_low_rate(self, obj):
         return get_object_stars_rate(obj, 'low')
 
-
     supported_languages = serializers.SerializerMethodField('get_supported_languages')
     def get_supported_languages(self, obj):
         return get_packageversion_supported_languages(obj)
@@ -317,6 +316,10 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
         if not obj.tags_text:
             return list()
         return obj.tags_text.split()
+
+    reported = serializers.SerializerMethodField('get_reported')
+    def get_reported(self, obj):
+        return get_packageversion_reported(obj)
 
     class Meta:
         model = PackageVersion
@@ -348,7 +351,8 @@ class PackageVersionDetailSerializer(PackageVersionRelatedPackageMixin,
                   'versions_url',
                   'related_packages_url',
                   'released_datetime',
-                  'supported_languages'
+                  'supported_languages',
+                  'reported',
         )
 
 
