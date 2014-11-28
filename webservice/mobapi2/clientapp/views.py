@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from rest_framework import generics, status, filters, views
+from rest_framework.decorators import link
 from rest_framework.response import Response
-from mobapi2.clientapp.serializers import ClientPackageVersionSerializer
+from mobapi2.clientapp.serializers import ClientPackageVersionSerializer, LoadingCoverSerializer
 from clientapp.models import ClientPackageVersion, LoadingCover
 from rest_framework_extensions.cache.decorators import cache_response
 from mobapi2 import cache_keyconstructors as ckc
+from rest_framework import viewsets
 
 
 class SelfUpdateView(generics.RetrieveAPIView):
@@ -63,12 +65,12 @@ class SelfUpdateView(generics.RetrieveAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class LoadingCoverView(views.APIView):
-    """ 客户端自更新接口
+class LoadingCoverViewSet(viewsets.ViewSet):
+    """ 客户端Loading封面接口
 
     #### 访问方式
 
-    GET /api/v2/loadingcovers/`package_name`/`version_name`
+    GET /api/v2/loadingcovers/active/?`package_name`=`com.lion.market`&`version_name`=`2.6`
 
     #### 请求参数
     * `package_name`: 客户端包名, "com.lion.market"
@@ -76,34 +78,44 @@ class LoadingCoverView(views.APIView):
 
     #### 响应内容
 
-    * 302 HTTP_302_FOUND
-    * 重定向图片
+    * 200 HTTP_200_OK
+        * 正常返回数据
     * 404 HTTP_404_NOT_FOUND
-    * 无图片
+        * 无图片
 
     """
 
+    queryset = None
+    model = LoadingCover
     permission_classes = ()
+    authentication_classes = ()
+    serializer_class = LoadingCoverSerializer
 
-    @cache_response(key_func=ckc.PackageLookupConstructor())
-    def get(self, request, package_name, version_name=None, *args, **kwargs):
-        qs = LoadingCover.objects.published().order_by('-_order')
-        q = qs.find_covers(package_name, version_name)
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = self.model.objects.status_published().order_by('-_order')
+        return self.queryset
+
+    @link()
+    @cache_response(key_func=ckc.PackageFilterKeyConstructor())
+    def active(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        package_name = request.GET.get('package_name', 'com.lion.market')
+        print(package_name)
+        version_name = request.GET.get('version_name')
         try:
-            cover = qs.find_covers(package_name, version_name)[0]
+            cover = queryset.find_covers(package_name=package_name,
+                                         version_name=version_name)[0]
         except IndexError:
             try:
-                cover = qs.find_covers(package_name)[0]
+                cover = queryset.find_covers(package_name)[0]
             except IndexError:
                 return Response({'detail': 'Not Found'},
                                 status=status.HTTP_404_NOT_FOUND)
-
-        return Response({'title': cover.title},
-                        headers=dict(Location=cover.image.url),
-                        status=status.HTTP_302_FOUND)
+        serializer = self.serializer_class(cover)
+        return Response(serializer.data)
 
 
-from rest_framework import viewsets
 from mobapi2.rest_clients import android_home_api
 
 

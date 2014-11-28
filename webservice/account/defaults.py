@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from toolkit.helpers import register_setting
-
+from toolkit.mz_helpers import register_setting
 
 def _(t):
     return t

@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
+from django.http import QueryDict
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from rest_framework import generics, status, viewsets, filters, mixins
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.decorators import action, link
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -25,6 +29,100 @@ def errors_flat_to_str(errors):
     for field, _messages in errors.items():
         messages.append(", ".join(_messages))
     return ", ".join(messages)
+
+
+from mobapi2.account.serializers import PhoneAuthSerializer, OldPhoneAuthSerializer, ChangePhoneAuthSerializer
+
+
+class AccountPhoneAuthViewSet(viewsets.GenericViewSet):
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = PhoneAuthSerializer
+
+    def fetch_error_message(self, errors):
+        for k, ers in errors.items():
+            return ers[0]
+
+    @link()
+    @action()
+    @method_decorator(never_cache)
+    def sendcode(self, request, *args, **kwargs):
+        data = request.DATA or request.GET
+        serializer = self.get_serializer(data=data)
+        if serializer.is_valid():
+            sended, data = serializer.send_sms()
+            if sended:
+                return Response(data=data)
+            else:
+                return Response(data=dict(detail='发送失败'),
+                                status=status.HTTP_400_BAD_REQUEST)
+        else:
+            detail = self.fetch_error_message(serializer.errors)
+            return Response(data=dict(detail=detail),
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class AccountChangePhoneViewSet(viewsets.GenericViewSet):
+
+    authentication_classes = (PlayerTokenAuthentication, )
+    permission_classes = (IsAuthenticated, )
+
+    serializer_class = PhoneAuthSerializer
+    serializer_classes = {'change': ChangePhoneAuthSerializer,
+                          'old': OldPhoneAuthSerializer}
+
+    def fetch_error_message(self, errors):
+        for k, ers in errors.items():
+            return ers[0]
+
+    def get_serializer(self, *args, **kwargs):
+        try:
+            cls_type = kwargs.pop('cls_type')
+            self.serializer_class = self.serializer_classes[cls_type]
+        except KeyError:
+            pass
+        ser = super(AccountChangePhoneViewSet, self).get_serializer(*args, **kwargs)
+        self.serializer_class = PhoneAuthSerializer
+        return ser
+
+    @link()
+    @action()
+    @method_decorator(never_cache)
+    def auth_old(self, request, *args, **kwargs):
+        """
+            :param code
+        """
+        data = dict()
+        data['phone'] = request.user.profile.phone
+        code = request.DATA.get('code') or request.GET.get('code')
+        if code:
+            data['code'] = code
+
+        serializer = self.get_serializer(cls_type='old', data=data)
+        if serializer.is_valid():
+            return Response(data=dict())
+        else:
+            detail = self.fetch_error_message(serializer.errors)
+            return Response(data=dict(detail=detail), status=status.HTTP_400_BAD_REQUEST)
+
+    @link()
+    @action()
+    @method_decorator(never_cache)
+    def auth_change(self, request, *args, **kwargs):
+        """
+            :param phone newphone
+            :param code
+        """
+        data = request.DATA or request.GET
+        serializer = self.get_serializer(cls_type='change',
+                                         instance=request.user.profile,
+                                         data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=dict())
+        else:
+            detail = self.fetch_error_message(serializer.errors)
+            return Response(data=dict(detail=detail), status=status.HTTP_400_BAD_REQUEST)
 
 
 class AccountCreateView(generics.CreateAPIView):
@@ -58,11 +156,20 @@ class AccountCreateView(generics.CreateAPIView):
     authentication_classes = ()
     permission_classes = ()
     serializer_class = AccountProfileSignupSerizlizer
+    SIGNIN_TYPE = ['phone', 'email']
 
-    form_class = account_forms.SignupForm
+    def get_form_class(self, signin_type=None):
+        if signin_type == 'phone':
+            return account_forms.PhoneSignupForm
+        elif signin_type == 'email':
+            return account_forms.EmailSignupForm
+        else:
+            return account_forms.SignupForm
 
     def create(self, request, *args, **kwargs):
-        form = self.form_class(request.DATA, files=request.FILES)
+        signin_type = request.DATA.get('signup_type', None)
+        form = self.get_form_class(signin_type)(request.DATA,
+                                                files=request.FILES)
         if form.is_valid():
             user = form.save()
             self.object = user.profile
@@ -189,11 +296,39 @@ class AccountMyProfileView(mixins.UpdateModelMixin, generics.RetrieveAPIView):
             self.post_save(self.object, created=created)
             response = Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            response = Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            detail = errors_flat_to_str(serializer.errors)
+            response = Response(dict(detail=detail),
+                                status=status.HTTP_400_BAD_REQUEST)
         return response
 
+    # action
+    def validate_fields(self, request, *args, **kwargs):
+        pass
 
-from django.contrib.auth.forms import PasswordChangeForm
+
+from django.contrib.auth.forms import PasswordChangeForm as BasePasswordChangeForm
+from django import forms
+
+
+class PasswordChangeForm(BasePasswordChangeForm):
+    error_messages = {
+        'password_mismatch': '两次密码输入错误',
+        'password_incorrect': '旧密码输入错误, 请再次输入',
+    }
+    new_password1 = forms.CharField(label='新密码',
+                                    error_messages={
+                                        'max_length': '密码不能超过%(limit_value)s位',
+                                        'min_length': '密码至少填写%(limit_value)s位',
+                                    },
+                                    validators=[
+                                        validators.MaxLengthValidator(16),
+                                        validators.MinLengthValidator(6),
+                                    ],
+                                    widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label='重复密码',
+                                    widget=forms.PasswordInput)
+    old_password = forms.CharField(label='就密码',
+                                   widget=forms.PasswordInput)
 
 
 class AccountChangePasswordView(APIView):
@@ -241,7 +376,8 @@ class AccountChangePasswordView(APIView):
             chpass.save()
             response = Response({'detail': 'ok'}, status=status.HTTP_200_OK)
         else:
-            response = Response(chpass.errors, status=status.HTTP_400_BAD_REQUEST)
+            detail = errors_flat_to_str(chpass.errors)
+            response = Response(dict(detail=detail), status=status.HTTP_400_BAD_REQUEST)
         return response
 
 
@@ -309,13 +445,38 @@ class AccountAuthTokenView(ObtainAuthToken):
     serializer_class = MultiAppAuthTokenSerializer
     serializer_class_myprofile = AccountProfileSigninSerializer
 
+    def get_serializer_class_myprofile(self, type=None):
+        return self.serializer_class_myprofile
+
     def post(self, request):
         serializer = self.serializer_class(data=request.DATA)
         if serializer.is_valid():
-            myprofile_serializer = self.serializer_class_myprofile(
-                serializer.object['user'].profile)
+            cls_type = None
+            myprofile_serializer = self.get_serializer_class_myprofile(cls_type)\
+                    (serializer.object['user'].profile)
             return Response(myprofile_serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        detail = errors_flat_to_str(serializer.errors)
+        return Response(data=dict(detail=detail), status=status.HTTP_400_BAD_REQUEST)
+
+
+class AccountWXAuthTokenView(ObtainAuthToken):
+
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
+    serializer_class = WeixinAuthTokenSerializer
+    serializer_class_myprofile = WeixinAccountProfileSerializer
+
+    def get_serializer_class_myprofile(self, type=None):
+        return self.serializer_class_myprofile
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.DATA)
+        if serializer.is_valid():
+            cls_type = None
+            myprofile_serializer = self.get_serializer_class_myprofile(cls_type) \
+                    (serializer.object['user'].profile)
+            return Response(myprofile_serializer.data)
+        data = {"detail": msgs[0] for k,msgs in serializer.errors.items()}
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MyCommentedPackageVersionFilter(filters.BaseFilterBackend):

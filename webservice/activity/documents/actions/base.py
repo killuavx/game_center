@@ -161,12 +161,18 @@ class Task(Ownerable, CreditExchangable, DynamicDocument):
 
     status = fields.StringField(choices=list(dict(STATUS).keys()), default=STATUS.posted)
 
+    publish_date = fields.DateTimeField(required=False)
+
+    expiry_date = fields.DateTimeField(required=False)
+
     meta = {
         'allow_inheritance': True,
         'db_alias': db_alias,
         'collection': collection_name('task'),
         'indexes': [
             ('created_datetime', ),
+            ('-publish_date', ),
+            ('publish_date', 'expiry_date', ),
             ('status', 'created_datetime', ),
             ('user_id', 'created_datetime', ),
             ('user_id', 'status', '-completed_datetime', ),

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from toolkit.mz_helpers import register_setting
 from django import forms
-from toolkit.helpers import register_setting
 
 
 register_setting(

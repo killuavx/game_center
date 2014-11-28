@@ -6,7 +6,6 @@ from django.db import models
 from django.db.models.query import QuerySet
 from model_utils import Choices, FieldTracker
 from model_utils.fields import StatusField
-from model_utils.managers import PassThroughManager
 from django.utils.translation import ugettext_lazy as _
 from easy_thumbnails.fields import ThumbnailerImageField
 from toolkit.helpers import sync_status_from, released_hourly_datetime, qurl_to
@@ -16,6 +15,8 @@ from mezzanine.core.models import TimeStamped, Orderable
 from toolkit.fields import MultiResourceField
 from mezzanine.core.fields import FileField
 import os
+from django.contrib.contenttypes.generic import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 
 class ClientPackageVersionQuerySet(QuerySet):
@@ -241,14 +242,21 @@ class LoadingCoverManager(PublishedManager, CurrentSitePassThroughManager):
     pass
 
 
-def _clientloading_upload_to_path(instance, filename):
-    extension = filename.split('.')[-1].lower()
-    path = "clientloading/%s" % instance.package_name
-    basename = instance.created.strftime('%Y%m%d-%H%M%S')
-    return '%(path)s/%(filename)s.%(extension)s' % {'path': path,
-                                                    'filename': basename,
-                                                    'extension': extension,
-                                                    }
+LOADING_DIRECTORY_DTFORMAT = 'clientloading/%Y%m%d/%H%M-%S-%f'
+
+
+def clientloading_created_now(instance):
+    if not instance.created:
+        instance.created = now().astimezone()
+    else:
+        instance.created = instance.created.astimezone()
+
+
+def clientloading_upload_to_path(instance, filename):
+    clientloading_created_now(instance)
+    path = instance.created.strftime(LOADING_DIRECTORY_DTFORMAT)
+    basename = os.path.basename(filename)
+    return '%s/%s' % (path, basename)
 
 
 class LoadingCover(SiteRelated,
@@ -267,7 +275,35 @@ class LoadingCover(SiteRelated,
                                 null=True,
                                 blank=True)
 
-    image = models.ImageField(upload_to=_clientloading_upload_to_path)
+    image = models.ImageField(upload_to=clientloading_upload_to_path)
+
+    content_type = models.ForeignKey(ContentType,
+                                     verbose_name='类型',
+                                     related_name='+',
+                                     limit_choices_to=dict(
+                                         app_label='warehouse',
+                                         model='package'
+                                     ),
+                                     blank=True, null=True)
+
+    object_id = models.IntegerField(verbose_name='ID',
+                                    default=0,
+                                    blank=True)
+
+    content_object = GenericForeignKey()
+
+    link = models.URLField(verbose_name='外部链接',
+                           max_length=1024,
+                           default='',
+                           blank=True)
+
+    @property
+    def content(self):
+        if self.link:
+            return self.link
+        if self.object_id:
+            return self.content_object
+        return None
 
     def clean(self):
         if not self.package_name and not self.version:
@@ -293,3 +329,8 @@ class LoadingCover(SiteRelated,
 
     def sync_status(self):
         return sync_status_from(self)
+
+    def save(self, update_site=False, *args, **kwargs):
+        if self.version:
+            self.package_name = self.version.package_name
+        return super(LoadingCover, self).save(update_site=update_site, *args, **kwargs)

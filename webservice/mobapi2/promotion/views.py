@@ -134,7 +134,7 @@ class RecommendView(generics.RetrieveAPIView):
         dt = now().astimezone()
         self.object = self.get_object(queryset)
         if not self.object.allow_show(dt):
-            raise Response(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = self.get_serializer(self.object)
         return Response(serializer.data)

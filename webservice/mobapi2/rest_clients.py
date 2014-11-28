@@ -19,6 +19,17 @@ def api_factory(platform, version=2):
     class RestApi(drest.API):
         _platform = platform
 
+        def auth(self, token_key=None, *args, **kwargs):
+            key = 'Authorization'
+            if token_key:
+                value = 'Token %s' % token_key
+                self.request.add_header(key, value)
+            else:
+                if hasattr(self.request, 'remove_header'):
+                    self.request.remove_header(key)
+                elif hasattr(self.request, 'headers'):
+                    del self.request.headers[key]
+
         class Meta:
             trailing_slash = True
             baseurl = api_url
@@ -31,10 +42,14 @@ def api_factory(platform, version=2):
     api.add_resource('rankings')
     api.add_resource('authors')
     api.add_resource('categories')
+    api.add_resource('activities')
+    api.add_resource('bulletins')
     return api
 
 ios_api = api_factory('ios')
 android_api = api_factory('android')
+android_api.add_resource('lotteries')
+android_api.add_resource('giftbags')
 
 
 class AndroidHomeApi(object):

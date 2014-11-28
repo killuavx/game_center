@@ -50,6 +50,9 @@ if settings.DEBUG:
     Profile.sync_processor_class = \
         mock_processor_class(ProfileProcessor)
 
+    Activity.sync_processor_class = \
+        mock_processor_class(ActivityProcessor)
+
 
 from searcher.helpers import get_default_package_query
 from searcher.search_results import PackageSearchResult

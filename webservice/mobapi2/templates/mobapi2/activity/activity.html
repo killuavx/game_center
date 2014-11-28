@@ -1,0 +1,36 @@
+{% extends "mobapi2/activity/base.html" %}
+{% load staticfiles mezzanine_tags %}
+{% block main %}
+{% editable object.content %}
+    {{ object.content|richtext_filters|safe }}
+{% endeditable %}
+<script src="{% static 'common/js/jquery.min.js' %}"></script>
+<script type="text/javascript">
+    function open_activity(){
+        try{
+            window.lionJs.toActivity("#Intent;launchFlags=0x24000000;component=com.lion.market/.app.TurntableActivity;end",true);
+        }catch(e){
+            console.log(e);
+        }
+    }
+    $(function(){
+        $('.event-open-activity').click(function(){
+            {% if not object.is_active %}
+            function open_lottery_winnings(lottery_id){
+                window.location = "{% url 'apiv2-lottery-winnings-richpage' pk=0 %}".replace('0', lottery_id);
+            }
+            var classes = $(this).attr('class').split(' ');
+            var id = null;
+            for(i in classes)
+            {
+                var mg = classes[i].match(/lottery-(\d+)/);
+                if(mg){ id = mg[1]; }
+            }
+            if( id ){ open_lottery_winnings(id); }
+            {% else %}
+            open_activity();
+            {% endif %}
+        })
+    })
+</script>
+{% endblock %}

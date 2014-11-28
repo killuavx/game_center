@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
-import random
+import hashlib
+
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
+
 from account.models import Profile
 from account.models import UserAppBind
-import hashlib
-from account.utils import get_datetime_now
-from django.db import transaction
+from account.utils import unique_value, unique_email_value
+from account.utils import get_datetime_now, PROFILE_EMAIL_DEFAULT_HOST
+from toolkit.wxapi import WXApi, WXApiException, userinfo_transaction_profile
+
 
 sha_constructor = hashlib.sha1
 
@@ -23,38 +28,6 @@ class GetUserMixin(object):
             return Player.objects.get(pk=user_id)
         except Player.DoesNotExist:
             return None
-
-
-def unique_value(queryset, field, value, segment='-'):
-    i = 0
-    while True:
-        if i > 0:
-            if i > 1:
-                value = value.rsplit(segment, 1)[0]
-            value = "%s%s%s" % (value, segment, i)
-        try:
-            queryset.get(**{field: value})
-        except ObjectDoesNotExist:
-            break
-        i += 1
-    return value
-
-
-def unique_email_value(queryset, field, email, segment='_'):
-    i = 0
-    value, host = email.split('@')
-    while True:
-        if i > 0:
-            if i > 1:
-                value = value.rsplit(segment, 1)[0]
-            value = "%s%s%s" % (value, segment, i)
-            email = "%s@%s" %(value, host)
-        try:
-            queryset.get(**{field: email})
-        except ObjectDoesNotExist:
-            break
-        i += 1
-    return email
 
 
 def uc_unique_username(api, value, segment='-'):
@@ -155,7 +128,7 @@ class UserSyncAPI(object):
 
     def clean_email(self, email):
         qs = Profile.objects.all()
-        return unique_value(qs, 'email', email)
+        return unique_email_value(qs, 'email', email)
 
     def _phone(self):
         now = get_datetime_now()
@@ -165,6 +138,35 @@ class UserSyncAPI(object):
         phone = self._phone()
         qs = Profile.objects.all()
         return unique_value(qs, 'phone', phone)
+
+    def checkupdate_wx_user_bind(self, openid, extra_data=None):
+        appbind = UserAppBind.objects.get(app=UserAppBind.APPS.wx, openid=openid)
+        print(extra_data)
+        if extra_data:
+            appbind.extra_data = extra_data
+            if appbind.tracker.has_changed('extra_text'):
+                appbind.save()
+        return appbind.user
+
+    def create_wx_user_bind(self, openid, userinfo, extra_data):
+        username = userinfo['openid'].lower()[0:5] + userinfo['unionid'][0:5].lower()
+        username = self.clean_username(username)
+        email = "%s@%s" %(username, PROFILE_EMAIL_DEFAULT_HOST)
+        email = self.clean_email(email)
+        phone = self.clean_phone()
+        User = get_user_model()
+        user = User.objects.create_user(username=username,
+                                        email=email,
+                                        phone=phone)
+        group_player, _is_new = Group.objects.get_or_create(name='weixin')
+        user.groups.add(group_player)
+        bind = UserAppBind.objects.create(user=user,
+                                          app=UserAppBind.APPS.wx,
+                                          openid=openid,
+                                          extra_data=extra_data,
+                                          )
+        userinfo_transaction_profile(user, userinfo)
+        return user
 
 
 class GameCenterModelBackend(UserSyncAPI,
@@ -272,3 +274,75 @@ class GameCenterProfileBackend(GetUserMixin):
         if user.check_password(password):
             return user
         return None
+
+
+class WXBackend(UserSyncAPI, GetUserMixin):
+
+    SUCCESS = 0
+
+    wxapi = WXApi()
+
+    ACTIONS = ('wx_access', 'wx_refresh')
+
+    def oauth_by_refresh_token(self, refresh_token):
+        result = self.wxapi.refresh_token(refresh_token=refresh_token)
+        if result.get('errcode', self.SUCCESS) == self.SUCCESS:
+            access_token, openid = result['access_token'], result['openid']
+            return access_token, openid, result
+        else:
+            return None
+
+    def oauth_by_access_token(self, access_token):
+        result = self.wxapi.request_access_token(code=access_token)
+        if result.get('errcode', self.SUCCESS) == self.SUCCESS:
+            access_token, openid = result['access_token'], result['openid']
+            return access_token, openid, result
+        else:
+            return None
+
+    def authenticate_by(self, access_token, openid, refresh_token):
+        try:
+            if openid:
+                try:
+                    return self.checkupdate_wx_user_bind(openid=openid)
+                except UserAppBind.DoesNotExist:
+                    return None
+
+            result = None
+            if access_token:
+                result = self.oauth_by_access_token(access_token)
+            elif refresh_token:
+                result = self.oauth_by_refresh_token(refresh_token)
+
+            if not result:
+                return None
+
+            access_token, openid, extra_data = result
+            return self.sync_user(openid=openid, access_token=access_token, extra_data=extra_data)
+
+        except WXApiException as e:
+            print(e)
+            return None
+
+    def authenticate(self, username=None, password=None, app=None, **kwargs):
+        access_token = refresh_token = openid = None
+        if app == 'wx_access':
+            access_token, openid = password, username
+        elif app == 'wx_refresh':
+            refresh_token, openid = password, username
+        else:
+            return None
+
+        return self.authenticate_by(access_token=access_token,
+                                 refresh_token=refresh_token,
+                                 openid=openid)
+
+    def sync_user(self, openid, access_token, extra_data):
+        try:
+            return self.checkupdate_wx_user_bind(openid=openid, extra_data=extra_data)
+        except UserAppBind.DoesNotExist:
+            userinfo = self.wxapi.userinfo(access_token=access_token, openid=openid)
+            if userinfo.get('errcode', self.SUCCESS) == self.SUCCESS:
+                return self.create_wx_user_bind(openid=openid, userinfo=userinfo, extra_data=extra_data)
+        return None
+

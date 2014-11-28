@@ -9,6 +9,8 @@ from django.utils.timezone import now
 from random import randint
 import uuid
 
+db_alias = 'data_center'
+
 
 class ScratchRule(DynamicDocument):
     """
@@ -24,7 +26,7 @@ class ScratchRule(DynamicDocument):
     winning_rate = fields.IntField()
 
     meta = {
-        'db_alias': 'data_center',
+        'db_alias': db_alias,
         'collection': 'activity_scratchrule',
         'indexes': [
             ['group', 'winning_rate'],
@@ -76,7 +78,7 @@ class ScratchCard(DynamicDocument):
     award_coin = fields.IntField(verbose_name='奖励金币')
 
     meta = {
-        'db_alias': 'data_center',
+        'db_alias':  db_alias,
         'collection': 'activity_scratchcard',
         'indexes': [
             ['rule',],

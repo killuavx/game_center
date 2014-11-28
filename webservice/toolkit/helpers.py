@@ -147,6 +147,7 @@ def sync_status_actions(obj):
                                content_type=data['content_type'],
                                object_pk=data['object_pk'],
                                publishlevel=PublishOperation.FILE_LEVEL_REFRESH)
+    return " | ".join([refresh_link])
     preload_link = mask % dict(op_name='publish',
                                text='publish(preload)',
                                content_type=data['content_type'],

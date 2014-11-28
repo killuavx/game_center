@@ -6,7 +6,7 @@ from toolkit.helpers import qurl_to
 from rest_framework import serializers
 from mobapi2.serializers import HyperlinkedModelSerializer, ModelSerializer, Serializer
 from mobapi2.helpers import PackageDetailApiUrlEncode, PackageVersionDetailApiUrlEncode
-from mobapi2.settings import IMAGE_ICON_SIZE
+from mobapi2.settings import IMAGE_ICON_SIZE, IMAGE_COVER_SIZE
 
 
 def giftbag_icon(giftbag):
@@ -354,4 +354,317 @@ class MyTasksStatusSerializer(Serializer):
             install=install_task,
         )
         return cls(data)
+
+
+from activity.models import Bulletin, Activity
+
+
+class BulletinSummarySerializer(ModelSerializer):
+
+    page_url = serializers.SerializerMethodField('get_page_url')
+    def get_page_url(self, obj):
+        request = self.context.get('request')
+        url =  reverse('apiv2-bulletin-richpage', kwargs=dict(pk=obj.pk))
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    class Meta:
+        model = Bulletin
+        fields = (
+            'page_url',
+            'title',
+            'summary',
+            'publish_date',
+        )
+
+
+class ActivitySummarySerializer(ModelSerializer):
+
+    page_url = serializers.SerializerMethodField('get_page_url')
+    def get_page_url(self, obj):
+        request = self.context.get('request')
+        url =  reverse('apiv2-activity-richpage', kwargs=dict(pk=obj.pk))
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    cover = serializers.SerializerMethodField('get_cover_url')
+    def get_cover_url(self, obj):
+        try:
+            return obj.cover[IMAGE_COVER_SIZE].url
+        except:
+            return None
+
+    class Meta:
+        model = Activity
+        fields = (
+            'page_url',
+            'title',
+            'cover',
+            'is_active',
+            'publish_date',
+        )
+
+
+from datetime import datetime
+from mobapi2.rest_clients import android_api
+from mobapi2.activity.throttling import *
+
+
+class NotificationSerializer(Serializer):
+
+    def __init__(self, view, request, *args, **kwargs):
+        assert request
+        super(NotificationSerializer, self).__init__(*args, **kwargs)
+        self.context['request'] = request
+        self.context['view'] = view
+
+    activity = serializers.SerializerMethodField('get_activity')
+
+    def get_activity(self, obj):
+        #request = self.context.get('request')
+        response = android_api.activities.get()
+        try:
+            latest = response.data['results'][0]
+            result = dict(
+                new_count=1 if latest['is_active'] else 0,
+                latest=latest,
+                #active=latest['is_active']
+            )
+        except Exception as e:
+            result = dict(new_count=0, latest=None, active=False)
+        return result
+
+    bulletin = serializers.SerializerMethodField('get_bulletin')
+
+    def get_bulletin(self, obj):
+        request = self.context.get('request')
+        response = android_api.bulletins.get()
+        data = response.data
+        result = dict(new_count=0, latest=None)
+        try:
+            if data['count']:
+                result['new_count'] = self._bulletin_newcount(request, data)
+                #result['active'] = result['new_count'] > 0
+                result['latest'] = data['results'][0]
+        except:
+            pass
+        return result
+
+    def _bulletin_newcount(self, request, data):
+        new_count = 0
+        n = now().astimezone()
+        for item in data['results']:
+            cur_dt = datetime.fromtimestamp(int(item['publish_date']),
+                                            tz=n.tzinfo)
+            if (n - cur_dt) < timedelta(days=3):
+                new_count += 1
+        return new_count
+
+    scratchcard = serializers.SerializerMethodField('get_scratchcard')
+
+    def get_scratchcard(self, obj):
+        throttle = ScratchCardPlayDailyThrottle()
+        active = throttle.check_allowed(request=self.context.get('request'),
+                                        view=self.context.get('view'))
+        return dict(active=active)
+
+    lottery = serializers.SerializerMethodField('get_lottery')
+
+    def get_lottery(self, obj):
+        throttle = LotteryPlayDailyThrottle()
+        active = throttle.check_allowed(request=self.context.get('request'),
+                                        view=self.context.get('view'))
+
+        res = android_api.lotteries.get('active')
+        if res.status == 200:
+            active = active and res.data['status'] == LotterySerializer.STATUS.inprogress
+        else:
+            active = False
+        return dict(active=active)
+
+
+from model_utils.choices import Choices
+from activity.models import Lottery, LotteryPrize, LotteryWinning
+from django.utils import timezone
+from toolkit.models import CONTENT_STATUS_PUBLISHED
+from activity.documents.actions import lottery as lottery_doc
+
+
+class LotterySerializer(HyperlinkedModelSerializer):
+
+    STATUS = Choices(
+        ('comingsoon', 'comingsoon', '即将开始'),
+        ('inprogress', 'inprogress', '进行中'),
+        ('finish', 'finish', '活动结束'),
+        ('expired', 'expired', '活动截止'),
+    )
+
+    def __init__(self, instance=None, now=None, *args, **kwargs):
+        self.now = now if now else timezone.now().astimezone()
+        super(LotterySerializer, self).__init__(instance=instance, *args, **kwargs)
+
+    status = serializers.SerializerMethodField('get_status')
+
+    def get_status(self, obj):
+        if obj.status != CONTENT_STATUS_PUBLISHED:
+            return self.STATUS.comingsoon
+
+        if obj.publish_date.astimezone() >= self.now and self.now < obj.expiry_date.astimezone():
+            return self.STATUS.comingsoon
+
+        if self.now > obj.expiry_date.astimezone():
+            return self.STATUS.expired
+
+        return self.STATUS.inprogress
+
+    play = serializers.SerializerMethodField('get_play_url')
+
+    def get_play_url(self, obj):
+        request = self.context.get('request')
+        base_name = self.opts.router.get_base_name('lottery-play')
+        url = reverse(base_name, kwargs=dict(pk=obj.pk))
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    winning_url = serializers.SerializerMethodField('get_winning_url')
+
+    def get_winning_url(self, obj):
+        request = self.context.get('request')
+        base_name = self.opts.router.get_base_name('lottery-winnings-richpage')
+        url = reverse(base_name, kwargs=dict(pk=obj.pk))
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    class Meta:
+        model = Lottery
+        fields = (
+            'url',
+            'title',
+            'cost_coin',
+            'status',
+            'publish_date',
+            'expiry_date',
+        )
+
+
+class LotterySummarySerializer(LotterySerializer):
+
+    class Meta:
+        model = Lottery
+        fields = (
+            'url',
+            'title',
+            'cost_coin',
+            'status',
+            'publish_date',
+            'expiry_date',
+        )
+
+
+class LotteryDetailSerializer(LotterySerializer):
+
+    prizes = serializers.SerializerMethodField('get_prizes')
+
+    def get_prizes(self, obj):
+        prizes = list()
+        for p in sorted(obj.prizes.all(),
+                        key=lambda item:item.level,
+                        reverse=True):
+            prizes.append(dict(
+                level=p.level,
+                group=p.group,
+                title=p.title,
+                level_name=p.level_name,
+            ))
+        return prizes
+
+    winnings = serializers.SerializerMethodField('get_winnings')
+
+    def get_winnings(self, obj):
+        winners = list()
+        for winning in lottery_doc.LotteryWinningAction\
+                        .objects.lottery_winning_list(obj.pk)[0:5]:
+            try:
+                winners.append(dict(username=winning.username,
+                                    level_name=winning.prize_level_name,
+                                    group=winning.prize_group,
+                                    title=winning.prize_title))
+            except:
+                pass
+        return winners
+
+
+    class Meta:
+        model = Lottery
+        fields = (
+            'url',
+            'title',
+            'play',
+            'prizes',
+            'cost_coin',
+            'description',
+            'status',
+            'publish_date',
+            'expiry_date',
+            'takepartin_count',
+            'winnings',
+            'winning_url',
+        )
+
+
+class LotteryPrizeWinningSerializer(Serializer):
+
+    prize_group = serializers.SerializerMethodField('get_group')
+
+    prize_title = serializers.SerializerMethodField('get_title')
+
+    prize_prompt = serializers.SerializerMethodField('get_prompt')
+
+    level = serializers.SerializerMethodField('get_level')
+
+    def get_level(self, obj):
+        prize, _ = obj
+        return prize.level
+
+    def get_prompt(self, obj):
+        prize, _ = obj
+        return prize.win_prompt
+
+    def get_title(self, obj):
+        prize, _ = obj
+        return "%s: %s" % (prize.level_name, prize.title)
+
+    def get_group(self, obj):
+        prize, _ = obj
+        return prize.group
+
+    winning_detail_url = serializers.SerializerMethodField('get_winning_detail_url')
+
+    def get_winning_detail_url(self, obj):
+        prize, winning = obj
+        request = self.context.get('request')
+        view_name = self.opts.router.get_base_name('lottery-winning-detail-richpage')
+        url = reverse(view_name, kwargs=dict(winning_id=winning.pk))
+        if request:
+            return request.build_absolute_uri(url)
+        return url
+
+    def save_object(self, obj, **kwargs):
+        pass
+
+    def delete_object(self, obj):
+        pass
+
+    class Meta:
+        fields = (
+            'level',
+            'prize_group',
+            'prize_title',
+            'prize_prompt',
+            'winning_detail_url',
+        )
 

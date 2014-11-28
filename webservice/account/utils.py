@@ -2,6 +2,7 @@
 import datetime
 from django.conf import settings
 from django.contrib.auth.models import SiteProfileNotAvailable
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import get_model
 from django.contrib.auth import get_user
 
@@ -86,3 +87,36 @@ try:
 except ImportError:
     from django.contrib.auth.models import User
     get_user_model = lambda: User
+
+
+def unique_value(queryset, field, value, segment='-'):
+    i = 0
+    while True:
+        if i > 0:
+            if i > 1:
+                value = value.rsplit(segment, 1)[0]
+            value = "%s%s%s" % (value, segment, i)
+        try:
+            queryset.get(**{field: value})
+        except ObjectDoesNotExist:
+            break
+        i += 1
+    return value
+
+
+def unique_email_value(queryset, field, email, segment='_'):
+    i = 0
+    value, host = email.split('@')
+    while True:
+        if i > 0:
+            if i > 1:
+                value = value.rsplit(segment, 1)[0]
+            value = "%s%s%s" % (value, segment, i)
+            email = "%s@%s" %(value, host)
+        try:
+            queryset.get(**{field: email})
+        except ObjectDoesNotExist:
+            break
+        i += 1
+    return email
+
