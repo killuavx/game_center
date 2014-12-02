@@ -107,7 +107,6 @@
 
 
   {% cache CACHE_TIMEOUT_DAYS product_web_home_a4a5_t3 request.get_host %}
-  {% if is_android %}
   / START 广告 行4
   .auto.width.cc-a-d-box
     .rel.pt20.cell-bk.ovh
@@ -118,7 +117,7 @@
         {% settings_value "GC_WEB_HOME_A5_PLACE_SLUG" as R4C2A_PLACE_SLUG %}
         {% include_widget WebSingleAdvertisementWidget slug=R4C2A_PLACE_SLUG %}
   / END 广告 行4
-  {% endif %}
+  {% comment %}
   {% if is_ios %}
   / START collections 行4
   .auto.rel.width.box_btn.roll.ovh.project
@@ -128,6 +127,7 @@
     / pct100
   / END collections 行4
   {% endif %}
+  {% endcomment %}
   {% endcache %}
 
   / START appliction 行5
@@ -148,7 +148,6 @@
   / END application 行5
 
   {% cache CACHE_TIMEOUT_DAYS product_web_home_a6a7_t4 request.get_host %}
-  {% if is_android %}
   / START 广告 行6
   .auto.width.cc-a-d-box
     .rel.pt20.cell-bk.ovh
@@ -159,7 +158,7 @@
         {% settings_value "GC_WEB_HOME_A7_PLACE_SLUG" as R6C2A_PLACE_SLUG %}
         {% include_widget WebSingleAdvertisementWidget slug=R6C2A_PLACE_SLUG %}
   / END 广告 行6
-  {% endif %}
+  {% comment %}
   {% if is_ios %}
   / START collections 行6
   .auto.rel.width.box_btn.roll.ovh.project
@@ -169,6 +168,7 @@
     / pct100
   / END collections 行6
   {% endif %}
+  {% endcomment %}
   {% endcache %}
 
 
