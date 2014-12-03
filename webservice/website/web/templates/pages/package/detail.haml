@@ -138,25 +138,26 @@
             %a.ios-web-icon.abs.next{:href => "javascript:;", :style => ""}
           / a_btn
 
-          / product banner
-          .game-dis-cc-down
-            .rel.cc-down-bg
-              %object#flashad{:width => "500", :height => "90", :codebase => "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" }
-                %param{:name => "movie", :value => "{% static 'android_web/swf/swfad001.swf' %}"}
-                %param{:name => "quality", :value => "autohigh"}
-                %param{:name => "wmode", :value => "transparent"}
-                %embed{:src => "{% static 'android_web/swf/swfad001.swf' %}",
-                       :quality => "autohigh",
-                       :wmode => "opaque",
-                       :name => "flashad",
-                       :swliveconnect => "TRUE",
-                       :width => "500",
-                       :height => "90",
-                       :type => "application/x-shockwave-flash",
-                       :pluginspage => "http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"}
-              %p.abs.tr
-                %img{:src => "{% static 'common/img/code.png' %}"}
-              %a.abs{:target => "_blank", :title => "虫虫助手", :href => "{% url 'page' slug='product' %}"}
+          - if is_android
+            / product banner
+            .game-dis-cc-down
+              .rel.cc-down-bg
+                %object#flashad{:width => "500", :height => "90", :codebase => "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" }
+                  %param{:name => "movie", :value => "{% static 'android_web/swf/swfad001.swf' %}"}
+                  %param{:name => "quality", :value => "autohigh"}
+                  %param{:name => "wmode", :value => "transparent"}
+                  %embed{:src => "{% static 'android_web/swf/swfad001.swf' %}",
+                         :quality => "autohigh",
+                         :wmode => "opaque",
+                         :name => "flashad",
+                         :swliveconnect => "TRUE",
+                         :width => "500",
+                         :height => "90",
+                         :type => "application/x-shockwave-flash",
+                         :pluginspage => "http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"}
+                %p.abs.tr
+                  %img{:src => "{% static 'common/img/code.png' %}"}
+                %a.abs{:target => "_blank", :title => "虫虫助手", :href => "{% url 'page' slug='product' %}"}
         / up
 
         .down
