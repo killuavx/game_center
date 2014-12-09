@@ -222,6 +222,7 @@ EXTENDAL_APPS = [
     'mobapi2',
     'crawler',
     'activity',
+    'apksite',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 

@@ -1,0 +1,35 @@
+-load util_tags url_tags
+.f18.cell-bk.rel.t-title
+  %ul.l.abs.cell-bk.f16
+    %li.ios-web-icon.dib.tab.tc
+      %a{:href => "#"}= ranking.ranking_name
+  .rel.tab-more
+    -if ranking.category_slug == 'game'
+      %a.r.f12.mt5.more{:href => "{% url 'page' slug='ranking/game' %}"} 更多&gt;
+    -else
+      %a.r.f12.mt5.more{:href => "{% url 'page' slug='ranking/application' %}"} 更多&gt;
+/ t-title
+
+.app-list-right
+  %ol
+    -for pkg in ranking.packages
+      -with icon_url=pkg.icon
+        {% url 'package_detail_default' pk=pkg.id package_name=pkg.package_name as dt_url %}
+        {% qurl pkg.download entrytype=product as dw_url %}
+        %li.rel
+          %b.l{:class => "{% if forloop.counter <= 3 %}gr{% endif %}"}= forloop.counter
+          %a.l{:href => "={dt_url}", :title => "={pkg.title}"}
+            %img.lazy{"data-original" => "={icon_url}"}
+              %span.ios-web-icon.abs
+          %h3.n
+            %a{:href => "={dt_url}", :title => "={pkg.title}" }><
+              = pkg.title
+          %p.g9
+            {{ pkg.download_size|filesizeformat }}
+            %em> |
+            {{ pkg.download_count|default:0|intwordcn }}+下载
+          .btn-s
+            -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+            %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载
+
+/ app-list-right

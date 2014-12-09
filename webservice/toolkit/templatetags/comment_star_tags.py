@@ -20,8 +20,15 @@ def content_object_id(obj):
 
 
 def comment_list_url(obj, content_type=None, view_name='comment_list'):
-    obj = get_content_object(obj, content_type)
-    qstr = "?content_type=%s&object_pk=%s" % content_object_id(obj)
+    if isinstance(obj, int) and isinstance(content_type, int):
+        qstr = "?content_type=%s&object_pk=%s" % (content_type, obj)
+    elif isinstance(obj, int):
+        app_label, model = content_type.split('.')
+        ct = ContentType.objects.get_by_natural_key(app_label, model)
+        qstr = "?content_type=%s&object_pk=%s" % (ct.pk, obj)
+    else:
+        obj = get_content_object(obj, content_type)
+        qstr = "?content_type=%s&object_pk=%s" % get_content_object(obj, content_type)
     return reverse(view_name) + qstr
 
 register.simple_tag(comment_list_url)
@@ -30,8 +37,16 @@ register.assignment_tag(comment_list_url, name='comment_list_url_as')
 
 @register.simple_tag()
 def comment_star_form_url_for(obj, content_type, view_name='comment_form'):
-    obj = get_content_object(obj, content_type)
-    qstr = "?content_type=%s&object_pk=%s" % content_object_id(obj)
+    if isinstance(obj, int) and isinstance(content_type, int):
+        qstr = "?content_type=%s&object_pk=%s" % (content_type, obj)
+    elif isinstance(obj, int):
+        app_label, model = content_type.split('.')
+        ct = ContentType.objects.get_by_natural_key(app_label, model)
+        qstr = "?content_type=%s&object_pk=%s" % (ct.pk, obj)
+    else:
+        obj = get_content_object(obj, content_type)
+        qstr = "?content_type=%s&object_pk=%s" % get_content_object(obj, content_type)
+
     return reverse(view_name) + qstr
 
 
@@ -85,6 +100,7 @@ def get_content_object(obj, content_type=None):
         and content_type and isinstance(content_type, str):
         app_label, model = content_type.split('.')
         model_cls = models.get_model(app_label, model, only_installed=False)
+
         if hasattr(model_cls.objects, 'get_cache_by'):
             return model_cls.objects.get_cache_by(obj)
         else:
