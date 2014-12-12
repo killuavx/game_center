@@ -29,6 +29,9 @@ class PackageDetail(DetailView):
         except ApiException:
             raise Http404()
 
+        if not pkg:
+            raise Http404()
+
         try:
             related_pkgs = detail_api.get_response_data(response=res, name=detail_api.related_name)
         except ApiException:
