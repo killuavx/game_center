@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from apksite.apis import ApiListPaginator, ApiListResultSet
+from apksite.apis import ApiListPaginator, ApiListResultSet, ApiFactory
 
 
 PRODUCT = 'web'
@@ -26,6 +26,14 @@ class ApiParamFilterBackendViewMixin(object):
         return super(ApiParamFilterBackendViewMixin, self).get_paginator(queryset, per_page=per_page, **kwargs)
 
 
+class ApiSearchPackageViewMixin(object):
+
+    def get_queryset(self):
+        api = ApiFactory.factory('search.packageList')
+        params = self.filter_params(self.request, *self.args, **self.kwargs)
+        return self.api_list_result_class(api=api, name=self.api_name, params=params)
+
+
 def pageobj_with_visible_range(page_obj, max_paging_links=10):
     """
     Return a paginated page for the given objects, giving it a custom
@@ -38,3 +46,5 @@ def pageobj_with_visible_range(page_obj, max_paging_links=10):
         page_range = page_range[start:start + max_paging_links]
     page_obj.visible_page_range = page_range
     return page_obj
+
+

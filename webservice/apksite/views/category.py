@@ -4,7 +4,7 @@ from django.http import Http404
 from django.views.generic import ListView
 
 from apksite.apis import ApiFactory, ApiResponseException
-from apksite.views.base import ApiParamFilterBackendViewMixin, pageobj_with_visible_range, PRODUCT
+from apksite.views.base import ApiParamFilterBackendViewMixin, ApiSearchPackageViewMixin, pageobj_with_visible_range, PRODUCT
 from apksite.views.filters import BaseParamFilterBackend, LanguageParamFilterBackend, PkgSizeParamFilterBackend, PkgReportsParamFilterBackend, PaginatorParamFilterBackend
 
 
@@ -50,7 +50,9 @@ class TopicParamFilterBackend(BaseParamFilterBackend):
                     topic_slug=topic_slug)
 
 
-class CategoryView(ApiParamFilterBackendViewMixin, ListView):
+class CategoryView(ApiParamFilterBackendViewMixin,
+                   ApiSearchPackageViewMixin,
+                   ListView):
 
     context_object_name = 'packages'
     paginate_by = 27
@@ -72,11 +74,6 @@ class CategoryView(ApiParamFilterBackendViewMixin, ListView):
 
     def get_template_names(self):
         return [self.template_name]
-
-    def get_queryset(self):
-        api = ApiFactory.factory('search.packageList')
-        params = self.filter_params(self.request, *self.args, **self.kwargs)
-        return self.api_list_result_class(api=api, name=self.api_name, params=params)
 
     def get_context_data(self, **kwargs):
         kwargs = super(CategoryView, self).get_context_data(**kwargs)
