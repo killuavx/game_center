@@ -99,8 +99,8 @@ class BaseApi(object):
         raise NotImplementedError()
 
     def request(self, *args, **kwargs):
-        response = requests.post(self.api_url,
-                                 data=dict(data=json.dumps(self.get_request_data(*args, **kwargs))))
+        data_str = json.dumps(self.get_request_data(*args, **kwargs))
+        response = requests.post(self.api_url, data=dict(data=data_str))
         if response.status_code != status_codes.OK:
             raise Http404()
         return response
@@ -248,7 +248,6 @@ class CategoryListApi(BaseApi):
         params = deepcopy(self.category_params)
         params.update(kwargs)
         params = self.generate_access_params(params)
-        print(kwargs, params)
         data[self.category_name] = self.generate_access_params(params)
         return data
 

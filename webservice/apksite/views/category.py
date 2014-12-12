@@ -1,106 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.core.paginator import EmptyPage, InvalidPage
-from django.http import Http404
-from django.views.generic import DetailView, TemplateView, ListView
-from apksite.apis import ApiFactory, ApiException, ApiListResultSet, ApiListPaginator, ApiResponseException
 from copy import deepcopy
+from django.http import Http404
+from django.views.generic import ListView
 
-PRODUCT = 'web'
-
-class BaseParamFilterBackend(object):
-
-    def filter_params(self, request, *args, **kwargs):
-        """
-        Return a filtered queryset.
-        """
-        raise NotImplementedError(".filter_queryset() must be overridden.")
-
-
-class LanguageParamFilterBackend(BaseParamFilterBackend):
-
-    language_param = 'lang'
-
-    choices = [
-        {'code': 'ZH', 'name': '中文'},
-        {'code': 'EN', 'name': '英文'},
-        ]
-
-    lang_choices = {}
-    for c in choices:
-        lang_choices[c['code']] = c['code']
-
-    def filter_params(self, request, *args, **kwargs):
-        lang = request.GET.get(self.language_param)
-        lang = lang.upper() if lang is not None else None
-        if lang not in self.lang_choices:
-            return dict()
-        return dict(language=lang)
-
-
-class PkgSizeParamFilterBackend(BaseParamFilterBackend):
-
-    M = 1024 * 1024
-
-    G = M * 1024
-
-    size_param = 'size'
-
-    choices = [
-        {'code': '0-10m', 'name': '10M以内', 'value': (0, 10*M)},
-        {'code': '10-50m', 'name': '10-50M', 'value': (10*M, 50*M)},
-        {'code': '50-100m', 'name': '50-100M', 'value': (50*M, 100*M)},
-        {'code': '100-300m', 'name': '100-300M', 'value': (100*M, 300*M)},
-        {'code': '300-500m', 'name': '300-500M', 'value': (300*M, 500*M)},
-        {'code': '500-800m', 'name': '500-800M', 'value': (500*M, 800*M)},
-        {'code': '800m-1g', 'name': '800M-1G', 'value': (800*M, 1*G)},
-        {'code': '1g', 'name': '1G以上', 'value': (1*G, None)},
-        ]
-
-    size_choices = {}
-    for c in choices:
-        size_choices[c['code']] = c['value']
-
-    def filter_params(self, request, *args, **kwargs):
-        size = request.GET.get(self.size_param)
-        size = size.lower() if size is not None else None
-        if size not in self.size_choices:
-            return None
-        min_size, max_size = self.size_choices[size]
-
-        size_range = []
-        if min_size is not None:
-            size_range.append(str(min_size))
-        if max_size is not None:
-            size_range.append(str(max_size))
-
-        return dict(download_size="-".join(size_range))
-
-
-class PkgReportsParamFilterBackend(BaseParamFilterBackend):
-
-    reports_param = 'reps'
-
-    choices = [
-        {'code': 'no-network', 'name': '无需网络'},
-        {'code': 'no-adv', 'name': '无广告'},
-        {'code': 'no-gplay', 'name': '无需谷歌市场'},
-        {'code': 'no-root', 'name': '无需root权限'},
-        ]
-
-    report_choices = {}
-    for c in choices:
-        report_choices[c['code']] = c['code']
-
-    def filter_params(self, request, *args, **kwargs):
-        reps = request.GET.getlist(self.reports_param)
-        lookups = {}
-        for r in reps:
-            r = r.lower()
-            if r in self.report_choices:
-                name = r.replace('no-', '')
-                lookups['reported_%s' % name] = 'false'
-
-        return lookups
+from apksite.apis import ApiFactory, ApiResponseException
+from apksite.views.base import ApiParamFilterBackendViewMixin, pageobj_with_visible_range, PRODUCT
+from apksite.views.filters import BaseParamFilterBackend, LanguageParamFilterBackend, PkgSizeParamFilterBackend, PkgReportsParamFilterBackend, PaginatorParamFilterBackend
 
 
 class CategoryParamFilterBackend(BaseParamFilterBackend):
@@ -143,50 +48,6 @@ class TopicParamFilterBackend(BaseParamFilterBackend):
         topic_id = int(topic_id) if str(topic_id).isnumeric() else None
         return dict(topic_id=topic_id,
                     topic_slug=topic_slug)
-
-
-class PaginatorParamFilterBackend(BaseParamFilterBackend):
-
-    page_param = 'page'
-
-    def filter_params(self, request, *args, **kwargs):
-        page = request.GET.get(self.page_param)
-        return dict(page=page)
-
-
-class ApiParamFilterBackendViewMixin(object):
-
-    filter_param_backends = ()
-
-    paginator_class = ApiListPaginator
-
-    api_list_result_class = ApiListResultSet
-
-    def filter_params(self, request, *args, **kwargs):
-        params = dict()
-        for backend in self.filter_param_backends:
-            result = backend().filter_params(request, *args, **kwargs)
-            if result:
-                params.update(result)
-        return params
-
-    def get_paginator(self, queryset, per_page, **kwargs):
-        queryset.params['page_size'] = per_page
-        return super(ApiParamFilterBackendViewMixin, self).get_paginator(queryset, per_page=per_page, **kwargs)
-
-
-def pageobj_with_visible_range(page_obj, max_paging_links=10):
-    """
-    Return a paginated page for the given objects, giving it a custom
-    ``visible_page_range`` attribute calculated from ``max_paging_links``.
-    """
-    page_range = page_obj.paginator.page_range
-    if len(page_range) > max_paging_links:
-        start = min(page_obj.paginator.num_pages - max_paging_links,
-                    max(0, page_obj.number - (max_paging_links // 2) - 1))
-        page_range = page_range[start:start + max_paging_links]
-    page_obj.visible_page_range = page_range
-    return page_obj
 
 
 class CategoryView(ApiParamFilterBackendViewMixin, ListView):
@@ -306,3 +167,91 @@ class CategoryView(ApiParamFilterBackendViewMixin, ListView):
                 break
 
         return data
+
+
+class SearchCategoryParamFilterBackend(BaseParamFilterBackend):
+
+    root_category_slugs = ['game', 'application']
+
+    root_param = 'cat'
+
+    query_param = 'q'
+
+    def filter_params(self, request, *args, **kwargs):
+        q = request.GET.get(self.query_param)
+        if q is None:
+            raise Http404()
+
+        root_slug = request.GET.get(self.root_param)
+        root_slug = root_slug if root_slug in self.root_category_slugs else self.root_category_slugs[0]
+
+        return dict(
+            q=q,
+            root_slug=root_slug,
+            cat_slug=root_slug,
+            category_slugs=root_slug,
+            category_id=None,
+        )
+
+
+class SearchView(CategoryView):
+
+    template_name = 'apksite/pages/category/search.haml'
+
+    filter_param_backends = (
+        SearchCategoryParamFilterBackend,
+        LanguageParamFilterBackend,
+        PkgSizeParamFilterBackend,
+        PkgReportsParamFilterBackend,
+        PaginatorParamFilterBackend,
+    )
+
+    def get_context_category_data(self, request, *args, **kwargs):
+        api = ApiFactory.factory('category.getList')
+        backend = SearchCategoryParamFilterBackend()
+        params = backend.filter_params(request, *args, **kwargs)
+
+        try:
+            res = api.request(parent_slug=params['root_slug'])
+            category_list = api.get_response_data(res, name=api.category_name)
+        except ApiResponseException as e:
+            category_list = []
+
+        data = dict()
+        data['category_selectlist'] = category_list
+        #data['current_category_id'] = params['category_id']
+        data['current_root_slug'] = params['root_slug']
+        data['current_category_slug'] = params['cat_slug']
+
+        data['current_root'] = None
+        for cat in category_list:
+            if cat['slug'] == data['current_root_slug']:
+                kwargs['current_root'] = cat
+                break
+
+        data['current_category'] = None
+        for cat in category_list:
+            if cat['slug'] == data['current_category_slug']:
+                data['current_category'] = cat
+                break
+
+        return data
+
+    def get_context_data(self, **kwargs):
+        kwargs = super(ListView, self).get_context_data(**kwargs)
+        kwargs['product'] = self.product
+
+        cat_kwargs = self.get_context_category_data(self.request,
+                                                    *self.args,
+                                                    **self.kwargs)
+        kwargs.update(cat_kwargs)
+        filter_kwargs = self.get_context_filter_select_data(self.request,
+                                                            *self.args,
+                                                            **self.kwargs)
+        kwargs.update(filter_kwargs)
+        kwargs['filter_selector'] = self.get_filter_select_list()
+
+        kwargs['page_obj'] = pageobj_with_visible_range(kwargs['page_obj'],
+                                                        max_paging_links=10)
+        return kwargs
+

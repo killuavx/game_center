@@ -2,8 +2,7 @@
 from django.http import Http404
 from django.views.generic import DetailView, TemplateView
 from apksite.apis import ApiFactory, ApiException
-
-PRODUCT = 'web'
+from apksite.views.base import PRODUCT
 
 
 class PackageDetail(DetailView):
