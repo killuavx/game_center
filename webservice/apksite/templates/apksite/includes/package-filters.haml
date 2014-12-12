@@ -1,0 +1,49 @@
+-load url_tags templatehelper_tags
+/ 列表筛选
+{% qurl current_url lang=current_lang size=current_size reps=current_reps as current_url %}
+.f14.screening
+  %dl.language
+    %dt 语言：
+    %dd
+      -ifequal current_lang None
+        %a.on{:href => "javascript:;"} 全部
+      -else
+        %a{:href => "{% qurl current_url lang=None %}"} 全部
+      -for lang in filter_selector.langs
+        {% ifequal current_lang|lower lang.code|lower %}
+        %a.on{:href => "javascript:;"}= lang.name
+        {% else %}
+        %a{:href => "{% qurl current_url lang=lang.code|lower %}"}= lang.name
+        {% endifequal %}
+    .fix
+  %dl.size
+    %dt 大小：
+    %dd
+      -ifequal current_size None
+        %a.on{:href => "javascript:;"} 全部
+      -else
+        %a{:href => "{% qurl current_url size=None %}"} 全部
+      -for size in filter_selector.sizes
+        {% ifequal current_size|lower size.code|lower %}
+        %a.on{:href => "javascript:;"}= size.name
+        {% else %}
+        %a{:href => "{% qurl current_url size=size.code|lower %}"}= size.name
+        {% endifequal %}
+    .fix
+
+  %dl.screening-other
+    %dt 其他：
+    %dd><
+      - for rep in filter_selector.reports
+        {% if rep.code|lower in current_reps %}
+        %a{:class => "on", :href => "{% qurl current_url reps-=rep.code|lower %}" }><
+          %span
+          = rep.name
+        {% else %}
+        %a{:href => "{% qurl current_url reps+=rep.code|lower %}" }><
+          %span
+          = rep.name
+        {% endif %}
+    .fix
+  .fix
+/ 列表筛选 end

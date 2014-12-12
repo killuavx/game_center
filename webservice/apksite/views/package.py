@@ -60,3 +60,5 @@ class PackageDetail(DetailView):
                                         ranking=ranking,
                                         )
         return self.render_to_response(context)
+
+

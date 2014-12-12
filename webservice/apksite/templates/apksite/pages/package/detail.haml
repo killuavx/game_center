@@ -5,8 +5,6 @@
 {% block meta_description %}{{ package.summary }} | {{ package.whatsnew }}{% endblock %}
 
 -block main
-  {% is_site_android as is_android %}{% is_site_ios as is_ios %}{% get_site_name as site_name %}
-  {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
   {% with title=package.title icon_url=package.icon|default:'' root_category=package.root_category main_category=package.primary_category %}
   .auto.pt10.width.app-dis-page
     .cell-bk.ovh
