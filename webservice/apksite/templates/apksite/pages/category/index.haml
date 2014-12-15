@@ -29,26 +29,25 @@
     .rel.cell-bk
       .l.left-list
         %ul.f14.left-nav
+          %li
+            -ifequal current_category_id None
+              %a.hover{:href => "javascript:;"}
+                全部
+                %span.r
+            -else
+              %a{:href => "{{ request.path }}"}
+                全部
+                %span.r
           -for cat in category_selectlist
             %li
-              -ifequal current_root_slug cat.slug
-                -ifequal current_category.id cat.id
-                  %a.hover{:href => "javascript:;"}
-                    全部
-                    %span.r
-                -else
-                  %a{:href => "{{ request.path }}"}
-                    全部
-                    %span.r
+              -ifnotequal current_category.id cat.id
+                %a{:href => "{% qurl request.path category=cat.id %}"}
+                  = cat.name
+                  %span.r
               -else
-                -ifnotequal current_category.id cat.id
-                  %a{:href => "{% qurl request.path category=cat.id %}"}
-                    = cat.name
-                    %span.r
-                -else
-                  %a.hover{:href => "javascript:;"}
-                    = cat.name
-                    %span.r
+                %a.hover{:href => "javascript:;"}
+                  = cat.name
+                  %span.r
 
       .l.btn-s-box.tj.p20.right-list
         {% qurl request.path topic=current_topic_id|default:None category=current_category_id|default:None as current_url %}

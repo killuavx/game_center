@@ -177,15 +177,15 @@ class RankingListApi(BaseApi):
     name = ranking_name = 'web.rank.list'
     params = ranking_params = {
         'category': None,
-        'rank_slug': None,
+        'rank_slugs': None,
         'cycle': 0,
     }
 
-    def get_request_data(self, category_slug, rank_slug='main', *args, **kwargs):
+    def get_request_data(self, category_slug, rank_slugs='main', *args, **kwargs):
         data = dict()
         data[self.name] = self.generate_access_params(self.params)
         data[self.name]['category'] = category_slug
-        data[self.name]['rank_slug'] = rank_slug
+        data[self.name]['rank_slugs'] = rank_slugs
         return data
 
 
@@ -245,21 +245,21 @@ class PackageSearchApi(BaseApi):
 
 class CategoryListApi(BaseApi):
 
-    category_name = 'web.category.getList'
-    category_params = {
+    name = category_name = 'web.category.getLeafsList'
+    params = category_params = {
         'parent_id': None,
         'parent_slug': None,
-        'recursive_flag': 'true',
     }
 
     def filter_params(self, **kwargs):
-        return dict(filter(lambda x: x[0] in self.category_params and x[1] is not None, kwargs.items()))
+        return dict(filter(lambda x: x[0] in self.params and x[1] is not None, kwargs.items()))
 
     def get_request_data(self, **kwargs):
         data = dict()
-        params = deepcopy(self.category_params)
+        params = deepcopy(self.params)
         params.update(kwargs)
-        data[self.category_name] = self.generate_access_params(params)
+        params = self.filter_params(**params)
+        data[self.name] = self.generate_access_params(params)
         return data
 
 
