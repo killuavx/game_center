@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls import patterns, url, include
-from apksite.views import package as package_view, category as category_view, topic as topic_view
+from apksite.views import (
+    package as package_view,
+    category as category_view,
+    topic as topic_view,
+    ranking as ranking_view,
+)
 
 pkgview = package_view.PackageDetail.as_view()
 catview = category_view.CategoryView.as_view()
@@ -8,6 +13,7 @@ searchview = category_view.SearchView.as_view()
 masterpieceview = topic_view.MasterpieceView.as_view()
 collectionsview = topic_view.CollectionView.as_view()
 collectionsdetail = topic_view.CollectionDetailView.as_view()
+rankingview = ranking_view.RankingView.as_view()
 
 urlpatterns = patterns('apksite.web.views',
                        url(r'^package/(?P<pk>\d+)/(?P<package_name>[\d\w_.-]+)/detail\.html$', pkgview, name='package_detail_default'),
@@ -19,4 +25,6 @@ urlpatterns = patterns('apksite.web.views',
                        url(r'^masterpiece/?$', masterpieceview, name='masterpiece'),
                        url(r'^collections/?$', collectionsview, name='collection-list'),
                        url(r'^collections/(?P<slug>[\d\w_.-]+)/?$', collectionsdetail, name='collection-detail'),
+                       url(r'^ranking/?$', rankingview, name='ranking-default'),
+                       url(r'^ranking/(?P<category_slug>[\d\w_.-]+)/?$', rankingview, name='ranking-list'),
                    )

@@ -174,17 +174,18 @@ class PackageDetailApi(BaseApi):
 
 class RankingListApi(BaseApi):
 
-    ranking_name = 'web.rank.list'
-    ranking_params = {
+    name = ranking_name = 'web.rank.list'
+    params = ranking_params = {
         'category': None,
-        'ranking_slug': None,
+        'rank_slug': None,
+        'cycle': 0,
     }
 
-    def get_request_data(self, category_slug, ranking_slug='main', *args, **kwargs):
+    def get_request_data(self, category_slug, rank_slug='main', *args, **kwargs):
         data = dict()
-        data[self.ranking_name] = self.generate_access_params(self.ranking_params)
-        data[self.ranking_name]['category'] = category_slug
-        data[self.ranking_name]['ranking_slug'] = ranking_slug
+        data[self.name] = self.generate_access_params(self.params)
+        data[self.name]['category'] = category_slug
+        data[self.name]['rank_slug'] = rank_slug
         return data
 
 

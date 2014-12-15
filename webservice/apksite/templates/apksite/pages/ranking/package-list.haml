@@ -1,0 +1,27 @@
+-load url_tags util_tags templatehelper_tags
+.f18.cell.rel.t-title
+  %h3.l.n.mr30= title
+/ t-title
+.cell-bk
+  -for package in packages
+    -with title=package.title icon_url=package.icon_large_url|default:package.icon
+      {% url 'package_detail_default' pk=package.id package_name=package.package_name as dt_url %}
+      {% qurl package.download entrytype=product as dw_url %}
+      %dl.dib.rel.app-list-xl{:class => "{% if forloop.counter <= 3 %}top-={forloop.counter}{% endif %}"}
+        %dt.abs
+          %a.pic{:href => "={dt_url}", :title => "={title}"}
+            %img.lazy{:alt => "={title}", "data-original" => "={icon_url}"}
+            %span.ios-web-icon.abs
+        %dd.g9.pt5
+          %h3.n.rel.g3.f16
+            %a{:href => "={dt_url}", :title => "={title}"}= title
+          %p<
+            {{ package.download_size|filesizeformat }}
+            %em> |
+            {{ package.download_count|intwordcn }}+下载
+          %p.p2= package.main_category.name
+          .ios-web-icon.star{:class => "s={package.star|floatformat:'0'}"}
+          %span.ios-web-icon.abs.f16.tc.number{:class => "n={forloop.counter}"}= forloop.counter
+          .btn-s
+            %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载
+
