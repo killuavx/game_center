@@ -137,6 +137,17 @@ class BaseApi(object):
             ).items())
         return dict(list(params.items()) + api_access)
 
+    def filter_params(self, **kwargs):
+        return dict(filter(lambda x: x[0] in self.params and x[1] is not None, kwargs.items()))
+
+    def get_request_data(self, **kwargs):
+        data = dict()
+        params = deepcopy(self.params)
+        params.update(kwargs)
+        params = self.generate_access_params(params)
+        data[self.name] = self.generate_access_params(params)
+        return data
+
 
 class PackageDetailApi(BaseApi):
 
@@ -247,9 +258,39 @@ class CategoryListApi(BaseApi):
         data = dict()
         params = deepcopy(self.category_params)
         params.update(kwargs)
-        params = self.generate_access_params(params)
         data[self.category_name] = self.generate_access_params(params)
         return data
+
+
+class CollectionListApi(BaseApi):
+
+    COLLECTION_SLUG = 'spec-choice-topic'
+
+    name = 'web.topic.children'
+    params = {
+        'slug': COLLECTION_SLUG,
+        'item_size': 10,
+        'page': 1,
+        'page_size':None,
+    }
+
+
+class TopicPackageListApi(BaseApi):
+
+    name = 'web.topic.package'
+    params = {
+        'topic_slugs': None,
+        'page': 1,
+        'page_size':24,
+    }
+
+
+class TopicInfoApi(BaseApi):
+
+    name = 'web.topic.info'
+    params = {
+        'slug': None,
+    }
 
 
 class ApiFactory(object):
@@ -265,6 +306,9 @@ class ApiFactory(object):
         'ranking': RankingListApi,
         'search.packageList': PackageSearchApi,
         'category.getList': CategoryListApi,
+        'collection.getList': CollectionListApi,
+        'topic.info': TopicInfoApi,
+        'topic.packageList': TopicPackageListApi,
     }
 
     @classmethod
