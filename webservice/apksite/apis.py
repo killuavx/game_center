@@ -294,6 +294,32 @@ class TopicInfoApi(BaseApi):
     }
 
 
+class AdvertisementListApi(BaseApi):
+
+    name = 'web.advertisement.advList'
+    params = {
+        'slugs': None,
+    }
+
+
+class AuthorPackageListApi(BaseApi):
+
+    name = 'web.topic.authorPackages'
+    params = {
+        'author_id':None,
+        'page': None,
+        'page_size': None,
+    }
+
+
+class VenderListApi(BaseApi):
+
+    name = 'web.topic.authors'
+    params = {
+        'topic_slug': 'spec-top-author',
+    }
+
+
 class ApiFactory(object):
 
     API_KEY = 'android.ccplay.com.cn'
@@ -306,18 +332,30 @@ class ApiFactory(object):
         'detail': PackageDetailApi,
         'ranking': RankingListApi,
         'search.packageList': PackageSearchApi,
+        'author.packageList': AuthorPackageListApi,
+        'vender.getList': VenderListApi,
         'category.getList': CategoryListApi,
         'collection.getList': CollectionListApi,
         'topic.info': TopicInfoApi,
         'topic.packageList': TopicPackageListApi,
     }
 
+    COMMON_API_URL = 'http://192.168.5.101/commonservice/'
+    COMMON_API_CLASSES = {
+        'advList': AdvertisementListApi,
+    }
+
     @classmethod
     def factory(cls, name):
-        api_cls = cls.API_CLASSES.get(name)
-        if not api_cls:
+        if cls.COMMON_API_CLASSES.get(name):
+            api_cls = cls.COMMON_API_CLASSES.get(name)
+            api_url = cls.COMMON_API_URL
+        elif cls.API_CLASSES.get(name):
+            api_cls = cls.API_CLASSES.get(name)
+            api_url = cls.API_URL
+        else:
             raise ApiNotExists(msg="api %s not exists" % name)
-        return api_cls(api_url=cls.API_URL,
+        return api_cls(api_url=api_url,
                        key=cls.API_KEY,
                        secret=cls.API_SECRET)
 
