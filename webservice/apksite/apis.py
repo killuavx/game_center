@@ -320,6 +320,20 @@ class VenderListApi(BaseApi):
     }
 
 
+class PackageLatestListApi(BaseApi):
+    pass
+
+
+class PackageCrackListApi(BaseApi):
+
+    name = 'web.category.packages'
+    params = {
+        'slug': 'crack-game',
+        'page': 1,
+        'page_size': 150,
+    }
+
+
 class ApiFactory(object):
 
     API_KEY = 'android.ccplay.com.cn'
@@ -338,6 +352,8 @@ class ApiFactory(object):
         'collection.getList': CollectionListApi,
         'topic.info': TopicInfoApi,
         'topic.packageList': TopicPackageListApi,
+        'latest.crackList': PackageCrackListApi,
+        'latest.releaseList': PackageCrackListApi,
     }
 
     COMMON_API_URL = 'http://192.168.5.101/commonservice/'
