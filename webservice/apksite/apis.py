@@ -91,12 +91,13 @@ class BaseApi(object):
 
     SUCCESS_CODE = '0000'
 
+    name = None
+
+    params = None
+
     def __init__(self, api_url, key, secret):
         self.api_url = api_url
         self.key, self.secret = key, secret
-
-    def get_request_data(self, *args, **kwargs):
-        raise NotImplementedError()
 
     def request(self, *args, **kwargs):
         data_str = json.dumps(self.get_request_data(*args, **kwargs))
@@ -110,7 +111,8 @@ class BaseApi(object):
         if result.get('code') == self.SUCCESS_CODE:
             return result.get('results')
         else:
-            raise ApiResponseException(msg=result.get('msg'), code=result.get('code'))
+            raise ApiResponseException(msg="%s: %s" % (result.get('msg'), name),
+                                       code=result.get('code'))
 
     def get_response_list(self, response, name):
         result = response.json()[name]
@@ -128,7 +130,8 @@ class BaseApi(object):
                 object_list=object_list if object_list else list(),
             )
         else:
-            raise ApiResponseException(msg=result.get('msg'), code=result.get('code'))
+            raise ApiResponseException(msg="%s: %s" % (result.get('msg'), name),
+                                       code=result.get('code'))
 
     def generate_access_params(self, params):
         api_access = list(dict(
@@ -214,8 +217,8 @@ class ApiListPaginator(Paginator):
 
 class PackageSearchApi(BaseApi):
 
-    search_name = 'web.search.packageList'
-    search_params = {
+    name = search_name = 'web.search.packageList'
+    params = search_params = {
         'q': None,
         'language': None,
         'download_size': None,
@@ -334,6 +337,24 @@ class PackageCrackListApi(BaseApi):
     }
 
 
+class FriendLinkListApi(BaseApi):
+
+    name = 'web.friendlink.linkList'
+    params = {
+        'location_name': 'www',
+        'page_size': None,
+    }
+
+
+class ClientListApi(BaseApi):
+
+    name = 'web.ccplayClient.list'
+    params = dict(
+        packageName='com.lion.market',
+        page_size=None,
+    )
+
+
 class ApiFactory(object):
 
     API_KEY = 'android.ccplay.com.cn'
@@ -359,6 +380,8 @@ class ApiFactory(object):
     COMMON_API_URL = 'http://192.168.5.101/commonservice/'
     COMMON_API_CLASSES = {
         'advList': AdvertisementListApi,
+        'friendLinkList': FriendLinkListApi,
+        'clientList': ClientListApi,
     }
 
     @classmethod

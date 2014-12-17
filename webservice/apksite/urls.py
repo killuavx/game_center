@@ -7,7 +7,8 @@ from apksite.views import (
     ranking as ranking_view,
     vender as vender_view,
     latest as latest_view,
-    #home as home_view
+    #home as home_view,
+    product as product_view,
 )
 
 pkgview = package_view.PackageDetail.as_view()
@@ -21,6 +22,7 @@ crackview = latest_view.CrackTimeLineView.as_view()
 latestview = latest_view.LatestTimeLineView.as_view()
 #homeview = home_view.HomeView.as_view()
 venderview = vender_view.VenderView.as_view()
+productview = product_view.ProductView.as_view()
 
 urlpatterns = patterns('apksite.web.views',
                        #url(r'^/?$', homeview, name='home'),
@@ -38,4 +40,5 @@ urlpatterns = patterns('apksite.web.views',
                        url(r'^ranking/(?P<category_slug>[\d\w_.-]+)/?$', rankingview, name='ranking-list'),
                        url(r'^crack/?$', crackview, name='crack'),
                        url(r'^latest/?$', latestview, name='latest'),
+                       url(r'^product/?$', productview, name='product'),
                    )

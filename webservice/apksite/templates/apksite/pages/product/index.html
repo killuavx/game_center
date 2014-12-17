@@ -1,0 +1,135 @@
+{% extends "apksite/base_common.haml" %}
+{% load staticfiles templatehelper_tags url_tags mezzanine_tags keyword_tags %}
+{% block meta_title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_keywords %}{% metablock %}
+    {% keywords_for page as keywords %}
+    {% for keyword in keywords %}
+        {% if not forloop.first %}, {% endif %}
+        {{ keyword }}
+    {% endfor %}
+{% endmetablock %}{% endblock %}
+
+{% block meta_description %}{% metablock %}
+    {{ page.description }}
+{% endmetablock %}{% endblock %}
+
+{% block title %}
+    {% editable page.title %}{{ page.title }}{% endeditable %}
+{% endblock %}
+
+{% block platform_css %}<link href="{% static 'product/css/site.css' %}?1414044679081" media="all" rel="stylesheet" type="text/css"/>{% endblock %}
+{% block extra_meta %}
+    {{ block.super }}
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+{% endblock %}
+{% comment %}
+{% block head_base  %}<base target="_blank"/>{% endblock %}
+{% endcomment %}
+{% block extra_js_footer %}
+<script src="{% static 'product/js/site.js' %}" ></script>
+{% endblock %}
+{% block main %}
+<!--虫虫客户端下载 开始product-page-->
+<div class="cell-bk product-page">
+    <div class="rel product-banner">
+        <div class="auto width">
+            <div class="abs left-phone">
+                <div class="focus-box">
+                    <ul style="margin: 0px;">
+                        <li class="clone" style="float: left;"><img src="{% static 'product/img/cc-06.png' %}" /></li>
+                        <li style="float: left;"><img src="{% static 'product/img/cc-01.png' %}" /></li>
+                        <li style="float: left;"><img src="{% static 'product/img/cc-02.png' %}" /></li>
+                        <li style="float: left;"><img src="{% static 'product/img/cc-03.png' %}" /></li>
+                        <li style="float: left;"><img src="{% static 'product/img/cc-04.png' %}" /></li>
+                        <li style="float: left;"><img src="{% static 'product/img/cc-05.png' %}" /></li>
+                        <li style="float: left;"><img src="{% static 'product/img/cc-06.png' %}" /></li>
+                        <li class="clone" style="float: left;"><img src="{% static 'product/img/cc-01.png' %}" /></li>
+                    </ul>
+                </div>
+                <div class="phone-light"></div>
+            </div>
+            <!--left-phone-->
+            <div class="rel right-txt">
+                <h1 class="logo-ver"><span class="dn">虫虫助手</span><em>v{{latest.versionName}} 正式版</em></h1>
+                <ul class="SubSlogan-txt">
+                    <li class="st-1">精品破解</li>
+                    <li class="st-2">独家首发</li>
+                    <li class="st-3">网游礼包</li>
+                </ul>
+                {% qurl "http://qr.liantu.com/api.php" m=10 w=168 el='h' logo="http://static.ccplay.com.cn/static/common/img/favicon.png" as qr_url %}
+                {% with dw_url=latest.download %}
+                {% if request.GET.channel %}{% qurl dw_url channel=request.GET.channel as dw_url %}{% endif %}
+                <div class="abs qr-code"><img src="{% qurl qr_url text=dw_url %}" alt="虫虫助手二维码" /></div>
+                <div class="f14 down-btn"><a title="下载最新的虫虫助手" target="_blank" href="{{ dw_url }}" class="l Download-button"><span class="db f28">立即下载</span><em>v{{latest.versionName}} 版 for Android</em></a>
+                    <p class="l ml15 mt2 pt5">版本：{{latest.versionName}} 正式版<br /> 大小：{{ latest.downloadSize|filesizeformat }}<br /> 更新：{{ latest.releasedDatetime }}</p>
+                    <div class="fix"></div>
+                </div>
+                <!--down-btn--></div>
+                {% endwith %}
+            <!--right-txt--></div>
+        <!--auto--></div>
+    <!--product-banner-->
+
+    <div class="product-SubSlogan">
+        <div class="auto width">
+            <ul>
+                <li class="p-s-1"><span class="p-icon"></span>
+                    <h2 class="n f28 p-title">深度破解</h2>
+                    <p class="f14 p-info">我们只选最精品的游戏<br />只做最深度的破解</p>
+                </li>
+                <li class="p-s-2"><span class="p-icon"></span>
+                    <h2 class="n f28 p-title">独家首发</h2>
+                    <p class="f14 p-info">我们拥有最丰富的渠道<br />让你最快体验巨作</p>
+                </li>
+                <li class="p-s-3"><span class="p-icon"></span>
+                    <h2 class="n f28 p-title">网游礼包</h2>
+                    <p class="f14 p-info">最全的游戏礼包发放平台<br />统统免费提供领取</p>
+                </li>
+                <li class="p-s-4"><span class="p-icon"></span>
+                    <h2 class="n f28 p-title">虫虫活动</h2>
+                    <p class="f14 p-info">天天有惊喜大礼包放送<br />随时在线兑换奖品</p>
+                </li>
+            </ul>
+            <div class="fix"></div>
+        </div>
+        <!--auto--></div>
+    <!--product-SubSlogan-->
+
+    <div class="product-log">
+        <div class="auto width">
+
+            <div class="rel timeline">
+                <span class="t-l-clock"></span>
+
+                <div class="p-l-title">
+                    <h3 class="abs n f28">更新日志</h3>
+                    <p class="abs f16">
+                        <a href="http://bbs.ccplay.com.cn/thread-37344-1-1.html" target="_blank">常见问题</a>
+                        <a href="http://bbs.ccplay.com.cn/forum-2-1.html" target="_blank">问题反馈</a>
+                    </p>
+                </div>
+
+                <div class="item-box" id="item-box">
+                    {% for app in clients %}
+                    <div class="item">
+                        <div class="f20 i-title">
+                            虫虫助手 v{{ app.versionName }} {% if forloop.first %}<span class="red f14">(最新)</span>{% endif %}<span class="r f14">更新：{{ app.releasedDatetime }}</span>
+                        </div>
+                        <div class="f14 lh24 i-info">
+                            <b>更新内容：</b>
+                            <p>{{ app.whatsnew|linebreaksbr }}</p>
+                        </div>
+                    </div><!--item-->
+                    {% endfor %}
+
+                </div><!--item-box-->
+
+                <div class="fix"></div>
+            </div><!--timeline-->
+
+        </div><!--auto-->
+    </div><!--product-log-->
+
+</div><!--虫虫客户端下载 结束 product-page-->
+{% endblock %}
