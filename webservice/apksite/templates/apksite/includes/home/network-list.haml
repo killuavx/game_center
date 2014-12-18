@@ -1,0 +1,28 @@
+-load util_tags url_tags templatehelper_tags apksite_tags
+.f18.cell.rel.t-title
+  %h3.l.n.mr30= title
+  %a.r.f12.mt5.more{:href => "={more_url}", :target => "_blank" } 更多>
+/ t-title
+.most-list.pl10.pr10.pb10.btn-s-box
+  - for package in items
+    -with title=package.title icon_url=package.icon_middle_url star=package.star summary=package.summary cat_name=package.category_name dw_count=package.download_count
+      %dl.cell-bk.pt15.rel.app-list-l
+        %dt.abs
+          %a.pic{:href => "{% package_url package %}", :target => "_blank" , :title => "={title}"}
+            %img.lazy{:alt => "={title}", "data-original" => "={icon_url}"}
+              %span.ios-web-icon.abs
+        %dd.g9
+          %h3.n.rel.g3.f14
+            %a{:href => "={detail_url}", :target => "_blank" , :title => "={title}"}= title
+            %span.abs.ios-web-icon.star{:class => "s={star|floatformat:'0'}"}
+          %p
+            = summary|slice:"16"
+          %p
+            {{ cat_name }}
+            %em> |
+            {{ dw_count|intwordcn }}+下载
+          -#
+            .btn-s
+              %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+              %a.a2{:href => "javascript:;", :class => "app-download-btn-js"} 下载
+/ most-list

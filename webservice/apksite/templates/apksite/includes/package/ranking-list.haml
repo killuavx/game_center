@@ -1,20 +1,17 @@
--load util_tags url_tags
+-load util_tags url_tags apksite_tags
 .f18.cell-bk.rel.t-title
   %ul.l.abs.cell-bk.f16
     %li.ios-web-icon.dib.tab.tc
       %a{:href => "#"}= ranking.ranking_name
   .rel.tab-more
-    -if ranking.category_slug == 'game'
-      %a.r.f12.mt5.more{:href => "{% url 'page' slug='ranking/game' %}"} 更多&gt;
-    -else
-      %a.r.f12.mt5.more{:href => "{% url 'page' slug='ranking/application' %}"} 更多&gt;
+    %a.r.f12.mt5.more{:href => "{% url 'ranking-list' category_slug=ranking.category_slug %}"} 更多&gt;
 / t-title
 
 .app-list-right
   %ol
     -for pkg in ranking.packages
       -with icon_url=pkg.icon
-        {% url 'package_detail_default' pk=pkg.id package_name=pkg.package_name as dt_url %}
+        {% package_url_as pkg as dt_url %}
         {% qurl pkg.download entrytype=product as dw_url %}
         %li.rel
           %b.l{:class => "{% if forloop.counter <= 3 %}gr{% endif %}"}= forloop.counter

@@ -35,3 +35,13 @@ def adv_content_url(adv, *args, **kwargs):
 
 register.assignment_tag(adv_content_url, name='adv_content_url_as')
 register.simple_tag(adv_content_url)
+
+
+def package_url(pkg, *args, **kwargs):
+    return reverse(viewname='package_detail_default',
+                   kwargs=dict(
+                       pk=pkg.get('id'),
+                       package_name=pkg.get('package_name'),
+                   ))
+register.assignment_tag(package_url, name='package_url_as')
+register.simple_tag(package_url)

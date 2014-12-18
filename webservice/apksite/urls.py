@@ -7,7 +7,7 @@ from apksite.views import (
     ranking as ranking_view,
     vendor as vendor_view,
     latest as latest_view,
-    #home as home_view,
+    home as home_view,
     product as product_view,
 )
 
@@ -20,12 +20,12 @@ collectionsdetail = topic_view.CollectionDetailView.as_view()
 rankingview = ranking_view.RankingView.as_view()
 crackview = latest_view.CrackTimeLineView.as_view()
 latestview = latest_view.LatestTimeLineView.as_view()
-#homeview = home_view.HomeView.as_view()
+homeview = home_view.HomeView.as_view()
 vendorview = vendor_view.VendorView.as_view()
 productview = product_view.ProductView.as_view()
 
-urlpatterns = patterns('apksite.web.views',
-                       #url(r'^/?$', homeview, name='home'),
+urlpatterns = patterns('',
+                       url(r'^/?$', homeview, name='home'),
                        url(r'^vendors/?$', vendorview, name='vendor'),
                        url(r'^package/(?P<pk>\d+)/(?P<package_name>[\d\w_.-]+)/detail\.html$', pkgview, name='package_detail_default'),
                        url(r'^package/(?P<pk>\d+)/(?P<package_name>[\d\w_.-]+)/(?P<template>[\w\d_]+)\.html$', pkgview, name='package_detail_template'),
