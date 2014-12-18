@@ -50,12 +50,14 @@ class PackageDetail(DetailView):
         if package_name and pkg['package_name'] != package_name:
             raise Http404()
 
+        self.fill_package_category_objects(pkg)
+
         try:
             related_pkgs = detail_api.get_response_data(response=res, name=detail_api.related_name)
         except ApiException:
             related_pkgs = []
 
-        category_slug = pkg.get('root_category_slug', 'game')
+        category_slug = pkg['root_category']['slug']
         ranking_api = ApiFactory.factory('ranking')
         res = ranking_api.request(category_slug=category_slug)
         try:
@@ -63,7 +65,26 @@ class PackageDetail(DetailView):
                                                     name=ranking_api.ranking_name)[0]
         except (ApiException, IndexError):
             ranking = None
+
         return pkg, related_pkgs, ranking
+
+    def fill_package_category_objects(self, pkg):
+        root_category = dict(id=pkg['rootCategoryId'],
+                             slug=pkg['rootCategorySlug'],
+                             name=pkg['rootCategoryName'])
+        cat_url = reverse(viewname='category-%s' %root_category['slug'])
+        root_category['url'] = cat_url
+        main_category = dict(id=pkg['primaryCategoryId'],
+                             url="%s?category=%s" %(cat_url, pkg['primaryCategoryId']),
+                             slug=pkg['primaryCategorySlug'],
+                             name=pkg['category_name'])
+        pkg['root_category'] = root_category
+        pkg['main_category'] = main_category
+        main_categories = []
+        for cat in pkg['categories_leaf']:
+            cat['url'] = "%s?category=%s" %(cat_url, cat['id'])
+            main_categories.append(cat)
+        pkg['main_categories'] = main_categories
 
     def get_context_data(self, **kwargs):
         data = super(PackageDetail, self).get_context_data(**kwargs)

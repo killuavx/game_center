@@ -5,7 +5,7 @@
 {% block meta_description %}{{ package.summary }} | {{ package.whatsnew }}{% endblock %}
 
 -block main
-  {% with title=package.title icon_url=package.icon|default:'' root_category=package.root_category main_category=package.primary_category %}
+  {% with title=package.title icon_url=package.icon|default:'' root_category=package.root_category main_category=package.main_category %}
   .auto.pt10.width.app-dis-page
     .cell-bk.ovh
       {% qurl package.download entrytype=product as dw_url %}
@@ -13,9 +13,9 @@
         当前位置：
         %a{:href => "/"} 首页
         %em &gt;
-        %a{:href => ""}><= root_category.name
+        %a{:href => "={root_category.url}"}><= root_category.name
         %em &gt;
-        %a{:href => ""}><= main_category.name
+        %a{:href => "={main_category.url}"}><= main_category.name
         %em &gt;
         %a{:href => "javascript:;"}><= title
 
@@ -63,10 +63,10 @@
           %li<
             类别
             %span><
-              -for cat in package.main_category_objects
-                %a.tdl{:href => "{% absolute_url cat product='web' %}"}= cat.name
+              -for cat in package.main_categories
+                %a.tdl{:href => "={cat.url}"}= cat.name
                 &nbsp;
-          - if package.supported_languages
+          - if package.supported_languages|length != 0
             %li<
               语言
               %span><= pacakge.supported_languages
