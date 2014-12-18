@@ -11,10 +11,10 @@
             <div class="rel cell-bk">
                 <div class="l left-list">
                     <ul class="f14 left-nav">
-                        {% for cur_author in vender_list %}
+                        {% for cur_author in vendor_list %}
                             {% with icon_url=cur_author.icon %}
                         <li>
-                            <a href="{% url 'vender' %}{% if not forloop.first %}?author={{ cur_author.id }}{% endif %}"{% if current_author_id == cur_author.id %} class="hover"{% endif %}>
+                            <a href="{% url 'vendor' %}{% if not forloop.first %}?author={{ cur_author.id }}{% endif %}"{% if current_author_id == cur_author.id %} class="hover"{% endif %}>
                                 <img class="lazy" data-original="{{ icon_url }}" />
                             </a>
                         </li>

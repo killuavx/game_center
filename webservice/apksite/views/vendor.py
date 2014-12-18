@@ -7,7 +7,7 @@ from apksite.views.base import ApiParamFilterBackendViewMixin, pageobj_with_visi
 from apksite.views.filters import BaseParamFilterBackend, PaginatorParamFilterBackend
 
 
-class VenderParamFilterBackend(BaseParamFilterBackend):
+class VendorParamFilterBackend(BaseParamFilterBackend):
 
     def filter_params(self, request, *args, **kwargs):
         author_id = request.GET.get('author') or kwargs.get('author_id')
@@ -16,18 +16,18 @@ class VenderParamFilterBackend(BaseParamFilterBackend):
         return dict(author_id=author_id)
 
 
-class VenderView(ApiParamFilterBackendViewMixin,
+class VendorView(ApiParamFilterBackendViewMixin,
                  ListView):
 
     context_object_name = 'packages'
     paginate_by = 18
 
     filter_param_backends = (
-        VenderParamFilterBackend,
+        VendorParamFilterBackend,
         PaginatorParamFilterBackend,
     )
 
-    template_name = 'apksite/pages/vender/index.html'
+    template_name = 'apksite/pages/vendor/index.html'
 
     product = PRODUCT
 
@@ -36,18 +36,18 @@ class VenderView(ApiParamFilterBackendViewMixin,
         params = self.filter_params(self.request, *self.args, **self.kwargs)
         return self.api_list_result_class(api=api, name=api.name, params=params)
 
-    def get_vender_list(self):
-        api = ApiFactory.factory('vender.getList')
+    def get_vendor_list(self):
+        api = ApiFactory.factory('vendor.getList')
         try:
             resposne = api.request()
-            venders = api.get_response_data(response=resposne, name=api.name)
+            vendors = api.get_response_data(response=resposne, name=api.name)
         except ApiResponseException as e:
             raise Http404()
 
-        return venders
+        return vendors
 
     def get_context_data(self, **kwargs):
-        kwargs = super(VenderView, self).get_context_data(**kwargs)
+        kwargs = super(VendorView, self).get_context_data(**kwargs)
         kwargs['product'] = self.product
         kwargs['page_obj'] = pageobj_with_visible_range(kwargs['page_obj'],
                                                         max_paging_links=10)
@@ -55,11 +55,11 @@ class VenderView(ApiParamFilterBackendViewMixin,
 
     def pre_context_data(self):
         kwargs = dict()
-        kwargs['vender_list'] = self.get_vender_list()
+        kwargs['vendor_list'] = self.get_vendor_list()
         author_id = self.request.GET.get('author') or self.kwargs.get('author_id')
         try:
             if not author_id:
-                kwargs['author_id'] = kwargs['vender_list'][0]['id']
+                kwargs['author_id'] = kwargs['vendor_list'][0]['id']
             else:
                 self.kwargs['author_id'] = kwargs['author_id'] = int(author_id)
         except:

@@ -315,7 +315,7 @@ class AuthorPackageListApi(BaseApi):
     }
 
 
-class VenderListApi(BaseApi):
+class VendorListApi(BaseApi):
 
     name = 'web.topic.authors'
     params = {
@@ -368,7 +368,7 @@ class ApiFactory(object):
         'ranking': RankingListApi,
         'search.packageList': PackageSearchApi,
         'author.packageList': AuthorPackageListApi,
-        'vender.getList': VenderListApi,
+        'vendor.getList': VendorListApi,
         'category.getList': CategoryListApi,
         'collection.getList': CollectionListApi,
         'topic.info': TopicInfoApi,
