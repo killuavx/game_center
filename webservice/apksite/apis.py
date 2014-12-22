@@ -106,12 +106,12 @@ class BaseApi(object):
             raise Http404()
         return response
 
-    def get_response_data(self, response, name):
+    def get_response_data(self, response, name, success_code=SUCCESS_CODE):
         result = response.json()[name]
-        if result.get('code') == self.SUCCESS_CODE:
+        if result.get('code') == success_code:
             return result.get('results')
         else:
-            raise ApiResponseException(msg="%s: %s" % (result.get('msg'), name),
+            raise ApiResponseException(msg=result.get('msg'),
                                        code=result.get('code'))
 
     def get_response_list(self, response, name):
@@ -355,6 +355,47 @@ class ClientListApi(BaseApi):
     )
 
 
+class UserLoginApi(BaseApi):
+
+    name = 'user.login'
+    params = {
+        'username': None,
+        'password': None,
+        'app': None,
+    }
+
+
+class UserProfileApi(BaseApi):
+
+    name = 'user.getProfile'
+    params = {
+        'user_id': None,
+        'authorization_token': None,
+    }
+
+
+class UserRegisterApi(BaseApi):
+
+    SUCCESS_CODE = '0020'
+
+    name = 'user.register'
+    params = {
+        'signup_type': None,
+        'username': None,
+        'password': None,
+        'email': None,
+        'phone': None,
+        'code': None,
+    }
+
+    def get_response_data(self, response, name, success_code=SUCCESS_CODE):
+        return super(UserRegisterApi, self)\
+            .get_response_data(response=response,
+                               name=name,
+                               success_code=success_code)
+
+
+
 class ApiFactory(object):
 
     API_KEY = 'android.ccplay.com.cn'
@@ -384,9 +425,19 @@ class ApiFactory(object):
         'clientList': ClientListApi,
     }
 
+    USER_API_URL = 'http://192.168.5.101/user/'
+    USER_API_CLASSES = {
+        'user.login': UserLoginApi,
+        'user.getProfile': UserProfileApi,
+        'user.register': UserRegisterApi,
+    }
+
     @classmethod
     def factory(cls, name):
-        if cls.COMMON_API_CLASSES.get(name):
+        if cls.USER_API_CLASSES.get(name):
+            api_cls = cls.USER_API_CLASSES.get(name)
+            api_url = cls.USER_API_URL
+        elif cls.COMMON_API_CLASSES.get(name):
             api_cls = cls.COMMON_API_CLASSES.get(name)
             api_url = cls.COMMON_API_URL
         elif cls.API_CLASSES.get(name):

@@ -9,6 +9,7 @@ from apksite.views import (
     latest as latest_view,
     home as home_view,
     product as product_view,
+    auth as auth_view
 )
 
 pkgview = package_view.PackageDetail.as_view()
@@ -23,6 +24,17 @@ latestview = latest_view.LatestTimeLineView.as_view()
 homeview = home_view.HomeView.as_view()
 vendorview = vendor_view.VendorView.as_view()
 productview = product_view.ProductView.as_view()
+
+authpanel = auth_view.UserAuthenticatedPanelView.as_view()
+
+
+
+account_urlpatterns = patterns('apksite.views.auth',
+                               url(r'^authpanel/?', authpanel, name='authpanel'),
+                               url(r'^login/?', 'login', name='login'),
+                               url(r'^logout/?', 'logout', name='logout'),
+                               url(r'^signup/?', 'signup', name='signup'),
+                               )
 
 urlpatterns = patterns('',
                        url(r'^/?$', homeview, name='home'),
@@ -41,4 +53,11 @@ urlpatterns = patterns('',
                        url(r'^crack/?$', crackview, name='crack'),
                        url(r'^latest/?$', latestview, name='latest'),
                        url(r'^product/?$', productview, name='product'),
+
+                       url(r'^captcha/?', 'apksite.views.auth.captcha', name='captcha'),
+                       url(r'^accounts/', include(account_urlpatterns)),
                    )
+
+
+#handler404 = "apksite.views.common.page_not_found"
+#handler500 = "apksite.views.common.server_error"
