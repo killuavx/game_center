@@ -2,6 +2,9 @@
 from django.core.exceptions import PermissionDenied
 from apksite.apis import ApiFactory, ApiResponseException
 from apksite.models import User
+from toolkit.helpers import current_request
+
+SESSION_KEY_USER_PROFILE = '_auth_user_profile'
 
 
 class RemoteApiUserBackend(object):
@@ -16,14 +19,30 @@ class RemoteApiUserBackend(object):
 
         return self.wrapup_user(result)
 
-    def get_user(self, id):
+    def get_user(self, id, update_session=False):
+        currequest = current_request()
+        if update_session:
+            profile_data = self._request_profile_data(id)
+        else:
+            profile_data = currequest.session.get(SESSION_KEY_USER_PROFILE)
+            if profile_data is None:
+                _data = self._request_profile_data(id)
+                profile_data = _data if _data is not None else False
+
+        currequest.session[SESSION_KEY_USER_PROFILE] = profile_data
+        if profile_data:
+            return self.wrapup_user(profile_data)
+        else:
+            return None
+
+    def _request_profile_data(self, id):
         api = ApiFactory.factory('user.getProfile')
         response = api.request(user_id=id)
         try:
             result = api.get_response_data(response=response, name=api.name)
         except ApiResponseException as e:
-            return None
-        return self.wrapup_user(result)
+            result = None
+        return result
 
     def wrapup_user(self, result):
         user = User(**dict(
