@@ -114,7 +114,7 @@
                     {% for app in clients %}
                     <div class="item">
                         <div class="f20 i-title">
-                            虫虫助手 v{{ app.versionName }} {% if forloop.first %}<span class="red f14">(最新)</span>{% endif %}<span class="r f14">更新：{{ app.releasedDatetime }}</span>
+                            虫虫助手 v{{ app.versionName }} {% if forloop.first %}<span class="red f14">(最新)</span>{% endif %}<span class="r f14">更新：{{ app.releasedDatetime|slice:":10" }}</span>
                         </div>
                         <div class="f14 lh24 i-info">
                             <b>更新内容：</b>
