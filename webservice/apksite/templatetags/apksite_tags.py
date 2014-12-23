@@ -45,3 +45,37 @@ def package_url(pkg, *args, **kwargs):
                    ))
 register.assignment_tag(package_url, name='package_url_as')
 register.simple_tag(package_url)
+
+
+@register.inclusion_tag('apksite/menus/navigation.haml', takes_context=True)
+def apksite_navigation(context, *args, **kwargs):
+    navs = [
+        dict(url='/', name='首页'),
+        dict(url='/video/', name='视频',
+             li_class='video-li', mark_class='mark-new', mark=True),
+        dict(url='/game/', name='游戏'),
+        dict(url='/application/', name='软件'),
+        dict(url='/crack/', name='破解'),
+        dict(url='/collections/', name='合集'),
+        dict(url='/masterpiece/', name='巨作'),
+        dict(url='/vendors/', name='厂商'),
+        dict(url='/ranking/', name='排行',
+             has_children=True,
+             children=[
+                 dict(url='/ranking/game/', name='游戏'),
+                 dict(url='/ranking/application/', name='软件'),
+             ],
+        ),
+        dict(url='http://bbs.ccplay.com.cn/forum-47-1.html', name='许愿'),
+        dict(url='http://bbs.ccplay.com.cn/', name='论坛'),
+    ]
+    return dict(
+        request=kwargs.get('request'),
+        navs=navs,
+    )
+
+@register.filter
+def navigation_active(nav_url, request):
+    idx = request.path.index('/', 1)
+    shortpath = request.path[0:idx+1]
+    return nav_url.endswith(shortpath)
