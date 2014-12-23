@@ -70,5 +70,5 @@ urlpatterns = patterns('',
 
 
 
-#handler404 = "apksite.views.common.page_not_found"
-#handler500 = "apksite.views.common.server_error"
+handler404 = "apksite.views.common.page_not_found"
+handler500 = "apksite.views.common.server_error"

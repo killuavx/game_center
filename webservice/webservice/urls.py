@@ -33,8 +33,11 @@ if "mezzanine.boot" in settings.INSTALLED_APPS:
                             ("^", include("mezzanine.urls")),
                             )
 
-    handler404 = "mezzanine.core.views.page_not_found"
-handler500 = "website.views.common.server_error"
+try:
+    from apksite.urls import handler404, handler500
+except ImportError:
+    handler404 = "website.views.common.page_not_found"
+    handler500 = "website.views.common.server_error"
 
 from django.http import HttpResponse
 # urlpatterns += patterns("", ("^robots.txt$", lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")), )
