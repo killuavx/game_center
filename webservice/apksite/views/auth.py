@@ -7,37 +7,13 @@ from django.shortcuts import render, redirect
 from django.template import loader, RequestContext
 from django.utils.cache import patch_cache_control
 from django.utils.decorators import method_decorator
-from django.utils.http import is_safe_url
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.vary import vary_on_cookie
-from django.views.generic import View, TemplateView
+from django.views.generic import View
 from apksite.forms import LoginForm, SignupForm, CaptchaVerifyForm
-from apksite.utils import login as auth_login, logout as auth_logout, authenticate
-
-
-def login_redirect(request):
-    next = next_url(request) or ""
-    return redirect(next)
-
-
-def next_url(request):
-    """
-    Returns URL to redirect to from the ``next`` param in the request.
-    """
-    next = request.REQUEST.get("next", "")
-    host = request.get_host()
-    return next if next and is_safe_url(next, host=host) else None
-
-
-def is_ajax_request(request):
-    return request.is_ajax() or request.GET.get('is_ajax') or request.POST.get('is_ajax')
-
-
-def previous_url(request):
-    previous = request.META.get('HTTP_REFERER', '')
-    host = request.get_host()
-    return previous if previous and is_safe_url(previous, host=host) else None
+from apksite.utils import login as auth_login, logout as auth_logout
+from apksite.views.base import is_ajax_request, previous_url, next_url, login_redirect
 
 
 @csrf_exempt

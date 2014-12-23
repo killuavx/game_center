@@ -86,6 +86,9 @@ class ApiListResultSet(object):
             self._request()
         return iter(self._current_object_list)
 
+    def __len__(self):
+        return len(self._current_object_list) if self._current_object_list else 0
+
 
 class BaseApi(object):
 
@@ -395,6 +398,37 @@ class UserRegisterApi(BaseApi):
                                success_code=success_code)
 
 
+class UserPostCommentApi(BaseApi):
+
+    SUCCESS_CODE = '0020'
+
+    name = 'user.postComment'
+    params = {
+        'authorization_token': None,
+        # warehouse.packageversion: 17
+        'content_type': 17,
+        'object_pk': None,
+        'comment': None,
+        'star': None,
+        'ip_address': None,
+    }
+
+    def get_response_data(self, response, name, success_code=SUCCESS_CODE):
+        return super(UserPostCommentApi, self) \
+            .get_response_data(response=response,
+                               name=name,
+                               success_code=success_code)
+
+
+class CommentListApi(BaseApi):
+    name = 'web.comment.list'
+    params = {
+        'content_type': None,
+        'object_pk': None,
+        'page': None,
+        'page_size': None,
+    }
+
 
 class ApiFactory(object):
 
@@ -416,6 +450,8 @@ class ApiFactory(object):
         'topic.packageList': TopicPackageListApi,
         'latest.crackList': PackageCrackListApi,
         'latest.releaseList': PackageCrackListApi,
+
+        'comment.list': CommentListApi,
     }
 
     COMMON_API_URL = 'http://192.168.5.101/commonservice/'
@@ -430,6 +466,8 @@ class ApiFactory(object):
         'user.login': UserLoginApi,
         'user.getProfile': UserProfileApi,
         'user.register': UserRegisterApi,
+
+        'user.postComment': UserPostCommentApi,
     }
 
     @classmethod

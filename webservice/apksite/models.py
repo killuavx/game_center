@@ -88,6 +88,7 @@ class User(BaseUser):
                                 coin=kwargs.get('coin'),
                                 user=self,
                                 )
+        self.token = kwargs.get('token')
         self._profile.icon = kwargs.get('icon')
 
     def save(self, *args, **kwargs):

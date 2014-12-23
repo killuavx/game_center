@@ -36,6 +36,13 @@ account_urlpatterns = patterns('apksite.views.auth',
                                url(r'^signup/?', 'signup', name='signup'),
                                )
 
+comment_urlpatterns = patterns('apksite.views.comment',
+                               url(r'^comments/$', 'comment_list', name='comment_list'),
+                               url(r'^form_comment/$', 'comment_form', name='comment_form'),
+                               url(r'^comment/$', 'comment', name='comment'),
+                               url(r'^comment/remove/(?P<pk>\d+)/?$', 'comment_remove', name='comment_remove'),
+                               )
+
 urlpatterns = patterns('',
                        url(r'^/?$', homeview, name='home'),
                        url(r'^vendors/?$', vendorview, name='vendor'),
@@ -56,7 +63,11 @@ urlpatterns = patterns('',
 
                        url(r'^captcha/?', 'apksite.views.auth.captcha', name='captcha'),
                        url(r'^accounts/', include(account_urlpatterns)),
+                       url(r'^', include(comment_urlpatterns)),
                    )
+
+
+
 
 
 #handler404 = "apksite.views.common.page_not_found"

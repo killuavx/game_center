@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime, time, timezone
 from django import forms
+from django.utils.encoding import force_text
 from mezzanine.accounts.forms import username_label
 from account.validators import AccountUsernameForbiddenValidator
 from mezzanine.conf import settings
@@ -117,3 +119,99 @@ class SignupForm(CaptchaVerifyForm):
         return user
 
 
+
+from django.contrib.comments import CommentForm
+from comment.helpers import comment_forbidden_words
+from comment.forms import ForbiddenWordValidator
+
+COMMENT_MAX_LENGTH = 300
+
+
+class CommentWithStarForm(CommentForm):
+
+    email = forms.EmailField(required=False)
+
+    name = forms.CharField(required=False)
+
+    star = forms.IntegerField(label="评星",
+                              widget=forms.HiddenInput(attrs={'id': 'rating_output', 'value': 3}))
+
+    comment = forms.CharField(label=_('Comment'), widget=forms.Textarea,
+                              min_length=3,
+                              max_length=COMMENT_MAX_LENGTH,
+                              validators=[
+                                  #ForbiddenWordValidator(words=comment_forbidden_words, message='您的评论含有敏感词汇')
+                              ])
+
+    def __init__(self, request, **kwargs):
+        self.request = request
+        super(CommentWithStarForm, self).__init__(**kwargs)
+
+    def clean_star(self):
+        from mezzanine.conf import settings
+        if self.cleaned_data['star'] not in settings.RATINGS_RANGE + [0]:
+            raise forms.ValidationError('评星错误', code=1)
+        return self.cleaned_data['star']
+
+    def get_comment_model(self):
+        return dict
+
+    def save(self):
+        ip_address = self.request.get_client_ip()
+        token_key = self.request.user.token
+        api = ApiFactory.factory('user.postComment')
+        response = api.request(
+            authorization_token=token_key,
+            content_type=self.CONTENT_TYPE_ID,
+            object_pk=self.cleaned_data['object_pk'],
+            comment=self.cleaned_data['comment'],
+            star=self.cleaned_data['star'],
+            ip_address=ip_address,
+        )
+        try:
+            result = api.get_response_data(response=response, name=api.name)
+        except ApiResponseException as e:
+            raise forms.ValidationError(e.msg)
+
+        return result
+
+    CONTENT_TYPE = 'warehouse.packageversion'
+
+    CONTENT_TYPE_ID = 17
+
+    def generate_security_data(self):
+        """Generate a dict of security data for "initial" data."""
+        timestamp = int(datetime.now().timestamp())
+        security_dict =   {
+            'content_type'  : self.CONTENT_TYPE,
+            'object_pk'     : str(self.target_object.get('id', '')),
+            'timestamp'     : str(timestamp),
+            'security_hash' : self.initial_security_hash(timestamp),
+            }
+        return security_dict
+
+    def initial_security_hash(self, timestamp):
+        """
+        Generate the initial security hash from self.content_object
+        and a (unix) timestamp.
+        """
+
+        initial_security_dict = {
+            'content_type' : self.CONTENT_TYPE,
+            'object_pk' : str(self.target_object.get('id', '')),
+            'timestamp' : str(timestamp),
+            }
+        return self.generate_security_hash(**initial_security_dict)
+
+    def get_comment_create_data(self):
+        return dict(
+            content_type = str(self.CONTENT_TYPE_ID),
+            object_pk    = force_text(self.target_object.get('id', '')),
+            comment      = self.cleaned_data["comment"],
+        )
+
+    def get_comment_object(self):
+        return self.get_comment_create_data()
+
+    def clean_comment(self):
+        return self.cleaned_data["comment"]

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from django.shortcuts import redirect
+from django.utils.http import is_safe_url
 from apksite.apis import ApiListPaginator, ApiListResultSet, ApiFactory
 
 
@@ -48,3 +50,25 @@ def pageobj_with_visible_range(page_obj, max_paging_links=10):
     return page_obj
 
 
+def is_ajax_request(request):
+    return request.is_ajax() or request.GET.get('is_ajax') or request.POST.get('is_ajax')
+
+
+def previous_url(request):
+    previous = request.META.get('HTTP_REFERER', '')
+    host = request.get_host()
+    return previous if previous and is_safe_url(previous, host=host) else None
+
+
+def next_url(request):
+    """
+    Returns URL to redirect to from the ``next`` param in the request.
+    """
+    next = request.REQUEST.get("next", "")
+    host = request.get_host()
+    return next if next and is_safe_url(next, host=host) else None
+
+
+def login_redirect(request):
+    next = next_url(request) or ""
+    return redirect(next)

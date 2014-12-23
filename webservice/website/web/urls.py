@@ -19,11 +19,15 @@ urlpatterns = patterns('website.web.views',
                        url(r'^packageversion/(?P<pk>\d+)/?', 'packageversion_detail'),
                        url(r'^collections/(?P<slug>%s)/?' % slug_pattern, 'topic_detail'),
                        url(r'^qrcode/?', 'qrcode_gen'),
+                       )
+"""
                        url(r'^captcha/?', 'captcha', name='captcha'),
                        url(r'^accounts/', include(account_urlpatterns)),
+
                        url(r'^comments/$', 'comment_list', name='comment_list'),
                        url(r'^form_comment/$', 'comment_form', name='comment_form'),
                        url(r'^comment/$', 'comment', name='comment'),
                        url(r'^comment/remove/(?P<pk>\d+)/?$', 'comment_remove', name='comment_remove'),
                        )
 
+"""

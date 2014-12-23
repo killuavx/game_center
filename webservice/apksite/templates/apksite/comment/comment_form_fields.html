@@ -1,0 +1,7 @@
+<input type="hidden" name="referer" value="{{ request.META.HTTP_REFERER }}">
+{% csrf_token %}
+{% for field in form_for_fields %}
+    {% if field.is_hidden %}
+        {{ field }}
+    {% endif %}
+{% endfor %}
