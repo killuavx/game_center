@@ -2,11 +2,7 @@
 {% for comment in comments %}
 <div class="review_list" id="comment-{{ comment.id }}" onmouseout="comment_hide_toolbar(this);" onmouseover="comment_show_toolbar(this);">
     <dl class="cb">
-        <dt class="ios-web-icon l user" title="{{ comment.user_name }}">
-            {% comment %}
-        <img src="{{ comment.user_icon }}" />
-            {% endcomment %}
-        </dt>
+        <dt class="ios-web-icon l user" title="{{ comment.user_name }}"><img src="{{ comment.user_icon }}" /></dt>
         <dd class="d1">
             <span class="ios-web-icon l star s{{ comment.star|floatformat:"0" }}"></span>
             <span class="ml10 rl-user">{{ comment.user_name }}</span>
