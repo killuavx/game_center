@@ -9,7 +9,7 @@ from datetime import datetime
 from django.views.generic import TemplateView
 
 from apksite.apis import ApiFactory, ApiResponseException
-from apksite.views.base import PRODUCT
+from apksite.views.base import PRODUCT, CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
 
 
 def datesince(cur_dt, comp_dt):
@@ -115,6 +115,12 @@ class CrackTimeLineView(TimeLineView):
         return "%s?category=%s" % (reverse(viewname='category-game'),
                                    self.category_crack_id)
 
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='crack')
+    def get(self, request, *args, **kwargs):
+        return super(CrackTimeLineView, self).get(request, *args, **kwargs)
+
 
 class LatestTimeLineView(TimeLineView):
 
@@ -136,3 +142,9 @@ class LatestTimeLineView(TimeLineView):
 
     def get_more_url(self):
         return reverse(viewname='category-game')
+
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='latest')
+    def get(self, request, *args, **kwargs):
+        return super(LatestTimeLineView, self).get(request, *args, **kwargs)
