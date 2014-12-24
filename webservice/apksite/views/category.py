@@ -6,6 +6,7 @@ from django.views.generic import ListView
 from apksite.apis import ApiFactory, ApiResponseException
 from apksite.views.base import ApiParamFilterBackendViewMixin, ApiSearchPackageViewMixin, pageobj_with_visible_range, PRODUCT
 from apksite.views.filters import BaseParamFilterBackend, LanguageParamFilterBackend, PkgSizeParamFilterBackend, PkgReportsParamFilterBackend, PaginatorParamFilterBackend
+from apksite.views.base import CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
 
 
 class CategoryParamFilterBackend(BaseParamFilterBackend):
@@ -165,6 +166,12 @@ class CategoryView(ApiParamFilterBackendViewMixin,
 
         return data
 
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='category')
+    def get(self, request, *args, **kwargs):
+        return super(CategoryView, self).get(request, *args, **kwargs)
+
 
 class SearchCategoryParamFilterBackend(BaseParamFilterBackend):
 
@@ -252,3 +259,8 @@ class SearchView(CategoryView):
                                                         max_paging_links=10)
         return kwargs
 
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='search')
+    def get(self, request, *args, **kwargs):
+        return super(SearchView, self).get(request, *args, **kwargs)
