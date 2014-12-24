@@ -19,6 +19,8 @@
       %link{:href => "{% static 'android_web/css/site.css' %}?1416988991591", :media => "all", :rel => "stylesheet", :type => "text/css"}</
 
     %link{:href => "{% static 'common/css/quick-layout.css' %}?1416988991591", :media => "all", :rel => "stylesheet", :type => "text/css"}/
+    %style
+      {% site_logocss %}
     {% block extra_css %}{% endblock %}
     {% endcompress %}
     {% compress js %}{% block extra_js_header %}{% endblock %}{% endcompress %}
