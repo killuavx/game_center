@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import TemplateView
 from apksite.apis import ApiFactory, ApiResponseException
-from apksite.views.base import PRODUCT
+from apksite.views.base import PRODUCT, CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
 
 
 class ProductView(TemplateView):
@@ -28,3 +28,10 @@ class ProductView(TemplateView):
         except ApiResponseException as e:
             result = []
         return result
+
+
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='product')
+    def get(self, request, *args, **kwargs):
+        return super(ProductView, self).get(request, *args, **kwargs)

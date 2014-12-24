@@ -72,3 +72,15 @@ def next_url(request):
 def login_redirect(request):
     next = next_url(request) or ""
     return redirect(next)
+
+
+from django.views.decorators.cache import cache_page as django_cache_page
+from django.utils.decorators import method_decorator
+
+
+method_cache_page = lambda *args, **kwargs: method_decorator(django_cache_page(*args, **kwargs))
+cache_page = django_cache_page
+CACHE_APKSITE_ALIAS = 'apksite'
+CACHE_APKSITE_TIMEOUT = 60 * 60
+
+
