@@ -4,6 +4,7 @@ from django.views.generic.list import ListView
 from apksite.views.base import ApiParamFilterBackendViewMixin, ApiSearchPackageViewMixin, PRODUCT, pageobj_with_visible_range
 from apksite.views.filters import PaginatorParamFilterBackend, BaseParamFilterBackend
 from apksite.apis import ApiFactory, ApiResponseException
+from apksite.views.base import CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
 
 
 class MasterpieceFilterBackend(BaseParamFilterBackend):
@@ -41,6 +42,12 @@ class MasterpieceView(ApiParamFilterBackendViewMixin,
 
     template_name = 'apksite/pages/masterpiece/index.html'
 
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='masterpiece')
+    def get(self, request, *args, **kwargs):
+        return super(MasterpieceView, self).get(request, *args, **kwargs)
+
 
 class CollectionView(ApiParamFilterBackendViewMixin,
                      FillContextViewMixin,
@@ -62,6 +69,12 @@ class CollectionView(ApiParamFilterBackendViewMixin,
         api = ApiFactory.factory('collection.getList')
         params = self.filter_params(self.request, *self.args, **self.kwargs)
         return self.api_list_result_class(api=api, name=self.api_name, params=params)
+
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='collection-list')
+    def get(self, request, *args, **kwargs):
+        return super(CollectionView, self).get(request, *args, **kwargs)
 
 
 class CollectionDetailView(ApiParamFilterBackendViewMixin,
@@ -107,3 +120,9 @@ class CollectionDetailView(ApiParamFilterBackendViewMixin,
         data['page_obj'] = pageobj_with_visible_range(data['page_obj'],
                                                       max_paging_links=10)
         return data
+
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='collection-detail')
+    def get(self, request, *args, **kwargs):
+        return super(CollectionDetailView, self).get(request, *args, **kwargs)
