@@ -3,6 +3,7 @@ from django.http import Http404
 from django.views.generic import TemplateView
 from apksite.views.base import PRODUCT
 from apksite.apis import ApiFactory, ApiResponseException
+from apksite.views.base import CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
 
 
 class RankingView(TemplateView):
@@ -53,3 +54,9 @@ class RankingView(TemplateView):
         except (ApiResponseException, IndexError) as e:
             raise Http404()
         return rankings
+
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='ranking')
+    def get(self, request, *args, **kwargs):
+        return super(RankingView, self).get(request, *args, **kwargs)
