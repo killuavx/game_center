@@ -5,6 +5,7 @@ from django.views.generic import ListView
 from apksite.apis import ApiFactory, ApiResponseException
 from apksite.views.base import ApiParamFilterBackendViewMixin, pageobj_with_visible_range, PRODUCT
 from apksite.views.filters import BaseParamFilterBackend, PaginatorParamFilterBackend
+from apksite.views.base import CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
 
 
 class VendorParamFilterBackend(BaseParamFilterBackend):
@@ -67,6 +68,9 @@ class VendorView(ApiParamFilterBackendViewMixin,
         kwargs['current_author_id'] = kwargs.get('author_id')
         return kwargs
 
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='vendor')
     def get(self, request, *args, **kwargs):
         context_kwargs = self.pre_context_data()
         self.kwargs['author_id'] = context_kwargs['author_id']
