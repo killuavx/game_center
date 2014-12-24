@@ -131,3 +131,49 @@ def resource_field(inst, kind, field, alias='default'):
 
 register.assignment_tag(resource_field, name='resource_field_as')
 register.simple_tag(resource_field)
+
+from django.utils.timezone import now, datetime, get_default_timezone
+
+@register.filter
+def date_contains_nowdate(datestring):
+    ds = datestring.split(",")
+    n = now().astimezone().strftime("%Y-%m-%d")
+    return n in ds
+
+@register.simple_tag()
+def site_logocss():
+    n = now().astimezone().date()
+    tz = get_default_timezone()
+    def _logocss(s, e, path):
+        if s <= n <= e:
+            return """
+            #cc-l .logo a{background:none}
+            #cc-l .logo img{visibility:hidden}
+            #cc-l .search{background:#fff}
+            #cc-l .head .top{background:url(%(static_url)s%(logo_path)s) no-repeat}
+            """ % dict(static_url=settings.STATIC_URL, logo_path=path)
+        else:
+            return None
+
+    #/*12.24-12.25 共显示2天*/
+    css = _logocss(datetime(2014, 12, 23, tzinfo=tz).date(),
+                   datetime(2014, 12, 25, tzinfo=tz).date(),
+                   path='android_web/img/logo-Christmas.png')
+    if css:
+        return css
+
+    #/*12.31-1.3 共显示4天*/
+    css = _logocss(datetime(2014, 12, 31, tzinfo=tz).date(),
+                   datetime(2015, 1, 3, tzinfo=tz).date(),
+                   path='android_web/img/logo-New-Year.png')
+    if css:
+        return css
+
+    #/*2.17-2.24 共显示8天*/
+    css = _logocss(datetime(2015, 2, 17, tzinfo=tz).date(),
+                   datetime(2015, 2, 24, tzinfo=tz).date(),
+                   path='android_web/img/logo-Chinese-New-Year.png')
+    if css:
+        return css
+    return ""
+
