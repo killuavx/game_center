@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.views.generic import DetailView, TemplateView
 from apksite.apis import ApiFactory, ApiException
-from apksite.views.base import PRODUCT
+from apksite.views.base import PRODUCT, CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
 
 
 class PackageSEORedirect(Exception):
@@ -91,6 +91,9 @@ class PackageDetail(DetailView):
         data['product'] = self.product
         return data
 
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='package-detail')
     def get(self, request, *args, **kwargs):
         try:
             self.object, related_packages, ranking = self.get_object()
