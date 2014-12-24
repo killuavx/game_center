@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 from apksite.apis import ApiFactory, ApiResponseException
 from apksite.views.base import PRODUCT
 from apksite.views.topic import MasterpieceFilterBackend
+from apksite.views.base import CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
 
 
 class BaseWidget(object):
@@ -357,3 +358,9 @@ class HomeView(TemplateView):
         for key, widget_cls in self.WIDGETS.items():
             widgets[key] = widget_cls(view=self)
         return widgets
+
+    @method_cache_page(CACHE_APKSITE_TIMEOUT,
+                       cache=CACHE_APKSITE_ALIAS,
+                       key_prefix='home')
+    def get(self, request, *args, **kwargs):
+        return super(HomeView, self).get(request, *args, **kwargs)
