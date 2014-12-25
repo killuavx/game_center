@@ -43,19 +43,18 @@ if 'django.contrib.redirects.middleware.RedirectFallbackMiddleware' in MIDDLEWAR
     MIDDLEWARE_CLASSES\
         .remove('django.contrib.redirects.middleware.RedirectFallbackMiddleware')
 MIDDLEWARE_CLASSES = [
-    "mezzanine.core.middleware.UpdateCacheMiddleware",
+    #"mezzanine.core.middleware.UpdateCacheMiddleware",
      ] + MIDDLEWARE_CLASSES + [
     "mezzanine.core.request.CurrentRequestMiddleware",
     "mezzanine.core.middleware.RedirectFallbackMiddleware",
-    "mezzanine.core.middleware.TemplateForDeviceMiddleware",
-    "mezzanine.core.middleware.TemplateForHostMiddleware",
     "mezzanine.core.middleware.AdminLoginInterfaceSelectorMiddleware",
     #"mezzanine.core.middleware.SitePermissionMiddleware",
     # Uncomment the following if using any of the SSL settings:
     # "mezzanine.core.middleware.SSLRedirectMiddleware",
     "mezzanine.pages.middleware.PageMiddleware",
-    "mezzanine.core.middleware.FetchFromCacheMiddleware",
     "django.middleware.http.ConditionalGetMiddleware",
+    #"toolkit.middleware.PageMiddleware",
+    #"mezzanine.core.middleware.FetchFromCacheMiddleware",
 ]
 
 # Store these package names here as they may change in the future since
