@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from apksite.views.base import PRODUCT
 from apksite.apis import ApiFactory, ApiResponseException
 from apksite.views.base import CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
+from apksite.views.common import page_not_found
 
 
 class RankingView(TemplateView):
@@ -59,4 +60,7 @@ class RankingView(TemplateView):
                        cache=CACHE_APKSITE_ALIAS,
                        key_prefix='ranking')
     def get(self, request, *args, **kwargs):
-        return super(RankingView, self).get(request, *args, **kwargs)
+        try:
+            return super(RankingView, self).get(request, *args, **kwargs)
+        except Http404 as e:
+            return page_not_found(request=request)

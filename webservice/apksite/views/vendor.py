@@ -4,6 +4,7 @@ from django.views.generic import ListView
 
 from apksite.apis import ApiFactory, ApiResponseException
 from apksite.views.base import ApiParamFilterBackendViewMixin, pageobj_with_visible_range, PRODUCT
+from apksite.views.common import page_not_found
 from apksite.views.filters import BaseParamFilterBackend, PaginatorParamFilterBackend
 from apksite.views.base import CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
 
@@ -72,6 +73,12 @@ class VendorView(ApiParamFilterBackendViewMixin,
                        cache=CACHE_APKSITE_ALIAS,
                        key_prefix='vendor')
     def get(self, request, *args, **kwargs):
+        try:
+            return self._get(request, *args, **kwargs)
+        except Http404:
+            return page_not_found(request=request)
+
+    def _get(self, request, *args, **kwargs):
         context_kwargs = self.pre_context_data()
         self.kwargs['author_id'] = context_kwargs['author_id']
         self.object_list = self.get_queryset()

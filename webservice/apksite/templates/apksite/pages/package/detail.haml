@@ -66,10 +66,10 @@
               -for cat in package.main_categories
                 %a.tdl{:href => "={cat.url}"}= cat.name
                 &nbsp;
-          - if package.supported_languages|length != 0
+          - ifnotequal package.supported_languages|default:""|length 0
             %li<
               语言
-              %span><= pacakge.supported_languages
+              %span><= package.supported_languages
           %li<
             下载
             %span>< {{ package.download_count|intwordcn }}+

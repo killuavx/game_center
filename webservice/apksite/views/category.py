@@ -7,6 +7,7 @@ from apksite.apis import ApiFactory, ApiResponseException
 from apksite.views.base import ApiParamFilterBackendViewMixin, ApiSearchPackageViewMixin, pageobj_with_visible_range, PRODUCT
 from apksite.views.filters import BaseParamFilterBackend, LanguageParamFilterBackend, PkgSizeParamFilterBackend, PkgReportsParamFilterBackend, PaginatorParamFilterBackend
 from apksite.views.base import CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
+from apksite.views.common import page_not_found
 
 
 class CategoryParamFilterBackend(BaseParamFilterBackend):
@@ -170,7 +171,10 @@ class CategoryView(ApiParamFilterBackendViewMixin,
                        cache=CACHE_APKSITE_ALIAS,
                        key_prefix='category')
     def get(self, request, *args, **kwargs):
-        return super(CategoryView, self).get(request, *args, **kwargs)
+        try:
+            return super(CategoryView, self).get(request, *args, **kwargs)
+        except Http404:
+            return page_not_found(request=request)
 
 
 class SearchCategoryParamFilterBackend(BaseParamFilterBackend):
@@ -263,4 +267,7 @@ class SearchView(CategoryView):
                        cache=CACHE_APKSITE_ALIAS,
                        key_prefix='search')
     def get(self, request, *args, **kwargs):
-        return super(SearchView, self).get(request, *args, **kwargs)
+        try:
+            return super(SearchView, self).get(request, *args, **kwargs)
+        except Http404:
+            return page_not_found(request=request)

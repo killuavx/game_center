@@ -5,6 +5,7 @@ from apksite.views.base import ApiParamFilterBackendViewMixin, ApiSearchPackageV
 from apksite.views.filters import PaginatorParamFilterBackend, BaseParamFilterBackend
 from apksite.apis import ApiFactory, ApiResponseException
 from apksite.views.base import CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
+from apksite.views.common import page_not_found
 
 
 class MasterpieceFilterBackend(BaseParamFilterBackend):
@@ -46,7 +47,10 @@ class MasterpieceView(ApiParamFilterBackendViewMixin,
                        cache=CACHE_APKSITE_ALIAS,
                        key_prefix='masterpiece')
     def get(self, request, *args, **kwargs):
-        return super(MasterpieceView, self).get(request, *args, **kwargs)
+        try:
+            return super(MasterpieceView, self).get(request, *args, **kwargs)
+        except Http404 as e:
+            return page_not_found(request=request)
 
 
 class CollectionView(ApiParamFilterBackendViewMixin,
@@ -74,7 +78,10 @@ class CollectionView(ApiParamFilterBackendViewMixin,
                        cache=CACHE_APKSITE_ALIAS,
                        key_prefix='collection-list')
     def get(self, request, *args, **kwargs):
-        return super(CollectionView, self).get(request, *args, **kwargs)
+        try:
+            return super(CollectionView, self).get(request, *args, **kwargs)
+        except Http404 as e:
+            return page_not_found(request=request)
 
 
 class CollectionDetailView(ApiParamFilterBackendViewMixin,
@@ -125,4 +132,7 @@ class CollectionDetailView(ApiParamFilterBackendViewMixin,
                        cache=CACHE_APKSITE_ALIAS,
                        key_prefix='collection-detail')
     def get(self, request, *args, **kwargs):
-        return super(CollectionDetailView, self).get(request, *args, **kwargs)
+        try:
+            return super(CollectionDetailView, self).get(request, *args, **kwargs)
+        except Http404:
+            return page_not_found(request=request)

@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.views.generic import DetailView, TemplateView
 from apksite.apis import ApiFactory, ApiException
 from apksite.views.base import PRODUCT, CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALIAS, method_cache_page
+from apksite.views.common import page_not_found
 
 
 class PackageSEORedirect(Exception):
@@ -96,6 +97,12 @@ class PackageDetail(DetailView):
                        key_prefix='package-detail')
     def get(self, request, *args, **kwargs):
         try:
+            return self._get(request, *args, **kwargs)
+        except Http404 as e:
+            return page_not_found(request)
+
+    def _get(self, reqeust, *args, **kwargs):
+        try:
             self.object, related_packages, ranking = self.get_object()
         except PackageSEORedirect as e:
             return redirect(to=e.to_url, permanent=True)
@@ -105,5 +112,3 @@ class PackageDetail(DetailView):
                                         ranking=ranking,
                                         )
         return self.render_to_response(context)
-
-
