@@ -267,6 +267,8 @@ class SearchView(CategoryView):
 
         kwargs['page_obj'] = pageobj_with_visible_range(kwargs['page_obj'],
                                                         max_paging_links=10)
+        kwargs['q'] = self.query_params.get('q') if self.query_params else None
+        kwargs['current_search_uri'] = "%s?q=%s" % (reverse('search'), kwargs['q'])
         return kwargs
 
     @method_cache_page(CACHE_APKSITE_TIMEOUT,
