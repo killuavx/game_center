@@ -1,7 +1,6 @@
 -load templatehelper_tags url_tags util_tags
 {% url 'package_detail_default' pk=package.id package_name=package.package_name as dt_url %}
--with title=package.title star=package.star dw_size=package.download_size dw_count=package.download_count cat_name=package.category_name cover_url=package.cover_middle|default:package.cover
-  {% qurl package.download entrytype=product as dw_url %}
+-with title=package.title dw_url=package.download star=package.star dw_size=package.download_size dw_count=package.download_count cat_name=package.category_name cover_url=package.cover_middle|default:package.cover
   %a{:href => "={dt_url}", :title => "={title}"}<
     %img.lazy{:alt => "={title}", "data-original" => "{{ cover_url }}"}
     %h3.l= title|slice:"10"

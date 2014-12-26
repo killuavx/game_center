@@ -5,10 +5,9 @@
 {% block meta_description %}{{ package.summary }} | {{ package.whatsnew }}{% endblock %}
 
 -block main
-  {% with title=package.title icon_url=package.icon|default:'' root_category=package.root_category main_category=package.main_category %}
+  {% with title=package.title dw_url=package.download icon_url=package.icon|default:'' root_category=package.root_category main_category=package.main_category %}
   .auto.pt10.width.app-dis-page
     .cell-bk.ovh
-      {% qurl package.download entrytype=product as dw_url %}
       .p10.location.page-location><
         当前位置：
         %a{:href => "/"} 首页
@@ -149,9 +148,8 @@
             %h3.n 相关推荐
             .cell-bk.tj
               -for pkg in related_packages
-                -with related_title=pkg.title mcat_name=pkg.category_name related_icon_url=pkg.icon|default:''
+                -with related_title=pkg.title related_dw_url=pkg.download mcat_name=pkg.category_name related_icon_url=pkg.icon|default:''
                   {% url 'package_detail_default' pk=pkg.id package_name=pkg.package_name as related_dt_url %}
-                  {% qurl pkg.download entrytype=product as related_dw_url %}
                   .dib.rel.app-list-min<
                     %a.db.tc.f14{:href => "={related_dt_url}", :target => "_blank", :title => "={related_title}"}><
                       %img.db.auto.lazy{"data-original" => "={related_icon_url}"}

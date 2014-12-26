@@ -1,7 +1,6 @@
 -load url_tags util_tags templatehelper_tags
-{% with title=package.title dw_size=package.download_size dw_count=package.download_count star=package.star category_name=package.category_name icon_url=package.icon_middle_url|default:package.icon %}
+{% with title=package.title dw_url=package.download dw_size=package.download_size dw_count=package.download_count star=package.star category_name=package.category_name icon_url=package.icon_middle_url|default:package.icon %}
 {% url 'package_detail_default' pk=package.id package_name=package.package_name as dt_url %}
-{% qurl package.download entrytype=product as dw_url %}
 %dl.dib.rel.app-list-xl
   %dt.abs
     %a.pic{:href => "={dt_url}", :title => "={title}"}

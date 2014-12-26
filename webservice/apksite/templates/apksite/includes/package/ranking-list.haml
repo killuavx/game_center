@@ -10,9 +10,8 @@
 .app-list-right
   %ol
     -for pkg in ranking.packages
-      -with icon_url=pkg.icon
+      -with icon_url=pkg.icon dw_url=pkg.download
         {% package_url_as pkg as dt_url %}
-        {% qurl pkg.download entrytype=product as dw_url %}
         %li.rel
           %b.l{:class => "{% if forloop.counter <= 3 %}gr{% endif %}"}= forloop.counter
           %a.l{:href => "={dt_url}", :title => "={pkg.title}"}
