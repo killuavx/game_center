@@ -15,12 +15,15 @@ class ApiParamFilterBackendViewMixin(object):
 
     api_list_result_class = ApiListResultSet
 
+    query_params = None
+
     def filter_params(self, request, *args, **kwargs):
         params = dict()
         for backend in self.filter_param_backends:
             result = backend().filter_params(request, *args, **kwargs)
             if result:
                 params.update(result)
+        self.query_params = params
         return params
 
     def get_paginator(self, queryset, per_page, **kwargs):
@@ -77,10 +80,9 @@ def login_redirect(request):
 from django.views.decorators.cache import cache_page as django_cache_page
 from django.utils.decorators import method_decorator
 
-
 method_cache_page = lambda *args, **kwargs: method_decorator(django_cache_page(*args, **kwargs))
+
+
 cache_page = django_cache_page
 CACHE_APKSITE_ALIAS = 'apksite'
 CACHE_APKSITE_TIMEOUT = 60 * 60
-
-
