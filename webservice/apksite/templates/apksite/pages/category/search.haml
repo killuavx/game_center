@@ -22,12 +22,12 @@
                     全部
                     %span.r
                 -else
-                  %a{:href => "{{ request.path }}"}
+                  %a{:href => "{{ current_category_uri }}"}
                     全部
                     %span.r
               -else
                 -ifnotequal current_category.id cat.id
-                  %a{:href => "{% qurl request.path category=cat.id %}"}
+                  %a{:href => "{% qurl current_category_uri category=cat.id %}"}
                     = cat.name
                     %span.r
                 -else

@@ -2,6 +2,7 @@
 from copy import deepcopy
 from django.http import Http404
 from django.views.generic import ListView
+from django.core.urlresolvers import reverse
 
 from apksite.apis import ApiFactory, ApiResponseException
 from apksite.views.base import ApiParamFilterBackendViewMixin, ApiSearchPackageViewMixin, pageobj_with_visible_range, PRODUCT
@@ -242,6 +243,11 @@ class SearchView(CategoryView):
             if cat['slug'] == data['current_category_slug']:
                 data['current_category'] = cat
                 break
+
+        try:
+            data['current_category_uri'] = reverse('category-%s' % data['current_root_slug'])
+        except:
+            pass
 
         return data
 
