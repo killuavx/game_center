@@ -432,11 +432,12 @@ class CommentListApi(BaseApi):
 
 class ApiFactory(object):
 
-    API_KEY = 'android.ccplay.com.cn'
+    API_KEY = 'android_web'
 
-    API_SECRET = 'e10adc3949ba59abbe56e057f20f883e'
+    API_SECRET = 'c111801f8af3dad7f209f22a045175ee'
 
-    API_URL = 'http://192.168.5.101/content/'
+    #API_URL = 'http://192.168.5.101/content/'
+    API_URL = 'http://10.10.34.142:80/'
 
     API_CLASSES = {
         'detail': PackageDetailApi,
@@ -454,14 +455,16 @@ class ApiFactory(object):
         'comment.list': CommentListApi,
     }
 
-    COMMON_API_URL = 'http://192.168.5.101/commonservice/'
+    #COMMON_API_URL = 'http://192.168.5.101/commonservice/'
+    COMMON_API_URL = 'http://10.10.45.159:8080/'
     COMMON_API_CLASSES = {
         'advList': AdvertisementListApi,
         'friendLinkList': FriendLinkListApi,
         'clientList': ClientListApi,
     }
 
-    USER_API_URL = 'http://192.168.5.101/user/'
+    #USER_API_URL = 'http://192.168.5.101/user/'
+    COMMON_API_URL = 'http://10.10.45.159:8080/'
     USER_API_CLASSES = {
         'user.login': UserLoginApi,
         'user.getProfile': UserProfileApi,
