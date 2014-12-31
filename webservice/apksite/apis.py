@@ -464,7 +464,7 @@ class ApiFactory(object):
     }
 
     #USER_API_URL = 'http://192.168.5.101/user/'
-    COMMON_API_URL = 'http://10.10.45.159:8080/'
+    USER_API_URL = 'http://10.10.45.159:8080/'
     USER_API_CLASSES = {
         'user.login': UserLoginApi,
         'user.getProfile': UserProfileApi,
