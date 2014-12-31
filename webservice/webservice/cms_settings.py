@@ -12,7 +12,7 @@ HOST_URL = os.getenv('GC_HOST_URL', '')
 SITE_TITLE = '虫虫游戏'
 
 # Name of the directory for the project.
-PROJECT_DIRNAME = PROJECT_PATH.split(os.sep)[-1]
+PROJECT_DIRNAME = 'webservice'
 
 NEVERCACHE_KEY = "%(NEVERCACHE_KEY)s"
 
