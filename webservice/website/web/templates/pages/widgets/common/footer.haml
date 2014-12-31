@@ -29,10 +29,10 @@
     %dl
       %dd.g9 扫描Android版二维码
       %dd
-        {% qurl '/qrcode/' s=1 url=client_download_url as client_qr_url %}
+        {% qurl "http://qr.liantu.com/api.php" m=5 w=108 el='l' text=product_url as client_qr_url %}
         %img{:src => "={client_qr_url}", :width => "108"}/
 .cl.tc.pt20<
   Copyright ©
   :javascript
     var yearStr;now = new Date();yearStr = now.getFullYear();document.write(yearStr);
-  {{ hostname }}. All Rights Reserved
+  {{ hostname }}. All Rights Reserved<br/>上海掌越科技有限公司 版权所有
