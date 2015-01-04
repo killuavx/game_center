@@ -437,7 +437,7 @@ class ApiFactory(object):
     API_SECRET = 'c111801f8af3dad7f209f22a045175ee'
 
     #API_URL = 'http://192.168.5.101/content/'
-    API_URL = 'http://10.10.34.142:80/'
+    API_URL = 'http://10.10.34.142:80/content/'
 
     API_CLASSES = {
         'detail': PackageDetailApi,
@@ -456,7 +456,7 @@ class ApiFactory(object):
     }
 
     #COMMON_API_URL = 'http://192.168.5.101/commonservice/'
-    COMMON_API_URL = 'http://10.10.45.159:8080/'
+    COMMON_API_URL = 'http://10.10.45.159:8080/commonservice/'
     COMMON_API_CLASSES = {
         'advList': AdvertisementListApi,
         'friendLinkList': FriendLinkListApi,
@@ -464,7 +464,7 @@ class ApiFactory(object):
     }
 
     #USER_API_URL = 'http://192.168.5.101/user/'
-    USER_API_URL = 'http://10.10.45.159:8080/'
+    USER_API_URL = 'http://10.10.45.159:8080/user/'
     USER_API_CLASSES = {
         'user.login': UserLoginApi,
         'user.getProfile': UserProfileApi,
