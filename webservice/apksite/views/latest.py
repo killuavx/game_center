@@ -84,8 +84,11 @@ class TimeLineView(TemplateView):
         return list(groups.values())
 
     def fill_package_group_result(self, result):
-        result[-1]['time_name'] = '以前'
-        result[-1]['url'] = self.get_more_url()
+        try:
+            result[-1]['time_name'] = '以前'
+            result[-1]['url'] = self.get_more_url()
+        except:
+            pass
 
     def get_more_url(self):
         return None
