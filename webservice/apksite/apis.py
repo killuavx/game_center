@@ -344,7 +344,7 @@ class FriendLinkListApi(BaseApi):
 
     name = 'web.friendlink.linkList'
     params = {
-        'location_name': 'www',
+        'slug': 'www',
         'page_size': None,
     }
 
