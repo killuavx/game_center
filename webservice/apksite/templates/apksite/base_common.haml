@@ -56,3 +56,13 @@
     /[if IE 6]
       <script src="{% static 'common/js/DD_PNG.js' %}"></script>
       <script>window.onload = function() {DD_belatedPNG.fix(".png,.ios-web-icon,.ios-web-icon:hover"}</script>
+    %span.dn
+      %script{:type => "text/javascript", :charset => "UTF-8", :src => "http://tajs.qq.com/stats?sId=35095128"}
+      :javascript
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "//hm.baidu.com/hm.js?a5a2946647afb46ec9c88ebdcf078b0d";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
