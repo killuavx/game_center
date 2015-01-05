@@ -305,6 +305,11 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
             title='诚聘英才',
             full_url=self._page_url('about/joinus'),
         )
+        yield dict(
+            slug='about/legal',
+            title='法律声明',
+            full_url=self._page_url('about/legal'),
+        )
 
     def get_menus_helpers(self):
         yield dict(
