@@ -6,6 +6,7 @@
 
 -block main
   {% with title=package.title dw_url=package.download icon_url=package.icon|default:'' root_category=package.root_category main_category=package.main_category %}
+  {% qurl dw_url entrytype='android_web' as dw_url %}
   .auto.pt10.width.app-dis-page
     .cell-bk.ovh
       .p10.location.page-location><
