@@ -149,6 +149,7 @@ class BaseApi(object):
     def get_request_data(self, **kwargs):
         data = dict()
         params = deepcopy(self.params)
+        params = params if params else dict()
         params.update(kwargs)
         params = self.generate_access_params(params)
         data[self.name] = self.generate_access_params(params)
@@ -327,7 +328,12 @@ class VendorListApi(BaseApi):
 
 
 class PackageLatestListApi(BaseApi):
-    pass
+
+    name = 'web.package.getReleasedPackages'
+    params = {
+        'page': 1,
+        'page_size': 10,
+    }
 
 
 class PackageCrackListApi(BaseApi):
@@ -450,7 +456,7 @@ class ApiFactory(object):
         'topic.info': TopicInfoApi,
         'topic.packageList': TopicPackageListApi,
         'latest.crackList': PackageCrackListApi,
-        'latest.releaseList': PackageCrackListApi,
+        'latest.releaseList': PackageLatestListApi,
 
         'comment.list': CommentListApi,
     }
