@@ -27,11 +27,14 @@ def package_box(context, package, *args, **kwargs):
         product='web',
     )
 
+
 def adv_content_url(adv, *args, **kwargs):
-    if adv.get('content_type') == 'package':
-        return reverse(viewname='package_detail', kwargs=dict(pk=adv.get('object_id')))
-    else:
+    if adv.get('content_url'):
         return adv.get('content_url')
+    elif adv.get('content_type') == 'package':
+        return reverse(viewname='package_detail', kwargs=dict(pk=adv.get('object_id', 0)))
+    else:
+        return None
 
 register.assignment_tag(adv_content_url, name='adv_content_url_as')
 register.simple_tag(adv_content_url)
