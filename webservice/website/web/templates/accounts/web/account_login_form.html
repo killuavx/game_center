@@ -1,4 +1,4 @@
-{% load url_tags %}{% url 'login' as login_url %}{% url 'signup' as signup_url %}{% qurl login_url is_ajax=1 as login_url %}{% qurl signup_url next=request.get_full_path as signup_url %}
+{% load url_tags %}{% url 'login' as login_url %}{% url 'signup' as signup_url %}{% qurl login_url is_ajax=1 as login_url %}{% qurl signup_url next=request.META.HTTP_REFERER|default:None as signup_url %}
 <!--登录-->
 <form id="login-form" class="cell-bk dn bg-white login-box ovh login-form" action="{{ login_url }}" method="POST">
     {% csrf_token %}

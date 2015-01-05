@@ -509,7 +509,7 @@ class UserAuthenticatedPanelView(View):
     template_prefix = 'pages/menus/web'
     template_name = 'header_platform_user_panel.haml'
 
-    @method_decorator(vary_on_cookie)
+    @method_decorator(never_cache)
     def get(self, request):
         data = dict(
             title=None if request.user.is_anonymous() else request.user.username,
