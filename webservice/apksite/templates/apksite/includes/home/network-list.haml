@@ -6,14 +6,15 @@
 .most-list.pl10.pr10.pb10.btn-s-box
   - for package in items
     -with title=package.title icon_url=package.icon_middle_url star=package.star summary=package.summary cat_name=package.category_name dw_count=package.download_count
+      {% package_url_as package as dt_url %}
       %dl.cell-bk.pt15.rel.app-list-l
         %dt.abs
-          %a.pic{:href => "{% package_url package %}", :target => "_blank" , :title => "={title}"}
+          %a.pic{:href => "={dt_url}", :target => "_blank" , :title => "={title}"}
             %img.lazy{:alt => "={title}", "data-original" => "={icon_url}"}
               %span.ios-web-icon.abs
         %dd.g9
           %h3.n.rel.g3.f14
-            %a{:href => "={detail_url}", :target => "_blank" , :title => "={title}"}= title
+            %a{:href => "={dt_url}", :target => "_blank" , :title => "={title}"}= title
             %span.abs.ios-web-icon.star{:class => "s={star|floatformat:'0'}"}
           %p
             = summary|slice:"16"
