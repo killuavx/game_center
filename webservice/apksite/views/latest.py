@@ -13,7 +13,9 @@ from apksite.views.base import PRODUCT, CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALI
 
 
 def datesince(cur_dt, comp_dt):
-    comp = relativedelta(comp_dt, cur_dt)
+    cur_dtd = cur_dt.date()
+    comp_dtd = comp_dt.date()
+    comp = relativedelta(comp_dtd, cur_dtd)
     dmap = {
         'before': '%d天前',
         -2: '前天',
