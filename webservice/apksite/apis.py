@@ -462,7 +462,7 @@ class ApiFactory(object):
     }
 
     #COMMON_API_URL = 'http://192.168.5.101/commonservice/'
-    COMMON_API_URL = 'http://10.10.45.159:8080/commonservice/'
+    COMMON_API_URL = 'http://10.10.45.159:80/commonservice/'
     COMMON_API_CLASSES = {
         'advList': AdvertisementListApi,
         'friendLinkList': FriendLinkListApi,
@@ -470,7 +470,7 @@ class ApiFactory(object):
     }
 
     #USER_API_URL = 'http://192.168.5.101/user/'
-    USER_API_URL = 'http://10.10.45.159:8080/user/'
+    USER_API_URL = 'http://10.10.42.252:80/user/'
     USER_API_CLASSES = {
         'user.login': UserLoginApi,
         'user.getProfile': UserProfileApi,
