@@ -53,7 +53,8 @@ background-repeat: no-repeat;}
 .p-about .bg{background-image:url(http://static.ccplay.com.cn/static/ios_web/img/about_t.jpg)}
 .p-contact .bg{background-image:url(http://static.ccplay.com.cn/static/ios_web/img/contact_t.jpg)}
 .p-vision .bg{background-image:url(http://static.ccplay.com.cn/static/ios_web/img/vision_t.jpg)}
-
+.p-legal .bg{background-image:url(http://static.ccplay.com.cn/static/ios_web/img/legal_t.jpg)}
+.p-legal li{margin-bottom:15px}
 
 .latest-release h3 span,.hot-news h3 span{display:none}
 
