@@ -21,6 +21,7 @@ urlpatterns = patterns("",
                        url(r'^admin/cdn/', include('website.cdn.urls')),
                        url(r'^admin/toolkit/', include('toolkit.urls')),
                        url(r'^tagging_autocomplete/', include('tagging_autocomplete.urls')),
+                       url(r'^', include('apksite.urls')),
                        url(r'^', include('website.web.urls')),
                        url(r'^', include('website.urls')),
                        url(r'^pc/', include('website.urls_pc')),
@@ -32,8 +33,11 @@ if "mezzanine.boot" in settings.INSTALLED_APPS:
                             ("^", include("mezzanine.urls")),
                             )
 
-    handler404 = "mezzanine.core.views.page_not_found"
-handler500 = "website.views.common.server_error"
+try:
+    from apksite.urls import handler404, handler500
+except ImportError:
+    handler404 = "website.views.common.page_not_found"
+    handler500 = "website.views.common.server_error"
 
 from django.http import HttpResponse
 # urlpatterns += patterns("", ("^robots.txt$", lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")), )

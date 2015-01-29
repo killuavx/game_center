@@ -38,10 +38,10 @@ def category_fill(request, page):
     )
     return data
 
-processor_for('game')(category_fill)
-processor_for('application')(category_fill)
+#processor_for('game')(category_fill)
+#processor_for('application')(category_fill)
 
-@processor_for('vendors')
+#@processor_for('vendors')
 def vendors_fill(request, page):
     author_pk = request.GET.get('author')
     if not author_pk:
@@ -67,15 +67,15 @@ def ranking_fill(request, page):
         category=category
     )
 
-processor_for('ranking')(ranking_fill)
-processor_for('ranking/game')(ranking_fill)
-processor_for('ranking/application')(ranking_fill)
+#processor_for('ranking')(ranking_fill)
+#processor_for('ranking/game')(ranking_fill)
+#processor_for('ranking/application')(ranking_fill)
 
 
 from clientapp.models import ClientPackageVersion
 
 
-@processor_for('product')
+#@processor_for('product')
 def product_clientapp_fill(request, page):
     package_name = 'com.lion.market'
     clients = ClientPackageVersion.objects.filter(package_name=package_name)\

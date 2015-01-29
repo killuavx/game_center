@@ -160,3 +160,13 @@ def unique_tags_text(*args, **kwargs):
             pass
     return ", ".join(list(result))
 
+
+@register.filter
+def listsort(iterable, reverse=None):
+    flag = False
+    if reverse:
+        reverse = int(reverse) if str(reverse).isnumeric() else None
+        if reverse < 0:
+            flag = True
+
+    return sorted(iterable, reverse=flag)

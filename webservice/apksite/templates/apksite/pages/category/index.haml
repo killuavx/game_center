@@ -1,0 +1,62 @@
+-extends 'apksite/pages/page_web.html'
+-load url_tags util_tags templatehelper_tags apksite_tags
+
+-block main
+  / START 应用列表 app-list-page
+  .auto.mt30.width.app-list-page.minheight-page
+    .cell
+      .f18.cell.rel.t-title
+        %h3.l.n.mr30 安卓{{ page.title }}
+        %ul.l.abs.cell-bk.f16
+          -for topic in topic_selectlist
+            -ifequal topic.id|default:None None
+              -ifequal current_topic_id None
+                %li.dib.pl10.pr10.tab.ios-web-icon
+                  %a{:href => "javascript:;"}= topic.name
+              -else
+                %li.dib.pl10.pr10.tab
+                  %a{:href => "{% qurl request.path category=current_category_id|default:None %}"}= topic.name
+            -else
+              -ifequal topic.id current_topic_id
+                %li.dib.pl10.pr10.tab.ios-web-icon
+                  %a{:href => "javascript:;"}= topic.name
+              -else
+                %li.dib.pl10.pr10.tab
+                  %a{:href => "{% qurl request.path category=current_category_id|default:None topic=topic.id %}"}= topic.name
+      / t-title
+    / cell
+
+    .rel.cell-bk
+      .l.left-list
+        %ul.f14.left-nav
+          %li
+            -ifequal current_category_id None
+              %a.hover{:href => "javascript:;"}
+                全部
+                %span.r
+            -else
+              %a{:href => "{{ request.path }}"}
+                全部
+                %span.r
+          -for cat in category_selectlist
+            %li
+              -ifnotequal current_category.id cat.id
+                %a{:href => "{% qurl request.path category=cat.id %}"}
+                  = cat.name
+                  %span.r
+              -else
+                %a.hover{:href => "javascript:;"}
+                  = cat.name
+                  %span.r
+
+      .l.btn-s-box.tj.p20.right-list
+        {% qurl request.path topic=current_topic_id|default:None category=current_category_id|default:None as current_url %}
+        {% include 'apksite/includes/package-filters.haml' with current_url=current_url filter_selector=filter_selector %}
+        -for package in packages
+          {% package_box package product=product %}
+        {% pagination page_obj %}
+      / right-list
+
+    / cell-bk
+
+  / END 应用列表 app-list-page

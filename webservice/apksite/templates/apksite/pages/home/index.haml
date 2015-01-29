@@ -1,0 +1,129 @@
+-extends "pages/page_web.html"
+-load templatehelper_tags templatehelper_tags
+
+-block extra_js_header
+  :javascript
+    function addCookie(name,value,domain,expiresHours){var cookieString=name+"="+escape(value)+"; domain="+domain;if(expiresHours>0){var date=new Date();date.setTime(date.getTime+expiresHours*3600*1000);cookieString=cookieString+"; expires="+date.toGMTString()}document.cookie=cookieString}function getCookie(name){var strCookie=document.cookie;var arrCookie=strCookie.split("; ");for(var i=0;i<arrCookie.length;i++){var arr=arrCookie[i].split("=");if(arr[0]==name){return arr[1]}}return""};
+    function mobile_redict(){
+      var appName = getCookie('appName');
+      if(appName == 'wap'){return;}
+      else{
+        var mobile_url = 'http://m.ccplay.com.cn/';
+        if(/Android|Windows Phone|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent) || /AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE/.test(navigator.userAgent))){
+          addCookie('appName', 'web', 'ccplay.com.cn', 4);
+          window.location = mobile_url;
+        }
+      }
+    }
+    mobile_redict();
+
+-block main
+  / START Banner
+  .rel.ovh.banner
+    {% include "apksite/includes/banner.haml" with items=adv.banner_list %}
+  / END Banner
+
+  / START Masterpiece
+  .auto.rel.width.box_btn.roll.masterpiece
+    .tj.pct100
+      -with widget=widgets.masterpiece.get_context
+        {% include widget.template_name with items=widget.items %}
+    / pct100
+  / END Masterpiece
+
+  / START 最新发布 热点资讯 最贵应用 multi
+  .auto.rel.width.multi
+    .cell-bk
+      / START 首发破解
+      .l.pt20.hot-news
+        - with widget=widgets.crack.get_context
+          {% include widget.template_name with title=widget.title more_url=widget.more_url items=widget.items  %}
+      / END 首发破解
+      .l.abs.pt20.latest-release.btn-s-box
+        / START 最新发布
+        - with widget=widgets.latest.get_context
+          {% include widget.template_name with title=widget.title more_url=widget.more_url items=widget.items  %}
+        / END 最新发布
+      / latest-released
+      .r.abs.pt20.most-expensive
+        - with widget=widgets.network.get_context
+          {% include widget.template_name with title=widget.title more_url=widget.more_url items=widget.items  %}
+      / most-expensive
+    / cell-bk
+  / END 最新发布 热点资讯 最贵应用 multi
+
+  / START 广告 行2
+  .auto.width.cc-a-d-box
+    .rel.pt20.cell-bk.ovh
+      .l-box.cc-a-d-2
+        {% include adv.template_name with item=adv.a2.0 %}
+      .r-box.cc-a-d-3
+        {% include adv.template_name with item=adv.a3.0 %}
+  / END 广告 行2
+
+  / START game 行3
+  .auto.mt20.width.game
+    .rel.cell-bk.app-box
+      .left.tab-box-o
+        - with widget=widgets.game_panel.get_context
+          {% include widget.template_name with title=widget.title groups=widget.groups %}
+      / left
+      .abs.right
+        - with widget=widgets.game_ranking.get_context
+          {% include widget.template_name with ranking=widget.ranking %}
+      / right
+  / END game 行3
+
+  / START 广告 行4
+  .auto.width.cc-a-d-box
+    .rel.pt20.cell-bk.ovh
+      .l-box.cc-a-d-2
+        {% include adv.template_name with item=adv.a4.0 %}
+      .r-box.cc-a-d-3
+        {% include adv.template_name with item=adv.a5.0 %}
+  / END 广告 行4
+
+  / START appliction 行5
+  .auto.mt20.width.soft
+    .rel.cell-bk.app-box
+      .left.tab-box-o
+        - with widget=widgets.application_panel.get_context
+          {% include widget.template_name with title=widget.title groups=widget.groups %}
+      / left
+      .abs.right
+        - with widget=widgets.application_ranking.get_context
+          {% include widget.template_name with ranking=widget.ranking %}
+      / right
+  / END application 行5
+
+  / START 广告 行6
+  .auto.width.cc-a-d-box
+    .rel.pt20.cell-bk.ovh
+      .l-box.cc-a-d-2
+        {% include adv.template_name with item=adv.a6.0 %}
+      .r-box.cc-a-d-3
+        {% include adv.template_name with item=adv.a7.0 %}
+  / END 广告 行6
+
+  / START 厂商 合集
+  .auto.width.i-collections-box
+    .rel.cell-bk
+
+      .l.pt20.i-collections
+        -with widget=widgets.collection.get_context
+          {% include widget.template_name with title=widget.title more_url=widget.more_url items=widget.items %}
+      / i-collections
+
+      .r.pt20.abs.vendor
+        -with widget=widgets.vendor.get_context
+          {% include widget.template_name with title=widget.title more_url=widget.more_url items=widget.items %}
+      / vendor
+
+    / cell-bk
+  / END 厂商 合集
+
+  .auto.width.ovh.i-link
+    .pt20.pb30
+      - with widget=widgets.friendlink.get_context
+        {% include widget.template_name with title=widget.title items=widget.items %}
+

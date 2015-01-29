@@ -1,0 +1,16 @@
+{% extends "pages/page_web.html" %}
+{% load templatehelper_tags apksite_tags %}
+{% block main %}
+<!-- START 巨作 开始 masterpiece-->
+<div class="auto mt30 width masterpiece minheight-page">
+    <div class="cell-bk mb30">
+        {% for package in packages %}
+        <div class="maste_lsit">
+        {% include "apksite/pages/masterpiece/package-list.haml" with package=package product=product %}
+        </div>
+        {% endfor %}
+        {% pagination page_obj %}
+    </div><!--cell-bk-->
+</div>
+<!-- END 巨作 结束 masterpiece-->
+{% endblock %}

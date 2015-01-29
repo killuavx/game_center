@@ -12,7 +12,7 @@ HOST_URL = os.getenv('GC_HOST_URL', '')
 SITE_TITLE = '虫虫游戏'
 
 # Name of the directory for the project.
-PROJECT_DIRNAME = PROJECT_PATH.split(os.sep)[-1]
+PROJECT_DIRNAME = 'webservice'
 
 NEVERCACHE_KEY = "%(NEVERCACHE_KEY)s"
 
@@ -43,19 +43,18 @@ if 'django.contrib.redirects.middleware.RedirectFallbackMiddleware' in MIDDLEWAR
     MIDDLEWARE_CLASSES\
         .remove('django.contrib.redirects.middleware.RedirectFallbackMiddleware')
 MIDDLEWARE_CLASSES = [
-    "mezzanine.core.middleware.UpdateCacheMiddleware",
+    #"mezzanine.core.middleware.UpdateCacheMiddleware",
      ] + MIDDLEWARE_CLASSES + [
     "mezzanine.core.request.CurrentRequestMiddleware",
     "mezzanine.core.middleware.RedirectFallbackMiddleware",
-    "mezzanine.core.middleware.TemplateForDeviceMiddleware",
-    "mezzanine.core.middleware.TemplateForHostMiddleware",
     "mezzanine.core.middleware.AdminLoginInterfaceSelectorMiddleware",
-    "mezzanine.core.middleware.SitePermissionMiddleware",
+    #"mezzanine.core.middleware.SitePermissionMiddleware",
     # Uncomment the following if using any of the SSL settings:
     # "mezzanine.core.middleware.SSLRedirectMiddleware",
     "mezzanine.pages.middleware.PageMiddleware",
-    "mezzanine.core.middleware.FetchFromCacheMiddleware",
     "django.middleware.http.ConditionalGetMiddleware",
+    #"toolkit.middleware.PageMiddleware",
+    #"mezzanine.core.middleware.FetchFromCacheMiddleware",
 ]
 
 # Store these package names here as they may change in the future since

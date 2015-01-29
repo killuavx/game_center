@@ -264,9 +264,14 @@ class WebIOSClientDownloadBox(base.ProductPropertyWidgetMixin, Widget):
         return data
 
 
+from django.core.urlresolvers import reverse
+
+
 class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
 
     template = 'pages/widgets/common/footer.haml'
+
+    MAIN_SITE_NAME = 'ccplay.com.cn'
 
     def _static(self, url):
         from django.conf import settings
@@ -277,7 +282,7 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
         return "http://%s/%s" % (domain, url.lstrip('/'))
 
     def _page_url(self, slug):
-        return "http://%s/%s" % (get_mainsite().domain, slug.lstrip('/'))
+        return "http://%s/%s" % ( self.MAIN_SITE_NAME, slug.lstrip('/'))
 
     def get_menus_aboutus(self):
         yield dict(
@@ -299,6 +304,11 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
             slug='about/joinus',
             title='诚聘英才',
             full_url=self._page_url('about/joinus'),
+        )
+        yield dict(
+            slug='about/legal',
+            title='法律声明',
+            full_url=self._page_url('about/legal'),
         )
 
     def get_menus_helpers(self):
@@ -322,10 +332,14 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
                                             entrytype=self.product)
         return self._full_url(helpers.get_global_site(), client_dw_url)
 
+    def get_product_url(self):
+        uri = reverse('product')
+        return self._page_url(uri)
+
     def get_context(self, value, options):
         from mezzanine.conf import settings
         from toolkit.helpers import current_request
-        self.hostname = getattr(settings, 'GC_HOST_NAME', 'www.ccplay.com.cn')
+        self.hostname = getattr(settings, 'GC_HOST_NAME', 'ccplay.com.cn')
         self.request = current_request()
         data = deepcopy(options)
         data.update(dict(
@@ -333,6 +347,7 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
             menus_helpers=list(self.get_menus_helpers()),
             hostname=self.hostname,
             client_download_url=self.get_client_download_url(),
+            product_url=self.get_product_url(),
         ))
         return data
 

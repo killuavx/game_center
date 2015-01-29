@@ -77,19 +77,29 @@ class QURLNode(Node):
     def render(self, context):
         urlp = list(urlparse(self.url.resolve(context)))
         qp = parse_qsl(urlp[4])
+
+        def _op_func(_qp, _op, _name, _value):
+            _value = smart_str(_value) if _value is not None else None
+            if _op == '+=':
+                _qp = list(filter(lambda nv: not(nv[0] == _name and nv[1] == _value), _qp))
+                _qp.append((_name, value,))
+            elif _op == '-=':
+                _qp = list(filter(lambda nv: not(nv[0] == _name and nv[1] == _value), _qp))
+            elif _op == '=':
+                _qp = list(filter(lambda nv: not(nv[0] == _name), _qp))
+                if value is not None:
+                    _qp.append((_name, value,))
+            return _qp
+
         for name, op, value in self.qs:
             name = smart_str(name)
             value = value.resolve(context)
-            value = smart_str(value) if value is not None else None
-            if op == '+=':
-                qp = list(filter(lambda nv: not(nv[0] == name and nv[1] == value), qp))
-                qp.append((name, value,))
-            elif op == '-=':
-                qp = list(filter(lambda nv: not(nv[0] == name and nv[1] == value), qp))
-            elif op == '=':
-                qp = list(filter(lambda nv: not(nv[0] == name), qp))
-                if value is not None:
-                    qp.append((name, value,))
+
+            if isinstance(value, list):
+                for v in value:
+                    qp = _op_func(qp, op, name, v)
+            else:
+                qp = _op_func(qp, op, name, value)
 
         urlp[4] = urlencode(qp, True)
         url = urlunparse(urlp)

@@ -14,7 +14,7 @@
             {% for package in items %}
             <div class="maste_lsit">
             {% with pkg_tags=package.get_all_cache_identifier_tags %} {% cache_location_register tags=pkg_tags %} {% cache_add_tags pkg_tags %}
-            {% include "pages/widgets/masterpiece/package-list2.haml" with package=package %}
+            {% include "pages/widgets/masterpiece/package-list.haml" with package=package %}
             {% endwith %}
             </div>
             {% endfor %}

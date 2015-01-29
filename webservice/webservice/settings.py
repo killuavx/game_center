@@ -222,6 +222,7 @@ EXTENDAL_APPS = [
     'mobapi2',
     'crawler',
     'activity',
+    'apksite',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
@@ -309,9 +310,10 @@ def NOW():
 
 AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
-    'account.backends.UCenterModelBackend',
-    'account.backends.GameCenterModelBackend',
-    'account.backends.GameCenterProfileBackend',
+    'apksite.backends.RemoteApiUserBackend',
+    #'account.backends.UCenterModelBackend',
+    #'account.backends.GameCenterModelBackend',
+    #'account.backends.GameCenterProfileBackend',
 )
 ANONYMOUS_USER_ID = -1
 
@@ -362,6 +364,7 @@ SESSION_REDIS_PASSWORD = ''
 SESSION_REDIS_PREFIX = 'session'
 
 CACHE_DEFAULT_LOCATION_REDIS = "127.0.0.1:6379:1"
+CACHE_APKSITE_LOCATION_REDIS = "127.0.0.1:6379:5"
 CACHES = {
     "default": {
         "BACKEND": "redis_cache.cache.RedisCache",
@@ -369,7 +372,14 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "redis_cache.client.DefaultClient",
             }
-    }
+    },
+    "apksite": {
+        "BACKEND": "redis_cache.cache.RedisCache",
+        "LOCATION": CACHE_APKSITE_LOCATION_REDIS,
+        "OPTIONS": {
+            "CLIENT_CLASS": "redis_cache.client.DefaultClient",
+            }
+    },
 }
 
 MOGOENGINE_SERVER_CMD = '/opt/local/bin/mongod'

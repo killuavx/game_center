@@ -11,9 +11,7 @@
                     {% page_menu about 'pages/menus/web/about-nav-li.haml' %}
                 </ul>
             </div> <!--t-title-->
-            {% editable page.richtextpage.content %}
-                {{ page.richtextpage.content|richtext_filters|safe }}
-            {% endeditable %}
+            {{ page.richtextpage.content|richtext_filters|safe }}
         </div><!--cell-bk-->
     </div>
     <!--结束 {{ page.title }}-->
