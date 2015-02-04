@@ -9,32 +9,32 @@ from django.contrib import admin
 #admin.site = DjrillAdminSite()
 admin.autodiscover()
 
-rest_framework_swagger_url = url(r'^api-docs/', include('rest_framework_swagger.urls'))
+#rest_framework_swagger_url = url(r'^api-docs/', include('rest_framework_swagger.urls'))
 urlpatterns = patterns("",
-                       url(r'^mob/', include('webmob.urls')),
+                       #url(r'^mob/', include('webmob.urls')),
                        url("^admin/", include(admin.site.urls)),
-                       url("^admin/analysis/", include('analysis.data_urls')),
-                       url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-                       url(r'^api/', include('mobapi.urls')),
-                       url(r'^api/v2/', include('mobapi2.urls')),
+                       #url("^admin/analysis/", include('analysis.data_urls')),
+                       #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+                       #url(r'^api/', include('mobapi.urls')),
+                       #url(r'^api/v2/', include('mobapi2.urls')),
                        #rest_framework_swagger_url,
-                       url(r'^admin/cdn/', include('website.cdn.urls')),
-                       url(r'^admin/toolkit/', include('toolkit.urls')),
+                       #url(r'^admin/cdn/', include('website.cdn.urls')),
+                       #url(r'^admin/toolkit/', include('toolkit.urls')),
                        url(r'^tagging_autocomplete/', include('tagging_autocomplete.urls')),
-                       url(r'^', include('apksite.urls')),
-                       url(r'^', include('website.web.urls')),
+                       url(r'^', include('iossite.urls')),
+                       #url(r'^', include('website.web.urls')),
                        url(r'^', include('website.urls')),
-                       url(r'^pc/', include('website.urls_pc')),
+                       #url(r'^pc/', include('website.urls_pc')),
                        )
 if "mezzanine.boot" in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
-                            url("^$", "mezzanine.pages.views.page", {"slug": "/"}, name="home"),
+                            #url("^$", "mezzanine.pages.views.page", {"slug": "/"}, name="home"),
                             #url("^$", "mezzanine.blog.views.blog_post_list", name="home"),
-                            ("^", include("mezzanine.urls")),
+                            #("^", include("mezzanine.urls")),
                             )
 
 try:
-    from apksite.urls import handler404, handler500
+    from iossite.urls import handler404, handler500
 except ImportError:
     handler404 = "website.views.common.page_not_found"
     handler500 = "website.views.common.server_error"

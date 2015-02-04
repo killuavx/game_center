@@ -1,0 +1,8 @@
+- for page in page_branch
+  - if page.in_menu
+    %li.dib.pl10.pr10.tab{:class => "{% if page.is_current or page.is_current_child %}ios-web-icon{% endif %}"}><
+      {% if page.is_current or page.is_current_child %}
+      %a{:href => "javascript:;"}= page.title
+      {% else %}
+      %a{:href => "={page.get_absolute_url}"}= page.title
+      {% endif %}

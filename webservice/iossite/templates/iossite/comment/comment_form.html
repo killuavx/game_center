@@ -1,0 +1,97 @@
+{% load url_tags iossite_comment_tags %}
+<div id="comments" class="cell-bk review">
+    <h3 class="l n">应用评论</h3>
+    {% if not request.user.is_authenticated %}
+        <span class="r login"><a href="javascript:;" class="open-login" onclick="open_login();">请先登录，再来评分。</a></span>
+    {% endif %}
+    {% qurl comment_url is_ajax=1 as comment_url %}
+    <form action="{{ comment_url }}" class="cl comment-form" method="POST">
+        {% comment_fields_for comment_star_form %}
+        <textarea class="comment-box" name="comment"></textarea>
+        <div class="l review_btn">
+            <div id="rating_cont">
+                <div id="rating_btns">
+                    <ul>
+                        <li title="很差">1</li>
+                        <li title="一般">2</li>
+                        <li title="好">3</li>
+                        <li title="很好">4</li>
+                        <li title="非常好">5</li>
+                    </ul>
+                </div>
+                <div id="rating_on" style="width: 0px;"></div>
+                <div id="rating" class="r">点击星星来评分</div>
+            </div>
+        </div>
+        <button class="r btn btn-red f16">发表评论</button>
+        <span class="dib mr30 red r pt15 comment-tip"></span>
+    </form>
+</div>
+<script type="text/javascript">
+    $('#rating_btns li').hover(function(){
+        var val = $(this).text();
+        $('#rating_on').css('width', rateWidth(val));
+    },function(){
+        rating_star($('#rating_output').val());
+    }).click(function(){
+                var val = $(this).text();
+                rating_star(val);
+            });
+    function rateWidth($rating){
+        $rating = parseFloat($rating);
+        switch ($rating){
+            case 1: $width = "25px"; break;
+            case 2: $width = "54px"; break;
+            case 3: $width = "81px"; break;
+            case 4: $width = "107px"; break;
+            case 5: $width = "134px"; break;
+            default:  $width =  "0";
+        }
+        return $width;
+    }
+    function rating_star(val){
+        if(val==''){
+            $('#rating').text('点击星星来评分');
+        }
+        else{
+            $('#rating').text(val+'分');
+        }
+        $('#rating_output').val(val);
+        $('#rating_on').css('width', rateWidth(val));
+    }
+
+    var comment_tips = $('#comments .comment-tip');
+    var review=$(".comment-form").Validform({
+        showAllError:true,
+        tiptype:function(msg,o,cssctl){
+            var objtip=$("");
+            cssctl(comment_tips,o.type);
+            objtip.text(msg);
+        },
+        ajaxPost:true,
+        callback: function(data){
+            if( data.code == 0 )
+            {
+                comment_tips.html('');
+                $('.comment-form textarea[name=comment]').val('');
+                rating_star(0);
+                alert(data.msg);
+                page_load('#comment-list', $('#comment-list .page'), 1);
+            }
+            else
+            {
+                var msgs = [];
+                for(k in data.errors)
+                {
+                    msgs.push(data.errors[k].join(','));
+                }
+                var _msg = data.msg + " " + msgs.join(", ")
+                comment_tips.html(_msg);
+            }
+            return false;
+        }
+    });
+    review.addRule([{
+        ele:".comment-box",datatype:"*1-300"}
+    ]);
+</script>

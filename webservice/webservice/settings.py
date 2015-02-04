@@ -222,7 +222,7 @@ EXTENDAL_APPS = [
     'mobapi2',
     'crawler',
     'activity',
-    'apksite',
+    'iossite',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
 
@@ -365,6 +365,7 @@ SESSION_REDIS_PREFIX = 'session'
 
 CACHE_DEFAULT_LOCATION_REDIS = "127.0.0.1:6379:1"
 CACHE_APKSITE_LOCATION_REDIS = "127.0.0.1:6379:5"
+CACHE_IOSSITE_LOCATION_REDIS = "127.0.0.1:6379:6"
 CACHES = {
     "default": {
         "BACKEND": "redis_cache.cache.RedisCache",
@@ -376,6 +377,13 @@ CACHES = {
     "apksite": {
         "BACKEND": "redis_cache.cache.RedisCache",
         "LOCATION": CACHE_APKSITE_LOCATION_REDIS,
+        "OPTIONS": {
+            "CLIENT_CLASS": "redis_cache.client.DefaultClient",
+            }
+    },
+    "iossite": {
+        "BACKEND": "redis_cache.cache.RedisCache",
+        "LOCATION": CACHE_IOSSITE_LOCATION_REDIS,
         "OPTIONS": {
             "CLIENT_CLASS": "redis_cache.client.DefaultClient",
             }

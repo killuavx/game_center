@@ -1,0 +1,26 @@
+{% extends 'iossite/base_web.haml' %}
+{% load staticfiles %}
+{% block top_menu %}
+<!--头部开始 head-->
+<div class="auto head login">
+
+    <!--导航开始 nav-->
+    <div class="cell-bk nav">
+        <div class="auto rel width">
+
+            <div class="l ovh logo">
+                <h2><a href="/" class="user-icon rel"><img src="{% static 'common/img/logo.png' %}" title="虫虫游戏 | 免费玩精品"></a></h2>
+            </div><!--logo-->
+            <div class="l pt1 f18">
+                <h1 class="n f28 white pt5 mt2">{% block title %}{% endblock %}</h1>
+            </div><!--l-->
+
+            <div class="abs pt10 mt2 f14">
+                <a href="/" class="dib p5">返回首页</a>
+            </div><!--abs-->
+        </div><!--width-->
+    </div>
+    <!--导航结束 nav-->
+</div>
+<!--头部结束 head-->
+{% endblock %}

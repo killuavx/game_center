@@ -1,0 +1,69 @@
+{% load iossite_tags  util_tags %}
+{% for comment in comments %}
+<div class="review_list" id="comment-{{ comment.id }}" onmouseout="comment_hide_toolbar(this);" onmouseover="comment_show_toolbar(this);">
+    <dl class="cb">
+        <dt class="ios-web-icon l user" title="{{ comment.user_name }}"><img src="{{ comment.user_icon }}" /></dt>
+        <dd class="d1">
+            <span class="ios-web-icon l star s{{ comment.star|floatformat:"0" }}"></span>
+            <span class="ml10 rl-user">{{ comment.user_name }}</span>
+            <span class="r">{{ comment.submit_date|print_timestamp|date:'Y-m-d H:i' }}</span></dd>
+        <dd class="d2">{{ comment.comment }}</dd>
+
+        <dd class="d3">
+        {% comment %}
+            {% if request.user.is_authenticated %}
+            {% if request.user.is_staff %}
+            <a title="删除" href="javascript:remove_comment({{ comment.pk }});" class="r4"><span class="ios-web-icon"></span>删除</a>
+            {% endif %}
+            <a title="举报" href="javascript:;" onclick="report_comment({{ comment.pk }});" class="r3"><span class="ios-web-icon"></span>举报</a>
+            <a title="回复" href="javascript:;" onclick="reply_comment({{ comment.pk }});" class="r2"><span class="ios-web-icon"></span>1</a>
+            <a title="赞" href="javascript:;" onclick="vote_comment({{ comment.pk }});" class="r1"><span class="ios-web-icon"></span>0</a>
+            {% endif %}
+        {% endcomment %}
+        </dd>
+
+    </dl>
+    <div class="cl"></div>
+</div>
+{% endfor %}
+{% if with_paginator %}{% pagination_ajax comments_page paginator_url=comment_list_url load_selector='#comment-list' %}{% endif %}
+<script type="text/javascript">
+    function comment_show_toolbar(dom){
+        $(dom).find('dd.d3').find('.r3,.r4').show()
+    }
+    function comment_hide_toolbar(dom){
+        $(dom).find('dd.d3').find('.r3,.r4').hide()
+    }
+    {% if request.user.is_authenticated %}
+    {% if request.user.is_staff %}
+    function remove_comment(id){
+        $.ajax({
+            url:'/comment/remove/' + id,
+            type:'get',
+            dataType:'json',
+            success:function(data){
+                if(data.code != 0) {
+                    alert(data.msg);
+                } else {
+                   var cmtlist = $('#comment-list');
+                   var cmtlist_page = cmtlist.find('.page');
+                   page_load('#comment-list',
+                           cmtlist_page,
+                           cmtlist_page.attr('data-page'));
+                }
+            }
+        });
+    }
+    {% endif %}{% comment %}
+    function report_comment(id){
+
+    }
+    function reply_comment(id){
+
+    }
+    function vote_comment(id){
+
+    }
+    {% endcomment %}
+    {% endif %}
+</script>

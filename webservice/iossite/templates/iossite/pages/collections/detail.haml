@@ -1,0 +1,18 @@
+-extends "iossite/pages/page_web.html"
+-load url_tags util_tags templatehelper_tags iossite_tags
+-block main
+  -with cover_url=topic.cover
+    .auto.mt30.width.collection-dis.minheight-page
+      .cell-bk.mb30.bdc
+        .pr10.collection_title
+          %img.l.mr20{:alt => "={topic.name}", :src => "={cover_url}"}
+            %h1.pt10= topic.name
+            %p= topic.summary
+            %span.date 更新日期：{{ topic.updated_datetime|print_timestamp|date }} | 共 {{ topic.items_count|default:0 }} 个应用
+            .cl
+        .btn-s-box.p20.right-list
+          -for package in packages
+            {% package_box package=package product=product %}
+          {% pagination page_obj %}
+        / right-list
+      / cell-bk

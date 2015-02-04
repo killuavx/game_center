@@ -1,0 +1,20 @@
+{% extends "iossite/base_web.haml" %}
+
+{% load i18n %}
+
+{% block meta_title %}
+{% trans "Error" %}
+{% endblock %}
+
+{% block title %}
+{% trans "Error" %}
+{% endblock %}
+
+{% block main %}
+<div class="auto width page-500 minheight-page" style="min-height: 557px;">
+    <div class="panel panel-danger dn">
+        <div class="panel-heading"><h3 class="panel-title">{% trans "Error" %}</h3></div>
+        <div class="panel-body">{% trans "Sorry, an error occurred." %}</div>
+    </div>
+</div>
+{% endblock %}

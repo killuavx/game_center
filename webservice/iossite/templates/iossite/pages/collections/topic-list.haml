@@ -1,0 +1,24 @@
+-load url_tags util_tags iossite_tags templatehelper_tags
+{% url 'collection-detail' slug=topic.slug as dt_url %}
+.l
+  %a{:href => "={dt_url}", :target => "_blank" }
+    %img.lazy{:alt => "={topic.name}", "data-original" => "={topic.cover}"}
+    %h3= topic.name
+/ l
+
+.r
+  .pt20.btn-s-box.inner
+    .inner-box
+      - for package in topic.items
+        {% package_box package=package product=product %}
+      %dl.more-dl
+        %a.tc.db.ml10.f16.gr{:href => "={dt_url}", :target => "_blank" } 更多应用 &gt;
+    / inner-box
+  / inner
+
+  .cb.rel.a_btn
+    %a.ios-web-icon.abs.prev{:href => "javascript:;"}
+    %a.ios-web-icon.abs.next{:href => "javascript:;"}
+
+  .cb.date 更新日期：{{ topic.updated_datetime|print_timestamp|date }} | 共 {{ topic.items_count|default:0 }} 个应用
+/ r

@@ -1,0 +1,36 @@
+-load url_tags util_tags templatehelper_tags iossite_tags
+.f18.cell.rel.t-title
+  %h3.l.n.mr30
+    %span.abs.ios-web-icon>
+    = title
+  %a.r.f12.mt5.more{:href => "={more_url}", :target => "_blank"} 更多>
+
+.crack-rcd
+  .time-box-t
+    .time-box-b
+      - for package in items
+        -with title=package.title cat_name=package.category_name summary=package.summary star=package.star dw_size=package.download_size dw_count=package.download_count icon_url=package.icon_large_url
+          {% package_url_as package as dt_url %}
+          %dl.dib.rel.app-list-xl
+            %dt.abs
+              %a.pic{:href => "={dt_url}", :target => "_blank" , :title => "={title}"}
+                %img.lazy{:alt => "={title}",  "data-original" => "={icon_url}"}
+                  %span.ios-web-icon.abs
+            %dd.g9
+              %h3.n.rel.g3.f16.pb5.text-db
+                %a{:href => "={dt_url}", :target => "_blank", :title => "={title}" }= title
+              .g9.lh20= summary|default:''
+              .l.mt5.ios-web-icon.star{:class => "s={star|floatformat:'0'}"}
+              %p.pt2.r
+                {{ dw_size|filesizeformat }}
+                %em> |
+                {{ dw_count|intwordcn }}+下载
+                %em> |
+                = cat_name
+              -#
+                .btn-s
+                  %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+                  %a.a2{:href => "{% download_url version product=product %}", :class => "app-download-btn-js"} 下载
+    / time-box-b
+  / time-box-t
+/ crack-rcd

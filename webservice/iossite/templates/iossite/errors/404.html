@@ -1,0 +1,20 @@
+{% extends "iossite/base_web.haml" %}
+
+{% load i18n %}
+
+{% block meta_title %}
+{% trans "Page not found" %}
+{% endblock %}
+
+{% block title %}
+{% trans "Page not found" %}
+{% endblock %}
+
+{% block main %}
+<div class="auto width page-404 minheight-page" style="min-height: 557px;">
+    <div class="panel panel-danger dn">
+        <div class="panel-heading"><h2 class="panel-title">{% trans "Page not found" %}</h2></div>
+        <div class="panel-body">{% trans "The page you requested does not exist." %}</div>
+    </div>
+</div>
+{% endblock %}

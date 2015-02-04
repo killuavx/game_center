@@ -1,0 +1,201 @@
+-extends "iossite/pages/page_web.html"
+-load staticfiles mezzanine_tags widgets url_tags util_tags templatehelper_tags web_tags cache_tagging_tags comment_star_tags
+{% block meta_title %}{{ package.title }}{% endblock%}
+{% block meta_keywords %}{{ package.tags|join:', ' }}{% endblock %}
+{% block meta_description %}{{ package.summary }} | {{ package.whatsnew }}{% endblock %}
+
+-block main
+  {% with title=package.title dw_url=package.download icon_url=package.icon|default:'' root_category=package.root_category main_category=package.main_category %}
+  {% qurl dw_url entrytype='android_web' as dw_url %}
+  .auto.pt10.width.app-dis-page
+    .cell-bk.ovh
+      .p10.location.page-location><
+        当前位置：
+        %a{:href => "/"} 首页
+        %em &gt;
+        %a{:href => "={root_category.url}"}><= root_category.name
+        %em &gt;
+        %a{:href => "={main_category.url}"}><= main_category.name
+        %em &gt;
+        %a{:href => "javascript:;"}><= title
+
+      .rel.cell-bk.t-title.page-tab
+        %h1.l.n= title
+      /
+        .r.f16.page-tab-a
+          %a.on{:href => "javascript:;", } 游戏详情
+          %a{:href => "", } 游戏礼包
+
+      {% spaceless %}
+      .l.rel.left
+        .auto.rel.pic
+          %img.db.auto.pt1.mt20{:height => "175px", :src => "={icon_url}", :width => "175px"}
+            %span.dib.abs.cover.png
+        %a.mt20.db.btn.btn-green.f16.app-download-btn-js{:href => "={dw_url}"} 下载应用
+        -#
+          .pt20.pb30.db.pct100.btn-s
+            %a.a1.install.app-download-btn-js{:href => "={dw_url}", :target => ""} 下载应用
+            %a.a2{:href => "#", :target => ""} 下载到电脑
+        .tc.pt20.p-code
+          %div<
+            {% qurl dw_url api=package.url product=product as dwapi_url %}
+            {% qurl "http://qr.liantu.com/api.php" m=10 w=168 el='l' text=dwapi_url as qr_url %}
+            %img{:src => "={qr_url}", :title => "={title}"}/
+          %p.gr 扫描二维码即可下载
+        %ul.g9.pt20.instr
+          %li<
+            评分
+            %span><
+              .ios-web-icon.star.mr5{:class => "s={package.star|default:0|floatformat:'0'}" }>
+              {{ package.comment_count|default:0 }}人评分
+          %li<
+            厂商
+            %span><= package.author.name
+          %li<
+            发布
+            %span><= package.released_datetime|print_timestamp|date
+          %li<
+            版本
+            %span><= package.version_name
+          %li<
+            大小
+            %span><= package.download_size|filesizeformat
+          %li<
+            类别
+            %span><
+              -for cat in package.main_categories
+                %a.tdl{:href => "={cat.url}"}= cat.name
+                &nbsp;
+          - ifnotequal package.supported_languages|length 0
+            %li<
+              语言
+              %span><= package.supported_languages|join:" "
+          - ifnotequal package.compatibility|default:""|length 0
+            %li<
+              支持
+              %span><= package.compatibility
+          %li<
+            下载
+            %span><
+              {{ package.download_count|intwordcn }}{% if package.download_count > 10000 %}+{% endif %}
+
+        -ifnotequal ranking None
+          .cell-bk.pt10.pb30.left-top-list
+            {% include "iossite/includes/package/ranking-list.haml" with ranking=ranking product=product only %}
+        / left-top-list
+      / left-list
+      {% endspaceless %}
+
+      .r.right
+        -if package.reported
+          .detection
+            %ul><
+              %li{:class => "{% if package.reported.network %}no{% endif %}"}
+                %span><
+                {% if not package.reported.network %}不{% endif %}需要网络
+              %li{:class => "{% if package.reported.gplay %}no{% endif %}"}
+                %span><
+                %a.tdl{:target => "_blank", :href => "{% url 'package_detail_default' pk=98167 package_name='com.googlesuit.ggkj' %}"}><
+                  {% if not package.reported.gplay %}不{% endif %}需要谷歌市场
+              %li{:class => "{% if package.reported.root %}no{% endif %}"}
+                %span><
+                {% if not package.reported.root %}不{% endif %}需要ROOT权限
+              %li{:class => "{% if package.reported.adv %}no{% endif %}"}
+                %span><
+                {% if package.reported.adv %}有{% else %}无{% endif %}广告
+            .fix
+
+        .up.box_btn.up_box
+          .up_pic
+            %ul
+              -for screenshot in package.screenshots
+                %li><
+                  %img{:src => "={screenshot.preview}", :alt => "={screenshot.alt}"}/
+          / up_pic
+          .cl.rel.a_btn{:style => "display: none;"}
+            %a.ios-web-icon.abs.prev.prevStop{:href => "javascript:;", :style => "display: none;"}
+            %a.ios-web-icon.abs.next{:href => "javascript:;", :style => ""}
+          / a_btn
+
+          / product banner
+          .game-dis-cc-down
+            .rel.cc-down-bg
+              %object#flashad{:width => "500", :height => "90", :codebase => "http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" }
+                %param{:name => "movie", :value => "{% static 'android_web/swf/swfad001.swf' %}"}
+                %param{:name => "quality", :value => "autohigh"}
+                %param{:name => "wmode", :value => "transparent"}
+                %embed{:src => "{% static 'android_web/swf/swfad001.swf' %}",
+                       :quality => "autohigh",
+                       :wmode => "opaque",
+                       :name => "flashad",
+                       :swliveconnect => "TRUE",
+                       :width => "500",
+                       :height => "90",
+                       :type => "application/x-shockwave-flash",
+                       :pluginspage => "http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"}
+              %p.abs.tr
+                %img{:src => "{% static 'common/img/code.png' %}"}
+              %a.abs{:target => "_blank", :title => "虫虫助手", :href => "={product_url}"}
+        / up
+
+        {% spaceless %}
+        .down
+          %h3.n 应用介绍
+          .text_inner= package.description|linebreaksbr
+          / text_inner
+          -if package.whatsnew
+            %h3.n 新版特性
+            .text_inner= package.whatsnew|linebreaksbr
+          / text_inner
+
+          {% if related_packages %}
+          / 相关推荐
+          .ovh.relevant-app
+            %h3.n 相关推荐
+            .cell-bk.tj
+              -for pkg in related_packages
+                -with related_title=pkg.title related_dw_url=pkg.download mcat_name=pkg.category_name related_icon_url=pkg.icon|default:''
+                  {% url 'package_detail_default' pk=pkg.id package_name=pkg.package_name as related_dt_url %}
+                  .dib.rel.app-list-min<
+                    %a.db.tc.f14{:href => "={related_dt_url}", :target => "_blank", :title => "={related_title}"}><
+                      %img.db.auto.lazy{"data-original" => "={related_icon_url}"}
+                      %span.ios-web-icon.abs.db.auto
+                      {{ related_title|slice:"5"}}
+                      %i.db.n.f12.g9= mcat_name
+                    .btn-s
+                      -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+                      %a.a2{:href => "={related_dw_url}", :class => "app-download-btn-js"} 下载
+          / 相关推荐
+          {% endif %}
+        {% endspaceless %}
+
+        #comment-panel.down.mb30
+          {% comment %} {% comment_star_for package.latest_version_id 'warehouse.packageversion' %}{% endcomment %}
+          #comment-list
+
+      / right
+    / cell-bk
+  {% endwith %}
+-block extra_js_footer
+  -with PVID=17
+    %script{:src => "{% static 'android_web/js/game-dis.js' %}" }
+    :javascript
+      $(function(){
+        $.ajax({
+          url: '{% comment_star_form_url_for package.latest_version_id PVID %}',
+          type:'get',
+          dataType:'text',
+          success:function(text){
+            $('#comment-panel').prepend(text);
+          }
+        });
+        {% comment_list_url_as package.latest_version_id PVID as cmt_list_url %}
+        $.ajax({
+          url:'{% qurl cmt_list_url page=1 %}',
+          type:'get',
+          dataType:'text',
+          success:function(text){
+            $('#comment-list').html(text);
+          }
+        });
+      });
