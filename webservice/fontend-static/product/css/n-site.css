@@ -1,0 +1,50 @@
+/*banner*/
+.product-banner { height: 550px; background: #bd3130; border-bottom: 26px solid #fff }
+.left-phone { width: 482px; height: 576px; display: block; background: url(http://static.ccplay.com.cn/static/product/img/n-mobile.jpg) no-repeat; top: 0 }
+/*右边文字*/
+.right-txt { padding-top: 100px; height: 477px; margin-left: 560px; color: #FFF }
+.slogan, .down-btn a { display: block; background: url(http://static.ccplay.com.cn/static/product/img/n-icon.png) no-repeat; }
+.slogan { width: 570px; height: 115px; text-indent: -999999px; margin-bottom: 50px }
+.down-btn { padding-left: 60px }
+.down-btn a { width: 147px; height: 54px; line-height: 54px; padding-left: 80px; font-size: 20px; color: #fff; background-color: #e53333; border: 2px solid #fff; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; }
+.down-btn a:hover { text-decoration: none; color: #fff }
+.down-btn a.android { background-color: #5bc400; background-position: 15px -118px }
+.down-btn a.android:hover { background-color: #51af00 }
+.down-btn a.iphone { background-color: #429aef; background-position: -525px -118px }
+.down-btn a.iphone:hover { background-color: #2f87dc }
+.down-btn span { margin: 10px 20px 37px 0; display: inline-block }
+.qr-code { height: 180px; margin-left: 100px }
+#cc-m .left-phone { width: 380px; background-position: bottom right; left: 0px }
+#cc-m .right-txt { margin-left: 400px }
+#cc-m .down-btn { padding-left: 50px }
+#cc-m .qr-code { margin-left: 50px }
+#cc-s .left-phone { display: none }
+#cc-s .right-txt { margin-left: 60px }
+/*标语*/
+.product-SubSlogan { clear: both; padding: 50px 0 }
+.product-SubSlogan ul { text-align: center }
+.product-SubSlogan ul li { display: inline-block; width: 24% }
+.p-title, .p-info { display: block }
+.p-icon { width: 114px; height: 114px; display: inline-block; margin: 0 auto 10px auto; background: url(http://static.ccplay.com.cn/static/product/img/SubSlogan-icon.png) no-repeat; }
+.p-s-2 .p-icon { background-position: 0 -122px }
+.p-s-3 .p-icon { background-position: 0 -244px }
+.p-s-4 .p-icon { background-position: 0 -366px }
+.product-log { background: url(http://static.ccplay.com.cn/static/product/img/time-icon.png) no-repeat bottom; padding-bottom: 145px }
+.t-l-clock { background: #fff url(http://static.ccplay.com.cn/static/product/img/time-icon.png) no-repeat; width: 114px; height: 114px; display: block; margin: 0 auto 100px auto }
+.timeline { background: #fff url(http://static.ccplay.com.cn/static/product/img/time-line.png) repeat-y center; overflow: hidden }
+.t-l-line { width: 4px; background: #F00; padding-bottom: 1000px; margin: 0 auto -1000px auto; display: inline-block }
+.item-first { margin-top: -20px }
+.i-title { padding-bottom: 10px }
+.i-info { clear: both; border-top: 1px dotted #ddd; padding-top: 10px }
+.i-info p { padding-left: 5em }
+.rightCorner, .leftCorner { width: 43px; height: 14px; display: inline-block; position: absolute; right: -43px; top: -7px; background: url(http://static.ccplay.com.cn/static/product/img/time-icon.png) no-repeat -20px -144px; }
+.leftCorner { background-position: -49px -144px; left: -43px }
+.item-box { width: 110% }
+.item { width: 543px; padding: 15px; border: 1px solid #ddd; float: left; margin: 0 50px 35px 20px; left: 645px }
+#cc-m .item { width: 413px; left: 515px }
+#cc-s .item { width: 288px; left: 390px }
+#cc-s .i-info p { padding-left: 2em }
+.p-l-title h3 { top: 40px; left: 20px }
+.p-l-title p { right: 20px; top: 45px }
+.p-l-title p a { display: inline-block; padding: 5px 10px; background: #bbb; color: #fff; border-radius: 5px; }
+.p-l-title p a:hover { text-decoration: none; background: #e53333 }

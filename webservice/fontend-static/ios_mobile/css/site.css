@@ -1,0 +1,46 @@
+@charset "utf-8";
+/* CSS Document */
+html, body { width: 100%; height: 100%; font-family:Helvetica,Arial,Tahoma,sans-serif;}
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+body { line-height: 1; -webkit-touch-callout: none; -webkit-text-size-adjust: none; }
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
+ul { list-style: none; }
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; }
+a { margin: 0; padding: 0; text-decoration: none; vertical-align: baseline; background: transparent; }
+.clearfix { display: block; height: 0; overflow: hidden; clear: both; }
+
+.about-cc, .page-main { width: 100%; height: 100%; background: #eee}
+.logo { width: 30%; margin: 0 auto; padding: 30px 0 10px 0 }
+.logo img { width: 100% }
+.about-cc p { line-height: 150%; font-size: 100%; padding: 0 30px; text-indent: 2em }
+.slogan { width: 100%; margin: 0 auto; text-align: center; padding: 15px 0; }
+.slogan img { width: 50%; margin: 0 auto; opacity: 0.3}
+.about-cc .qa-list h3 span{float:right; margin-right:18px; color:#999}
+.about-cc .qa-list h3::after,.about-cc .qa-list h3.list-3::before,.about-cc .qa-list h3.list-4::before{display:none}
+.about-cc .qa-list h3::before{background:url(../img/arrow_icon.png) no-repeat; width:16px; height:16px; background-size:contain; top:14px}
+.about-cc{background:#eee url(../img/slogan.png) no-repeat center bottom; background-size:50%}
+
+
+
+
+.page-main span { color: #bbb; display: block; text-align: left; padding-left: 10px; font-size: 12px }
+.qa-box, .feedback { padding: 10px 0; text-align: center }
+.feedback{width:100%; overflow:hidden}
+.form{position:relative}
+.feedback textarea { width: 100%; height: 70px; margin: 10px auto; font-size: 100%; border: 1px solid #ccc; border-width: 1px 0; -moz-border-radius: 0em; -webkit-border-radius: 0em; border-radius: 0em; -webkit-appearance: none; }
+.textCount{font-weight: 700;font-size: 22px;font-style: italic;font-family: Constantia, Georgia; position:absolute; right:10px; top:-15px}
+.submit { width: 90%; padding: 10px 0; margin: 0 auto; font-size: 16px; -webkit-appearance: none; background: #5bc400; color: #fff; border: none }
+.submit-ok{height:70px; line-height:70px; text-align:center; color:#5bc400; display:none}
+.qa-list { text-align: left; margin: 10px auto; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; background: #fff }
+.qa-box h3 b{width:14px; height:1px; display:block; background:#fff; position:absolute; left:0; top:-1px; z-index:10}
+
+.qa-box h3 {font-size: 14px; font-weight:100; border-top: .5px solid #ddd; padding: 15px; position: relative;}
+.qa-box h3:first-child{ border: none }
+.qa-box h3:first-child b{background:#ddd}
+.qa-box p{display:none; font-size:12px; line-height:130%; padding:0 15px 15px 15px}
+.qa-box p img{width:100%}
+
+.qa-list h3::before, .qa-list h3::after { content: ''; position: absolute; top: 18px; right: 10px; z-index: 2; display: block; width: 16px; height: 2px; background: #ccc; pointer-events: none; -webkit-transition: -webkit-transform 0.25s ease-in-out; transition: transform 0.25s ease-in-out; }
+.qa-list h3::after { -webkit-transform: rotate(90deg); -ms-transform: rotate(90deg); transform: rotate(90deg); }
+.qa-list h3.on::after { -webkit-transform: rotate(0deg); -ms-transform: rotate(0deg); transform: rotate(0deg); }

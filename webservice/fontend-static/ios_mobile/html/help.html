@@ -1,0 +1,93 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+<title>帮助与反馈</title>
+<link rel="stylesheet" type="text/css" href="../css/site.css"/>
+</head> 
+<body> 
+
+<div class="page-main">
+      
+      
+      <!--反馈问题 开始-->
+      <div class="feedback">
+          <span>反馈问题</span>
+          <form class="form">
+              <textarea class="textarea"></textarea>
+              <span class="textCount"></span>
+              <input type="button" class="submit" name="" value="提交反馈" />
+          </form>
+          <div class="submit-ok">感谢您的反馈！</div>
+      </div>
+      <!--反馈问题 结束-->
+
+      <!--常见问题 开始-->
+      <div class="qa-box">
+          <span>常见问题</span>
+          <div class="qa-list">
+                <h3><b></b>为什么无法下载及安装？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+                <h3><b></b>下载安装的游戏出现闪退？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+                <h3><b></b>为什么无法下载及安装？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+                <h3><b></b>为什么无法下载及安装？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+                <h3><b></b>下载安装的游戏出现闪退？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+                <h3><b></b>为什么无法下载及安装？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+                <h3><b></b>为什么无法下载及安装？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+                <h3><b></b>下载安装的游戏出现闪退？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+                <h3><b></b>为什么无法下载及安装？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+                <h3><b></b>为什么无法下载及安装？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+                <h3><b></b>下载安装的游戏出现闪退？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+                <h3><b></b>为什么无法下载及安装？</h3>
+                <p>为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装为什么无法下载及安装</p>
+          </div>
+      </div>
+      <!--常见问题 结束-->
+
+
+</div><!--page-main-->
+<script src="http://static.ccplay.com.cn/static/common/js/jquery.min.js"></script>
+<script>
+$(function(){
+   $(".qa-list h3").click(function(){
+		$(this).addClass("on").next("p").slideToggle(300).siblings("p").slideUp("slow");
+		$(this).siblings().removeClass("on");
+	});	
+	
+	
+	$(".submit").click(function(){
+		$(".form").slideUp();
+		$(".submit-ok").slideDown();
+		setTimeout(function(){$('.submit-ok').slideUp();$('.form').slideDown(500);},1500);
+	});
+	
+	
+	$(".textarea").keydown(function(){
+		var curLength=$(".textarea").val().length;	
+		if(curLength>=141){
+			var num=$(".textarea").val().substr(0,140);
+			$(".textarea").val(num);
+		}
+		else{
+			$(".textCount").text(140-$(".textarea").val().length)
+		}
+	})
+	
+	
+});
+</script>
+</body>
+</html>
