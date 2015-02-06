@@ -9,7 +9,6 @@ from iossite.apis import ApiFactory, ApiResponseException
 from iossite.views.base import PRODUCT
 from iossite.views.topic import MasterpieceFilterBackend
 from iossite.views.base import CACHE_IOSSITE_TIMEOUT, CACHE_IOSSITE_ALIAS, method_cache_page
-from pprint import pprint
 
 
 class BaseWidget(object):
@@ -175,7 +174,7 @@ class BaseTopicPackageListWidget(BaseWidget):
 
 class CrackWidget(BaseTopicPackageListWidget):
 
-    title = '精品推荐'
+    title = '小编推荐'
 
     topic_slug = 'recommend'
 
@@ -186,13 +185,13 @@ class CrackWidget(BaseTopicPackageListWidget):
 
 class NetworkWidget(BaseTopicPackageListWidget):
 
-    title = '网游专区'
+    title = '中文精选'
 
     template_name = 'iossite/includes/home/network-list.haml'
 
     page_size = 8
 
-    topic_slug = 'home-network-game'
+    topic_slug = 'chinese'
 
 
 class BaseRankingWidget(BaseWidget):
@@ -327,20 +326,12 @@ class HomeView(TemplateView):
 
     adv_template_name = 'iossite/includes/single-adv.haml'
 
-    def get_context_data(self, **kwargs):
-        data = super(HomeView, self).get_context_data(**kwargs)
-        data['product'] = self.product
-        data['adv'] = self.get_adv_list()
-        data['adv']['template_name'] = self.adv_template_name
-        data['widgets'] = self.get_widgets()
-        return data
-
     ADV_MAP = {
-        "banner-mainsite": 'banner_list',
-        "home-a2": 'a2',
-        "home-a3": 'a3',
-        "home-a4": 'a4',
-        "home-a5": 'a5',
+        "ios-web-banner": 'banner_list',
+        "ios-web-a2": 'a2',
+        "ios-web-a3": 'a3',
+        "ios-web-a4": 'a4',
+        "ios-web-a5": 'a5',
         #"home-a6": 'a6',
         #"home-a7": 'a7',
     }
@@ -366,6 +357,14 @@ class HomeView(TemplateView):
         for key, widget_cls in self.WIDGETS.items():
             widgets[key] = widget_cls(view=self)
         return widgets
+
+    def get_context_data(self, **kwargs):
+        data = super(HomeView, self).get_context_data(**kwargs)
+        data['product'] = self.product
+        data['adv'] = self.get_adv_list()
+        data['adv']['template_name'] = self.adv_template_name
+        data['widgets'] = self.get_widgets()
+        return data
 
     #@method_cache_page(CACHE_IOSSITE_TIMEOUT,
     #                   cache=CACHE_IOSSITE_ALIAS,

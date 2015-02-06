@@ -30,7 +30,7 @@ if "mezzanine.boot" in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
                             #url("^$", "mezzanine.pages.views.page", {"slug": "/"}, name="home"),
                             #url("^$", "mezzanine.blog.views.blog_post_list", name="home"),
-                            #("^", include("mezzanine.urls")),
+                            ("^", include("mezzanine.urls")),
                             )
 
 try:
@@ -49,15 +49,10 @@ if settings.DEBUG:
                                {'document_root': settings.STATIC_ROOT, 'show_indexes': True}),
                            ) + urlpatterns
 
+#from easy_thumbnails.signals import saved_file
+#from easy_thumbnails.signal_handlers import generate_aliases_global
 
-#urlpatterns += patterns("",
-#   url(r'^iospc/', include('website.ios_pc_urls')),
-#)
-
-from easy_thumbnails.signals import saved_file
-from easy_thumbnails.signal_handlers import generate_aliases_global
-
-saved_file.connect(generate_aliases_global)
+#saved_file.connect(generate_aliases_global)
 
 try:
     from mezzanine.conf import settings as mz_settings

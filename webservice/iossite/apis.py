@@ -107,7 +107,11 @@ class BaseApi(object):
         self.key, self.secret = key, secret
 
     def request(self, *args, **kwargs):
-        api_params = self.append_token_to_apis(self.get_request_data(**kwargs))
+        req_params = dict()
+        for api_key, params in self.get_request_data(**kwargs).items():
+            req_params[api_key] = self.filter_params(**params)
+
+        api_params = self.append_token_to_apis(req_params)
         api_url = os.path.join(self.api_url, self.get_multi_api_uri(api_params))
         data_str = json.dumps(api_params)
         response = requests.post(api_url, data=dict(data=data_str))
@@ -146,18 +150,19 @@ class BaseApi(object):
         api_access = list(dict(
             #apiSecret=self.secret,
             apiKey=self.key,
-            ).items())
+        ).items())
         return dict(list(params.items()) + api_access)
 
     def filter_params(self, **kwargs):
-        return dict(filter(lambda x: x[0] in self.params and x[1] is not None, kwargs.items()))
+        if self.params is None:
+            return kwargs
+        return dict(filter(lambda x: (x[0] in self.params or x[0] == 'apiKey') and x[1] is not None, kwargs.items()))
 
     def get_request_data(self, **kwargs):
         data = dict()
         params = deepcopy(self.params)
         params = params if params else dict()
         params.update(kwargs)
-        params = self.generate_access_params(params)
         data[self.name] = self.generate_access_params(params)
         return data
 
@@ -165,7 +170,11 @@ class BaseApi(object):
         if not params:
             params = dict()
         _ordered = collections.OrderedDict(sorted(params.items()))
-        query_str = urlencode(_ordered)
+
+        _bits = []
+        for k, v in _ordered.items():
+            _bits.append("=".join([k, str(v)]))
+        query_str = "&".join(_bits)
         q2hash = "&".join([query_str, api_name, self.secret])
         token = hashlib.md5(q2hash.encode()).hexdigest()
         return token
@@ -281,13 +290,9 @@ class PackageSearchApi(BaseApi):
         'crack'
     ]
 
-    def filter_params(self, **kwargs):
-        return dict(filter(lambda x: x[0] in self.search_params and x[1] is not None, kwargs.items()))
-
     def get_request_data(self, **kwargs):
         data = dict()
-        search_params = self.generate_access_params(kwargs)
-        data[self.search_name] = self.generate_access_params(search_params)
+        data[self.search_name] = self.generate_access_params(kwargs)
         return data
 
 
@@ -299,14 +304,10 @@ class CategoryListApi(BaseApi):
         'parent_slug': None,
     }
 
-    def filter_params(self, **kwargs):
-        return dict(filter(lambda x: x[0] in self.params and x[1] is not None, kwargs.items()))
-
     def get_request_data(self, **kwargs):
         data = dict()
         params = deepcopy(self.params)
         params.update(kwargs)
-        params = self.filter_params(**params)
         data[self.name] = self.generate_access_params(params)
         return data
 
@@ -317,7 +318,7 @@ class CollectionListApi(BaseApi):
 
     name = 'web.topic.children'
     params = {
-        'slug': COLLECTION_SLUG,
+        'topic_slug': COLLECTION_SLUG,
         'item_size': 10,
         'page': 1,
         'page_size':None,
@@ -338,7 +339,7 @@ class TopicInfoApi(BaseApi):
 
     name = 'web.topic.info'
     params = {
-        'slug': None,
+        'topic_slug': None,
     }
 
 

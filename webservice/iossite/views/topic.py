@@ -106,11 +106,11 @@ class CollectionDetailView(ApiParamFilterBackendViewMixin,
 
     def get_object(self):
         api = ApiFactory.factory('topic.info')
-        params = dict(slug=self.kwargs.get(self.slug_url_param))
+        params = dict(topic_slug=self.kwargs.get(self.slug_url_param))
         try:
             res = api.request(**params)
             obj = api.get_response_data(response=res, name=api.name)
-        except ApiResponseException:
+        except ApiResponseException as e:
             raise Http404()
 
         if not obj:
