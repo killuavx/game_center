@@ -115,7 +115,7 @@ class CategoryView(ApiParamFilterBackendViewMixin,
     def get_topic_select_list(self):
         return [
             dict(id=0, name='最新发布', slug='release'),
-            dict(id=9, name='最热下载', slug='hotdown'),
+            dict(id=13, name='最热下载', slug='hotdown'),
         ]
 
     def get_context_filter_select_data(self, request, *args, **kwargs):

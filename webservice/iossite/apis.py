@@ -314,7 +314,7 @@ class CategoryListApi(BaseApi):
 
 class CollectionListApi(BaseApi):
 
-    COLLECTION_SLUG = 'spec-choice-topic'
+    COLLECTION_SLUG = 'ios_spec_title'
 
     name = 'web.topic.children'
     params = {
@@ -427,7 +427,7 @@ class UserProfileApi(BaseApi):
 
 class UserRegisterApi(BaseApi):
 
-    SUCCESS_CODE = '0020'
+    SUCCESS_CODE = '0000'
 
     name = 'user.register'
     params = {
@@ -448,7 +448,7 @@ class UserRegisterApi(BaseApi):
 
 class UserPostCommentApi(BaseApi):
 
-    SUCCESS_CODE = '0020'
+    SUCCESS_CODE = '0000'
 
     name = 'user.postComment'
     params = {
