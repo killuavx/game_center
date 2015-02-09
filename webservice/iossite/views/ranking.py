@@ -15,11 +15,11 @@ class RankingView(TemplateView):
 
     RANKING_MAP = {
         # 总榜
-        'main': 'c1',
+        'zongbang': 'c1',
         # 推荐榜
         'tuijianbang': 'c2',
         # 最热榜
-        'zuirebang': 'c3',
+        'heimabang': 'c3',
     }
 
     root_category_slugs = ['game', 'application']
