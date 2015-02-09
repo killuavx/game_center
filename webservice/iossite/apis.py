@@ -365,7 +365,7 @@ class VendorListApi(BaseApi):
 
     name = 'web.topic.authors'
     params = {
-        'topic_slug': 'spec-top-author',
+        'topic_slug': 'ios-spec-top-author',
     }
 
 
