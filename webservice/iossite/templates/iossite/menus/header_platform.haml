@@ -10,7 +10,7 @@
                 %span.trans.home
         / logo
         .inline-three.search
-          {% include "pages/includes/search_form.haml" %}
+          {% include "iossite/includes/search_form.html" %}
         / search
         .inline-three.r.user-switch
           %ul.r
@@ -30,8 +30,7 @@
 
   .cell-bk.nav#nav
     .auto.rel.width
-      {% page_menu "pages/menus/web/navigation.haml" %}
+      {% page_menu "iossite/menus/navigation.haml" %}
     / width
   / nav
-  {% endspaceless %}
 

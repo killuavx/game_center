@@ -21,6 +21,11 @@
     %link{:href => "{% static 'common/css/quick-layout.css' %}?1416988991591", :media => "all", :rel => "stylesheet", :type => "text/css"}/
     %style
       {% site_logocss %}
+    :css
+      .diy_select{display:none}
+      .search .key, #cc-l .search .key{width:88%}
+      #cc-m .search .key{width:85%}
+      #cc-s .search .key{width:80%}
     {% block extra_css %}{% endblock %}
     {% endcompress %}
     {% compress js %}{% block extra_js_header %}{% endblock %}{% endcompress %}

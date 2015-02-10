@@ -1,16 +1,7 @@
--load util_tags
+-load pages_tags
 .l.f18
   %ul.cell.pct100
-    -for nav in page_branch
-      %li{:class => "={nav.li_class}{% if nav.has_children %} rel{% endif %}"}
-        %a{:href => "={nav.url}", :class => "{% if nav.url|navigation_active %}{% endif %}{% if nav.has_children %} nav-top-a{% endif %}"}
-          = nav.name
-          -if nav.has_children
-            %em.ios-web-icon
-        -if nav.mark
-          %i{:class => "={nav.mark_class}"}.mark-new
-        -if nav.has_children
-          .abs.drop-down
-            -for subnav in nav.children
-              %a{:href => "={subnav.url}"}= subnav.name
+    -for top_page in page_branch
+      -if top_page.in_menu
+        {% page_menu top_page "iossite/menus/nav-li.haml" %}
 / l
