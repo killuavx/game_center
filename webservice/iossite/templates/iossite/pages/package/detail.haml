@@ -1,12 +1,11 @@
 -extends "iossite/pages/page_web.html"
--load staticfiles mezzanine_tags widgets url_tags util_tags templatehelper_tags web_tags cache_tagging_tags comment_star_tags
+-load staticfiles mezzanine_tags widgets url_tags util_tags templatehelper_tags web_tags cache_tagging_tags comment_star_tags iossite_tags
 {% block meta_title %}{{ package.title }}苹果版免费下载_iphone版免费下载_虫虫游戏{% endblock%}
 {% block meta_keywords %}{{ package.tags|join:',' }},{{ package.title }}苹果版免费下载,{{ package.title }}iphone版免费下载{% endblock %}
 {% block meta_description %}{{ package.summary }} | {{ package.whatsnew }}{% endblock %}
 
 -block main
   {% with title=package.title dw_url=package.download icon_url=package.icon|default:'' root_category=package.root_category main_category=package.main_category %}
-  {% qurl dw_url entrytype='android_web' as dw_url %}
   .auto.pt10.width.app-dis-page
     .cell-bk.ovh
       .p10.location.page-location><
@@ -31,15 +30,14 @@
         .auto.rel.pic
           %img.db.auto.pt1.mt20{:height => "175px", :src => "={icon_url}", :width => "175px"}
             %span.dib.abs.cover.png
-        %a.mt20.db.btn.btn-green.f16.app-download-btn-js{:href => "={dw_url}"} 下载应用
+        %a.mt20.db.btn.btn-green.f16.app-download-btn-js{:href => "={package|package_download_url}"} 下载应用
         -#
           .pt20.pb30.db.pct100.btn-s
             %a.a1.install.app-download-btn-js{:href => "={dw_url}", :target => ""} 下载应用
             %a.a2{:href => "#", :target => ""} 下载到电脑
         .tc.pt20.p-code
           %div<
-            {% qurl dw_url api=package.url product=product as dwapi_url %}
-            {% qurl "http://qr.liantu.com/api.php" m=10 w=168 el='l' text=dwapi_url as qr_url %}
+            {% qurl "http://qr.liantu.com/api.php" m=10 w=168 el='l' text=package|package_download_url as qr_url %}
             %img{:src => "={qr_url}", :title => "={title}"}/
           %p.gr 扫描二维码即可下载
         %ul.g9.pt20.instr
@@ -154,7 +152,7 @@
             %h3.n 相关推荐
             .cell-bk.tj
               -for pkg in related_packages
-                -with related_title=pkg.title related_dw_url=pkg.download mcat_name=pkg.category_name related_icon_url=pkg.icon|default:''
+                -with related_title=pkg.title related_dw_url=pkg|package_download_url mcat_name=pkg.category_name related_icon_url=pkg.icon|default:''
                   {% url 'package_detail_default' pk=pkg.id package_name=pkg.package_name as related_dt_url %}
                   .dib.rel.app-list-min<
                     %a.db.tc.f14{:href => "={related_dt_url}", :target => "_blank", :title => "={related_title}"}><

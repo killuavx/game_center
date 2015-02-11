@@ -82,3 +82,12 @@ def navigation_active(nav_url, request):
     idx = request.path.index('/', 1)
     shortpath = request.path[0:idx+1]
     return nav_url.endswith(shortpath)
+
+
+from iossite.apis import ApiFactory
+
+
+@register.filter
+def package_download_url(pkg):
+    dw_url = 'itms-services://?action=download-manifest&url=https://ios-api.ccplay.com.cn/download/%(api_key)s/%(version_id)s.plist' % dict(api_key=ApiFactory.API_KEY, version_id=pkg['latest_version_id'])
+    return dw_url
