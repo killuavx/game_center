@@ -15,6 +15,14 @@
     <h1 style="font-size:100%;color:#e53333;display:block;text-align:center">由于您的浏览器禁用了javascript脚本，网页无法正常浏览!</h1>
 </noscript>
 <base target="_blank">
+<script>
+//判断设备跳转
+(function(W){
+	if(/iphone/i.test(navigator.userAgent.toLowerCase()) || /samsung|HTC|android/i.test(navigator.userAgent.toLowerCase())){  
+		W.location.href = 'mobile.html';  
+	}             
+})(window) 
+</script>
 </head>
 
 
@@ -306,5 +314,6 @@
 <script src="http://static.ccplay.com.cn/static/product/js/site.js"></script>
 <script src="http://static.ccplay.com.cn/static/common/js/jquery.SuperSlide.2.1.1.source.js"></script>
 <script src="http://static.ccplay.com.cn/static/common/js/site-v1.js"></script>
+
 </body>
 </html>
