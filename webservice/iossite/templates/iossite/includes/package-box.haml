@@ -1,5 +1,5 @@
--load url_tags util_tags templatehelper_tags
-{% with title=package.title dw_url=package.download dw_size=package.download_size dw_count=package.download_count star=package.star category_name=package.category_name icon_url=package.icon_middle_url|default:package.icon %}
+-load url_tags util_tags templatehelper_tags iossite_tags
+{% with title=package.title dw_url=package|package_download_url dw_size=package.download_size dw_count=package.download_count star=package.star category_name=package.category_name icon_url=package.icon_middle_url|default:package.icon %}
 {% url 'package_detail_default' pk=package.id package_name=package.package_name as dt_url %}
 %dl.dib.rel.app-list-xl
   %dt.abs
@@ -17,5 +17,5 @@
     .ios-web-icon.star{:class => "s={star|floatformat:'0'}"}
     .btn-s
       -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
-      %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载
+      %a.a2{:href => "={dw_url}", :title => "={title}", :class => "app-download-btn-js"} 下载
 {% endwith %}

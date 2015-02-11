@@ -10,7 +10,7 @@
 .app-list-right
   %ol
     -for pkg in ranking.packages
-      -with icon_url=pkg.icon dw_url=pkg.download
+      -with icon_url=pkg.icon dw_url=pkg|package_download_url
         {% package_url_as pkg as dt_url %}
         %li.rel
           %b.l{:class => "{% if forloop.counter <= 3 %}gr{% endif %}"}= forloop.counter
@@ -26,6 +26,6 @@
             {{ pkg.download_count|default:0|intwordcn }}+下载
           .btn-s
             -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
-            %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载
+            %a.a2{:href => "={dw_url}", :title => "={pkg.title}", :class => "app-download-btn-js"} 下载
 
 / app-list-right

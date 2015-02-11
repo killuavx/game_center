@@ -249,18 +249,10 @@ class WebIOSClientDownloadBox(base.ProductPropertyWidgetMixin, Widget):
     client_package_name = 'com.cchelper.pc'
 
     def get_context(self, value, options):
-        from mezzanine.conf import settings
-        self.client_package_name = getattr(settings, 'GC_FOOTER_CLIENT_DOWNLOAD_PACKAGE_NAME', '')
-        self.options = deepcopy(options)
-        self.product = options.get('product')
-        from clientapp.models import client_download_url
-        download_url = client_download_url(package_name=self.client_package_name,
-                                           entrytype=self.product)
-        data = deepcopy(options)
-        data.update(dict(
-            download_url=download_url,
-            product=self.product,
-        ))
+        product_url = "http://%s/product" % get_mainsite().domain
+        data = dict(
+            product_url=product_url
+        )
         return data
 
 

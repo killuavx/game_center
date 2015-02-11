@@ -1,15 +1,15 @@
 {% load staticfiles %}
 <!--下载应用开始 cc-ios-app-down-box dn-->
 <div class="cell-bk bg-white ovh cc-ios-app-down-box dn">
-      <div class="cell-bk w750 p0">
-          <div class="r pb10"><img src="{% static 'cc_web/img/d-1.jpg' %}" width="250" /></div>
-          <div class="pb20 f18 b down-pic">
-              <img src="{% static 'common/img/favicon.png' %}"/>
-              付费应用 虫虫买单
-          </div>
-          <div>请在电脑上安装 <a href="{{ download_url }}" target="_blank" class="green ml5 mr30">虫虫助手（PC版）</a>已安装？<a href="#" class="green ml5" id="startup_cc-js">立即启动>></a></div>
-          <div class="pt20"><a href="{{ download_url }}" target="_blank" class="btn btn-red w160 tc mr15" >安装 虫虫助手（PC版）</a>本窗口<span id="close_count" class="red b f14"></span>秒后关闭！</div>
-          <div class="pt30 tc"><img class="mt10" src="{% static 'common/img/app-down-text-tip.png' %}"/></div>
-      </div>
+    <div class="cell-bk w750 p0">
+        <div class="l tc p30">
+            <img id="appbox-qr" src="http://static.ccplay.com.cn/static/common/img/code.png" width="170" height="170">
+            <div>苹果手机扫描 快速安装</div>
+            <h4 id="appbox-title" class="db red f18">游戏</h4>
+        </div>
+        <div class="r pt20 pr30">
+            <a href="{{ product_url }}" target="_blank"><img src="{% static 'ios_web/img/pop-cc.jpg' %}"></a>
+        </div>
+    </div>
 </div>
 <!--下载应用结束 cc-ios-app-down-box dn-->

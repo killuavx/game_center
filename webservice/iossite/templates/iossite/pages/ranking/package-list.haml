@@ -1,10 +1,10 @@
--load url_tags util_tags templatehelper_tags
+-load url_tags util_tags templatehelper_tags iossite_tags
 .f18.cell.rel.t-title
   %h3.l.n.mr30= title
 / t-title
 .cell-bk
   -for package in packages
-    -with title=package.title dw_url=package.download icon_url=package.icon_large_url|default:package.icon
+    -with title=package.title dw_url=package|package_download_url icon_url=package.icon_large_url|default:package.icon
       {% url 'package_detail_default' pk=package.id package_name=package.package_name as dt_url %}
       %dl.dib.rel.app-list-xl{:class => "{% if forloop.counter <= 3 %}top-={forloop.counter}{% endif %}"}
         %dt.abs
@@ -22,5 +22,5 @@
           .ios-web-icon.star{:class => "s={package.star|floatformat:'0'}"}
           %span.ios-web-icon.abs.f16.tc.number{:class => "n={forloop.counter}"}= forloop.counter
           .btn-s
-            %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载
+            %a.a2{:href => "={dw_url}", :title => "={title}", :class => "app-download-btn-js"} 下载
 
