@@ -129,7 +129,7 @@ class CrackTimeLineView(TimeLineView):
 
 class LatestTimeLineView(TimeLineView):
 
-    banner_slug = 'latest-banner'
+    banner_slug = 'ios-web-new'
 
     title = '最新发布'
 
