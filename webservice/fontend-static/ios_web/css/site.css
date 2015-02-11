@@ -58,8 +58,10 @@ background-repeat: no-repeat;}
 
 .latest-release h3 span,.hot-news h3 span{display:none}
 
-
-
+.diy_select{display:none}
+.search .key, #cc-l .search .key{width:88%}
+#cc-m .search .key{width:85%}
+#cc-s .search .key{width:80%}
 
 
 

@@ -32,7 +32,7 @@ function showCcHelperLayer(){
 			count--;
 			obj.text(count);
 			if(count == 0){
-				$.zxxbox.hide();
+				//$.zxxbox.hide();
 				clearInterval(ii);
 			}
 		},1000);
