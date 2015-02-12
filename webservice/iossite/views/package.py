@@ -74,10 +74,13 @@ class PackageDetail(DetailView):
     LANG_NAMES = {
         'zh': '中文',
         'en': '英文',
+        'other': '其他',
     }
 
     def fill_package_support_languages(self, pkg):
-        pkg['supported_languages'] = [self.LANG_NAMES[lang['code'].lower()] for lang in pkg['languages']]
+        pkg['supported_languages'] = [self.LANG_NAMES[lang['code'].lower()]
+                                      for lang in pkg['languages']
+                                      if lang['code'].lower() in self.LANG_NAMES]
 
     def fill_package_support_devices(self, pkg):
         pass

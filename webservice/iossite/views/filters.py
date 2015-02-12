@@ -17,6 +17,7 @@ class LanguageParamFilterBackend(BaseParamFilterBackend):
     choices = [
         {'code': 'ZH', 'name': '中文'},
         {'code': 'EN', 'name': '英文'},
+        {'code': 'OTHER', 'name': '其他'},
         ]
 
     lang_choices = {}
