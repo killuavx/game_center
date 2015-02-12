@@ -23,12 +23,14 @@ def datesince(cur_dt, comp_dt):
         0: '今天',
         'after': '%d天后',
         }
-    if comp.days in dmap:
-        return dmap[comp.days]
-    elif comp.days < 0:
-        return dmap['before'] % abs(comp.days)
+    days = comp.days + (comp.months * 30 if comp.months else 0)
+    if days in dmap:
+        des = dmap[days]
+    elif days < 0:
+        des = dmap['before'] % abs(days)
     else:
-        return dmap['after'] % comp.days
+        des = dmap['after'] % days
+    return des
 
 
 class TimeLineView(TemplateView):
