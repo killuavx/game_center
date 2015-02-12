@@ -1,4 +1,4 @@
--load pages_tags mezzanine_tags templatehelper_tags widgets cache future staticfiles
+-load pages_tags mezzanine_tags templatehelper_tags widgets cache future staticfiles iossite_tags
 !!!5
 %html{:lang => '={LANGUAGE_CODE}'}<
   %head
@@ -85,6 +85,4 @@
         :javascript
           var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
           document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F828b147bbb4948edf937255560d20611' type='text/javascript'%3E%3C/script%3E"));
-    {% cache 86400 product_web_iosdownbox %}
-    {% include_widget WebIOSClientDownloadBox %}
-    {% endcache %}
+    {% ios_app_downbox %}

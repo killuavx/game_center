@@ -91,3 +91,20 @@ from iossite.apis import ApiFactory
 def package_download_url(pkg):
     dw_url = 'itms-services://?action=download-manifest&url=https://ios-api.ccplay.com.cn/download/%(api_key)s/%(version_id)s.plist' % dict(api_key=ApiFactory.API_KEY, version_id=pkg['latest_version_id'])
     return dw_url
+
+
+def get_mainsite():
+    from toolkit.helpers import get_global_site, SITE_NOT_SET, SITE_ANDROID, set_global_site_id
+    set_global_site_id(SITE_ANDROID)
+    site = get_global_site()
+    set_global_site_id(SITE_NOT_SET)
+    return site
+
+
+@register.inclusion_tag('iossite/includes/ios-downbox.html', takes_context=True)
+def ios_app_downbox(context, *args, **kwargs):
+    product_url = "http://%s/product" % get_mainsite().domain
+    data = dict(
+        product_url=product_url
+    )
+    return data
