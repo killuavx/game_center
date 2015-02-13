@@ -195,7 +195,7 @@ border-radius:8px 0 0 8px}
 .masterpiece{margin-top:-180px; *overflow:hidden; z-index:2}
 .roll_box{height:125px; *overflow:hidden}
 .roll_box ul{width:1500px}
-.roll_box li{margin:0 18px 0 0; float:left}
+.roll_box li{margin:0 18px 0 0; float:left; width:237px;}
 .roll_box li img{width:237px; height:125px}
 .roll_box .text,.novice-bbs-list .top span,.r-box .top span,.bbs-rcd span,.mm a span{left:0; bottom:0; width:227px; height:30px; line-height:30px; background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,.7)); -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',endColorstr='#B2000000',gradientType=0)";
 filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',endColorstr='#B2000000',gradientType=0);
