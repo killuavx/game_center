@@ -17,8 +17,18 @@
 {% block title %}
     {% editable page.title %}{{ page.title }}{% endeditable %}
 {% endblock %}
+{% block extra_js_header  %}
+<script>
+    //判断设备跳转
+    (function(W){
+        if(/iphone/i.test(navigator.userAgent.toLowerCase()) || /samsung|HTC|android/i.test(navigator.userAgent.toLowerCase())){
+            W.location.href = 'mobile.html';
+        }
+    })(window)
+</script>
+{% endblock %}
 
-{% block platform_css %}<link href="{% static 'product/css/site.css' %}?1414044679081" media="all" rel="stylesheet" type="text/css"/>{% endblock %}
+{% block platform_css %}<link href="{% static 'product/css/n-site.css' %}?1414044779001" media="all" rel="stylesheet" type="text/css" />{% endblock %}
 {% block extra_meta %}
     {{ block.super }}
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
@@ -32,44 +42,28 @@
 {% block main %}
 <!--虫虫客户端下载 开始product-page-->
 <div class="cell-bk product-page">
+
     <div class="rel product-banner">
         <div class="auto width">
-            <div class="abs left-phone">
-                <div class="focus-box">
-                    <ul style="margin: 0px;">
-                        <li class="clone" style="float: left;"><img src="{% static 'product/img/cc-06.png' %}" /></li>
-                        <li style="float: left;"><img src="{% static 'product/img/cc-01.png' %}" /></li>
-                        <li style="float: left;"><img src="{% static 'product/img/cc-02.png' %}" /></li>
-                        <li style="float: left;"><img src="{% static 'product/img/cc-03.png' %}" /></li>
-                        <li style="float: left;"><img src="{% static 'product/img/cc-04.png' %}" /></li>
-                        <li style="float: left;"><img src="{% static 'product/img/cc-05.png' %}" /></li>
-                        <li style="float: left;"><img src="{% static 'product/img/cc-06.png' %}" /></li>
-                        <li class="clone" style="float: left;"><img src="{% static 'product/img/cc-01.png' %}" /></li>
-                    </ul>
-                </div>
-                <div class="phone-light"></div>
-            </div>
-            <!--left-phone-->
+
+            <div class="abs left-phone"></div><!--left-phone-->
             <div class="rel right-txt">
-                <h1 class="logo-ver"><span class="dn">虫虫助手</span><em>v{{latest.versionName}} 正式版</em></h1>
-                <ul class="SubSlogan-txt">
-                    <li class="st-1">精品破解</li>
-                    <li class="st-2">独家首发</li>
-                    <li class="st-3">网游礼包</li>
-                </ul>
-                {% qurl "http://qr.liantu.com/api.php" m=10 w=168 el='h' logo="http://static.ccplay.com.cn/static/common/img/favicon.png" as qr_url %}
-                {% with dw_url=latest.download %}
-                {% if request.GET.channel %}{% qurl dw_url channel=request.GET.channel as dw_url %}{% endif %}
-                <div class="abs qr-code"><img src="{% qurl qr_url text=dw_url %}" alt="虫虫助手二维码" /></div>
-                <div class="f14 down-btn"><a title="下载最新的虫虫助手" target="_blank" href="{{ dw_url }}" class="l Download-button"><span class="db f28">立即下载</span><em>v{{latest.versionName}} 版 for Android</em></a>
-                    <p class="l ml15 mt2 pt5">版本：{{latest.versionName}} 正式版<br /> 大小：{{ latest.downloadSize|filesizeformat }}<br /> 更新：{{ latest.releasedDatetime }}</p>
-                    <div class="fix"></div>
+                <h1 class="slogan">虫虫助手-免费玩精品</h1>
+                <div class="l down-btn">{% qurl dw_url channel=request.GET.channel as dw_url %}
+                    {% with dw_url=latest.download %}
+                    <a href="{{ dw_url }}" class="android">安卓版下载</a>
+                    <p><span>版本：{{latest.versionName}}</span>更新：{{ latest.releasedDatetime|slice:":10" }}</p>
+                    {% endwith %}
+
+                    <a href="itms-services://?action=download-manifest&url=https://ios-api.ccplay.com.cn/downloadLatestClient/ios_web/com.ccyx.zykj.helper.plist" class="iphone">苹果版下载</a>
+                    <p><span>版本：1.0</span>更新：2015-02-14</p>
                 </div>
-                <!--down-btn--></div>
-                {% endwith %}
-            <!--right-txt--></div>
-        <!--auto--></div>
-    <!--product-banner-->
+            <div class="l qr-code"><img src="http://static.ccplay.com.cn/static/common/img/big-code.png" height="100%" /></div>
+        </div><!--right-txt-->
+
+        </div><!--auto-->
+
+    </div><!--product-banner-->
 
     <div class="product-SubSlogan">
         <div class="auto width">
@@ -111,6 +105,21 @@
                 </div>
 
                 <div class="item-box" id="item-box">
+                    <div class="item">
+                        <div class="f20 i-title">
+                            虫虫助手 v1.0 苹果版<span class="red f14">(最新)</span> <span class="r f14">更新：2015-02-14</span>
+                        </div>
+                        <div class="f14 lh24 i-info">
+                            <b>更新内容：</b>
+                            <p>
+                                1.支持iOS 4.0 - 7.0系统，无需越狱；<br/>
+                                2.无限金币，再也不用花钱买道具；<br/>
+                                3.无帐号模式，下载无需登陆Apple ID；<br/>
+                                4.火速下载无需等候。<br/>
+                            </p>
+                        </div>
+                    </div><!--item-->
+
                     {% for app in clients %}
                     <div class="item">
                         <div class="f20 i-title">
