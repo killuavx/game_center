@@ -39,8 +39,10 @@ except ImportError:
     handler404 = "website.views.common.page_not_found"
     handler500 = "website.views.common.server_error"
 
-from django.http import HttpResponse
+#from django.http import HttpResponse
 # urlpatterns += patterns("", ("^robots.txt$", lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")), )
+from django.template.response import TemplateResponse
+urlpatterns += patterns("", ("^mobile.html$", lambda r: TemplateResponse(request=r, template='apksite/pages/product/mobile.html')), )
 if settings.DEBUG:
     urlpatterns = patterns('',
                            url(r'^media/(?P<path>.*)$', 'django.views.static.serve',
