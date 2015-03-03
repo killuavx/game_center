@@ -21,7 +21,7 @@
 <script>
     //判断设备跳转
     (function(W){
-        if(/iphone/i.test(navigator.userAgent.toLowerCase()) || /samsung|HTC|android/i.test(navigator.userAgent.toLowerCase())){
+        if(/(iphone)|(ip[oa]d)/i.test(navigator.userAgent.toLowerCase()) || /samsung|HTC|android/i.test(navigator.userAgent.toLowerCase())){
             W.location.href = 'mobile.html';
         }
     })(window)
