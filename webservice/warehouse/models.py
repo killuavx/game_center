@@ -748,11 +748,11 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
         default="",
         blank=True)
 
-    supported_features = models.ManyToManyField('SupportedFeature', blank=True)
+    #supported_features = models.ManyToManyField('SupportedFeature', blank=True)
 
-    supported_languages = models.ManyToManyField('SupportedLanguage', blank=True)
+    #supported_languages = models.ManyToManyField('SupportedLanguage', blank=True)
 
-    supported_devices = models.ManyToManyField('SupportedDevice', blank=True)
+    #supported_devices = models.ManyToManyField('SupportedDevice', blank=True)
 
     STATUS = Choices(
         'draft',
@@ -890,6 +890,7 @@ class PackageVersion(urlmixin.ModelAbsoluteUrlMixin,
             EN='英文',
             _='其他'
         )
+        return []
         lang_codes = list(self.supported_languages.values_list('code', flat=True))
         desc_langs = []
         if len(lang_codes):
@@ -1430,6 +1431,7 @@ class IOSPackageVersion(IOSPlatform, PackageVersion):
 
     def _get_support_device_types(self):
         devtypes = ['iPad', 'iPhone', 'iPod']
+        return []
         result = set()
         for dev in self.supported_devices.all():
             for t in devtypes:

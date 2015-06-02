@@ -40,6 +40,7 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
     version_name = serializers.SerializerMethodField('get_latest_version_name')
     version_code = serializers.SerializerMethodField('get_latest_version_code')
     versions_url = serializers.SerializerMethodField('get_versions_url')
+    whatsnew = serializers.SerializerMethodField('get_latest_version_whatsnew')
 
     class Meta:
         model = Package
@@ -53,6 +54,8 @@ class PackageSummarySerializer(PackageRelatedVersionsMixin,
                   'categories_names',
                   'version_count',
                   'summary',
+                  'whatsnew',
+                  'description',
                   'author',
                   'download',
                   'download_size',

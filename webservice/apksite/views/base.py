@@ -85,4 +85,4 @@ method_cache_page = lambda *args, **kwargs: method_decorator(django_cache_page(*
 
 cache_page = django_cache_page
 CACHE_APKSITE_ALIAS = 'apksite'
-CACHE_APKSITE_TIMEOUT = 60 * 60
+CACHE_APKSITE_TIMEOUT = 0

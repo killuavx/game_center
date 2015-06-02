@@ -77,13 +77,14 @@
               -for cat in package.main_category_objects
                 %a.tdl{:href => "{% absolute_url cat product='web' %}"}= cat.name
                 &nbsp;
-          %li<
-            语言
-            %span><= package.language_names|join:", "
-          -if is_ios
+          //
             %li<
-              设备
-              %span><= package.support_device_types|join:", "
+              语言
+              %span><= package.language_names|join:", "
+            -if is_ios
+              %li<
+                设备
+                %span><= package.support_device_types|join:", "
           %li<
             下载
             %span>< {{ package.download_count|intwordcn }}+

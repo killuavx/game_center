@@ -171,9 +171,9 @@ class PackageVersionAdmin(MainAdmin):
                         'grp-collapse collapse-closed'),
             'fields': (
                 'award_coin',
-                'supported_languages',
-                'supported_devices',
-                'supported_features',
+                #'supported_languages',
+                #'supported_devices',
+                #'supported_features',
             )
         }),
         (_('Version Statistics'), {
@@ -206,9 +206,9 @@ class PackageVersionAdmin(MainAdmin):
                        'stars_medium_rate', 'stars_medium_count',
                        'stars_low_rate', 'stars_low_count',
     )
-    filter_horizontal = ("supported_languages",
-                         "supported_devices",
-                         "supported_features")
+    #filter_horizontal = ("supported_languages",
+    #                     "supported_devices",
+    #                     "supported_features")
     list_filter = ('status', 'has_award', 'reported')
     date_hierarchy = 'released_datetime'
     ordering = ('-released_datetime',)

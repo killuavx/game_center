@@ -11,6 +11,7 @@ admin.autodiscover()
 
 rest_framework_swagger_url = url(r'^api-docs/', include('rest_framework_swagger.urls'))
 urlpatterns = patterns("",
+                       url(r'video/', include('video.urls')),
                        url(r'^mob/', include('webmob.urls')),
                        url("^admin/", include(admin.site.urls)),
                        url("^admin/analysis/", include('analysis.data_urls')),
@@ -42,7 +43,10 @@ except ImportError:
 #from django.http import HttpResponse
 # urlpatterns += patterns("", ("^robots.txt$", lambda r: HttpResponse("User-agent: *\nDisallow: /", mimetype="text/plain")), )
 from django.template.response import TemplateResponse
-urlpatterns += patterns("", ("^mobile.html$", lambda r: TemplateResponse(request=r, template='apksite/pages/product/mobile.html')), )
+urlpatterns += patterns("",
+    ("^mobile.html$", lambda r: TemplateResponse(request=r, template='apksite/pages/product/mobile.html')),
+    ("^product/mobile.html$", lambda r: TemplateResponse(request=r, template='apksite/pages/product/mobile.html')),
+ )
 if settings.DEBUG:
     urlpatterns = patterns('',
                            url(r'^media/(?P<path>.*)$', 'django.views.static.serve',

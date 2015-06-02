@@ -253,10 +253,11 @@ def current_site_id():
         0. combine
         1. android
         2. ios
+        4. www
     """
     from mezzanine.utils.sites import current_site_id as _cur_site_id
     site_id = _cur_site_id()
-    if site_id == 3:
+    if site_id in [3, 4]:
         return 1
     return int(site_id)
 

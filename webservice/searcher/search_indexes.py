@@ -195,7 +195,8 @@ class PackageSearchIndex(indexes.SearchIndex,
         prepare_data['released_datetime'] = latest_version.released_datetime.astimezone()
         prepare_data['updated_datetime'] = latest_version.updated_datetime.astimezone()
 
-        lang_codes = latest_version.supported_languages.values_list('code', flat=True)
+        #lang_codes = latest_version.supported_languages.values_list('code', flat=True)
+        lang_codes = []
         prepare_data['support_language_codes'] = list(lang_codes)
 
     is_download_apk = indexes.BooleanField(indexed=True, default=False)

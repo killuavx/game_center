@@ -59,7 +59,8 @@
           </div><!--bg-->
           <div class="btn-group">          
               <a id="android" href="http://android.ccplay.com.cn/download/client/com.lion.market/?entrytype=android_web">安装虫虫助手<span>安卓版</span></a>
-              <a id="iphone" href="itms-services://?action=download-manifest&url=https://ios-api.ccplay.com.cn/downloadLatestClient/ios_web/com.ccyx.zykj.helper.plist">安装虫虫助手<span>苹果版</span></a>
+              <a href="javascript:alert('感谢参与Beta测试版的虫粉，敬请期待苹果正式版！')" id="iphone">敬请期待正式版<span>感谢参与Beta测试版的虫粉</span></a>
+              <!--<a id="iphone" href="itms-services://?action=download-manifest&url=https://ios-api.ccplay.com.cn/downloadLatestClient/ios_web/com.ccyx.zykj.helper.plist">安装虫虫助手<span>苹果版</span></a> -->
           </div>
     </div>
     <!--第一页 结束-->    
@@ -104,7 +105,7 @@
 //判断设备跳转
 $(document).ready(function(){
 	if(/ipad/i.test(navigator.userAgent.toLowerCase())){
-		W.location.href = 'http://ccplay.com.cn/product';
+		W.location.href = 'http://ccplay.cc/product';
 	}else if(/iphone/i.test(navigator.userAgent.toLowerCase()) || /samsung|HTC|android/i.test(navigator.userAgent.toLowerCase())){  
 		if(/iphone/i.test(navigator.userAgent.toLowerCase())){
 			$("#android").hide();

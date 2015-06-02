@@ -333,6 +333,7 @@ class PackageUpdateView(generics.CreateAPIView):
             return Response(dict(detail='versions should be list type'),
                             status=status.HTTP_400_BAD_REQUEST)
 
+        return Response([], status.HTTP_200_OK)
         pkg_names = sorted_pkg_idx.keys()
         #pkgs = self.get_queryset().filter(package_name__in=pkg_names).all()
         pkgs = self.query_packages(pkg_names)

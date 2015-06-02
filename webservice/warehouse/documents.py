@@ -500,6 +500,7 @@ class SyncPackageDocumentHandler(object):
             )
 
     def sync_supporteds(self):
+        return
         self.doc.supported_languages = list(self.version.supported_languages\
             .values_list('code', flat=True))
         self.doc.supported_devices = list(self.version.supported_devices\

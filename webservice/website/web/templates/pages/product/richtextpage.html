@@ -44,7 +44,7 @@
                     <li class="st-3">网游礼包</li>
                 </ul>
                 {% qurl "http://qr.liantu.com/api.php" m=10 w=168 el='h' logo="http://static.ccplay.com.cn/static/common/img/favicon.png" as qr_url %}
-                {% with dw_url="http://android.ccplay.com.cn/download/client/" %}
+                {% with dw_url="http://android.ccplay.cc/download/client/" %}
                 {% if request.GET.channel %}{% qurl dw_url channel=request.GET.channel as dw_url %}{% endif %}
                 <div class="abs qr-code"><img src="{% qurl qr_url text=dw_url %}" alt="虫虫助手二维码" /></div>
                 <div class="f14 down-btn"><a title="下载最新的虫虫助手" target="_blank" href="{{ dw_url }}" class="l Download-button"><span class="db f28">立即下载</span><em>v{{latest.version_name}} 版 for Android</em></a>
@@ -91,8 +91,8 @@
                 <div class="p-l-title">
                     <h3 class="abs n f28">更新日志</h3>
                     <p class="abs f16">
-                        <a href="http://bbs.ccplay.com.cn/thread-37344-1-1.html" target="_blank">常见问题</a>
-                        <a href="http://bbs.ccplay.com.cn/forum-2-1.html" target="_blank">问题反馈</a>
+                        <a href="http://bbs.ccplay.cc/thread-37344-1-1.html" target="_blank">常见问题</a>
+                        <a href="http://bbs.ccplay.cc/forum-2-1.html" target="_blank">问题反馈</a>
                     </p>
                 </div>
 

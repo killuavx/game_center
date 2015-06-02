@@ -10,7 +10,7 @@ register_setting(
     name="GC_HOST_NAME",
     description=_("主站域名" ),
     editable=True,
-    default='www.ccplay.com.cn',
+    default='www.ccplay.cc',
     )
 
 register_setting(
@@ -169,14 +169,14 @@ register_setting(
     name="GC_WEB_HOME_F1_RSS_LINK",
     description=_("主站首页,论坛热帖rss地址" ),
     editable=True,
-    default='http://bbs.ccplay.com.cn/api.php?mod=rss&bid=45',
+    default='http://bbs.ccplay.cc/api.php?mod=rss&bid=45',
 )
 
 register_setting(
     name="GC_WEB_HOME_F2_RSS_LINK",
     description=_("主站首页,论坛新手rss地址" ),
     editable=True,
-    default='http://bbs.ccplay.com.cn/api.php?mod=rss&bid=101',
+    default='http://bbs.ccplay.cc/api.php?mod=rss&bid=101',
 )
 
 

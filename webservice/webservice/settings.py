@@ -38,6 +38,7 @@ DATABASES = {
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = [
     '*',
+    '.ccplay.cc',
     '.ccplay.com.cn',
 ]
 
@@ -144,6 +145,7 @@ MIDDLEWARE_CLASSES = (
     'webservice.middlewares.RequestFillLanguageCodeMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'toolkit.middleware.TokenAuthenticationMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 )
 
 ROOT_URLCONF = 'webservice.urls'
@@ -222,6 +224,7 @@ EXTENDAL_APPS = [
     'mobapi2',
     'crawler',
     'activity',
+    'video',
     'apksite',
 ]
 INSTALLED_APPS = INTERNAL_APPS + EXTENDAL_APPS
@@ -238,13 +241,13 @@ LANGUAGES = (
 )
 
 FILE_UPLOAD_HANDLERS = (
-    'django.core.files.uploadhandler.MemoryFileUploadHandler',
+    'toolkit.uploadhandler.MemoryFileUploadExceptVideoHandler',
     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
 )
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440 * 4
 FILE_UPLOAD_PERMISSIONS = None
-FILE_UPLOAD_TEMP_DIR = None
+FILE_UPLOAD_TEMP_DIR = '/tmp'
 
 
 REST_FRAMEWORK = {
@@ -386,7 +389,7 @@ MOGOENGINE_SERVER_CMD = '/opt/local/bin/mongod'
 
 MOGOENGINE_CLIENT_CMD = '/opt/local/bin/mongo'
 
-FORUM_URL = 'http://bbs.ccplay.com.cn/'
+FORUM_URL = 'http://bbs.ccplay.cc/'
 
 DATABASE_ROUTERS = [
     'webservice.dbroute_settings.DatawarehouseRouter',
@@ -443,3 +446,9 @@ try:
 except:
     pass
 
+
+
+# for python-video-converter
+FFMPEG_EXECUTABLE = '/usr/local/bin/ffmpeg'
+
+FFPROBE_EXECUTABLE = '/usr/local/bin/ffprobe'

@@ -271,7 +271,7 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
 
     template = 'pages/widgets/common/footer.haml'
 
-    MAIN_SITE_NAME = 'ccplay.com.cn'
+    MAIN_SITE_NAME = 'ccplay.cc'
 
     def _static(self, url):
         from django.conf import settings
@@ -339,7 +339,7 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
     def get_context(self, value, options):
         from mezzanine.conf import settings
         from toolkit.helpers import current_request
-        self.hostname = getattr(settings, 'GC_HOST_NAME', 'ccplay.com.cn')
+        self.hostname = getattr(settings, 'GC_HOST_NAME', 'ccplay.cc')
         self.request = current_request()
         data = deepcopy(options)
         data.update(dict(
