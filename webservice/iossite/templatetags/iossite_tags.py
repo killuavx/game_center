@@ -69,8 +69,8 @@ def iossite_navigation(context, *args, **kwargs):
                  dict(url='/ranking/application/', name='软件'),
              ],
         ),
-        dict(url='http://bbs.ccplay.com.cn/forum-47-1.html', name='许愿'),
-        dict(url='http://bbs.ccplay.com.cn/', name='论坛'),
+        dict(url='http://bbs.ccplay.cc/forum-47-1.html', name='许愿'),
+        dict(url='http://bbs.ccplay.cc/', name='论坛'),
     ]
     return dict(
         request=kwargs.get('request'),

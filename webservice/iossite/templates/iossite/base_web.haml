@@ -80,9 +80,13 @@
     {% block extra_js_footer %}{% endblock %}
     {% endcompress %}
     %span.dn
-      %script{:type => "text/javascript", :charset => "UTF-8", :src => "http://tajs.qq.com/stats?sId=35027569"}
-      %span.dn
-        :javascript
-          var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-          document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F828b147bbb4948edf937255560d20611' type='text/javascript'%3E%3C/script%3E"));
+      :javascript
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "//hm.baidu.com/hm.js?0043f6f6231e038dccb4d26982275fc4";
+          var s = document.getElementsByTagName("script")[0]; 
+          s.parentNode.insertBefore(hm, s);
+        })();
+      %script{:type => "text/javascript", :charset => "UTF-8", :src => "http://tajs.qq.com/stats?sId=45959396"}
     {% ios_app_downbox %}

@@ -3,6 +3,7 @@ from rest_framework import generics, status, filters
 from rest_framework.response import Response
 from mobapi.clientapp.serializers import ClientPackageVersionSerializer
 from clientapp.models import ClientPackageVersion
+from rest_framework import filters
 
 
 class SelfUpdateView(generics.RetrieveAPIView):
@@ -47,9 +48,13 @@ class SelfUpdateView(generics.RetrieveAPIView):
             self.queryset = ClientPackageVersion.objects
         return self.queryset.published()
 
+    _default_package_name = 'com.lion.market'
+
     def get_object(self, queryset=None):
         queryset = self.filter_queryset(self.get_queryset())
-        return queryset.latest_version()
+        package_name = self.request.GET.get('package_name',
+                                            self._default_package_name)
+        return queryset.filter(package_name=package_name).latest_version()
 
     def get(self, request, *args, **kwargs):
         try:

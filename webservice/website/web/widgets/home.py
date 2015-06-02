@@ -263,7 +263,7 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
 
     template = 'pages/widgets/common/footer.haml'
 
-    MAIN_SITE_NAME = 'ccplay.com.cn'
+    MAIN_SITE_NAME = 'ccplay.cc'
 
     def _static(self, url):
         from django.conf import settings

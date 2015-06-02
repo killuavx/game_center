@@ -106,7 +106,7 @@ class PackageDetail(DetailView):
     def get_context_data(self, **kwargs):
         data = super(PackageDetail, self).get_context_data(**kwargs)
         data['product'] = self.product
-        data['product_url'] = 'http://ccplay.com.cn' + reverse('product')
+        data['product_url'] = 'http://ccplay.cc' + reverse('product')
         return data
 
     @method_cache_page(CACHE_IOSSITE_TIMEOUT,

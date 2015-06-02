@@ -38,6 +38,7 @@ DATABASES = {
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = [
     '*',
+    '.ccplay.cc',
     '.ccplay.com.cn',
 ]
 
