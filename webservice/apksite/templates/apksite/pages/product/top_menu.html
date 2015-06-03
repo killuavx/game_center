@@ -1,0 +1,16 @@
+{% load apksite_templateutils_tags %}
+<!--导航 开始 cc-product-nav-->
+<div class="cc-product-nav">
+    <div class="auto width">
+        <div class="l cc-p-logo">
+            <a href="http://ccplay.cc/" target="_blank" title="虫虫游戏-只玩精品">虫虫游戏</a>
+        </div>
+
+        <ul class="r cc-p-tab">
+            <li><a href="{% current_url request 'product_helper_page' %}" {% active_url request 'product' class_name='on' %} {% active_url request 'product_helper_page' class_name='on' %}>虫虫助手</a></li>
+            <li><a href="{% current_url request 'product_union_page' %}" {% active_url request 'product_union_page' class_name='on' %}>虫虫公会</a></li>
+        </ul>
+        <div class="cl"></div>
+    </div>
+</div>
+<!--导航 结束 cc-product-nav-->
