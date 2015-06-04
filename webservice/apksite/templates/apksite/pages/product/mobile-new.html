@@ -50,16 +50,18 @@
 
     <!--第一页 开始-->
     <div class="page page-1 page-current">
+
         <div class="bg">
             <div class="logo"></div>
             <p class="fadeInUp">为HardCore的游戏玩家提供<br/>第一手的海内外精品游戏</p>
             <img src="{% static 'product/img/zs-ihpne.png' %}" class="img-logo" />
         </div><!--bg-->
-        <div class="btn-group">
-            <a class="android" href="#">安装虫虫助手<span>安卓版</span></a>
-            <a href="javascript:alert('感谢参与Beta测试版的虫粉，敬请期待苹果正式版！')" class="iphone disable">敬请期待正式版<span>感谢参与Beta测试版的虫粉</span></a>
 
+        <div class="btn-group">
+            <a class="android" {% if android_helper %}href="{{ android_helper.download }}"{% else %}href="#"{% endif %}>安装虫虫助手<span>安卓版</span></a>
+            <a class="iphone{% if not ios_helper %} disable{% endif %}" {% if ios_helper %}href="{{ ios_helper.download }}"{% else %}href="javascript:alert('感谢参与Beta测试版的虫粉，敬请期待苹果正式版！')"{% endif %}>{% if ios_helper %}安装虫虫助手<span>苹果版</span>{% else %}敬请期待正式版<span>感谢参与Beta测试版的虫粉</span>{% endif %}</a>
         </div>
+
     </div>
     <!--第一页 结束-->
 
@@ -71,9 +73,8 @@
             <img src="{% static 'product/img/gh-ihpne.png' %}" class="img-logo" />
         </div><!--bg-->
         <div class="btn-group">
-            <a class="android" href="#">安装虫虫公会<span>安卓版</span></a>
-            <a href="javascript:alert('敬请期待苹果版！')" class="iphone disable">敬请期待苹果版<span>感谢参与Beta测试版的虫粉</span></a>
-
+            <a class="android" {% if android_helper %}href="{{ android_union.download }}"{% else %}href="#"{% endif %}>安装虫虫公会<span>安卓版</span></a>
+            <a class="iphone{% if not ios_helper %} disable{% endif %}" {% if ios_helper %}href="{{ ios_union.download }}"{% else %}href="javascript:alert('敬请期待苹果版！')"{% endif %}>{% if ios_helper %}安装虫虫公会<span>苹果版</span>{% else %}敬请期待虫虫公会<span>苹果版</span>{% endif %}</a>
         </div>
     </div>
     <!--第二页 结束-->

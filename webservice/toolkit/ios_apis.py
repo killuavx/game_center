@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
+import os
+import hashlib
+import collections
 import json
 from django.http import Http404
 import requests
 from requests import codes as status_codes
 from copy import deepcopy
 from django.core.paginator import Paginator, Page
-import collections
-import hashlib
-import os
 
 
 class ApiException(Exception):
@@ -91,72 +91,6 @@ class ApiListResultSet(object):
 
     def __len__(self):
         return len(self._current_object_list) if self._current_object_list else 0
-
-
-class _BaseApi(object):
-
-    SUCCESS_CODE = '0000'
-
-    name = None
-
-    params = None
-
-    def __init__(self, api_url, key, secret):
-        self.api_url = api_url
-        self.key, self.secret = key, secret
-
-    def request(self, *args, **kwargs):
-        data_str = json.dumps(self.get_request_data(*args, **kwargs))
-        response = requests.post(self.api_url, data=dict(data=data_str))
-        if response.status_code != status_codes.OK:
-            raise Http404()
-        return response
-
-    def get_response_data(self, response, name, success_code=SUCCESS_CODE):
-        result = response.json()[name]
-        if result.get('code') == success_code:
-            return result.get('results')
-        else:
-            raise ApiResponseException(msg=result.get('msg'),
-                                       code=result.get('code'))
-
-    def get_response_list(self, response, name):
-        result = response.json()[name]
-        if result.get('code') == self.SUCCESS_CODE:
-            current_page = result.get('curPage')
-            page_size = result.get('pageSize')
-            total_pages = result.get('totalPages')
-            count = result.get('count')
-            object_list = result.get('results', list())
-            return dict(
-                current_page=current_page if current_page else 1,
-                page_size=page_size if page_size else 1,
-                total_pages=total_pages if total_pages else 1,
-                count=count if count else 0,
-                object_list=object_list if object_list else list(),
-            )
-        else:
-            raise ApiResponseException(msg="%s: %s" % (result.get('msg'), name),
-                                       code=result.get('code'))
-
-    def generate_access_params(self, params):
-        api_access = list(dict(
-            apiSecret=self.secret,
-            apiKey=self.key,
-            ).items())
-        return dict(list(params.items()) + api_access)
-
-    def filter_params(self, **kwargs):
-        return dict(filter(lambda x: x[0] in self.params and x[1] is not None, kwargs.items()))
-
-    def get_request_data(self, **kwargs):
-        data = dict()
-        params = deepcopy(self.params)
-        params = params if params else dict()
-        params.update(kwargs)
-        params = self.generate_access_params(params)
-        data[self.name] = self.generate_access_params(params)
-        return data
 
 
 class BaseApi(object):
@@ -348,15 +282,16 @@ class PackageSearchApi(BaseApi):
         'topic_name': None,
         'page': None,
         'page_size': None,
+        'package_type': None,
     }
 
-    def filter_params(self, **kwargs):
-        return dict(filter(lambda x: x[0] in self.search_params and x[1] is not None, kwargs.items()))
+    PKG_TYPES = [
+        'crack'
+    ]
 
     def get_request_data(self, **kwargs):
         data = dict()
-        search_params = self.generate_access_params(kwargs)
-        data[self.search_name] = self.generate_access_params(search_params)
+        data[self.search_name] = self.generate_access_params(kwargs)
         return data
 
 
@@ -368,25 +303,21 @@ class CategoryListApi(BaseApi):
         'parent_slug': None,
     }
 
-    def filter_params(self, **kwargs):
-        return dict(filter(lambda x: x[0] in self.params and x[1] is not None, kwargs.items()))
-
     def get_request_data(self, **kwargs):
         data = dict()
         params = deepcopy(self.params)
         params.update(kwargs)
-        params = self.filter_params(**params)
         data[self.name] = self.generate_access_params(params)
         return data
 
 
 class CollectionListApi(BaseApi):
 
-    COLLECTION_SLUG = 'spec-choice-topic'
+    COLLECTION_SLUG = 'ios_spec_title'
 
     name = 'web.topic.children'
     params = {
-        'slug': COLLECTION_SLUG,
+        'topic_slug': COLLECTION_SLUG,
         'item_size': 10,
         'page': 1,
         'page_size':None,
@@ -407,7 +338,7 @@ class TopicInfoApi(BaseApi):
 
     name = 'web.topic.info'
     params = {
-        'slug': None,
+        'topic_slug': None,
     }
 
 
@@ -433,7 +364,7 @@ class VendorListApi(BaseApi):
 
     name = 'web.topic.authors'
     params = {
-        'topic_slug': 'spec-top-author',
+        'topic_slug': 'ios-spec-top-author',
     }
 
 
@@ -469,7 +400,7 @@ class ClientListApi(BaseApi):
 
     name = 'web.ccplayClient.list'
     params = dict(
-        packageName='com.lion.market',
+        packageName='com.ccplay.helper',
         page_size=None,
     )
 
@@ -495,7 +426,7 @@ class UserProfileApi(BaseApi):
 
 class UserRegisterApi(BaseApi):
 
-    SUCCESS_CODE = '0020'
+    SUCCESS_CODE = '0000'
 
     name = 'user.register'
     params = {
@@ -516,7 +447,7 @@ class UserRegisterApi(BaseApi):
 
 class UserPostCommentApi(BaseApi):
 
-    SUCCESS_CODE = '0020'
+    SUCCESS_CODE = '0000'
 
     name = 'user.postComment'
     params = {
@@ -547,21 +478,14 @@ class CommentListApi(BaseApi):
 
 
 class ApiFactory(object):
-    """
-        ccplay.user.api.server=http://10.10.42.252:8080/
-        ccplay.content.api.server=http://10.10.34.142:80/
-        ccplay.commonservice.api.server=http://10.10.45.159:8080/
-    """
 
-    API_KEY = 'android_web'
-    #API_KEY = 'android_crack_sdk'
+    API_KEY = 'ios_web'
 
-    API_SECRET = 'c111801f8af3dad7f209f22a045175ee'
-    #API_SECRET = 'f036a8bc52d09246198163b6330ca64f'
+    API_SECRET = '1397eb666b0d7fe6653cb57b872639e3'
 
     #API_URL = 'http://192.168.1.21/content/'
-    API_URL = 'http://10.10.34.142:80/content/'
-    #API_URL = 'http://android-api.ccplay.com.cn/apicenter/'
+    API_URL = 'http://10.10.53.176:81/content/'
+    #API_URL = 'http://ios-api.ccplay.com.cn/apicenter/'
 
     API_CLASSES = {
         'detail': PackageDetailApi,
@@ -580,8 +504,8 @@ class ApiFactory(object):
     }
 
     #COMMON_API_URL = 'http://192.168.1.21/commonservice/'
-    #COMMON_API_URL = 'http://android-api.ccplay.com.cn/apicenter/'
-    COMMON_API_URL = 'http://10.10.45.159:80/commonservice/'
+    COMMON_API_URL = 'http://10.10.53.176:83/commonservice/'
+    #COMMON_API_URL = 'http://ios-api.ccplay.com.cn/apicenter/'
     COMMON_API_CLASSES = {
         'advList': AdvertisementListApi,
         'friendLinkList': FriendLinkListApi,
@@ -589,8 +513,8 @@ class ApiFactory(object):
     }
 
     #USER_API_URL = 'http://192.168.1.21/user/'
-    USER_API_URL = 'http://10.10.42.252:80/user/'
-    #USER_API_URL = 'http://android-api.ccplay.com.cn/apicenter/'
+    USER_API_URL = 'http://10.10.53.176:82/user/'
+    #USER_API_URL = 'http://ios-api.ccplay.com.cn/apicenter/'
     USER_API_CLASSES = {
         'user.login': UserLoginApi,
         'user.getProfile': UserProfileApi,
@@ -615,5 +539,3 @@ class ApiFactory(object):
         return api_cls(api_url=api_url,
                        key=cls.API_KEY,
                        secret=cls.API_SECRET)
-
-

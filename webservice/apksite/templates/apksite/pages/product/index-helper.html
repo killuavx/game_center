@@ -45,21 +45,35 @@
 
                     <div class="down-btn">
                         <div class="l">
-                            <a href="#" class="button android">
+                            {% if android_last %}{% with app=android_last %}
+                            <a href="{{ app.download }}" class="button android">
                                 <span class="icon"></span>
-                                安卓版下载
-                                                              <span class="text">
-                                                                  <em>版本：1.0</em>
-                                                                  <em>更新：2015-06-01</em>
-                                                              </span>
-                            </a>
+                                {{ app.platformName }}下载
+                                        <span class="text">
+                                            <em>版本：{{ app.versionName }}</em>
+                                            <em>更新：{{ app.releasedDatetime|slice:":10" }}</em>
+                                        </span>
+                            </a>{% endwith %}
+                            {% endif %}
+
+                            {% if ios_last %}{% with app=ios_last %}
+                                <a href="{{ app.download }}" class="button IOS">
+                                    <span class="icon"></span>
+                                    {{ app.platformName }}下载
+                                        <span class="text">
+                                            <em>版本：{{ app.versionName }}</em>
+                                            <em>更新：{{ app.releasedDatetime|slice:":10" }}</em>
+                                        </span>
+                                </a>{% endwith %}
+                            {% else %}
                             <a href="javascript:alert('感谢参与Beta测试版的虫粉，敬请期待苹果正式版！')" class="button IOS disable">
                                 <span class="icon"></span>
                                 苹果版下载
-                                                              <span class="text">
-                                                                  敬请期待正式版！
-                                                              </span>
+                                      <span class="text">
+                                          敬请期待正式版！
+                                      </span>
                             </a>
+                            {% endif %}
                         </div>
                         <div class="r qr-code">
                             <span><img src="{% static 'common/img/big-code.png' %}" />扫一扫 立即下载</span>
