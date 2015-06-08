@@ -144,7 +144,6 @@ class ProductMobileView(TemplateView):
         platformName = '安卓版'
         data['android_helper'] = self.get_last_app(api, self.android_helper_package_name, platformName)
         data['android_union'] = self.get_last_app(api, self.android_union_package_name, platformName)
-        print(data)
         return data
 
 
