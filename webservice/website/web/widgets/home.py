@@ -45,7 +45,7 @@ class WebHeaderSiteListWidget(Widget):
         yield dict(url="http://%s/" % ios_site.domain, name=ios_site.name, css_class='a1')
         android_site = Site.objects.get(pk=helpers.SITE_ANDROID)
         yield dict(url="http://%s/" % android_site.domain, name=android_site.name, css_class='a2')
-        yield dict(url="http://%s/product" % get_mainsite().domain, name='虫虫助手', css_class='a3')
+        yield dict(url="http://ccplay.cc/product", name='产品中心', css_class='a3')
 
     def get_context(self, value, options):
         items = list(self.get_list())
