@@ -1,17 +1,9 @@
 {% extends "apksite/base_product.haml" %}
 {% load staticfiles templatehelper_tags url_tags mezzanine_tags keyword_tags %}
-{% block meta_title %}{% if page.title %}{{ page.title }}-{{ settings.SITE_TITLE }}{% else %}虫虫助手客户端下载-虫虫游戏{% endif %}{% endblock %}
-{% block meta_keywords %}{% metablock %}
-    {% keywords_for page as keywords %}
-    {% for keyword in keywords %}
-        {% if not forloop.first %}, {% endif %}
-        {{ keyword }}
-    {% endfor %}
-{% endmetablock %}{% endblock %}
+{% block meta_title %}虫虫公会客户端下载-虫虫游戏{% endblock %}
+{% block meta_keywords %}虫虫公会, 虫虫公会安卓版, 虫虫公会安卓版下载, 虫虫游戏, 安卓游戏下载{% endblock %}
 
-{% block meta_description %}{% metablock %}
-    {{ page.description }}
-{% endmetablock %}{% endblock %}
+{% block meta_description %}虫虫公会，做最有趣的精品游戏社区。依托虫虫游戏只玩精品的理念，虫虫公会上的每一款游戏都经过了玩家的精挑细选，让千万热爱手游的玩家有一个真实、互动的交流社区。同时分享最新活动、最新手游攻略及免费大礼包！{% endblock %}
 {% block extra_meta %}{% endblock %}
 
 {% block extra_js_header  %}
@@ -66,11 +58,11 @@
                                         </span>
                                     </a>{% endwith %}
                                 {% else %}
-                                    <a href="javascript:alert('感谢参与Beta测试版的虫粉，敬请期待苹果正式版！')" class="button IOS disable">
+                                    <a href="javascript:alert('敬请期待苹果版！')" class="button IOS disable">
                                         <span class="icon"></span>
                                         苹果版下载
                                       <span class="text">
-                                          敬请期待正式版！
+                                          敬请期待！
                                       </span>
                                     </a>
                                 {% endif %}
