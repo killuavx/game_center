@@ -41,8 +41,8 @@ class WebHeaderSiteListWidget(Widget):
 
     def get_list(self):
         from toolkit import helpers
-        ios_site = Site.objects.get(pk=helpers.SITE_IOS)
-        yield dict(url="http://%s/" % ios_site.domain, name=ios_site.name, css_class='a1')
+        #ios_site = Site.objects.get(pk=helpers.SITE_IOS)
+        #yield dict(url="http://%s/" % ios_site.domain, name=ios_site.name, css_class='a1')
         android_site = Site.objects.get(pk=helpers.SITE_ANDROID)
         yield dict(url="http://%s/" % android_site.domain, name=android_site.name, css_class='a2')
         yield dict(url="http://ccplay.cc/product", name='产品中心', css_class='a3')
@@ -318,12 +318,12 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
             cls='i-5',
             full_url=self._page_url('product'),
         )
-        yield dict(
-            slug='product',
-            title='苹果PC版',
-            cls='i-6',
-            full_url=self._page_url('product'),
-        )
+        #yield dict(
+        #    slug='product',
+        #    title='苹果PC版',
+        #    cls='i-6',
+        #    full_url=self._page_url('product'),
+        #)
 
     def get_client_download_url(self):
         from toolkit import helpers
