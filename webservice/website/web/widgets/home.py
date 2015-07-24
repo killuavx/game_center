@@ -310,13 +310,24 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
             title='法律声明',
             full_url=self._page_url('about/legal'),
         )
+        yield dict(
+            slug='about/developer',
+            title='开发者平台',
+            full_url='http://developer.ccplay.cc/',
+        )
 
     def get_menus_helpers(self):
         yield dict(
             slug='product',
-            title='Android版',
+            title='虫虫助手',
             cls='i-5',
             full_url=self._page_url('product'),
+        )
+        yield dict(
+            slug='product',
+            title='虫虫公会',
+            cls='i-5',
+            full_url=self._page_url('product/gonghui'),
         )
         #yield dict(
         #    slug='product',

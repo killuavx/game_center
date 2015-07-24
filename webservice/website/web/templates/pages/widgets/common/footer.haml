@@ -2,13 +2,13 @@
 {% is_site_android as is_android %}{% is_site_ios as is_ios %}
 .float-five.f-1
   %dl
-    %dt.f14 关于我们
+    %dt.f14 虫虫游戏
     - for p in menus_aboutus
       %dd
         %a{:target => "_blank", :href => "={p.full_url}"}= p.title
 .float-five.f-2
   %dl
-    %dt.f14 关注我们
+    %dt.f14 关注虫虫
     %dd
       %a.ios-web-icon.i-1{:target => "_blank", :href => "http://weibo.com/ccyxpt"} 新浪微博
     %dd
@@ -20,7 +20,7 @@
   %a.ios-web-icon.f-logo{:href => "javascript:;"}
 .float-five.tl.f-4
   %dl.r
-    %dt.f14 虫虫助手
+    %dt.f14 产品中心
     - for p in menus_helpers
       %dd<
         %a.ios-web-icon{:target => "_blank", :class => "={p.cls}", :href => "={p.full_url}"}= p.title
