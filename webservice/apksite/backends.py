@@ -10,6 +10,7 @@ SESSION_KEY_USER_PROFILE = '_auth_user_profile'
 class RemoteApiUserBackend(object):
 
     def authenticate(self, username, password, app=None, **kwargs):
+
         api = ApiFactory.factory('user.login')
         response = api.request(username=username, password=password, app=app)
         try:
@@ -17,19 +18,19 @@ class RemoteApiUserBackend(object):
         except ApiResponseException as e:
             raise PermissionDenied(e.msg)
 
-        return self.wrapup_user(result)
+        currequest = current_request()
+        currequest.session[SESSION_KEY_USER_PROFILE] = result
+        user = self.wrapup_user(result)
+        return user
 
     def get_user(self, id, update_session=False):
         currequest = current_request()
         if update_session:
             profile_data = self._request_profile_data(id)
+            currequest.session[SESSION_KEY_USER_PROFILE] = profile_data
         else:
             profile_data = currequest.session.get(SESSION_KEY_USER_PROFILE)
-            if profile_data is None:
-                _data = self._request_profile_data(id)
-                profile_data = _data if _data is not None else False
 
-        currequest.session[SESSION_KEY_USER_PROFILE] = profile_data
         if profile_data:
             return self.wrapup_user(profile_data)
         else:
