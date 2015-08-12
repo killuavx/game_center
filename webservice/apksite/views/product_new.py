@@ -5,6 +5,18 @@ from apksite.views.base import PRODUCT, CACHE_APKSITE_TIMEOUT, CACHE_APKSITE_ALI
 from toolkit.ios_apis import ApiFactory as IOSApiFactory, ApiResponseException as IOSApiResponseException
 
 
+IOS_LAST_HELPER = dict(
+    platformName='苹果版',
+    versionName='1.0.3',
+    releasedDatetime='2015-08-12',
+    whatsnew="""1.全新界面风格，视觉更美观；
+2.海量资源，一触即得；
+3.随时随地，发现世界的精彩；
+4.独家首发，抢先体验巨作；
+5.精选专题，玩机生活精品不断。""",
+    download='http://itunes.apple.com/cn/app/id1017180641?mt=8',
+)
+
 class ProductTimeLineView(TemplateView):
     product = PRODUCT
 
@@ -80,6 +92,9 @@ class ProductHelperView(ProductTimeLineView):
 
     androidclient_package_name = 'com.lion.market'
 
+    def get_ios_client_apps(self):
+        return [IOS_LAST_HELPER]
+
 
 class ProductUnionView(ProductTimeLineView):
 
@@ -94,6 +109,9 @@ class ProductUnionView(ProductTimeLineView):
                        key_prefix='product')
     def get(self, request, *args, **kwargs):
         return super(ProductUnionView, self).get(request, *args, **kwargs)
+
+    def get_ios_client_apps(self):
+        return []
 
 
 class ProductMobileView(TemplateView):
@@ -131,14 +149,20 @@ class ProductMobileView(TemplateView):
         except:
             return None
 
+    def get_ios_last_app(self, *args, **kwargs):
+        return IOS_LAST_HELPER
+
     def get_context_data(self, **kwargs):
+        from django.core.urlresolvers import reverse
+
         data = super(ProductMobileView, self).get_context_data(**kwargs)
         data['product'] = self.product
 
         ios_api = self.get_client_api('ios')
         platformName = '苹果版'
-        data['ios_helper'] = self.get_last_app(ios_api, self.ios_helper_package_name, platformName)
-        data['ios_union'] = self.get_last_app(ios_api, self.ios_union_package_name, platformName)
+        #data['ios_helper'] = None # self.get_last_app(ios_api, self.ios_helper_package_name, platformName)
+        data['ios_helper'] = self.get_ios_last_app()
+        data['ios_union'] = None # self.get_last_app(ios_api, self.ios_union_package_name, platformName)
 
         api = self.get_client_api('android')
         platformName = '安卓版'
