@@ -315,6 +315,16 @@ class WebFooterWidget(base.ProductPropertyWidgetMixin, Widget):
             title='开发者平台',
             full_url='http://developer.ccplay.cc/',
         )
+        yield dict(
+            slug='about/anti-addiction',
+            title='防沉迷系统',
+            full_url=self._page_url('about/anti-addiction'),
+        )
+        yield dict(
+            slug='about/parental-controls',
+            title='家长监护工程',
+            full_url=self._page_url('about/parental-controls'),
+        )
 
     def get_menus_helpers(self):
         yield dict(
