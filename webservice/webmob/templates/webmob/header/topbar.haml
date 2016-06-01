@@ -1,0 +1,22 @@
+-load i18n
+
+%header.navbar.navbar-inverse.bs-docs-nav.navbar-fixed-top{role:'banner'}
+  .container
+    .row
+      - if is_search
+        .navbar-header.col-xs-2.col-lg-2
+          %a.navbar-brand{href:'javascript:window.history.back();'}
+            %i.logo.glyphicon.glyphicon-chevron-left &nbsp;
+      - else
+        .navbar-header.col-xs-2.col-lg-2
+          %a.navbar-brand{href:'{%url "webmob.views.home" %}'}
+            %img.logo{src:'={STATIC_URL}resource/logo.png'}
+      %nav{role: 'navigation'}
+        %form.form-inline{role:'search', action:'{% url "webmob.views.searches" %}', method:'GET'}
+          #searchbox.input-group.has-success.col-xs-8.col-lg-10.pull-right
+            %input.form-control.input-sm{type: 'text',
+              name:'q', value:'={request.GET.q}',
+              placeholder:'{% trans "Search" %} '}
+            %span.input-group-btn
+              %button.btn.btn-success.btn-sm{type: 'submit'}<
+                %i.glyphicon.glyphicon-search

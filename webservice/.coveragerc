@@ -1,0 +1,21 @@
+[run]
+data_file=reports/.coverage
+omit =
+    wsgi
+    *_settings.py
+	*/migrations/*
+	*/tests/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+
+[html]
+directory = reports/covhtml
+
+[xml]
+output=reports/coverage.xml

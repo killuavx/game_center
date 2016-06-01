@@ -1,0 +1,26 @@
+-load url_tags util_tags web_tags cache_tagging_tags templatehelper_tags
+{% absolute_url_as topic product=product as detail_url %}
+.l
+  %a{:href => "={detail_url}", :target => "_blank" }
+    %img.lazy{:alt => "={topic.name}", "data-original" => "{% resource_url topic.resources 'cover' product %}"}
+    %h3= topic.name
+/ l
+
+.r
+  .pt20.btn-s-box.inner
+    .inner-box
+      - for package in topic.packages
+        - with pkg_tags=package.get_all_cache_identifier_tags
+          {% cache_location_register tags=pkg_tags %} {% cache_add_tags pkg_tags %}
+          {% package_box2 package=package product=product %}
+      %dl.more-dl
+        %a.tc.db.ml10.f16.gr{:href => "={detail_url}", :target => "_blank" } 更多应用 &gt;
+    / inner-box
+  / inner
+
+  .cb.rel.a_btn
+    %a.ios-web-icon.abs.prev{:href => "javascript:;"}
+    %a.ios-web-icon.abs.next{:href => "javascript:;"}
+
+  .cb.date 更新日期：{{ topic.updated_datetime|date }} | 共 {{ topic.packages_count|default:0 }} 个应用
+/ r

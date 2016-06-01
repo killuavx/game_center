@@ -1,0 +1,57 @@
+/*下载页面*/
+.icon,.btn-box a,.down-btn a,.down-btn a:hover{background:url(http://static.ccplay.com.cn/static/cc_web/img/icon.png) no-repeat; display:inline-block}
+.bg-red{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-t1-bg.jpg) repeat-x; height:404px}
+.banner{top:0; right:0%}
+#cc-s .bg-red .rel img{margin-left:-200px}
+.banner .text{text-indent:-9999999px; height:230px; width:480px !important}
+.text-1{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-1.png) no-repeat right top}
+.text-2{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-2.png) no-repeat right top}
+.text-3{background:url(http://static.ccplay.com.cn/static/cc_web/img/d-text-3.png) no-repeat right top}
+#cc-l .banner{right:70px}
+#cc-l .banner .text{background-position:left top}
+
+.btn-box{padding:24px 100px 0 0;}
+#cc-m .btn-box{padding:24px 20px 0 0;}
+#cc-s .btn-box{padding:24px 30px 0 0;}
+.btn-box .a1{background-position:0 -205px}
+.btn-box .a1:hover,.btn-box .a1.on{background-position:0 -324px}
+.btn-box .a1:hover span{color:#e53333 !important}
+.btn-box a{width:93px; height:140px; margin:0 30px;}
+.btn-box a span{bottom:0; width:93px; height:39px; padding-top:5px}
+.btn-box .a2{background-position:-93px -205px}
+.btn-box .a2:hover,.btn-box .a2.on{background-position:-93px -324px}
+.btn-box .a3{background-position:-186px -205px}
+.btn-box .a3:hover,.btn-box .a3.on{background-position:-186px -324px}
+#cc-l .rel .text{width:580px}
+#cc-m .rel .text{width:380px}
+.r{right:0}
+
+.down-btn{width:27%; padding:30px; text-align:left; vertical-align:top}
+.down-btn dt{float:left}
+#cc-s .down-btn{width:24%}
+
+.down-btn a,.down-btn a:hover{display:block; background-color:#e53333; font-size:24px; padding-left:70px; overflow:hidden; padding-bottom:23px;text-overflow:ellipsis;white-space:nowrap}
+.down-btn .a1,.down-btn .a1:hover{background-position:-600px 7px}
+.down-btn .a2,.down-btn .a2:hover{background-position:-600px -88px}
+.down-btn .a3,.down-btn .a3:hover{background-position:-600px -184px}
+#cc-s .down-btn a,#cc-m .down-btn a{padding-left:40px}
+.down-btn img{right:30px; bottom:30px}
+.down-comingsoon{position:absolute; height:300px; background:url(http://static.ccplay.com.cn/static/cc_web/img/comingsoon.png) no-repeat right top; width:100%; right:30px; top:30px;}
+#cc-s .down-btn img,#cc-m .down-btn img{display:none}
+
+.app-list-min{margin:0 8px}
+#cc-s .app-list-min{margin:0 11px}
+#cc-m .app-list-min{margin:0 7px}
+
+
+
+/*安卓版*/
+
+a.a-down{width:251px; height:66px; background:url(http://static.ccplay.com.cn/static/cc_web/img/a-down.png) no-repeat; text-indent:-9999px; margin:0 0 40px 40px}
+a.a-down:hover{background-position:center}
+a.a-down:active{background-position:bottom}
+.text-info{padding:50px 0; margin-bottom:50px; min-height:164px}
+.text-info p{width:80%}
+.text-info-1,.text-info-2,.text-info-3{padding-left:55px; background:url(http://static.ccplay.com.cn/static/cc_web/img/text-icon.png) no-repeat 0 10px}
+.text-info-2{background-position:0 -120px}
+.text-info-3{background-position:0 -245px}

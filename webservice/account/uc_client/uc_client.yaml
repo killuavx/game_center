@@ -1,0 +1,107 @@
+uc_get_user:
+  args:
+    - name: username
+      type: str
+    - name: isuid
+      type: int
+      default: 0
+  return: list
+
+uc_user_register:
+  args:
+    - name: username
+      type: str
+    - name: password
+      type: str
+    - name: email
+      type: str
+    - name: questionid
+      type: str
+      default: ''
+    - name: answer
+      type: str
+      default: ''
+    - name: regip
+      type: str
+      default: ''
+  return: int
+
+uc_user_login:
+  args:
+    - name: username
+      type: str
+    - name: password
+      type: str
+    - name: isuid
+      type: int
+      default: 0
+    - name: checkques
+      type: int
+      default: 0
+    - name: questionid
+      type: str
+      default: ''
+    - name: answer
+      type: str
+      default: ''
+  return: list
+
+
+uc_user_synlogin:
+  args:
+    - name: uid
+      type: str
+  return: list
+
+
+uc_user_synlogout:
+  args: !!null
+  return: url
+
+
+uc_user_edit:
+  args:
+    - name: username
+      type: str
+    - name: oldpw
+      type: str
+    - name: newpw
+      type: str
+    - name: email
+      type: str
+    - name: ignoreoldpw
+      type: int
+      default: 0
+    - name: questionid
+      type: str
+      default: ''
+    - name: answer
+      type: str
+      default: ''
+  return: int
+
+uc_user_delete:
+  args:
+    - name: uid
+      type: [int, list]
+  return: int
+
+uc_user_deleteavatar:
+  args:
+    - name: uid
+      type: [int, list]
+  return: int
+
+uc_user_checkname:
+  args:
+    - name: username
+      type: str
+  return: int
+
+uc_user_checkemail:
+  args:
+    - name: email
+      type: str
+  return: int
+
+

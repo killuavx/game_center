@@ -1,0 +1,16 @@
+{% extends "pc_base.haml" %}
+{% load widgets templatehelper_tags pc_tags %}
+{% block main %}
+<div class="cb box masterpiece">
+    {% settings_value 'GC_TOPICS_MASTERPIECE_SLUG' as masterpiece_slug %}
+    {% widget PCMasterpiecePackageListWidget slug=masterpiece_slug page=request.GET.page per_page=9 %}
+    <div class="masterpiece_box">
+{% for package in items %}
+    {% include "pages/pc/widgets/masterpiece-package-list.haml" %}
+{% endfor %}
+    </div>
+    {% pagination items %}
+    {% endwidget %}
+</div>
+{% endblock %}
+

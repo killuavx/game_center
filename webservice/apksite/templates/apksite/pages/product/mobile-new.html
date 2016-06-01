@@ -1,0 +1,103 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+    <title>虫虫助手</title>
+    <link rel="shortcut icon" href="{% static 'common/img/favicon.png' %}" type="image/png" />
+    <link rel="icon" href="{% static 'common/img/favicon.ico' %}" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="{% static 'product/css/animations.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'product/css/mobile-201505.css' %}" />
+</head>
+
+
+<body>
+
+<!--loading 开始-->
+<div id="page-hd">
+    <div id="loading">
+        <div class="spinner">
+            <div class="spinner-container container1">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+            </div>
+            <div class="spinner-container container2">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+            </div>
+            <div class="spinner-container container3">
+                <div class="circle1"></div>
+                <div class="circle2"></div>
+                <div class="circle3"></div>
+                <div class="circle4"></div>
+            </div>
+        </div>
+    </div>
+    <img src="{% static 'product/img/icon_up.png' %}" class="arrow-up pt-page-moveIconUp">
+</div>
+<!--loading 结束-->
+
+
+<!--页面 开始-->
+<div id="page-content">
+
+    <!--第一页 开始-->
+    <div class="page page-1 page-current">
+
+        <div class="bg">
+            <div class="logo"></div>
+            <p class="fadeInUp">为HardCore的游戏玩家提供<br/>第一手的海内外精品游戏</p>
+            <img src="{% static 'product/img/zs-ihpne.png' %}" class="img-logo" />
+        </div><!--bg-->
+
+        <div class="btn-group">
+            <a class="android" {% if android_helper %}href="{{ android_helper.download }}"{% else %}href="#"{% endif %}>安装虫虫助手<span>安卓版</span></a>
+            <a class="iphone{% if not ios_helper %} disable{% endif %}" {% if ios_helper %}href="{{ ios_helper.download }}"{% else %}href="javascript:alert('敬请期待虫虫助手苹果版，近期闪亮登场！')"{% endif %}>{% if ios_helper %}安装虫虫助手<span>苹果版</span>{% else %}敬请期待虫虫助手<span>苹果版</span>{% endif %}</a>
+        </div>
+
+    </div>
+    <!--第一页 结束-->
+
+    <!--第二页 开始-->
+    <div class="page page-2 hide">
+        <div class="bg">
+            <div class="logo"></div>
+            <p>为HardCore的游戏玩家提供<br/>最有趣的精品游戏互动社区</p>
+            <img src="{% static 'product/img/gh-ihpne.png' %}" class="img-logo" />
+        </div><!--bg-->
+        <div class="btn-group">
+            <a class="android" {% if android_helper %}href="{{ android_union.download }}"{% else %}href="#"{% endif %}>安装虫虫公会<span>安卓版</span></a>
+            <a class="iphone{% if not ios_helper %} disable{% endif %}" {% if ios_helper %}href="{{ ios_union.download }}"{% else %}href="javascript:alert('敬请期待虫虫公会苹果版，近期闪亮登场！')"{% endif %}>{% if ios_helper %}安装虫虫公会<span>苹果版</span>{% else %}敬请期待虫虫公会<span>苹果版</span>{% endif %}</a>
+        </div>
+    </div>
+    <!--第二页 结束-->
+
+</div>
+<!--页面 结束-->
+
+<script type="text/javascript" src="{% static 'product/js/zepto.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'product/js/touch.js' %}"></script>
+<script type="text/javascript" src="{% static 'product/js/index.js' %}"></script>
+<script>
+    //判断设备跳转
+    $(document).ready(function(){
+        if(/ipad/i.test(navigator.userAgent.toLowerCase())){
+            W.location.href = 'http://ccplay.cc/product/';
+        }else if(/iphone/i.test(navigator.userAgent.toLowerCase()) || /samsung|HTC|android/i.test(navigator.userAgent.toLowerCase())){
+            if(/iphone/i.test(navigator.userAgent.toLowerCase())){
+                $(".android").hide();
+            }else{
+                $(".iphone").hide();
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+-load cache
+-load pages_tags
+.logo.left
+  %h1
+    %a{:href => "{% url 'home' %}"}
+%nav.nav.left
+  %ul
+    - for page in page_branch
+      - if page.in_menu
+        %li<
+          %a{ :href => "={page.get_absolute_url}",
+             :class => "{% if page.is_current_or_ascendant %}navbg{% endif %}"}= page.title
+.search.right
+  {% include "pages/widgets/search_form.haml" %}

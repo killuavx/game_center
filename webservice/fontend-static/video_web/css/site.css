@@ -1,0 +1,30 @@
+.player{max-height:750px}
+.player video{width:100%}
+.Video-list .pic{max-height:95px; max-width:190px;}
+.Video-list .pic-img{width:100%; max-height:95px; max-width:190px}
+.Video-list .pic a{display:block; background:url(../images/play_icon.png) no-repeat center #000;}
+.Video-list .pic a:hover img{filter:alpha(opacity=30); -moz-opacity:0.3;-khtml-opacity: 0.3;opacity: 0.3;}
+.Video-list .inline-six{border-bottom:2px solid #fff}
+.Video-list .inline-six:hover{background:#f5f5f5; border-bottom-color:#c5c5c5}
+.Video-list .on{background:#f5f5f5; border-bottom-color:#e53333}
+.Video-list .text{padding-bottom:20px}
+.Video-list .text dd{background:url(../images/icon.png) no-repeat; padding-left:20px; height:16px; line-height:16px; margin-top:5px; _filter:alpha(opacity=70); -moz-opacity:0.7;-khtml-opacity: 0.7;opacity: 0.7; overflow:hidden} 
+.Video-list dd.name{background-position:0 1px}
+.Video-list dd.date{background-position:0 -36px}
+.Video-list dd.number{background-position:0 -72px}
+.Video-list .title{display:block; height:22px; line-height:22px; font-size:14px; overflow:hidden}
+.Video-list{ overflow:hidden; position:relative }
+.Video-list .hd ul{overflow:hidden; zoom:1; position:absolute; text-align:center; width:100%; margin-top:-20px}
+.Video-list .hd ul li {display:inline-block; width: 4px; height: 4px; overflow:hidden; margin:0 5px; border: 2px solid #ccc; border-radius: 6px; cursor: pointer; background:#ccc; text-indent:-9999px}
+.Video-list .hd ul li.on { background:none; opacity: 1; width: 20px; height: 6px; position:relative; top:1px}
+.Video-list .bd ul{ overflow:hidden; zoom:1; }
+.Video-list .bd ul li{float:left; _display:inline; overflow:hidden}
+.Video-list .bd ul li .title{ line-height:24px}
+.Video-introduction{background:#fae9e0; padding-bottom:100px}
+.Video-introduction .inline-four{padding-top:250px; overflow:hidden}
+.Video-introduction .i-1{background:url(../images/function1.png) no-repeat center}
+.Video-introduction .i-2{background:url(../images/function2.png) no-repeat center}
+.Video-introduction .i-3{background:url(../images/function3.png) no-repeat center}
+.Video-introduction .i-4{background:url(../images/function4.png) no-repeat center}
+.Video-advantage img{width:382px; height:180px}
+.Video-contact{background:url(../images/bg-bottom.png) no-repeat center top; margin-bottom:-35px}

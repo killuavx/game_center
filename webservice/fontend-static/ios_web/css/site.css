@@ -1,0 +1,65 @@
+.logo a{display:inline-block; height:50px; background:url(http://static.ccplay.com.cn/static/ios_web/img/logo.png) no-repeat}
+.logo a img{opacity: 0; filter: alpha(opacity=0)}
+.login .logo a{background-image: url(http://static.ccplay.com.cn/static/common/img/user-icon.png);
+background-repeat: no-repeat;}
+.main-text p{text-indent:2em}
+.main-text strong {padding-top:20px; display:block}
+.project{padding-top:15px}
+
+/*去掉安装按钮*/
+.btn-s .a1{display:none}
+.btn-s .a2{width:100%}
+.app-list-min .btn-s{height:25px}
+
+/*v1*/
+.multi{margin-top:-60px}
+.hot-news .t-title{border-bottom-color:#e53333}
+
+.hot-news .t-title h3 .ios-web-icon{background-position:-166px -67px; left:55px}
+.hot-news .time-box-t{background:url(http://static.ccplay.com.cn/static/common/img/time-line-2.png) 47px bottom no-repeat; padding-bottom:20px}
+.hot-news .time-box-b{background:url(http://static.ccplay.com.cn/static/common/img/time-line-1.png) 47px 0 repeat-y}
+
+
+.app-list-l .pic .ios-web-icon{background-position:0px -663px}
+.most-expensive .t-title{border-bottom-color:#ccc; background: inherit;}
+.most-list{background:#f8f8f8}
+
+.crack-page { margin-top: -180px; z-index: 2;}
+.crack-rcd{padding:0 15px}
+.crack-rcd .app-list-xl{width:100%; padding:0; margin-top:20px}
+.crack-rcd .app-list-xl .lh20{height:40px; overflow:hidden}
+.crack-rcd .app-list-xl dd{padding-left:105px}
+#cc-m .crack-rcd{width:390px}
+
+#cc-s .nav .l li{width:83px}
+#cc-s .nav .drop-down a,#fixed-head #cc-s .nav .drop-down a{padding:0 20px}
+#fixed-head #cc-l .search{margin-left:490px}
+#fixed-head #cc-l .nav .l li{width:80px}
+
+#fixed-head #cc-m .search{margin-left:435px}
+#fixed-head #cc-m .nav .l li,#fixed-head #cc-l .nav .l li{width:8%}
+#fixed-head #cc-m .nav .l li a,#fixed-head #cc-l .nav .l li a{letter-spacing:5px}
+#fixed-head #cc-l .nav li .drop-down a{letter-spacing:0; padding:0 10px}
+
+#fixed-head .login .nav .l li a{letter-spacing:0 !important}
+
+.about-page{min-height:800px}
+.about-page ol li{list-style:decimal}
+
+.about-page .info p{margin-bottom:30px; text-indent:2em}
+.about-page .bg{background:#f5f5f5 no-repeat right bottom}
+.about-page .bg h1{line-height:55px; padding-left:45px}
+.job-btn a:hover{color:#e53333; text-decoration:none; border-color:#e53333}
+.p-about .bg{background-image:url(http://static.ccplay.com.cn/static/ios_web/img/about_t.jpg)}
+.p-contact .bg{background-image:url(http://static.ccplay.com.cn/static/ios_web/img/contact_t.jpg)}
+.p-vision .bg{background-image:url(http://static.ccplay.com.cn/static/ios_web/img/vision_t.jpg)}
+
+
+.latest-release h3 span,.hot-news h3 span{display:none}
+
+
+
+
+
+
+

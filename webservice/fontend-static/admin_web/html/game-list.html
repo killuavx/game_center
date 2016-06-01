@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="renderer" content="webkit">
+	<title>所有游戏</title>
+    <link rel="stylesheet" href="http://static.ccplay.com.cn/static/bootstrap3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://static.ccplay.com.cn/static/admin_web/style/site.css">
+</head>
+
+<body>
+	
+
+<div class="main game-list">
+
+	<div class="main-top">
+    
+            <h3>所有游戏 <small>共<span>12365</span>个</small></h3>
+            
+            <form class="form-inline pull-right search-box" role="form">
+            	<select class="form-control">
+                    <option>应用名</option>
+                    <option>包名</option>
+                    <option>ID</option>
+                </select>
+                <input type="text" class="form-control" placeholder="应用关键词">
+                <button type="button" class="btn btn-default">搜索</button>
+                <button type="button" class="btn btn-primary">显示全部</button>
+            </form>
+            
+    </div><!--main-top-->
+    
+    
+    
+<div class="panel panel-info">
+  <div class="panel-heading">
+  <!--查看 开始-->
+  <div class="pin">
+                  <form class="form-inline" role="form">
+                    <div class="form-group">
+                          <span>操作</span>
+                          <select class="form-control">
+                                    <option>--</option>
+                                    <option>下架</option>
+                                    <option>上架</option>
+                                    <option>排序</option>
+                                    <option>有金币</option>
+                                    <option>删除</option>
+                          </select>
+                    </div>
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-default">查看</button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                              <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                              <li><a href="#">确认</a></li>
+                            </ul>
+                          </div>
+                  </form>
+                  
+                  
+                  
+                  <form class="form-inline" role="form">
+                    <div class="form-group">
+                          <span>分类</span>
+                          <select class="form-control">
+                            <option>全部</option>
+                            <option>破解游戏</option>
+                            <option>大型游戏</option>
+                            <option>中文游戏</option>
+                            <option>休闲益智</option>
+                            <option>动作射击</option>
+                            <option>体育竞技</option>
+                            <option>角色扮演</option>
+                            <option>棋牌游戏</option>
+                            <option>赛车竞速</option>
+                            <option>策略塔防</option>
+                            <option>模拟经营</option>
+                            <option>卡牌策略</option>
+                            <option>回合战斗</option>
+                            <option>即时动作</option>
+                            <option>热门游戏</option>
+                            <option>精选游戏</option>
+                            <option>休闲娱乐</option>
+                            <option>最新游戏</option>
+                          </select>
+                    </div>
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-default">查看</button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                              <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                              <li><a href="#">加入</a></li>
+                              <li><a href="#">移出</a></li>
+                            </ul>
+                          </div>
+                  </form>
+                  
+                  
+                  <form class="form-inline" role="form">
+                    <div class="form-group">
+                          <span>合集</span>
+                          <select class="form-control">
+                            <option>全部</option>
+                            <option>虫虫游戏周刊9月B</option>
+                            <option>虫虫游戏特刊向Minecraft致敬</option>
+                            <option>虫虫游戏周刊9月A</option>
+                            <option>...</option>
+                            <option>列出最新5个</option>
+                          </select>
+                    </div>
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-default">查看</button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                              <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                              <li><a href="#">加入</a></li>
+                              <li><a href="#">移出</a></li>
+                            </ul>
+                          </div>
+                  </form>
+                  
+                  
+                  <form class="form-inline" role="form">
+                    <div class="form-group">
+                          <span>榜单</span>
+                          <select class="form-control">
+                                <option>全部</option>
+                                <optgroup label="游戏排行">
+                                    <option>总榜</option>
+                                    <option>推荐榜</option>
+                                    <option>最热榜</option>
+                                    <option>男神榜</option>
+                                    <option>女神榜</option>
+                                <optgroup label="网游排行">
+                                    <option>总榜</option>
+                                    <option>推荐榜</option>
+                                    <option>最热榜</option>
+                                    <option>男神榜</option>
+                                    <option>女神榜</option>
+                          </select>
+                    </div>
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-default">查看</button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                              <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                              <li><a href="#">加入</a></li>
+                              <li><a href="#">移出</a></li>
+                            </ul>
+                          </div>
+                  </form>
+        </div>
+            <!--查看 结束-->
+  </div>
+
+
+
+
+	<table class="table" id="table_drag" style="display: none;"></table>
+
+    <table class="table table-hover" id="table">
+      <thead>
+        <tr>
+          <th class="th-check"><input type="checkbox" id="check-btn" class="tag" title="全选/反选"></th>
+          <th class="th-name">名称</th>
+          <th class="th-package">版本/包名</th>
+          <th class="th-size">大小/金币</th>
+          <th class="th-tag">标签/分类</th>
+          <th class="th-time">发布时间</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox" name="list-checkbox" value="001"></td>
+          <td class="td-name"><img src="http://usr.im/35x35" class="img-rounded game-icon"/>地铁跑酷北京破解版<br/>
+          		<span class="en-name">Subway Surfers</span>
+          		<span class="row-actions"><a href="http://android.ccplay.com.cn/package/800" target="_blank"><span class="glyphicon glyphicon-eye-open"></span>预览</a><a href="#"><span class="glyphicon glyphicon-floppy-save"></span>下载</a><a href="editor-game.html"><span class="glyphicon glyphicon-edit"></span>编辑</a></span>
+          </td>
+          <td>1.0.1.2 <br/> com.centurysoft.fruityrobo</td>
+          <td>999.99 MB <br/> 50金币</td>
+          <td>蜘蛛侠, 破解, 无限金币, 冒险, 首发<br/>破解游戏, 中文游戏, 动作射击, 热门游戏, 精选游戏, 最新游戏</td>
+          <td>2014-07-16 11:57</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" name="list-checkbox" value="002"></td>
+          <td><img class="img-rounded game-icon" src="http://i2.media.ccplay.com.cn/media/package/98909/v14/i.png.72x72_q85_upscale.png"> 主教之旅2破解版<br/>
+          		<span class="en-name">Cardinal Quest 2</span>
+          		<span class="row-actions"><a href="http://android.ccplay.com.cn/package/800" target="_blank"><span class="glyphicon glyphicon-eye-open"></span>预览</a><a href="#"><span class="glyphicon glyphicon-floppy-save"></span>下载</a><a href="editor-game.html"><span class="glyphicon glyphicon-edit"></span>编辑</a></span>
+          </td>
+          <td>1.0.1.2 <br/> com.kiloo.subwaysurf</td>
+          <td>2.0 MB <br/> 10金币</td>
+          <td>蜘蛛侠, 破解, 无限金币, 冒险, 首发<br/>破解游戏, 中文游戏, 体育竞技, 热门游戏, 精选游戏</td>
+          <td>2014-07-16 11:57</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" name="list-checkbox" value="003"></td>
+          <td class="td-name"><img class="img-rounded game-icon" src="http://i1.media.ccplay.com.cn/media/package/98910/v2/i.png.72x72_q85_upscale.png">二战神鹰2:太平洋1942破解版<br/> 
+          		<span class="en-name">iFighter 2: The Pacific 1942</span>
+          		<span class="row-actions"><a href="http://android.ccplay.com.cn/package/800" target="_blank"><span class="glyphicon glyphicon-eye-open"></span>预览</a><a href="#"><span class="glyphicon glyphicon-floppy-save"></span>下载</a><a href="editor-game.html"><span class="glyphicon glyphicon-edit"></span>编辑</a></span>
+          </td>
+          <td>1.0.1.2 <br/> com.jr.ninjarun.mm.yxd</td>
+          <td>5.0 MB <br/> 10金币</td>
+          <td>蜘蛛侠, 破解, 无限金币, 冒险, 首发<br/>破解游戏, 中文游戏, 体育竞技, 热门游戏, 最新游戏</td>
+          <td>2014-07-16 11:57</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" name="list-checkbox" value="004"></td>
+          <td><img class="img-rounded game-icon" src="http://i4.media.ccplay.com.cn/media/package/630/v2602/i.png.72x72_q85_upscale.png"> 僵尸收割者破解版<br/> 
+          		<span class="en-name">Zombie Harvest</span>
+          		<span class="row-actions"><a href="http://android.ccplay.com.cn/package/800" target="_blank"><span class="glyphicon glyphicon-eye-open"></span>预览</a><a href="#"><span class="glyphicon glyphicon-floppy-save"></span>下载</a><a href="editor-game.html"><span class="glyphicon glyphicon-edit"></span>编辑</a></span>
+          </td>
+          <td>1.0.1.2 <br/> com.kongregate.mobile.cardinalquest.google</td>
+          <td>10.0 MB <br/> 10金币</td>
+          <td>蜘蛛侠, 破解, 无限金币, 冒险, 首发<br/>破解游戏, 角色扮演, 热门游戏, 最新游戏</td>
+          <td>2014-07-16 11:57</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" name="list-checkbox" value="005"></td>
+          <td><img class="img-rounded game-icon" src="http://i2.media.ccplay.com.cn/media/package/98911/v9/i.png.72x72_q85_upscale.png">追捕杜芬舒<br/>
+          		<span class="en-name">Cardinal Quest 2</span>
+          		<span class="row-actions"><a href="http://android.ccplay.com.cn/package/800" target="_blank"><span class="glyphicon glyphicon-eye-open"></span>预览</a><a href="#"><span class="glyphicon glyphicon-floppy-save"></span>下载</a><a href="#"><span class="glyphicon glyphicon-edit"></span>编辑</a></span>
+          </td>
+          <td>1.0.1.2 <br/> com.epicforce.iFighter2</td>
+          <td>100.0 MB <br/> 10金币</td>
+          <td>蜘蛛侠, 破解, 无限金币, 冒险, 首发<br/>破解游戏, 动作射击, 热门游戏, 最新游戏</td>
+          <td>2014-07-16 11:57</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" name="list-checkbox" value="005"></td>
+          <td><img class="img-rounded game-icon" src="http://i4.media.ccplay.com.cn/media/package/98542/v346/i.png.72x72_q85_upscale.png">真三国快打 <br/>
+          		<span class="row-actions"><a href="http://android.ccplay.com.cn/package/800" target="_blank"><span class="glyphicon glyphicon-eye-open"></span>预览</a><a href="#"><span class="glyphicon glyphicon-floppy-save"></span>下载</a><a href="editor-game.html"><span class="glyphicon glyphicon-edit"></span>编辑</a></span>
+          </td>
+          <td>1.0.1.2 <br/> com.brave.guardians</td>
+          <td>112.0 MB <br/> 30金币</td>
+          <td>蜘蛛侠, 破解, 无限金币, 冒险, 首发<br/>中文游戏, 即时动作, 热门游戏, 精选游戏</td>
+          <td>2014-07-16 11:57</td>
+        </tr>
+      </tbody>
+    </table>
+
+</div><!--panel-info-->
+ 
+
+    <div class="load_more">
+    		<button type="button" class="btn btn-default btn-block loading-btn" data-loading-text="Loading..." autocomplete="off">加载更多</button>
+    </div>
+
+    
+    <div class="main-bottom">
+              <ul class="pagination">
+                <li class="disabled"><a href="#">«</a></li>
+                <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><span>...</span></li>
+                <li><a href="#">9999</a></li>
+                <li><a href="#">»</a></li>
+              </ul>
+    </div><!--main-bottom-->
+
+
+</div><!--main end-->
+    
+    
+
+
+
+
+<script src="http://static.ccplay.com.cn/static/admin_web/style/jquery.min.js" type="text/javascript"></script>
+<script src="http://static.ccplay.com.cn/static/common/js/jquery.pin.js" type="text/javascript"></script>
+<script src="http://static.ccplay.com.cn/static/bootstrap3.2.0/js/bootstrap.min.js"></script>
+<script>
+$(function(){	
+	/*锁定操作栏*/
+	$(".pin").pin()
+	
+	/*加载按钮*/
+	$('.loading-btn').on('click', function () {
+    	var $btn = $(this).button('loading')
+    	// business logic...		
+		setTimeout(function(){$btn.button('reset')},2000)
+  	});
+	
+	
+	/*全选 取消全选*/	
+	var check_btn = document.getElementById("check-btn");
+	var check_name = document.getElementsByName("list-checkbox");
+	check_btn.onclick = function(){
+		for(var i=1; i<=check_name.length; i+=1){
+			if(check_name[i-1].checked){
+				check_name[i-1].checked = false;
+			}else{
+				check_name[i-1].checked = true;
+			}
+		}
+	};
+	
+
+});
+
+
+
+
+/*TR拖动排序*/
+jQuery.tableDnD={currentTable:null,dragObject:null,mouseOffset:null,oldY:0,build:function(a){this.each(function(){this.tableDnDConfig=jQuery.extend({onDragStyle:null,onDropStyle:null,onDragClass:"tDnD_whileDrag",onDrop:null,onDragStart:null,scrollAmount:5,serializeRegexp:/[^\-]*$/,serializeParamName:null,dragHandle:null,table_drag_flotage:$("#table_drag")},a||{});jQuery.tableDnD.makeDraggable(this)});jQuery(document).bind("mousemove",jQuery.tableDnD.mousemove).bind("mouseup",jQuery.tableDnD.mouseup);return this},makeDraggable:function(c){var b=c.tableDnDConfig;if(c.tableDnDConfig.dragHandle){var a=jQuery("td."+c.tableDnDConfig.dragHandle,c);a.each(function(){jQuery(this).mousedown(function(e){jQuery.tableDnD.dragObject=this.parentNode;jQuery.tableDnD.currentTable=c;jQuery.tableDnD.mouseOffset=jQuery.tableDnD.getMouseOffset(this,e);if(b.onDragStart){b.onDragStart(c,this)}return false})})}else{var d=jQuery("tbody tr",c);d.each(function(){var e=jQuery(this);if(!e.hasClass("nodrag")){e.mousedown(function(f){b.table_drag_flotage.html(e.prop("outerHTML"));if(f.target.tagName=="TD"){jQuery.tableDnD.dragObject=this;jQuery.tableDnD.currentTable=c;jQuery.tableDnD.mouseOffset=jQuery.tableDnD.getMouseOffset(this,f);if(b.onDragStart){b.onDragStart(c,this)}return false}}).css("cursor","move")}})}},updateTables:function(){this.each(function(){if(this.tableDnDConfig){jQuery.tableDnD.makeDraggable(this)}})},mouseCoords:function(a){if(a.pageX||a.pageY){return{x:a.pageX,y:a.pageY}}return{x:a.clientX+document.body.scrollLeft-document.body.clientLeft,y:a.clientY+document.body.scrollTop-document.body.clientTop}},getMouseOffset:function(d,c){c=c||window.event;var b=this.getPosition(d);var a=this.mouseCoords(c);return{x:a.x-b.x,y:a.y-b.y}},getPosition:function(c){var b=0;var a=0;if(c.offsetHeight==0){c=c.firstChild}while(c.offsetParent){b+=c.offsetLeft;a+=c.offsetTop;c=c.offsetParent}b+=c.offsetLeft;a+=c.offsetTop;return{x:b,y:a}},mousemove:function(g){if(jQuery.tableDnD.dragObject==null){return}var d=jQuery(jQuery.tableDnD.dragObject);var b=jQuery.tableDnD.currentTable.tableDnDConfig;var i=jQuery.tableDnD.mouseCoords(g);var f=i.y-jQuery.tableDnD.mouseOffset.y;b.table_drag_flotage.css("top",f+"px").show();var c=window.pageYOffset;if(document.all){if(typeof document.compatMode!="undefined"&&document.compatMode!="BackCompat"){c=document.documentElement.scrollTop}else{if(typeof document.body!="undefined"){c=document.body.scrollTop}}}if(i.y-c<b.scrollAmount){window.scrollBy(0,-b.scrollAmount)}else{var a=window.innerHeight?window.innerHeight:document.documentElement.clientHeight?document.documentElement.clientHeight:document.body.clientHeight;if(a-(i.y-c)<b.scrollAmount){window.scrollBy(0,b.scrollAmount)}}if(f!=jQuery.tableDnD.oldY){var e=f>jQuery.tableDnD.oldY;jQuery.tableDnD.oldY=f;if(b.onDragClass){d.addClass(b.onDragClass)}else{d.css(b.onDragStyle)}var h=jQuery.tableDnD.findDropTargetRow(d,f);if(h){if(e&&jQuery.tableDnD.dragObject!=h){jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject,h.nextSibling)}else{if(!e&&jQuery.tableDnD.dragObject!=h){jQuery.tableDnD.dragObject.parentNode.insertBefore(jQuery.tableDnD.dragObject,h)}}}}return false},findDropTargetRow:function(f,g){var j=jQuery.tableDnD.currentTable.rows;for(var e=0;e<j.length;e++){var h=j[e];var b=this.getPosition(h).y;var a=parseInt(h.offsetHeight)/2;if(h.offsetHeight==0){b=this.getPosition(h.firstChild).y;a=parseInt(h.firstChild.offsetHeight)/2}if((g>b-a)&&(g<(b+a))){if(h==f){return null}var c=jQuery.tableDnD.currentTable.tableDnDConfig;if(c.onAllowDrop){if(c.onAllowDrop(f,h)){return h}else{return null}}else{var d=jQuery(h).hasClass("nodrop");if(!d){return h}else{return null}}return h}}return null},mouseup:function(c){if(jQuery.tableDnD.currentTable&&jQuery.tableDnD.dragObject){var b=jQuery.tableDnD.dragObject;var a=jQuery.tableDnD.currentTable.tableDnDConfig;if(a.onDragClass){jQuery(b).removeClass(a.onDragClass)}else{jQuery(b).css(a.onDropStyle)}jQuery.tableDnD.dragObject=null;if(a.onDrop){a.onDrop(jQuery.tableDnD.currentTable,b)}jQuery.tableDnD.currentTable=null;a.table_drag_flotage.hide()}},serialize:function(){if(jQuery.tableDnD.currentTable){return jQuery.tableDnD.serializeTable(jQuery.tableDnD.currentTable)}else{return"错误啦~"}},serializeTable:function(d){var a="";var c=d.id;var e=d.rows;for(var b=0;b<e.length;b++){if(a.length>0){a+="&"}var f=e[b].id;if(f&&f&&d.tableDnDConfig&&d.tableDnDConfig.serializeRegexp){f=f.match(d.tableDnDConfig.serializeRegexp)[0]}a+=c+"[]="+f}return a},serializeTables:function(){var a="";this.each(function(){a+=jQuery.tableDnD.serializeTable(this)});return a}};jQuery.fn.extend({tableDnD:jQuery.tableDnD.build,tableDnDUpdate:jQuery.tableDnD.updateTables,tableDnDSerialize:jQuery.tableDnD.serializeTables});
+$(document).ready(function() {
+	$("#table").tableDnD({
+		onDrop: function() {
+			var table = document.getElementById("table");
+			var tr = table.getElementsByTagName("tr");
+			for (var i = 0; i < tr.length; i++) {
+				var rowid = tr[i].getAttribute("id");
+				/*数据接口  tr加id=""
+				alert("排序完成后表格的第 " + (i+1) + " 行id为 : " + rowid);
+				*/
+			}
+		}
+	});
+});
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

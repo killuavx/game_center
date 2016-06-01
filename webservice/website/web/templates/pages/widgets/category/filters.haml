@@ -1,0 +1,51 @@
+-load url_tags templatehelper_tags
+{% get_site_name as site_name %}
+/ 列表筛选
+.f14.screening
+  %dl.language
+    %dt 语言：
+    %dd
+      -ifequal c_lang 'all'
+        %a.on{:href => "javascript:;"} 全部
+      -else
+        %a{:href => "{% qurl current_url lang=None %}"} 全部
+      -for lang in langs
+        {% ifequal c_lang lang.code %}
+        %a.on{:href => "javascript:;"}= lang.name
+        {% else %}
+        %a{:href => "{% qurl current_url lang=lang.code|lower %}"}= lang.name
+        {% endifequal %}
+    .fix
+  %dl.size
+    %dt 大小：
+    %dd
+      -ifequal c_size 'all'
+        %a.on{:href => "javascript:;"} 全部
+      -else
+        %a{:href => "{% qurl current_url size=None %}"} 全部
+      -for size in sizes
+        {% ifequal c_size|lower size.code|lower %}
+        %a.on{:href => "javascript:;"}= size.name
+        {% else %}
+        %a{:href => "{% qurl current_url size=size.code|lower %}"}= size.name
+        {% endifequal %}
+    .fix
+
+  %dl.screening-other
+    %dt 其他：
+    %dd><
+      - for rep in reports
+        {% if site_name != 'ios' or rep.code not in 'no-gplay no-root' %}
+        {% if rep.code in c_reps %}
+        %a{:class => "on", :href => "{% qurl current_url reps-=rep.code|lower %}" }><
+          %span
+          = rep.name
+        {% else %}
+        %a{:href => "{% qurl current_url reps+=rep.code|lower %}" }><
+          %span
+          = rep.name
+        {% endif %}
+        {% endif %}
+    .fix
+  .fix
+/ 列表筛选 end

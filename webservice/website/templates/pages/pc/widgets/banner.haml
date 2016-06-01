@@ -1,0 +1,18 @@
+-load url_tags
+.fl.focus_left
+  .banner
+    %ul.banner_ul
+      - for item in items
+        %li><
+          %a{:href => '{% absolute_url item.content product=product %}'}><
+            %img{:src => "{% resource_url item 'cover' %}"}><
+              %span.bg
+              %span.text= item.title
+  .cb.banner_btn
+    %a.unslider-arrow.icon.prev{:href => "javascript:void(0)"}
+    %a.unslider-arrow.icon.next{:href => "javascript:void(0)"}
+  .num
+    %ul
+/ focus_left
+.fl.focus_right
+/ focus_right

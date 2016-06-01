@@ -1,0 +1,12 @@
+-load staticfiles
+%ul
+  #demo
+    #indemo
+      #demo1
+        - for item in items
+          %li
+            %a{:href => '={item.content.get_absolute_url}', :title => '={item.content.title|safe}'}<
+              %span= item.title
+              %img{:src => '={item.cover.url}', :alt => '={item.title|safe}',
+                   :height => "120",  :width => "230"}/
+      #demo2

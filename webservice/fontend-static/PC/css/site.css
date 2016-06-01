@@ -1,0 +1,414 @@
+/*
+       Item Name  PC-IOS
+         Creator  Jun.
+    Created Date  2014-04-03
+Copyright © 2014  www.ccplay.com.cn
+        File URL  http://static.ccplay.com.cn/static/pc/css/site.css     
+*/
+body,ol,ul,li,h1,h2,h3,h4,h5,h6,p,th,td,dl,dd,form,input,textarea,select{margin:0;padding:0}
+body{font:12px 'Microsoft YaHei UI','Microsoft YaHei',DengXian,SimSun,'Segoe UI',Tahoma,Helvetica,sans-serif;-webkit-text-size-adjust:100%;}
+h1,h2,h3,h4,h5,h6{font-weight:500; font-size:100%}
+a, button {jing:e xpression(this.onFocus=this.blur());blr:expression(this.onFocus=this.blur()); text-decoration: none; cursor: pointer}
+a:focus{outline:0}
+a{color:#2d374b}
+a:hover{color:#e53333}
+em{font-style:normal}
+li{list-style:none}
+img{border:0;vertical-align:middle}
+table{border-collapse:collapse;border-spacing:0}
+p{word-wrap:break-word}
+.undis{display:none}
+.dis{display:block}
+.fl{float:left}
+.fr{float:right}
+.c_b{content:".";display:block;height:0;clear:both;visibility:hidden;zoom:1; text-indent:-90000px; font-size:0px;}
+.cb{clear:both;}
+
+.warp{background:#fff; padding-top:40px;}
+.box{background:#fff; width:800px}
+
+.icon{background:url(../img/icon.png) no-repeat; display:inline-block}
+
+.head{height:35px; background:#d5d8db; color:#fff; position:fixed; width:100%; z-index:10; top:0; left:0; right:0}
+	.head_set a{width:30px; height:35px; display:block; text-indent:-9999px; float:left; margin-left:10px}
+	.ban{cursor:not-allowed}
+	.pgup{background-position:0 2px}
+	.pgup:hover{background-position:0 -28px}
+	.pgup.no{background-position:0 -58px}
+	
+	.pgdn{background-position:-30px 2px}
+	.pgdn:hover{background-position:-30px -28px}
+	.pgdn.no{background-position:-30px -58px}
+	
+	.refresh{background-position:-60px 2px}
+	.refresh:hover{background-position:-60px -28px}
+	.refresh.no{background-position:-60px -58px}
+
+.head_nav{padding-left:30px}
+	.head_nav a{color:#333; display:block; float:left; width:80px; text-align:center; line-height:35px; font-size:16px}
+	.head_nav a:hover{background:#ccc}
+	.head_nav a.hover{background:#fff}
+
+.focus{height:190px}
+
+.focus_left{width:600px; height:190px; background:#ddd}
+	.banner {position: relative; width:600px; height:190px; overflow:hidden}
+	.banner ul li {float: left; width:600px; height:190px}
+	.banner ul li img{width:600px; height:190px}
+	.banner ul li span{position:absolute; width:585px; height:35px; line-height:35px; font-size:14px; color:#fff; padding-left:15px; bottom:0; left:0}
+	.banner ul li span.bg{background:#000;  filter:alpha(opacity=60); opacity: 0.6;}
+	.banner_btn{position:relative}
+	.unslider-arrow{display:inline-block; position:absolute; width:31px; height:45px; top:-130px; display:none; opacity: 0.6;}
+	
+	.banner_btn .prev{background-position:-88px -115px}	
+	.banner_btn .prev:hover{background-position:-88px -171px}	
+	.banner_btn .next{background-position:-126px -115px; right:0}
+	.banner_btn .next:hover{background-position:-126px -171px}
+	.num{position:absolute; z-index:9; width:590px; margin-top:-22px}
+	.num ul{float:right}
+	.num li { display:inline-block; float:left; width: 4px; height: 4px; overflow:hidden; margin: 1px 5px  0 4px; border: 2px solid #fff; border-radius: 6px; cursor: pointer; background:#fff; text-indent:-9999px}
+	.num li.on { background:none; opacity: 1; width: 6px; height: 6px;  margin:0 5px}
+	
+	
+	
+	
+	
+	
+	.focus_left .prev:hover{background-position:-88px -171px}	
+	.focus_left .next:hover{background-position:-126px -171px; right:0}
+
+.focus_right{width:197px; height:190px; background:#FFC}	
+
+.list_box_left{border-right:1px solid #ccc; width:599px; background:#fff; overflow:hidden}
+.list_box .title_box{ background:#f4f5f6; width:597px; height:40px; *height:44px; border-left:2px solid #e53333; z-index:999;}
+
+.list_box .title_box h3{font-size:20px}
+.list_box .title_box h3,.list_box .title_box a{line-height:40px; padding:0 15px; color:#e53333}
+.list_box .title_box a:hover{color:#d12525}
+
+.list_box .title_box ul {width:300px; padding:8px 0 0 160px}
+.list_box .title_box ul li{float:left; height:22px; line-height:22px; display:block; border:1px solid #333; width:70px; margin-left:-1px; text-align:center; background-color:#fff; cursor:pointer; z-index:999999}
+.list_box .title_box ul li:hover{background-color:#666; color:#fff}
+.list_box .title_box ul li.li_1{border-radius:3px 0 0 3px}
+.list_box .title_box ul li.li_2{border-radius:0 3px 3px 0;}
+.list_box .title_box ul li.hover{background-color:#333333; color:#fff}
+
+.home_game .list,.home_soft .list,.home_game .list ul,.home_soft .list ul {height:395px;}
+.list{width:599px; overflow:hidden; position:relative; margin-top:-4px; z-index:0}
+.list ul{width:620px; position:absolute; top:-1px; left:-1px; background:url(../img/list_bg.png) 1px 0; z-index:0}
+.list ul li{width:198px; height:97px; float:left; display:inline-block; position:relative; overflow:hidden; margin:1px; background-color:#fff}
+.list ul li *{position:absolute}
+.list ul li img{width:68px; height:68px}
+
+.big_pic{position:relative; left:10px; top:15px; display:inline-block; overflow:hidden; cursor:pointer; width:72px; height:72px}
+.big_pic img{width:68px; height:68px}
+.cover{background-position:-161px -114px; display:inline-block; width:72px; height:72px}
+.big_pic .cover{left:-2px; _left:-1px; top:-2px}
+.list h2{left:85px; top:12px; font-size:14px; width:100px; height:20px; overflow:hidden}
+.list p{color:#999; left:85px; top:35px; font-family:Arial; width:110px; height:18px; line-height:20px; white-space:nowrap; overflow:hidden; text-overflow: ellipsis}
+p.price{top:53px}
+p.price span{color:#e53333; text-decoration:line-through}
+
+.star{width:68px; height:12px; display:inline-block; background-position:-71px -91px; left:85px; top:73px; overflow:hidden}
+.list .star{}
+.s1{background-position:-57px -91px}
+.s2{background-position:-43px -91px}
+.s3{background-position:-29px -91px}
+.s4{background-position:-15px -91px}
+.s5{background-position:-1px -91px}
+
+.list .btn{bottom:1px; right:0; display:none}
+.btn a{display:inline-block; position:relative !important; float:left; width:60px; height:29px; line-height:29px; text-align:center; background:#429aef; font-family:宋体; font-size:12px;color:#fff}
+.btn a:hover{background:#1779d8}
+.btn .a1{background:#5bc400}
+.btn .a1:hover,.install-popup a:hover{background:#4b9d03}
+.btn .no{background:#CCC !important; color:#aaa !important; cursor:no-drop}
+.btn .a2.no{border-left:1px solid #ddd}
+
+.btn .update{background:#ff9933}
+.btn .update:hover{background:#ff7b33}
+
+
+.btn a:hover,.btn a:focus,.install-popup a:focus{text-decoration:none;background-image:linear-gradient(to bottom, rgba(0,0,0,.1), rgba(0,0,0,.1)); color:#fff}
+.btn a:focus,.install-popup a:focus{outline:thin dotted;outline:5px auto -webkit-focus-ring-color;outline-offset:-2px; color:#fff}
+.btn a:active,.install-popup a:active{outline:0;-webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);-moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.15);box-shadow: inset 0 2px 4px rgba(0,0,0,.15); color:#fff; jing:e xpression(this.onFocus=this.blur());blr:expression(this.onFocus=this.blur());}
+
+
+.install-popup{background:#5bc400; position:absolute; font-family:宋体; width:120px; z-index:99999}
+.install-popup i{display:none}
+.install-popup span,.install-popup a{padding:2px 5px; display:block; color:#FF6; border-top:1px solid #51ae00}
+.install-popup a:hover i{display:inline-block; margin-right:5px}
+
+
+
+.list_box_right{width:200px; height:435px; background:#fff; overflow:hidden}
+.list_box_right .title_box{width:200px; border:none}
+.list_box_right .title_box ul{padding-left:37px; width:150px}
+.list_box_right .title_box ul li{width:40px}
+
+.right_list{width:200px; overflow:hidden; z-index:0}
+.right_list ul{background:#fff; width:200px}
+.right_list ul li{clear:both; width:200px; position:relative; height:34px; border-top:1px dotted #ddd; border-left:none; margin:0}
+.right_list li.hover{height:80px}
+.right_list .big_pic{left:25px; top:5px}
+.right_list .big_pic img{width:24px; height:24px}
+.right_list .big_pic,.right_list .big_pic .cover{width:26px; height:26px}
+.right_list .big_pic .cover{background-position:-292px -114px}
+.right_list h2{left:5px; top:9px; padding-left:53px; font-weight:100; font-size:12px; width:130px; height:18px; overflow:hidden}
+.right_list em{margin-left:-52px; display:inline-block; text-align:center; width:15px}
+.right_list .top{color:#e53333; font-weight:bold}
+
+.right_list li.hover .big_pic{left:25px; top:28px}
+.right_list li.hover .cover{left:0; top:0}
+.right_list li.hover .big_pic,.right_list li.hover .cover{width:49px; height:49px}
+.right_list li.hover img{width:45px; height:45px}
+.right_list li.hover .cover{background-position:-240px -116px}
+
+.right_list li.hover .big_pic{_width:47px}
+.right_list li.hover .cover{_width:46px}
+
+.right_list li.hover h2{padding-left:19px; width:160px}
+.right_list li.hover em{margin-left:-18px} 
+.right_list li.hover p{left:78px; top:30px;}
+.right_list li.hover .btn{display:block; right:5px}
+.right_list li.hover .btn p{left:0; top:-22px}
+
+.roll{padding:10px 0; height:100px; overflow:hidden; zoom:1; position:relative; width:800px;}
+.roll .list_box{width:800px; height:100px; overflow:hidden}
+.roll .list_box ul{ overflow:hidden; zoom:1;width:817px;}
+.roll .list_box li{width:190px; height:100px; display:inline-block; background:#fff; float:left; margin-left:10px; _margin-left:5px; margin-right:2px; _margin-right:7px}
+.roll .list_box li img{width:190px; height:100px}
+.roll .unslider-arrow{top:-73px; display:none}  
+
+.list_box .menu{padding:10px 5px 5px 5px; border-bottom:2px solid #333; position:relative}
+.list_box .menu ul{}
+.list_box .menu li{display:inline}
+.list_box .menu a{ display:inline-block; padding:3px; font-size:12px}
+.list_box .menu a:hover{background-color:#333; color:#fff}
+.list_box .menu a.hover{ background:none; font-weight:bold; color:#e53333}
+.list_box .tag{padding-left:10px}
+.list_box .tag a{line-height:35px; color:#333; padding:5px}
+.list_box .tag a.hover,.location .red{color:#e53333; font-weight:bold}
+.list_box .tag a:hover{background:#333; color:#fff}
+
+.game .list_box_left,.game .title_box{border:none; width:800px}
+.game .list{width:800px; height:494px}
+.game .list ul{width:805px; height:500px}
+.game .title_box ul {padding-left:15px; width:772px}
+.game .title_box li.li_5{margin-left:10px}
+.game .title_box li.li_6{float:right}
+
+.game .title_box li.li_5,.game .title_box li.li_6{background-position:65px -143px; padding-right:13px; position:relative; border-radius:3px}
+
+.game .title_box li.li_5:hover,.game .title_box li.li_6:hover{background-color:#e53333; border-color:#e53333;border-radius:3px 3px 0 0 }
+
+.page{padding:20px 0; background:#fff; text-align:center; font-size:14px}
+.page a{display:inline-block; padding:2px 7px; border:1px solid #ccc}
+.page a:hover{border-color:#e53333; color:#e53333}
+.page a.hover{border-color:#e53333; background:#e53333; color:#fff}
+ 
+.game{margin-bottom:10px}
+
+.pop_menu{position:absolute; z-index:9999; background:#e53333; width:85px; left:-1px; top:0px; margin-top:23px; text-align:left; border-radius:0 0 3px 3px; display:none}
+.title_box .pop_menu a{color:#fff; padding-left:12px; display:block; height:24px; line-height:24px} 
+.title_box .pop_menu a:hover{background:#333; color:#fff}
+
+.collection{background:none}
+.collection_box{height:175px; border-bottom:1px solid #eee; padding-top:10px; position:relative; background:#fff} 
+.collection_box .l{width:270px; padding-left:10px; text-align:center}
+.collection_box .r{width:517px;}
+
+
+.collection_box .l img{width:270px; height:135px}
+.collection_box .l h3{font-size:16px; margin-top:7px}
+
+.collection_box .inner{height:145px; width:511px; overflow:hidden; position:relative; padding-left:6px}
+.collection_box .inner ul{width:540px}
+.collection_box .inner li{width:95px; height:130px; float:left; margin:15px 0 0 5px; text-align:center; position:relative}
+.collection_box .inner img{width:68px; height:68px}
+.collection_box .inner .name{font-size:14px; height:25px; line-height:33px; margin-bottom:2px; overflow:hidden; display:block}
+
+.collection_box .btn{position:absolute; bottom:0; left:9px; *left:0px; margin-left:0px; background:#fff; width:85px; height:60px; padding:0 0 0 5px; display:none}
+.collection_box .btn a{display:block; width:68px}
+.collection_box .cover{position:absolute; left:12px; top:-2px}
+.collection_box .star{top:5px; left:2px}
+.collection_box .banner_btn{top:21px}
+.collection_box .date{padding:0 10px 0 0; text-align:right; color:#666}
+
+.collection_dis{background:none}
+.collection_title{border-bottom:1px solid #eee; padding-right:10px; background:url(http://static.ccplay.com.cn/static/common/img/collection_bg.png) #333 center center; color:#FFF}
+.collection_title img{width:300px; float:left; margin-right:20px}
+.collection_title h1{font-size:24px; padding-top:10px}
+.collection_title p{height:50px; overflow:hidden; padding-top:5px}
+
+.masterpiece{background:none; width:800px; overflow:hidden}
+.masterpiece_box{height:589px; width:800px}
+.maste_lsit{width:245px; height:205px; padding:10px; position:relative; float:left; margin:0 1px 1px 0; overflow:hidden}
+.maste_lsit img{width:250px; height:120px; padding-bottom:8px}
+.maste_lsit h3{font-size:16px}
+.maste_lsit p{color:#999}
+.maste_lsit .des{padding:4px 0; height:30px; _line-height:18px; overflow:hidden; margin-bottom:4px}
+.maste_lsit .star{left:0px; top:2px; margin-top:3px}
+.maste_lsit .btn{position:absolute; left:10px; bottom:95px; height:34px; width:250px; overflow:hidden; display:none}
+.maste_lsit .btn a{width:125px; height:34px; line-height:34px}
+
+
+.home_vendor .list_box li,.home_vendor .list_box,.home_vendor{width:auto; height:auto}
+.home_vendor{width:800px}
+.home_vendor .unslider-arrow{top:-52px}
+.home_vendor .list_box li a{display:inline-block; padding:5px; border:1px solid #ddd}
+.home_vendor .list_box li img{width:150px; height:46px}
+.vendor {width:800px; height:630px;}
+.vendor .l{width:197px; height:630px; text-align:center}
+.vendor .r{width:600px}
+
+.vendor .list{height:594px; margin:0}
+.vendor .list ul{height:620px}
+
+.vendor .left-nav li a{height:61px; width:197px; display:block; text-align:center; background-position: center center; background-repeat:no-repeat; background-size:60% 80%; background-color:#f8f8f8; border-bottom: 1px solid #e8e8e8}
+.vendor .left-nav li a img{width:150px; height:46px; padding:7px 0;}
+
+.vendor .left-nav li a:hover,.vendor .left-nav li a.hover{background-color:#fff}
+.vendor .left-nav li a.hover{border-left:3px solid #e53333}
+.vendor .left-nav li a.hover img{margin-left:-5px}
+.vendor .left-nav li a.v1{background-image:url(http://static.ccplay.com.cn/static/common/img/v1.png)}
+.vendor .left-nav li a.v1:hover,.vendor .left-nav li a.v1.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v1.png)}
+.vendor .left-nav li a.v2{background-image:url(http://static.ccplay.com.cn/static/common/img/v2.png)}
+.vendor .left-nav li a.v2:hover,.vendor .left-nav li a.v2.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v2.png)}
+.vendor .left-nav li a.v3{background-image:url(http://static.ccplay.com.cn/static/common/img/v3.png)}
+.vendor .left-nav li a.v3:hover,.vendor .left-nav li a.v3.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v3.png)}
+.vendor .left-nav li a.v4{background-image:url(http://static.ccplay.com.cn/static/common/img/v4.png)}
+.vendor .left-nav li a.v4:hover,.vendor .left-nav li a.v4.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v4.png)}
+.vendor .left-nav li a.v5{background-image:url(http://static.ccplay.com.cn/static/common/img/v5.png)}
+.vendor .left-nav li a.v5:hover,.vendor .left-nav li a.v5.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v5.png)}
+.vendor .left-nav li a.v6{background-image:url(http://static.ccplay.com.cn/static/common/img/v6.png)}
+.vendor .left-nav li a.v6:hover,.vendor .left-nav li a.v6.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v6.png)}
+.vendor .left-nav li a.v7{background-image:url(http://static.ccplay.com.cn/static/common/img/v7.png)}
+.vendor .left-nav li a.v7:hover,.vendor .left-nav li a.v7.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v7.png)}
+.vendor .left-nav li a.v8{background-image:url(http://static.ccplay.com.cn/static/common/img/v8.png)}
+.vendor .left-nav li a.v8:hover,.vendor .left-nav li a.v8.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v8.png)}
+.vendor .left-nav li a.v9{background-image:url(http://static.ccplay.com.cn/static/common/img/v9.png)}
+.vendor .left-nav li a.v9:hover,.vendor .left-nav li a.v9.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v9.png)}
+.vendor .left-nav li a.v10{background-image:url(http://static.ccplay.com.cn/static/common/img/v10.png)}
+.vendor .left-nav li a.v10:hover,.vendor .left-nav li a.v10.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v10.png)}
+.vendor .left-nav li a.v11{background-image:url(http://static.ccplay.com.cn/static/common/img/v11.png)}
+.vendor .left-nav li a.v11:hover,.vendor .left-nav li a.v11.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v11.png)}
+.vendor .left-nav li a.v12{background-image:url(http://static.ccplay.com.cn/static/common/img/v12.png)}
+.vendor .left-nav li a.v12:hover,.vendor .left-nav li a.v12.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v12.png)}
+
+.vendor .page{padding:7px 0 0 0 }
+
+
+.dis {background:none; padding:15px 0 10px 0}
+.location{background-color:#f5f5f5; padding:10px}
+.location em{margin:0 5px;font-family: 宋体;color: #999;}
+.dis_box{background:url(../img/dis_l_bg.png) repeat-y #fff}
+.dis .title{height:37px; padding:0 10px}
+.dis .title h1{font-size:24px}
+.dis .title p{color:#666; padding-top:10px}
+.dis .title .icon{display:inline-block; padding-left:16px; margin-left:5px; display:none}
+.dis .ad{background-position:-146px -16px}
+.dis .ad.no{background-position:-146px 2px}
+
+.dis .wifi{background-position:-146px -54px}
+.dis .wifi.no{background-position:-146px -37px}
+
+.dis .google{background-position:-144px -94px}
+.dis .google.no{background-position:-144px -73px}
+
+.dis .l{width:197px; border-top:2px solid #e53333}
+.dis .l .up,.dis .r .up{background:#e6e6e6;}
+.dis .r{width:603px; background:#fff; border-top:2px solid #333}
+.dis .l .down{height:500px; width:196px; overflow:hidden}
+.dis .l .down .right_list{height:395px}
+.dis .r .up{background:#fff;}
+
+.dis .pic{height:173px; width:197px; text-align:center; position:relative; padding-top:24px}
+.dis .pic img{width:150px; height:150px}
+.dis .up .cover{background:url(../img/cover.png) no-repeat; width:197px; height:197px; position:absolute; top:0; left:0}
+
+.dis .up .btn{width:130px; height:80px; margin:0 auto}
+.dis .up .btn a{display:block; height:30px; width:130px; line-height:27px; text-align:center; margin-bottom:10px; font-size:14px}
+
+.instr{color:#555; padding-top:10px; position:relative}
+.instr li{border-top:1px solid #dadada; padding:4px 10px; vertical-align:text-top; clear:both}
+.instr span{color:#888; padding-left:10px; width:140px; overflow:hidden; display:inline-block; float:right}
+.instr .star{left:0; top:0px; _top:-1px; width:68px; height:12px; padding-left:0; position:relative}
+
+.dis .r .up,.dis .r .up .up_box{overflow:hidden; height:310px; position:relative; padding:10px}
+.up_box .up_pic{background:url(http://static.ccplay.com.cn/static/common/img/up_pic_img_bg.png); height:300px}
+.dis .r .up ul{padding:10px}
+.dis .r .up li{float:left; margin-right:12px; margin-left:3px; _margin-left:2px}
+.dis .r .up img{height:300px}
+
+.dis .r .up .unslider-arrow{top:-170px; display:inline-block; z-index:99999}
+.dis .r .up .prev{left:-10px}
+
+.dis .r .up .next{right:-10px}
+.prevStop,.nextStop{display:none !important}
+
+
+.dis .r .down{padding:0 20px 20px 20px; clear:both}
+.dis .r h3{font-size:18px; margin-bottom:5px}
+.text_inner{font-size:14px}
+
+.review{margin-bottom:15px}
+.review .login{padding-top:5px}
+.text_inner{padding-bottom:15px; color:#555}
+.r textarea{width:550px; height:60px; outline: 0 none; overflow:auto; resize: none;}
+.r button{background:#ddd; border:none; width:85px; height:25px; line-height:25px; margin-right:8px; cursor:pointer}
+.r button:hover{background:#e53333; color:#fff}
+
+.review_list {border-top:1px solid #ddd; clear:both; padding:7px 0; color:#666}
+.review_list dt{margin-left:10px}
+.review_list .star{left:0; top:0}
+.review_list dd{float:right; width:490px; _width:480px}
+.review_list .d1,.review_list .d2{padding-bottom:5px}
+.user{width:48px; height:48px; background-position:-35px -129px}
+
+.d3 a{float:right}
+.d3 a{display:inline-block; height:14px; margin-left:13px}
+.d3 .icon{display:inline-block; width:14px; height:14px; cursor:pointer; position:relative; left:-3px; top:3px; *top:0; _top:3px;}
+.d3 .r1 .icon{background-position:0 -110px}
+.d3 .r1:hover .icon{background-position:-22px -110px}
+.d3 .r2 .icon{background-position:-43px -109px}
+.d3 .r2:hover .icon{background-position:-65px -109px}
+.i_reply{width:490px; float:right}
+.i_reply dd{width:420px; _width:410px}
+
+.dis .page{border-top:1px solid #ddd}
+
+#rating_cont { background:url(../img/stars_1.png) no-repeat;  width: 240px; height:35px; overflow:hidden}
+	#rating_on { background: url(../img/stars_2.png) no-repeat; width: 0px; height: 25px; position: relative; z-index: 50; top: -25px}
+	#rating_btns { position: relative; z-index: 100; width: 134; height: 25px;}
+	#rating_btns li { float: left; width: 25px; height:25px; display: block; text-indent:-9999px; cursor: pointer}
+#rating{position:relative; left:0px; top:0; margin:-45px 0 0 0; text-align:left; width:100px;}
+
+
+
+
+
+/*v1*/
+.focus_right{display:none}
+.focus_left,.banner ul li,.banner ul li img,.banner{width:800px}
+.banner ul li span,.num{width:785px}
+.list_box_right .title_box ul li.hover{width:85%; border-radius:3px}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

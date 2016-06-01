@@ -1,0 +1,7 @@
+-load pages_tags
+.l.f18
+  %ul.cell.pct100
+    -for top_page in page_branch
+      -if top_page.in_menu
+        {% page_menu top_page "pages/menus/web/nav-li.haml" %}
+/ l

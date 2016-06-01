@@ -1,0 +1,27 @@
+-load staticfiles
+%h2.mcenter_title<
+  - if more_url
+    %span.right
+      %a{:href => "{% url more_url %}"} 更多 &gt;
+  %b
+  = title
+- for post in items
+  .mcdl
+    %span.mainsort= post.categories.all.0.title
+    %dl
+      - if post.featured_image
+        %dt<
+          %img{:src => '={post.featured_image.url}', :width => "92", :height => "92"}/
+      %dd<
+        %h3<
+          %a{:href => '={post.get_absolute_url}', :title => "={post.title}"}= post.title|slice:":20"
+      %dd<
+        %article.mc_txt= post.description|truncatechars:100|safe
+      %dd><
+        = post.user.username
+        %i>< |
+        = post.publish_date|date:'SHORT_DATE_FORMAT'
+        %i>< |
+        阅读次数
+        %i>< |
+        = post.comment_count|default:0

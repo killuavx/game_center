@@ -1,0 +1,30 @@
+-load staticfiles
+%h3
+  - if more_url
+    %span.right<
+      %a{:href => "={more_url}"} 更多 &gt;
+  %span.em<
+    %b.h4bg
+    = title
+.hd.left
+  %ul
+    - for group_item in group_items
+      {% with category=group_item.0 %}
+      %li{:class => "{% if forloop.first%}on{% endif %}"}<
+        %a{:href => "={category.get_absolute_url}"}= category.name
+      {% endwith %}
+.bd.left
+  - for group_item in group_items
+    %ul
+      {% with packages=group_item.1 %}
+      - for package in packages
+        %li<
+          {% with version=package.versions.published.0 %}
+          %a{:href => "={version.get_absolute_url}", :title => "={package.title}"}
+            %img{:src => "={version.icon.small.url}", :width => "72", :height => "72" }
+            %span= package.title|slice:":5"
+          {% endwith %}
+      {% endwith %}
+  :javascript
+    jQuery(".msort").slide();
+

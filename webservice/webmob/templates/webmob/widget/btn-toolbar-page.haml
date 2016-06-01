@@ -1,0 +1,19 @@
+-load i18n
+
+%ul.pager{role: 'toolbar'}
+  - if previous
+    %li
+      %a.btn.btn-default.btn-lg{href: '={previous}', itemprop: 'relatedLink'}<
+        &larr; {% trans "Previous" %}
+  - else
+    %li.disabled
+      %a.btn.btn-default.btn-lg{href: 'javascript:void(0);'}
+        &larr; {% trans "Previous" %}
+  - if next
+    %li
+      %a.btn.btn-default.btn-lg{href: '={next}', itemprop: 'relatedLink'}<
+        {% trans "Next" %} &rarr;
+  - else
+    %li.disabled
+      %a.btn.btn-default.btn-lg{href: 'javascript:void(0);'}<
+        {% trans "Next" %} &rarr;

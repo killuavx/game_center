@@ -1,4 +1,12 @@
 *.log
 *.pot
 *.pyc
+.idea
+__pycache__
 local_settings.py
+static
+media
+*/reports/
+*.iml
+*.sqlite
+localserver_settings.py

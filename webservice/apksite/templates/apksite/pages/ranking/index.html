@@ -1,0 +1,36 @@
+{% extends "apksite/pages/page_web.html" %}
+{% load templatehelper_tags %}
+
+{% block main %}
+<!-- START 排行 开始 top-page-->
+<div class="auto mt30 width top-page">
+    <div class="pb30 cell-bk btn-s-box">
+
+        <!--下载榜 down-top-->
+        <div class="float-three down-top">
+            <div class="mr10">
+            {% include "apksite/pages/ranking/package-list.haml" with title=rankings.c1.ranking_name packages=rankings.c1.packages product=product %}
+            </div>
+        </div>
+        <!--下载榜 down-top-->
+
+        <!--推荐榜 rcd-top-->
+        <div class="float-three rcd-top">
+            <div class="ml20 mr20">
+            {% include "apksite/pages/ranking/package-list.haml" with title=rankings.c2.ranking_name packages=rankings.c2.packages product=product %}
+            </div>
+        </div>
+        <!--推荐榜 rcd-top-->
+
+        <!--官方榜 cc-top-->
+        <div class="float-three cc-top">
+            <div class="ml10">
+            {% include "apksite/pages/ranking/package-list.haml" with title=rankings.c3.ranking_name packages=rankings.c3.packages product=product %}
+            </div>
+        </div>
+        <!--官方榜 cc-top-->
+
+    </div>
+</div>
+<!-- END 排行 结束 top-page-->
+{% endblock %}

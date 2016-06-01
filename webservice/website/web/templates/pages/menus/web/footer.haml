@@ -1,0 +1,40 @@
+-load staticfiles
+.float-five.f-1
+  %dl
+    %dt.f14 关于我们
+    %dd
+      %a{:target => "_blank", :href => "{% static 'ios_web/html/about.html' %}"} 公司简介
+    %dd
+      %a{:target => "_blank", :href => "{% static 'ios_web/html/vision.html' %}"} 发展愿景
+    %dd
+      %a{:target => "_blank", :href => "{% static 'ios_web/html/contact.html' %}"} 联系方式
+    %dd
+      %a{:target => "_blank", :href => "{% static 'ios_web/html/job.html' %}"} 诚聘英才
+.float-five.f-2
+  %dl
+    %dt.f14 关注我们
+    %dd
+      %a.ios-web-icon.i-1{:target => "_blank", :href => "http://weibo.com/ccyxpt"} 新浪微博
+    %dd
+      %a.ios-web-icon.i-2{:target => "_blank", :href => "http://t.qq.com/ccyxpt"} 腾讯微博
+    %dd.weixin-code
+      %a.ios-web-icon.i-3{:target => "_blank", :href => "javascript:;"} 官方微信
+      %img.dn.abs{:src => "{% static 'common/img/cc-weixin-code.png' %}"}/
+.float-five.tc.f-3
+  %a.ios-web-icon.f-logo{:href => "javascript:;"}
+.float-five.tl.f-4
+  %dl.r
+    %dt.f14 虫虫助手
+    %dd
+      %a.ios-web-icon.i-5{:target => "_blank", :href => "{% static 'cc_web/html/a-down.html' %}"} Android版
+.float-five.tr.f-5
+  %dl
+    %dd.g9 扫描二维码即可下载
+    %dd
+      %img{:src => "{% static 'common/img/code.png' %}"}/
+.cl.tc.pt20
+  Copyright ©
+  :javascript
+    var yearStr;now = new Date();yearStr = now.getFullYear();document.write(yearStr);
+  www.ccplay.com.cn. All Rights Reserved
+

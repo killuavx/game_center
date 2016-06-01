@@ -1,0 +1,38 @@
+{% extends "pages/page_web.html" %}
+{% load url_tags templatehelper_tags apksite_tags %}
+{% block main %}
+    <!--START 厂商 开始 vendor-page-->
+    <div class="auto mt30 width app-list-page vendor-page">
+        <div class="cell">
+            <div class="f18 cell-bk rel t-title">
+                <h3 class="l n mr30">顶级厂商</h3>
+            </div><!-- t-title -->
+
+            <div class="rel cell-bk">
+                <div class="l left-list">
+                    <ul class="f14 left-nav">
+                        {% for cur_author in vendor_list %}
+                            {% with icon_url=cur_author.icon %}
+                        <li>
+                            <a href="{% url 'vendor' %}{% if not forloop.first %}?author={{ cur_author.id }}{% endif %}"{% if current_author_id == cur_author.id %} class="hover"{% endif %}>
+                                <img class="lazy" data-original="{{ icon_url }}" />
+                            </a>
+                        </li>
+                            {% endwith %}
+                        {% endfor %}
+                    </ul>
+
+                </div><!--left-list-->
+
+                <div class="l btn-s-box tj p20 right-list">
+                {% for package in packages %}
+                   {% package_box package product=product %}
+                {% endfor %}
+                {% pagination page_obj %}
+                </div><!--right-list-->
+            </div>
+
+            </div>
+    </div>
+    <!--END 厂商 结束 vendor-page-->
+{% endblock %}

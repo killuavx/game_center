@@ -1,0 +1,50 @@
+-extends 'apksite/pages/page_web.html'
+-load url_tags util_tags templatehelper_tags apksite_tags
+{% block meta_title %}搜索_{{ q }}{% endblock %}
+{% block title %}搜索_{{ q }}{% endblock %}
+{% block meta_keywords %}搜索 {{ q }} {% endblock %}
+
+-block main
+  / START 应用列表 app-list-page
+  .auto.mt30.width.app-list-page.minheight-page
+    .cell
+      .f18.cell.rel.t-title
+        %h3.l.n.mr30
+          搜索相关结果约{{ paginator.count|default:0 }}个与<span class="ml5 mr5 red">“{{ request.GET.q }}”</span>相关{{ current_root.name }}
+      / t-title
+    / cell
+
+    .rel.cell-bk
+      .l.left-list
+        %ul.f14.left-nav
+          -for cat in category_selectlist
+            %li
+              -ifequal current_root_slug cat.slug
+                -ifequal current_category.id cat.id
+                  %a.hover{:href => "javascript:;"}
+                    全部
+                    %span.r
+                -else
+                  %a{:href => "{{ current_category_uri }}"}
+                    全部
+                    %span.r
+              -else
+                -ifnotequal current_category.id cat.id
+                  %a{:href => "{% qurl current_category_uri category=cat.id %}"}
+                    = cat.name
+                    %span.r
+                -else
+                  %a.hover{:href => "javascript:;"}
+                    = cat.name
+                    %span.r
+
+      .l.btn-s-box.tj.p20.right-list
+        {% include 'apksite/includes/package-filters.haml' with current_url=current_search_uri filter_selector=filter_selector %}
+        -for package in packages
+          {% package_box package product=product %}
+        {% pagination page_obj %}
+      / right-list
+
+    / cell-bk
+
+  / END 应用列表 app-list-page

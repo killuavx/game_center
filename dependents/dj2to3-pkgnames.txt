@@ -1,0 +1,5 @@
+filer
+easy_thumbnails
+polymorphic
+cmsplugin_filer_file
+django_jenkins

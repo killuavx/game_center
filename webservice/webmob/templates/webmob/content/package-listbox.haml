@@ -1,0 +1,28 @@
+-load sizefieldtags
+-load less
+
+.package-listbox.container{id: 'package-list-={request.GET.page|default:1}'}
+  .row
+    - for item in results
+      .col-sm-12.col-md-3
+        .package-item.thumbnail{id: 'pkg-={item.id}', itemscope: '', itemtype: 'http://schema.org/MobileApplication'}
+          %a{href: '={item.url}', itemprop: 'url'}
+            %img.icon{alt: '={item.title}',
+              onerror: 'imgonerror(this, default_icon);',
+              src: 'item.icon.url', itemprop: 'image' }
+          %span.caption.pull-left{itemprop: 'description'}
+            %h4.title{itemprop: 'name'}<
+              %a{href: '={item.url}'}= item.title
+            %p.summary.small
+              %span{itemprop: 'applicationSubCategory'}= item.category_name
+              |
+              %span{itemprop: 'softwareVersion'}= item.version_name
+              |
+              %span{itemprop: 'fileSize'}= item.download_size|filesize
+          %a.pull-right.btn.btn-primary.btn-lg.text-center{href: '={item.url}', itemprop: 'url'}<
+            %span.glyphicon.glyphicon-chevron-right
+    - empty
+      {% include "webmob/widget/empty.haml" %}
+
+- if results and count > 10 and results|length >= 10
+  {% include "webmob/widget/btn-more.haml" %}

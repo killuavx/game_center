@@ -1,0 +1,9 @@
+[behave]
+tags=~browser
+     ~solrservice
+     ~webmob
+     ~skip
+color=on
+show_skipped=no
+expand=yes
+verbose=yes

@@ -1,0 +1,393 @@
+[
+{
+    "model": "taxonomy.category", 
+    "pk": 1, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 0, 
+        "slug": "game", 
+        "mptt_level": 0, 
+        "icon": "", 
+        "is_hidden": false, 
+        "name": "\u6e38\u620f", 
+        "parent": null, 
+        "tree_id": 1, 
+        "mptt_lft": 1, 
+        "mptt_rgt": 44
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 2, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 3, 
+        "slug": "big-game", 
+        "mptt_level": 2, 
+        "icon": "category/big-game/icon_2.png", 
+        "is_hidden": false, 
+        "name": "\u5927\u578b\u6e38\u620f", 
+        "parent": 5, 
+        "tree_id": 1, 
+        "mptt_lft": 5, 
+        "mptt_rgt": 6
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 3, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 4, 
+        "slug": "cn-game", 
+        "mptt_level": 2, 
+        "icon": "category/cn-game/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u4e2d\u6587\u6e38\u620f", 
+        "parent": 5, 
+        "tree_id": 1, 
+        "mptt_lft": 7, 
+        "mptt_rgt": 8
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 4, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 2, 
+        "slug": "crack-game", 
+        "mptt_level": 2, 
+        "icon": "category/crack-game/icon_2.png", 
+        "is_hidden": false, 
+        "name": "\u7834\u89e3\u6e38\u620f", 
+        "parent": 5, 
+        "tree_id": 1, 
+        "mptt_lft": 3, 
+        "mptt_rgt": 4
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 5, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 1, 
+        "slug": "characteristic-game", 
+        "mptt_level": 1, 
+        "icon": "", 
+        "is_hidden": false, 
+        "name": "\u7279\u8272\u6e38\u620f", 
+        "parent": 1, 
+        "tree_id": 1, 
+        "mptt_lft": 2, 
+        "mptt_rgt": 11
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 6, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 5, 
+        "slug": "stand-alone-game", 
+        "mptt_level": 1, 
+        "icon": "", 
+        "is_hidden": false, 
+        "name": "\u5355\u673a\u6e38\u620f", 
+        "parent": 1, 
+        "tree_id": 1, 
+        "mptt_lft": 12, 
+        "mptt_rgt": 29
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 7, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 14, 
+        "slug": "online-game", 
+        "mptt_level": 1, 
+        "icon": "", 
+        "is_hidden": false, 
+        "name": "\u7f51\u7edc\u6e38\u620f", 
+        "parent": 1, 
+        "tree_id": 1, 
+        "mptt_lft": 30, 
+        "mptt_rgt": 39
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 8, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 17, 
+        "slug": "online-immediate-action-game", 
+        "mptt_level": 2, 
+        "icon": "category/online-immediate-action-game/icon.png", 
+        "is_hidden": false, 
+        "name": "\u5373\u65f6\u52a8\u4f5c", 
+        "parent": 7, 
+        "tree_id": 1, 
+        "mptt_lft": 35, 
+        "mptt_rgt": 36
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 9, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 15, 
+        "slug": "online-card-game", 
+        "mptt_level": 2, 
+        "icon": "category/online-card-game/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u5361\u724c\u7b56\u7565", 
+        "parent": 7, 
+        "tree_id": 1, 
+        "mptt_lft": 31, 
+        "mptt_rgt": 32
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 10, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 16, 
+        "slug": "online-tbs-game", 
+        "mptt_level": 2, 
+        "icon": "category/online-tbs-game/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u56de\u5408\u6218\u6597", 
+        "parent": 7, 
+        "tree_id": 1, 
+        "mptt_lft": 33, 
+        "mptt_rgt": 34
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 11, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 6, 
+        "slug": "standalone-relaxation-game", 
+        "mptt_level": 2, 
+        "icon": "category/standalone-relaxation-game/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u4f11\u95f2\u76ca\u667a", 
+        "parent": 6, 
+        "tree_id": 1, 
+        "mptt_lft": 13, 
+        "mptt_rgt": 14
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 12, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 7, 
+        "slug": "standalone-action-game", 
+        "mptt_level": 2, 
+        "icon": "category/standalone-action-game/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u52a8\u4f5c\u5c04\u51fb", 
+        "parent": 6, 
+        "tree_id": 1, 
+        "mptt_lft": 15, 
+        "mptt_rgt": 16
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 13, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 8, 
+        "slug": "standalone-sports-game", 
+        "mptt_level": 2, 
+        "icon": "category/standalone-sports-game/icon_2.png", 
+        "is_hidden": false, 
+        "name": "\u4f53\u80b2\u7ade\u6280", 
+        "parent": 6, 
+        "tree_id": 1, 
+        "mptt_lft": 17, 
+        "mptt_rgt": 18
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 14, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 9, 
+        "slug": "standalone-rpg-game", 
+        "mptt_level": 2, 
+        "icon": "category/standalone-rpg-game/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u89d2\u8272\u626e\u6f14", 
+        "parent": 6, 
+        "tree_id": 1, 
+        "mptt_lft": 19, 
+        "mptt_rgt": 20
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 15, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 10, 
+        "slug": "standalone-chess-card-game", 
+        "mptt_level": 2, 
+        "icon": "category/standalone-chess-card-game/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u68cb\u724c\u6e38\u620f", 
+        "parent": 6, 
+        "tree_id": 1, 
+        "mptt_lft": 21, 
+        "mptt_rgt": 22
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 16, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 11, 
+        "slug": "standalone-rac-game", 
+        "mptt_level": 2, 
+        "icon": "category/standalone-rac-game/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u8d5b\u8f66\u7ade\u901f", 
+        "parent": 6, 
+        "tree_id": 1, 
+        "mptt_lft": 23, 
+        "mptt_rgt": 24
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 17, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 12, 
+        "slug": "standalone-strategicdefense-game", 
+        "mptt_level": 2, 
+        "icon": "category/standalone-strategicdefense-game/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u7b56\u7565\u5854\u9632", 
+        "parent": 6, 
+        "tree_id": 1, 
+        "mptt_lft": 25, 
+        "mptt_rgt": 26
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 18, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 13, 
+        "slug": "standalone-imitate-game", 
+        "mptt_level": 2, 
+        "icon": "category/standalone-imitate-game/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u6a21\u62df\u7ecf\u8425", 
+        "parent": 6, 
+        "tree_id": 1, 
+        "mptt_lft": 27, 
+        "mptt_rgt": 28
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 20, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 18, 
+        "slug": "popular1game_", 
+        "mptt_level": 1, 
+        "icon": "category/popular1game_/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u70ed\u95e8\u6e38\u620f", 
+        "parent": 1, 
+        "tree_id": 1, 
+        "mptt_lft": 40, 
+        "mptt_rgt": 41
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 22, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 19, 
+        "slug": "hot-game", 
+        "mptt_level": 2, 
+        "icon": "category/hot-game/icon_2.png", 
+        "is_hidden": false, 
+        "name": "\u7cbe\u9009\u6e38\u620f", 
+        "parent": 5, 
+        "tree_id": 1, 
+        "mptt_lft": 9, 
+        "mptt_rgt": 10
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 23, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 20, 
+        "slug": "online-relax-game", 
+        "mptt_level": 2, 
+        "icon": "category/online-relax-game/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u4f11\u95f2\u5a31\u4e50", 
+        "parent": 7, 
+        "tree_id": 1, 
+        "mptt_lft": 37, 
+        "mptt_rgt": 38
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 24, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 21, 
+        "slug": "newgame_", 
+        "mptt_level": 1, 
+        "icon": "category/newgame_/icon_1.png", 
+        "is_hidden": false, 
+        "name": "\u6700\u65b0\u6e38\u620f", 
+        "parent": 1, 
+        "tree_id": 1, 
+        "mptt_lft": 42, 
+        "mptt_rgt": 43
+    }
+},
+{
+    "model": "taxonomy.category", 
+    "pk": 25, 
+    "fields": {
+        "subtitle": "", 
+        "ordering": 22, 
+        "slug": "application", 
+        "mptt_level": 0, 
+        "icon": "", 
+        "is_hidden": true, 
+        "name": "\u88c5\u673a\u5fc5\u5907", 
+        "parent": null, 
+        "tree_id": 2, 
+        "mptt_lft": 1, 
+        "mptt_rgt": 2
+    }
+}
+]

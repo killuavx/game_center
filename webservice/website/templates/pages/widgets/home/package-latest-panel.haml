@@ -1,0 +1,28 @@
+-load util_tags
+%h2.mleft_title
+  - if more_url
+    %span.right
+      %a{:href => "={more_url}"} 更多 &gt;
+  %b
+  = title
+.mleftbg
+- for package in items
+  - with version=package.versions.latest_published
+    %dl
+      %dt
+        %a{:href => "={version.get_absolute_url}"}
+          %img{:src => "={version.icon.small.url}", :width => "48", :height => "48"}
+      %dd.mltitle
+        %em.star3.right
+        %a{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":6"
+      %dd><
+        {% with category=package.categories.all.0 %}
+        %a{:href => "={category.get_absolute_url}"}><= category.name
+        {% endwith %}
+        %i>< |
+        {{ version.get_download_size|default:0|filesizeformat }}
+        %i>< |
+        {{ version.released_datetime|date:"SHORT_DATE_FORMAT" }}
+      %dd
+        %span.left v{{ version.version_name}}
+        %span.right {{ version.download_count|default:0|intwordcn }}次

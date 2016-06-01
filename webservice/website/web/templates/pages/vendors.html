@@ -1,0 +1,42 @@
+{% extends "pages/page_web.html" %}
+{% load cache widgets url_tags templatehelper_tags web_tags %}
+{% block main %}
+    {% with c_author=request.GET.author c_page=request.GET.page|default:1 %}
+    {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
+    {% cache CACHE_TIMEOUT_DAYS product_web_vendors request.get_host request.path_info c_author c_page %}
+    <!--START 厂商 开始 vendor-page-->
+    <div class="auto mt30 width app-list-page vendor-page">
+        <div class="cell">
+            <div class="f18 cell-bk rel t-title">
+                <h3 class="l n mr30">顶级厂商</h3>
+            </div><!-- t-title -->
+
+            <div class="rel cell-bk">
+                <div class="l left-list">
+                    <ul class="f14 left-nav">
+                        {% widget WebVendorNavListWidget author=author per_page=12 %} {% for cur_author in items %}
+                        <li>
+                            <a href="{% absolute_url cur_author product=product %}"{% if cur_author.is_current %} class="hover"{% endif %}>
+                                <img class="lazy" data-original="{% resource_url cur_author.resources 'cover' product %}" />
+                            </a>
+                        </li>
+                        {% endfor %}{% endwidget %}
+                    </ul>
+
+                </div><!--left-list-->
+                {% widget WebVendorPackageBySearchListWidget author=author per_page=18 page=request.GET.page %}
+                <div class="l btn-s-box tj p20 right-list">
+                {% for package in items %}
+                   {% package_box2 package product=product %}
+                {% endfor %}
+                {% pagination items %}
+                </div><!--right-list-->
+                {% endwidget %}
+            </div>
+
+            </div>
+    </div>
+    <!--END 厂商 结束 vendor-page-->
+    {% endcache %}
+    {% endwith %}
+{% endblock %}

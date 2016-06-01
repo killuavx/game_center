@@ -1,0 +1,5 @@
+%h4= title
+%ul
+  - for post in posts
+    %li<
+      %a{:href => "={post.get_absolute_url}"}= post.title|truncatechars:40

@@ -1,0 +1,11 @@
+-extends 'webmob/base.haml'
+
+-load less
+
+-block header
+  .container
+    .row
+      {% include 'webmob/header/topbar.haml' %}
+
+-block content
+  {% include 'webmob/content/package-list.haml' %}

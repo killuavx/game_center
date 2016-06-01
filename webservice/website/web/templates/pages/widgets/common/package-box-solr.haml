@@ -1,0 +1,34 @@
+-load url_tags util_tags templatehelper_tags
+{% is_site_android as is_android %}{% is_site_ios as is_ios %}
+{% with title=package.title dw_size=package.download_size dw_count=package.download_count star=package.star category_name=package.primary_category_name icon_url=package.icon_large_url|default:package.icon_default_url %}
+{% absolute_url_as package product=product as detail_url %}
+- if is_ios
+  {% qurl package.static_download_url as dw_url %}
+- else
+  {% qurl package.download_url entrytype=product as dw_url %}
+%dl.dib.rel.app-list-xl
+  %dt.abs
+    %a.pic{:href => "={detail_url}", :title => "={title}"}
+      %img.lazy{"data-original" =>"={icon_url}", :alt => "={title}"}
+        %span.ios-web-icon.abs
+  %dd.g9.pt5
+    %h3.n.rel.g3.f16
+      %a{:href => "={detail_url}", :title => "={title}"}= title
+    %p<
+      {{ dw_size|filesizeformat }}
+      %em> |
+      {{ dw_count|intwordcn }}+下载
+    -if is_android
+      %p= category_name
+    -if is_ios
+      {% with is_free=package.is_free formatted_price=package.formatted_price %}
+      -if not is_free
+        %p.price.gr= formatted_price
+      -else
+        %p 免费
+      {% endwith %}
+    .ios-web-icon.star{:class => "s={star|floatformat:'0'}"}
+    .btn-s
+      -# %a.a1.install{:href => "javascript:;", :class => "app-install-btn-js"} 安装
+      %a.a2{:href => "={dw_url}", :class => "app-download-btn-js"} 下载
+{% endwith %}

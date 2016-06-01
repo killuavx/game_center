@@ -1,0 +1,23 @@
+-load pages_tags
+.head
+  .fl.head_set
+    %a.icon.pgup{:href => "javascript:;"} 上一页
+    %a.icon.pgdn{:href => "javascript:;"} 下一页
+    %a.icon.refresh{:href => "javascript:;"} 刷新
+  / head_set
+  .fl.head_nav><
+    {% spaceless %}
+    -if page_branch_in_menu
+      -for page in page_branch
+        -if page.in_menu
+          -if page.is_current
+            %a.hover{:href => "#"}= page.title
+          -else
+            -# 临时解决
+            -if page.title == '许愿' or page.title == '论坛'
+              %a{:href => "={page.get_absolute_url}", :target => "_blank"}= page.title
+            -else
+              %a{:href => "={page.get_absolute_url}"}= page.title
+    {% endspaceless %}
+  / head_nav
+/ head

@@ -1,0 +1,70 @@
+{% extends "analysis/admin/base.haml" %}
+{% load analysis_tags url_tags %}
+{% block main %}
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#">破解游戏</a></li>
+        <li class="pull-right">
+            <form class="navbar-form" role="search" style="margin:0" action="{{ request.get_full_path }}" method="GET" >
+                <div class="form-group">
+                    <input type="date" name="start_date" value="{{ query.start_date }}" class="form-control">
+                    <!--<input type="date" name="end_date" class="form-control">-->
+                </div>
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" value="{{ query.q|default:'' }}" placeholder="关键词">
+                    <div class="input-group-btn">
+                        <button type="submit" value="search" class="btn btn-default btn-primary">搜索</button>
+                        <a href="{% qurl request.get_full_path start_date=None q=None %}" class="btn btn-default">全部</a>
+                    </div>
+                </div>
+            </form>
+        </li>
+    </ul>
+
+    <table class="table table-condensed table-striped table-hover">
+        <thead>
+            <tr>
+                <th>应用</th>
+                <th>当前版本</th>
+                <th>更新日期</th>
+                <th>上架日期</th>
+                <th>详情</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th>合计</th>
+            <th></th>
+            <th>版本：{{ total_result.version_count }}个</th>
+            <th>游戏：{{ total_result.package_count }}个</th>
+            <th></th>
+        </tr>
+        {% for item in object_list %}
+            <tr>
+                <td>
+                    <a target="_blank" title="{{ item.package_name }}" href="{{ item.admin_url }}">
+                        {{ item.title }}
+                    </a>
+                </td>
+                <td>
+                    {% if item.latest_version %}
+                    <a target="_blank" title="{{ item.latest_version.package_name }}" href="{{ item.version_admin_url }}">
+                    {{ item.latest_version.version_name }}
+                    </a>
+                    {% endif %}
+                </td>
+                <td>{{ item.updated_datetime|date }} {{ item.updated_datetime|time }}</td>
+                <td>{{ item.released_datetime|date }} {{ item.released_datetime|time }}</td>
+                <td>
+                    {% url 'analysis_package_crack_activate_list' package_name=item.package_name as apcc_url %}
+                    <a href="{{ apcc_url }}" class="btn btn-default btn-xs">渠道激活</a>
+                    {% url 'analysis_package_crack_download_detail' package_name=item.package_name as apcd_url %}
+                    <a href="{{ apcd_url }}" class="btn btn-default btn-xs">下载数量</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="text-center">
+        {% pagination page_obj %}
+    </div>
+{% endblock %}

@@ -1,0 +1,59 @@
+-extends "pages/page_web.html"
+-load widgets url_tags util_tags templatehelper_tags web_tags cache_tagging_tags
+{% block meta_title %}{{ request.GET.q }}{% endblock %}
+-block main
+  {% with c_cat=category.slug c_q=request.GET.q|lower c_lang=request.GET.lang|upper|default:'all' c_size=request.GET.size|upper|default:'all' c_reps=request.GET|query_getlist:'reps' c_page=request.GET.page|default:1 %}{% get_site_name as site_name %}
+  {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_HOURS' as CACHE_TIMEOUT_HOURS %}{% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
+  {% cache_tagging 'product_web_search'|add_param:site_name|add_param:c_cat|add_param:c_q|add_param:c_lang|add_param:c_size|add_param:c_reps|add_param:c_page timeout=CACHE_TIMEOUT_HOURS %}{% spaceless %}
+  {% cache_add_tags request.get_host|add:request.path_info request.build_absolute_uri %}
+  {% cache_add_tags 'search_word'|add_param:c_q 'search_category'|add_param:c_cat %}
+  {% cache_location_register 'product_web_search' 'search_word'|add_param:c_q 'search_category'|add_param:c_cat %}
+  {% cache_location_register 'product_web_search'|add_param:c_cat|add_param:c_q %}
+  / START 应用列表 app-list-page
+  .auto.mt30.width.app-list-page
+    {% qurl request.build_absolute_uri page=None as current_url %}
+    {% widget WebSearchPackageListWidget q=request.GET.q cat=root_category.slug lang=c_lang size=c_size reps=c_reps per_page=27 page=request.GET.page %}
+    .cell
+      .f18.cell.rel.t-title
+        %h3.l.n.mr30
+          搜索相关结果约{{ paginator.count|default:0 }}个与<span class="ml5 mr5 red">“{{ request.GET.q }}”</span>相关的{{ root_category.name }}
+      / t-title
+    / cell
+
+    .rel.cell-bk
+      {% cache_tagging 'product_web_search_selector'|add_param:site_name|add_param:c_cat %}
+      {% widget WebSearchCategorySelectorWidget root_category=root_category %}
+      .l.left-list
+        %ul.f14.left-nav
+          -for cat in category_selectlist
+            %li
+              -ifequal category.pk cat.pk
+                %a.hover{:href => "javascript:;"}
+                  -if cat.is_root_node
+                    全部
+                  -else
+                    = cat.name
+                  %span.r
+              -else
+                -if cat.is_root_node
+                  %a{:href => "{% absolute_url cat product=product %}"}
+                    全部
+                    %span.r
+                -else
+                  %a{:href => "{% absolute_url cat product=product %}"}
+                    = cat.name
+                    %span.r
+      {% endwidget %}
+      {% end_cache_tagging %}
+
+      .l.btn-s-box.tj.p20.right-list
+        {% include_widget WebPackageFiltersWidget current_url=current_url c_lang=c_lang c_size=c_size c_reps=c_reps %}
+        -for package in items
+          -with pkg_tags=package.get_all_cache_identifier_tags
+            {% cache_location_register tags=pkg_tags %} {% cache_add_tags pkg_tags %}
+            {% package_box2 package %}
+        {% pagination items %}
+      / right-list
+    {% endwidget %}
+  {% endspaceless  %}{% end_cache_tagging %}
+  {% endwith %}

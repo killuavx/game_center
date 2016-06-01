@@ -1,0 +1,6 @@
+-load url_tags
+当前位置：
+%a{:href => "={home_url}"} 首页
+- for bc in breadcrumbs
+  %em &gt;
+  %a{:href => "{% absolute_url bc product=product %}"}><= bc.bcname

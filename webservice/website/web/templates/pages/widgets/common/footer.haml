@@ -1,0 +1,38 @@
+-load staticfiles url_tags templatehelper_tags user_agents
+{% is_site_android as is_android %}{% is_site_ios as is_ios %}
+.float-five.f-1
+  %dl
+    %dt.f14 虫虫游戏
+    - for p in menus_aboutus
+      %dd
+        %a{:target => "_blank", :href => "={p.full_url}"}= p.title
+.float-five.f-2
+  %dl
+    %dt.f14 关注虫虫
+    %dd
+      %a.ios-web-icon.i-1{:target => "_blank", :href => "http://weibo.com/ccyxpt"} 新浪微博
+    %dd
+      %a.ios-web-icon.i-2{:target => "_blank", :href => "http://t.qq.com/ccyxpt"} 腾讯微博
+    %dd.weixin-code
+      %a.ios-web-icon.i-3{:target => "_blank", :href => "javascript:;"} 官方微信
+      %img.dn.abs{:src => "{% static 'common/img/cc-weixin-code.png' %}"}/
+.float-five.tc.f-3
+  %a.ios-web-icon.f-logo{:href => "javascript:;"}
+.float-five.tl.f-4
+  %dl.r
+    %dt.f14 产品中心
+    - for p in menus_helpers
+      %dd<
+        %a.ios-web-icon{:target => "_blank", :class => "={p.cls}", :href => "={p.full_url}"}= p.title
+-if is_android
+  .float-five.tr.f-5
+    %dl
+      %dd.g9 扫描Android版二维码
+      %dd
+        %img{:src => "http://static.ccplay.com.cn/static/common/img/big-code.png", :width => "108"}/
+.cl.tc 抵制不良游戏 拒绝盗版游戏 注意自我保护 谨防受骗上当 适度游戏益脑 沉迷游戏伤身 合理安排时间 享受健康生活 本游戏适合18岁以上的玩家进入
+.cl.tc.pt20<
+  Copyright &copy;
+  :javascript
+    var yearStr;now = new Date();yearStr = now.getFullYear();document.write(yearStr);
+  Shanghai Zhangyue Technology Co.,Ltd  All Rights Reserved. 上海掌越科技有限公司 版权所有 沪ICP备14042656号-2<br/>公司地址：上海市普陀区中江路388号新城控股大厦B座5层 星翼空间 客服电话：021-3257517

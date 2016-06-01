@@ -1,0 +1,1055 @@
+@charset "utf-8";
+body,ol,ul,h1,h2,h3,h4,h5,h6,p,th,td,dl,dd,form,fieldset,legend,input,textarea,select{margin:0;padding:0}
+body{font:12px "微软雅黑","Microsoft YaHei UI","Microsoft YaHei","宋体","Arial Narrow",HELVETICA;background:#fff;-webkit-text-size-adjust:100%;}
+em,u,i{font-style:normal; text-decoration:none}
+li{list-style:none}
+img{border:0;vertical-align:middle}
+table{border-collapse:collapse;border-spacing:0}
+p{word-wrap:break-word}
+a {jing:e xpression(this.onFocus=this.blur());blr:expression(this.onFocus=this.blur()); text-decoration: none; cursor: pointer}
+a:focus,input,select,textarea{outline:0;resize: none}
+::-webkit-input-placeholder{color:#ddd}
+:-moz-placeholder{color:#ddd}
+::-moz-placeholder{color:#ddd}
+:-ms-input-placeholder{color:#ddd}
+::-moz-selection{background:#ff7900;color:#fff}
+
+/*		公共		*/
+.top img,.roll_box img,.maste_lsit img,.collection_box .l img,.app-list-min img,.app-list-xl img,.app-list-m img,.app-list-l img{background:url(http://static.ccplay.com.cn/static/common/img/no-cc-45.png) no-repeat center}
+.cc-a-d-2,.cc-a-d-3,.up_pic img{background:url(http://static.ccplay.com.cn/static/common/img/loading_red.gif) no-repeat center}
+
+.width {width: 1260px}
+.re-1{border:1px solid #ffdd99; background:#fff9ed;}
+.re-2{border:1px solid #c9d9ee; background:#ecf8ff;}
+.re-3{border:1px solid #adcd3c; background:#f2fddb;}
+/*.width,.banner .bg,.banner .bg-c,.logo,.right-list,.left-list,.right,.collection_box .r,.nav .l li,.nav .l li a,.logo,.logo a,.float-three,.num li,.l-box,.r-box,a,.css3,#pw-strength,#pw-strength span,.Validform_checktip,.Validform_right,.mm a span,.search button,.nav li a,.nav a,.info-box-title,.info-box:hover{transition: 0.5s; -moz-transition: 0.5s; -o-transition: 0.5s; -webkit-transition: 0.5s;}*/
+
+.ios-web-icon{background:url(http://static.ccplay.com.cn/static/common/img/ios_web_icon.png) no-repeat; display:inline-block}
+.drop-down{z-index:9; width:100%; left:0; *top:33px; display:none; -webkit-box-shadow: 0px 6px 24px -4px gray;-moz-box-shadow: 0px 6px 24px -4px gray;box-shadow: 0px 6px 24px -4px gray;}
+.drop-down a{display:block}
+
+.a_btn{display:none}
+.a_btn a{width:31px; height:45px; background-position:0 -394px}
+.a_btn a:hover{background-position:0 -450px}
+.a_btn a.next{background-position:-38px -394px; right:0}
+.a_btn a.next:hover{background-position:-38px -450px;}
+.a_btn a:active,.btn-s a:active,.nav a:active,.submit_btn:active, .cancel_btn:active,.user-switch li dl{outline:none;-webkit-box-shadow: 0px 6px 24px -4px gray;-moz-box-shadow: 0px 6px 24px -4px gray;box-shadow: 0px 6px 24px -4px gray;}
+.price{text-decoration:line-through}
+em{padding:0 5px; color:#CCC}
+
+.star{width:68px; height:12px; display:inline-block; background-position:-69px -501px; overflow:hidden}
+.s1{background-position:-55px -501px}
+.s2{background-position:-41px -501px}
+.s3{background-position:-27px -501px}
+.s4{background-position:-13px -501px}
+.s5{background-position:1px -501px}
+
+.i-phone{width:16px; height:17px; background-position:-124px -715px}
+.i-pad{width:17px; height:16px; background-position:-102px -715px}
+.i-all{width:16px; height:16px; background-position:-78px -715px}
+
+.btn-s {display:none}
+.btn-s a{display:inline-block; width:49.9%; height:30px; line-height:28px; text-align:center;color:#fff; background:#429aef; letter-spacing:3px; font-size:14px; float:left}
+.btn-s a:hover{background:#1779d8; color:#fff; text-decoration:none}
+.btn-s a.install{background:#5bc400}
+.btn-s a.install:hover{background:#4b9d03}
+
+.cc-a-d-1{height:82px}
+.cc-a-d-2,.cc-a-d-3{height:100px; overflow:hidden; position:relative;}
+.cc-a-d-4{height:90px}
+.l-box{width:940px; margin-right:320px; float:left}
+.r-box{width:300px; right:0; float:right; position:absolute}
+.cc-a-d-3 a.swf-a{position:absolute; left:0; top:0; width:100%; height:100%; display:block;z-index: 10;
+background-color: #fff;
+filter: alpha(opacity=0);
+opacity: 0;}
+
+#cc-m .cc-a-d-2 img{margin-left:-130px}
+#cc-s .cc-a-d-2 img{margin-left:-95px}
+
+
+
+.text-db,.hot-game-list-1 li,.app-list-min a,.app-list-m dd a,.app-list-l dd a,.app-list-xl h3{height:18px; margin-bottom:2px; overflow:hidden}
+.app-list-m dd a,.app-list-l dd a{display:inline-block; width:90px}
+#cc-s .app-list-m dd a,#cc-s .app-list-l dd a{width:auto}
+.app-list-l dd a{width:110px}
+
+/*头部*/
+.head .top,.hot-game{background-color:#fff}
+.head .top{height:85px; padding-top:15px} 
+.logo {height:50px}
+.home{background:url(http://static.ccplay.com.cn/static/common/img/home.png) no-repeat; width:50px; height:50px; position:absolute; left:0; display:none}
+/*搜索*/
+.no-content{margin-left:10%}
+#cc-s .no-content{margin-left:0}
+.no-content img{width:123px; height:123px}
+.search{padding-top:7px}
+.search .box{border:1px solid #b8b8b8; height:33px}
+.search .key{border:none; padding-left:5px; height:33px; line-height:33px; background:none; left:0; width:73%}
+.diy_select{width:60px;position:relative;float:left; font-size:14px}
+.diy_select_btn,.diy_select_txt{float:left;height:35px; line-height:35px}
+.diy_select_txt{width:60px;}
+.diy_select_txt,.diy_select_list li{text-indent:10px;overflow:hidden}
+.diy_select_list{position:absolute;top:35px;left:-1px;z-index:88888;border-top:none;width:100%;display:none;_top:29px; background-color:#fff; border:1px solid #e53333;-webkit-box-shadow: 0px 6px 24px -4px gray;-moz-box-shadow: 0px 6px 24px -4px gray;box-shadow: 0px 6px 24px -4px gray;}
+.diy_select_list li{list-style:none;height:35px;line-height:35px;cursor:default;_background:#fff}
+.diy_select_list li.focus{background:#b72929;color:#fff}
+.diy_select_btn {background-position:-162px -459px; width:20px; height:35px; left:40px; border-right:1px solid #b8b8b8}
+.search .hover{border-color:#e53333}
+.search button{right:0; top:0px; top:1px\9; height:35px;  width:40px; background-position:-80px -370px; text-indent:-99999px}
+.search button:hover,.search .hover button{background-position:-120px -370px; background-color:#b72929}
+.search .Validform_checktip{position: absolute;right: -85px;top: 8px;}
+
+.search-drop{padding:3px 0 0 60px; opacity:0; z-index:10}
+.search-drop-box{z-index:10; width:358px; border-top:none !important; -webkit-box-shadow: 0px 6px 24px -4px gray;-moz-box-shadow: 0px 6px 24px -4px gray;box-shadow: 0px 6px 24px -4px gray;}
+.search-drop-box a{display:block; padding-left:5px}
+.search-drop-box a:hover,.emailist li:hover,.emailist li.on{text-decoration:none; background:#ddd; color:#e53333; padding-left:15px}
+.emailist li{padding:2px 10px}
+.emailist li:hover,.emailist li.on{padding-left:10px}
+#cc-m .search-drop-box{width:272px}
+#cc-s .search-drop-box{width:188px}
+#fixed-head .search-drop-box{width:288px}
+#fixed-head #cc-m .search-drop-box{width:168px}
+#fixed-head #cc-s .search-drop-box{display:none}
+
+/*切换*/
+.user-switch li{float:left; margin-left:11px; position:relative}
+.user-switch li a.ios-web-icon{display:inline-block; width:55px; height:20px; text-align:center; padding-top:35px;-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale; overflow:hidden}
+.user-switch .a0{background-position:-84px -850px}
+.user-switch .a1{background-position:12px -169px}
+.user-switch .a2{background-position:-73px -169px}
+.user-switch .a3{background-position:12px -249px}
+.user-switch .a4{background-position:-74px -250px}
+.user-switch a.ios-web-icon:hover{filter:alpha(opacity=80);opacity: 0.8; background-color:#fff; -webkit-animation: toTopFromBottom .3s forwards;
+-moz-animation: toTopFromBottom .3s forwards;
+animation: toTopFromBottom .3s forwards;}
+
+.user-switch li dl{right:0; min-width:120px;white-space:nowrap}
+.user-switch li dl i.ios-web-icon{width:15px; height:9px; right:20px; top:-9px; background-position:-115px -481px}
+
+/*导航*/
+.nav{height:57px; background:#e53333; z-index:10}
+.nav ul{*width:80%}
+.nav .l li{float:left; width:8%; *width:110px; background-color:#e53333}
+.nav a{background-color:#e53333}
+.nav a,.nav a:hover{color:#fff; text-decoration:none}
+.nav .l li a{display:block; height:57px; line-height:57px; text-align:center; letter-spacing:5px;}
+.nav .nav-top-a em{width:5px; height:8px; background-position:-82px -479px; margin:-3px 0 0 3px}
+.nav .abs{right:5px}
+.ios-switch a{display:inline-block; height:30px; padding:0 15px; background:#ed6e6e; line-height:30px;}
+.ios-switch .b-1{-moz-border-radius:20px 0 0 20px; -webkit-border-radius:20px 0 0 20px; border-radius:20px 0 0 20px;}
+.ios-switch .b-2{-moz-border-radius:0 20px 20px 0; -webkit-border-radius:0 20px 20px 0; border-radius:0 20px 20px 0;}
+.nav a:hover{background-color:#cf2929}
+.nav .hover,.nav li.hover a{background-color:#b72929}
+
+.nav .drop-down{background:#e53333;}
+.nav li.rel .drop-down a{letter-spacing:0; padding:0 10px; overflow:hidden}
+.nav li:hover .drop-down{display:block}
+
+
+/*广告*/
+.banner{height:400px; z-index:1}
+.ban_pic li{display:block; height:400px;}
+.ban_pic a{height:200px; display:block; text-align:center; overflow:hidden}
+.banner .bg{width:1296px;height:200px; top:-220px;z-index:2}
+.banner .bg-t{background:url(http://static.ccplay.com.cn/static/common/img/banner-bg.png) repeat-x 0 -209px; height:8px; margin-left:8px; margin-right:8px; height:200px;}
+.banner .bg-l,.banner .bg-r{width:8px; height:200px; background:url(http://static.ccplay.com.cn/static/common/img/banner-bg.png) no-repeat; top:0}
+.banner .bg-r{ background-position:right top; right:0}
+.banner .bg-c{margin:11px 8px 0 8px; height:189px; width:1280px; background:#fff; top:0; filter:alpha(opacity=50);opacity: 0.5;}
+	.num{z-index:3; top:-220px}
+	.num li {display:inline-block; width: 4px; height: 4px; overflow:hidden; margin:0 5px; border: 2px solid #fff; border-radius: 6px; cursor: pointer; background:#fff; text-indent:-9999px}
+	.num li.on { background:none; opacity: 1; width: 20px; height: 6px; position:relative; top:1px}
+
+
+.banner-page .arrow { display:block; position:absolute; top:35px; z-index:9; width:67px; height:130px; opacity:0; filter:alpha(opacity=25); cursor:pointer; outline:none;
+	-webkit-transition:.25s opacity linear;
+	   -moz-transition:.25s opacity linear;
+	        transition:.25s opacity linear;
+}
+
+.banner-page a:hover{background-color: rgba(0,0,0,.1);
+-webkit-border-radius: 8px;
+-moz-border-radius: 8px;
+border-radius: 8px;}
+.banner-page a:active{background-color: rgba(0,0,0,.2)}
+
+.banner:hover .banner-page .arrow { opacity:.75; filter:alpha(opacity=75); }
+.banner-page .arrow:hover { opacity:.8; filter:alpha(opacity=80); }
+.banner-page .arrow.disabled { display:none; }
+.banner-page .arrow b { display:block; overflow:hidden; width:67px; height:130px; text-indent:-9999px; background:no-repeat 0 0; background-size:67px 130px}
+
+.banner-page .arrow.prev { left:0; -webkit-border-radius:0 8px 8px 0;
+-moz-border-radius:0 8px 8px 0;
+border-radius: 0 8px 8px 0; }
+.banner-page .arrow.prev b { float:left; background-image:url(http://static.ccplay.com.cn/static/common/img/p_previous.png); }
+
+.banner-page .arrow.next {right:0; -webkit-border-radius:8px 0 0 8px;
+-moz-border-radius:8px 0 0 8px;
+border-radius:8px 0 0 8px}
+.banner-page .arrow.next b { float:right; background-image:url(http://static.ccplay.com.cn/static/common/img/p_next.png); }
+
+
+
+	
+/*巨作*/
+.masterpiece{margin-top:-180px; *overflow:hidden; z-index:2}
+.roll_box{height:125px; *overflow:hidden}
+.roll_box ul{width:1500px}
+.roll_box li{margin:0 18px 0 0; float:left}
+.roll_box li img{width:237px; height:125px}
+.roll_box .text,.novice-bbs-list .top span,.r-box .top span,.bbs-rcd span,.mm a span{left:0; bottom:0; width:227px; height:30px; line-height:30px; background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,.7)); -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',endColorstr='#B2000000',gradientType=0)";
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000',endColorstr='#B2000000',gradientType=0);
+white-space:nowrap; overflow:hidden; color:#fff}
+.roll_btn a{top:-85px}
+
+.novice-bbs-list .top:hover span,.r-box .top:hover span,.bbs-rcd:hover span,.mm a:hover span,.masterpiece a:hover span,.project a:hover span{background-image: linear-gradient(to bottom,transparent,rgba(0,0,0,1))}
+
+
+
+.latest-release,.vendor{width:240px; left:0}
+.hot-news,.hot-bbs{margin-left:260px; margin-right:320px}
+.most-expensive,.novice-bbs,.i-collections-box .vendor{width:300px; right:0 !important; left:auto !important}
+.crack-page .time-list{text-align:left}
+
+/*首页合集 厂商*/
+.i-collections-box{height:565px; overflow:hidden}
+.i-collections{margin-right:320px}
+#cc-s .i-collections{margin-right:190px}
+#cc-s .vendor{width:340px; position:relative!important}
+
+#cc-s .i-collections-box .vendor{width:170px; position:absolute !important}
+
+.i-collections-list{text-justify:distribute-all-lines}
+.i-c-l-box{width:224px; height:243px; overflow:hidden; padding:0 4px}
+.i-c-l-box a{display:block; height:188px; margin-bottom:20px; overflow:hidden}
+.i-c-l-box a .i-c-l-main{top:0; position:relative;}
+.i-c-l-box img{opacity:1}
+.i-c-l-main img{width:100%; height:116px}
+
+#cc-m .i-c-l-box{width:330px; height:243px}
+#cc-m .i-c-l-main img{height:170px}
+#cc-m .i-c-l-box a{height:200px}
+
+#cc-s .i-c-l-box{width:270px; height:243px}
+#cc-s .i-c-l-main img{height:139px}
+#cc-s .i-c-l-box a{height:190px}
+
+
+
+/*时光轴*/
+.multi{z-index:3}
+.time-box-t{background:url(http://static.ccplay.com.cn/static/common/img/time-line-2.png) 37px bottom no-repeat; padding-bottom:40px}
+.time-box-b{background:url(http://static.ccplay.com.cn/static/common/img/time-line-1.png) 37px 0 repeat-y}
+.t-title{height:35px; border-bottom:2px solid #ccc; background-color:#fff}
+.t-title ul{*width:75%; text-align:left; padding-left:100px}
+.right .t-title ul,.left-top-list .t-title ul{padding-left:0}
+.left-top-list .tab-more a{margin-right:10px}
+.t-title li a{color:#777}
+.t-title li{background-position: center 31px; height:37px; *display:inline; padding:0 20px}
+.t-title li a{text-decoration:none}
+.t-title .hover a,.t-title li.ios-web-icon a,.t-title li a:hover{color:#e53333}
+.tab-more{z-index:10}
+
+/*热点资讯*/
+.news-list h2{font-weight:600; height:25px; overflow:hidden; *font-size:20px}  
+.news-list dl{margin-left:60px}
+.news-list .pic img{width:125px; height:80px}
+.tag-time a.ios-web-icon,.n-1 a.ios-web-icon{background-position:0 -521px; width:39px; height:18px; line-height:18px; padding-left:3px; color:#fff; text-decoration:none}
+.n-2 a.ios-web-icon{background-position:-50px -521px}
+.n-3 a.ios-web-icon{background-position:0 -541px}
+.n-4 a.ios-web-icon{background-position:-50px -541px}
+.n-5 a.ios-web-icon{background-position:0 -561px}
+.n-6 a.ios-web-icon{background-position:-50px -561px}
+.news-list .tag-time{margin:-20px 0 0 -60px}
+
+.t-title h3 .ios-web-icon{width:15px; height:15px; left:30px; top:29px; z-index:9; display:none}
+.hot-news .t-title h3 .ios-web-icon{background-position:-166px -33px}
+
+/*最新发布*/
+.latest-release .t-title h3 .ios-web-icon{background-position:-166px -100px; left:26px}
+.latest-list{background:#f8f8f8}
+.app-list-m .pic img{width:45px; height:45px; margin:5px 10px 5px 0}
+.app-list-m .pic .ios-web-icon{width:47px; height:47px; background-position:-75px -313px; left:-2px; top:3px}
+.app-list-m dd,.app-list-l dd{padding-left:55px}
+.app-list-m .star{right:5px; top:3px}
+.app-list-m .btn-s{position:absolute; top:37px; width:70%}
+.latest-release .time-box-t{background-position:23px bottom; padding-bottom:15px}
+.latest-release .time-box-b{background-position:23px bottom}
+.latest-list .app-list-m{padding-top:10px}
+
+/*最贵排行*/
+.most-expensive .t-title h3 .ios-web-icon{background-position:-166px -67px; left:35px}
+.most-expensive .t-title{border-bottom-color:#e53333}
+.most-list{background:#ffeaea}
+.most-list .time-box-t{background:url(http://static.ccplay.com.cn/static/common/img/time-line-4.png) #ffeaea 31px bottom no-repeat; padding-bottom:15px;}
+.most-list .time-box-b{background:url(http://static.ccplay.com.cn/static/common/img/time-line-3.png) #ffeaea 31px bottom repeat-y; padding-top:3px}
+.app-list-l{height:66px; padding:5px 0;}
+.app-list-l .pic img,.app-list-min img,.app-list-right li.hover img{width:68px; height:68px}
+.app-list-l dd,.app-list-l dd{padding:7px 0 0 78px}
+.app-list-l .pic .ios-web-icon{width:70px; height:70px; background-position:-1px -313px; left:-2px; top:0}
+.app-list-l .star{right:5px; top:3px}
+.app-list-l .f14{font-size:15px}
+.app-list-l .btn-s{position:absolute; top:45px; width:70%}
+
+/*首页 应用*/
+.soft,.game{overflow:hidden}
+.app-box{overflow:hidden; height:444px; border-bottom:1px solid #e8e8e8}
+.app-box .left{margin-right:300px}
+.app-box .left .t-title,.app-list-left{padding-right:20px}
+.app-box .right{right:0; top:0; width:300px}
+.app-box .right .t-title li{width:32%; padding:0px} 
+/*左列表*/
+.app-list-left{height:402px; *overflow:hidden; }
+.app-list-min{width:100px; height:130px; *float:left; *margin-right:8px; *margin-left:6px}
+.app-list-min a{height:100px; padding:15px 0; overflow:hidden}
+.app-list-min a:hover{text-decoration:none}
+.app-list-min .ios-web-icon.auto{width:70px; height:70px; background-position:-1px -585px; left:15px; top:15px}
+.app-list-min .btn-s{position:absolute; bottom:0px; width:68px; padding-left:16px; height:46px;}
+.app-list-min .btn-s a{height:23px; width:68px; line-height:23px; padding:0}
+.app-more{}
+.app-more a{background:url(http://static.ccplay.com.cn/static/common/img/app-more.png) no-repeat 15px 12px; height: 100px; width:100px; display:inline-block; text-indent:-9999px}
+.app-more a:hover{background-position:15px -128px}
+.crack-page .app-list-min{float:left}
+
+
+
+/*右排行榜*/
+.app-list-right,.vendor-list,.novice-bbs-list,.left-list,.app-dis-page .left,.pin-box,.news-page .r-box,.user-page .left{background:#f8f8f8}
+.app-list-right li,.hot-bbs-list li{height:24px; padding:5px 10px; line-height:24px; border-bottom:1px solid #e8e8e8}
+.app-list-right img{width:24px; height:24px; margin:0 5px}
+.app-list-right h3{font-size:12px; height:20px; overflow:hidden}
+.app-list-right b{display:inline-block; width:20px; text-align:center}
+.app-list-right a span.ios-web-icon{width:26px; height:26px; background-position:-127px -313px; left:34px; top:4px}
+.app-list-right p{display:none; height:23px; overflow:hidden}
+
+.app-list-right li.hover{height:82px}
+.app-list-right li.hover h3{font-size:14px}
+.app-list-right li.hover img{margin-right:10px; margin-top:6px}
+.app-list-right li.hover a span.ios-web-icon{width:70px; height:70px; background-position:-1px -661px; top:9px}
+.app-list-right li.hover p{display:block}
+.app-list-right li.hover .btn-s{display:block; width:59%; position:absolute; right:10px}
+.app-list-right li.hover .btn-s a{height:25px; line-height:25px}
+
+/*热帖*/
+.hot-bbs-list li{position:relative; padding:6px 0; *padding:5px 0 4px 0; height:auto}
+.hot-bbs-list li h4{padding-left:5px; font-size:14px; font-weight:100; height:26px; overflow:hidden}
+.hot-bbs-list li.first{}
+.hot-bbs-list li.first p{display:none}
+.hot-bbs-list li .f10{padding-right:5px}
+.hot-bbs-list li p{padding-left:40px; line-height:23px; *line-height:20px; display:none}
+.hot-bbs-list li.first p{display:inline-block}
+.hot-bbs-list li img{width:24px; height:24px; margin-right:10px}
+.hot-bbs-list li .ios-web-icon{background-position:-131px -662px; width:26px; height:26px; left:4px}
+/*厂商*/
+.vendor-list li{border-bottom:1px solid #e8e8e8; text-align:center}
+.vendor-list li a img{width:150px; height:46px; padding-top:7px;}
+.vendor-list li a{display:block; height:60px; border:1px solid #f8f8f8}
+.vendor-list li a:hover{border-color:#e53333}
+/*新手*/
+.novice-bbs-list li h4{font-size:12px; width:210px}
+.novice-bbs-list li .ios-web-icon{background-position:-127px -313px}
+.novice-bbs-list .top{display:block; height:110px; width:300px; overflow:hidden}
+.novice-bbs-list .top img{height:125px; width:300px}
+.novice-bbs-list .top span{width:300px}
+
+/*美图*/
+.mm-pic{height:552px; background:#fff; display:none}
+.mm{overflow:hidden; position:absolute}
+.mm-pic .t-title li{padding:0 20px}
+.mm img,.mm{width:180px; height:180px}
+
+
+.mp1,.mp1 img{left:0; top:0}
+.mp2,.mp2 img{left:184px; top:0}
+.mp3,.mp3 img{left:0; top:184px; width:364px; height:300px}
+.mp4,.mp4 img{width:382px; height:484px; left:368px; top:0}
+
+.mp5,.mp5 img{left:754px; top:0; width:364px; height:300px}
+.mp6,.mp6 img{left:754px; top:304px;}
+.mp7,.mp7 img{ left:938px; top:304px}
+.mp8,.mp8 img{width:382px; height:484px; left:1118px; top:0}
+
+.mm img,.n-mm-list img {
+   -webkit-transition: all 0.2s linear;
+   -moz-transition: all 0.2s linear;
+   -o-transition: all 0.2s linear;
+   -ms-transition: all 0.2s linear;
+   transition: all 0.2s linear;
+}
+.mm:hover img,.n-mm-list img:hover{
+   -webkit-transform: scale(1.3,1.3);
+   -moz-transform: scale(1.3,1.3);
+   -o-transform: scale(1.3,1.3);
+   -ms-transform: scale(1.3,1.3);
+   transform: scale(1.3,1.3);
+}
+
+.mm a{position:relative; display:block}
+.mm a span{position:relative; display:block; color:#fff; left:0; top:-30px; text-align:center; width:auto}
+
+
+
+
+
+
+/*友情链接*/
+.i-link-list ul{text-align:justify}
+.i-link-list li{line-height: 24px; display:inline-block; *float:left; margin-right:15px}
+.i-link-list li a{color:#999}
+
+
+.footer{background-position:0 -900px; background-repeat:repeat-x; background-color:#333333; padding:50px 0 15px 0}
+.footer dt{padding-bottom:10px}
+.footer dd{line-height:25px; padding-bottom:5px}
+.footer dd a{color:#999}
+.f-logo{background-position:0 -33px; width:132px; height:107px}
+.footer .ios-web-icon{padding-left:30px}
+.i-1{background-position:-165px -500px}
+.i-1:hover{background-position:-165px -533px}
+
+.i-2{background-position:-165px -567px}
+.i-2:hover{background-position:-165px -600px}
+
+.i-3{background-position:-165px -634px; padding-right:5px;}
+.i-3:hover{background-position:-165px -667px}
+
+.i-4{background-position:-165px -769px}
+.i-4:hover{background-position:-165px -802px}
+
+.i-5{background-position:-165px -700px}
+.i-5:hover{background-position:-165px -733px}
+
+.i-6{background-position:-165px -832px}
+.i-6:hover{background-position:-165px -866px}
+
+.f-4 dl{width:110px}
+
+
+
+/*应用列表*/
+.app-list-page{padding-bottom:75px}
+.app-list-page .pin-box{width:240px}
+.app-list-page .left-list{top:0; width:240px; z-index:2}
+.app-list-page .right-list{min-height:400px; width:1000px; text-align:left !important}
+.app-list-page .left-nav li{border-bottom:1px solid #e8e8e8}
+.app-list-page .left-nav li a{display:block; height:40px; line-height:40px; padding:0 20px}
+.app-list-page .left-nav li a span{color:#999; font-family: Candara;}
+.app-list-page .left-nav li a:hover{background-color:#fff}
+.app-list-page .left-nav li a.hover{background-color:#fff; border-left:2px solid #e53333; position:relative; margin-left:-2px}
+
+.app-list-page .t-title ul{padding-left:240px; width:50%}
+
+.sort{height:5px; line-height:5px; background-color:#bbbbbb; z-index:9}
+.sort .ios-web-icon{background-position:-83px -478px; width:8px; height:8px; margin-left:5px}
+.sort-menu{width:100%; left:0; top:25px; display:none}
+.sort-menu a{display:block; height:25px; line-height:25px; padding-left:10px; background-color:#bbbbbb; color:#fff}
+.sort-menu a:hover{background-color:#e53333; color:#fff}
+
+.app-list-xl{width:32%; height:94px; padding:0 0 20px 10px; *float:left; vertical-align:top}
+.app-list-xl .p2{padding:0}
+.app-list-xl h3{padding:5px 0; width:90%}
+.app-list-xl img{width:92px; height:92px; margin-left:1px}
+.app-list-xl dt .ios-web-icon{width:94px; height:94px; background-position:0 -736px; left:0; top:-1px}
+.app-list-xl dd{padding-left:100px}
+.app-list-xl .btn-s{margin-top:-32px; position:absolute; width:60%}
+
+/*列表筛选*/
+.app-list-page .right-list{padding:20px 0 20px 20px !important}
+.screening{clear:both; border-bottom:1px solid #ddd; margin-bottom:20px; margin-top:-20px}
+.screening{position:relative}
+.screening dl{clear:both; padding-top:10px; border-top:1px dotted #ccc}
+.screening dl:hover{background:#f8f8f8}
+.screening dt{display:inline-block; padding:3px 5px 3px 15px; position:absolute}
+.screening dd{padding-left:80px}
+.screening dd a,.slideGroup .slideBox a{display:inline-block; padding:3px 5px; margin:0 10px 10px 0; color:#666}
+.screening dd a:hover,.screening dd a.on,.slideGroup .slideBox a:hover,.slideGroup .slideBox a.on{background:#e53333; color:#fff; text-decoration:none}
+dl.language{border:none}
+.screening-other dd a {}
+.screening-other a span{display:inline-block; margin-right:5px; background:url(http://static.ccplay.com.cn/static/android_web/img/screening.png) no-repeat; width:13px; height:13px; position:relative; top:1px}
+.screening-other dd a.on{color:#e53333; background:none}
+.screening-other dd a:hover{background:none; color:#000}
+.screening-other dd a:hover span{background-position:-14px 0}
+.screening-other dd a:active span,.screening-other dd a.on span,.screening-other dd a:active{background-position:-28px -14px; color:#e53333}
+
+
+
+
+
+
+/*翻页*/
+.page{padding:40px 10px; background:#fff; text-align:center}
+.page a{display:inline-block; padding:7px 14px; border:1px solid #ccc; margin-left:-1px}
+.page a:hover{border-color:#e53333; color:#e53333; text-decoration:none; position:relative; z-index:3}
+.page a.hover{border-color:#e53333; background:#e53333; color:#fff}
+
+
+/*详细页*/
+.page-location{background:#eee}
+.location em{font-family:宋体; color:#999}
+.title{height:35px; border-bottom:2px solid #ccc}
+.title h1{padding:15px}
+.app-dis-page .left{width:240px; z-index:2; padding-bottom:99999px; margin-bottom:-99999px}
+.app-dis-page .right,.user-page .right{width:1019px}
+.app-dis-page .pic{width:177px; height:177px}
+.cover{background:url(http://static.ccplay.com.cn/static/common/img/app_bg.png) no-repeat; width:177px; height:177px; top:0}
+
+
+.app-dis-page h1{width:67%; height:35px; text-align:left; display:inline-block; white-space: nowrap;text-overflow: ellipsis;-o-text-overflow: ellipsis;overflow: hidden;}
+.app-dis-page .t-title{border-bottom:1px solid #eee; background: #f8f8f8}
+.app-dis-page .t-title h1{padding:20px 0 20px 25px}
+.page-tab-a{position:absolute; right:0; bottom:-1px}
+.page-tab-a a{display:inline-block; height:51px; line-height:51px; padding:0 25px; border-right:1px solid #eee; border-top:1px solid #eee; background:#eee; float:left}
+.page-tab-a a.on{background:#fff; border-top:2px solid #e53333; line-height:49px}
+
+
+.detection{padding:10px 10px 2px 10px}
+.detection li{float:left; margin-right:20px}
+.detection span{ width:16px; height:16px; display:inline-block; background:url(http://static.ccplay.com.cn/static/android_web/img/screening.png) no-repeat -42px 0; position:relative; top:3px; margin-right:5px}
+.detection .no{color:#ff9933}
+.detection .no span{background-position:-42px -17px}
+
+
+
+.instr{border-top:1px solid #e8e8e8; padding-top:3px !important; margin-top:20px}
+.instr li{border-bottom:1px solid #e8e8e8; padding:3px 10px; vertical-align:top}
+.instr li span{padding-left:10px; color:#333}
+.left-top-list .t-title{background:none}
+.left-top-list .t-title li{padding:0 20px}
+.left-top-list li {padding:5px}
+.left-top-list li b{width:15px}
+.left-top-list li span.ios-web-icon{left:24px; top:5px}
+.left-top-list li.hover .btn-s{width:48%}
+
+.prompt{display:inline-block; width:160px;}
+.prompt span{padding-left:16px !important; vertical-align:middle}
+.app-dis-page .ad{background-position:-166px -166px}
+.app-dis-page .ad.no{background-position:-166px -133px}
+
+.app-dis-page .wifi{background-position:-166px -234px; margin-left:40px}
+.app-dis-page .wifi.no{background-position:-166px -201px}
+
+.app-dis-page .google{background-position:-166px -300px}
+.app-dis-page .google.no{background-position:-166px -267px}
+
+.app-dis-page .up_pic{background:url(http://static.ccplay.com.cn/static/common/img/up_pic_img_bg.png); height:370px; overflow:hidden}
+.app-dis-page .right .up,.app-dis-page .right .up .up_box{ margin-bottom:10px; overflow:hidden; position:relative; padding:10px}
+.app-dis-page .right .up_pic li{float:left; margin-right:12px}
+.app-dis-page .right .up_pic img{height:370px}
+
+.app-dis-page .right .up .ios-web-icon{top:-210px; display:inline-block; z-index:99999}
+.app-dis-page .right .up .prev{left:-10px}
+.app-dis-page .right .up .next{right:-10px}
+.app-dis-page .right .down{padding:0 20px 0 20px; clear:both}
+.app-dis-page .right h3{font-size:18px; margin-bottom:5px}
+.down h3{position:relative}
+.app-dis-page .right .text_inner{font-size:14px}
+.text_inner{color:#555; padding-bottom:15px}
+.down .text_inner{border-top:1px solid #eee; padding-top:10px; padding:10px 0 20px 0}
+.relevant-app .cell-bk{border-top:1px solid #eee}
+
+/*虫虫下载提示*/
+.game-dis-cc-down{margin:30px 0}
+.cc-down-bg{background:url(http://static.ccplay.com.cn/static/common/img/up_pic_img_bg.png); height:90px; text-align:center}
+.cc-down-bg object{margin:0 auto; width:500px}
+.cc-down-bg p{right:0; top:-10px}
+.cc-down-bg p img{border:1px solid #ccc}
+.cc-down-bg a{display:block; width:100%; height:90px; top:0; left:0}
+#cc-s .cc-down-bg p{display:none}
+
+.report-box h5{margin-bottom:10px}
+.report-box li{display:inline-block; margin:0 10px 20px 0}
+
+
+.review{margin-bottom:15px}
+.review .login{padding-top:5px}
+.review textarea{height:60px; width:100%; outline: 0 none; overflow:auto; resize: none;}
+
+.review_list {border-top:1px solid #ddd; clear:both; padding:7px 0; color:#666}
+.review_list dl{position:relative; padding:5px 0}
+.review_list dt{position:absolute}
+.review_list .star{position:relative; margin-top:2px;}
+.review_list dd{padding-left:58px}
+.review_list .d1,.review_list .d2{padding-bottom:5px}
+.review_list .d2{clear:both; padding-top:5px; font-size:14px}
+.user{width:48px; height:48px; background-position:-81px -416px}
+.user img{width:48px; height:48px; border-radius:48px;}
+
+
+.review_list .d3{float:right}
+.review_list .d3 a{display:inline-block; height:14px; margin-left:13px}
+.review_list .d3 .ios-web-icon{display:inline-block; width:16px; height:14px; cursor:pointer; position:relative; left:-3px; top:3px; *top:0; _top:3px;}
+.review_list .d3 .r1 .ios-web-icon{background-position:-166px -337px}
+.review_list .d3 .r1:hover .ios-web-icon{background-position:-166px -370px}
+.review_list .d3 .r2 .ios-web-icon{background-position:-166px -403px}
+.review_list .d3 .r2:hover .ios-web-icon{background-position:-166px -437px}
+.review_list .d3 .r3,.review_list .d3 .r4{display:none}
+.review_list .d3 .r3 .ios-web-icon{background-position:-193px -336px}
+.review_list .d3 .r3:hover .ios-web-icon{background-position:-193px -369px}
+
+.review_list .d3 .r4 .ios-web-icon{background-position:-193px -403px}
+.review_list .d3 .r4:hover .ios-web-icon{background-position:-193px -403px}
+.i_reply{margin-left:58px}
+.admin-review{border-left:3px solid #ccc; padding:7px 10px; margin-top:10px; background:#f8f8f8}
+
+.app-dis-page .page,.n-review .page{border-top:1px solid #ddd}
+
+#rating_cont { background:url(http://static.ccplay.com.cn/static/common/img/stars_1.png) no-repeat;  width: 240px; height:35px; overflow:hidden}
+	#rating_on { background: url(http://static.ccplay.com.cn/static/common/img/stars_2.png) no-repeat; width: 0px; height: 25px; position: relative; z-index: 8; top: -25px}
+	#rating_btns { position: relative; z-index: 9; width: 134; height: 25px;}
+	#rating_btns li { float: left; width: 27px; height:25px; display: block; text-indent:-9999px; cursor: pointer}
+#rating{position:relative; left:0px; top:0; margin:-45px 0 0 0; text-align:left; width:100px;}
+
+
+/*合集*/
+.collection_box{height:175px; border-bottom:1px solid #eee; padding-top:10px; position:relative; background:#fff} 
+.collection_box .l{width:270px; padding-left:10px; text-align:center}
+.collection_box .r{width:979px}
+.collection_box .l img{width:270px; height:135px}
+.collection_box .l h3{font-size:16px; margin-top:7px}
+.collection_box .inner{height:115px; overflow:hidden; position:relative; padding-left:6px}
+.collection_box .date{padding:9px 10px 0 0; text-align:right; color:#666}
+.collection_box .a_btn a{top:-95px}
+.collection_box .inner dl{width:28%}
+.collection_box .app-list-xl{margin:0 0 0 30px}
+#cc-s .collection_box .inner dl{width:9%}
+#cc-s .collection_box .app-list-xl{margin:0 0 0 10px}
+
+.collection_dis{padding-top:10px; background:none}
+.collection_title{border-bottom:1px solid #eee; background:url(http://static.ccplay.com.cn/static/common/img/collection_bg.png) #333 center center; color:#FFF}
+.collection_title img{width:400px; height:180px;}
+.collection_title h1{font-size:24px}
+.collection_title p{height:50px; overflow:hidden; padding-top:5px}
+.more-dl a{background:url(http://static.ccplay.com.cn/static/common/img/app-more.png) no-repeat right 0; width:223px; height:94px; display:block; text-indent:-9999px}
+.more-dl a:hover{background-position:right -130px}
+
+.collection-dis .app-list-xl{width:23.6%}
+
+/*巨作*/
+.masterpiece{margin-bottom:60px}
+
+.maste_lsit{width:270px; height:200px; padding:10px; border:5px solid #ffffff; position:relative; float:left; margin:0 5px 20px 10px}
+.masterpiece .hover{border-color:#ffe5e5}
+.maste_lsit img{width:270px; height:135px; padding-bottom:8px}
+.maste_lsit h3{font-size:18px; font-weight:100}
+.maste_lsit .des{padding:4px 0; height:30px; _line-height:18px; overflow:hidden; margin-bottom:8px}
+.maste_lsit .star{left:0px; top:2px; margin-top:3px}
+.maste_lsit .btn-s{display: table; width: 271px; left:10px; bottom:75px; table-layout: fixed; word-wrap: break-word; z-index:99}
+
+/*厂商*/
+.vendor-page .pin-box{width:240px}
+.vendor-page .left-nav li a{height:70px; text-align:center; background-position: center center; background-repeat:no-repeat; background-size:60% 80%}
+.vendor-page .left-nav li a:hover{background-color:#fff}
+.vendor-page .left-nav li a img{width:150px; height:46px; padding:12px 0;}
+.vendor-page .left-nav li a.v1{background-image:url(http://static.ccplay.com.cn/static/common/img/v1.png)}
+.vendor-page .left-nav li a.v1:hover,.vendor-page .left-nav li a.v1.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v1.png)}
+.vendor-page .left-nav li a.v2{background-image:url(http://static.ccplay.com.cn/static/common/img/v2.png)}
+.vendor-page .left-nav li a.v2:hover,.vendor-page .left-nav li a.v2.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v2.png)}
+.vendor-page .left-nav li a.v3{background-image:url(http://static.ccplay.com.cn/static/common/img/v3.png)}
+.vendor-page .left-nav li a.v3:hover,.vendor-page .left-nav li a.v3.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v3.png)}
+.vendor-page .left-nav li a.v4{background-image:url(http://static.ccplay.com.cn/static/common/img/v4.png)}
+.vendor-page .left-nav li a.v4:hover,.vendor-page .left-nav li a.v4.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v4.png)}
+.vendor-page .left-nav li a.v5{background-image:url(http://static.ccplay.com.cn/static/common/img/v5.png)}
+.vendor-page .left-nav li a.v5:hover,.vendor-page .left-nav li a.v5.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v5.png)}
+.vendor-page .left-nav li a.v6{background-image:url(http://static.ccplay.com.cn/static/common/img/v6.png)}
+.vendor-page .left-nav li a.v6:hover,.vendor-page .left-nav li a.v6.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v6.png)}
+.vendor-page .left-nav li a.v7{background-image:url(http://static.ccplay.com.cn/static/common/img/v7.png)}
+.vendor-page .left-nav li a.v7:hover,.vendor-page .left-nav li a.v7.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v7.png)}
+.vendor-page .left-nav li a.v8{background-image:url(http://static.ccplay.com.cn/static/common/img/v8.png)}
+.vendor-page .left-nav li a.v8:hover,.vendor-page .left-nav li a.v8.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v8.png)}
+.vendor-page .left-nav li a.v9{background-image:url(http://static.ccplay.com.cn/static/common/img/v9.png)}
+.vendor-page .left-nav li a.v9:hover,.vendor-page .left-nav li a.v9.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v9.png)}
+.vendor-page .left-nav li a.v10{background-image:url(http://static.ccplay.com.cn/static/common/img/v10.png)}
+.vendor-page .left-nav li a.v10:hover,.vendor-page .left-nav li a.v10.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v10.png)}
+.vendor-page .left-nav li a.v11{background-image:url(http://static.ccplay.com.cn/static/common/img/v11.png)}
+.vendor-page .left-nav li a.v11:hover,.vendor-page .left-nav li a.v11.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v11.png)}
+.vendor-page .left-nav li a.v12{background-image:url(http://static.ccplay.com.cn/static/common/img/v12.png)}
+.vendor-page .left-nav li a.v12:hover,.vendor-page .left-nav li a.v12.hover{background-image:url(http://static.ccplay.com.cn/static/common/img/w/v12.png)}
+
+/*排行*/
+.top-page .app-list-xl{width:100%; padding:15px 0; border-bottom:1px solid #e8e8e8}
+.top-page .number{width:30px; height:43px; background-position:-98px -521px; padding-top:7px; right:0; top:-5px}
+.top-page .n1{top:0}
+.top-page .n1,.top-page .n2,.top-page .n3{background-position:-130px -521px; color:#fff}
+.top-page .app-list-xl p{height:18px; overflow:hidden}
+
+
+/*资讯*/
+.news-page .l-box{width:940px}
+.news-page .r-box{width:300px; padding-bottom:99999px; margin-bottom:-99999px}
+
+.l-news-list dl{border-bottom: 1px dashed #dbdbdb; padding:20px}
+.l-news-list dl:hover{background-color:#f8f8f8}
+.l-news-list dt a:hover{color: #e53333}
+.l-news-list .n-pic{width: 200px;height: 137px}
+.l-news-list .n-pic img{width:180px; height:130px}
+
+.r-box .top{width:300px; height:250px; display:block}
+.r-box .top img{width:300px; height:250px}
+.r-box .top span{width:300px}
+
+.n-top-lsit li{padding:5px 10px; border-bottom:1px dashed #ccc}
+.n-top-lsit li a{ display:block; height:25px; overflow:hidden}
+.n-top-lsit li i{display:inline-block; padding:3px 0; width:25px; margin-right:8px; text-align:center; background:#ccc; color:#fff}
+li i.t-1,li i.t-2,li i.t-3{background:#e53333}
+
+
+.n-mm-list{height:450px}
+.n-mm-list div{overflow:hidden}
+.n-m-1,.n-m-1 img{width:150px; height:250px}
+.n-m-2 {left:150px}
+.n-m-2,.n-m-2 img{width:150px; height:125px}
+.n-m-3{left:150px; top:125px}
+.n-m-3,.n-m-3 img{width:150px; height:125px}
+.n-m-4{top:250px}
+.n-m-4,.n-m-4 img{width:300px; height:200px}
+
+
+.n-dis-cover img{width:100%}
+.n-dis-cover {height:250px}
+.n-body p{margin-bottom:25px; text-indent: 30px; display: block;
+clear: both; line-height: 1.8em;}
+
+.n-share .l .ios-web-icon{width:24px; height:21px; vertical-align:middle; margin-right:5px}
+.n-share .l a{line-height:21px; display:inline-block; padding-top:8px}
+.n-share .l .a-1{background-position:-98px -766px}
+.n-share .l a:hover .a-1{background-position:-98px -738px}
+
+.n-share .l .a-2{background-position:-129px -766px}
+.n-share .l a:hover .a-2{background-position:-129px -738px}
+
+.n-share .r .a-3{border-color:#e53333; color:#e53333}
+.n-share .r .a-4{border-color:#5bc400; color:#5bc400}
+.n-share .r .a-5{border-color:#429aef; color:#429aef}
+
+.n-relevant img{width:180px; height:130px}
+
+
+
+/*			登录			*/
+.user-icon{background-image:url(http://static.ccplay.com.cn/static/common/img/user-icon.png); background-repeat:no-repeat; display:inline-block}
+
+.login .logo{width:225px; height:57px;}
+.login .logo img{display:none}
+.login .logo h2 a{height:57px; width:225px; background-position:0 -19px}
+
+.login-page,.reg-page{padding:50px 0}
+.reg-form{padding-top:30px}
+.login-page .box,.reg-page .box{border-top:2px solid #e53333; margin:2% 10% 5% 60%; background-color:#f8f8f8}
+.yzm-img{top:0; right:70px}
+.login-line span{top:-15px}
+.reg-page .box{margin:2% 20% 5% 20%}
+.reg-box .login-line,.login-box .login-line{min-width:350px}
+.reg-box dd{margin-left:120px}
+.reg-page .reg-box dd{margin-left:120px; margin-right:30px}
+.login-box .login-line span,.reg-box .login-line span{background-color:#fff}
+.login-page .login-line span,.reg-page .login-line span{background-color:#f8f8f8}
+#pw-strength {right:0; top:9px}
+
+#wrapBody .reg-box dt label{width:65px}
+#wrapBody .reg-box dd{margin-left:80px}
+#wrapBody .reg-box .ask-login{padding:0px}
+
+
+
+
+
+.login .nav li{width:auto}
+.login .nav li a {letter-spacing:0; padding:0 20px;}
+
+/*用户中心*/
+.user-page .t-title{padding-left:240px}
+.user-page .t-title ul{padding-left:0}
+.user-page .left{padding-bottom:9999px; margin-bottom:-9999px; width:240px}
+.user-page .pic img{border-radius:190px; margin:-35px auto 0 auto; z-index:9; border:4px solid #ed7070; background-color:#ed7070}
+.user-page .pic a:hover img{border-color:#fff}
+
+.user-page .left li{border-bottom:1px solid #e8e8e8; display:block; height:40px; line-height:40px}
+.user-page .left li a{display:block; padding-left:80px}
+.user-page .left li a.hover{background-color: #fff;border-left: 2px solid #e53333;position:absolute;margin-left: -2px; color:#e53333; width:160px}
+.user-page .left li a:hover{background-color:#fff}
+.user-page .gift-main dl{margin:0; min-width:460px; min-height:115px}
+.user-page .gift-main dl dt .icon{display:none}
+.user-page .gift-main dl h2{font-weight:100; font-size:16px; color:#333}
+.user-page .gift-main dl dd{display:none}
+
+.u-1{background-position:55px -90px}
+.u-1:hover,.u-1.hover{background-position:55px -123px}
+.u-2{background-position:55px -157px}
+.u-2:hover,.u-2.hover{background-position:55px -190px}
+.u-3{background-position:55px -222px}
+.u-3:hover,.u-3.hover{background-position:55px -256px}
+.u-4{background-position:55px -289px}
+.u-4:hover,.u-4.hover{background-position:55px -322px}
+.u-5{background-position:55px -356px}
+.u-5:hover,.u-5.hover{background-position:55px -389px}
+.u-5s{background-position:-247px -427px}
+.u-5s:hover,.u-5s.hover{background-position:-247px -460px}
+
+.u-6{background-position:-247px -90px}
+.u-6:hover,.u-6.hover{background-position:-247px -123px}
+.u-7{background-position:-247px -157px}
+.u-7:hover,.u-7.hover{background-position:-247px -191px}
+.u-8{background-position:-247px -222px}
+.u-8:hover,.u-8.hover{background-position:-247px -255px}
+.u-9{background-position:-247px -289px}
+.u-9:hover,.u-9.hover{background-position:-247px -322px}
+.u-10{background-position:-247px -356px}
+.u-10:hover,.u-10.hover{background-position:-247px -389px}
+
+.user-page .t-title li{padding:0 30px !important}
+
+
+.time-list dl{margin:35px 0 0 65px}
+.time-list dt .tag-time{left:-81px; top:-27px}
+.triangle{width:9px; height:8px; background-position:0 -463px; left:-24px; top:-16px}
+
+
+#go-wish{width:44px;height:44px;position:fixed;right:20px;bottom:64px;z-index:9999;display:block;text-indent:-9999px;background:url(http://static.ccplay.com.cn/static/common/img/go-wish.png) no-repeat}#go-wish:hover{background-position:left bottom}
+
+.page-404{background:url(http://static.ccplay.com.cn/static/common/img/404.png) no-repeat center}
+.page-500{background:url(http://static.ccplay.com.cn/static/common/img/500.png) no-repeat center}
+
+
+.cc-down-tip-box{background:rgba(0,0,0,.8); position:fixed; bottom:0px; z-index:99999; color:#fff; width:100%; display:none}
+.browsers_ad_close_gray img{background:#fff; border-radius:50%; height:50px}
+
+#cc-s .cc-down-tip-box{display:block}
+
+
+/*			cc-l			*/
+#cc-l .user-switch{width:400px !important}
+#cc-l .right .t-title li{padding:0}
+#cc-l .mm{width:165px}
+#cc-l .mp2{left:169px}
+#cc-l .mp3{width:334px;}
+#cc-l .mp4{left:338px; width:290px}
+#cc-l .mp4 img{margin-left:-95}
+#cc-l .mp5{left:632px; width:334px}
+#cc-l .mp6{left:632px}
+#cc-l .mp7{left:801px}
+#cc-l .mp8{left:970px; width:290px}
+#cc-l .mp8 img{margin-left:-95}
+#cc-l .left-top-list li.hover .btn-s{width:53%}
+
+#cc-l .top-page .p1{display:none}
+#cc-l .top-page .top-1,#cc-l .top-page .top-2,#cc-l .top-page .top-3{width: 33.3%; height:150px; text-align:center}
+
+#cc-l .top-page .top-2{float:left}
+#cc-l .top-page .top-3{float:right}
+#cc-l .top-page .top-2 img,#cc-l .top-page .top-3 img{width:68px; height:68px;}
+#cc-l .top-page .top-2 dt .pic .ios-web-icon,#cc-l .top-page .top-3 dt .pic .ios-web-icon{width:70px; height:70px; background-position:-1px -585px; top:25px}
+#cc-l .top-page .top-2 dt ,#cc-l .top-page .top-3 dt{left:50%; margin-left:-34px; padding-top:25px}
+#cc-l .top-page .top-1 dt{left:50%; margin-left:-46px}
+#cc-l .top-page .top-1 dd ,#cc-l .top-page .top-2 dd ,#cc-l .top-page .top-3 dd{padding:90px 0 0 0}
+#cc-l .top-page .top-1 h3,#cc-l .top-page .top-2 h3 ,#cc-l .top-page .top-3 h3{padding-bottom:0}
+
+#cc-l .top-page .top-1 .btn-s,#cc-l .top-page .top-2 .btn-s,#cc-l .top-page .top-3 .btn-s{width:100%; margin-top:-34px}
+
+#cc-l .top-page .top-1 .number,#cc-l .top-page .top-2 .number,#cc-l .top-page .top-3 .number{background-position:-131px -621px; width:30px; height:31px; padding-top:4px; left:50%; bottom:66px; margin-left:-15px; top:auto}
+
+#cc-l .top-page .top-1 .number{margin-left:-45px}
+#cc-l .top-page .top-2 .number,#cc-l .top-page .top-3 .number{margin-left:-34px}
+.top-1 p,.top-2 p,.top-3 p{display:none}
+.top-1 p.p2,.top-2 p.p2,.top-3 p.p2{display:block}
+#cc-l .top-1 h3,#cc-l .top-2 h3,#cc-l .top-3 h3{width:70%; margin:0 auto 5px auto}
+
+
+/*			cc-m			*/
+#cc-m .width{width: 1000px;}
+#cc-m .search .key{width:67%}
+#cc-m .nav .l li{float:left; width:8%; *width:85px}
+#cc-m .nav li.rel .drop-down a{padding:0 15px}
+#cc-m .banner .bg{width:1036px}
+#cc-m .banner .bg-c{width:1020px}
+#cc-m .news-list p{height:50px; overflow:hidden}
+#cc-m .hot-news .t-title ul,#cc-m .hot-bbs .t-title ul{*padding:0; *width:65%}
+#cc-m .app-box .left .t-title ul{margin-left:-30px}
+#cc-m .hot-bbs .hot-bbs-list li h4{width:320px}
+#cc-m .user-switch{width:330px!important}
+#cc-m .user-switch li{margin-left:5px}
+
+#cc-m .mm{width:165px}
+#cc-m .mp2{left:169px}
+#cc-m .mp3{width:334px;}
+#cc-m .mp4{left:338px; width:324px}
+#cc-m .mp5{left:666px; width:334px}
+#cc-m .mp6{left:666px}
+#cc-m .mp7{left:835px}
+
+#cc-m .app-list-page .left-list,#cc-m .app-list-page .pin-box{width:150px}
+#cc-m .app-list-page .t-title ul{padding-left:0; text-align:center; width:100%}
+#cc-m .app-list-page .left-nav li a{padding:0 10px}
+#cc-m .app-list-page .right-list{width:820px}
+#cc-m .app-list-page .app-list-xl{width:31%}
+#cc-m .app-dis-page .left,#cc-m .user-page .left{width:220px}
+#cc-m .app-dis-page .right,#cc-m .user-page .right{width:779px}
+#cc-m .left-top-list .t-title li{padding:0 18px}
+#cc-m .collection_box .r{width:719px}
+#cc-m .maste_lsit{margin:0 10px 20px 20px}
+
+#cc-m .vendor-page .left-list,#cc-m .vendor-page .pin-box{width:180px}
+#cc-m .vendor-page .right-list{ width:780px}
+#cc-m .vendor-page .app-list-xl{width:31.5%}
+#cc-m .vendor-page .left-nav li a{background-size:70% 70%}
+#cc-m .news-page .l-box{width:680px}
+
+#cc-m .login .nav li{width:auto}
+#cc-m .login .nav li a{padding:0 20px}
+#cc-m .user-page .left li a.hover{width:140px}
+#cc-m .user-page .t-title{padding-left:220px}
+#cc-m .l-box{width:680px}
+
+
+/*			cc-s			*/
+#cc-s .width{width: 750px;}
+#cc-s .logo {width:165px}
+#cc-s .logo a{width:165px; overflow:hidden; display:inline-block}
+#cc-s .login .logo,#cc-s .login .logo h2 a{width:225px !important}
+
+#cc-s .home{top:0}
+#cc-s .search .key{width:56%}
+#cc-s .user-switch{width:290px!important}
+#cc-s .user-switch li{margin-left:0px}
+#cc-s .nav .l li{float:left; width:8%; *width:66px}
+#cc-s .nav .l li a{letter-spacing:0}
+#cc-s .login .nav li{width:auto}
+#cc-s .login .nav li a{padding:0 13px}
+#cc-s .search{margin-left:35px; *margin:0 20px}
+#cc-s .banner .bg{width:786px}
+#cc-s .banner .bg-c{width:770px}
+#cc-s .nav .drop-down a{padding:0 10px}
+#cc-s .hot-news,#cc-s .hot-bbs{margin:0}
+#cc-s .latest-release,#cc-s .most-expensive,#cc-s .novice-bbs{position:relative}
+#cc-s .latest-release{width:335px}
+#cc-s .most-expensive,#cc-s .novice-bbs{width:385px}
+#cc-s .hot-news .t-title ul,#cc-s .hot-bbs .t-title ul{*padding:0; *width:75%}
+#cc-s .hot-news .t-title li,#cc-s .hot-bbs .t-title li{padding:0 20px}
+#cc-s .app-list-m .btn-s{width:83%}
+#cc-s .app-list-l .btn-s{width:79%}
+#cc-s .app-box .left{margin-right:250px}
+#cc-s .app-list-min{width:85px;}
+#cc-s .app-list-min .ios-web-icon{left:8px}
+#cc-s .app-list-min .btn-s{margin-left:-7px}
+#cc-s .app-box .right{width:250px}
+#cc-s .app-list-right li.hover .btn-s{width:50%}
+#cc-s .app-box .left .t-title ul{*width:70%; *padding:0; margin-left:-30px}
+#cc-s .app-box .left .t-title li{padding:0 5px}
+#cc-s .novice-bbs-list .top,#cc-s .novice-bbs-list .top img,#cc-s .novice-bbs-list .top span{width:385px}
+#cc-s .mp1,#cc-s .mp1 img{left:0; top:0}
+#cc-s .mp2,#cc-s .mp2 img{left:184px; top:0}
+#cc-s .mp3,#cc-s .mp3 img{left:0; top:184px; width:364px; height:300px}
+#cc-s .mp4,#cc-s .mp4 img{width:382px; height:484px; left:368px; top:0}
+#cc-s .app-list-page .left-list,#cc-s .app-list-page .pin-box{width:100px}
+#cc-s .app-list-page .left-nav li a span{display:none}
+#cc-s .app-list-page .t-title ul{padding-left:0; text-align:center; width:100%}
+#cc-s .app-list-page .t-title li{padding:0 20px}
+#cc-s .app-list-page .right-list{width:630px}
+#cc-s .app-list-page .app-list-xl{width:47%}
+#cc-s .app-dis-page .left,#cc-s .user-page .left{width:220px}
+#cc-s .app-dis-page .right,#cc-s .user-page .right{width:529px}
+#cc-s .left-top-list .t-title li{padding:0 18px}
+#cc-s .collection_box .r{width:469px}
+#cc-s .maste_lsit{margin:0 10px 20px 40px}
+
+#cc-s .vendor-page .left-list,#cc-s .vendor-page .pin-box{width:180px}
+#cc-s .vendor-page .right-list{width:530px}
+#cc-s .vendor-page .app-list-xl{width:45%}
+#cc-s .vendor-page .left-nav li a{background-size:70% 70%}
+
+#cc-s .top-page .number{left:0; right:auto}
+#cc-s .top-page .t-title li{padding:0 3px}
+#cc-s .news-page .l-box{width:480px}
+#cc-s .news-page .r-box,#cc-s .r-box .top span{width:250px}
+#cc-s .l-news-list dl{padding:20px 10px}
+#cc-s .l-news-list .n-pic{width:150px;height:100 px}
+#cc-s .l-news-list .n-pic img{width:130px; height:90px}
+#cc-s .login-page .box{margin:5% 5% 5% 55%}
+
+#cc-s .user-page .left li a.hover{width:140px}
+#cc-s .user-page .t-title{padding-left:220px}
+
+#cc-s .l-box{margin-right:385px}
+#cc-s .r-box{width:365px}
+#cc-s .l-box{width:750px}
+
+#cc-s .cc-a-d-box .r-box,#cc-s .cc-a-d-4{display:none}
+#cc-s .cc-a-d-box .l-box{margin-right:0}
+
+
+
+/*跟随滚动条*/
+#fixed-head .nav{position:fixed; top:0; z-index:10;opacity:.85;}
+#fixed-head .pin-wrapper .nav{-moz-box-shadow:0px 2px 5px #ccc; -webkit-box-shadow:0px 2px 5px #ccc; box-shadow:0px 2px 5px #ccc;}
+#fixed-head #cc-l .nav .l li{width:72px}
+#fixed-head #cc-m  .nav .l li{width:60px}
+#fixed-head #cc-m .nav .drop-down a{padding:0 10px}
+#fixed-head #cc-l .nav .drop-down a{padding:0 15px}
+#fixed-head #cc-m .login .nav .l li,#fixed-head #cc-l .login .nav .l li{width:auto}
+#fixed-head #cc-m .login .nav .l li a,#fixed-head #cc-l .login .nav .l li a{padding:0 20px}
+#fixed-head #cc-s .login .nav .l li{width:auto}
+#fixed-head #cc-s .login .nav .l li a{padding:0 13px}
+#fixed-head .nav .l li a{letter-spacing:0px}
+#fixed-head #cc-l .search,#fixed-head #cc-m .search{position:fixed; z-index:11; width:25%; top:3px}
+#fixed-head .search .box{background:rgba(255, 255, 255, 0.9); border-color:#e53333}
+#fixed-head #cc-l .search{margin-left:320px; width:350px}
+#fixed-head #cc-l .search .key{width:70%}
+#fixed-head #cc-m .search{margin-left:280px; width:230px}
+#fixed-head #cc-m .search .key{width:55%}
+#fixed-head #cc-s .search{position:relative}
+.left-list #pin-box{margin-top:57px}
+#fixed-head .search .Validform_checktip{right:60px}
+
+
+/*表单验证*/
+/*用户中心*/
+#Validform_msg{display:none}
+.Validform_checktip{font-size:12px}
+input.Validform_error,select.Validform_error,textarea.Validform_error{border-color:#e53333}
+.Validform_wrong,.login-box .Validform_error{color:#e53333}
+.Validform_right{color:#5bc400}
+
+.user-password-form #pw-strength{right:auto; left:300px; top:17px}
+
+.reg-box .Validform_checktip{font-size:16px; height:21px}
+
+.login-box .Validform_checktip,.reg-box .Validform_checktip{left:0; top:0; height:20px; line-height:16px; background:#333; padding:5px 0; color:#fff; display:block; overflow:hidden;}
+.login-box .Validform_right,.reg-box .Validform_right{height:0; font-size:0; overflow:hidden; padding:0; line-height:0}
+
+#wrapIn .white .rel{top:-3px}
+.login-box .w750{padding-top:15px}
+
+input:focus, textarea:focus, isindex:focus, keygen:focus, select:focus{border-color:#999}
+
+
+
+/*右边栏按钮*/
+.aside-float-bar{position:relative}
+.aside-float-bar ul{position:fixed; z-index:10; left:50%; bottom:115px; margin-left:630px}
+.aside-float-bar ul li{display:block; margin-bottom:5px; filter:progid:DXImageTransform.Microsoft.gradient(enabled="true", startColorstr="#0FE53333", endColorstr="#0FE53333"); background-color:rgba(229,51,51,0.6)}
+.aside-float-bar ul li span{display:none}
+.aside-float-bar ul li:hover{background:#e53333}
+.aside-float-bar ul li:hover span{display:block}
+:root .aside-float-bar ul li{filter:none}
+#cc-m .aside-float-bar ul{margin-left:505px}
+#cc-s .aside-float-bar ul{margin-left:380px}
+
+.aside-float-bar a{font-size:14px!important; display:block; width:40px!important; padding:4px 4px 6px 6px!important;letter-spacing:3px; line-height:normal!important; height:40px!important; text-align:center; color:#fff !important; text-decoration:none !important; background:url(http://static.ccplay.com.cn/static/android_web/img/aside_float_bar_btn.png) no-repeat!important; margin:0!important; text-indent:-99999px;}
+
+.aside-float-bar a.a-share{background-position:0 0!important}
+.bdshare-button-style0-16 a:hover{filter: alpha(opacity=100)!important; opacity:1!important;}
+.aside-float-bar a.a-problems{background-position:0 -55px!important}
+.aside-float-bar a.a-qr-code{background-position:0 -110px!important}
+.aside-float-bar a.a-top{background-position:0 -165px!important; display:none}
+
+.aside-float-bar a:hover{text-indent:0}
+.aside-float-bar a.a-share:hover,.aside-float-bar a.a-problems:hover,.aside-float-bar a.a-top:hover{background:none!important}
+
+.aside-float-bar .li_code{position:relative}
+.aside-float-bar .qr-code-box{position:absolute; left:-345px; bottom:0; background:#fff; width:345px; text-align:center; z-index:11; display:none}
+.aside-float-bar .qr-code-box,.bdshare_popup_box{-moz-box-shadow:-3px 0px 10px #333333; -webkit-box-shadow:-3px 0px 10px #333333; box-shadow:-3px 0px 10px #333333;}
+.bdshare_popup_top{display:none}
+.aside-float-bar .qr-code-box img{width:108px; height:108px}
+.aside-float-bar .qr-code-box dl{float:left; padding:5px 0 8px 5px}
+.s-triangle{position:absolute; font-size:30px; color:#fff; bottom:7px; right:-8px}
+
+

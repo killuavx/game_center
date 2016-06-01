@@ -1,0 +1,357 @@
+
+.icon-size(@length){
+  width: @length;
+  height: @length;
+}
+
+.text-more {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.panel-style1-widget {
+  background-color: white;
+
+  .panel-heading {
+    background: inherit;
+    border-bottom: none;
+    padding-left: 30px;
+    height: 42px;
+
+    .more {
+      color: #ffffff;
+    }
+
+  }
+
+  .panel-body {
+
+  }
+
+}
+
+.panel-list-widget {
+  background: url(http://www.25pp.com/static/images/navBg.jpg) repeat-y;
+  background-size: 4px;
+  background-color: white;
+  .panel-heading {
+    background: inherit;
+    border-bottom: none;
+    padding-left: 30px;
+    height: 42px;
+    h3 {
+      font-size: 16px; 
+    }
+    .more {
+      color: #ffffff;
+    }
+  }
+
+  .panel-body {
+    h3 {
+      margin: 0px;
+      padding: 0px;
+      padding-top: 5px;
+      margin-bottom: 5px;
+      font-size: 14px;
+      height: 24px;
+      .text-more()
+    }
+
+    dt {
+      float: left;
+      margin-right: 6px;
+      _margin-right: 3px;
+      position: relative;
+    }
+
+    dd {
+      overflow: hidden;
+      p {
+        font-size: 12px;
+        line-height: 18px;
+        margin-bottom: 0px;
+      }
+    }
+  }
+
+}
+
+ul.panel-body li {
+  list-style: none;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.col-left {
+  padding-left: 0px;
+  padding-right: 15px;
+}
+
+.col-center {
+  padding-left: 5px;
+  padding-right: 0px;
+}
+
+.col-right {
+  padding-left: 25px;
+  padding-right: 0px;
+}
+
+#main-left-side {
+  background-color: #efffff;
+  background-position-x: 36px;
+
+  img.icon{
+    .icon-size(48px);
+  }
+
+  .panel-heading {
+    background: url(/static/website/image/title-newest.png) no-repeat 0px 0px;
+    background-color: #e7f6cd;
+    color: #023403;
+  }
+
+  .panel-body {
+    h3 { color: #888; }
+
+    span.released { display: none;}
+    p.summary { display: none }
+    .item-info { color: #666; }
+  }
+}
+
+#main-center-side {
+  background-color: #c8ece0;
+  background-position-x: 35px;
+
+  img.icon{
+    .icon-size(78px);
+  }
+
+  .panel-heading {
+    background: url(/static/website/image/title-info.png) no-repeat 0px 0px;
+    background-color: #c8ece0;
+    color: #023403;
+  }
+
+  .panel-body {
+    padding: 0px;
+    :before { padding-top: 15px;}
+    li {
+      position: relative;
+
+      span.released { display: none;}
+      .label {
+        position: absolute;
+        left: -10px;
+        margin-top: 4px;
+      }
+      dd {
+        width: 78%;
+        min-height: 100px;
+        position: relative;
+        h3 { padding-left: 30px; }
+        .summary { margin-bottom: 10px; }
+        .item-info {
+          position: absolute;
+          bottom: 0px;
+        }
+
+      }
+      dt {
+        float: none;
+        position: absolute;
+        right: 0;
+      }
+      min-height: 100px;
+      background-color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 2px;
+      padding: 10px 15px;
+    }
+  }
+
+}
+
+#main-right-side {
+  background-color: #68cccc;
+  background-position-x: 47px;
+  color: white;
+  a { color: white; }
+
+  img.icon{
+    .icon-size(72px);
+  }
+
+  .panel-heading{
+    background: url(/static/website/image/title-crack.png) no-repeat 0px 0px;
+    background-color: #0c3666;
+    color: #ffffff;
+    .more {
+      color: #ffffff;
+    }
+  }
+
+  .panel-body {
+    li {
+      position: relative;
+      min-height: 98px;
+
+      .released {
+        float: right;
+        position: absolute;
+        top: 1px;
+        right: 0px;
+      }
+
+      dd {
+        position: relative;
+        width: 71%;
+        h3 { max-width: 120px;}
+        p.summary {
+          margin-bottom: 0px;
+          overflow: hidden;
+          font-size: 11px;
+          .text-more();
+        }
+      }
+    }
+
+  }
+}
+
+.cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 84px;
+  height: 90px;
+  background: url(http://www.25pp.com/static/images/cover.png) no-repeat 1px -179px;
+  cursor: pointer;
+}
+
+.fg-shadow {
+  position: absolute;
+  bottom: 0;
+  background: url(/static/website/image/shadow-ework.png) repeat-x 0 bottom;
+  z-index: 99;
+  width: 100%;
+  padding: 0 20%;
+  height: 30px;
+}
+
+.top-adv {
+  padding: 0px;
+  li {
+    list-style: none;
+    float: left;
+    padding: 0px 10px;
+    position: relative;
+
+    a {
+      position: relative;
+      display: inline-block;
+
+      img {
+        width: 230px;
+        height: 123px;
+        background-color: #ffffff;
+      }
+
+      span.shadow {
+        .fg-shadow();
+        cursor: pointer;
+        display: block;
+        h3 {
+          margin: 0;
+          text-align: center;
+          font-size: 14px;
+          color: white;
+          .text-more();
+        }
+      }
+    }
+  }
+
+  li.first-li {
+    padding-left:0px;
+  }
+
+  li.last-li {
+    padding-right:0px;
+  }
+
+  margin: 13px auto;
+  height: 124px;
+}
+
+.banner-list-widget {
+  height: 237px;
+  .panel-body {
+    @banner-border:1px solid #eee;
+
+    dl {
+      float: left;
+      border:@banner-border;
+      height: 100px;
+      width: 326px;
+      margin: 0;
+      position: relative;
+      dt {
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      dd {
+        .fg-shadow();
+        h3 {
+          margin: 0;
+          padding-top:10px;
+          text-align: center;
+          font-size: 14px;
+          color: white;
+          .text-more
+        }
+      }
+    }
+  }
+}
+
+.panel-style2-widget {
+  background: none;
+  border: none;
+  position: relative;
+  .panel-heading {
+    width: 100%;
+    margin-top: 10px;
+    margin-left: 1px;
+    padding: 0px;
+    border: none;
+    z-index: 99;
+    position: absolute;
+    .more {
+      width: 35px;
+      line-height: 25px;
+      text-align: center;
+    }
+  }
+  .panel-body {
+    padding: 0px;
+    padding: 0px;
+    position: absolute;
+    bottom: 0px;
+    z-index: 10;
+  }
+}
+
+
+body {
+  /*background-image: url(/static/image/index.jpg);
+  background-color: none;
+  background-repeat: no-repeat;
+  background-position: center; */
+  height: 3410px;
+}

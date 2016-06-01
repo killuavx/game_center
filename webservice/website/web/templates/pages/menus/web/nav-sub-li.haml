@@ -1,0 +1,4 @@
+- load pages_tags
+.abs.drop-down
+  - for p in page_branch
+    %a{:href => "={p.get_absolute_url}"}><= p.title

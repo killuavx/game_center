@@ -1,0 +1,122 @@
+{% extends "apksite/base_product.haml" %}
+{% load staticfiles templatehelper_tags url_tags mezzanine_tags keyword_tags %}
+{% block meta_title %}虫虫公会客户端下载-虫虫游戏{% endblock %}
+{% block meta_keywords %}虫虫公会, 虫虫公会安卓版, 虫虫公会安卓版下载, 虫虫游戏, 安卓游戏下载{% endblock %}
+
+{% block meta_description %}虫虫公会，做最有趣的精品游戏社区。依托虫虫游戏只玩精品的理念，虫虫公会上的每一款游戏都经过了玩家的精挑细选，让千万热爱手游的玩家有一个真实、互动的交流社区。同时分享最新活动、最新手游攻略及免费大礼包！{% endblock %}
+{% block extra_meta %}{% endblock %}
+
+{% block extra_js_header  %}
+    <script>
+        //判断设备跳转
+        (function(W){
+            if(/(iphone)|(ip[oa]d)/i.test(navigator.userAgent.toLowerCase()) || /samsung|HTC|android/i.test(navigator.userAgent.toLowerCase())){
+                W.location.href = '{% url "product_mobile_page" %}';
+            }
+        })(window)
+    </script>
+{% endblock %}
+{% block platform_css %}{{ block.super }}<link href="{% static 'product/css/site-201505.css' %}" media="all" rel="stylesheet" type="text/css" />{% endblock %}
+
+
+{% block main %}
+    <div class="product-box">
+        <!--虫虫公会 开始 cc-guild-->
+        <div class="product-item cc-guild">
+
+            <!--介绍和下载 开始Introduction-->
+            <div class="Introduction">
+                <div class="auto width">
+                    <div class="l phone"></div>
+
+                    <div class="l down">
+                        <div class="top">
+                            <h2>虫虫公会</h2>
+                            <p>为HardCore的游戏玩家提供<br/>最有趣的精品游戏互动社区！</p>
+                        </div>
+
+                        <div class="down-btn">
+                            <div class="l">
+                                {% if android_last %}{% with app=android_last %}
+                                    <a href="{{ app.download }}" class="button android">
+                                        <span class="icon"></span>
+                                        {{ app.platformName }}下载
+                                        <span class="text">
+                                            <em>版本：{{ app.versionName }}</em>
+                                            <em>更新：{{ app.releasedDatetime|slice:":10" }}</em>
+                                        </span>
+                                    </a>{% endwith %}
+                                {% endif %}
+
+                                {% if ios_last %}{% with app=ios_last %}
+                                    <a href="{{ app.download }}" class="button IOS">
+                                        <span class="icon"></span>
+                                        {{ app.platformName }}下载
+                                        <span class="text">
+                                            <em>版本：{{ app.versionName }}</em>
+                                            <em>更新：{{ app.releasedDatetime|slice:":10" }}</em>
+                                        </span>
+                                    </a>{% endwith %}
+                                {% else %}
+                                    <a href="javascript:alert('敬请期待虫虫公会苹果版，近期闪亮登场！')" class="button IOS disable">
+                                        <span class="icon"></span>
+                                        苹果版下载
+                                      <span class="text">
+                                          近期闪亮登场！
+                                      </span>
+                                    </a>
+                                {% endif %}
+                            </div>
+                            <div class="r qr-code">
+                                <span><img src="{% static 'common/img/big-code.png' %}" />扫一扫 立即下载</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="cl"></div>
+
+                </div>
+            </div>
+
+            <!--更新日志 开始Update-log-->
+            <div class="cell-bk Update-log">
+                <div class="auto width">
+
+                    <div class="rel timeline">
+                        <span class="t-l-clock"></span>
+
+                        <div class="p-l-title">
+                            <h3 class="abs n f28">更新日志</h3>
+                        </div>
+
+                        <div class="item-box" id="item-box">
+
+                            {% for app in clients %}
+                                <div class="item">
+                                    <div class="f20 i-title">
+                                        虫虫公会 v{{ app.versionName }} {{ app.platformName }} {% if forloop.first %}<span class="red f14">(最新)</span>{% endif %}<span class="r f14">更新：{{ app.releasedDatetime|slice:":10" }}</span>
+                                    </div>
+                                    <div class="f14 lh24 i-info">
+                                        <b>更新内容：</b>
+                                        <p>{{ app.whatsnew|linebreaksbr }}</p>
+                                    </div>
+                                </div><!--item-->
+                            {% endfor %}
+
+                        </div><!--item-box-->
+
+                        <div class="fix"></div>
+                    </div><!--timeline-->
+
+                </div><!--auto-->
+
+            </div>
+            <!--更新日志 结束 Update-log-->
+
+
+        </div>
+        <!--虫虫公会 结束 cc-assistant-->
+
+
+    </div><!--/.product-box-->
+{% endblock %}

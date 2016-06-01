@@ -1,0 +1,37 @@
+.hd.left
+  %ul
+    - for author, packages in group_items
+      %li{:class =>"{% if forloop.first %}on{% endif %}"}
+        %img{:alt => "={author.name}", :src => "{% if author.cover %}{{ author.cover.url }}{% endif %}", :width => "200", :height => "60" }/
+.bd.right
+  / 轮换
+  - for author, packages in group_items
+    %ul{ :style => "display: {% if forloop.first %}block{% else %}none{% endif %};" }
+      %li
+        .detop
+          {% with package=author.packages.published.all.0 %}
+          .detopleft.left
+            %img{:alt => "", :height => "200", :src => "images/p9.jpg", :width => "430"}/
+          .detopright.right
+            %span
+              %b
+                %a{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":9"
+                = package.summary
+            %img{:alt => "", :height => "200", :src => "images/p5.jpg", :width => "280"}/
+          {% endwith %}
+      %li.bdcont.clear
+        - for package in packages
+          {% with version=package.versions.latest_published %}
+          %dl><
+            %dt><
+              %a{:href => "={version.get_absolute_url}"}><
+                %img{:alt => "={package.title}", :src => "={version.icon.middle.url}", :width => "72", :height => "72"}/
+            %dd><
+              %a{:href => "={version.get_absolute_url}", :title => "={package.title}"}= package.title|slice:":5"
+            %dd><
+              %span
+                .star1
+          {% endwith %}
+  / 轮换 end
+:javascript
+  jQuery(".develop").slide();

@@ -1,0 +1,161 @@
+@import "../../less/flatui/flat-ui";
+
+@green-sea: #16A085;
+@background-green: #67cccc;
+@panel-green: #32af3e;
+@element-green: #c6d202;
+
+body {
+  font-size: 14px;
+  font-family: Helvetica, Arial, sans-serif, Tahoma ;
+  line-height: 25px;
+  background:url(/static/website/image/bg-index.png) repeat-x 0px 0px;
+  background-color: #effdfd;
+}
+
+.no-padding {
+  padding: 0px;
+}
+
+.noradius () {
+  border-radius: 0;
+}
+
+.input-group .form-control,
+.container .jumbotron,
+.btn, .label, .share,
+.panel, .panel-heading
+{ .noradius() }
+
+.container {
+  padding-left:0;
+  padding-right:0;
+}
+
+@page-width: 980px;
+
+header {
+  //background-color: #33af3f;
+  position: relative;
+  height: 380px;
+  width: @page-width;
+  margin:0 auto;
+}
+
+#topbar-account {
+  //background-color: #385b81;
+  line-height: 30px;
+  .container {
+    padding-right: 113px;
+    font-weight: 500;
+  }
+
+ color: #ffffff;
+ a { color: #ffffff; }
+}
+
+#topbar-nav {
+  z-index: 99;
+  position: absolute;
+  height: 65px;
+  padding-top: 5px;
+  a { color: #ffffff; }
+  img#logo {
+    padding: 0px;
+  }
+
+  .breadcrumb>.active {
+    color: white;
+  }
+  .breadcrumb {
+    margin-top: 10px;
+    line-height: 32px;
+    color: white;
+    display: inline-block;
+    background-color: inherit;
+    font-size: 17px;
+    width: 572px;
+
+    li.active, li:hover{
+      background: url(/static/website/image/arrow-navi.png) no-repeat 0px 0px;
+      background-position-x: 70%;
+    }
+
+  }
+
+  .breadcrumb>li+li:before {
+    content: "|";
+    color: inherit;
+  }
+
+}
+
+.searchform {
+  display: inline-block;
+}
+
+.searchbox {
+  width: 230px;
+  background: url(/static/website/image/bg-searchbar.png) no-repeat 0 0;
+  padding: 5px 17px;
+  input, button {
+    background: none;
+    border: none;
+  }
+  input { width: 160px; }
+  button { color: white;}
+}
+
+#topbar-banner {
+  padding-top:2px;
+  padding-bottom: 10px;
+  margin: 0 auto;
+  margin-bottom: 5px;
+  height: 350px;
+  width: 980px;
+}
+
+#content {
+  padding: 0px;
+  width: @page-width;
+}
+
+footer {
+  padding: 25px 10px 10px 10px;
+  margin-bottom: -25px;
+  background: url(/static/website/image/bg-bottom.png) repeat-x 0 0;
+  color:#ffffff;
+  font-size: 13px;
+  .container { width: @page-width; }
+
+  #logo-bottom {
+    margin-bottom: 10px;
+    margin-right: 10px;
+  }
+
+  h3, h5 { margin-top: 0px; }
+  h3 {
+    margin-bottom: 20px;
+    font-size: 30px;
+
+  }
+  h5 {
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+
+  ul {
+    padding-left: 0px;
+    li {
+      list-style: none;
+      color: #ffffff;
+    }
+  }
+  .part-2, .part-3 {
+    ul {
+      padding-left: 27px
+    }
+  }
+}
+
+

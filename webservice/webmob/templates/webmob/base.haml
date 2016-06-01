@@ -1,0 +1,35 @@
+-load less
+-load coffeescript
+
+!!! 5
+%html{lang: '={LANGUAGE_CODE}'}
+  %head
+    %meta{name:"viewport",
+      content:"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"}
+    %meta{'http-equiv': 'Content-Type', content: 'text/html; charset=UTF-8'}/
+    %title= html_title
+    %meta{name: 'keywords', content: '={meta_keywords}'}
+    %meta{name: 'description', content: '={meta_description}'}
+    -block jscore
+      %script{type: 'text/javascript', src: '={STATIC_URL}js/lib/jquery-2.0.3.min.js'}
+    -block theme
+      %link{rel:"stylesheet", type:'text/css', href:'={STATIC_URL}bootstrap/css/bootstrap.min.css'}
+      %link{rel:"stylesheet", type:'text/css', href:"={STATIC_URL}{% less 'less/webmob/common.less' %}"}
+    -block jsappend
+      %script{type: 'text/javascript', src: '={STATIC_URL}{% coffeescript "js/src/helper.coffee" %}'}
+      %script{type: 'text/javascript'}
+        var default_icon = "{{ STATIC_URL }}resource/icon_default.png";
+
+  %body{itemscope:'', itemtype:'http://schema.org/WebPage'}
+    - block header
+    - block content
+
+    - block footer
+    - block footer-css
+    - block footer-js
+      %script{src:"={STATIC_URL}js/lib/bootstrap.min.js"}
+      %span.hide
+        %script{type:"text/javascript", charset:'UTF-8', src:'http://tajs.qq.com/stats?sId=29187280'}
+        %script{type:"text/javascript"}
+          var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+          document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F6dead2ecbec230fad5cacacae69215de' type='text/javascript'%3E%3C/script%3E"));

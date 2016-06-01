@@ -1,0 +1,12 @@
+-load url_tags templatehelper_tags
+.f18.cell.rel.t-title
+  %h3.l.n.mr30= title
+  %a.r.f12.mt5.more{:href => "={more_url}", :target => "_blank" } 更多&gt;
+
+/ t-title
+.vendor-list
+  %ul
+    -for author in items
+      %li
+        %a{:href => "{% absolute_url author product=product %}", :title => "={author.name}" , :target => "_blank" }
+          %img.lazy{"data-original" => "{% resource_url author.resources 'cover' product %}"}/

@@ -1,0 +1,163 @@
+{% extends "apksite/base_common.haml" %}
+{% load staticfiles templatehelper_tags url_tags mezzanine_tags keyword_tags %}
+{% block meta_title %}{{ page.meta_title }}{% endblock %}
+
+{% block meta_keywords %}{% metablock %}
+    {% keywords_for page as keywords %}
+    {% for keyword in keywords %}
+        {% if not forloop.first %}, {% endif %}
+        {{ keyword }}
+    {% endfor %}
+{% endmetablock %}{% endblock %}
+
+{% block meta_description %}{% metablock %}
+    {{ page.description }}
+{% endmetablock %}{% endblock %}
+
+{% block title %}
+    {% editable page.title %}{{ page.title }}{% endeditable %}
+{% endblock %}
+{% block extra_js_header  %}
+<script>
+    //判断设备跳转
+    (function(W){
+        if(/(iphone)|(ip[oa]d)/i.test(navigator.userAgent.toLowerCase()) || /samsung|HTC|android/i.test(navigator.userAgent.toLowerCase())){
+            W.location.href = 'mobile.html';
+        }
+    })(window)
+</script>
+{% endblock %}
+
+{% block platform_css %}<link href="{% static 'product/css/n-site.css' %}?1414044779001" media="all" rel="stylesheet" type="text/css" />{% endblock %}
+{% block extra_meta %}
+    {{ block.super }}
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+{% endblock %}
+{% comment %}
+{% block head_base  %}<base target="_blank"/>{% endblock %}
+{% endcomment %}
+{% block extra_js_footer %}
+<script src="{% static 'product/js/site.js' %}" ></script>
+{% endblock %}
+{% block main %}
+<!--虫虫客户端下载 开始product-page-->
+<div class="cell-bk product-page">
+
+    <div class="rel product-banner">
+        <div class="auto width">
+
+            <div class="abs left-phone"></div><!--left-phone-->
+            <div class="rel right-txt">
+                <h1 class="slogan">虫虫助手-免费玩精品</h1>
+                <div class="l down-btn">{% qurl dw_url channel=request.GET.channel as dw_url %}
+                    {% with dw_url=latest.download %}
+                    <a href="{{ dw_url }}" class="android">安卓版下载</a>
+                    <p><span>版本：{{latest.versionName}}</span>更新：{{ latest.releasedDatetime|slice:":10" }}</p>
+                    {% endwith %}
+                    <a href="javascript:alert('感谢参与Beta测试版的虫粉，敬请期待正式版！');" class="iphone">期待正式版</a>
+                    <p><span style="color:#FC3">感谢参与Beta测试版的虫粉，敬请期待正式版！</span></p>
+{% comment %}
+                    <a href="http://ios-api.ccplay.com.cn/download/client/ios_client/com.ccyx.zykj.helper" class="iphone">苹果版下载</a>
+                    <p><span>版本：1.0.1Beta</span>更新：2015-03-03</p>
+{% endcomment %}
+                </div>
+            <div class="l qr-code"><img src="http://static.ccplay.com.cn/static/common/img/big-code.png" height="100%" /></div>
+        </div><!--right-txt-->
+
+        </div><!--auto-->
+
+    </div><!--product-banner-->
+
+    <div class="product-SubSlogan">
+        <div class="auto width">
+            <ul>
+                <li class="p-s-1"><span class="p-icon"></span>
+                    <h2 class="n f28 p-title">深度破解</h2>
+                    <p class="f14 p-info">我们只选最精品的游戏<br />只做最深度的破解</p>
+                </li>
+                <li class="p-s-2"><span class="p-icon"></span>
+                    <h2 class="n f28 p-title">独家首发</h2>
+                    <p class="f14 p-info">我们拥有最丰富的渠道<br />让你最快体验巨作</p>
+                </li>
+                <li class="p-s-3"><span class="p-icon"></span>
+                    <h2 class="n f28 p-title">网游礼包</h2>
+                    <p class="f14 p-info">最全的游戏礼包发放平台<br />统统免费提供领取</p>
+                </li>
+                <li class="p-s-4"><span class="p-icon"></span>
+                    <h2 class="n f28 p-title">虫虫活动</h2>
+                    <p class="f14 p-info">天天有惊喜大礼包放送<br />随时在线兑换奖品</p>
+                </li>
+            </ul>
+            <div class="fix"></div>
+        </div>
+        <!--auto--></div>
+    <!--product-SubSlogan-->
+
+    <div class="product-log">
+        <div class="auto width">
+
+            <div class="rel timeline">
+                <span class="t-l-clock"></span>
+
+                <div class="p-l-title">
+                    <h3 class="abs n f28">更新日志</h3>
+                    <p class="abs f16">
+                        <a href="http://bbs.ccplay.cc/thread-37344-1-1.html" target="_blank">常见问题</a>
+                        <a href="http://bbs.ccplay.cc/forum-2-1.html" target="_blank">问题反馈</a>
+                    </p>
+                </div>
+
+                <div class="item-box" id="item-box">
+                    <div class="item">
+                        <div class="f20 i-title">
+                            虫虫助手 v1.0.1Beta 苹果版<span class="red f14">(最新)</span> <span class="r f14">更新：2015-03-03</span>
+                        </div>
+                        <div class="f14 lh24 i-info">
+                            <b>更新内容：</b>
+                            <p>
+                                1.优化 应用下载，下载游戏更流畅；<br/>
+                                2.优化 界面细节，提升用户体验；<br/>
+                                3.修复 IOS 7系统部分用户闪退问题；<br/>
+                                4.修复 用户反馈的BUG。<br/>
+                            </p>
+                        </div>
+                    </div><!--item-->
+
+
+                    <div class="item">
+                        <div class="f20 i-title">
+                            虫虫助手 v1.0Beta 苹果版<span class="r f14">更新：2015-02-14</span>
+                        </div>
+                        <div class="f14 lh24 i-info">
+                            <b>更新内容：</b>
+                            <p>
+                                1.支持iOS 4.0 - 7.0系统，无需越狱；<br/>
+                                2.无限金币，再也不用花钱买道具；<br/>
+                                3.无帐号模式，下载无需登陆Apple ID；<br/>
+                                4.火速下载无需等候。<br/>
+                            </p>
+                        </div>
+                    </div><!--item-->
+
+                    {% for app in clients %}
+                    <div class="item">
+                        <div class="f20 i-title">
+                            虫虫助手 v{{ app.versionName }} {% if forloop.first %}<span class="red f14">(最新)</span>{% endif %}<span class="r f14">更新：{{ app.releasedDatetime|slice:":10" }}</span>
+                        </div>
+                        <div class="f14 lh24 i-info">
+                            <b>更新内容：</b>
+                            <p>{{ app.whatsnew|linebreaksbr }}</p>
+                        </div>
+                    </div><!--item-->
+                    {% endfor %}
+
+                </div><!--item-box-->
+
+                <div class="fix"></div>
+            </div><!--timeline-->
+
+        </div><!--auto-->
+    </div><!--product-log-->
+
+</div><!--虫虫客户端下载 结束 product-page-->
+{% endblock %}

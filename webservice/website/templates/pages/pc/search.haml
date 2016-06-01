@@ -1,0 +1,25 @@
+-extends "pc_base.haml"
+-load widgets templatehelper_tags pc_tags
+{% block main %}
+.cb.box.list_box.game
+
+  .list_box_left.game_box
+    {% widget PCSearchPackageListWidget q=request.GET.q cat=request.GET.cat per_page=20 page=request.GET.page %}
+    .location
+      搜索相关结果约{{ paginator.count|default:0 }}个与<span class="red">“{{ q }}”</span>相关的游戏
+    / title_box
+
+    .left_list.list
+      %ul><
+        -for search_result in items
+          {% include "pages/pc/widgets/include-package-box.haml" with package=search_result.object %}
+      .c_b
+    / left_list
+
+    {% pagination items %}
+    {% endwidget %}
+
+  / game_box
+/ game
+
+{% endblock %}

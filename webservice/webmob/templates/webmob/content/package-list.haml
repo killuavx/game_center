@@ -1,0 +1,35 @@
+-load sizefieldtags
+-load less
+
+%table.table.table-hover.package-list{id: 'package-list-={request.GET.page|default:1}',
+  itemtype:'http://schema.org/MobileApplication'}
+  %tbody
+    - for item in results
+      {% url "webmob.views.packagedetail" pk=item.id as detail_url %}
+      %tr.row{itemscope: '',
+        onclick:"window.location=$(this).data().url;", 'data-url': '={detail_url}'}
+        %td
+          %img.icon.img-polaroid{alt: '={item.title}',
+            onerror: 'imgonerror(this, default_icon);',
+            src: '={item.icon}', itemprop: 'image'}
+        %td
+          .caption{itemprop: 'description'}
+            %h4.title{itemprop: 'name'}
+              %a{href: '={detail_url}', itemprop: 'url'}<
+                = item.title
+            %p.summary.small
+              %span.hide{itemprop: 'name'}= item.package_name
+              %span{itemprop: 'applicationSubCategory'}= item.category_name
+              |
+              %span{itemprop: 'softwareVersion'}= item.version_name
+              |
+              %span{itemprop: 'fileSize'}= item.download_size|filesize
+        %td
+          %a.pull-right.btn.download.btn-lg.text-center{href: '={item.download|default:"#"}',
+            itemprop: 'downloadUrl'}<
+            %span.glyphicon.glyphicon-cloud-download
+    - empty
+      {% include "webmob/widget/empty.haml" %}
+
+- if results and count > 10 and results|length >= 10
+  {% include "webmob/widget/btn-more.haml" %}

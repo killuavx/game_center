@@ -1,0 +1,38 @@
+language: python
+python:
+  - "3.3"
+env:
+  - DJANGO_VERSION=1.5.2
+    DJANGO_SETTINGS_MODULE=webservice.test_settings
+    DBA_SQL_DJANGO_ENGINE='django.db.backends.mysql'
+    DBA_SQL_DB_NAME='webservice_test_1'
+    DBA_SQL_ADMIN_USER=travis
+    DBA_SQL_ADMIN_PASSWORD=''
+    DBA_SQL_HOST='127.0.0.1'
+    DBA_SQL_PORT='3306'
+
+services:
+  - mysql
+
+install:
+  - pip install -q Django==$DJANGO_VERSION
+  - pip install -r requirements.txt  --use-mirrors
+  - pip install -r requirements-dev.txt --use-mirrors
+  - cd ../dependents/python-dateutil-2.0 && python setup.py install && cd -
+  - cd ../dependents/easy-thumbnails && python setup.py install && cd -
+  - cd ../dependents/django-tagging && python setup.py install && cd -
+  - cd ../dependents/django-tagging-autocomplate && python setup.py install -
+
+before_script:
+  - mysql -e 'create database webservice_test_1'
+  - python manage.py syncdb --noinput
+  - python manage.py migrate
+
+after_script:
+  - mysql -e 'drop database webservice_test_1'
+
+script:
+  - python manage.py jenkins warehouse taxonomy fts
+
+after_success:
+  - coveralls

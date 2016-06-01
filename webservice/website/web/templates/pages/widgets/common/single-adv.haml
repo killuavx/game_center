@@ -1,0 +1,6 @@
+-load url_tags
+- if item
+  %a{:href => "{% absolute_url item product=product %}",
+     :title => "={item.title}",
+     :target => "={item.target}"}
+    %img.lazy{"data-original" => "{% resource_url item 'cover' %}"}/

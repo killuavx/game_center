@@ -1,0 +1,16 @@
+-load templateutils_tags
+{% mkrange 1 6 as fnum %}
+- for topic in items
+  %li
+    %dl
+      %dt
+        %a{:href => "={topic.get_absolute_url}"}
+          %img{:alt => "", :src => "{{ topic.cover.url }}", :width => "320", :height => "240"}/
+      %dd
+        %span.matar
+          %div{:class => "star={fnum|random}"}
+        %a.font18{:href => "={topic.get_absolute_url}", :title => "={topic.name}"}= topic.name|slice:":10"
+      %dd.c69.f14= topic.summary|truncatechars:45
+      %dd.mabut
+        %span.matime= topic.released_datetime|date:'SHORT_DATE_FORMAT'
+        %span.masz 99845

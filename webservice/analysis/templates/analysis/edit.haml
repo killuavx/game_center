@@ -1,0 +1,10 @@
+-extends 'base_cs.haml'
+-block title
+  Another page
+-block content
+  .wide More content
+
+  %form{action: '/', method: 'POST'}
+    %table
+      =form.as_table
+    %button Vote!

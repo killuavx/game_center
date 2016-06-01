@@ -1,0 +1,31 @@
+-extends "pages/page_web.html"
+-load widgets url_tags templatehelper_tags web_tags cache_tagging_tags
+-block main
+  {% get_site_name as site_name %}
+  {% with c_cat=request.GET.category c_topic=topic.pk c_page=request.GET.page|default:'1' %}
+  {% settings_value 'GC_TEMPLATE_CACHE_TIMEOUT_DAYS' as CACHE_TIMEOUT_DAYS %}
+  {% cache_tagging 'product_web_collection_page'|add_param:site_name|add_param:topic.slug|add_param:c_page timeout=CACHE_TIMEOUT_DAYS %}{% spaceless %}
+  {% cache_add_tags request.get_host|add:request.path_info request.build_absolute_uri %}
+  -with topic_tags=topic.get_all_cache_identifier_tags
+    {% cache_add_tags 'product_web_collection_page'|add_param:site_name 'product_web_colletion_page' %}
+    {% cache_add_tags topic_tags %}
+    {% cache_location_register 'product_web_collection_page' tags=topic_tags %}
+  .auto.mt30.width.collection-dis.minheight-page
+    .cell-bk.mb30.bdc
+      .pr10.collection_title
+        %img.l.mr20{:alt => "={topic.name}", :src => "{% resource_url topic.resources 'cover' product %}"}
+          %h1.pt10= topic.name
+          %p= topic.summary
+          %span.date 更新日期：{{ topic.updated_datetime|date }} | 共 {{ topic.packages_count|default:0 }} 个应用
+          .cl
+      {% widget WebCollectionPackageBySearchListWidget slug=topic.slug per_page=24 page=request.GET.page %}
+      .btn-s-box.p20.right-list
+        -for package in items
+          -with pkg_tags=package.get_all_cache_identifier_tags
+            {% cache_location_register tags=pkg_tags %} {% cache_add_tags pkg_tags %}
+            {% package_box2 package %}
+        {% pagination items %}
+      / right-list
+      {% endwidget %}
+    / cell-bk
+  {% endspaceless %}{% end_cache_tagging %}{% endwith %}
